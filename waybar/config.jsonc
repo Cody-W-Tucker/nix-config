@@ -1,0 +1,97 @@
+{
+  "layer": "top",
+  "height": 30,
+  "spacing": 4,
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["hyprland/window"],
+  "modules-right": [
+    "pulseaudio",
+    "cpu",
+    "memory",
+    "temperature",
+    "clock",
+    "tray"
+  ],
+  "hyprland/workspaces": {
+    "on-click": "activate",
+    "format": "{}"
+  },
+  "tray": {
+    "icon-size": 21,
+    "spacing": 10
+  },
+  "clock": {
+    "format": "{:%I:%M %p}",
+    "tooltip-format": "{:%Y-%m-%d}",
+    "format-alt": "{:%Y-%m-%d}",
+    "on-click": "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
+  },
+  "cpu": {
+    "format": "{usage}% ",
+    "tooltip": false
+  },
+  "memory": {
+    "format": "{}% "
+  },
+  "temperature": {
+    "critical-threshold": 80,
+    "format": "{temperatureC}°C {icon}",
+    "format-icons": ["", "", ""]
+  },
+  "pulseaudio": {
+    "format": "{volume}% {icon} {format_source}",
+    "format-bluetooth": "{volume}% {icon} {format_source}",
+    "format-bluetooth-muted": " {icon} {format_source}",
+    "format-muted": " {format_source}",
+    "format-source": "{volume}% ",
+    "format-source-muted": "",
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": ["", "", ""]
+    },
+    "on-click": "pavucontrol"
+  },
+  "reload_style_on_change": true,
+  "hyprland/window": {
+    "max-length": 50
+  }
+  // "group/group-power": {
+  //   "orientation": "inherit",
+  //   "drawer": {
+  //     "transition-duration": 500,
+  //     "children-class": "not-power",
+  //     "transition-left-to-right": false
+  //   },
+  //   "modules": [
+  //     "custom/power", // First element is the "group leader" and won't ever be hidden
+  //     "custom/quit",
+  //     "custom/lock",
+  //     "custom/reboot"
+  //   ]
+  // },
+  // "custom/quit": {
+  //   "format": "󰗼",
+  //   "tooltip": false,
+  //   "on-click": "hyprctl dispatch exit"
+  // },
+  // "custom/lock": {
+  //   "format": "󰍁",
+  //   "tooltip": false,
+  //   "on-click": "swaylock"
+  // },
+  // "custom/reboot": {
+  //   "format": "󰜉",
+  //   "tooltip": false,
+  //   "on-click": "reboot"
+  // },
+  // "custom/power": {
+  //   "format": "",
+  //   "tooltip": false,
+  //   "on-click": "shutdown now"
+  // }
+}
