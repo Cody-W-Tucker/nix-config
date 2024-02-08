@@ -9,22 +9,22 @@
     "cpu",
     "memory",
     "temperature",
-    "clock",
-    "tray"
+    "clock"
+    // "tray"
   ],
   "hyprland/workspaces": {
     "on-click": "activate",
     "format": "{}"
   },
-  "tray": {
-    "icon-size": 21,
-    "spacing": 10
-  },
+  // "tray": {
+  //   "icon-size": 21,
+  //   "spacing": 10
+  // },
   "clock": {
     "format": "{:%I:%M %p}",
     "tooltip-format": "{:%Y-%m-%d}",
-    "format-alt": "{:%Y-%m-%d}",
-    "on-click": "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
+    "format-alt": "{:%Y-%m-%d}"
+    // "on-click": "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
   },
   "cpu": {
     "format": "{usage}% ",

@@ -173,6 +173,7 @@
    zoom-us
    github-desktop
    vscode
+   pywal
    #wolfram-engine
    # wget
   ];
