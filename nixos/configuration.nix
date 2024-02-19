@@ -180,14 +180,8 @@
    docker-compose
    docker-client
    pavucontrol
-   obsidian
    #wolfram-engine
    # wget
-  ];
-
-  
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-25.9.0"
   ];
 
   # Security daemon for swaylock, needed to make password input work
