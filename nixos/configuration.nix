@@ -96,17 +96,21 @@
 
   # Enable OpenGL
   hardware = {
-    opengl = {
+    bluetooth = {
       enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
-      extraPackages = with pkgs; [
-        intel-media-driver # LIBVA_DRIVER_NAME=iHD
-        vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-        vaapiVdpau
-        libvdpau-va-gl
-      ];
+      powerOnBoot = true;
     };
+    # opengl = {
+    #   enable = true;
+    #   driSupport = true;
+    #   driSupport32Bit = true;
+    #   extraPackages = with pkgs; [
+    #     intel-media-driver # LIBVA_DRIVER_NAME=iHD
+    #     vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+    #     vaapiVdpau
+    #     libvdpau-va-gl
+    #   ];
+    # };
     openrazer.enable = true;
     openrazer.devicesOffOnScreensaver = true;
   };
@@ -115,7 +119,7 @@
   users.users.codyt = {
     isNormalUser = true;
     description = "Cody Tucker";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker"];
     # packages = with pkgs; [
     # ];
   };
@@ -155,37 +159,54 @@
   environment.systemPackages = with pkgs; [
    git
    direnv
-   python3
-   virtualenv
    waybar
    mako
    swww
    kitty
    rofi-wayland
    openrazer-daemon
-   xdg-utils
+   xdg-utils # Seems to be needed for noticing which desktop environment is in use
    wlogout
    swaylock-effects
    swayidle
-   killall
    firefox
    google-chrome
    zoom-us
-   github-desktop
    vscode
    pywal
+   starship
+   ranger
+   docker
+   docker-compose
+   docker-client
+   pavucontrol
+   obsidian
    #wolfram-engine
    # wget
+  ];
+
+  
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-25.9.0"
   ];
 
   # Security daemon for swaylock, needed to make password input work
   security.pam.services.swaylock = {};
 
+  # NeoVim
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+    defaultEditor = true;
+  };
+
   # Enabling auto enviroment switching per directory
   programs.direnv.enable = true;
 
-  # Enable lorri for nix development
-  services.lorri.enable = true;
+  # Enable Docker.
+  virtualisation.docker.enable = true;
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
