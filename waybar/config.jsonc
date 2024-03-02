@@ -1,107 +1,215 @@
-{
-  "layer": "top",
-  "height": 30,
-  "spacing": 4,
-  "modules-left": ["hyprland/workspaces"],
-  "modules-center": ["hyprland/window"],
-  "modules-right": [
-    "bluetooth",
-    "pulseaudio",
-    "cpu",
-    "memory",
-    "temperature",
-    "clock"
-    // "tray"
-  ],
-  "hyprland/workspaces": {
-    "on-click": "activate",
-    "format": "{}"
-  },
-  // "tray": {
-  //   "icon-size": 21,
-  //   "spacing": 10
-  // },
-  "clock": {
-    "format": "{:%I:%M %p}",
-    "tooltip-format": "{:%Y-%m-%d}",
-    "format-alt": "{:%Y-%m-%d}"
-    // "on-click": "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
-  },
-  "cpu": {
-    "format": "{usage}% ",
-    "tooltip": false
-  },
-  "memory": {
-    "format": "{}% "
-  },
-  "temperature": {
-    "critical-threshold": 80,
-    "format": "{temperatureC}°C {icon}",
-    "format-icons": ["", "", ""]
-  },
-  "bluetooth": {
-    // "controller": "controller1", // specify the alias of the controller if there are more than 1 on the system
-    "format": "",
-    // "format-disabled": "", // an empty format will hide the module
-    "format-connected": " {num_connections} connected",
-    "tooltip-format": "{controller_alias}\t{controller_address}",
-    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-    "on-click": "/home/codyt/Code/dotfiles/scripts/bluetoothSwitch.sh"
-  },
-  "pulseaudio": {
-    "format": "{volume}% {icon} {format_source}",
-    "format-bluetooth": "{volume}% {icon} {format_source}",
-    "format-bluetooth-muted": " {icon} {format_source}",
-    "format-muted": " {format_source}",
-    "format-source": "{volume}% ",
-    "format-source-muted": "",
-    "format-icons": {
-      "headphone": "",
-      "hands-free": "",
-      "headset": "",
-      "phone": "",
-      "portable": "",
-      "car": "",
-      "default": ["", "", ""]
+[
+  {
+    "layer": "top",
+    "output": "DP-1",
+    "spacing": 4,
+    "modules-center": ["clock"],
+    "modules-left": ["hyprland/workspaces"],
+    "modules-right": [
+      "bluetooth",
+      "pulseaudio",
+      "cpu",
+      "memory",
+      "temperature",
+      "group/group-power"
+    ],
+    "hyprland/workspaces": {
+      "on-click": "activate",
+      "format": "{}",
+      "on-scroll-up": "hyprctl dispatch workspace e+1",
+      "on-scroll-down": "hyprctl dispatch workspace e-1"
     },
-    "on-click": "pavucontrol"
+    "clock": {
+      "format": "{:%m/%d/%Y - %I:%M %p}",
+      "on-click-right": "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
+    },
+    "cpu": {
+      "format": "{usage}% ",
+      "tooltip": false
+    },
+    "memory": {
+      "format": "{}% "
+    },
+    "temperature": {
+      "critical-threshold": 80,
+      "thermal-zone": 2,
+      "hwmon-path": "/sys/devices/platform/coretemp.0/hwmon/hwmon4/temp1_input",
+      "format": "{temperatureC}°C "
+    },
+    "bluetooth": {
+      "format": " {status}",
+      "format-connected": " {num_connections} connected",
+      "tooltip-format": "{controller_alias}\t{controller_address}",
+      "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+      "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+      "on-click": "/home/codyt/Code/dotfiles/scripts/bluetoothSwitch.sh"
+    },
+    "pulseaudio": {
+      "format": "{volume}% {icon} {format_source}",
+      "format-bluetooth": "{volume}% {icon} {format_source}",
+      "format-bluetooth-muted": " {icon} {format_source}",
+      "format-muted": " {format_source}",
+      "format-source": "{volume}% ",
+      "format-source-muted": "",
+      "format-icons": {
+        "headphone": "",
+        "hands-free": "",
+        "headset": "",
+        "phone": "",
+        "portable": "",
+        "car": "",
+        "default": ["", "", ""]
+      },
+      "on-click": "pavucontrol"
+    },
+    "hyprland/window": {
+      "max-length": 200,
+      "separate-outputs": true
+    },
+    "group/group-power": {
+      "orientation": "inherit",
+      "drawer": {
+        "transition-duration": 500,
+        "children-class": "not-power",
+        "transition-left-to-right": false
+      },
+      "modules": [
+        "custom/power", // First element is the "group leader" and won't ever be hidden
+        "custom/quit",
+        "custom/lock",
+        "custom/reboot"
+      ]
+    },
+    "custom/quit": {
+      "format": "󰗼",
+      "tooltip": true,
+      "tooltip-format": "Quit",
+      "on-click": "hyprctl dispatch exit"
+    },
+    "custom/lock": {
+      "format": "󰍁",
+      "tooltip-format": "Lock",
+      "tooltip": true,
+      "on-click": "swaylock"
+    },
+    "custom/reboot": {
+      "format": "󰜉",
+      "tooltip-format": "Reboot",
+      "tooltip": true,
+      "on-click": "reboot"
+    },
+    "custom/power": {
+      "format": "",
+      "tooltip-format": "Shutdown",
+      "tooltip": false,
+      "on-click": "shutdown now"
+    }
   },
-  "hyprland/window": {
-    "max-length": 50
+  {
+    "layer": "top",
+    "output": "DP-2",
+    "position": "bottom",
+    "spacing": 4,
+    "modules-center": ["clock"],
+    "modules-left": ["hyprland/workspaces"],
+    "modules-right": [
+      "bluetooth",
+      "pulseaudio",
+      "cpu",
+      "memory",
+      "temperature",
+      "group/group-power"
+    ],
+    "hyprland/workspaces": {
+      "on-click": "activate",
+      "format": "{}",
+      "on-scroll-up": "hyprctl dispatch workspace e+1",
+      "on-scroll-down": "hyprctl dispatch workspace e-1"
+    },
+    "clock": {
+      "format": "{:%m/%d/%Y - %I:%M %p}",
+      "on-click-right": "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
+    },
+    "cpu": {
+      "format": "{usage}% ",
+      "tooltip": false
+    },
+    "memory": {
+      "format": "{}% "
+    },
+    "temperature": {
+      "critical-threshold": 80,
+      "thermal-zone": 2,
+      "hwmon-path": "/sys/devices/platform/coretemp.0/hwmon/hwmon4/temp1_input",
+      "format": "{temperatureC}°C "
+    },
+    "bluetooth": {
+      "format": " {status}",
+      "format-connected": " {num_connections} connected",
+      "tooltip-format": "{controller_alias}\t{controller_address}",
+      "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+      "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+      "on-click": "/home/codyt/Code/dotfiles/scripts/bluetoothSwitch.sh"
+    },
+    "pulseaudio": {
+      "format": "{volume}% {icon} {format_source}",
+      "format-bluetooth": "{volume}% {icon} {format_source}",
+      "format-bluetooth-muted": " {icon} {format_source}",
+      "format-muted": " {format_source}",
+      "format-source": "{volume}% ",
+      "format-source-muted": "",
+      "format-icons": {
+        "headphone": "",
+        "hands-free": "",
+        "headset": "",
+        "phone": "",
+        "portable": "",
+        "car": "",
+        "default": ["", "", ""]
+      },
+      "on-click": "pavucontrol"
+    },
+    "hyprland/window": {
+      "max-length": 200,
+      "separate-outputs": true
+    },
+    "group/group-power": {
+      "orientation": "inherit",
+      "drawer": {
+        "transition-duration": 500,
+        "children-class": "not-power",
+        "transition-left-to-right": false
+      },
+      "modules": [
+        "custom/power", // First element is the "group leader" and won't ever be hidden
+        "custom/quit",
+        "custom/lock",
+        "custom/reboot"
+      ]
+    },
+    "custom/quit": {
+      "format": "󰗼",
+      "tooltip": true,
+      "tooltip-format": "Quit",
+      "on-click": "hyprctl dispatch exit"
+    },
+    "custom/lock": {
+      "format": "󰍁",
+      "tooltip-format": "Lock",
+      "tooltip": true,
+      "on-click": "swaylock"
+    },
+    "custom/reboot": {
+      "format": "󰜉",
+      "tooltip-format": "Reboot",
+      "tooltip": true,
+      "on-click": "reboot"
+    },
+    "custom/power": {
+      "format": "",
+      "tooltip-format": "Shutdown",
+      "tooltip": false,
+      "on-click": "shutdown now"
+    }
   }
-  // "group/group-power": {
-  //   "orientation": "inherit",
-  //   "drawer": {
-  //     "transition-duration": 500,
-  //     "children-class": "not-power",
-  //     "transition-left-to-right": false
-  //   },
-  //   "modules": [
-  //     "custom/power", // First element is the "group leader" and won't ever be hidden
-  //     "custom/quit",
-  //     "custom/lock",
-  //     "custom/reboot"
-  //   ]
-  // },
-  // "custom/quit": {
-  //   "format": "󰗼",
-  //   "tooltip": false,
-  //   "on-click": "hyprctl dispatch exit"
-  // },
-  // "custom/lock": {
-  //   "format": "󰍁",
-  //   "tooltip": false,
-  //   "on-click": "swaylock"
-  // },
-  // "custom/reboot": {
-  //   "format": "󰜉",
-  //   "tooltip": false,
-  //   "on-click": "reboot"
-  // },
-  // "custom/power": {
-  //   "format": "",
-  //   "tooltip": false,
-  //   "on-click": "shutdown now"
-  // }
-}
+]
