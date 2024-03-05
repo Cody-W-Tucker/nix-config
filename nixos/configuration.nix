@@ -50,6 +50,23 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
+  #polkit Auth Agent
+  systemd = {
+    user.services.polkit-gnome-authentication-agent-1 = {
+      description = "polkit-gnome-authentication-agent-1";
+      wantedBy = [ "graphical-session.target" ];
+      wants = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+      };
+    };
+  };
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -89,6 +106,7 @@
     };
     openrazer.enable = true;
     openrazer.devicesOffOnScreensaver = true;
+    # openrazer.users = [ "codyt" ];
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -96,8 +114,9 @@
     isNormalUser = true;
     description = "Cody Tucker";
     extraGroups = [ "networkmanager" "wheel" "docker"];
-    # packages = with pkgs; [
-    # ];
+    packages = with pkgs; [
+      xwaylandvideobridge
+    ];
   };
 
   # Enable the Hyprland Desktop Environment.
@@ -106,13 +125,9 @@
     xwayland.enable = true;
   };
 
-  # When you click a link it should open the correct program, it needs a portal to do so
-  xdg.portal = { 
+  #xdg  
+  xdg.portal = {
     enable = true;
-  };
-
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
   };
 
   # Manage user environment with home-manager
@@ -125,26 +140,27 @@
       wl-clipboard
       nodejs
       hyprpicker
+      starship
     ];
-    dconf.settings = {
-      "org/gnome/desktop/background" = {
-        picture-uri-dark = "file://${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.src}";
-      };
-      "org/gnome/desktop/interface" = {
-        color-scheme = "prefer-dark";
-        gtk-theme = "WhiteSur-Dark";
+    dconf = {
+      enable = true;
+      settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+        };
       };
     };
+    # X keyboard
     home.keyboard = {
       layout = "us";
-      model = "pc105";
+      model = "pc104";
     };
     home.pointerCursor = {
       gtk.enable = true;
       # x11.enable = true;
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
-      size = 16;
+      size = 24;
     };
     gtk = {
       enable = true;
@@ -153,7 +169,7 @@
         name = "Adwaita";
       };
       theme = {
-        name = "WhiteSur-Dark";
+        name = "WhiteSur-Dark-solid";
         package = pkgs.whitesur-gtk-theme;
       };
       gtk3.extraConfig = {
@@ -181,14 +197,16 @@
         exec-once = /home/codyt/Code/dotfiles/scripts/sleep.sh
         exec-once = waybar
         exec-once = mako
-        exec-once = swww init 
+        exec-once = swww init
         exec-once = /home/codyt/Code/dotfiles/scripts/wallpaper.sh ~/Pictures/Wallpapers
       '';
       settings = {
         input = {
           numlock_by_default = "true";
           follow_mouse = "1";
-          sensitivity = "0";
+          sensitivity = "-.7";
+          kb_model = "pc104";
+          kb_layout = "us";
         };
         general =  {
           border_size = "2";
@@ -222,7 +240,6 @@
           workspace_swipe = "off";
         };
         misc = {
-
           mouse_move_enables_dpms = "true";
           key_press_enables_dpms = "true";
           force_default_wallpaper = "0";
@@ -249,6 +266,7 @@
             "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://chat.openai.com"
             "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
             "$mainMod, KP_Enter, exec, google-chrome-stable --app=https://essay.app/home/"
+            "$mainMod, KP_Subtract, exec, google-chrome-stable --app=https://recorder.google.com/"
             # Number keys (1, 2, 3)
             "$mainMod, KP_End, exec, google-chrome-stable --app=https://mail.google.com"
             "$mainMod, KP_Down, exec, google-chrome-stable --app=https://messages.google.com/web/u/0/conversations"
@@ -262,8 +280,8 @@
             # Skipped 8 KP_Up
             "$mainMod, KP_Prior, exec, google-chrome-stable --app=https://tmv-social.odoo.com/web?action=277&model=account.journal&view_type=kanban&cids=1&menu_id=114"
             # Screenshots
-            "$mainMod, S, exec, grim -g '$(slurp)'"
-            "$mainMod SHIFT, S, exec, grim -g '$(slurp)' - | wl-copy"
+            ''$mainMod, S, exec, grim -g "$(slurp)" "$HOME/Pictures/Screenshots/$(date '+%y%m%d_%H-%M-%S').png"''
+            ''$mainMod SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
             # Move focus with mainMod + arrow keys
             "$mainMod, left, movefocus, l"
             "$mainMod, right, movefocus, r"
@@ -303,6 +321,16 @@
       XDG_CURRENT_DESKTOP = "Hyprland";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "Hyprland";
+      # BROWSER = "google-chrome-stable";
+      EDITOR = "nvim";
+      VISUAL = "code";
+      TERMINAL = "kitty";
+      LIBVA_DRIVER_NAME = "iHD";
+	    WLR_RENDERER = "vulkan";
+      # GTK_USE_PORTAL = "1";
+      XDG_CACHE_HOME = "\${HOME}/.cache";
+	    XDG_CONFIG_HOME = "\${HOME}/.config";
+      NIXOS_OZONE_WL = "1";
     };
     programs.bash = {
       enable = true;
@@ -312,6 +340,23 @@
         eval "$(starship init bash)"
         export PATH=$HOME/.npm-global/bin:$PATH
       '';
+    };
+    programs.starship = {
+      enable = true;
+    };
+    programs.kitty = {
+      enable = true;
+      # theme = "OneHalfDark";
+      font = {
+        name = "MesloLGSDZ Nerd Font Mono";
+        size = 12;
+      };
+      settings = {
+        "window_padding_width" = "0 8";
+        "confirm_os_window_close" = "0";
+        "background_opacity" = ".8";
+        "wayland_titlebar_color" = "system";
+      };
     };
 
     # The state version is required and should stay at the version you originally installed.
@@ -358,7 +403,6 @@
    swww
    kitty
    rofi-wayland
-   xdg-utils # Seems to be needed for noticing which desktop environment is in use
    wlogout
    swaylock-effects
    swayidle
@@ -367,7 +411,6 @@
    zoom-us
    vscode
    pywal
-   starship
    ranger
    docker
    docker-compose
@@ -375,10 +418,10 @@
    pavucontrol
    libreoffice-qt
    hunspell
-   xwaylandvideobridge
    gcalcli
    openrazer-daemon
-   polychromatic
+   spotify
+   xdg-utils # xdg-open
    #wolfram-engine
    # wget
   ];
@@ -427,8 +470,8 @@
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.allowedTCPPorts = [ 57621 ];
+  networking.firewall.allowedUDPPorts = [ 5353 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
