@@ -72,6 +72,7 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
+    historyFile = "${config.xdg.dataHome}/bash/bash_history";
     bashrcExtra = ''
       eval "$(direnv hook bash)"
       eval "$(starship init bash)"
@@ -82,6 +83,8 @@
     enable = true;
     enableCompletion = true;
     enableAutosuggestions = true;
+    autocd = true;
+    history.path = "${config.xdg.dataHome}/zsh/zsh_history";
     syntaxHighlighting.enable = true;
     shellAliases = {
       ll = "ls -l";

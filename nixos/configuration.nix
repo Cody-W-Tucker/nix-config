@@ -132,6 +132,7 @@
   #xdg  
   xdg.portal = {
     enable = true;
+    xdgOpenUsePortal = true;
   };
 
   # Manage user environment with home-manager
@@ -146,7 +147,7 @@
       hyprpicker
       starship
     ];
-    imports = [ ./modules/hyprland.nix ./modules/terminal.nix ];
+    imports = [ ./modules/hyprland.nix ./modules/terminal.nix ./modules/xdg.nix ];
     dconf = {
       enable = true;
       settings = {
@@ -186,9 +187,6 @@
     };
     home.sessionVariables = {
       GTK_THEME = "WhiteSur-Dark";
-      XDG_CURRENT_DESKTOP = "Hyprland";
-      XDG_SESSION_TYPE = "wayland";
-      XDG_SESSION_DESKTOP = "Hyprland";
       # BROWSER = "google-chrome-stable";
       EDITOR = "nvim";
       VISUAL = "code";
@@ -196,8 +194,6 @@
       LIBVA_DRIVER_NAME = "iHD";
 	    WLR_RENDERER = "vulkan";
       # GTK_USE_PORTAL = "1";
-      XDG_CACHE_HOME = "\${HOME}/.cache";
-	    XDG_CONFIG_HOME = "\${HOME}/.config";
       NIXOS_OZONE_WL = "1";
     };
 
