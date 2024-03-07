@@ -18,20 +18,6 @@ window#waybar.hidden {
   opacity: 0.2;
 }
 
-button {
-  /* Use box-shadow instead of border so the text isn't offset */
-  box-shadow: inset 0 -3px transparent;
-  /* Avoid rounded borders under each button name */
-  border: none;
-  border-radius: 0;
-}
-
-/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
-button:hover {
-  background: inherit;
-  box-shadow: inset 0 -3px #ffffff;
-}
-
 #workspaces button {
   padding: 0 5px;
   background-color: transparent;
@@ -115,6 +101,7 @@ label:focus {
 #wireplumber.muted,
 #temperature,
 #clock,
+#workspaces,
 #bluetooth {
   padding: 5px 10px;
   border: 1px solid @foreground;
@@ -124,11 +111,13 @@ label:focus {
 }
 
 window.DP-1 * {
-  border-radius: 0 0 10px 10px; /* bottom border rounded */
+  border-radius: 0 0 10px 10px;
+  border-top-style: none;
 }
 
 window.DP-2 * {
-  border-radius: 10px 10px 0 0; /* top border rounded */
+  border-radius: 10px 10px 0 0;
+  border-bottom-style: none;
 }
 
 #idle_inhibitor {
