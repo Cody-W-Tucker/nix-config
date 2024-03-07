@@ -3,12 +3,12 @@
     wayland.windowManager.hyprland = {
       enable = true;
       extraConfig = ''
-        exec-once = ${config.home.homeDirectory}/Code/dotfiles/scripts/sleep.sh
+        exec-once = ~/Code/dotfiles/scripts/sleep.sh
         exec-once = waybar
         exec-once = mako
         exec-once = swww query || swww init
-        exec-once = ${config.home.homeDirectory}/Code/dotfiles/scripts/wallpaper.sh ~/Pictures/Wallpapers
-        source= ${config.home.homeDirectory}/.cache/wal/colors-hyprland.conf
+        exec-once = ~/Code/dotfiles/scripts/wallpaper.sh ~/Pictures/Wallpapers
+        source= ~/.cache/wal/colors-hyprland.conf
       '';
       settings = {
         animations = {

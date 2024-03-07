@@ -36,7 +36,7 @@
       nix_shell = {
         symbol = " ";
         style = "bold yellow";
-        format = "via [$symbol $name]($style) ";
+        format = "via [$symbol$name]($style) ";
       };
       git_branch = {
         symbol = " ";
