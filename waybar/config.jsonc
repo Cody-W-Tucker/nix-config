@@ -1,6 +1,7 @@
 [
   {
     "layer": "top",
+    "reload_style_on_change": true,
     "output": "DP-1",
     "spacing": 4,
     "modules-center": ["clock"],
@@ -107,6 +108,7 @@
   },
   {
     "layer": "top",
+    "reload_style_on_change": true,
     "output": "DP-2",
     "position": "bottom",
     "spacing": 4,
