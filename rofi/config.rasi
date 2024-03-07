@@ -4,6 +4,7 @@
  * Theme Repo           : https://github.com/lr-tech/rofi-themes-collection
  *******************************************************************************/
 
+    @import "~/.cache/wal/colors-rofi-dark"
 * {
   bg0: #242424e6;
   bg1: #7e7e7e80;

@@ -14,6 +14,9 @@
       wayland_titlebar_color = "system";
       cursor_shape = "block";
     };
+    extraConfig = ''
+    include ${config.home.homeDirectory}/.cache/wal/colors-kitty.conf
+    '';
   };
   programs.starship = {
     enable = true;
@@ -33,7 +36,7 @@
       nix_shell = {
         symbol = " ";
         style = "bold yellow";
-        format = "via [$symbol] [$name]($style) ";
+        format = "via [$symbol $name]($style) ";
       };
       git_branch = {
         symbol = " ";

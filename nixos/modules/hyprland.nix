@@ -3,25 +3,30 @@
     wayland.windowManager.hyprland = {
       enable = true;
       extraConfig = ''
-        monitor=DP-2,2560x1080@60,0x0,1
-        monitor=DP-1,2560x1080@60,0x1080,1
-        animations {
-          enabled = yes
-          bezier = myBezier, 0.05, 0.9, 0.1, 1.05
-          animation = windows, 1, 7, myBezier
-          animation = windowsOut, 1, 7, default, popin 80%
-          animation = border, 1, 10, default
-          animation = borderangle, 1, 8, default
-          animation = fade, 1, 7, default
-          animation = workspaces, 1, 6, default
-        }
-        exec-once = /home/codyt/Code/dotfiles/scripts/sleep.sh
+        exec-once = ${config.home.homeDirectory}/Code/dotfiles/scripts/sleep.sh
         exec-once = waybar
         exec-once = mako
-        exec-once = swww init
-        exec-once = /home/codyt/Code/dotfiles/scripts/wallpaper.sh ~/Pictures/Wallpapers
+        exec-once = swww query || swww init
+        exec-once = ${config.home.homeDirectory}/Code/dotfiles/scripts/wallpaper.sh ~/Pictures/Wallpapers
+        source= ${config.home.homeDirectory}/.cache/wal/colors-hyprland.conf
       '';
       settings = {
+        animations = {
+          enabled = true;
+          bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+          animation = [
+            "windows, 1, 7, myBezier"
+            "windowsOut, 1, 7, default, popin 80%"
+            "border, 1, 10, default"
+            "borderangle, 1, 8, default"
+            "fade, 1, 7, default"
+            "workspaces, 1, 6, default"
+          ];
+        };
+        monitor = [
+          "DP-2,2560x1080@60,0x0,1"
+          "DP-1,2560x1080@60,0x1080,1"
+        ];
         input = {
           numlock_by_default = "true";
           follow_mouse = "1";
