@@ -1,9 +1,9 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 let
   home = config.home.homeDirectory;
 in
 { 
-  xdg = lib.mkForce {
+  xdg = {
     enable = true;
     dataHome = "${home}/.local/share";
     configHome = "${home}/.config";
@@ -20,5 +20,7 @@ in
       templates = "${home}/Templates";
       videos = "${home}/Videos";
     };
+    # mimeApps = {
+    # };
   };
 }

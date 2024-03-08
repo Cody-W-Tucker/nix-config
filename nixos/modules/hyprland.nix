@@ -8,13 +8,20 @@
         exec-once = mako
         exec-once = swww query || swww init
         exec-once = ~/Code/dotfiles/scripts/wallpaper.sh ~/Pictures/Wallpapers
+        exec-once = GDK_BACKEND=wayland,x11
+        exec-once = QT_QPA_PLATFORM="wayland;xcb"
+        exec-once = SDL_VIDEODRIVER=wayland
+        exec-once = CLUTTER_BACKEND=wayland
+        exec-once = XDG_CURRENT_DESKTOP=Hyprland
+        exec-once = XDG_SESSION_TYPE=wayland
+        exec-once = XDG_SESSION_DESKTOP=Hyprland
         source= ~/.cache/wal/colors-hyprland.conf
       '';
       settings = {
         windowrulev2 = [
           "opacity 0.9 0.9,class:^(Code)$"
-          "opacity 0.95 0.95,class:^(google-chrome)$"
-          "opacity 0.9 0.9,class:^(chrome-)"
+          "opacity 0.95 0.93,class:^(google-chrome)$"
+          "opacity 0.95 0.93,class:^(chrome-)"
           
           ];
         animations = {
@@ -89,7 +96,7 @@
             "$mainMod, ESCAPE, exec, wlogout"
             "$mainMod, Q, exec, kitty"
             "$mainMod, C, killactive"
-            "$mainMod, E, exec, nautilus"
+            "$mainMod, E, exec, thunar"
             "$mainMod, V, togglefloating"
             "$mainMod, Tab, exec, rofi -show drun -show-icons"
             "$mainMod, F, fullscreen"

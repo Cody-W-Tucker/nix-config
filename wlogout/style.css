@@ -1,19 +1,7 @@
-/*
-          _                         _    
-__      _| | ___   __ _  ___  _   _| |_  
-\ \ /\ / / |/ _ \ / _` |/ _ \| | | | __| 
- \ V  V /| | (_) | (_| | (_) | |_| | |_  
-  \_/\_/ |_|\___/ \__, |\___/ \__,_|\__| 
-                  |___/                  
- 
-by Stephan Raabe (2023) 
------------------------------------------------------ 
-*/
-
 /* -----------------------------------------------------
  * Import Pywal colors 
  * ----------------------------------------------------- */
-/* @import '../../.cache/wal/colors-wlogout.css'; */
+@import '../../.cache/wal/colors-wlogout.css';
 
 /* -----------------------------------------------------
   * General 
@@ -39,7 +27,7 @@ button {
   background-size: 25%;
 
   border-style: solid;
-  background-color: rgba(12, 12, 12, 0.3);
+  background-color: rgba(12, 12, 12, 0.8);
   border: 3px solid #ffffff;
 
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -48,9 +36,9 @@ button {
 /* button:focus, */
 button:active,
 button:hover {
-  color: #404040;
-  background-color: rgba(12, 12, 12, 0.5);
-  border: 3px solid #404040;
+  color: @color11;
+  background-color: rgba(12, 12, 12, 0.99);
+  border: 3px solid @color11;
 }
 
 /* 
