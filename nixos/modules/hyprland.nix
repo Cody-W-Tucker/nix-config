@@ -3,7 +3,7 @@
     wayland.windowManager.hyprland = {
       enable = true;
       extraConfig = ''
-        exec-once = ~/Code/dotfiles/scripts/sleep.sh
+        exec-once = hypridle
         exec-once = waybar
         exec-once = mako
         exec-once = swww query || swww init
@@ -15,7 +15,6 @@
         exec-once = XDG_CURRENT_DESKTOP=Hyprland
         exec-once = XDG_SESSION_TYPE=wayland
         exec-once = XDG_SESSION_DESKTOP=Hyprland
-        source= ~/.cache/wal/colors-hyprland.conf
       '';
       settings = {
         windowrulev2 = [
@@ -93,7 +92,6 @@
         bind =
           [
             "$mainMod, RETURN, exec, pkill waybar && waybar &"
-            "$mainMod, ESCAPE, exec, wlogout"
             "$mainMod, Q, exec, kitty"
             "$mainMod, C, killactive"
             "$mainMod, E, exec, thunar"
@@ -104,7 +102,7 @@
             # Number keys (0, -, +)
             "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://chat.openai.com"
             "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
-            "$mainMod, KP_Enter, exec, google-chrome-stable --app=https://essay.app/home/"
+            # "$mainMod, KP_Enter, exec, google-chrome-stable --app="
             "$mainMod, KP_Subtract, exec, google-chrome-stable --app=https://recorder.google.com/"
             # Number keys (1, 2, 3)
             "$mainMod, KP_End, exec, google-chrome-stable --app=https://mail.google.com"

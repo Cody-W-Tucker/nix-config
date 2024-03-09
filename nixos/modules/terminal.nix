@@ -14,9 +14,9 @@
       wayland_titlebar_color = "system";
       cursor_shape = "block";
     };
-    extraConfig = ''
-    include ${config.home.homeDirectory}/.cache/wal/colors-kitty.conf
-    '';
+    # extraConfig = ''
+    # include ${config.home.homeDirectory}/.cache/wal/colors-kitty.conf
+    # '';
   };
   programs.starship = {
     enable = true;

@@ -91,7 +91,7 @@
       "format": "󰍁",
       "tooltip-format": "Lock",
       "tooltip": true,
-      "on-click": "swaylock"
+      "on-click": "hyprlock"
     },
     "custom/reboot": {
       "format": "󰜉",
@@ -199,7 +199,7 @@
       "format": "󰍁",
       "tooltip-format": "Lock",
       "tooltip": true,
-      "on-click": "swaylock"
+      "on-click": "hyprlock"
     },
     "custom/reboot": {
       "format": "󰜉",
