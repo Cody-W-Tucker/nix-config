@@ -27,10 +27,6 @@ while true; do
 		| sort -n | cut -d':' -f2- \
 		| while read -r img; do
 			swww img "$img"
-
-			# Create color scheme from wallpaper
-			wal -q -i "$img"
-
 			sleep $INTERVAL
 		done
 done

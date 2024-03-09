@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       <home-manager/nixos>
+      ./config/system
     ];
 
   # Run the latest kernel
@@ -49,8 +50,9 @@
       autoLogin.user = "codyt";
       sddm = {
         enable = true;
+        autoNumlock = true;
         wayland.enable = true;
-        theme = "where_is_my_sddm_theme";
+        theme = "where-is-my-sddm-theme";
       };
     };
   };
@@ -84,15 +86,6 @@
     bluetooth = {
       enable = true;
       powerOnBoot = true;
-    };
-    opengl = {
-      enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
-      extraPackages = with pkgs; [
-        intel-media-driver # LIBVA_DRIVER_NAME=iHD
-        vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      ];
     };
     openrazer.enable = true;
     openrazer.devicesOffOnScreensaver = true;
@@ -137,7 +130,7 @@
       hyprpicker
       starship
     ];
-    imports = [ ./modules/hyprland.nix ./modules/terminal.nix ./modules/xdg.nix ];
+    imports = [ ./config/home ];
     dconf = {
       enable = true;
       settings = {
@@ -182,8 +175,7 @@
       VISUAL = "code";
       TERMINAL = "kitty";
       LIBVA_DRIVER_NAME = "iHD";
-	    WLR_RENDERER = "vulkan";
-      # GTK_USE_PORTAL = "1";
+      VDPAU_DRIVER="va_gl";
       NIXOS_OZONE_WL = "1";
     };
 
@@ -237,6 +229,7 @@
    xdg-utils # xdg-open
    hypridle
    hyprlock
+   where-is-my-sddm-theme
    #wolfram-engine
    # wget
   ];
