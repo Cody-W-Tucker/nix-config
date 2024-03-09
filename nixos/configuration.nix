@@ -220,9 +220,6 @@
    swww
    kitty
    rofi-wayland
-   wlogout
-   swaylock-effects
-   swayidle
    firefox
    google-chrome
    zoom-us
@@ -233,12 +230,13 @@
    docker-compose
    docker-client
    pavucontrol
-   libreoffice-qt
    hunspell
    gcalcli
    openrazer-daemon
    spotify
    xdg-utils # xdg-open
+   hypridle
+   hyprlock
    #wolfram-engine
    # wget
   ];
