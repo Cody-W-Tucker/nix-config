@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+{ pkgs }:
+
+pkgs.writeShellScriptBin "bluetoothSwitch" ''
 device="74:74:46:1C:20:61"
 
 if bluetoothctl info "$device" | grep 'Connected: yes' -q; then
@@ -6,3 +8,4 @@ if bluetoothctl info "$device" | grep 'Connected: yes' -q; then
 else
   bluetoothctl connect "$device"
 fi
+''
