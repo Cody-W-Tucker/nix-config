@@ -7,7 +7,7 @@
         exec-once = waybar
         exec-once = mako
         exec-once = swww query || swww init
-        exec-once = ~/Code/dotfiles/scripts/wallpaper.sh ~/Pictures/Wallpapers
+        exec-once = wallpaper
         env = NIXOS_OZONE_WL, 1
         env = NIXPKGS_ALLOW_UNFREE, 1
         env = XDG_CURRENT_DESKTOP, Hyprland
@@ -101,12 +101,12 @@
             "$mainMod, C, killactive"
             "$mainMod, E, exec, thunar"
             "$mainMod, V, togglefloating"
-            "$mainMod, Tab, exec, rofi -show drun -show-icons"
+            "$mainMod, Tab, exec, rofi-launcher"
             "$mainMod, F, fullscreen"
             "$mainMod SHIFT, F, fakefullscreen"
             # Number keys (0, -, +)
             "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://chat.openai.com"
-            "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
+            # "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
             # "$mainMod, KP_Enter, exec, google-chrome-stable --app="
             "$mainMod, KP_Subtract, exec, google-chrome-stable --app=https://recorder.google.com/"
             # Number keys (1, 2, 3)

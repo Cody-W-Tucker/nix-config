@@ -4,6 +4,16 @@
 
 { config, pkgs, ... }:
 
+let
+  scriptNames = [
+    "rofi-launcher"
+    "bluetoothSwitch"
+    "wallpaper"
+  ];
+
+  scriptPackages = map (script: import ./config/scripts/${script}.nix { inherit pkgs; }) scriptNames;
+in
+
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -52,7 +62,7 @@
         enable = true;
         autoNumlock = true;
         wayland.enable = true;
-        theme = "where-is-my-sddm-theme";
+        theme = "where_is_my_sddm_theme";
       };
     };
   };
@@ -60,13 +70,6 @@
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
-
-  # Trying to fix the issue with swaylock accepting password input
-  security.pam.services.swaylock = {
-    text = ''
-    auth include login
-    '';
-  };
 
   # Enable the Hyprland Desktop Environment.
   programs.hyprland = {
@@ -205,34 +208,30 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-   git
-   direnv
-   waybar
-   mako
-   swww
-   kitty
-   rofi-wayland
-   firefox
-   google-chrome
-   zoom-us
-   vscode
-   pywal
-   ranger
-   docker
-   docker-compose
-   docker-client
-   pavucontrol
-   hunspell
-   gcalcli
-   openrazer-daemon
-   spotify
-   xdg-utils # xdg-open
-   hypridle
-   hyprlock
-   where-is-my-sddm-theme
-   #wolfram-engine
-   # wget
-  ];
+    git
+    direnv
+    waybar
+    mako
+    swww
+    kitty
+    rofi-wayland
+    firefox
+    google-chrome
+    zoom-us
+    vscode
+    pywal
+    ranger
+    docker
+    docker-compose
+    pavucontrol
+    gcalcli
+    openrazer-daemon
+    spotify
+    xdg-utils # xdg-open
+    hypridle
+    hyprlock
+    where-is-my-sddm-theme # If I forget, the package name is hyphenated, the sddm theme is underscored
+  ] ++ scriptPackages;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
