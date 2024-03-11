@@ -67,10 +67,6 @@ in
     };
   };
 
-  # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
-
   # Enable the Hyprland Desktop Environment.
   programs.hyprland = {
     enable = true;
@@ -107,7 +103,7 @@ in
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    jack.enable = true;
+    # jack.enable = true;
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -221,7 +217,6 @@ in
     vscode
     pywal
     ranger
-    docker
     docker-compose
     pavucontrol
     gcalcli

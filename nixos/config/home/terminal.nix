@@ -74,17 +74,14 @@
   };
   programs.bash = {
     enable = true;
-    enableCompletion = true;
     historyFile = "${config.xdg.dataHome}/bash/bash_history";
     bashrcExtra = ''
       eval "$(direnv hook bash)"
-      eval "$(starship init bash)"
       export PATH=$HOME/.npm-global/bin:$PATH
     '';
   };
   programs.zsh = {
     enable = true;
-    enableCompletion = true;
     enableAutosuggestions = true;
     autocd = true;
     history.path = "${config.xdg.dataHome}/zsh/zsh_history";
@@ -93,6 +90,10 @@
       ll = "ls -l";
       update = "sudo nixos-rebuild switch";
     };
+    initExtra = ''
+      eval "$(direnv hook zsh)"
+      export PATH=$HOME/.npm-global/bin:$PATH
+    '';
     history.size = 10000;
   };
 }
