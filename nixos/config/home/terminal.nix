@@ -77,7 +77,6 @@
     historyFile = "${config.xdg.dataHome}/bash/bash_history";
     bashrcExtra = ''
       eval "$(direnv hook bash)"
-      export PATH=$HOME/.npm-global/bin:$PATH
     '';
   };
   programs.zsh = {
@@ -92,7 +91,6 @@
     };
     initExtra = ''
       eval "$(direnv hook zsh)"
-      export PATH=$HOME/.npm-global/bin:$PATH
     '';
     history.size = 10000;
   };

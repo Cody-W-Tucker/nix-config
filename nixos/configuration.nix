@@ -126,7 +126,6 @@ in
       grim
       slurp
       wl-clipboard
-      nodejs
       hyprpicker
       starship
     ];
@@ -166,6 +165,16 @@ in
       };
       gtk4.extraConfig = {
         gtk-application-prefer-dark-theme = 1;
+      };
+    };
+
+    # Theme QT -> GTK
+    qt = {
+      enable = true;
+      platformTheme = "gtk";
+      style = {
+        name = "adwaita-dark";
+        package = pkgs.adwaita-qt;
       };
     };
     home.sessionVariables = {
@@ -255,6 +264,24 @@ in
 
   # Enable Docker.
   virtualisation.docker.enable = true;
+
+  # Optimization settings and garbage collection automation
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" ];
+      substituters = [ "https://hyprland.cachix.org" ];
+      trusted-public-keys = [
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      ];
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+  };
+
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
