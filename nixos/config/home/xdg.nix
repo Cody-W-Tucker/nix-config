@@ -2,7 +2,7 @@
 let
   home = config.home.homeDirectory;
 in
-{ 
+{
   xdg = {
     enable = true;
     dataHome = "${home}/.local/share";

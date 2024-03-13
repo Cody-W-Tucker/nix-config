@@ -3,7 +3,9 @@
  * User                 : LR-Tech               
  * Theme Repo           : https://github.com/lr-tech/rofi-themes-collection
  *******************************************************************************/
-
+configuration {
+  modes: "window,run,ssh,drun,filebrowser";
+}
     @import "~/.cache/wal/colors-rofi-dark"
 * {
   bg0: #242424e6;
