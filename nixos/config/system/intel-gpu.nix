@@ -1,12 +1,12 @@
 { pkgs, config, lib, ... }:
 
 {
-nixpkgs.config.packageOverrides =
+  nixpkgs.config.packageOverrides =
     pkgs: {
       vaapiIntel = pkgs.vaapiIntel.override {
-      enableHybridCodec = true;
+        enableHybridCodec = true;
+      };
     };
-  };
 
   # OpenGL
   hardware.opengl = {

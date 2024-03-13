@@ -16,7 +16,8 @@ in
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
       <home-manager/nixos>
       ./config/system
@@ -110,7 +111,7 @@ in
   users.users.codyt = {
     isNormalUser = true;
     description = "Cody Tucker";
-    extraGroups = [ "networkmanager" "wheel" "docker"];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
       xwaylandvideobridge
     ];
@@ -161,10 +162,10 @@ in
         package = pkgs.whitesur-gtk-theme;
       };
       gtk3.extraConfig = {
-        gtk-application-prefer-dark-theme=1;
+        gtk-application-prefer-dark-theme = 1;
       };
       gtk4.extraConfig = {
-        gtk-application-prefer-dark-theme=1;
+        gtk-application-prefer-dark-theme = 1;
       };
     };
     home.sessionVariables = {
@@ -174,7 +175,7 @@ in
       VISUAL = "code";
       TERMINAL = "kitty";
       LIBVA_DRIVER_NAME = "iHD";
-      VDPAU_DRIVER="va_gl";
+      VDPAU_DRIVER = "va_gl";
       NIXOS_OZONE_WL = "1";
     };
 
@@ -190,12 +191,12 @@ in
       noto-fonts-emoji
       font-awesome
       source-han-sans
-      (nerdfonts.override { fonts = [ "Meslo"]; })
+      (nerdfonts.override { fonts = [ "Meslo" ]; })
     ];
     fontconfig = {
       defaultFonts = {
         monospace = [ "Meslo LG M Regular Nerd Font Complete Mono" ];
-        serif = [ "Noto Serif" "Source Han Serif"];
+        serif = [ "Noto Serif" "Source Han Serif" ];
         sansSerif = [ "Noto Sans" "Source Han Sans" ];
       };
     };
@@ -205,6 +206,7 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     git
+    nixpkgs-fmt
     direnv
     waybar
     mako
