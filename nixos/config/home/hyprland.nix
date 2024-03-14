@@ -3,7 +3,6 @@
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
-      exec-once = hypridle
       exec-once = waybar
       exec-once = mako
       exec-once = swww query || swww init
@@ -22,12 +21,6 @@
       env = MOZ_ENABLE_WAYLAND, 1
     '';
     settings = {
-      windowrulev2 = [
-        "opacity 0.9 0.9,class:^(Code)$"
-        "opacity 0.95 0.93,class:^(google-chrome)$"
-        "opacity 0.95 0.93,class:^(chrome-)"
-
-      ];
       animations = {
         enabled = true;
         bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
@@ -99,7 +92,7 @@
           "$mainMod, RETURN, exec, pkill waybar && waybar &"
           "$mainMod, Q, exec, kitty"
           "$mainMod, C, killactive"
-          "$mainMod, E, exec, thunar"
+          "$mainMod, E, exec, kitty -- ranger"
           "$mainMod, V, togglefloating"
           "$mainMod, Tab, exec, rofi-launcher"
           "$mainMod, F, fullscreen"

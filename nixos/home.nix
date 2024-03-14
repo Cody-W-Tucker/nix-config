@@ -12,7 +12,12 @@
 
   colorScheme = inputs.nix-colors.colorSchemes."google-dark";
 
-  imports = [ ./config/home inputs.nix-colors.homeManagerModules.default inputs.hyprland.homeManagerModules.default ];
+  imports = [
+    ./config/home
+    inputs.nix-colors.homeManagerModules.default
+    inputs.hyprland.homeManagerModules.default
+    inputs.hypridle.homeManagerModules.default
+  ];
   dconf = {
     enable = true;
     settings = {
@@ -69,6 +74,32 @@
     LIBVA_DRIVER_NAME = "iHD";
     VDPAU_DRIVER = "va_gl";
     NIXOS_OZONE_WL = "1";
+  };
+  services.hypridle = {
+    enable = true;
+    lockCmd = "pidof hyprlock || hyprlock";
+    beforeSleepCmd = "loginctl lock-session";
+    afterSleepCmd = "hyprctl dispatch dpms on";
+    listeners = [
+      {
+        timeout = 150;
+        onTimeout = "brightnessctl -sd rgb:kbd_backlight set 0";
+        onResume = "brightnessctl -rd rgb:kbd_backlight";
+      }
+      {
+        timeout = 900;
+        onTimeout = "loginctl lock-session";
+      }
+      {
+        timeout = 980;
+        onTimeout = "hyprctl dispatch dpms off";
+        onResume = "hyprctl dispatch dpms on";
+      }
+      {
+        timeout = 1800;
+        onTimeout = "systemctl suspend";
+      }
+    ];
   };
 
   # The state version is required and should stay at the version you originally installed.

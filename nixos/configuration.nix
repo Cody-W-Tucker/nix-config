@@ -141,7 +141,6 @@ in
   environment.systemPackages = with pkgs; [
     git
     nixpkgs-fmt
-    direnv
     waybar
     mako
     swww
@@ -159,7 +158,6 @@ in
     openrazer-daemon
     spotify
     xdg-utils # xdg-open
-    hypridle
     hyprlock
     where-is-my-sddm-theme # If I forget, the package name is hyphenated, the sddm theme is underscored
   ] ++ scriptPackages;
@@ -169,12 +167,6 @@ in
 
   # ZSH settings
   programs.zsh.enable = true;
-
-  # Thunar file manager
-  programs.thunar.enable = true;
-  programs.xfconf.enable = true;
-  services.gvfs.enable = true; # Mount, trash, and other functionalities
-  services.tumbler.enable = true; # Thumbnail support for images
 
   # NeoVim
   programs.neovim = {
