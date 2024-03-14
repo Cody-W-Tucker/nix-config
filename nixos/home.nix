@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, config, inputs, gtkThemeFromScheme, ... }:
+{
   home.packages = with pkgs; [
     # Add some packages to the user environment.
     dconf
@@ -8,7 +9,10 @@
     hyprpicker
     starship
   ];
-  imports = [ ./config/home ];
+
+  colorScheme = inputs.nix-colors.colorSchemes."google-dark";
+
+  imports = [ ./config/home inputs.nix-colors.homeManagerModules.default inputs.hyprland.homeManagerModules.default ];
   dconf = {
     enable = true;
     settings = {
@@ -29,6 +33,7 @@
     name = "Bibata-Modern-Classic";
     size = 24;
   };
+
   gtk = {
     enable = true;
     iconTheme = {
@@ -36,8 +41,8 @@
       name = "Adwaita";
     };
     theme = {
-      name = "WhiteSur-Dark-solid";
-      package = pkgs.whitesur-gtk-theme;
+      name = "${config.colorScheme.slug}";
+      package = gtkThemeFromScheme { scheme = config.colorScheme; };
     };
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
@@ -57,7 +62,6 @@
     };
   };
   home.sessionVariables = {
-    GTK_THEME = "WhiteSur-Dark";
     BROWSER = "google-chrome";
     EDITOR = "nvim";
     VISUAL = "code";
