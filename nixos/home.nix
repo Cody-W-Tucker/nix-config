@@ -82,11 +82,6 @@
     afterSleepCmd = "hyprctl dispatch dpms on";
     listeners = [
       {
-        timeout = 150;
-        onTimeout = "brightnessctl -sd rgb:kbd_backlight set 0";
-        onResume = "brightnessctl -rd rgb:kbd_backlight";
-      }
-      {
         timeout = 900;
         onTimeout = "loginctl lock-session";
       }
