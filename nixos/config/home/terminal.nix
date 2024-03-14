@@ -134,7 +134,7 @@ in
     syntaxHighlighting.enable = true;
     shellAliases = {
       ll = "ls -l";
-      update = "sudo nixos-rebuild switch";
+      update = "sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
     };
     initExtra = ''
       eval "$(direnv hook zsh)"
