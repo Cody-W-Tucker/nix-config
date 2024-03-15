@@ -7,6 +7,7 @@
       exec-once = mako
       exec-once = swww query || swww init
       exec-once = wallpaper
+      exec-once = $POLKIT_BIN
       env = NIXOS_OZONE_WL, 1
       env = NIXPKGS_ALLOW_UNFREE, 1
       env = XDG_CURRENT_DESKTOP, Hyprland

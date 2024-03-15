@@ -132,9 +132,15 @@
     ranger
     docker-compose
     pavucontrol
+    polkit_gnome
     xdg-utils # xdg-open
     where-is-my-sddm-theme # If I forget, the package name is hyphenated, the sddm theme is underscored
   ];
+
+  environment.variables = {
+    POLKIT_BIN = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+  };
+
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

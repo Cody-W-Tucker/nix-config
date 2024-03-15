@@ -3,5 +3,6 @@
 {
   imports = [
     ./intel-gpu.nix
+    ./polkit.nix
   ];
 }
