@@ -8,6 +8,8 @@
       exec-once = swww query || swww init
       exec-once = wallpaper
       exec-once = $POLKIT_BIN
+      exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec-once = dbus-update-activation-environment --systemd --all
       env = NIXOS_OZONE_WL, 1
       env = NIXPKGS_ALLOW_UNFREE, 1
       env = XDG_CURRENT_DESKTOP, Hyprland
