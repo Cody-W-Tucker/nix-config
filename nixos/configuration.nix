@@ -80,7 +80,7 @@ in
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
-  # Enable OpenGL
+  # Hardware
   hardware = {
     bluetooth = {
       enable = true;
@@ -112,8 +112,19 @@ in
     description = "Cody Tucker";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
+      google-chrome
+      zoom-us
       xwaylandvideobridge
-    ];
+      waybar
+      mako
+      swww
+      kitty
+      rofi-wayland
+      vscode
+      gcalcli
+      spotify
+      openrazer-daemon
+    ] ++ scriptPackages;
     shell = pkgs.zsh;
   };
 
@@ -141,26 +152,13 @@ in
   environment.systemPackages = with pkgs; [
     git
     nixpkgs-fmt
-    waybar
-    mako
-    swww
-    kitty
-    rofi-wayland
     firefox
-    google-chrome
-    zoom-us
-    vscode
-    pywal
     ranger
     docker-compose
     pavucontrol
-    gcalcli
-    openrazer-daemon
-    spotify
     xdg-utils # xdg-open
-    hyprlock
     where-is-my-sddm-theme # If I forget, the package name is hyphenated, the sddm theme is underscored
-  ] ++ scriptPackages;
+  ];
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

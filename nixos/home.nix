@@ -8,6 +8,8 @@
     wl-clipboard
     hyprpicker
     starship
+    hyprlock
+    hypridle
   ];
 
   colorScheme = inputs.nix-colors.colorSchemes."google-dark";
@@ -74,27 +76,6 @@
     LIBVA_DRIVER_NAME = "iHD";
     VDPAU_DRIVER = "va_gl";
     NIXOS_OZONE_WL = "1";
-  };
-  services.hypridle = {
-    enable = true;
-    lockCmd = "pidof hyprlock || hyprlock";
-    beforeSleepCmd = "loginctl lock-session";
-    afterSleepCmd = "hyprctl dispatch dpms on";
-    listeners = [
-      {
-        timeout = 900;
-        onTimeout = "loginctl lock-session";
-      }
-      {
-        timeout = 980;
-        onTimeout = "hyprctl dispatch dpms off";
-        onResume = "hyprctl dispatch dpms on";
-      }
-      {
-        timeout = 1800;
-        onTimeout = "systemctl suspend";
-      }
-    ];
   };
 
   # The state version is required and should stay at the version you originally installed.
