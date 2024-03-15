@@ -4,16 +4,6 @@
 
 { config, pkgs, ... }:
 
-let
-  scriptNames = [
-    "rofi-launcher"
-    "bluetoothSwitch"
-    "wallpaper"
-  ];
-
-  scriptPackages = map (script: import ./config/scripts/${script}.nix { inherit pkgs; }) scriptNames;
-in
-
 {
   imports =
     [
@@ -111,20 +101,6 @@ in
     isNormalUser = true;
     description = "Cody Tucker";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [
-      google-chrome
-      zoom-us
-      xwaylandvideobridge
-      waybar
-      mako
-      swww
-      kitty
-      rofi-wayland
-      vscode
-      gcalcli
-      spotify
-      openrazer-daemon
-    ] ++ scriptPackages;
     shell = pkgs.zsh;
   };
 

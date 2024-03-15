@@ -1,4 +1,14 @@
 { pkgs, config, inputs, gtkThemeFromScheme, ... }:
+
+let
+  scriptNames = [
+    "rofi-launcher"
+    "bluetoothSwitch"
+    "wallpaper"
+  ];
+
+  scriptPackages = map (script: import ./config/scripts/${script}.nix { inherit pkgs; }) scriptNames;
+in
 {
   home.packages = with pkgs; [
     # Add some packages to the user environment.
@@ -10,7 +20,20 @@
     starship
     hyprlock
     hypridle
-  ];
+    google-chrome
+    zoom-us
+    xwaylandvideobridge
+    waybar
+    mako
+    swww
+    kitty
+    rofi-wayland
+    vscode
+    gcalcli
+    spotify
+    openrazer-daemon
+    todoist-electron
+  ] ++ scriptPackages;
 
   colorScheme = inputs.nix-colors.colorSchemes."google-dark";
 
