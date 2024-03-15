@@ -84,7 +84,7 @@ in
 
     inputbar {
       background-image: url("~/.config/rofi/rofi.jpg", width);
-      padding: 180 0 0;
+      padding: 20 0 0;
       margin: 0 0 0 0;
     } 
 
@@ -105,7 +105,7 @@ in
     button {
       padding:	      10px;
       background-color: @bg;
-      text-color:	      #${palette.base01};
+      text-color:	      #${palette.base03};
       vertical-align:   0.5; 
       horizontal-align: 0.5;
     }
