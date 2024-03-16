@@ -17,9 +17,9 @@ in
     slurp
     wl-clipboard
     hyprpicker
-    starship
     hyprlock
     hypridle
+    starship
     google-chrome
     zoom-us
     xwaylandvideobridge
@@ -33,6 +33,8 @@ in
     spotify
     openrazer-daemon
     todoist-electron
+    obsidian
+    brightnessctl
   ] ++ scriptPackages;
 
   colorScheme = inputs.nix-colors.colorSchemes."google-dark";
@@ -41,7 +43,6 @@ in
     ./config/home
     inputs.nix-colors.homeManagerModules.default
     inputs.hyprland.homeManagerModules.default
-    inputs.hypridle.homeManagerModules.default
   ];
   dconf = {
     enable = true;
