@@ -14,6 +14,9 @@
     pavucontrol
     polkit_gnome
     xdg-utils # xdg-open
+    jellyfin
+    jellyfin-web
+    jellyfin-ffmpeg
     where-is-my-sddm-theme # If I forget, the package name is hyphenated, the sddm theme is underscored
   ];
 
