@@ -3,27 +3,36 @@
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
+      exec-once = swww query || swww init
       exec-once = hypridle
       exec-once = waybar
       exec-once = mako
-      exec-once = swww query || swww init
       exec-once = wallpaper
       exec-once = $POLKIT_BIN
-      exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-      exec-once = dbus-update-activation-environment --systemd --all
-      env = NIXOS_OZONE_WL, 1
-      env = NIXPKGS_ALLOW_UNFREE, 1
-      env = XDG_CURRENT_DESKTOP, Hyprland
-      env = XDG_SESSION_TYPE, wayland
-      env = XDG_SESSION_DESKTOP, Hyprland
-      env = GDK_BACKEND, wayland
-      env = CLUTTER_BACKEND, wayland
-      env = SDL_VIDEODRIVER, wayland
-      env = QT_QPA_PLATFORM, wayland
-      env = QT_WAYLAND_DISABLE_WINDOWDECORATION, 1
-      env = QT_AUTO_SCREEN_SCALE_FACTOR, 1
-      env = MOZ_ENABLE_WAYLAND, 1
     '';
+    systemd = {
+      enable = true;
+      variables = [
+        "DISPLAY"
+        "HYPRLAND_INSTANCE_SIGNATURE"
+        "WAYLAND_DISPLAY"
+        "XDG_CURRENT_DESKTOP"
+        "NIXOS_OZONE_WL"
+        "XDG_SESSION_TYPE"
+        "XDG_SESSION_DESKTOP"
+        "GDK_BACKEND"
+        "CLUTTER_BACKEND"
+        "SDL_VIDEODRIVER"
+        "QT_QPA_PLATFORM"
+        "QT_WAYLAND_DISABLE_WINDOWDECORATION"
+        "QT_AUTO_SCREEN_SCALE_FACTOR"
+        "MOZ_ENABLE_WAYLAND"
+      ];
+      extraCommands = [
+        "systemctl --user stop hyprland-session.target"
+        "systemctl --user start hyprland-session.target"
+      ];
+    };
     settings = {
       animations = {
         enabled = true;

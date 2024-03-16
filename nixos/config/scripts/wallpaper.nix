@@ -17,20 +17,29 @@ pkgs.writeShellScriptBin "wallpaper" ''
   # Define the wallpaper directory
   wallpaperDir="$HOME/Pictures/Wallpapers"
 
+  # Function to set a random wallpaper
+  set_random_wallpaper() {
+    if [ -d "$wallpaperDir" ]; then
+      find ''${wallpaperDir} \
+        | while read -r img; do
+            echo "$((RANDOM % 1000)):$img"
+        done \
+        | sort -n | cut -d':' -f2- \
+        | head -n 1 \
+        | while read -r img; do
+            swww img "$img"
+        done
+    else
+      echo "Directory $wallpaperDir not found"
+      sleep 10
+    fi
+  }
+
+  # Set a random wallpaper immediately
+  set_random_wallpaper
+
   while true; do
-  	if [ -d "$wallpaperDir" ]; then
-  		find ''${wallpaperDir} \
-  			| while read -r img; do
-  				echo "$((RANDOM % 1000)):$img"
-  			done \
-  			| sort -n | cut -d':' -f2- \
-  			| while read -r img; do
-  				swww img "$img"
-  				sleep $INTERVAL
-  			done
-  	else
-  		echo "Directory $wallpaperDir not found"
-  		sleep 10
-  	fi
+    sleep $INTERVAL
+    set_random_wallpaper
   done
 ''
