@@ -49,4 +49,5 @@
 
   # Enable UPower because chrome said so...
   services.upower.enable = true;
+
 }
