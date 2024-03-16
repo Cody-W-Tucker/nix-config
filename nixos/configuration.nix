@@ -56,49 +56,6 @@
     };
   };
 
-  # Enable the Hyprland Desktop Environment.
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
-
-  #xdg  
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal ];
-    configPackages = [
-      pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal
-    ];
-  };
-
-  # Hardware
-  hardware = {
-    bluetooth = {
-      enable = true;
-      powerOnBoot = true;
-    };
-    openrazer.enable = true;
-    openrazer.devicesOffOnScreensaver = true;
-    openrazer.users = [ "codyt" ];
-  };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # jack.enable = true;
-  };
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.codyt = {
     isNormalUser = true;
@@ -126,44 +83,10 @@
     };
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    git
-    nixpkgs-fmt
-    firefox
-    ranger
-    docker-compose
-    pavucontrol
-    polkit_gnome
-    xdg-utils # xdg-open
-    where-is-my-sddm-theme # If I forget, the package name is hyphenated, the sddm theme is underscored
-  ];
-
+  # Polkit settings
   environment.variables = {
     POLKIT_BIN = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
   };
-
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # ZSH settings
-  programs.zsh.enable = true;
-
-  # NeoVim
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-    defaultEditor = true;
-  };
-
-  # Enabling auto enviroment switching per directory
-  programs.direnv.enable = true;
-
-  # Enable Docker.
-  virtualisation.docker.enable = true;
 
   # Optimization settings and garbage collection automation
   nix = {
@@ -181,10 +104,6 @@
       options = "--delete-older-than 7d";
     };
   };
-
-  # Enable UPower because chrome said so...
-  services.upower.enable = true;
-
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
