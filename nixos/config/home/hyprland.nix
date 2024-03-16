@@ -3,6 +3,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
+      exec-once = hypridle
       exec-once = waybar
       exec-once = mako
       exec-once = swww query || swww init
