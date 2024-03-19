@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, inputs, ... }:
+
+let
+  theme = config.colorScheme.palette;
+in
+with lib;
 {
   wayland.windowManager.hyprland = {
     enable = true;
@@ -62,8 +67,8 @@
         gaps_in = "5";
         gaps_out = "20";
         layout = "master";
-        "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
+        "col.active_border" = "rgba(${theme.base0C}ff) rgba(${theme.base0D}ff) rgba(${theme.base0B}ff) rgba(${theme.base0E}ff) 45deg";
+        "col.inactive_border" = "rgba(${theme.base00}cc) rgba(${theme.base01}cc) 45deg";
       };
       decoration = {
         rounding = "10";
@@ -122,7 +127,7 @@
           # Number keys (4, 5, 6)
           "$mainMod, KP_Left, exec, google-chrome-stable --app=https://app.asana.com/home"
           "$mainMod, KP_Begin, exec, google-chrome-stable --app=https://app.reclaim.ai/planner?taskSort=schedule"
-          "$mainMod, KP_Right, exec, google-chrome-stable --app=https://tmvsocial.harvestapp.com/projects?filter=active"
+          "$mainMod, KP_Right, exec, google-chrome-stable --app=https://tmvsocial.harvestapp.com/time/week"
           # Number keys (7, 8, 9)
           "$mainMod, KP_Home, exec, code"
           # Skipped 8 KP_Up
