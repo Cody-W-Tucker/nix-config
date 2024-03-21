@@ -35,6 +35,7 @@ in
     todoist-electron
     obsidian
     brightnessctl
+    gh
   ] ++ scriptPackages;
 
   colorScheme = inputs.nix-colors.colorSchemes."google-dark";
@@ -93,7 +94,7 @@ in
     };
   };
   home.sessionVariables = {
-    BROWSER = "google-chrome";
+    BROWSER = "google-chrome-stable";
     EDITOR = "nvim";
     VISUAL = "code";
     TERMINAL = "kitty";
