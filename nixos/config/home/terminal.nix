@@ -124,6 +124,7 @@ in
     historyFile = "${config.xdg.dataHome}/bash/bash_history";
     bashrcExtra = ''
       eval "$(direnv hook bash)"
+      echo 'eval "$(gh copilot alias -- bash)"' >> ~/.bashrc
     '';
   };
   programs.zsh = {
@@ -135,9 +136,12 @@ in
     shellAliases = {
       ll = "ls -l";
       update = "sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
+      upgrade = "nix flake update && sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
+      gcCleanup = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
     };
     initExtra = ''
       eval "$(direnv hook zsh)"
+      echo 'eval "$(gh copilot alias -- zsh)"' >> ~/.zshrc
     '';
     history.size = 10000;
   };
