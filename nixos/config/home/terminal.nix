@@ -124,7 +124,7 @@ in
     historyFile = "${config.xdg.dataHome}/bash/bash_history";
     bashrcExtra = ''
       eval "$(direnv hook bash)"
-      echo 'eval "$(gh copilot alias -- bash)"' >> ~/.bashrc
+      eval "$(gh copilot alias -- bash)"
     '';
   };
   programs.zsh = {
@@ -141,7 +141,7 @@ in
     };
     initExtra = ''
       eval "$(direnv hook zsh)"
-      echo 'eval "$(gh copilot alias -- zsh)"' >> ~/.zshrc
+      eval "$(gh copilot alias -- zsh)"
     '';
     history.size = 10000;
   };
