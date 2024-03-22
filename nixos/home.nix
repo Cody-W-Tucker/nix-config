@@ -94,7 +94,7 @@ in
     };
   };
   home.sessionVariables = {
-    BROWSER = "google-chrome-stable";
+    BROWSER = "google-chrome";
     EDITOR = "nvim";
     VISUAL = "code";
     TERMINAL = "kitty";
