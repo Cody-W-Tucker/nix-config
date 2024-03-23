@@ -6,6 +6,7 @@ let
     "bluetoothSwitch"
     "wallpaper"
     "run-as-service"
+    "apply-hm-env"
   ];
 
   scriptPackages = map (script: import ./config/scripts/${script}.nix { inherit pkgs; }) scriptNames;
