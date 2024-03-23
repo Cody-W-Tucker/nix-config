@@ -115,8 +115,12 @@ in
 {
   programs.waybar = {
     enable = true;
-    # Duplicate the bars for each monitor
+    systemd = {
+      enable = true;
+      target = "hyprland-session.target";
+    };
     settings = {
+      # Duplicate the bars for each monitor
       monitor1 = createBar waybarConfig "DP-1" "top";
       monitor2 = createBar waybarConfig "DP-2" "bottom";
     };

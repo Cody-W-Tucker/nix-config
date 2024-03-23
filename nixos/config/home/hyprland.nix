@@ -45,7 +45,6 @@ with lib;
       exec-once = [
         "swww query || swww init"
         "hypridle"
-        "waybar"
         "mako"
         "$POLKIT_BIN"
       ];
