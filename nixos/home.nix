@@ -1,14 +1,6 @@
 { pkgs, config, inputs, lib, gtkThemeFromScheme, ... }:
 
 let
-  scriptNames = [
-    "rofi-launcher"
-    "bluetoothSwitch"
-    "wallpaper"
-  ];
-
-  scriptPackages = map (script: import ./config/scripts/${script}.nix { inherit pkgs; }) scriptNames;
-
   apply-hm-env = pkgs.writeShellScript "apply-hm-env" ''
     ${lib.optionalString (config.home.sessionPath != []) ''
       export PATH=${builtins.concatStringsSep ":" config.home.sessionPath}:$PATH
@@ -61,7 +53,7 @@ in
     brightnessctl
     gh
     run-as-service
-  ] ++ scriptPackages;
+  ];
 
   colorScheme = inputs.nix-colors.colorSchemes."google-dark";
 

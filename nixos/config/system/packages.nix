@@ -1,4 +1,16 @@
-{ pkgs, config, inputs, ... }: {
+{ pkgs, config, inputs, ... }:
+
+let
+  scriptNames = [
+    "rofi-launcher"
+    "bluetoothSwitch"
+    "wallpaper"
+  ];
+
+  scriptPackages = map (script: import ../scripts/${script}.nix { inherit pkgs; }) scriptNames;
+in
+
+{
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -18,7 +30,7 @@
     jellyfin-web
     jellyfin-ffmpeg
     where-is-my-sddm-theme # If I forget, the package name is hyphenated, the sddm theme is underscored
-  ];
+  ] ++ scriptPackages;
 
   # System wide terminal configuration
   programs = {

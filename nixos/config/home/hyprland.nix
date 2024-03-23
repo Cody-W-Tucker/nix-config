@@ -2,15 +2,6 @@
 
 let
   theme = config.colorScheme.palette;
-
-  systemd.services.wallpaper = {
-    description = "Set a random wallpaper at regular intervals";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.wallpaper}/bin/wallpaper";
-    };
-  };
 in
 with lib;
 {
@@ -37,8 +28,6 @@ with lib;
       extraCommands = [
         "systemctl --user stop hyprland-session.target"
         "systemctl --user start hyprland-session.target"
-        "systemctl --user stop wallpaper"
-        "systemctl --user start wallpaper"
       ];
     };
     settings = {

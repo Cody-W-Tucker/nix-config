@@ -1,6 +1,16 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }: {
 
-{
+  # Start the wallpaper service
+  systemd.services.wallpaper = {
+    enable = true;
+    description = "Set a random wallpaper at regular intervals";
+    wantedBy = [ "hyprland-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "wallpaper";
+    };
+  };
+
   # fstrim for SSDs
   services.fstrim.enable = true;
 
