@@ -1,15 +1,37 @@
-{ pkgs, config, inputs, gtkThemeFromScheme, ... }:
+{ pkgs, config, inputs, lib, gtkThemeFromScheme, ... }:
 
 let
   scriptNames = [
     "rofi-launcher"
     "bluetoothSwitch"
     "wallpaper"
-    "run-as-service"
-    "apply-hm-env"
   ];
 
   scriptPackages = map (script: import ./config/scripts/${script}.nix { inherit pkgs; }) scriptNames;
+
+  apply-hm-env = pkgs.writeShellScript "apply-hm-env" ''
+    ${lib.optionalString (config.home.sessionPath != []) ''
+      export PATH=${builtins.concatStringsSep ":" config.home.sessionPath}:$PATH
+    ''}
+    ${builtins.concatStringsSep "\n" (
+      lib.mapAttrsToList (k: v: ''
+        export ${k}=${toString v}
+      '')
+      config.home.sessionVariables
+    )}
+    ${config.home.sessionVariablesExtra}
+    exec "$@"
+  '';
+
+  # runs processes as systemd transient services
+  run-as-service = pkgs.writeShellScriptBin "run-as-service" ''
+    exec ${pkgs.systemd}/bin/systemd-run \
+      --slice=app-manual.slice \
+      --property=ExitType=cgroup \
+      --user \
+      --wait \
+      bash -lc "exec ${apply-hm-env} $@"
+  '';
 in
 {
   home.packages = with pkgs; [
@@ -38,6 +60,7 @@ in
     obsidian
     brightnessctl
     gh
+    run-as-service
   ] ++ scriptPackages;
 
   colorScheme = inputs.nix-colors.colorSchemes."google-dark";

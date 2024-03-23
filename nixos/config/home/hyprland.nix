@@ -2,19 +2,20 @@
 
 let
   theme = config.colorScheme.palette;
+
+  systemd.services.wallpaper = {
+    description = "Set a random wallpaper at regular intervals";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.wallpaper}/bin/wallpaper";
+    };
+  };
 in
 with lib;
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    extraConfig = ''
-      exec-once = swww query || swww init
-      exec-once = hypridle
-      exec-once = waybar
-      exec-once = mako
-      exec-once = wallpaper
-      exec-once = $POLKIT_BIN
-    '';
     systemd = {
       enable = true;
       variables = [
@@ -36,9 +37,18 @@ with lib;
       extraCommands = [
         "systemctl --user stop hyprland-session.target"
         "systemctl --user start hyprland-session.target"
+        "systemctl --user stop wallpaper"
+        "systemctl --user start wallpaper"
       ];
     };
     settings = {
+      exec-once = [
+        "swww query || swww init"
+        "hypridle"
+        "waybar"
+        "mako"
+        "$POLKIT_BIN"
+      ];
       animations = {
         enabled = true;
         bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
@@ -97,6 +107,7 @@ with lib;
         mouse_move_enables_dpms = "true";
         key_press_enables_dpms = "true";
         force_default_wallpaper = "0";
+        disable_hyprland_logo = "true";
       };
       # Keybindings
       "$mainMod" = "SUPER";
@@ -116,7 +127,7 @@ with lib;
           "$mainMod, F, fullscreen"
           "$mainMod SHIFT, F, fakefullscreen"
           # Number keys (0, -, +)
-          "$mainMod, KP_Insert, exec, run-as-service google-chrome-stable --app=https://chat.openai.com"
+          "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://chat.openai.com"
           # "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
           "$mainMod, KP_Enter, exec, google-chrome-stable --app=https://task-input-tmv.vercel.app/tasks"
           "$mainMod, KP_Subtract, exec, google-chrome-stable --app=https://recorder.google.com/"
