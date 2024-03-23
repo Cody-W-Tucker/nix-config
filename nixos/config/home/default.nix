@@ -6,5 +6,6 @@
     ./terminal.nix
     ./xdg.nix
     ./rofi.nix
+    ./waybar
   ];
 }
