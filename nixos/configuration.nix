@@ -10,6 +10,7 @@
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./config/system
+      ./secrets/secrets.nix
     ];
 
   # Run the latest kernel
