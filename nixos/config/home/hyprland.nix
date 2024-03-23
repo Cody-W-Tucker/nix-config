@@ -116,7 +116,7 @@ with lib;
           "$mainMod, F, fullscreen"
           "$mainMod SHIFT, F, fakefullscreen"
           # Number keys (0, -, +)
-          "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://chat.openai.com"
+          "$mainMod, KP_Insert, exec, run-as-service google-chrome-stable --app=https://chat.openai.com"
           # "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
           "$mainMod, KP_Enter, exec, google-chrome-stable --app=https://task-input-tmv.vercel.app/tasks"
           "$mainMod, KP_Subtract, exec, google-chrome-stable --app=https://recorder.google.com/"
