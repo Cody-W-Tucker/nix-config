@@ -1,4 +1,4 @@
-{ pkgs, config, inputs, gtkThemeFromScheme, ... }:
+{ pkgs, config, inputs, gtkThemeFromScheme, lib, ... }:
 
 let
   scriptNames = [
@@ -112,6 +112,31 @@ in
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     MOZ_ENABLE_WAYLAND = "1";
   };
+
+  # Borrowed from fuf's dotfiles
+  apply-hm-env = pkgs.writeShellScript "apply-hm-env" ''
+    ${lib.optionalString (config.home.sessionPath != []) ''
+      export PATH=${builtins.concatStringsSep ":" config.home.sessionPath}:$PATH
+    ''}
+    ${builtins.concatStringsSep "\n" (
+      lib.mapAttrsToList (k: v: ''
+        export ${k}=${toString v}
+      '')
+      config.home.sessionVariables
+    )}
+    ${config.home.sessionVariablesExtra}
+    exec "$@"
+  '';
+
+  # runs processes as systemd transient services
+  run-as-service = pkgs.writeShellScriptBin "run-as-service" ''
+    exec ${pkgs.systemd}/bin/systemd-run \
+      --slice=app-manual.slice \
+      --property=ExitType=cgroup \
+      --user \
+      --wait \
+      bash -lc "exec ${apply-hm-env} $@"
+  '';
 
   # The state version is required and should stay at the version you originally installed.
   home.stateVersion = "23.11";
