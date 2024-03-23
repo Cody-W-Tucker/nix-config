@@ -95,7 +95,7 @@ in
   };
   home.sessionVariables = {
     BROWSER = "google-chrome";
-    EDITOR = "nvim";
+    EDITOR = "code --wait";
     VISUAL = "code";
     TERMINAL = "kitty";
     LIBVA_DRIVER_NAME = "iHD";
