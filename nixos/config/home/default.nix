@@ -7,6 +7,6 @@
     ./xdg.nix
     ./rofi.nix
     ./waybar.nix
-    ./browser.nix
+    # ./browser.nix
   ];
 }
