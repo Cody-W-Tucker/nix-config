@@ -1,15 +1,21 @@
-{ pkgs, config, lib, ... }: {
+{ pkgs, config, lib, ... }:
 
-  # Start the wallpaper service
-  systemd.services.wallpaper = {
-    enable = true;
-    description = "Set a random wallpaper at regular intervals";
-    wantedBy = [ "hyprland-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "wallpaper";
-    };
-  };
+let
+  scriptNames = [
+    "rofi-launcher"
+    "bluetoothSwitch"
+    "wallpaper"
+  ];
+
+  scriptPackages = map (script: pkgs.callPackage ../scripts/${script}.nix { inherit pkgs; }) scriptNames;
+
+  wallpaper = pkgs.callPackage ../scripts/wallpaper.nix { inherit pkgs; };
+in
+
+{
+  environment.systemPackages = with pkgs; [
+    # Adding the scripts to the system packages
+  ] ++ scriptPackages;
 
   # fstrim for SSDs
   services.fstrim.enable = true;

@@ -36,6 +36,7 @@ with lib;
         "hypridle"
         "mako"
         "$POLKIT_BIN"
+        "run-as-service wallpaper"
       ];
       animations = {
         enabled = true;
