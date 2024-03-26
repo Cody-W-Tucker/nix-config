@@ -12,7 +12,7 @@ pkgs.writeShellScriptBin "wallpaper" ''
   export SWWW_TRANSITION_TYPE=random
 
   # This controls (in seconds) when to switch to the next image
-  INTERVAL=900
+  INTERVAL=1500
 
   # Define the wallpaper directory
   wallpaperDir="$HOME/Pictures/Wallpapers"
