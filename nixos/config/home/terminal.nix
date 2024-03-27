@@ -129,14 +129,14 @@ in
   };
   programs.zsh = {
     enable = true;
-    enableAutosuggestions = true;
+    autosuggestion.enable = true;
     autocd = true;
     history.path = "${config.xdg.dataHome}/zsh/zsh_history";
     syntaxHighlighting.enable = true;
     shellAliases = {
       ll = "ls -l";
       update = "sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
-      upgrade = "nix flake update && sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
+      upgrade = "nix flake update ~/Code/dotfiles/nixos && sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
       gcCleanup = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
     };
     initExtra = ''
