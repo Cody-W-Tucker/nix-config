@@ -36,7 +36,7 @@ with lib;
         "hypridle"
         "mako"
         "$POLKIT_BIN"
-        "run-as-service wallpaper"
+        "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
       ];
       animations = {
         enabled = true;
