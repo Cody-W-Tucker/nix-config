@@ -8,8 +8,6 @@ let
   ];
 
   scriptPackages = map (script: pkgs.callPackage ../scripts/${script}.nix { inherit pkgs; }) scriptNames;
-
-  wallpaper = pkgs.callPackage ../scripts/wallpaper.nix { inherit pkgs; };
 in
 
 {
