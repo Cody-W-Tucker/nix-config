@@ -10,6 +10,7 @@
     nixpkgs-fmt
     firefox
     ranger
+    zathura
     docker-compose
     pavucontrol
     polkit_gnome
