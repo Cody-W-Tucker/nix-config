@@ -30,7 +30,6 @@
       vimAlias = true;
       defaultEditor = true;
     };
-    direnv.enable = true;
   };
 
   # Enable the Hyprland Desktop Environment.
