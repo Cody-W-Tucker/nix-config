@@ -119,30 +119,40 @@ in
       };
     };
   };
-  programs.bash = {
-    enable = true;
-    historyFile = "${config.xdg.dataHome}/bash/bash_history";
-    bashrcExtra = ''
-      eval "$(direnv hook bash)"
-      eval "$(gh copilot alias -- bash)"
-    '';
-  };
-  programs.zsh = {
-    enable = true;
-    autosuggestion.enable = true;
-    autocd = true;
-    history.path = "${config.xdg.dataHome}/zsh/zsh_history";
-    syntaxHighlighting.enable = true;
-    shellAliases = {
-      ll = "ls -l";
-      update = "sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
-      upgrade = "nix flake update ~/Code/dotfiles/nixos && sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
-      gcCleanup = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
+
+  # Enable the user's shells and development environment
+  programs = {
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
     };
-    initExtra = ''
-      eval "$(direnv hook zsh)"
-      eval "$(gh copilot alias -- zsh)"
-    '';
-    history.size = 10000;
+    bash = {
+      enable = true;
+      historyFile = "${config.xdg.dataHome}/bash/bash_history";
+      bashrcExtra = ''
+        eval "$(direnv hook bash)"
+        eval "$(gh copilot alias -- bash)"
+      '';
+    };
+    zsh = {
+      enable = true;
+      autosuggestion.enable = true;
+      autocd = true;
+      history.path = "${config.xdg.dataHome}/zsh/zsh_history";
+      syntaxHighlighting.enable = true;
+      shellAliases = {
+        ll = "ls -l";
+        update = "sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
+        upgrade = "nix flake update ~/Code/dotfiles/nixos && sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
+        gcCleanup = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
+      };
+      initExtra = ''
+        eval "$(direnv hook zsh)"
+        eval "$(gh copilot alias -- zsh)"
+      '';
+      history.size = 10000;
+    };
   };
 }
