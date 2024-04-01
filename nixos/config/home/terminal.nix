@@ -122,6 +122,12 @@ in
 
   # Enable the user's shells and development environment
   programs = {
+    git = {
+      enable = true;
+      userEmail = "cody@tmvsocial.com";
+      userName = "Cody-W-Tucker";
+      lfs.enable = true;
+    };
     direnv = {
       enable = true;
       enableBashIntegration = true;
