@@ -10,11 +10,16 @@
     nixpkgs-fmt
     firefox
     ranger
+    feh
     zathura
     docker-compose
     pavucontrol
     polkit_gnome
     xdg-utils # xdg-open
+    # Removable media, daemons defined in system/services.nix
+    usbutils
+    udiskie
+    udisks
     jellyfin
     jellyfin-web
     jellyfin-ffmpeg

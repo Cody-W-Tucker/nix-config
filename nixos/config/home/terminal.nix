@@ -127,6 +127,9 @@ in
       userEmail = "cody@tmvsocial.com";
       userName = "Cody-W-Tucker";
       lfs.enable = true;
+      extraConfig = {
+        push = { autoSetupRemote = true; };
+      };
     };
     direnv = {
       enable = true;
