@@ -1,5 +1,6 @@
 { config, pkgs, lib, ... }: {
 
+  # Enable the Zathura PDF viewer
   programs.zathura = {
     enable = true;
     package = pkgs.zathura;
