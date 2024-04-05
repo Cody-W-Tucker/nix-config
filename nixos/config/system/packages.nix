@@ -9,6 +9,7 @@
     git
     nixpkgs-fmt
     firefox
+    lf
     ranger
     feh
     zathura
