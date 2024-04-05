@@ -2,18 +2,6 @@
 
   # Also Using feh image viewer
 
-  # Ranger Configuration
-  programs.ranger = {
-    enable = true;
-    settings = {
-      preview_images = true;
-      preview_images_method = "kitty";
-    };
-    mappings = {
-      C-d = "shell ripdrag %p -x 2>/dev/null &";
-    };
-  };
-
   # Enable the Zathura PDF viewer
   programs.zathura = {
     enable = true;
