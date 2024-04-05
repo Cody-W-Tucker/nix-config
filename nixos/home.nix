@@ -53,6 +53,8 @@ in
     brightnessctl
     gh
     run-as-service
+    ripdrag
+    xdragon
   ];
 
   colorScheme = inputs.nix-colors.colorSchemes."google-dark";

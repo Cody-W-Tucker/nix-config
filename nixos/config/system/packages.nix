@@ -20,6 +20,8 @@
     usbutils
     udiskie
     udisks
+    libreoffice-qt
+    hunspell
     jellyfin
     jellyfin-web
     jellyfin-ffmpeg
