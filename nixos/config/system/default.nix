@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./intel-gpu.nix
+    ./gpu.nix
     ./polkit.nix
     ./services.nix
     ./packages.nix
