@@ -6,7 +6,6 @@ let
   waybarConfig = {
     layer = "top";
     reload_style_on_change = true;
-    output = "DP-1";
     spacing = 4;
     modules-center = [ "clock" ];
     modules-left = [ "hyprland/workspaces" ];
@@ -121,8 +120,8 @@ in
     };
     settings = {
       # Duplicate the bars for each monitor
-      monitor1 = createBar waybarConfig "DP-1" "top";
-      monitor2 = createBar waybarConfig "DP-2" "bottom";
+      monitor1 = createBar waybarConfig "DP-2" "bottom";
+      monitor2 = createBar waybarConfig "DP-1" "top";
     };
     style = ''
       @import '../../.cache/wal/colors-waybar.css';
