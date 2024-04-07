@@ -24,6 +24,10 @@ with lib;
         "QT_WAYLAND_DISABLE_WINDOWDECORATION"
         "QT_AUTO_SCREEN_SCALE_FACTOR"
         "MOZ_ENABLE_WAYLAND"
+        "LIBVA_DRIVER_NAME"
+        "WLR_NO_HARDWARE_CURSORS"
+        "GBM_BACKEND"
+        "__GLX_VENDOR_LIBRARY_NAME"
       ];
       extraCommands = [
         "systemctl --user stop hyprland-session.target"

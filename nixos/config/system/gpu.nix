@@ -1,14 +1,23 @@
 { pkgs, config, lib, ... }:
-
 {
-  environment.systemPackages = with pkgs; [
-    nvtopPackages.full
-  ];
+  nixpkgs.config.packageOverrides =
+    pkgs: {
+      vaapiIntel = pkgs.vaapiIntel.override {
+        enableHybridCodec = true;
+      };
+    };
   # OpenGL
   hardware.opengl = {
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
+    extraPackages = with pkgs; [
+      intel-media-driver
+      intel-compute-runtime
+      vaapiIntel
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -33,5 +42,10 @@
     nvidiaSettings = true;
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
     package = config.boot.kernelPackages.nvidiaPackages.stable;
+    prime = {
+      sync.enable = true;
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:3:0:0";
+    };
   };
 }
