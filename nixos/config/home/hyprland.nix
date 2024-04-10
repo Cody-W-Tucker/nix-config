@@ -25,9 +25,9 @@ with lib;
         "QT_AUTO_SCREEN_SCALE_FACTOR"
         "MOZ_ENABLE_WAYLAND"
         "LIBVA_DRIVER_NAME"
-        "WLR_NO_HARDWARE_CURSORS"
         "GBM_BACKEND"
         "__GLX_VENDOR_LIBRARY_NAME"
+        "WLR_NO_HARDWARE_CURSORS"
       ];
       extraCommands = [
         "systemctl --user stop hyprland-session.target"
@@ -36,10 +36,9 @@ with lib;
     };
     settings = {
       exec-once = [
-        "swww query || swww init"
+        "swww restore || swww-daemon"
         "hypridle"
         "mako"
-        "$POLKIT_BIN"
         "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
       ];
       animations = {
@@ -62,8 +61,6 @@ with lib;
         numlock_by_default = "true";
         follow_mouse = "1";
         sensitivity = "-.7";
-        kb_model = "pc104";
-        kb_layout = "us";
       };
       general = {
         border_size = "2";
@@ -73,6 +70,7 @@ with lib;
         "col.active_border" = "rgba(${theme.base0C}ff) rgba(${theme.base0D}ff) rgba(${theme.base0B}ff) rgba(${theme.base0E}ff) 45deg";
         "col.inactive_border" = "rgba(${theme.base00}cc) rgba(${theme.base01}cc) 45deg";
       };
+      windowrule = "opacity 0.99 0.99, obsidian";
       decoration = {
         rounding = "10";
         blur = {
@@ -80,6 +78,7 @@ with lib;
           size = "3";
           passes = "1";
           new_optimizations = "true";
+          ignore_opacity = true;
         };
         drop_shadow = "yes";
         shadow_range = "4";

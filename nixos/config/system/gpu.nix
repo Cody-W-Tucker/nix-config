@@ -1,26 +1,23 @@
 { pkgs, config, lib, ... }:
+
 {
-  nixpkgs.config.packageOverrides =
-    pkgs: {
-      vaapiIntel = pkgs.vaapiIntel.override {
-        enableHybridCodec = true;
-      };
-    };
+  # Trying to get hyprland to work with nvidia
+  environment.systemPackages = with pkgs; [
+    libsForQt5.qt5.qtwayland
+    libsForQt5.qt5ct
+  ];
+
   # OpenGL
   hardware.opengl = {
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
     extraPackages = with pkgs; [
-      intel-media-driver
       intel-compute-runtime
-      vaapiIntel
-      vaapiVdpau
-      libvdpau-va-gl
+      libva
     ];
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
     # Modesetting is required.
     modesetting.enable = true;
@@ -41,9 +38,8 @@
     # accessible via `nvidia-settings`.
     nvidiaSettings = true;
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
     prime = {
-      sync.enable = true;
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:3:0:0";
     };

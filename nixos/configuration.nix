@@ -45,6 +45,10 @@
   # Set up the X11 windowing system.
   services.xserver = {
     enable = true;
+    xkb = {
+      layout = "us";
+      model = "pc105";
+    };
     displayManager = {
       autoLogin.enable = true;
       autoLogin.user = "codyt";

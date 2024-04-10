@@ -15,12 +15,6 @@ in
     # Adding the scripts to the system packages
   ] ++ scriptPackages;
 
-  # fstrim for SSDs
-  services.fstrim.enable = true;
-
-  # Microcode updates for Intel CPUs
-  hardware.cpu.intel.updateMicrocode = true;
-
   #xdg  
   xdg.portal = {
     enable = true;
