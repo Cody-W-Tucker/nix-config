@@ -10,13 +10,14 @@
     nix-colors.url = "github:misterio77/nix-colors";
     hyprland.url = "github:hyprwm/Hyprland";
     sops-nix.url = "github:Mic92/sops-nix";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # nixvim = {
     #   url = "github:nix-community/nixvim";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, ... }:
     let
       system = "x86_64-linux";
       username = "codyt";
@@ -38,6 +39,11 @@
           };
           modules = [
             ./configuration.nix
+            # Using community hardware configurations
+            nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
+            nixos-hardware.nixosModules.common-gpu-intel
+            nixos-hardware.nixosModules.common-gpu-nvidia
+            nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
