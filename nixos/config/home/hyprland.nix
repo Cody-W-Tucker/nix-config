@@ -41,6 +41,10 @@ with lib;
         "mako"
         "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
       ];
+      workspace = [
+        "1, monitor:DP-1, default:true"
+        "2, monitor:DP-2, default:true"
+      ];
       animations = {
         enabled = true;
         bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
@@ -153,6 +157,12 @@ with lib;
           "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
           # Hyprpicker color picker
           "$mainMod, mouse:274, exec, hyprpicker -a"
+          # Switching workspaces with mouse wheel
+          "$mainMod, mouse_down,workspace,e-1"
+          "$mainMod, mouse_up,workspace,e+1"
+          # Moving windows to workspaces with mouse wheel
+          "$mainMod SHIFT, mouse_down,movetoworkspace,e-1"
+          "$mainMod SHIFT, mouse_up,movetoworkspace,e+1"
         ]
         ++ (
           # workspaces
