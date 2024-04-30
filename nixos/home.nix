@@ -36,7 +36,12 @@ in
     hyprlock
     hypridle
     starship
-    google-chrome
+    (google-chrome.override {
+      commandLineArgs = [
+        "--enable-features=UseOzonePlatform"
+        "--ozone-platform=wayland"
+      ];
+    })
     zoom-us
     xwaylandvideobridge
     waybar
@@ -52,6 +57,7 @@ in
     obsidian
     brightnessctl
     gh
+    libsecret
     run-as-service
     ripdrag
     sweethome3d.application
@@ -106,14 +112,14 @@ in
   # Theme QT -> GTK
   qt = {
     enable = true;
-    platformTheme = "gtk";
+    platformTheme.name = "gtk";
     style = {
       name = "adwaita-dark";
       package = pkgs.adwaita-qt;
     };
   };
   home.sessionVariables = {
-    BROWSER = "google-chrome";
+    BROWSER = "google-chrome-stable";
     EDITOR = "code --wait";
     VISUAL = "code";
     TERMINAL = "kitty";
@@ -128,7 +134,7 @@ in
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     MOZ_ENABLE_WAYLAND = "1";
-    LIBVA_DRIVER_NAME = "nvidia";
+    LIBVA_DRIVER_NAME = "iHD";
     XDG_SESSION_TYPE = "wayland";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";

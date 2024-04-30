@@ -23,6 +23,7 @@
   # Enable networking
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = true;
+  systemd.network.networks.nixos.DHCP = true;
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
@@ -49,15 +50,16 @@
       layout = "us";
       model = "pc105";
     };
-    displayManager = {
-      autoLogin.enable = true;
-      autoLogin.user = "codyt";
-      sddm = {
-        enable = true;
-        autoNumlock = true;
-        wayland.enable = true;
-        theme = "where_is_my_sddm_theme";
-      };
+  };
+
+  services.displayManager = {
+    autoLogin.enable = true;
+    autoLogin.user = "codyt";
+    sddm = {
+      enable = true;
+      autoNumlock = true;
+      wayland.enable = true;
+      theme = "where_is_my_sddm_theme";
     };
   };
 

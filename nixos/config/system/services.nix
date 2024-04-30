@@ -68,4 +68,9 @@ in
     openFirewall = true;
     user = "codyt";
   };
+
+  # Ollama local llm
+  services.ollama = {
+    enable = true;
+  };
 }
