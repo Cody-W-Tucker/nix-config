@@ -26,6 +26,8 @@
     jellyfin
     jellyfin-web
     jellyfin-ffmpeg
+    vlc
+    libvlc
     where-is-my-sddm-theme # If I forget, the package name is hyphenated, the sddm theme is underscored
   ];
 

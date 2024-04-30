@@ -169,26 +169,6 @@ in
           set cleaner ${cleaner}/bin/clean.sh
         '';
     };
-    git = {
-      enable = true;
-      userEmail = "cody@tmvsocial.com";
-      userName = "Cody-W-Tucker";
-      lfs.enable = true;
-      diff-so-fancy.enable = true;
-      extraConfig = {
-        push = { autoSetupRemote = true; };
-        init = {
-          defaultBranch = "main";
-        };
-        merge = {
-          conflictStyle = "diff3";
-          tool = "meld";
-        };
-        pull = {
-          rebase = false;
-        };
-      };
-    };
     fzf = {
       enable = true;
       enableZshIntegration = true;
