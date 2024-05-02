@@ -119,7 +119,7 @@ in
     };
   };
   home.sessionVariables = {
-    BROWSER = "google-chrome-stable";
+    BROWSER = "google-chrome";
     EDITOR = "code --wait";
     VISUAL = "code";
     TERMINAL = "kitty";
