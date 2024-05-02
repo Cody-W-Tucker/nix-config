@@ -37,9 +37,9 @@ with lib;
     settings = {
       exec-once = [
         "swww restore || swww-daemon"
-        "hypridle"
         "mako"
         "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
+        "systemctl --user is-active hyprland-session.target || systemctl --user enable --now hypridle.service"
       ];
       workspace = [
         "1, monitor:DP-1, default:true"
