@@ -8,7 +8,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-colors.url = "github:misterio77/nix-colors";
-    hyprland.url = "github:hyprwm/Hyprland?submodules=1";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # nixvim = {
