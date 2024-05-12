@@ -49,9 +49,4 @@
     xwayland.enable = true;
   };
 
-  # Enable Docker.
-  virtualisation.docker = {
-    enable = true;
-    autoPrune.enable = true;
-  };
 }
