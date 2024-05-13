@@ -36,12 +36,7 @@ in
     hyprlock
     hypridle
     starship
-    (google-chrome.override {
-      commandLineArgs = [
-        "--enable-features=UseOzonePlatform"
-        "--ozone-platform=wayland"
-      ];
-    })
+    google-chrome
     zoom-us
     xwaylandvideobridge
     waybar
@@ -50,7 +45,6 @@ in
     kitty
     rofi-wayland
     vscode
-    gcalcli
     spotify
     openrazer-daemon
     todoist-electron
@@ -60,10 +54,9 @@ in
     libsecret
     run-as-service
     ripdrag
-    sweethome3d.application
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes."google-dark";
+  colorScheme = inputs.nix-colors.colorSchemes."tomorrow-night";
 
   imports = [
     ./config/home
