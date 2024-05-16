@@ -73,4 +73,8 @@ in
   services.ollama = {
     enable = true;
   };
+
+  # Password manager
+  services.vaultwarden.enable = true;
+
 }
