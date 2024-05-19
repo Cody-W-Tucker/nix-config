@@ -1,8 +1,5 @@
 { config, pkgs, lib, inputs, ... }:
 
-let
-  theme = config.colorScheme.palette;
-in
 with lib;
 {
   wayland.windowManager.hyprland = {
@@ -71,8 +68,8 @@ with lib;
         gaps_in = "5";
         gaps_out = "20";
         layout = "master";
-        "col.active_border" = "rgba(${theme.base0C}ff) rgba(${theme.base0D}ff) rgba(${theme.base0B}ff) rgba(${theme.base0E}ff) 45deg";
-        "col.inactive_border" = "rgba(${theme.base00}cc) rgba(${theme.base01}cc) 45deg";
+        # "col.active_border" = "rgba(${theme.base0C}ff) rgba(${theme.base0D}ff) rgba(${theme.base0B}ff) rgba(${theme.base0E}ff) 45deg";
+        # "col.inactive_border" = "rgba(${theme.base00}cc) rgba(${theme.base01}cc) 45deg";
       };
       windowrule = "opacity 0.99 0.99, obsidian";
       decoration = {
@@ -87,7 +84,7 @@ with lib;
         drop_shadow = "yes";
         shadow_range = "4";
         shadow_render_power = "3";
-        "col.shadow" = "rgba(1a1a1aee)";
+        # "col.shadow" = "rgba(1a1a1aee)";
       };
       dwindle = {
         pseudotile = "yes";

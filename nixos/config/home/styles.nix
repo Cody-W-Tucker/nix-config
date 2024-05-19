@@ -1,8 +1,7 @@
-{ pkgs, config, ... }:
-
+{ config, pkgs, ... }:
 {
   stylix = {
-    image = ./wallpaper.png;
+    image = ./defaultWallpaper.jpg;
     polarity = "dark";
     base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
 

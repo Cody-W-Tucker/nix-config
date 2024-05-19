@@ -1,16 +1,11 @@
 { pkgs, config, ... }:
 
-let
-  palette = config.colorScheme.palette;
-in
+# let
+#   palette = config.colorScheme.palette;
+# in
 {
   home.file.".config/rofi/config.rasi".text = ''
     @theme "/dev/null"
-
-    * {
-      bg: #${palette.base00};
-      background-color: @bg;
-    }
 
     configuration {
       modi:		    "run,filebrowser,drun";
@@ -29,7 +24,6 @@ in
       transparency: "real";
       orientation: vertical;
       border: 2px ;
-      border-color: #${palette.base0F};
       border-radius: 10px;
     }
 
@@ -42,13 +36,7 @@ in
 
     element {
       padding: 8 14;
-      text-color: #${palette.base05};
       border-radius: 5px;
-    }
-
-    element selected {
-      text-color: #${palette.base01};
-      background-color: #${palette.base0C};
     }
 
     element-text {
@@ -77,7 +65,6 @@ in
     //------------------------------------------------
 
     entry {
-      text-color: #${palette.base05};
       padding: 10 10 0 0;
       margin: 0 -2 0 0;
     }
@@ -88,7 +75,6 @@ in
     } 
 
     prompt {
-      text-color: #${palette.base0D};
       padding: 10 6 0 10;
       margin: 0 -2 0 0;
     }
@@ -97,25 +83,16 @@ in
     //------------------------------------------------
 
     mode-switcher {
-      border-color:   #${palette.base0F};
       spacing:	      0;
     }
 
     button {
       padding:	      10px;
-      background-color: @bg;
-      text-color:	      #${palette.base03};
       vertical-align:   0.5; 
       horizontal-align: 0.5;
     }
 
-    button selected {
-      background-color: @bg;
-      text-color: #${palette.base0F};
-    }
-
     message {
-      background-color: @bg;
       margin: 2px;
       padding: 2px;
       border-radius: 5px;
@@ -124,8 +101,6 @@ in
     textbox {
       padding: 6px;
       margin: 20px 0px 0px 20px;
-      text-color: #${palette.base0F};
-      background-color: @bg;
     }
   '';
 }

@@ -14,7 +14,7 @@ in
       shell_integration = "no-cursor";
       window_padding_width = "0 8";
       confirm_os_window_close = "0";
-      background_opacity = ".8";
+      # background_opacity = ".8";
       wayland_titlebar_color = "system";
       cursor_shape = "block";
     };
