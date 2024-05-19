@@ -8,5 +8,6 @@
     ./rofi.nix
     ./waybar.nix
     # ./browser.nix
+    ./styles.nix
   ];
 }
