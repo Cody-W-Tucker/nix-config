@@ -7,7 +7,8 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-colors.url = "github:misterio77/nix-colors";
+    # nix-colors.url = "github:misterio77/nix-colors";
+    stylix.url = "github:danth/stylix";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -17,7 +18,7 @@
     # };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, ... }:
     let
       system = "x86_64-linux";
       username = "codyt";
@@ -38,6 +39,7 @@
             inherit username; inherit hostname;
           };
           modules = [
+            stylix.nixosModules.stylix
             ./configuration.nix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
@@ -49,7 +51,7 @@
             {
               home-manager.extraSpecialArgs = {
                 inherit username; inherit inputs;
-                inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
+                # inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;

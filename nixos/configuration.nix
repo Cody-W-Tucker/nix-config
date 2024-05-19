@@ -72,25 +72,6 @@
     shell = pkgs.zsh;
   };
 
-  fonts = {
-    enableDefaultPackages = true;
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-emoji
-      font-awesome
-      source-han-sans
-      (nerdfonts.override { fonts = [ "Meslo" ]; })
-    ];
-    fontconfig = {
-      defaultFonts = {
-        monospace = [ "Meslo LG M Regular Nerd Font Complete Mono" ];
-        serif = [ "Noto Serif" "Source Han Serif" ];
-        sansSerif = [ "Noto Sans" "Source Han Sans" ];
-      };
-    };
-  };
-
   # Polkit settings
   environment.variables = {
     POLKIT_BIN = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
