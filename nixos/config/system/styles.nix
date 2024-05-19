@@ -31,17 +31,18 @@
         name = "Noto Color Emoji";
       };
     };
-  };
-  fonts = {
-    enableDefaultPackages = true;
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-emoji
-      font-awesome
-      source-han-sans
-      (nerdfonts.override { fonts = [ "Meslo" ]; })
-    ];
+
+    fonts = {
+      enableDefaultPackages = true;
+      packages = with pkgs; [
+        noto-fonts
+        noto-fonts-cjk
+        noto-fonts-emoji
+        font-awesome
+        source-han-sans
+        (nerdfonts.override { fonts = [ "Meslo" ]; })
+      ];
+    };
   };
 }
 

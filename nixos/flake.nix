@@ -40,6 +40,7 @@
           };
           modules = [
             ./configuration.nix
+            inputs.stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
             # nixos-hardware.nixosModules.common-gpu-intel
@@ -51,7 +52,6 @@
               home-manager.extraSpecialArgs = {
                 inherit username; inherit inputs;
                 # inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
-                inherit (inputs.stylix) stylix;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
