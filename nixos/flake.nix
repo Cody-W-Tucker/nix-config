@@ -40,7 +40,7 @@
           };
           modules = [
             ./configuration.nix
-            inputs.stylix.nixosModules.stylix
+            stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
             # nixos-hardware.nixosModules.common-gpu-intel
