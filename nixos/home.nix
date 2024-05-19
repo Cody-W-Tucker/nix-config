@@ -56,11 +56,8 @@ in
     ripdrag
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes."tomorrow-night";
-
   imports = [
     ./config/home
-    inputs.nix-colors.homeManagerModules.default
     inputs.hyprland.homeManagerModules.default
   ];
   dconf = {
@@ -75,41 +72,6 @@ in
   home.keyboard = {
     layout = "us";
     model = "pc104";
-  };
-  home.pointerCursor = {
-    gtk.enable = true;
-    # x11.enable = true;
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Classic";
-    size = 24;
-  };
-
-  gtk = {
-    enable = true;
-    iconTheme = {
-      package = pkgs.gnome.adwaita-icon-theme;
-      name = "Adwaita";
-    };
-    theme = {
-      name = "${config.colorScheme.slug}";
-      package = gtkThemeFromScheme { scheme = config.colorScheme; };
-    };
-    gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
-  };
-
-  # Theme QT -> GTK
-  qt = {
-    enable = true;
-    platformTheme.name = "gtk";
-    style = {
-      name = "adwaita-dark";
-      package = pkgs.adwaita-qt;
-    };
   };
   home.sessionVariables = {
     BROWSER = "google-chrome";

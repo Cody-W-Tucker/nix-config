@@ -124,7 +124,7 @@ in
       monitor2 = createBar waybarConfig "DP-1" "top";
     };
     style = ''
-      @import '../../.cache/wal/colors-waybar.css';
+      # @import '../../.cache/wal/colors-waybar.css';
 
       * {
         /* `otf-font-awesome` is required to be installed for icons */
