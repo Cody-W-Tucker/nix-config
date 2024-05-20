@@ -5,9 +5,8 @@
     ./hyprland.nix
     ./terminal.nix
     ./xdg.nix
-    ./rofi.nix
+    # ./rofi.nix
     ./waybar.nix
     # ./browser.nix
-    ./styles.nix
   ];
 }

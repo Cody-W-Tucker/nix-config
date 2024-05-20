@@ -6,5 +6,6 @@
     ./polkit.nix
     ./services.nix
     ./packages.nix
+    ./styles.nix
   ];
 }
