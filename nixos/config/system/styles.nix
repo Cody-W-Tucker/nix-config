@@ -48,7 +48,6 @@
       noto-fonts
       noto-fonts-cjk
       font-awesome
-      otf-font-awesome
       source-han-sans
       (nerdfonts.override { fonts = [ "Meslo" ]; })
     ];
