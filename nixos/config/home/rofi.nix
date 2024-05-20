@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ lib, pkgs, config, ... }:
 
 {
   home.file.".config/rofi/config.rasi".text = lib.mkForce ''
