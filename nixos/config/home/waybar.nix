@@ -123,8 +123,7 @@ in
       monitor1 = createBar waybarConfig "DP-2" "bottom";
       monitor2 = createBar waybarConfig "DP-1" "top";
     };
-    style = ''
-
+    style = lib.mkForce ''
       * {
         /* `otf-font-awesome` is required to be installed for icons */
         font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
@@ -132,8 +131,8 @@ in
       }
 
       window#waybar {
-        background: rgba(0, 0, 0, 0);
-        color: @theme_text_color;
+        background: #${config.lib.stylix.colors.base00};
+        color: #${config.lib.stylix.colors.base05};
         transition-property: background-color;
         transition-duration: 0.5s;
         transition-timing-function: ease;
@@ -146,7 +145,7 @@ in
       #workspaces button {
         padding: 0 5px;
         background-color: transparent;
-        color: #ffffff;
+        color: #${config.lib.stylix.colors.base05};
       }
 
       #workspaces button:hover {
@@ -159,7 +158,7 @@ in
       }
 
       #workspaces button.urgent {
-        background-color: #eb4d4b;
+        background-color: #${config.lib.stylix.colors.base09};
       }
 
       #mode {
