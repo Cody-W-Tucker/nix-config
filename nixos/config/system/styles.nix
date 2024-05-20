@@ -52,37 +52,21 @@
       (nerdfonts.override { fonts = [ "Meslo" ]; })
     ];
   };
+  # Theme GTK
+  gtk = {
+    enable = true;
+    iconTheme = {
+      package = pkgs.gnome.adwaita-icon-theme;
+      name = "Adwaita";
+    };
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+  };
 }
-
-#   fontconfig = {
-#     defaultFonts = {
-#       monospace = [ "Meslo LG M Regular Nerd Font Complete Mono" ];
-#       serif = [ "Noto Serif" "Source Han Serif" ];
-#       sansSerif = [ "Noto Sans" "Source Han Sans" ];
-#     };
-#   };
-# };
-
-# Base16 theme = tomorrow-night
-
-# # Theme GTK
-# gtk = {
-#   enable = true;
-#   iconTheme = {
-#     package = pkgs.gnome.adwaita-icon-theme;
-#     name = "Adwaita";
-#   };
-#   theme = {
-#     name = "${config.colorScheme.slug}";
-#     package = gtkThemeFromScheme { scheme = config.colorScheme; };
-#   };
-#   gtk3.extraConfig = {
-#     gtk-application-prefer-dark-theme = 1;
-#   };
-#   gtk4.extraConfig = {
-#     gtk-application-prefer-dark-theme = 1;
-#   };
-# };
 
 # # Theme QT -> GTK
 # qt = {

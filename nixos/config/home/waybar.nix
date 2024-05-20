@@ -152,11 +152,6 @@ in
         background: rgba(0, 0, 0, 0.2);
       }
 
-      #workspaces button.focused {
-        background-color: #64727d;
-        box-shadow: inset 0 -3px #ffffff;
-      }
-
       #workspaces button.urgent {
         background-color: #${config.lib.stylix.colors.base09};
       }
