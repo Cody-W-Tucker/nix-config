@@ -15,52 +15,58 @@
     ];
 
   # Run the latest kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;};
+  };
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # Enable networking
-  networking.hostName = "nixos"; # Define your hostname.
-  networking.networkmanager.enable = true;
-  systemd.network.networks.nixos.DHCP = true;
+  # Networking
+  networking = {
+    hostName = "nixos";
+    networkmanager.enable = true;
+  };
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
+  i18n = {
+    # Select internationalisation properties.
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "en_US.UTF-8";
+      LC_IDENTIFICATION = "en_US.UTF-8";
+      LC_MEASUREMENT = "en_US.UTF-8";
+      LC_MONETARY = "en_US.UTF-8";
+      LC_NAME = "en_US.UTF-8";
+      LC_NUMERIC = "en_US.UTF-8";
+      LC_PAPER = "en_US.UTF-8";
+      LC_TELEPHONE = "en_US.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
   };
 
-  # Set up the X11 windowing system.
-  services.xserver = {
+  # Default Display Manager and Windowing system.
+  services = {
+    # Set up the X11 windowing system.
+    xserver = {
     enable = true;
     xkb = {
       layout = "us";
       model = "pc105";
     };
   };
-
-  services.displayManager = {
-    autoLogin.enable = true;
-    autoLogin.user = "codyt";
-    sddm = {
-      enable = true;
-      autoNumlock = true;
-      wayland.enable = true;
-      theme = "where_is_my_sddm_theme";
+    # SDDM Display Manager
+    displayManager = {
+      autoLogin.enable = true;
+      autoLogin.user = "codyt";
+      sddm = {
+        enable = true;
+        autoNumlock = true;
+        wayland.enable = true;
+        theme = "where_is_my_sddm_theme";
+      };
     };
   };
 
