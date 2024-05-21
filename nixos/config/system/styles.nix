@@ -5,7 +5,7 @@
     polarity = "dark";
     base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
     opacity = {
-      applications = 1.0;
+      applications = 0.9;
       terminal = 0.8;
       desktop = 1.0;
       popups = 1.0;
@@ -53,12 +53,3 @@
     ];
   };
 }
-
-# # Theme QT -> GTK
-# qt = {
-#   enable = true;
-#   platformTheme.name = "gtk";
-#   style = {
-#     name = "adwaita-dark";
-#     package = pkgs.adwaita-qt;
-#   };
