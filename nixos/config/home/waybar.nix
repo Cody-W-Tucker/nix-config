@@ -125,26 +125,25 @@ in
     };
     style = lib.mkForce ''
       * {
-        /* `otf-font-awesome` is required to be installed for icons */
-        font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+        font-family: JetBrainsMono, Roboto, Helvetica, Arial, sans-serif;
         font-size: 15px;
       }
 
       window#waybar {
-        background: #${config.lib.stylix.colors.base00};
+        background-color: transparent;
         color: #${config.lib.stylix.colors.base05};
-        transition-property: background-color;
-        transition-duration: 0.5s;
-        transition-timing-function: ease;
       }
 
-      window#waybar.hidden {
-        opacity: 0.2;
+      #workspaces {
+        padding: 0 15px;
+        background-color: #${config.lib.stylix.colors.base00};
+        color: #${config.lib.stylix.colors.base05};
       }
 
       #workspaces button {
-        padding: 0 5px;
-        background-color: transparent;
+        padding: 5px 10px;
+        margin: 0 2px;
+        background-color: #${config.lib.stylix.colors.base00};
         color: #${config.lib.stylix.colors.base05};
       }
 
@@ -154,11 +153,6 @@ in
 
       #workspaces button.urgent {
         background-color: #${config.lib.stylix.colors.base09};
-      }
-
-      #mode {
-        background-color: #64727d;
-        border-bottom: 3px solid #ffffff;
       }
 
       #clock,
@@ -182,12 +176,7 @@ in
       #custom-lock,
       #custom-reboot {
         padding: 0 10px;
-        color: #ffffff;
-      }
-
-      #window,
-      #workspaces {
-        margin: 0 4px;
+        color: #${config.lib.stylix.colors.base05};
       }
 
       /* If workspaces is the leftmost module, omit left margin */
@@ -202,13 +191,13 @@ in
 
       @keyframes blink {
         to {
-          background-color: #ffffff;
+          background-color: #${config.lib.stylix.colors.base00};
           color: #000000;
         }
       }
 
       label:focus {
-        background-color: #000000;
+        background-color: #${config.lib.stylix.colors.base00};
       }
 
       #cpu,
@@ -223,20 +212,9 @@ in
       #workspaces,
       #bluetooth {
         padding: 5px 10px;
-        border: 1px solid @foreground;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
-        background-color: @background;
-        color: @theme_text_color;
-      }
-
-      window.DP-1 * {
-        border-radius: 0 0 10px 10px;
-        border-top-style: none;
-      }
-
-      window.DP-2 * {
-        border-radius: 10px 10px 0 0;
-        border-bottom-style: none;
+        background-color: #${config.lib.stylix.colors.base00};
+        color: #${config.lib.stylix.colors.base05};
       }
 
       #idle_inhibitor {

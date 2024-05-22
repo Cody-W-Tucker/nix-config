@@ -112,8 +112,8 @@ with lib;
       bind =
         [
           "$mainMod, RETURN, exec, pkill waybar && waybar &"
-          "$mainMod, C, exec, kitty"
-          "$mainMod, Q, killactive"
+          "$mainMod, Q, exec, kitty"
+          "$mainMod, C, killactive"
           "$mainMod, E, exec, kitty -- ranger"
           "$mainMod, V, togglefloating"
           "$mainMod, Tab, exec, rofi-launcher"
