@@ -141,14 +141,14 @@ in
       }
 
       #workspaces button {
-        padding: 5px 10px;
+        padding: 0 10px;
         margin: 0 2px;
         background-color: #${config.lib.stylix.colors.base00};
         color: #${config.lib.stylix.colors.base05};
       }
 
       #workspaces button:hover {
-        background: rgba(0, 0, 0, 0.2);
+        background: #${config.lib.stylix.colors.base02};
       }
 
       #workspaces button.urgent {
