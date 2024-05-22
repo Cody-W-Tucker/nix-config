@@ -130,8 +130,9 @@ in
       }
 
       window#waybar {
-        background-color: transparent;
+        background-color: #${config.lib.stylix.colors.base01};
         color: #${config.lib.stylix.colors.base05};
+        border-bottom: 1px solid #${config.lib.stylix.colors.base00};
       }
 
       #workspaces {
@@ -148,7 +149,7 @@ in
       }
 
       #workspaces button:hover {
-        background: #${config.lib.stylix.colors.base02};
+        background: #${config.lib.stylix.colors.base0D};
       }
 
       #workspaces button.urgent {
@@ -157,6 +158,7 @@ in
 
       #clock,
       #battery,
+      #bluetooth,
       #cpu,
       #memory,
       #disk,
@@ -174,9 +176,11 @@ in
       #custom-power,
       #custom-quit,
       #custom-lock,
-      #custom-reboot {
+      #custom-reboot,
+      #workspaces {
         padding: 0 10px;
         color: #${config.lib.stylix.colors.base05};
+        border: 1px solid #${config.lib.stylix.colors.base02};
       }
 
       /* If workspaces is the leftmost module, omit left margin */
