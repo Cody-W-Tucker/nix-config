@@ -7,24 +7,7 @@ with lib;
     systemd = {
       enable = true;
       variables = [
-        "DISPLAY"
-        "HYPRLAND_INSTANCE_SIGNATURE"
-        "WAYLAND_DISPLAY"
-        "XDG_CURRENT_DESKTOP"
-        "NIXOS_OZONE_WL"
-        "XDG_SESSION_TYPE"
-        "XDG_SESSION_DESKTOP"
-        "GDK_BACKEND"
-        "CLUTTER_BACKEND"
-        "SDL_VIDEODRIVER"
-        "QT_QPA_PLATFORM"
-        "QT_WAYLAND_DISABLE_WINDOWDECORATION"
-        "QT_AUTO_SCREEN_SCALE_FACTOR"
-        "MOZ_ENABLE_WAYLAND"
-        "LIBVA_DRIVER_NAME"
-        "GBM_BACKEND"
-        "__GLX_VENDOR_LIBRARY_NAME"
-        "WLR_NO_HARDWARE_CURSORS"
+        "--all"
       ];
       extraCommands = [
         "systemctl --user stop hyprland-session.target"
