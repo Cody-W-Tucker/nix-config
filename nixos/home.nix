@@ -54,6 +54,7 @@ in
     libsecret
     run-as-service
     ripdrag
+    calibre
   ];
 
   imports = [
