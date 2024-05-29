@@ -1,7 +1,5 @@
 { config, pkgs, lib, ... }: {
 
-  # Also Using feh image viewer
-
   # Enable the Zathura PDF viewer
   programs.zathura = {
     enable = true;
