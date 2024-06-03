@@ -13,6 +13,7 @@ in
 {
   environment.systemPackages = with pkgs; [
     # Adding the scripts to the system packages
+    kavita
   ] ++ scriptPackages;
 
   #xdg  
@@ -72,5 +73,16 @@ in
   # Ollama local llm
   services.ollama = {
     enable = true;
+  };
+
+  # Kavita Ebook reader
+    services.kavita = {
+    enable = true;
+    tokenKeyFile = "/run/secrets/kavita-token";
+  };
+  sops.secrets = {
+    kavita-token = {};
+    kavita-token.mode = "0440";
+    kavita-token.owner = "kavita";
   };
 }
