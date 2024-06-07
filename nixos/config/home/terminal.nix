@@ -186,6 +186,7 @@
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       syntaxHighlighting.enable = true;
       shellAliases = {
+        ssh = "kitty +kitten ssh";
         ll = "ls -l";
         update = "sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
         upgrade = "nix flake update ~/Code/dotfiles/nixos && sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";

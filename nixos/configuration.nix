@@ -11,7 +11,7 @@
       ./hardware-configuration.nix
       ./config/system
       ./secrets/secrets.nix
-      ./config/containers
+      # ./config/containers
     ];
 
   # Run the latest kernel
