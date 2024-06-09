@@ -11,6 +11,7 @@
     firefox
     lf
     ranger
+    gnome.nautilus
     feh
     zathura
     docker-compose
