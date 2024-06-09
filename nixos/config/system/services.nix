@@ -63,12 +63,6 @@ in
   # Enable UPower because chrome said so...
   services.upower.enable = true;
 
-  # Giving jellyfin access to my drives
-  services.jellyfin = {
-    enable = true;
-    openFirewall = true;
-    user = "codyt";
-  };
 
   # Ollama local llm
   services.ollama = {
