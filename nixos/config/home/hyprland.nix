@@ -4,6 +4,7 @@ with lib;
 {
   wayland.windowManager.hyprland = {
     enable = true;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     systemd = {
       enable = true;
       variables = [
@@ -98,6 +99,7 @@ with lib;
           "$mainMod, Q, exec, kitty"
           "$mainMod, C, killactive"
           "$mainMod, E, exec, kitty -- ranger"
+          "$mainMod SHIFT, E, exec, nautilus"
           "$mainMod, V, togglefloating"
           "$mainMod, Tab, exec, rofi-launcher"
           "$mainMod, F, fullscreen"

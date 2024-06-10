@@ -63,20 +63,8 @@ in
   # Enable UPower because chrome said so...
   services.upower.enable = true;
 
-
   # Ollama local llm
   services.ollama = {
     enable = true;
-  };
-
-  # Kavita Ebook reader
-    services.kavita = {
-    enable = true;
-    tokenKeyFile = "/run/secrets/kavita-token";
-  };
-  sops.secrets = {
-    kavita-token = {};
-    kavita-token.mode = "0440";
-    kavita-token.owner = "kavita";
   };
 }
