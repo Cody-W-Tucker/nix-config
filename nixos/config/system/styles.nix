@@ -1,6 +1,7 @@
 { config, lib, pkgs, stylix, ... }:
 {
   stylix = {
+    enable = true;
     image = config.lib.stylix.pixel "base0A";
     polarity = "dark";
     base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
