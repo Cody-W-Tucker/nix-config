@@ -37,7 +37,7 @@ in
     hypridle
     starship
     google-chrome
-    zoom-us
+    # zoom-us
     xwaylandvideobridge
     waybar
     mako
