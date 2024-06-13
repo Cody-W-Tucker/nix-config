@@ -6,7 +6,19 @@
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
+      "configuration.nix"
     ];
+
+  # Run the latest kernel
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;};
+  };
+
+  # Networking
+  networking.hostName = "business-desktop";
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
