@@ -13,7 +13,6 @@ in
 {
   environment.systemPackages = with pkgs; [
     # Adding the scripts to the system packages
-    kavita
   ] ++ scriptPackages;
 
   #xdg  

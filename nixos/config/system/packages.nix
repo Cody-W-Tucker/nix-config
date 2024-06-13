@@ -22,7 +22,7 @@
     usbutils
     udiskie
     udisks
-    libreoffice-qt
+    libreoffice
     hunspell
     jellyfin
     jellyfin-web

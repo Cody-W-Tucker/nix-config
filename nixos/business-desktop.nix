@@ -6,7 +6,7 @@
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
-      "configuration.nix"
+      ./configuration.nix
     ];
 
   # Run the latest kernel

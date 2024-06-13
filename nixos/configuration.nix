@@ -7,7 +7,6 @@
 {
   imports =
     [
-      # Include the results of the hardware scan.
       ./config/system
       ./secrets/secrets.nix
       # ./config/containers
@@ -64,6 +63,22 @@
     description = "Cody Tucker";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
+    packages = with pkgs; [
+    #  thunderbird
+    ];
+    openssh = {
+        authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJkUAtqd1GcKYejbmpxjLzXdMoDojpVuNXEEBhYQjVgY cody@tmvsocial.com"
+        ];
+    };
+  };
+    users.users.jordant = {
+    isNormalUser = true;
+    description = "Jordan Tucker";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [
+    # thunderbird
+    ];
   };
 
   # Polkit settings
@@ -87,6 +102,9 @@
       options = "--delete-older-than 7d";
     };
   };
+
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
