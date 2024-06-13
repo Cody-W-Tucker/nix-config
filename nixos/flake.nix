@@ -22,7 +22,7 @@
     let
       system = "x86_64-linux";
       username = "codyt";
-      hostname = "nixos";
+      hostname = "business-desktop";
 
       pkgs = import nixpkgs {
         inherit system;
@@ -33,7 +33,8 @@
     in
     {
       nixosConfigurations = {
-        "${hostname}" = nixpkgs.lib.nixosSystem {
+        business-desktop = nixpkgs.lib.nixosSystem {
+          system = system;
           specialArgs = {
             inherit system; inherit inputs;
             inherit username; inherit hostname;

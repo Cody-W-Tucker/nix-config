@@ -8,25 +8,13 @@
   imports =
     [
       # Include the results of the hardware scan.
-      ./hardware-configuration.nix
       ./config/system
       ./secrets/secrets.nix
       # ./config/containers
     ];
 
-  # Run the latest kernel
-  boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;};
-  };
-
   # Networking
-  networking = {
-    hostName = "nixos";
-    networkmanager.enable = true;
-  };
+  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
