@@ -40,7 +40,7 @@
             inherit username; inherit hostname;
           };
           modules = [
-            ./configuration.nix
+            ./business-desktop.nix
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
