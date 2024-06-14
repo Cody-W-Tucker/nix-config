@@ -1,4 +1,0 @@
-{
-  username = "codyt";
-  hostname = "nixos";
-}

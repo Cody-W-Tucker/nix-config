@@ -1,10 +1,6 @@
 { pkgs, config, inputs, ... }: {
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
     git
     nixpkgs-fmt
@@ -24,9 +20,6 @@
     udisks
     libreoffice
     hunspell
-    jellyfin
-    jellyfin-web
-    jellyfin-ffmpeg
     vlc
     libvlc
     unzip
@@ -50,5 +43,4 @@
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     xwayland.enable = true;
   };
-
 }
