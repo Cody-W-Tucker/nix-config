@@ -36,22 +36,16 @@ in
     hyprlock
     hypridle
     starship
-    google-chrome
-    # zoom-us
-    xwaylandvideobridge
     waybar
     mako
     swww
-    kitty
     rofi-wayland
     vscode
     spotify
     openrazer-daemon
     todoist-electron
-    obsidian
     brightnessctl
     gh
-    libsecret
     run-as-service
     ripdrag
     calibre
