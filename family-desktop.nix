@@ -3,7 +3,7 @@
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
-      # ./modules/common/desktop
+      ./modules/common/desktop
       ./configuration.nix
     ];
 
