@@ -8,7 +8,6 @@
   imports =
     [
       ./secrets/secrets.nix
-      # ./config/containers
     ];
 
   # Networking
@@ -52,6 +51,41 @@
     };
   };
 
+  # List packages installed in system profile. To search, run:
+  environment.systemPackages = with pkgs; [
+    git
+    nixpkgs-fmt
+    firefox
+    lf
+    ranger
+    feh
+    zathura
+    docker-compose
+    pavucontrol
+    polkit_gnome
+    xdg-utils # xdg-open
+    # Removable media, daemons defined in system/services.nix
+    usbutils
+    udiskie
+    udisks
+    libreoffice
+    hunspell
+    vlc
+    libvlc
+    unzip
+  ];
+
+  # System wide terminal configuration
+  programs = {
+    zsh.enable = true;
+    neovim = {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      defaultEditor = true;
+    };
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.codyt = {
     isNormalUser = true;
@@ -74,11 +108,6 @@
     packages = with pkgs; [
     # thunderbird
     ];
-  };
-
-  # Polkit settings
-  environment.variables = {
-    POLKIT_BIN = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
   };
 
   # Optimization settings and garbage collection automation
