@@ -114,53 +114,6 @@
 
   # Enable the user's shells and development environment
   programs = {
-    lf = {
-      enable = true;
-      settings = {
-        preview = true;
-        hidden = false;
-        drawbox = false;
-        icons = false;
-        ignorecase = true;
-      };
-      commands = {
-        dragon-out = ''%${pkgs.ripdrag}/bin/ripdrag -a -x "$fx"'';
-        editor-open = ''$$EDITOR $f'';
-        mkdir = ''
-          ''${{
-            printf "Directory Name: "
-            read DIR
-            mkdir $DIR
-          }}
-        '';
-      };
-      previewer = {
-        keybinding = "i";
-        source = pkgs.writeShellScript "pv.sh" ''
-          file=$1
-             w=$2
-             h=$3
-             x=$4
-             y=$5
-        
-             if [[ "$( ${pkgs.file}/bin/file -Lb --mime-type "$file")" =~ ^image ]]; then
-                 ${pkgs.kitty}/bin/kitty +kitten icat --silent --stdin no --transfer-mode file --place "''${w}x''${h}@''${x}x''${y}" "$file" < /dev/null > /dev/tty
-                 exit 1
-             fi
-        
-             ${pkgs.pistol}/bin/pistol "$file"
-        '';
-      };
-      extraConfig =
-        let
-          cleaner = pkgs.writeShellScriptBin "clean.sh" ''
-            ${pkgs.kitty}/bin/kitty +kitten icat --clear --stdin no --silent --transfer-mode file < /dev/null > /dev/tty
-          '';
-        in
-        ''
-          set cleaner ${cleaner}/bin/clean.sh
-        '';
-    };
     fzf = {
       enable = true;
       enableZshIntegration = true;
@@ -188,8 +141,8 @@
       shellAliases = {
         ssh = "kitty +kitten ssh";
         ll = "ls -l";
-        update = "sudo nixos-rebuild switch --flake /etc/nixos --option eval-cache false";
-        upgrade = "nix flake update /etc/nixos && sudo nixos-rebuild switch --flake /etc/nixos --option eval-cache false";
+        update = "sudo nixos-rebuild switch --option eval-cache false";
+        upgrade = "nix flake update /etc/nixos && sudo nixos-rebuild switch --option eval-cache false";
         gcCleanup = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       };
       initExtra = ''

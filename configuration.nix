@@ -58,8 +58,9 @@
     git
     nixpkgs-fmt
     firefox
-    lf
     ranger
+    obsidian
+    kitty
     feh
     zathura
     docker-compose
@@ -88,12 +89,19 @@
     };
   };
 
+  # Create the passwords so they exist across all hosts
+  sops.secrets = {
+    codyt.neededForUsers = true;
+    jordant.neededForUsers = true;
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.codyt = {
     isNormalUser = true;
     description = "Cody Tucker";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
+    hashedPasswordFile = config.sops.secrets.codyt.path;
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -107,6 +115,8 @@
     isNormalUser = true;
     description = "Jordan Tucker";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
+    hashedPasswordFile = config.sops.secrets.jordant.path;
     packages = with pkgs; [
     # thunderbird
     ];
