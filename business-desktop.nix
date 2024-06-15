@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{ config, lib, pkgs, modulesPath, inputs, ... }:
 
 {
   imports =
@@ -95,11 +95,13 @@
   # Enable UPower because chrome said so...
   services.upower.enable = true;
 
-  openrazer.enable = true;
-  openrazer.devicesOffOnScreensaver = true;
-  openrazer.users = [ "codyt" ];
+  hardware.openrazer = {
+  enable = true;
+  devicesOffOnScreensaver = true;
+  users = [ "codyt" ];
+  };
 
-    # Ollama local llm
+  # Ollama local llm
   services.ollama = {
     enable = true;
   };

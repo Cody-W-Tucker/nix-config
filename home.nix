@@ -58,7 +58,7 @@ in
   ];
 
   imports = [
-    ./config/home
+    ./home
     inputs.hyprland.homeManagerModules.default
   ];
   dconf = {
