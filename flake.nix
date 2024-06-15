@@ -60,6 +60,19 @@
             }
           ];
         };
+        family-desktop = nixpkgs.lib.nixosSystem {
+          system = system;
+          specialArgs = {
+            inherit system; inherit inputs;
+            inherit username; inherit hostname;
+          };
+          modules = [
+            ./family-desktop.nix
+            # Using community hardware configurations
+            # nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
+            inputs.sops-nix.nixosModules.sops
+          ];
+        };
       };
     };
 }
