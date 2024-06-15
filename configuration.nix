@@ -91,10 +91,13 @@
   };
 
   # Create the passwords so they exist across all hosts
-  sops.secrets = {
-    codyt.neededForUsers = true;
-    jordant.neededForUsers = true;
-  };
+  # sops.secrets = {
+  #   codyt.neededForUsers = true;
+  #   jordant.neededForUsers = true;
+  # };
+
+  # Make passwords uneditable
+  users.mutableUsers = false;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.codyt = {
