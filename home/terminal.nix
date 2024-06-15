@@ -188,8 +188,8 @@
       shellAliases = {
         ssh = "kitty +kitten ssh";
         ll = "ls -l";
-        update = "sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
-        upgrade = "nix flake update ~/Code/dotfiles/nixos && sudo nixos-rebuild switch --flake ~/Code/dotfiles/nixos --option eval-cache false";
+        update = "sudo nixos-rebuild switch --flake /etc/nixos --option eval-cache false";
+        upgrade = "nix flake update /etc/nixos && sudo nixos-rebuild switch --flake /etc/nixos --option eval-cache false";
         gcCleanup = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       };
       initExtra = ''
