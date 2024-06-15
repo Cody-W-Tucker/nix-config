@@ -60,7 +60,7 @@
             }
           ];
         };
-        family-desktop = nixpkgs.lib.nixosSystem {
+        family = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
             inherit system; inherit inputs;
