@@ -28,10 +28,7 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  swapDevices = [{
-    device = "/swapfile";
-    size = 16 * 1024; # 16GB
-  }];
+  swapDevices = [ ];
 
   # Enable automatic login for the user.
   services.displayManager.autoLogin.user = "jordant";
