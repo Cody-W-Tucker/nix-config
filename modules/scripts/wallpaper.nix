@@ -15,7 +15,7 @@ pkgs.writeShellScriptBin "wallpaper" ''
   INTERVAL=1500
 
   # Define the wallpaper directory
-  wallpaperDir="$HOME/Pictures/Wallpapers"
+  wallpaperDir="../wallpapers"
 
   # Function to set a random wallpaper
   set_random_wallpaper() {
