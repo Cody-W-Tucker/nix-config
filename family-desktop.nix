@@ -8,7 +8,7 @@
       ./modules/styles.nix
     ];
 
-    # Bootloader.
+  # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "family"; # Define your hostname.
@@ -33,13 +33,6 @@
     device = "/swapfile";
     size = 16 * 1024; # 16GB
   }];
-
-  # Enable the Hyprland Desktop Environment.
-  programs.hyprland = {
-    enable = true;
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-    xwayland.enable = true;
-  };
 
   # Enable automatic login for the user.
   services.displayManager.autoLogin.user = "jordant";
