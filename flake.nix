@@ -22,7 +22,6 @@
     let
       system = "x86_64-linux";
       username = "codyt";
-      hostname = "business-desktop";
 
       pkgs = import nixpkgs {
         inherit system;
@@ -36,8 +35,7 @@
         business-desktop = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit system; inherit inputs;
-            inherit username; inherit hostname;
+            inherit inputs; inherit username;
           };
           modules = [
             ./business-desktop.nix
@@ -63,14 +61,23 @@
         family = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit system; inherit inputs;
-            inherit username; inherit hostname;
+            inherit inputs; inherit username;
           };
           modules = [
             ./family-desktop.nix
             # Using community hardware configurations
             # nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
             inputs.sops-nix.nixosModules.sops
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                inherit username; inherit inputs;
+              };
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.users.${username} = import ./home.nix;
+            }
           ];
         };
       };
