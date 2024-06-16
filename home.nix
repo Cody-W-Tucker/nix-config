@@ -54,6 +54,7 @@ in
   imports = [
     ./home
     inputs.hyprland.homeManagerModules.default
+    inputs.stylix.nixosModules.stylix
   ];
   dconf = {
     enable = true;
