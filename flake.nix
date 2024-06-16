@@ -67,6 +67,7 @@
             ./family-desktop.nix
             # Using community hardware configurations
             # nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
+            stylix.nixosModules.stylix
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
