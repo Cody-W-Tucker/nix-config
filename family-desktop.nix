@@ -29,7 +29,17 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  swapDevices = [ ];
+  swapDevices = [{
+    device = "/swapfile";
+    size = 16 * 1024; # 16GB
+  }];
+
+  # Enable the Hyprland Desktop Environment.
+  programs.hyprland = {
+    enable = true;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    xwayland.enable = true;
+  };
 
   # Enable automatic login for the user.
   services.displayManager.autoLogin.user = "jordant";
