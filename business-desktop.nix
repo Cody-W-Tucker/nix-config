@@ -72,10 +72,6 @@
     enable = true;
   };
 
-  # # Polkit settings
-  # environment.variables = {
-  #   POLKIT_BIN = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-  # };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
