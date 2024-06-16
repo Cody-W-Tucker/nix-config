@@ -5,6 +5,7 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
       ./modules/common/desktop
       ./configuration.nix
+      ./modules/styles.nix
     ];
 
     # Bootloader.
