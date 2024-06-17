@@ -3,11 +3,10 @@
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
-      ./configuration.nix # Shared configuration across all hosts
-      ./modules/scripts
+      ./configuration.nix
       ./modules/common/desktop
       ./modules/styles.nix
-      # ./modules/common/nvidia.nix
+      ./modules/scripts
     ];
     
   # Bootloader
@@ -53,13 +52,6 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-  # Enable support for removable devices.
-  services.gvfs.enable = true;
-  services.udisks2.enable = true;
-
-  # Enable UPower because chrome said so...
-  services.upower.enable = true;
 
   hardware.openrazer = {
   enable = true;
