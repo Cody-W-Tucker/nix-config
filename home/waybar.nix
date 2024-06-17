@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hardwareConfig, ... }:
 
 # Create a reusable function to create a bar (since I want to duplicate the bar for each monitor)
 let
@@ -117,6 +117,11 @@ in
     systemd = {
       enable = true;
       target = "hyprland-session.target";
+    };
+    settings = {
+      # Duplicate the bars for each monitor
+      monitor1 = createBar waybarConfig "DP-2" "bottom";
+      monitor2 = createBar waybarConfig "DP-1" "top";
     };
     style = lib.mkForce ''
       * {

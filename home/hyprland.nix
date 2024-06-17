@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, inputs, hardwareConfig, ... }:
 
 with lib;
 {
@@ -21,6 +21,7 @@ with lib;
         "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
         "systemctl --user is-active hyprland-session.target || systemctl --user enable --now hypridle.service"
       ];
+      workspace = hardwareConfig.workspace;
       animations = {
         enabled = true;
         bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
@@ -33,6 +34,7 @@ with lib;
           "workspaces, 1, 6, default"
         ];
       };
+      monitor = hardwareConfig.monitor;
       input = {
         numlock_by_default = "true";
         follow_mouse = "1";

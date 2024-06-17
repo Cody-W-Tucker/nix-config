@@ -63,23 +63,6 @@
     users = [ "codyt" ];
   };
 
-  home.wayland.windowManager.hyprland.settings = {
-    monitor = [
-      "DP-2,2560x1080@60,0x0,1"
-      "DP-1,2560x1080@60,0x1080,1"
-    ];
-    workspace = [
-      "1, monitor:DP-1, default:true"
-      "2, monitor:DP-2, default:true"
-    ];
-  };
-
-  home.programs.waybar.settings = {
-    # Duplicate the bars for each monitor
-    monitor1 = createBar waybarConfig "DP-2" "bottom";
-    monitor2 = createBar waybarConfig "DP-1" "top";
-  };
-
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
