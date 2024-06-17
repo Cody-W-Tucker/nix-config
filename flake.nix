@@ -21,63 +21,55 @@
   outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, ... }:
     let
       system = "x86_64-linux";
-      username = "codyt";
-
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-        };
-      };
     in
     {
       nixosConfigurations = {
         business-desktop = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs; inherit username;
+            inherit inputs;
           };
           modules = [
             ./business-desktop.nix
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
-            # nixos-hardware.nixosModules.common-gpu-intel
-            # nixos-hardware.nixosModules.common-gpu-nvidia
+            nixos-hardware.nixosModules.common-gpu-intel
             nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit username; inherit inputs;
+                inherit inputs;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.${username} = import ./home.nix;
+              home-manager.users.codyt = import ./home.nix;
             }
           ];
         };
         family = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs; inherit username;
+            inherit inputs;
           };
           modules = [
             ./family-desktop.nix
-            # Using community hardware configurations
-            # nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
             stylix.nixosModules.stylix
+            # Using community hardware configurations
+            nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
+            nixos-hardware.nixosModules.common-gpu-intel
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit username; inherit inputs;
+                inherit inputs;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.${username} = import ./home.nix;
+              home-manager.users.codyt = import ./home.nix;
             }
           ];
         };
