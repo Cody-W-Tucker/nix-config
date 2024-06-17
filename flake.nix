@@ -34,7 +34,6 @@
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
-            nixos-hardware.nixosModules.common-gpu-intel
             nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
@@ -59,7 +58,6 @@
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
-            nixos-hardware.nixosModules.common-gpu-intel
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
