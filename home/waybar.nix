@@ -118,11 +118,6 @@ in
       enable = true;
       target = "hyprland-session.target";
     };
-    settings = {
-      # Duplicate the bars for each monitor
-      monitor1 = createBar waybarConfig "DP-2" "bottom";
-      monitor2 = createBar waybarConfig "DP-1" "top";
-    };
     style = lib.mkForce ''
       * {
         font-family: JetBrainsMono, Roboto, Helvetica, Arial, sans-serif;

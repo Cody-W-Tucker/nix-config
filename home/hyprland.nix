@@ -21,10 +21,6 @@ with lib;
         "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
         "systemctl --user is-active hyprland-session.target || systemctl --user enable --now hypridle.service"
       ];
-      workspace = [
-        "1, monitor:DP-1, default:true"
-        "2, monitor:DP-2, default:true"
-      ];
       animations = {
         enabled = true;
         bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
@@ -37,10 +33,6 @@ with lib;
           "workspaces, 1, 6, default"
         ];
       };
-      monitor = [
-        "DP-2,2560x1080@60,0x0,1"
-        "DP-1,2560x1080@60,0x1080,1"
-      ];
       input = {
         numlock_by_default = "true";
         follow_mouse = "1";

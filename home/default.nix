@@ -7,7 +7,5 @@
     ./xdg.nix
     ./rofi.nix
     ./waybar.nix
-    # ./textEditors.nix
-    # ./browser.nix
   ];
 }
