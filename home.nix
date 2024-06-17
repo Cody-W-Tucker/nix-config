@@ -1,4 +1,4 @@
-{ pkgs, config, inputs, lib, gtkThemeFromScheme, ... }:
+{ pkgs, config, inputs, lib, ... }:
 
 let
   apply-hm-env = pkgs.writeShellScript "apply-hm-env" ''
@@ -62,11 +62,6 @@ in
         color-scheme = "prefer-dark";
       };
     };
-  };
-  # X keyboard
-  home.keyboard = {
-    layout = "us";
-    model = "pc104";
   };
 
   # Theme GTK
