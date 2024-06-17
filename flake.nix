@@ -21,13 +21,30 @@
   outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, ... }:
     let
       system = "x86_64-linux";
+      hardwareConfig = {
+        business-desktop = {
+          workspace = [
+            "1, monitor:DP-1, default:true"
+            "2, monitor:DP-2, default:true"
+          ];
+          monitor = [
+            "DP-2,2560x1080@60,0x0,1"
+            "DP-1,2560x1080@60,0x1080,1"
+          ];
+          # settings = {
+          #   # Duplicate the bars for each monitor
+          #   monitor1 = createBar waybarConfig "DP-2" "bottom";
+          #   monitor2 = createBar waybarConfig "DP-1" "top";
+          # };
+        };
+      };
     in
     {
       nixosConfigurations = {
         business-desktop = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs; inherit hardwareConfig;
           };
           modules = [
             ./business-desktop.nix
@@ -39,7 +56,7 @@
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit inputs;
+                inherit inputs; hardwareConfig = hardwareConfig.business-desktop;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
