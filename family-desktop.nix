@@ -3,9 +3,10 @@
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
-      ./modules/common/desktop
       ./configuration.nix
+      ./modules/common/desktop
       ./modules/styles.nix
+      ./modules/scripts
     ];
 
   # Bootloader

@@ -21,4 +21,11 @@
     pulse.enable = true;
     # jack.enable = true;
   };
+
+  # Enable support for removable devices.
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
+
+  # Enable UPower because chrome said so...
+  services.upower.enable = true;
 }
