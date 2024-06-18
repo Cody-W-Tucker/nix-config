@@ -31,11 +31,6 @@
             "DP-2,2560x1080@60,0x0,1"
             "DP-1,2560x1080@60,0x1080,1"
           ];
-          # settings = {
-          #   # Duplicate the bars for each monitor
-          #   monitor1 = createBar waybarConfig "DP-2" "bottom";
-          #   monitor2 = createBar waybarConfig "DP-1" "top";
-          # };
         };
       };
     in

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, ... }:
+{ config, lib, pkgs, modulesPath, inputs, stylix, ... }:
 
 {
   imports =
@@ -62,6 +62,10 @@
     devicesOffOnScreensaver = true;
     users = [ "codyt" ];
   };
+
+  # Setting the color theme and default wallpaper
+  stylix.image = config.lib.stylix.pixel "base0A";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

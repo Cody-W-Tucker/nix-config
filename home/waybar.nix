@@ -1,4 +1,4 @@
-{ config, pkgs, lib, hardwareConfig, ... }:
+{ config, pkgs, lib, ... }:
 
 # Create a reusable function to create a bar (since I want to duplicate the bar for each monitor)
 let
