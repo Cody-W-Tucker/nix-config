@@ -140,8 +140,23 @@
       shellAliases = {
         ssh = "kitty +kitten ssh";
         ll = "ls -l";
-        update = "sudo nixos-rebuild switch --option eval-cache false";
-        upgrade = "nix flake update /etc/nixos && sudo nixos-rebuild switch --option eval-cache false";
+        pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
+        pullUpgrade = "cd /etc/nixos && git pull && sudo nix flake update /etc/nixos && sudo nixos-rebuild switch";
+        update = ''
+          cd /etc/nixos &&
+          git add . &&
+          git commit -m "Pre-update commit" &&
+          sudo nixos-rebuild switch &&
+          git push
+        '';
+        upgrade = ''
+          cd /etc/nixos &&
+          git add . &&
+          git commit -m "Pre-upgrade commit" &&
+          sudo nix flake update /etc/nixos &&
+          sudo nixos-rebuild switch &&
+          git push
+        '';
         gcCleanup = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       };
       initExtra = ''
