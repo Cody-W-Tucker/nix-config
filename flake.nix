@@ -32,6 +32,14 @@
             "DP-1,2560x1080@60,0x1080,1"
           ];
         };
+        family-desktop = {
+          workspace = [
+            "1, monitor:DP-1, default:true"
+          ];
+          monitor = [
+            "DP-1,2560x1080@60,0x1080,1"
+          ];
+        };
       };
     in
     {
@@ -63,7 +71,7 @@
         family = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs;
+            inherit inputs; inherit hardwareConfig;
           };
           modules = [
             ./family-desktop.nix
@@ -74,7 +82,7 @@
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit inputs;
+                inherit inputs; hardwareConfig = hardwareConfig.family-desktop;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
