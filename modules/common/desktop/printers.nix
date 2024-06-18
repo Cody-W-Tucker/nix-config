@@ -9,13 +9,7 @@
       userServices = true;
     };
   };
-  services.printing = {
-    listenAddresses = [ "*:631" ];
-    allowFrom = [ "all" ];
-    browsing = true;
-    defaultShared = true;
-    openFirewall = true;
-  };
+  services.printing.drivers = [ pkgs.cnijfilter2 ];
 
   # environment.systemPackages = with pkgs; [
   #   system-config-printer
