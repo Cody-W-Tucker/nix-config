@@ -39,6 +39,7 @@ with lib;
         numlock_by_default = "true";
         follow_mouse = "1";
         sensitivity = "-.7";
+        kb_layout = "us";
       };
       general = {
         border_size = "2";

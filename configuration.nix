@@ -41,9 +41,9 @@
   services = {
     # Set up the X11 windowing system.
     xserver = {
-    enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
+      enable = true;
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
       xkb = {
         layout = "us";
         model = "pc105";
@@ -55,7 +55,6 @@
   programs.hyprland = {
     enable = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-    xwayland.enable = true;
   };
 
   #xdg  
@@ -127,15 +126,15 @@
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
     # hashedPasswordFile = config.sops.secrets.codyt.path;
     packages = with pkgs; [
-    #  thunderbird
+      #  thunderbird
     ];
     openssh = {
-        authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJkUAtqd1GcKYejbmpxjLzXdMoDojpVuNXEEBhYQjVgY cody@tmvsocial.com"
-        ];
+      authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJkUAtqd1GcKYejbmpxjLzXdMoDojpVuNXEEBhYQjVgY cody@tmvsocial.com"
+      ];
     };
   };
-    users.users.jordant = {
+  users.users.jordant = {
     isNormalUser = true;
     description = "Jordan Tucker";
     extraGroups = [ "networkmanager" "wheel" ];
@@ -143,7 +142,7 @@
     hashedPassword = "$y$j9T$T1YkmagP6ULuI6DvQz8IK0$38YlfZN9eR1jH286/9kZn13flzy.wFtPX74ukXKJhM7";
     # hashedPasswordFile = config.sops.secrets.jordant.path;
     packages = with pkgs; [
-    # thunderbird
+      # thunderbird
     ];
   };
 
