@@ -8,6 +8,7 @@
       ./modules/common/desktop
       ./modules/styles.nix
       ./modules/scripts
+      ./modules/common/server/containers
     ];
 
   # Bootloader
