@@ -79,6 +79,12 @@ in
     };
   };
 
+  # Keyboard
+  home.keyboard = {
+    layout = "us";
+    model = "pc105";
+  };
+
   home.sessionVariables = {
     BROWSER = "google-chrome";
     EDITOR = "code --wait";
