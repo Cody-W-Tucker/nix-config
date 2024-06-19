@@ -2,24 +2,22 @@
 {
   virtualisation.oci-containers.containers."automatic-ripping-machine" = {
     autoStart = true; # Assuming you want the container to start automatically on boot
-    image = "/home/codyt/containers/arm:latest";
+    image = "automatic-ripping-machine:latest";
+    login.registry = "docker.io";
     ports = [ "8080:8080" ];
     environment = {
-      ARM_UID = "1002"; # You might need to replace this with the actual UID if the substitution doesn't work here
-      ARM_GID = "994"; # Same as above for GID
+      ARM_UID = "1002";
+      ARM_GID = "994";
     };
     volumes = [
-      "/home/arm:/home/arm"
-      "/home/arm/Music:/home/arm/Music"
-      "/home/arm/logs:/home/arm/logs"
-      "/home/arm/media:/home/arm/media"
-      "/etc/arm/config:/etc/arm/config"
+      "/home/codyt:/home/arm"
+      "/mnt/media/Music:/home/arm/Music"
+      "/home/codyt/logs:/home/arm/logs"
+      "/mnt/media:/home/arm/media"
+      "/home/codyt/config:/etc/arm/config"
     ];
     extraOptions = [
       "--device=/dev/sr0:/dev/sr0"
-      "--device=/dev/sr1:/dev/sr1"
-      "--device=/dev/sr2:/dev/sr2"
-      "--device=/dev/sr3:/dev/sr3"
       "--privileged"
     ];
   };
