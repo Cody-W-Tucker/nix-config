@@ -95,6 +95,7 @@
           system = system;
           modules = [
             ./server1.nix
+            inputs.sops-nix.nixosModules.sops
           ];
         };
       };
