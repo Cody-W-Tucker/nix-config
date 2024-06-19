@@ -8,7 +8,6 @@
       ./modules/common/desktop
       ./modules/styles.nix
       ./modules/scripts
-      ./modules/common/server/containers
     ];
 
   # Bootloader
@@ -67,6 +66,16 @@
   # Setting the color theme and default wallpaper
   stylix.image = config.lib.stylix.pixel "base0A";
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
+
+  # Using Docker
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
+  };
+
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
