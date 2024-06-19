@@ -5,7 +5,7 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
       ./configuration.nix
-      ./modules/common/server
+      ./modules/common/server/containers
     ];
 
   # Prevent Lid close sleep
