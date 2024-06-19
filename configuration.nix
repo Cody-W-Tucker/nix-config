@@ -12,7 +12,6 @@
 
   # Networking
   networking.networkmanager.enable = true;
-  services.displayManager.autoLogin.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
@@ -33,69 +32,24 @@
     };
   };
 
-  # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
-
-  # Default Display Manager and Windowing system.
-  services = {
-    # Set up the X11 windowing system.
-    xserver = {
-      enable = true;
-      displayManager.gdm.enable = true;
-      desktopManager.gnome.enable = true;
-      xkb = {
-        layout = "us";
-        model = "pc105";
-      };
-    };
-  };
-
-  # Enable the Hyprland Desktop Environment.
-  programs.hyprland = {
-    enable = true;
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-  };
-
-  #xdg  
-  xdg.portal = {
-    enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal
-    ];
-    configPackages = [
-      pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal
-    ];
-  };
-
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
-    google-chrome
     git
     nixpkgs-fmt
-    firefox
     ranger
-    obsidian
     kitty
-    feh
-    zathura
-    docker-compose
-    pavucontrol
-    polkit_gnome
-    xdg-utils # xdg-open
-    # Removable media, daemons defined in system/services.nix
+    unzip
+    # Removable media
     usbutils
     udiskie
     udisks
-    libreoffice
-    hunspell
-    vlc
-    libvlc
-    unzip
   ];
+
+  # Enable support for removable devices.
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
 
   # System wide terminal configuration
   programs = {
