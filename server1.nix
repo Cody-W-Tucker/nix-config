@@ -38,13 +38,14 @@
     {
       device = "//192.168.254.30/Media";
       fsType = "cifs";
+      options = [ "nobrl" ];
     };
 
   fileSystems."/mnt/dev/sr0" =
     {
       device = "/dev/sr0";
       fsType = "iso9660";
-      options = [ "users" "noauto" "exec" "utf8" ];
+      options = [ "users" "noauto" "exec" "utf8" "nobrl" ];
     };
 
   swapDevices = [ ];
