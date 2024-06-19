@@ -5,6 +5,7 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
       ./configuration.nix
+      ./modules/common/server
     ];
 
   # Prevent Lid close sleep
@@ -36,7 +37,7 @@
   swapDevices = [ ];
 
   # Enable automatic login for the user.
-  services.displayManager.autoLogin.user = "codyt";
+  services.getty.autologinUser = "codyt";
 
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
