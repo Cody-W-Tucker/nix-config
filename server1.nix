@@ -7,6 +7,9 @@
       ./configuration.nix
     ];
 
+  # Prevent Lid close sleep
+  services.logind.lidSwitchExternalPower = "ignore";
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

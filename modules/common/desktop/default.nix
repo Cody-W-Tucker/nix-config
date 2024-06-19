@@ -56,6 +56,13 @@
     libreoffice
     hunspell
     vlc
+    usbutils
+    udiskie
+    udisks
+    kitty
   ];
 
+  # Enable support for removable devices.
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
 }

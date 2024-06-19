@@ -39,17 +39,7 @@
     git
     nixpkgs-fmt
     ranger
-    kitty
-    unzip
-    # Removable media
-    usbutils
-    udiskie
-    udisks
   ];
-
-  # Enable support for removable devices.
-  services.gvfs.enable = true;
-  services.udisks2.enable = true;
 
   # System wide terminal configuration
   programs = {
