@@ -2,7 +2,7 @@
 {
   virtualisation.oci-containers.containers."automatic-ripping-machine" = {
     autoStart = true; # Assuming you want the container to start automatically on boot
-    image = "hub.docker.com/r/automaticrippingmachine/automatic-ripping-machine";
+    image = "/home/codyt/containers/arm:latest";
     ports = [ "8080:8080" ];
     environment = {
       ARM_UID = "$(id -u arm)"; # You might need to replace this with the actual UID if the substitution doesn't work here
