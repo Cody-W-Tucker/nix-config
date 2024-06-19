@@ -41,11 +41,16 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.arm = {
-    isNormalUser = false;
-    isSystemUser = true;
+    isNormalUser = true;
     description = "arm";
-    extraGroups = [ "arm" "cdrom" "video" "arm" ];
+    group = "arm";
+    extraGroups = [ "arm" "cdrom" "video" ];
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
+  };
+
+  # Define a user group.
+  users.group.arm = {
+    gid = 1000;
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
