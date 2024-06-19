@@ -9,7 +9,7 @@
     };
   };
 
-  # imports = [
-  #   ./perpelxia.nix
-  # ];
+  imports = [
+    ./arm.nix
+  ];
 }
