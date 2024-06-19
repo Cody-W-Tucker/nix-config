@@ -91,6 +91,12 @@
             }
           ];
         };
+        server1 = nixpkgs.lib.nixosSystem {
+          system = system;
+          modules = [
+            ./server1.nix
+          ];
+        };
       };
     };
 }
