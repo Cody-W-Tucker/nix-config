@@ -93,6 +93,9 @@
         };
         server1 = nixpkgs.lib.nixosSystem {
           system = system;
+          specialArgs = {
+            inherit inputs;
+          };
           modules = [
             ./server1.nix
             inputs.sops-nix.nixosModules.sops
