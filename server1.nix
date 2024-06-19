@@ -71,12 +71,6 @@
   # networking.interfaces.enp1s0.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp2s0.useDHCP = lib.mkDefault true;
 
-  # Opening port for ARM
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 8080 ];
-  };
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 

@@ -23,4 +23,9 @@
       "--privileged"
     ];
   };
+  # Opening port for ARM
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 8080 ];
+  };
 }
