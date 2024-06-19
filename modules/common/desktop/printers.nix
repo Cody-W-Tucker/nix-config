@@ -11,7 +11,6 @@
   };
   services.printing.drivers = [ pkgs.cnijfilter2 ];
 
-  # environment.systemPackages = with pkgs; [
-  #   system-config-printer
-  # ];
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
 }
