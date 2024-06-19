@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 {
   virtualisation.oci-containers.containers."automatic-ripping-machine" = {
+    autoStart = true; # Assuming you want the container to start automatically on boot
     image = pkgs.dockerTools.buildImage {
       name = "automatic-ripping-machine";
       tag = "latest";
@@ -9,14 +10,18 @@
       ];
     };
     ports = [ "8080:8080" ];
+    environment = {
+      ARM_UID = "$(id -u arm)"; # You might need to replace this with the actual UID if the substitution doesn't work here
+      ARM_GID = "$(id -g arm)"; # Same as above for GID
+    };
+    volumes = [
+      "/home/arm:/home/arm"
+      "/home/arm/Music:/home/arm/Music"
+      "/home/arm/logs:/home/arm/logs"
+      "/home/arm/media:/home/arm/media"
+      "/etc/arm/config:/etc/arm/config"
+    ];
     extraOptions = [
-      "--env=ARM_UID=$(id -u arm)"
-      "--env=ARM_GID=$(id -g arm)"
-      "--volume=/home/arm:/home/arm"
-      "--volume=/home/arm/Music:/home/arm/Music"
-      "--volume=/home/arm/logs:/home/arm/logs"
-      "--volume=/home/arm/media:/home/arm/media"
-      "--volume=/etc/arm/config:/etc/arm/config"
       "--device=/dev/sr0:/dev/sr0"
       "--device=/dev/sr1:/dev/sr1"
       "--device=/dev/sr2:/dev/sr2"
@@ -24,6 +29,5 @@
       "--privileged"
     ];
     restartPolicy = "always";
-    memoryLimit = "1G";
   };
 }
