@@ -69,7 +69,7 @@ with lib;
         preserve_split = "yes";
       };
       master = {
-        new_is_master = "true";
+        new_status = "master";
       };
       gestures = {
         workspace_swipe = "off";
