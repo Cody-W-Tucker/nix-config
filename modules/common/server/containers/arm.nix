@@ -28,6 +28,5 @@
       "--device=/dev/sr3:/dev/sr3"
       "--privileged"
     ];
-    restartPolicy = "always";
   };
 }
