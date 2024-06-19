@@ -39,6 +39,14 @@
   # Enable automatic login for the user.
   services.getty.autologinUser = "codyt";
 
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.arm = {
+    isNormalUser = false;
+    isSystemUser = true;
+    description = "arm";
+    extraGroups = [ "arm" "cdrom" "video" "arm" ];
+    hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
+  };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
