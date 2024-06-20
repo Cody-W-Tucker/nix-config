@@ -38,6 +38,9 @@
 
   users.groups.arm = { };
 
+  # Enable udev for docker
+  services.udev.enable = true;
+
 }
 
 #docker run -d -p "8080:8080" -e ARM_UID="1002" -e ARM_GID="994" -v "/home/arm:/home/arm" -v "/mnt/media/Music:/home/arm/Music" -v "/home/arm/logs:/home/arm/logs" -v "/mnt/media:/home/arm/media" -v "/etc/arm/config:/etc/arm/config" --device="/dev/sr0:/dev/sr0" --privileged --name "automatic-ripping-machine" automaticrippingmachine/automatic-ripping-machine:latest
