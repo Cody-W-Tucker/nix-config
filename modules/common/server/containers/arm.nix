@@ -10,11 +10,11 @@
       ARM_GID = "994";
     };
     volumes = [
-      "/home/codyt:/home/arm"
+      "/home/arm/:/home/arm"
       "/mnt/media/Music:/home/arm/Music"
-      "/home/codyt/logs:/home/arm/logs"
+      "/home/arm/logs:/home/arm/logs"
       "/mnt/media:/home/arm/media"
-      "/home/codyt/config:/etc/arm/config"
+      "/home/arm/config:/etc/arm/config"
     ];
     extraOptions = [
       "--device=/dev/sr0:/dev/sr0"
@@ -40,4 +40,5 @@
 
 }
 
-#docker run -d -p "8080:8080" -e ARM_UID="1002" -e ARM_GID="994" -v "/home/codyt:/home/arm" -v "/mnt/media/Music:/home/arm/Music" -v "/home/codyt/logs:/home/arm/logs" -v "/mnt/media:/home/arm/media" -v "/etc/arm/config:/etc/arm/config" --device="/dev/sr0:/dev/sr0" --privileged --restart "always" --name "automatic-ripping-machine" automatic-ripping-machine
+#docker run -d -p "8080:8080" -e ARM_UID="1002" -e ARM_GID="994" -v "/home/arm:/home/arm" -v "/mnt/media/Music:/home/arm/Music" -v "/home/arm/logs:/home/arm/logs" -v "/mnt/media:/home/arm/media" -v "/etc/arm/config:/etc/arm/config" --device="/dev/sr0:/dev/sr0" --privileged --name "automatic-ripping-machine" automaticrippingmachine/automatic-ripping-machine:latest
+
