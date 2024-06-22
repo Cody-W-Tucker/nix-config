@@ -68,6 +68,29 @@
             }
           ];
         };
+        workstation = nixpkgs.lib.nixosSystem {
+          system = system;
+          specialArgs = {
+            inherit inputs; inherit hardwareConfig;
+          };
+          modules = [
+            ./workstation.nix
+            stylix.nixosModules.stylix
+            # Using community hardware configurations
+            nixos-hardware.nixosModules.common-pc-ssd
+            inputs.sops-nix.nixosModules.sops
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                inherit inputs; hardwareConfig = hardwareConfig.business-desktop;
+              };
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.users.codyt = import ./home.nix;
+            }
+          ];
+        };
         family = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
