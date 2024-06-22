@@ -19,6 +19,7 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+  time.hardwareClockInLocalTime = true;
 
   # Use the latest kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
