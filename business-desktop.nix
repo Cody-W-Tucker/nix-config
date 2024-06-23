@@ -5,7 +5,7 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
       ./configuration.nix
-      ./modules/scripts
+      ./modules/common/server
     ];
 
   # Bootloader
@@ -41,9 +41,6 @@
 
   swapDevices = [ ];
 
-  # Enable automatic login for the user.
-  services.displayManager.autoLogin.user = "codyt";
-
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
@@ -54,25 +51,6 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-  hardware.openrazer = {
-    enable = true;
-    devicesOffOnScreensaver = true;
-    users = [ "codyt" ];
-  };
-
-  # Setting the color theme and default wallpaper
-  stylix.image = config.lib.stylix.pixel "base0A";
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
-
-  # Using Docker
-  virtualisation.docker = {
-    enable = true;
-    rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
