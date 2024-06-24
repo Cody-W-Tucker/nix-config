@@ -1,7 +1,6 @@
 { pkgs, config, lib, inputs, ... }: {
 
   imports = [
-    ./services.nix
     ./printers.nix
   ];
 
