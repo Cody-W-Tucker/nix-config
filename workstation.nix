@@ -38,6 +38,12 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
+  # fileSystems."/home/codyt" =
+  #   {
+  #     device = "//192.168.254.25/home/codyt/Share";
+  #     fsType = "cifs";
+  #   };
+
   swapDevices = [ ];
 
   # Enable automatic login for the user.
