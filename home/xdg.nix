@@ -9,10 +9,10 @@ in
     userDirs = {
       enable = true;
       createDirectories = true;
-      documents = /mnt/share/Documents;
-      music = /mnt/share/Music;
-      pictures = /mnt/share/Pictures;
-      videos = /mnt/share/Videos;
+      documents = "/mnt/share/Documents";
+      music = "/mnt/share/Music";
+      pictures = "/mnt/share/Pictures";
+      videos = "/mnt/share/Videos";
     };
   };
 }
