@@ -114,10 +114,6 @@
 
   # Enable the user's shells and development environment
   programs = {
-    fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
     zsh = {
       enable = true;
       autosuggestion.enable = true;
