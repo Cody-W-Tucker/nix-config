@@ -22,7 +22,7 @@
     let
       system = "x86_64-linux";
       hardwareConfig = {
-        business-desktop = {
+        workstation = {
           workspace = [
             "1, monitor:DP-1, default:true"
             "2, monitor:DP-2, default:true"
@@ -32,7 +32,7 @@
             "DP-1,2560x1080@60,0x1080,1"
           ];
         };
-        family-desktop = {
+        family = {
           workspace = [
             "1, monitor:DP-1, default:true"
           ];
@@ -44,13 +44,13 @@
     in
     {
       nixosConfigurations = {
-        business-desktop = nixpkgs.lib.nixosSystem {
+        server = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs; inherit hardwareConfig;
+            inherit inputs;
           };
           modules = [
-            ./business-desktop.nix
+            ./server.nix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
@@ -71,7 +71,7 @@
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit inputs; hardwareConfig = hardwareConfig.business-desktop;
+                inherit inputs; hardwareConfig = hardwareConfig.server;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -94,7 +94,7 @@
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit inputs; hardwareConfig = hardwareConfig.family-desktop;
+                inherit inputs; hardwareConfig = hardwareConfig.family;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
