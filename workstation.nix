@@ -44,7 +44,7 @@
     options =
       [
         "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s,user,users
-,credentials=/etc/nixos/secrets/smb,${config.users.users.codyt.uid},gid=${config.users.groups.users.gid}"
+,credentials=/etc/nixos/secrets/smb,1000,gid=100"
       ];
   };
 
