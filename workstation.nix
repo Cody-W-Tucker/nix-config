@@ -42,6 +42,12 @@
   fileSystems."/mnt/share" = {
     device = "//192.168.254.25/codythome";
     fsType = "cifs";
+    options = [
+      "vers=3.0"
+      "credentials=/etc/nixos/secrets/smb"
+      "uid=1000"
+      "gid=1000"
+    ];
   };
 
   # Tuning the firewall to allow for Samba share discovery
