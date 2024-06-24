@@ -38,17 +38,17 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  # environment.systemPackages = [ pkgs.cifs-utils ];
-  # fileSystems."/mnt/share" = {
-  #   device = "smb://192.168.254.25/home/codyt/Share";
-  #   fsType = "cifs";
-  #   options =
-  #     let
-  #       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s,user,users";
+  environment.systemPackages = [ pkgs.cifs-utils ];
+  fileSystems."/mnt/share" = {
+    device = "smb://192.168.254.25/home/codyt/Share";
+    fsType = "cifs";
+    options =
+      let
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s,user,users";
 
-  #     in
-  #     [ "${automount_opts},credentials=/etc/nixos/secrets/smb,${config.users.users.codyt.uid},gid=${config.users.groups.users.gid}" ];
-  # };
+      in
+      [ "${automount_opts},credentials=/etc/nixos/secrets/smb,${config.users.users.codyt.uid},gid=${config.users.groups.users.gid}" ];
+  };
 
   # Tuning the firewall to allow for Samba share discovery
   networking.firewall.extraCommands = ''iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns'';
