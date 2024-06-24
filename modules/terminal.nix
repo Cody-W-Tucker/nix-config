@@ -60,7 +60,6 @@
   programs = {
     zsh = {
       enable = true;
-      autosuggestion.enable = true;
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       syntaxHighlighting.enable = true;
       shellAliases = {
