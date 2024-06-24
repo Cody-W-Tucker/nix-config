@@ -12,7 +12,7 @@ with lib;
       extraCommands = [
         "systemctl --user stop hyprland-session.target"
         "systemctl --user start hyprland-session.target"
-        "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
+        "systemctl --user is-active hyprland-session.target || wallpaper"
         "systemctl --user is-active hyprland-session.target || systemctl --user enable --now hypridle.service"
       ];
     };
