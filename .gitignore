@@ -1,2 +1,2 @@
 .sops.yaml
-smb-secrets
+/secrets/smb
