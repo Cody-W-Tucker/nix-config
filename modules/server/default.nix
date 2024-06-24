@@ -24,7 +24,7 @@
     '';
     shares = {
       codytHome = {
-        path = "/home/codyt";
+        path = "/home/codyt/Share";
         browseable = "yes";
         "read only" = "no";
         "guest ok" = "no";
