@@ -48,7 +48,6 @@ in
     gh
     run-as-service
     ripdrag
-    calibre
   ];
 
   imports = [
