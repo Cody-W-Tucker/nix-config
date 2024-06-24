@@ -44,7 +44,7 @@
     in
     {
       nixosConfigurations = {
-        business-desktop = nixpkgs.lib.nixosSystem {
+        server = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
             inherit inputs;
