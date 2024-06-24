@@ -42,11 +42,6 @@
   fileSystems."/mnt/share" = {
     device = "//192.168.254.25/codythome";
     fsType = "cifs";
-    options =
-      [
-        "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s,user,users
-    ,credentials=/etc/nixos/secrets/smb,1000,gid=100"
-      ];
   };
 
   # Tuning the firewall to allow for Samba share discovery
