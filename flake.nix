@@ -71,7 +71,7 @@
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit inputs; hardwareConfig = hardwareConfig.server;
+                inherit inputs; hardwareConfig = hardwareConfig.workstation;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
