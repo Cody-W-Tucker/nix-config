@@ -71,6 +71,10 @@ in
         autosuggestion.enable = true;
         history.path = "${config.xdg.dataHome}/zsh/zsh_history";
         syntaxHighlighting.enable = true;
+        initExtra = ''
+          eval "$(direnv hook zsh)"
+        '';
+        history.size = 10000;
       };
     direnv = {
       enable = true;
