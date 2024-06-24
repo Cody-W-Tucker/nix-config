@@ -60,8 +60,6 @@
   programs = {
     zsh = {
       enable = true;
-      history.path = "${config.xdg.dataHome}/zsh/zsh_history";
-      syntaxHighlighting.enable = true;
       shellAliases = {
         ssh = "kitty +kitten ssh";
         ll = "ls -l";
