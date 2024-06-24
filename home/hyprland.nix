@@ -12,14 +12,14 @@ with lib;
       extraCommands = [
         "systemctl --user stop hyprland-session.target"
         "systemctl --user start hyprland-session.target"
+        "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
+        "systemctl --user is-active hyprland-session.target || systemctl --user enable --now hypridle.service"
       ];
     };
     settings = {
       exec-once = [
         "swww restore || swww-daemon"
         "mako"
-        "systemctl --user is-active hyprland-session.target || run-as-service wallpaper"
-        "systemctl --user is-active hyprland-session.target || systemctl --user enable --now hypridle.service"
       ];
       workspace = hardwareConfig.workspace;
       animations = {
