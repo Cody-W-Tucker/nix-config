@@ -66,6 +66,10 @@ in
 
   # User specific terminal settings
   programs = {
+    zsh =
+      {
+        autosuggestion.enable = true;
+      };
     direnv = {
       enable = true;
       enableBashIntegration = true;
