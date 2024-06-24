@@ -38,9 +38,8 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/share" = {
-    device = "smb://192.168.254.25/home/codyt/Share";
+    device = "//192.168.254.25/home/codyt/Share";
     fsType = "cifs";
     options =
       let
