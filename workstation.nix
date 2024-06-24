@@ -50,6 +50,9 @@
       [ "${automount_opts},credentials=/etc/nixos/secrets/smb,${config.users.users.codyt.uid},gid=${config.users.groups.users.gid}" ];
   };
 
+  # Tuning the firewall to allow for Samba share discovery
+  networking.firewall.extraCommands = ''iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns'';
+
   swapDevices = [ ];
 
   # Enable automatic login for the user.
