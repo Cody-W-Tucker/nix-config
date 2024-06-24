@@ -40,17 +40,6 @@
     ranger
   ];
 
-  # System wide terminal configuration
-  programs = {
-    zsh.enable = true;
-    neovim = {
-      enable = true;
-      viAlias = true;
-      vimAlias = true;
-      defaultEditor = true;
-    };
-  };
-
   # Create the passwords so they exist across all hosts
   # sops.secrets = {
   #   codyt.neededForUsers = true;

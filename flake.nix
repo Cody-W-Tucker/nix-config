@@ -44,19 +44,6 @@
     in
     {
       nixosConfigurations = {
-        server = nixpkgs.lib.nixosSystem {
-          system = system;
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./server.nix
-            # Using community hardware configurations
-            nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
-            nixos-hardware.nixosModules.common-pc-ssd
-            inputs.sops-nix.nixosModules.sops
-          ];
-        };
         workstation = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
@@ -67,6 +54,7 @@
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-pc-ssd
+            nixos-hardware.nixosModules.common-gpu-nvidia-sync
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
@@ -101,6 +89,19 @@
               home-manager.backupFileExtension = "backup";
               home-manager.users.codyt = import ./home.nix;
             }
+          ];
+        };
+        server = nixpkgs.lib.nixosSystem {
+          system = system;
+          specialArgs = {
+            inherit inputs;
+          };
+          modules = [
+            ./server.nix
+            # Using community hardware configurations
+            nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
+            nixos-hardware.nixosModules.common-pc-ssd
+            inputs.sops-nix.nixosModules.sops
           ];
         };
         server1 = nixpkgs.lib.nixosSystem {

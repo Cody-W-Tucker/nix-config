@@ -65,32 +65,24 @@ in
 
   # User specific terminal settings
   programs = {
-    zsh =
-      {
-        autosuggestion.enable = true;
-        history.path = "${config.xdg.dataHome}/zsh/zsh_history";
-        syntaxHighlighting.enable = true;
-        initExtra = ''
-          eval "$(direnv hook zsh)"
-        '';
-        history.size = 10000;
+    zsh = {
+      enable = true;
+      history.path = "${config.xdg.dataHome}/zsh/zsh_history";
+      history.size = 10000;
+      initExtra = ''
+        eval "$(direnv hook zsh)"
+      '';
+      shellAliases = {
+        ssh = "kitty +kitten ssh";
       };
+    };
     direnv = {
       enable = true;
-      enableBashIntegration = true;
       enableZshIntegration = true;
       nix-direnv.enable = true;
     };
-    bash = {
-      enable = true;
-      historyFile = "${config.xdg.dataHome}/bash/bash_history";
-      bashrcExtra = ''
-        eval "$(direnv hook bash)"
-      '';
-    };
     fzf = {
       enable = true;
-      enableZshIntegration = true;
     };
     kitty = {
       enable = true;
