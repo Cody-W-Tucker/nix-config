@@ -64,7 +64,7 @@
   services.gvfs.enable = true;
   services.udisks2.enable = true;
 
-  # Bluetooth and OpenRazer for RGB peripherals
+  # Bluetooth support.
   hardware = {
     bluetooth = {
       enable = true;

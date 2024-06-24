@@ -65,8 +65,6 @@
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
 
   hardware.nvidia.prime = {
-    sync.enable = true;
-    # Make sure to use the correct Bus ID values for your system!
     intelBusId = "PCI:0:2:0";
     nvidiaBusId = "PCI:1:0:0";
   };
