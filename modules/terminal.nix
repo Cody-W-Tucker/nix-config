@@ -124,13 +124,6 @@
       enableZshIntegration = true;
       nix-direnv.enable = true;
     };
-    bash = {
-      enable = true;
-      historyFile = "${config.xdg.dataHome}/bash/bash_history";
-      bashrcExtra = ''
-        eval "$(direnv hook bash)"
-      '';
-    };
     zsh = {
       enable = true;
       autosuggestion.enable = true;
