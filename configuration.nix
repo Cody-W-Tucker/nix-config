@@ -6,6 +6,7 @@
   imports =
     [
       ./secrets/secrets.nix
+      ./modules/terminal.nix
     ];
 
   # Networking
