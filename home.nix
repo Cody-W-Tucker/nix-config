@@ -64,6 +64,23 @@ in
     };
   };
 
+  # User specific terminal settings
+  programs = {
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
+    };
+    bash = {
+      enable = true;
+      historyFile = "${config.xdg.dataHome}/bash/bash_history";
+      bashrcExtra = ''
+        eval "$(direnv hook bash)"
+      '';
+    };
+  };
+
   # Theme GTK
   gtk = {
     enable = true;
