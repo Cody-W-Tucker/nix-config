@@ -79,6 +79,10 @@ in
         eval "$(direnv hook bash)"
       '';
     };
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 
   # Theme GTK
