@@ -40,7 +40,7 @@
 
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/share" = {
-    device = "//192.168.254.25/codytHome";
+    device = "//192.168.254.25/codythome";
     fsType = "cifs";
     options =
       [
