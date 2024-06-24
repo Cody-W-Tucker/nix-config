@@ -4,7 +4,7 @@
   programs.starship = {
     enable = true;
     settings = {
-      add_newline = true;
+      add_newline = false;
       format = lib.concatStrings [
         "$hostname"
         "$directory"
