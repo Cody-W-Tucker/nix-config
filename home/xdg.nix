@@ -7,7 +7,6 @@ in
     enable = true;
     userDirs = {
       enable = true;
-      createDirectories = true;
       documents = "/mnt/share/Documents";
       music = "/mnt/share/Music";
       pictures = "/mnt/share/Pictures";
