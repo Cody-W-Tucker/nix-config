@@ -3,7 +3,6 @@
 {
   imports = [
     ./hyprland.nix
-    ./terminal.nix
     ./xdg.nix
     ./rofi.nix
     ./waybar.nix
