@@ -36,8 +36,8 @@ let
     };
     temperature = {
       critical-threshold = 80;
-      thermal-zone = 2;
-      hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon4/temp1_input";
+      # thermal-zone = 2;
+      # hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon4/temp1_input";
       format = "{temperatureC}°C ";
     };
     bluetooth = {
