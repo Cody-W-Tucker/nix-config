@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  # imports = [
-  #   ./containers
-  # ];
+  imports = [
+    ./media.nix
+  ];
 
   services.samba = {
     enable = true;
