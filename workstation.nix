@@ -50,6 +50,54 @@
     ];
   };
 
+  fileSystems."/home/codyt/Tools" = {
+    device = "/mnt/share/Tools";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/codyt/Records" = {
+    device = "/mnt/share/Records";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/codyt/Projects" = {
+    device = "/mnt/share/Projects";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/codyt/Business" = {
+    device = "/mnt/share/Business";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/codyt/Documents" = {
+    device = "/mnt/share/Documents";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/codyt/Music" = {
+    device = "/mnt/share/Music";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/codyt/Pictures" = {
+    device = "/mnt/share/Pictures";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/codyt/Videos" = {
+    device = "/mnt/share/Videos";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
   # Tuning the firewall to allow for Samba share discovery
   networking.firewall.extraCommands = ''iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns'';
 
