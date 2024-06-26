@@ -108,7 +108,7 @@ with lib;
           "$mainMod, KP_Down, exec, google-chrome-stable --app=https://messages.google.com/web/u/0/conversations"
           "$mainMod, KP_Next, exec, google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
           # Number keys (4, 5, 6)
-          "$mainMod, KP_Left, exec, google-chrome-stable --app=https://app.asana.com/home"
+          "$mainMod, KP_Left, exec, google-chrome-stable --app=https://trello.com/u/codywt/boards"
           "$mainMod, KP_Begin, exec, google-chrome-stable --app=https://app.reclaim.ai/planner?taskSort=schedule"
           "$mainMod, KP_Right, exec, google-chrome-stable --app=https://tmvsocial.harvestapp.com/time/week"
           # Number keys (7, 8, 9)
