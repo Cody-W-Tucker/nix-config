@@ -11,7 +11,7 @@
   };
 
 
-  imports = [
-    ./photos.nix
-  ];
+  # imports = [
+  #   ./photos.nix
+  # ];
 }
