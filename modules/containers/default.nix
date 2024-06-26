@@ -7,7 +7,7 @@
   };
 
 
-  # imports = [
-  #   ./photos.nix
-  # ];
+  imports = [
+    ./arm.nix
+  ];
 }
