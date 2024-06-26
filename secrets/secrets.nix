@@ -11,4 +11,7 @@
   sops.age.generateKey = true;
 
   environment.systemPackages = [ pkgs.sops ];
+
+  sops.secrets.photoPrism = { };
+
 }
