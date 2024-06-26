@@ -39,7 +39,7 @@
     };
 
   environment.systemPackages = [ pkgs.cifs-utils ];
-  fileSystems."/home/codyt" = {
+  fileSystems."/mnt/share" = {
     device = "//192.168.254.25/codythome";
     fsType = "cifs";
     options = [
@@ -47,7 +47,6 @@
       "credentials=/etc/nixos/secrets/smb"
       "uid=1000"
       "gid=1000"
-      "bind"
     ];
   };
 
