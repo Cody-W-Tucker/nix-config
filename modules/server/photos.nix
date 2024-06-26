@@ -35,7 +35,7 @@
   };
 
   # ACME Certificates
-  security.acme.certs.codyt.email = "cody@tmvsocial.com";
+  security.acme.defaults.email = "cody@tmvsocial.com";
   security.acme.certs.codyt.dnsProvider = "cloudflare";
 
   # NGINX
