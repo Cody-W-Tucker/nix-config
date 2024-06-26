@@ -1,31 +1,31 @@
 { config, pkgs, ... }:
 {
-  virtualisation.oci-containers.containers."automatic-ripping-machine" = {
-    autoStart = true; # Assuming you want the container to start automatically on boot
-    image = "automatic-ripping-machine:latest";
-    login.registry = "docker.io";
-    ports = [ "8080:8080" ];
-    environment = {
-      ARM_UID = "1002";
-      ARM_GID = "994";
-    };
-    volumes = [
-      "/home/arm/:/home/arm"
-      "/mnt/media/Music:/home/arm/Music"
-      "/home/arm/logs:/home/arm/logs"
-      "/mnt/media:/home/arm/media"
-      "/home/arm/config:/etc/arm/config"
-    ];
-    extraOptions = [
-      "--device=/dev/sr0:/dev/sr0"
-      "--privileged"
-    ];
-  };
-  # Opening port for ARM
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 8080 ];
-  };
+  # virtualisation.oci-containers.containers."automatic-ripping-machine" = {
+  #   autoStart = true; # Assuming you want the container to start automatically on boot
+  #   image = "automatic-ripping-machine:latest";
+  #   login.registry = "docker.io";
+  #   ports = [ "8080:8080" ];
+  #   environment = {
+  #     ARM_UID = "1002";
+  #     ARM_GID = "994";
+  #   };
+  #   volumes = [
+  #     "/home/arm/:/home/arm"
+  #     "/mnt/media/Music:/home/arm/Music"
+  #     "/home/arm/logs:/home/arm/logs"
+  #     "/mnt/media:/home/arm/media"
+  #     "/home/arm/config:/etc/arm/config"
+  #   ];
+  #   extraOptions = [
+  #     "--device=/dev/sr0:/dev/sr0"
+  #     "--privileged"
+  #   ];
+  # };
+  # # Opening port for ARM
+  # networking.firewall = {
+  #   enable = true;
+  #   allowedTCPPorts = [ 8080 ];
+  # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.arm = {
