@@ -39,8 +39,9 @@
     };
 
   environment.systemPackages = [ pkgs.cifs-utils ];
-  fileSystems."/mnt/share" = {
-    device = "//192.168.254.25/codythome";
+
+  fileSystems."/home/codyt/Tools" = {
+    device = "//192.168.254.25/codythome/Tools";
     fsType = "cifs";
     options = [
       "vers=3.0"
@@ -50,52 +51,81 @@
     ];
   };
 
-  fileSystems."/home/codyt/Tools" = {
-    device = "/mnt/share/Tools";
-    fsType = "none";
-    options = [ "bind" ];
-  };
-
   fileSystems."/home/codyt/Records" = {
-    device = "/mnt/share/Records";
-    fsType = "none";
-    options = [ "bind" ];
+    device = "//192.168.254.25/codythome/Records";
+    fsType = "cifs";
+    options = [
+      "vers=3.0"
+      "credentials=/etc/nixos/secrets/smb"
+      "uid=1000"
+      "gid=1000"
+    ];
   };
 
   fileSystems."/home/codyt/Projects" = {
-    device = "/mnt/share/Projects";
-    fsType = "none";
-    options = [ "bind" ];
+    device = "//192.168.254.25/codythome/Projects";
+    fsType = "cifs";
+    options = [
+      "vers=3.0"
+      "credentials=/etc/nixos/secrets/smb"
+      "uid=1000"
+      "gid=1000"
+    ];
   };
 
   fileSystems."/home/codyt/Business" = {
-    device = "/mnt/share/Business";
-    fsType = "none";
-    options = [ "bind" ];
+    device = "//192.168.254.25/codythome/Business";
+    fsType = "cifs";
+    options = [
+      "vers=3.0"
+      "credentials=/etc/nixos/secrets/smb"
+      "uid=1000"
+      "gid=1000"
+    ];
   };
 
   fileSystems."/home/codyt/Documents" = {
-    device = "/mnt/share/Documents";
-    fsType = "none";
-    options = [ "bind" ];
+    device = "//192.168.254.25/codythome/Documents";
+    fsType = "cifs";
+    options = [
+      "vers=3.0"
+      "credentials=/etc/nixos/secrets/smb"
+      "uid=1000"
+      "gid=1000"
+    ];
   };
 
   fileSystems."/home/codyt/Music" = {
-    device = "/mnt/share/Music";
-    fsType = "none";
-    options = [ "bind" ];
+    device = "//192.168.254.25/codythome/Music";
+    fsType = "cifs";
+    options = [
+      "vers=3.0"
+      "credentials=/etc/nixos/secrets/smb"
+      "uid=1000"
+      "gid=1000"
+    ];
   };
 
   fileSystems."/home/codyt/Pictures" = {
-    device = "/mnt/share/Pictures";
-    fsType = "none";
-    options = [ "bind" ];
+    device = "//192.168.254.25/codythome/Pictures";
+    fsType = "cifs";
+    options = [
+      "vers=3.0"
+      "credentials=/etc/nixos/secrets/smb"
+      "uid=1000"
+      "gid=1000"
+    ];
   };
 
   fileSystems."/home/codyt/Videos" = {
-    device = "/mnt/share/Videos";
-    fsType = "none";
-    options = [ "bind" ];
+    device = "//192.168.254.25/codythome/Videos";
+    fsType = "cifs";
+    options = [
+      "vers=3.0"
+      "credentials=/etc/nixos/secrets/smb"
+      "uid=1000"
+      "gid=1000"
+    ];
   };
 
   # Tuning the firewall to allow for Samba share discovery

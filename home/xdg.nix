@@ -7,10 +7,10 @@ in
     enable = true;
     userDirs = {
       enable = true;
-      documents = "/mnt/share/Documents";
-      music = "/mnt/share/Music";
-      pictures = "/mnt/share/Pictures";
-      videos = "/mnt/share/Videos";
+      documents = "${home}/Documents";
+      music = "${home}/Music";
+      pictures = "${home}/Pictures";
+      videos = "${home}/Videos";
     };
   };
 }
