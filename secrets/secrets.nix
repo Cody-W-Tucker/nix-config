@@ -12,10 +12,4 @@
 
   environment.systemPackages = [ pkgs.sops ];
 
-  # Create the passwords so they exist across all hosts
-  sops.secrets = {
-    codyt.neededForUsers = true;
-    jordant.neededForUsers = true;
-  };
-
 }
