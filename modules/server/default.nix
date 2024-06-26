@@ -3,7 +3,6 @@
 {
   imports = [
     ./media.nix
-    ./photos.nix
   ];
 
   services.samba = {
