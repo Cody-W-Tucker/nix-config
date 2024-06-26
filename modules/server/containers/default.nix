@@ -12,6 +12,6 @@
 
 
   imports = [
-    ./arm.nix
+    ./photos.nix
   ];
 }
