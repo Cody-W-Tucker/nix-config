@@ -1,17 +1,15 @@
 { config, pkgs, ... }:
 
 {
-  sops.secrets.photoPrism = { };
-
   # Photoprism
   services.photoprism = {
     enable = true;
     port = 2342;
     originalsPath = "/var/lib/private/photoprism/originals";
     address = "0.0.0.0";
-    passwordFile = sops.secrets.photoPrism.path;
     settings = {
       PHOTOPRISM_ADMIN_USER = "admin";
+      PHOTOPRISM_ADMIN_PASSWORD = "admin";
       PHOTOPRISM_DEFAULT_LOCALE = "en";
       PHOTOPRISM_DATABASE_DRIVER = "mysql";
       PHOTOPRISM_DATABASE_NAME = "photoprism";
