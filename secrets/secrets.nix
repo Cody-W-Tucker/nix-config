@@ -2,12 +2,20 @@
 
 {
   sops.defaultSopsFile = ./secrets.yaml;
-  sops.defaultSopsFormat = "yaml";
 
-  sops.age.keyFile = "/home/codyt/.config/sops/age/keys.txt";
+  # This will automatically import SSH keys as age keys
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  # This is using an age key that is expected to already be in the filesystem
+  sops.age.keyFile = "/var/lib/sops-nix/key.txt";
+  # This will generate a new key if the key specified above does not exist
   sops.age.generateKey = true;
 
-  environment.systemPackages = with pkgs; [
-    sops
-  ];
+  environment.systemPackages = [ pkgs.sops ];
+
+  # Create the passwords so they exist across all hosts
+  sops.secrets = {
+    codyt.neededForUsers = true;
+    jordant.neededForUsers = true;
+  };
+
 }

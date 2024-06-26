@@ -39,6 +39,12 @@
       fsType = "ext4";
     };
 
+  fileSystems."/var/lib/private/photoprism/originals" =
+    {
+      device = "/mnt/photos";
+      options = [ "bind" ];
+    };
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
