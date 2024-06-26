@@ -12,6 +12,4 @@
 
   environment.systemPackages = [ pkgs.sops ];
 
-  sops.secrets.photoPrism = { };
-
 }
