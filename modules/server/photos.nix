@@ -34,6 +34,9 @@
     }];
   };
 
+  # ACME Certificates
+  security.acme.certs.codyt.email = "cody@tmvsocial.com";
+
   # NGINX
   services.nginx = {
     enable = true;
