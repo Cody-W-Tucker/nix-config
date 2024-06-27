@@ -149,7 +149,7 @@
 
 {
   virtualisation.oci-containers.containers."arm-rippers" = {
-    autoStart = true; # Assuming you want the container to start automatically on boot
+    autoStart = false; # Assuming you want the container to start automatically on boot
     image = "1337server/automatic-ripping-machine:latest";
     ports = [ "8080:8080" ];
     environment = {
@@ -164,7 +164,7 @@
       "/home/arm/config:/etc/arm/config"
     ];
     extraOptions = [
-      "--device=/mnt/dev/sr0:/dev/sr0"
+      "--device=/dev/sr0:/dev/sr0"
       "--privileged"
     ];
   };
