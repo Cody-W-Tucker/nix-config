@@ -47,7 +47,12 @@
 
   users.groups.arm = { };
 
-  # Enable udev for docker
+  # Enable udev
   services.udev.enable = true;
+
+  # Packages to install
+  environment.systemPackages = with pkgs; [
+    makemkv
+  ];
 
 }
