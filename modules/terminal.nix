@@ -12,6 +12,7 @@
   # Enable the user's shells and development environment
   programs = {
     zsh = {
+      enable = true;
       autosuggestions.enable = true;
       syntaxHighlighting.enable = true;
       shellAliases = {
