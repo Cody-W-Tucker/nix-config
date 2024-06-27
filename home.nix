@@ -44,18 +44,12 @@
       syntaxHighlighting.enable = true;
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       history.size = 10000;
-      initExtra = ''
-        eval "$(direnv hook zsh)"
-      '';
       shellAliases = {
         ssh = "kitty +kitten ssh";
       };
     };
     bash = {
       historyFile = "${config.xdg.dataHome}/bash/bash_history";
-      bashrcExtra = ''
-        eval "$(direnv hook bash)"
-      '';
     };
     direnv = {
       enable = true;
