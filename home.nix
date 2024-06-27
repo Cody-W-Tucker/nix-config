@@ -40,7 +40,6 @@
   # User specific terminal settings
   programs = {
     zsh = {
-      enable = true;
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       history.size = 10000;
       initExtra = ''
@@ -51,7 +50,6 @@
       };
     };
     bash = {
-      enable = true;
       historyFile = "${config.xdg.dataHome}/bash/bash_history";
       bashrcExtra = ''
         eval "$(direnv hook bash)"
@@ -59,9 +57,6 @@
     };
     direnv = {
       enable = true;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
-      nix-direnv.enable = true;
     };
     fzf = {
       enable = true;
