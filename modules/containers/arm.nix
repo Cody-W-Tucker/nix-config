@@ -1,31 +1,40 @@
 { config, pkgs, ... }:
+# docker run -d \
+#    -p "8080:8080" \
+#    -e ARM_UID="1002" \
+#    -e ARM_GID="983" \
+#    -v "/home/arm:/home/arm" \
+#    -v "/home/arm/Music:/home/arm/Music" \
+#    -v "/home/arm/logs:/home/arm/logs" \
+#    -v "/home/arm/media:/home/arm/media" \
+#    -v "/home/arm/config:/etc/arm/config" \
+#    --device=/dev/sr0:/dev/sr0 \
+#    --privileged \
+#    --restart "always" \
+#    --name "arm-rippers" \
+#    1337server/automatic-ripping-machine:latest
+
 {
-  # virtualisation.oci-containers.containers."automatic-ripping-machine" = {
-  #   autoStart = true; # Assuming you want the container to start automatically on boot
-  #   image = "automatic-ripping-machine:latest";
-  #   login.registry = "docker.io";
-  #   ports = [ "8080:8080" ];
-  #   environment = {
-  #     ARM_UID = "1002";
-  #     ARM_GID = "994";
-  #   };
-  #   volumes = [
-  #     "/home/arm/:/home/arm"
-  #     "/mnt/media/Music:/home/arm/Music"
-  #     "/home/arm/logs:/home/arm/logs"
-  #     "/mnt/media:/home/arm/media"
-  #     "/home/arm/config:/etc/arm/config"
-  #   ];
-  #   extraOptions = [
-  #     "--device=/dev/sr0:/dev/sr0"
-  #     "--privileged"
-  #   ];
-  # };
-  # # Opening port for ARM
-  # networking.firewall = {
-  #   enable = true;
-  #   allowedTCPPorts = [ 8080 ];
-  # };
+  virtualisation.oci-containers.containers."arm-rippers" = {
+    autoStart = true; # Assuming you want the container to start automatically on boot
+    image = "1337server/automatic-ripping-machine:latest";
+    ports = [ "8080:8080" ];
+    environment = {
+      ARM_UID = "1002";
+      ARM_GID = "983";
+    };
+    volumes = [
+      "/home/arm:/home/arm"
+      "/home/arm/Music:/home/arm/Music"
+      "/home/arm/logs:/home/arm/logs"
+      "/home/arm/media:/home/arm/media"
+      "/home/arm/config:/etc/arm/config"
+    ];
+    extraOptions = [
+      "--device=/dev/sr0:/dev/sr0"
+      "--privileged"
+    ];
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.arm = {
@@ -42,6 +51,3 @@
   services.udev.enable = true;
 
 }
-
-#docker run -d -p "8080:8080" -e ARM_UID="1002" -e ARM_GID="994" -v "/home/arm:/home/arm" -v "/mnt/media/Music:/home/arm/Music" -v "/home/arm/logs:/home/arm/logs" -v "/mnt/media:/home/arm/media" -v "/etc/arm/config:/etc/arm/config" --device="/dev/sr0:/dev/sr0" --privileged --name "automatic-ripping-machine" automaticrippingmachine/automatic-ripping-machine:latest
-
