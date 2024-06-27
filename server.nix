@@ -44,7 +44,7 @@
     {
       device = "/dev/sr0";
       fsType = "udf,iso9660";
-      options = [ "user" "noauto" "exec" "utf8" ];
+      options = [ "users" "noauto" "exec" "utf8" ];
     };
 
   swapDevices = [ ];
