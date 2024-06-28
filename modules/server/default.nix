@@ -6,7 +6,9 @@
     ./photos.nix
   ];
 
+  # Acme for SSL
   security.acme.defaults.email = "cody@tmvsocial.com";
+  security.acme.acceptTerms = true;
 
   services.samba = {
     enable = true;
