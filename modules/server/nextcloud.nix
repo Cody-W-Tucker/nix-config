@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
+  environment.etc."nextcloud-admin-pass".text = "admin";
   services = {
     nginx.virtualHosts = {
       "cloud.home.com" = {
@@ -13,7 +14,6 @@
         enableACME = true;
       };
     };
-    environment.etc."nextcloud-admin-pass".text = "admin";
     nextcloud = {
       enable = true;
       hostName = "cloud.home.com";
