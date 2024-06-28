@@ -6,6 +6,8 @@
     ./photos.nix
   ];
 
+  security.acme.defaults.email = "cody@tmvsocial.com";
+
   services.samba = {
     enable = true;
     securityType = "user";
