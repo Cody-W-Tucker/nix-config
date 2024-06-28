@@ -4,9 +4,10 @@
   environment.etc."nextcloud-admin-pass".text = "admin";
   services.nextcloud = {
     enable = true;
-    package = pkgs.nextcloud28;
+    package = pkgs.nextcloud29;
     hostName = "localhost";
     config.adminpassFile = "/etc/nextcloud-admin-pass";
     configureRedis = true;
   };
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
 }
