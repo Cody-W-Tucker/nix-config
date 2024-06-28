@@ -4,6 +4,7 @@
   imports = [
     ./media.nix
     ./photos.nix
+    ./nextcloud.nix
   ];
 
   # Acme for SSL
