@@ -43,7 +43,7 @@
     recommendedProxySettings = true;
     clientMaxBodySize = "500m";
     virtualHosts = {
-      "sub.domain.tld" = {
+      "photos.local.com" = {
         forceSSL = true;
         enableACME = true;
         http2 = true;
