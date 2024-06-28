@@ -16,7 +16,6 @@
     swww
     rofi-wayland
     vscode
-    spotify
     openrazer-daemon
     todoist-electron
     brightnessctl
