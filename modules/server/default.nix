@@ -12,6 +12,8 @@
   security.acme.acceptTerms = true;
   security.acme.defaults.dnsProvider = "cloudflare";
 
+  services.postgresql.enable = true;
+
   services.samba = {
     enable = true;
     securityType = "user";
