@@ -9,6 +9,7 @@
   # Acme for SSL
   security.acme.defaults.email = "cody@tmvsocial.com";
   security.acme.acceptTerms = true;
+  security.acme.defaults.dnsProvider = "cloudflare";
 
   services.samba = {
     enable = true;
