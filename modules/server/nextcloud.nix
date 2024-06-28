@@ -5,7 +5,7 @@
   services.nextcloud = {
     enable = true;
     package = pkgs.nextcloud29;
-    hostName = "192.168.254.25";
+    hostName = "home.local";
     config.adminpassFile = "/etc/nextcloud-admin-pass";
     configureRedis = true;
   };
