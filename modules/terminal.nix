@@ -27,11 +27,12 @@
           git push
         '';
         upgrade = ''
-          cd /etc/nixos &&
-          git add . &&
-          git commit -m "Pre-upgrade commit" &&
           sudo nix flake update /etc/nixos &&
           sudo nixos-rebuild switch
+          cd /etc/nixos &&
+          git add . &&
+          git commit -m "Flake Upgrade" &&
+          git push
         '';
         gcCleanup = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       };
