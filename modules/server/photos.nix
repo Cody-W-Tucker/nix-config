@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   environment.etc."immich-typsense-api-key".text = "12318551487654187654";
