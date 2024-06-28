@@ -5,13 +5,13 @@
   services = {
     nginx.virtualHosts = {
       "cloud.home.com" = {
-        forceSSL = true;
-        enableACME = true;
+        forceSSL = false;
+        enableACME = false;
       };
 
       "docs.home.com" = {
-        forceSSL = true;
-        enableACME = true;
+        forceSSL = false;
+        enableACME = false;
       };
     };
     nextcloud = {
@@ -22,7 +22,7 @@
       configureRedis = true;
       # Increase the maximum file upload size to avoid problems uploading videos.
       maxUploadSize = "16G";
-      https = true;
+      https = false;
       autoUpdateApps.enable = true;
       extraAppsEnable = true;
       extraApps = with config.services.nextcloud.package.packages.apps; {
@@ -32,11 +32,11 @@
       };
 
       config = {
-        overwriteProtocol = "https";
         dbtype = "pgsql";
         adminuser = "admin";
         adminpassFile = "/etc/nextcloud-admin-pass";
       };
+      settings.overwriteprotocol = "http";
     };
 
     onlyoffice = {
