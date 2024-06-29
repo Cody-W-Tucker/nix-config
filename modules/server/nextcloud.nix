@@ -44,5 +44,4 @@
       hostname = "docs.homehub.tv";
     };
   };
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
 }

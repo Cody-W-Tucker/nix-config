@@ -16,6 +16,7 @@
     firewall = {
       enable = true;
       allowPing = true;
+      allowedTCPPorts = [ 80 443 ];
     };
   };
 }
