@@ -5,6 +5,7 @@
     ./media.nix
     ./photos.nix
     ./samba.nix
+    ./homeAssistant.nix
     # ./nextcloud.nix
   ];
 
