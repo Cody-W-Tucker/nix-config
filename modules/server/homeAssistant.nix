@@ -3,6 +3,7 @@
 {
   services.home-assistant = {
     enable = true;
+    openFirewall = true;
     package = (pkgs.home-assistant.override {
       extraPackages = py: with py; [ psycopg2 ];
     }).overrideAttrs (oldAttrs: {
@@ -13,6 +14,7 @@
       "esphome"
       "met"
       "radio_browser"
+      "upnp"
     ];
     config = {
       # Includes dependencies for a basic setup
@@ -48,5 +50,4 @@
       ensureDBOwnership = true;
     }];
   };
-  networking.firewall.allowedTCPPorts = [ 8123 ];
 }
