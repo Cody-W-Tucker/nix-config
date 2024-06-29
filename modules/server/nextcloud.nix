@@ -4,19 +4,19 @@
   environment.etc."nextcloud-admin-pass".text = "admin";
   services = {
     nginx.virtualHosts = {
-      "cloud.home.com" = {
+      "cloud.homehub.tv" = {
         forceSSL = false;
         enableACME = false;
       };
 
-      "docs.home.com" = {
+      "docs.homehub.tv" = {
         forceSSL = false;
         enableACME = false;
       };
     };
     nextcloud = {
       enable = true;
-      hostName = "cloud.home.com";
+      hostName = "cloud.homehub.tv";
       package = pkgs.nextcloud29;
       database.createLocally = true;
       configureRedis = true;
@@ -41,7 +41,7 @@
 
     onlyoffice = {
       enable = true;
-      hostname = "docs.home.com";
+      hostname = "docs.homehub.tv";
     };
   };
   networking.firewall.allowedTCPPorts = [ 80 443 ];
