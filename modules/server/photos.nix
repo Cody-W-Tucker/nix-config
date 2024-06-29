@@ -56,9 +56,7 @@
   };
 
   # Certs
-  security.acme.certs."photos.homehub.tv" = {
-    dnsProvider = "cloudflare";
-  };
+  security.acme.certs."photos.homehub.tv".dnsProvider = "cloudflare";
 
   networking.firewall.allowedTCPPorts = [ 2342 ];
 
