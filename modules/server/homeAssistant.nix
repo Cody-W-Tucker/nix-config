@@ -15,6 +15,8 @@
       "met"
       "radio_browser"
       "upnp"
+      "hue"
+      "isal"
     ];
     config = {
       # Includes dependencies for a basic setup
