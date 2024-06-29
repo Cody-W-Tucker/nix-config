@@ -18,5 +18,8 @@
       allowPing = true;
     };
     domain = "homehub.tv";
-  };
-}
+    hosts = {
+      "127.0.0.2" = [ "photos.homehub.tv" ];
+    }
+      };
+  }
