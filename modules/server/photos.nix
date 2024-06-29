@@ -15,7 +15,7 @@
       PHOTOPRISM_DATABASE_NAME = "photoprism";
       PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
       PHOTOPRISM_DATABASE_USER = "photoprism";
-      PHOTOPRISM_SITE_URL = "http://photos.local.com:2342";
+      PHOTOPRISM_SITE_URL = "http://photos.homehub.tv:2342";
       PHOTOPRISM_SITE_TITLE = "My PhotoPrism";
     };
   };
@@ -43,9 +43,9 @@
     recommendedProxySettings = true;
     clientMaxBodySize = "500m";
     virtualHosts = {
-      "photos.local.com" = {
-        forceSSL = false;
-        enableACME = false;
+      "photos.homehub.tv" = {
+        forceSSL = true;
+        enableACME = true;
         http2 = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:2342";
