@@ -16,7 +16,8 @@
       server = "https://acme-staging-v02.api.letsencrypt.org/directory";
     };
   };
-  firewall = {
+
+  networking.firewall = {
     enable = true;
     allowPing = true;
     allowedTCPPorts = [ 80 443 ];
