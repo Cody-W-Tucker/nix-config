@@ -15,7 +15,7 @@
       PHOTOPRISM_DATABASE_NAME = "photoprism";
       PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
       PHOTOPRISM_DATABASE_USER = "photoprism";
-      PHOTOPRISM_SITE_URL = "http://photos.homehub.tv";
+      PHOTOPRISM_SITE_URL = "http://photos.homehub.tv:2342";
       PHOTOPRISM_SITE_TITLE = "My PhotoPrism";
     };
   };
