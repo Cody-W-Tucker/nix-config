@@ -42,10 +42,6 @@
     recommendedGzipSettings = true;
     recommendedProxySettings = true;
     clientMaxBodySize = "500m";
-    extraConfig = ''
-      proxy_headers_hash_max_size 1024;
-      proxy_headers_hash_bucket_size 128;
-    '';
     virtualHosts = {
       "photos.homehub.tv" = {
         forceSSL = false;
@@ -60,6 +56,8 @@
             proxy_set_header Host $host;
             proxy_set_header X-Forwarded-Proto $scheme;
             proxy_buffering off;
+            proxy_headers_hash_max_size 1024;
+            proxy_headers_hash_bucket_size 128;
           '';
         };
       };
