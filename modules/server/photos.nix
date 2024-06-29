@@ -55,9 +55,6 @@
     };
   };
 
-  # Certs
-  security.acme.certs."photos.homehub.tv".dnsProvider = "cloudflare";
-
   networking.firewall.allowedTCPPorts = [ 2342 ];
 
   # Change the path to the originals directory
