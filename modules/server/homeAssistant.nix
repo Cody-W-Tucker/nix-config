@@ -17,6 +17,8 @@
       "upnp"
       "hue"
       "isal"
+      "cast"
+      "jellyfin"
     ];
     config = {
       # Includes dependencies for a basic setup
