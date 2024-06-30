@@ -35,6 +35,8 @@
         dbtype = "mysql";
         adminuser = "admin";
         adminpassFile = "/etc/nextcloud-admin-pass";
+        trustedProxies = [ "127.0.0.1" ];
+        extraTrustedDomains = [ "homehub.tv" ];
       };
       settings.overwriteprotocol = "http";
     };
