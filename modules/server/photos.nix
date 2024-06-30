@@ -55,8 +55,6 @@
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 2342 ];
-
   # Change the path to the originals directory
   fileSystems."/var/lib/private/photoprism/originals" =
     {
