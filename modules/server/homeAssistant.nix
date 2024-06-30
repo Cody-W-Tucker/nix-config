@@ -14,12 +14,12 @@
       "esphome"
       "met"
       "radio_browser"
-      "upnp"
-      "hue"
-      "isal"
-      "cast"
-      "jellyfin"
     ];
+    jellyfin = { };
+    cast = { };
+    hue = { };
+    isal = { };
+    upnp = { };
     config = {
       # Includes dependencies for a basic setup
       # https://www.home-assistant.io/integrations/default_config/
