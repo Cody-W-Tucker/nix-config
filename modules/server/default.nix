@@ -6,7 +6,7 @@
     ./photos.nix
     ./samba.nix
     ./homeAssistant.nix
-    ./nextcloud.nix
+    # ./nextcloud.nix
   ];
 
   # Acme for SSL
