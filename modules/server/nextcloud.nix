@@ -39,9 +39,6 @@
       settings.overwriteprotocol = "http";
     };
 
-    # Open port for postgress
-    networking.firewall.allowedTCPPorts = [ 5432 ];
-
     onlyoffice = {
       enable = true;
       hostname = "docs.homehub.tv";
