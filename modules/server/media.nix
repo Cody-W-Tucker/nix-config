@@ -28,4 +28,19 @@
       intel-media-sdk # QSV up to 11th gen
     ];
   };
+
+  # NGINX
+  services.nginx = {
+    recommendedGzipSettings = true;
+    recommendedOptimisation = true;
+    recommendedProxySettings = true;
+    virtualHosts."media.homehub.tv" = {
+      forceSSL = false;
+      enableACME = false;
+      locations."/" = {
+        proxyPass = "http://media.homehub.tv:8096";
+        proxyWebsockets = true;
+      };
+    };
+  };
 }
