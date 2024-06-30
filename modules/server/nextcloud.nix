@@ -35,10 +35,12 @@
         dbtype = "mysql";
         adminuser = "admin";
         adminpassFile = "/etc/nextcloud-admin-pass";
-        trustedProxies = [ "127.0.0.1" ];
-        extraTrustedDomains = [ "homehub.tv" ];
       };
-      settings.overwriteprotocol = "http";
+      settings = {
+        overwriteprotocol = "http";
+        trusted_proxies = [ "127.0.0.1" ];
+        trusted_domains = [ "homehub.tv" ];
+      };
     };
 
     onlyoffice = {
