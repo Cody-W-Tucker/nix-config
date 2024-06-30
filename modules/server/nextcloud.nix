@@ -32,7 +32,7 @@
       };
 
       config = {
-        dbtype = "pgsql";
+        dbtype = "mysql";
         adminuser = "admin";
         adminpassFile = "/etc/nextcloud-admin-pass";
       };
