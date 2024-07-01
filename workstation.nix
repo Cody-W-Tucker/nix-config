@@ -117,9 +117,6 @@
     ];
   };
 
-  # Tuning the firewall to allow for Samba share discovery
-  networking.firewall.extraCommands = ''iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns'';
-
   swapDevices = [ ];
 
   # Enable automatic login for the user.
