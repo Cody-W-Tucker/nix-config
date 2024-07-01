@@ -40,17 +40,6 @@
 
   environment.systemPackages = [ pkgs.cifs-utils ];
 
-  fileSystems."/home/codyt/Tools" = {
-    device = "//192.168.254.25/codythome/Tools";
-    fsType = "cifs";
-    options = [
-      "vers=3.0"
-      "credentials=/etc/nixos/secrets/smb"
-      "uid=1000"
-      "gid=1000"
-    ];
-  };
-
   fileSystems."/home/codyt/Records" = {
     device = "//192.168.254.25/codythome/Records";
     fsType = "cifs";
