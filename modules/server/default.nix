@@ -7,7 +7,7 @@
     ./samba.nix
     ./homeAssistant.nix
     ./nextcloud.nix
-    ./automation.nix
+    # ./automation.nix
   ];
 
   # Acme for SSL
