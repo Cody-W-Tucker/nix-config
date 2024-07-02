@@ -4,11 +4,11 @@
   imports =
     [
       (modulesPath + "/installer/scan/not-detected.nix")
-      ./configuration.nix
-      ./modules/common/desktop
-      ./modules/styles.nix
-      ./modules/scripts
-      ./modules/nvidia.nix
+      ../configuration.nix
+      ../modules/common/desktop
+      ../modules/styles.nix
+      ../modules/scripts
+      ../modules/nvidia.nix
     ];
 
   # Bootloader.

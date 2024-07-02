@@ -4,8 +4,8 @@
   imports =
     [
       (modulesPath + "/installer/scan/not-detected.nix")
-      ./configuration.nix
-      ./modules/server/containers
+      ../configuration.nix
+      ../modules/server/containers
     ];
 
   # Prevent Lid close sleep
