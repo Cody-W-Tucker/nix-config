@@ -64,7 +64,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt = import ../home.nix;
+              home-manager.users.codyt = import ./home.nix;
             }
           ];
         };
@@ -87,7 +87,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt = import ../home.nix;
+              home-manager.users.codyt = import ./home.nix;
             }
           ];
         };
