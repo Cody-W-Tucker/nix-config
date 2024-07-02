@@ -50,7 +50,7 @@
             inherit inputs; inherit hardwareConfig;
           };
           modules = [
-            ./host/workstation.nix
+            ./hosts/workstation.nix
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-pc-ssd
@@ -64,7 +64,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt = import ./home.nix;
+              home-manager.users.codyt = import ../home.nix;
             }
           ];
         };
@@ -74,7 +74,7 @@
             inherit inputs; inherit hardwareConfig;
           };
           modules = [
-            ./host/family-desktop.nix
+            ./hosts/family-desktop.nix
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
@@ -87,7 +87,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt = import ./home.nix;
+              home-manager.users.codyt = import ../home.nix;
             }
           ];
         };
@@ -97,7 +97,7 @@
             inherit inputs;
           };
           modules = [
-            ./host/server.nix
+            ./hosts/server.nix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
@@ -110,7 +110,7 @@
             inherit inputs;
           };
           modules = [
-            ./host/server1.nix
+            ./hosts/server1.nix
             inputs.sops-nix.nixosModules.sops
           ];
         };
