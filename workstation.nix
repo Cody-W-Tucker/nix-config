@@ -51,17 +51,6 @@
     ];
   };
 
-  fileSystems."/home/codyt/Projects" = {
-    device = "//192.168.254.25/codythome/Projects";
-    fsType = "cifs";
-    options = [
-      "vers=3.0"
-      "credentials=/etc/nixos/secrets/smb"
-      "uid=1000"
-      "gid=1000"
-    ];
-  };
-
   fileSystems."/home/codyt/Business" = {
     device = "//192.168.254.25/codythome/Business";
     fsType = "cifs";
