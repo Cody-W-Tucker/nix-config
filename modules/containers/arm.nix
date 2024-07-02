@@ -150,7 +150,7 @@
 {
   virtualisation.oci-containers.containers."arm-rippers" = {
     autoStart = true; # Assuming you want the container to start automatically on boot
-    image = "1337server/automatic-ripping-machine:latest";
+    image = "automaticrippingmachine/automatic-ripping-machine:latest";
     ports = [ "8080:8080" ];
     environment = {
       ARM_UID = "1002";
