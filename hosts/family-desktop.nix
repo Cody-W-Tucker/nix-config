@@ -2,12 +2,12 @@
 
 {
   imports =
-    [ 
+    [
       (modulesPath + "/installer/scan/not-detected.nix")
-      ./configuration.nix
-      ./modules/common/desktop
-      ./modules/styles.nix
-      ./modules/scripts
+      ../configuration.nix
+      ../modules/common/desktop
+      ../modules/styles.nix
+      ../modules/scripts
     ];
 
   # Bootloader
@@ -21,12 +21,14 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/d6c24696-cc34-4a07-a065-9f143a63db02";
+    {
+      device = "/dev/disk/by-uuid/d6c24696-cc34-4a07-a065-9f143a63db02";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/A12C-B557";
+    {
+      device = "/dev/disk/by-uuid/A12C-B557";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
