@@ -50,11 +50,11 @@
             inherit inputs; inherit hardwareConfig;
           };
           modules = [
-            ./workstation.nix
+            ./host/workstation.nix
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-pc-ssd
-            nixos-hardware.nixosModules.common-gpu-nvidia
+            nixos-hardware.nixosModules.common-gpu-nvidia-sync
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
@@ -74,7 +74,7 @@
             inherit inputs; inherit hardwareConfig;
           };
           modules = [
-            ./family-desktop.nix
+            ./host/family-desktop.nix
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
@@ -97,7 +97,7 @@
             inherit inputs;
           };
           modules = [
-            ./server.nix
+            ./host/server.nix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
@@ -110,7 +110,7 @@
             inherit inputs;
           };
           modules = [
-            ./server1.nix
+            ./host/server1.nix
             inputs.sops-nix.nixosModules.sops
           ];
         };
