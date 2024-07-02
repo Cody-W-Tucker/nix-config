@@ -58,7 +58,7 @@
   # Change the path to the originals directory
   fileSystems."/var/lib/private/photoprism/originals" =
     {
-      device = "/mnt/photos";
+      device = "/mnt/media/Photos";
       options = [ "bind" ];
     };
 }
