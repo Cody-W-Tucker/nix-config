@@ -95,6 +95,9 @@
     };
   };
 
+  # Enable fail2ban to block brute-force attacks.
+  services.fail2ban.enable = true;
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 }
