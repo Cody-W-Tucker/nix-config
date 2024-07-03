@@ -30,7 +30,7 @@
         "force group" = "users";
       };
       media = {
-        path = "/mnt/media";
+        path = "/mnt/hdd/Media";
         browseable = "yes";
         "read only" = "no";
         "guest ok" = "no";
@@ -40,7 +40,7 @@
         "force group" = "users";
       };
       photos = {
-        path = "/mnt/photos";
+        path = "/mnt/hdd/Photos";
         browseable = "yes";
         "read only" = "no";
         "guest ok" = "no";
