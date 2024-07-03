@@ -12,7 +12,10 @@
       "docs.homehub.tv" = {
         forceSSL = false;
         enableACME = false;
-        listen = [{ addr = "0.0.0.0"; port = 8000; }];
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8000";
+          proxyWebsockets = true;
+        };
       };
     };
     nextcloud = {
@@ -39,7 +42,7 @@
       };
       settings = {
         overwriteprotocol = "http";
-        trusted_proxies = [ "127.0.0.1" "192.168.254.25" ];
+        trusted_proxies = [ "127.0.0.1" ];
         trusted_domains = [ "homehub.tv" "docs.homehub.tv" ];
       };
     };
