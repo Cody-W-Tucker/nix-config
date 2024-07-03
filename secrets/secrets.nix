@@ -9,6 +9,7 @@
   sops.age.keyFile = "/home/codyt/.config/age/key.txt";
   # This will generate a new key if the key specified above does not exist
   sops.age.generateKey = true;
+  sops.gnupg.sshKeyPaths = [ ];
 
   environment.systemPackages = [ pkgs.sops ];
 }
