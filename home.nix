@@ -21,6 +21,7 @@
     brightnessctl
     gh
     ripdrag
+    picard
   ];
 
   imports = [
