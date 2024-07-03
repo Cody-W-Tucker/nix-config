@@ -12,6 +12,7 @@
       "docs.homehub.tv" = {
         forceSSL = false;
         enableACME = false;
+        listen = [{ addr = "0.0.0.0"; port = 8000; }];
       };
     };
     nextcloud = {
