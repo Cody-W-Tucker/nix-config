@@ -44,7 +44,7 @@
     };
 
     onlyoffice = {
-      enable = true;
+      enable = false;
       hostname = "docs.homehub.tv";
     };
   };
