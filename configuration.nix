@@ -45,8 +45,14 @@
 
   # Create the passwords so they exist across all hosts
   sops.secrets = {
-    codyt.neededForUsers = true;
-    jordant.neededForUsers = true;
+    codyt = {
+      neededForUsers = true;
+      owner = config.users.users.codyt.name;
+    };
+    jordant = {
+      neededForUsers = true;
+      owner = config.users.users.jordant.name;
+    };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
