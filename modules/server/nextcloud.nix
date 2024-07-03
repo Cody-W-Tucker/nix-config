@@ -8,11 +8,6 @@
         forceSSL = false;
         enableACME = false;
       };
-
-      "docs.homehub.tv" = {
-        forceSSL = false;
-        enableACME = false;
-      };
     };
     nextcloud = {
       enable = true;
