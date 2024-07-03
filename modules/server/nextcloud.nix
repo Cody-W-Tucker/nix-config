@@ -12,6 +12,8 @@
     nextcloud = {
       enable = true;
       hostName = "homehub.tv";
+      # Storage path for files
+      home = "/mnt/hdd/Nextcloud";
       package = pkgs.nextcloud29;
       database.createLocally = true;
       configureRedis = true;
