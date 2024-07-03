@@ -4,7 +4,7 @@
   environment.etc."nextcloud-admin-pass".text = "admin";
   services = {
     nginx.virtualHosts = {
-      "cloud.homehub.tv" = {
+      "homehub.tv" = {
         forceSSL = false;
         enableACME = false;
       };
@@ -16,7 +16,7 @@
     };
     nextcloud = {
       enable = true;
-      hostName = "cloud.homehub.tv";
+      hostName = "homehub.tv";
       package = pkgs.nextcloud29;
       database.createLocally = true;
       configureRedis = true;
@@ -39,7 +39,7 @@
       settings = {
         overwriteprotocol = "http";
         trusted_proxies = [ "127.0.0.1" ];
-        trusted_domains = [ "homehub.tv" ];
+        trusted_domains = [ "homehub.tv" "docs.homehub.tv" ];
       };
     };
 
