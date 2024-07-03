@@ -43,15 +43,15 @@
   # Make passwords uneditable
   users.mutableUsers = false;
 
-  # Create the passwords so they exist across all hosts
-  sops.secrets = {
-    codyt = {
-      neededForUsers = true;
-    };
-    jordant = {
-      neededForUsers = true;
-    };
-  };
+  # # Create the passwords so they exist across all hosts
+  # sops.secrets = {
+  #   codyt = {
+  #     neededForUsers = true;
+  #   };
+  #   jordant = {
+  #     neededForUsers = true;
+  #   };
+  # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.codyt = {
@@ -59,7 +59,7 @@
     description = "Cody Tucker";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
-    hashedPasswordFile = config.sops.secrets.codyt.path;
+    #hashedPasswordFile = config.sops.secrets.codyt.path;
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
     packages = with pkgs; [
       #  thunderbird
@@ -75,7 +75,7 @@
     description = "Jordan Tucker";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
-    hashedPasswordFile = config.sops.secrets.jordant.path;
+    #hashedPasswordFile = config.sops.secrets.jordant.path;
     hashedPassword = "$y$j9T$T1YkmagP6ULuI6DvQz8IK0$38YlfZN9eR1jH286/9kZn13flzy.wFtPX74ukXKJhM7";
     packages = with pkgs; [
       # thunderbird
