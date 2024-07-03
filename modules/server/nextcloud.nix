@@ -46,7 +46,7 @@
     onlyoffice = {
       enable = true;
       hostname = "docs.homehub.tv";
-      jwtSecretFile = "/etc/onlyoffice/DocumentServer/local.json";
+      # jwtSecretFile = "/etc/onlyoffice/DocumentServer/local.json";
     };
   };
 }
