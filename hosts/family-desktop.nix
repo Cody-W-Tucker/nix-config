@@ -50,7 +50,7 @@
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Setting the color theme and default wallpaper
-  stylix.image = ./modules/wallpapers/Dancer.png;
+  stylix.image = ../modules/wallpapers/Dancer.png;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
