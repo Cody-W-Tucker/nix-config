@@ -36,6 +36,7 @@
         server = {
           port = 8888;
           bind_address = "0.0.0.0";
+          secret_key = "secret";
         };
       };
     };
