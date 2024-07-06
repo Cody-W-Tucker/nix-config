@@ -31,12 +31,29 @@
     searx = {
       enable = true;
       redisCreateLocally = true;
+      limiterSettings = {
+        # activate link_token method in the ip_limit method
+        link_token = true;
+      };
       settings = {
         use_default_settings = true;
         server = {
           port = 8888;
           bind_address = "0.0.0.0";
           secret_key = "secret";
+        };
+        ui = {
+          static_use_hash = true;
+        };
+
+        search = {
+          safe_search = "0";
+          autocomplete = "";
+          default_lang = "";
+          formats = {
+            html = true;
+            json = true;
+          };
         };
       };
     };
