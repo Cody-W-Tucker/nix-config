@@ -45,11 +45,7 @@
         ui = {
           static_use_hash = true;
         };
-
         search = {
-          safe_search = 0;
-          autocomplete = "";
-          default_lang = "";
           formats = {
             html = true;
             json = true;
