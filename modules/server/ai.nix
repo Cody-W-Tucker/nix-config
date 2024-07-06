@@ -8,7 +8,7 @@
       port = 11434;
       openFirewall = true;
       host = "0.0.0.0";
-      loadModules = [ "codellama" "llama3" ];
+      loadModels = [ "codellama" "llama3" ];
     };
     open-webui = {
       enable = true;
