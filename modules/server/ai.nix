@@ -47,7 +47,7 @@
         };
 
         search = {
-          safe_search = "0";
+          safe_search = 0;
           autocomplete = "";
           default_lang = "";
           formats = {
