@@ -23,5 +23,17 @@
         SCARF_NO_ANALYTICS = "True";
       };
     };
+    searx = {
+      enable = true;
+      redisCreateLocally = true;
+      settings = {
+        server = {
+          port = 8888;
+          bind_address = "0.0.0.0";
+          secret_key = "secret key";
+        };
+      };
+    };
   };
+  networking.firewall.allowedTCPPorts = [ 8888 ];
 }
