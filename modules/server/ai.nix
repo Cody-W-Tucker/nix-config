@@ -45,11 +45,12 @@
         ui = {
           static_use_hash = true;
         };
+
         search = {
-          formats = {
-            html = true;
-            json = true;
-          };
+          safe_search = 0;
+          autocomplete = "";
+          default_lang = "";
+          formats = [ "html" "json" ];
         };
       };
     };
