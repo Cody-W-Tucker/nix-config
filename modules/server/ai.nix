@@ -15,7 +15,7 @@
       host = "0.0.0.0";
       openFirewall = true;
       environment = {
-        OLLAMA_API_BASE_URL = "http://127.0.0.1:11434";
+        OLLAMA_API_BASE_URL = "http://192.168.254.25:11434";
         # Disable authentication
         WEBUI_AUTH = "False";
         ANONYMIZED_TELEMETRY = "False";

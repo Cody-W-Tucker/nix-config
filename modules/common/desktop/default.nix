@@ -49,7 +49,6 @@
     feh
     zathura
     pavucontrol
-    polkit_gnome
     xdg-utils # xdg-open
     libreoffice
     hunspell
@@ -58,6 +57,7 @@
     udiskie
     udisks
     kitty
+    ffmpeg
   ];
 
   # Enable support for removable devices.
