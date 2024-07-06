@@ -31,10 +31,6 @@
     searx = {
       enable = true;
       redisCreateLocally = true;
-      limiterSettings = {
-        # activate link_token method in the ip_limit method
-        link_token = true;
-      };
       settings = {
         use_default_settings = true;
         server = {
