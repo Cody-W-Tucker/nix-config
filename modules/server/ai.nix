@@ -22,6 +22,7 @@
         DO_NOT_TRACK = "True";
         SCARF_NO_ANALYTICS = "True";
         SEARXNG_QUERY_URL = "http://homehub.tv:8888/search?q=<query>";
+        USER_AGENT = "Ollama";
       };
     };
     searx = {
@@ -33,16 +34,20 @@
           port = 8888;
           bind_address = "0.0.0.0";
           secret_key = "secret";
+          limiter = false;
+          image_proxy = true;
         };
         ui = {
           static_use_hash = true;
         };
-
         search = {
           safe_search = 0;
           autocomplete = "";
           default_lang = "";
           formats = [ "html" "json" ];
+        };
+        outgoing = {
+          useragent_suffix = "webdev@tmvsocial.com";
         };
       };
     };
