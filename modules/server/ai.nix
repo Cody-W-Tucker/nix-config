@@ -3,6 +3,24 @@
 {
   # Ollama local llm
   services = {
+    nginx.virtualHosts = {
+      "ai.homehub.tv" = {
+        enableACME = false;
+        forceSSL = false;
+        locations."/" = {
+          proxyPass = "http://ai.homehub.tv:11435";
+          proxyWebsockets = true;
+        };
+      };
+      "search.homehub.tv" = {
+        enableACME = false;
+        forceSSL = false;
+        locations."/" = {
+          proxyPass = "http://search.homehub.tv:8888";
+          proxyWebsockets = true;
+        };
+      };
+    };
     ollama = {
       enable = true;
       port = 11434;
