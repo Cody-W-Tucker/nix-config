@@ -82,7 +82,7 @@
       database.createLocally = true;
       configureRedis = true;
       # Increase the maximum file upload size to avoid problems uploading videos.
-      maxUploadSize = "16G";
+      maxUploadSize = "1G";
       https = false;
       appstoreEnable = true;
       autoUpdateApps.enable = true;
