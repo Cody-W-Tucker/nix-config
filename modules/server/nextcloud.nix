@@ -12,7 +12,7 @@
       image = "docker.io/collabora/code:latest";
       ports = [ "9980:9980/tcp" ];
       environment = {
-        domain = "docs.homehub.tv";
+        server_name = "docs.homehub.tv";
         dictionaries = "en_US";
         extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
       };
