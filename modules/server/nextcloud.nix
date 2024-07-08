@@ -13,7 +13,7 @@
       ports = [ "9980:9980/tcp" ];
       environment = {
         domain = "homehub.tv";
-        server_name = "docs.homehub.tv";
+        server_name = "192.168.254.25:9980";
         dictionaries = "en_US";
         extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
       };
