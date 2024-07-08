@@ -42,6 +42,7 @@
         SEARXNG_QUERY_URL = "http://homehub.tv:8888/search?q=<query>";
         USER_AGENT = "Ollama";
         CHROMA_HTTP_PORT = "11436";
+        http_proxy = "http://ai.homehub.tv:11435";
       };
     };
     searx = {
@@ -50,6 +51,7 @@
       settings = {
         use_default_settings = true;
         server = {
+          base_url = "http://search.homehub.tv:8888";
           port = 8888;
           bind_address = "0.0.0.0";
           secret_key = "secret";
