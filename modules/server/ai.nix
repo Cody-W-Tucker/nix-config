@@ -33,8 +33,6 @@
         SCARF_NO_ANALYTICS = "True";
         SEARXNG_QUERY_URL = "http://search.homehub.tv/search?q=<query>";
         USER_AGENT = "Ollama";
-        CHROMA_HTTP_HOST = "0.0.0.0";
-        CHROMA_HTTP_PORT = "11436";
       };
     };
     searx = {
