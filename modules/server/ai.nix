@@ -23,6 +23,7 @@
         SCARF_NO_ANALYTICS = "True";
         SEARXNG_QUERY_URL = "http://homehub.tv:8888/search?q=<query>";
         USER_AGENT = "Ollama";
+        CHROMA_HTTP_PORT = "11436";
       };
     };
     searx = {
@@ -52,5 +53,5 @@
       };
     };
   };
-  networking.firewall.allowedTCPPorts = [ 8888 ];
+  networking.firewall.allowedTCPPorts = [ 8888 11436 ];
 }
