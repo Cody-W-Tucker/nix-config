@@ -84,6 +84,7 @@
       # Increase the maximum file upload size to avoid problems uploading videos.
       maxUploadSize = "16G";
       https = false;
+      appstoreEnable = true;
       autoUpdateApps.enable = true;
       extraAppsEnable = true;
       extraApps = with config.services.nextcloud.package.packages.apps; {
