@@ -7,7 +7,8 @@
     docker.enable = true;
     oci-containers.backend = "docker";
     # Online document editing
-    oci-containers.containers.collabora = {
+    oci-containers.containers."collabora" = {
+      autoStart = true;
       image = "docker.io/collabora/code:latest";
       ports = [ "9980:9980/tcp" ];
       environment = {
@@ -15,9 +16,7 @@
         dictionaries = "en_US";
         extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
       };
-      extraOptions = [
-        "--pull=newer"
-      ];
+      extraOptions = [ "--cap-add" "MKNOD" ];
     };
   };
 
