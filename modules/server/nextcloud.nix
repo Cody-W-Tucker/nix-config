@@ -82,7 +82,7 @@
       configureRedis = true;
       # Increase the maximum file upload size to avoid problems uploading videos.
       maxUploadSize = "4G";
-      http = false;
+      https = false;
       autoUpdateApps.enable = true;
       extraAppsEnable = true;
       extraApps = with config.services.nextcloud.package.packages.apps; {
