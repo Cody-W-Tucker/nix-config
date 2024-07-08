@@ -4,14 +4,6 @@
   # Ollama local llm
   services = {
     nginx.virtualHosts = {
-      "ai.homehub.tv" = {
-        enableACME = false;
-        forceSSL = false;
-        locations."/" = {
-          proxyPass = "http://ai.homehub.tv:11435";
-          proxyWebsockets = true;
-        };
-      };
       "search.homehub.tv" = {
         enableACME = false;
         forceSSL = false;
@@ -39,10 +31,10 @@
         ANONYMIZED_TELEMETRY = "False";
         DO_NOT_TRACK = "True";
         SCARF_NO_ANALYTICS = "True";
-        SEARXNG_QUERY_URL = "http://homehub.tv:8888/search?q=<query>";
+        SEARXNG_QUERY_URL = "http://search.homehub.tv/search?q=<query>";
         USER_AGENT = "Ollama";
+        CHROMA_HTTP_HOST = "0.0.0.0";
         CHROMA_HTTP_PORT = "11436";
-        http_proxy = "http://ai.homehub.tv:11435";
       };
     };
     searx = {
