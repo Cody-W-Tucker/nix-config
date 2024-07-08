@@ -89,7 +89,7 @@
       extraApps = with config.services.nextcloud.package.packages.apps; {
         # List of apps we want to install and are already packaged in
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/servers/nextcloud/packages/nextcloud-apps.json
-        inherit calendar contacts mail notes richdocuments richdocumentscode tasks cookbook;
+        inherit calendar contacts mail notes richdocuments tasks cookbook;
       };
 
       config = {
