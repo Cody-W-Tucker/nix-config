@@ -28,7 +28,7 @@
         enableACME = false;
       };
       "docs.homehub.tv" = {
-        enableACME = true;
+        enableACME = false;
         forceSSL = true;
         extraConfig = ''
            # static files
@@ -83,7 +83,7 @@
       configureRedis = true;
       # Increase the maximum file upload size to avoid problems uploading videos.
       maxUploadSize = "4G";
-      https = false;
+      https = true;
       autoUpdateApps.enable = true;
       extraAppsEnable = true;
       extraApps = with config.services.nextcloud.package.packages.apps; {
@@ -98,7 +98,7 @@
         adminpassFile = "/etc/nextcloud-admin-pass";
       };
       settings = {
-        overwriteprotocol = "http";
+        overwriteprotocol = "https";
         trusted_proxies = [ "127.0.0.1" ];
         trusted_domains = [ "homehub.tv" "docs.homehub.tv" ];
       };
