@@ -28,8 +28,8 @@
         enableACME = false;
       };
       "docs.homehub.tv" = {
-        enableACME = fales;
-        forceSSL = fales;
+        enableACME = false;
+        forceSSL = false;
         extraConfig = ''
            # static files
            location ^~ /browser {
