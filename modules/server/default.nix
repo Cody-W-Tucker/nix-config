@@ -16,7 +16,7 @@
     acceptTerms = true;
     defaults = {
       email = "cody@tmvsocial.com";
-      server = "https://acme-staging-v02.api.letsencrypt.org/directory";
+      server = "https://127.0.0.1";
     };
   };
 
