@@ -12,8 +12,8 @@
       image = "docker.io/collabora/code:latest";
       ports = [ "9980:9980/tcp" ];
       environment = {
-        domain = "homehub.tv";
-        server_name = "192.168.254.25:9980";
+        domain = "docs.homehub.tv";
+        server_name = "docs.homehub.tv";
         dictionaries = "en_US";
         extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
       };
@@ -28,8 +28,8 @@
         enableACME = false;
       };
       "docs.homehub.tv" = {
-        enableACME = false;
-        forceSSL = false;
+        enableACME = true;
+        forceSSL = true;
         extraConfig = ''
            # static files
            location ^~ /browser {
@@ -84,7 +84,6 @@
       # Increase the maximum file upload size to avoid problems uploading videos.
       maxUploadSize = "4G";
       https = false;
-      appstoreEnable = true;
       autoUpdateApps.enable = true;
       extraAppsEnable = true;
       extraApps = with config.services.nextcloud.package.packages.apps; {
