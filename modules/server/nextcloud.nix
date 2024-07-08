@@ -13,7 +13,6 @@
       ports = [ "9980:9980/tcp" ];
       environment = {
         domain = "docs.homehub.tv";
-        server_name = "192.168.254.25:9980";
         dictionaries = "en_US";
         extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
       };
@@ -24,14 +23,12 @@
   services = {
     nginx.virtualHosts = {
       "homehub.tv" = {
-        forceSSL = false;
-        addSSL = true;
-        enableACME = false;
+        forceSSL = true;
+        enableACME = true;
       };
       "docs.homehub.tv" = {
-        forceSSL = false;
-        addSSL = true;
-        enableACME = false;
+        forceSSL = true;
+        enableACME = true;
         extraConfig = ''
            # static files
            location ^~ /browser {
@@ -85,7 +82,7 @@
       configureRedis = true;
       # Increase the maximum file upload size to avoid problems uploading videos.
       maxUploadSize = "4G";
-      https = false;
+      https = true;
       autoUpdateApps.enable = true;
       extraAppsEnable = true;
       extraApps = with config.services.nextcloud.package.packages.apps; {
@@ -100,7 +97,7 @@
         adminpassFile = "/etc/nextcloud-admin-pass";
       };
       settings = {
-        overwriteprotocol = "http";
+        overwriteprotocol = "https";
         trusted_proxies = [ "127.0.0.1" ];
         trusted_domains = [ "homehub.tv" "docs.homehub.tv" ];
       };
