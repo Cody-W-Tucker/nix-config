@@ -38,6 +38,12 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
+  fileSystems."/mnt/backup" =
+    {
+      device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40";
+      fsType = "ext4";
+    };
+
   environment.systemPackages = [ pkgs.cifs-utils ];
 
   fileSystems."/home/codyt/Records" = {
