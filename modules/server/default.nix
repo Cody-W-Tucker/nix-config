@@ -8,6 +8,7 @@
     ./homeAssistant.nix
     ./nextcloud.nix
     ./ai.nix
+    ./syncthing.nix
     # ./automation.nix
   ];
 
