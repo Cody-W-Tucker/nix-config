@@ -7,6 +7,7 @@
       user = "codyt";
       openDefaultPorts = true;
       guiAddress = "0.0.0.0:8384";
+      configDir = "/home/codyt/Backup/.config/syncthing";
     };
   };
 }
