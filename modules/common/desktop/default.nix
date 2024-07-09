@@ -2,6 +2,7 @@
 
   imports = [
     ./printers.nix
+    ./clientSyncthing.nix
   ];
 
   services.displayManager.autoLogin.enable = true;
