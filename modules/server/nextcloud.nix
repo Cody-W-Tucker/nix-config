@@ -33,7 +33,7 @@
         adminpassFile = "/etc/nextcloud-admin-pass";
       };
       settings = {
-        overwriteprotocol = "https";
+        # overwriteprotocol = "https";
         trusted_proxies = [ "127.0.0.1" ];
         trusted_domains = [ "homehub.tv" "docs.homehub.tv" ];
       };
