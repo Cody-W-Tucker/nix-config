@@ -33,6 +33,7 @@
         SCARF_NO_ANALYTICS = "True";
         SEARXNG_QUERY_URL = "http://search.homehub.tv/search?q=<query>";
         USER_AGENT = "Ollama";
+        ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION = "False";
       };
     };
     searx = {
