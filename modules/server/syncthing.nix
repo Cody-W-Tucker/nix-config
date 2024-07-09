@@ -5,7 +5,7 @@
     syncthing = {
       enable = true;
       user = "codyt";
-      dataDir = "/mnt/hdd"; # Default folder for new synced folders
+      group = "users";
       openDefaultPorts = true;
       guiAddress = "0.0.0.0:8384";
     };
