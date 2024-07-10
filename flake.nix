@@ -12,10 +12,10 @@
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    # nixvim = {
-    #   url = "github:nix-community/nixvim";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, ... }:
