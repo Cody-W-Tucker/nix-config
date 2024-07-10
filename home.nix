@@ -1,5 +1,6 @@
 { pkgs, config, inputs, lib, nvix, ... }:
-
+let system = "x86_64-linux";
+in
 {
   home.packages = with pkgs; [
     # Add some packages to the user environment.
@@ -27,7 +28,7 @@
   imports = [
     ./home
     inputs.hyprland.homeManagerModules.default
-    inputs.nvix.packages.${config.system}.default
+    inputs.nvix.packages.${system}.default
   ];
   dconf = {
     enable = true;
