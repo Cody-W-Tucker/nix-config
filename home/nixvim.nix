@@ -10,6 +10,23 @@
       number = true;
       relativenumber = true;
       shiftwidth = 2;
+      autoCmd = [
+        {
+          event = [ "BufEnter" "BufWinEnter" ];
+          pattern = [ "*.md" ];
+          command = "setlocal spell spelllang=en_us";
+        }
+        {
+          event = [ "BufEnter" "BufWinEnter" ];
+          pattern = [ "*.md" ];
+          command = "Goyo";
+        }
+        {
+          event = [ "BufEnter" "BufWinEnter" ];
+          pattern = [ "*.md" ];
+          command = "Limelight";
+        }
+      ];
     };
     plugins = {
       telescope.enable = true;
@@ -34,22 +51,5 @@
     #     foo = "bar"
     #   })
     # '';
-    options.autoCmd = [
-      {
-        event = [ "BufEnter" "BufWinEnter" ];
-        pattern = [ "*.md" ];
-        command = "setlocal spell spelllang=en_us";
-      }
-      {
-        event = [ "BufEnter" "BufWinEnter" ];
-        pattern = [ "*.md" ];
-        command = "Goyo";
-      }
-      {
-        event = [ "BufEnter" "BufWinEnter" ];
-        pattern = [ "*.md" ];
-        command = "Limelight";
-      }
-    ];
   };
 }
