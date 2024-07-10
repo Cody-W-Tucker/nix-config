@@ -20,8 +20,8 @@
     extraPlugins = with pkgs.vimPlugins; [
       limelight-vim
       # vim-litecorrect
-      # vim-pencil
-      # vim-wordy
+      vim-pencil
+      vim-wordy
       # writegood
     ];
     # extraConfigLua = ''
