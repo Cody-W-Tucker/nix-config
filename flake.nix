@@ -12,13 +12,13 @@
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nixvim = {
+    nvix = {
       url = "github:niksingh710/nvix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nvix, ... }:
     let
       system = "x86_64-linux";
       hardwareConfig = {
@@ -47,7 +47,7 @@
         workstation = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs; inherit hardwareConfig; inherit system; inherit nvix;
+            inherit inputs; inherit hardwareConfig; inherit system;
           };
           modules = [
             ./hosts/workstation.nix
@@ -56,11 +56,11 @@
             nixos-hardware.nixosModules.common-pc-ssd
             nixos-hardware.nixosModules.common-gpu-nvidia-sync
             inputs.sops-nix.nixosModules.sops
-            inputs.nvix.packages.${system}.default
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
                 inherit inputs; hardwareConfig = hardwareConfig.workstation;
+                inherit system;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;

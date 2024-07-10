@@ -1,4 +1,4 @@
-{ pkgs, config, inputs, lib, ... }:
+{ pkgs, config, inputs, lib, nvix, system, ... }:
 
 {
   home.packages = with pkgs; [
@@ -27,6 +27,7 @@
   imports = [
     ./home
     inputs.hyprland.homeManagerModules.default
+    inputs.nvix.packages.${system}.default
   ];
   dconf = {
     enable = true;
