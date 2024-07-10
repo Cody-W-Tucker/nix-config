@@ -27,7 +27,7 @@
   imports = [
     ./home
     inputs.hyprland.homeManagerModules.default
-    inputs.nvix..homeManagerModules.nixvim
+    inputs.nixvim.homeManagerModules.nixvim
   ];
   dconf = {
     enable = true;
