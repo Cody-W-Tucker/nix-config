@@ -34,22 +34,22 @@
     #     foo = "bar"
     #   })
     # '';
+    options.autoCmd = [
+      {
+        event = [ "BufEnter" "BufWinEnter" ];
+        pattern = [ "*.md" ];
+        command = "setlocal spell spelllang=en_us";
+      }
+      {
+        event = [ "BufEnter" "BufWinEnter" ];
+        pattern = [ "*.md" ];
+        command = "Goyo";
+      }
+      {
+        event = [ "BufEnter" "BufWinEnter" ];
+        pattern = [ "*.md" ];
+        command = "Limelight";
+      }
+    ];
   };
-  options.autoCmd = [
-    {
-      event = [ "BufEnter" "BufWinEnter" ];
-      pattern = [ "*.md" ];
-      command = "setlocal spell spelllang=en_us";
-    }
-    {
-      event = [ "BufEnter" "BufWinEnter" ];
-      pattern = [ "*.md" ];
-      command = "Goyo";
-    }
-    {
-      event = [ "BufEnter" "BufWinEnter" ];
-      pattern = [ "*.md" ];
-      command = "Limelight";
-    }
-  ];
 }
