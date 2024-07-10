@@ -1,4 +1,4 @@
-{ pkgs, config, inputs, lib, nvix, ... }:
+{ pkgs, config, inputs, lib, ... }:
 let system = "x86_64-linux";
 in
 {
