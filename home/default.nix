@@ -6,5 +6,6 @@
     ./xdg.nix
     ./rofi.nix
     ./waybar.nix
+    ./nixvim.nix
   ];
 }
