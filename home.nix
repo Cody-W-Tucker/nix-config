@@ -1,4 +1,4 @@
-{ pkgs, config, inputs, lib, ... }:
+{ pkgs, config, inputs, lib, nixvim, ... }:
 
 {
   home.packages = with pkgs; [
@@ -27,6 +27,7 @@
   imports = [
     ./home
     inputs.hyprland.homeManagerModules.default
+    inputs.nixvim.homeManagerModules.nixvim
   ];
   dconf = {
     enable = true;
