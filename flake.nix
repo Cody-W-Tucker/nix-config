@@ -13,7 +13,7 @@
     sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixvim = {
-      url = "github:nix-community/nixvim";
+      url = "github:niksingh710/nvix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
