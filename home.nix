@@ -28,7 +28,6 @@ in
   imports = [
     ./home
     inputs.hyprland.homeManagerModules.default
-    inputs.nvix.packages.${system}.default
   ];
   dconf = {
     enable = true;
