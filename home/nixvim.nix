@@ -35,7 +35,7 @@
     #   })
     # '';
   };
-  autoCmd = [
+  options.autoCmd = [
     {
       event = [ "BufEnter" "BufWinEnter" ];
       pattern = [ "*.md" ];
