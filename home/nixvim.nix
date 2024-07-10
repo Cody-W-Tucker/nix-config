@@ -23,6 +23,10 @@
       vim-pencil
       vim-wordy
       goyo-vim
+      vim-markdown
+      vim-LanguageTool
+      thesaurus_query-vim
+      vim-wordy
       # writegood
     ];
     # extraConfigLua = ''
@@ -31,4 +35,21 @@
     #   })
     # '';
   };
+  autoCmd = [
+    {
+      event = [ "BufEnter" "BufWinEnter" ];
+      pattern = [ "*.md" ];
+      command = "setlocal spell spelllang=en_us";
+    }
+    {
+      event = [ "BufEnter" "BufWinEnter" ];
+      pattern = [ "*.md" ];
+      command = "Goyo";
+    }
+    {
+      event = [ "BufEnter" "BufWinEnter" ];
+      pattern = [ "*.md" ];
+      command = "Limelight";
+    }
+  ];
 }
