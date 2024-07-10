@@ -138,7 +138,6 @@
 
   home.sessionVariables = {
     BROWSER = "google-chrome";
-    EDITOR = "code --wait";
     VISUAL = "code";
     TERMINAL = "kitty";
     VDPAU_DRIVER = "va_gl";
