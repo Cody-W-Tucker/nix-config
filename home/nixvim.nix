@@ -16,6 +16,11 @@
       treesitter.enable = true;
       lsp.enable = true;
       direnv.enable = true;
+      limelight.enable = true;
+      vim-litecorrect.enable = true;
+      vim-pencil.enable = true;
+      vim-wordy.enable = true;
+      writegood.vim.enable = true;
     };
   };
 }
