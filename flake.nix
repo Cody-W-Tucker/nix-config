@@ -47,7 +47,7 @@
         workstation = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs; inherit hardwareConfig; inherit system;
+            inherit inputs; inherit hardwareConfig;
           };
           modules = [
             ./hosts/workstation.nix
@@ -60,7 +60,6 @@
             {
               home-manager.extraSpecialArgs = {
                 inherit inputs; hardwareConfig = hardwareConfig.workstation;
-                inherit system;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
