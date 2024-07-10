@@ -56,6 +56,7 @@
             nixos-hardware.nixosModules.common-pc-ssd
             nixos-hardware.nixosModules.common-gpu-nvidia-sync
             inputs.sops-nix.nixosModules.sops
+            inputs.nvix.packages.${system}.default
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
