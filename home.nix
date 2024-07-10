@@ -138,7 +138,7 @@
 
   home.sessionVariables = {
     BROWSER = "google-chrome";
-    VISUAL = "code";
+    VISUAL = "nvim";
     TERMINAL = "kitty";
     VDPAU_DRIVER = "va_gl";
     NIXOS_OZONE_WL = "1";
