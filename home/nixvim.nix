@@ -11,7 +11,7 @@
       relativenumber = true;
       shiftwidth = 2;
     };
-    profiles = {
+    plugins = {
       telescope.enable = true;
       treesitter.enable = true;
       lsp.enable = true;
