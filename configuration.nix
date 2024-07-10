@@ -7,6 +7,7 @@
     [
       ./secrets/secrets.nix
       ./modules/terminal.nix
+      ./modules/nixvim.nix
     ];
 
   # Networking
