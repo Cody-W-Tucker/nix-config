@@ -16,11 +16,18 @@
       treesitter.enable = true;
       lsp.enable = true;
       direnv.enable = true;
-      limelight.enable = true;
-      vim-litecorrect.enable = true;
-      vim-pencil.enable = true;
-      vim-wordy.enable = true;
-      writegood.vim.enable = true;
     };
+    extraPlugins = with pkgs.vimPlugins; [
+      "limelight"
+      "vim-litecorrect"
+      "vim-pencil"
+      "vim-wordy"
+      "writegood.vim"
+    ];
+    # extraConfigLua = ''
+    #   require('examplePlugin').setup({
+    #     foo = "bar"
+    #   })
+    # '';
   };
 }
