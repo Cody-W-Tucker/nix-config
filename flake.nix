@@ -12,13 +12,13 @@
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nvix = {
-      url = "github:niksingh710/nvix";
+    nixvim = {
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nvix, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
     let
       system = "x86_64-linux";
       hardwareConfig = {
@@ -56,7 +56,6 @@
             nixos-hardware.nixosModules.common-pc-ssd
             nixos-hardware.nixosModules.common-gpu-nvidia-sync
             inputs.sops-nix.nixosModules.sops
-            inputs.nvix.packages.${system}.default
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {

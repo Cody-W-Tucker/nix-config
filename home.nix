@@ -1,6 +1,5 @@
-{ pkgs, config, inputs, lib, ... }:
-let system = "x86_64-linux";
-in
+{ pkgs, config, inputs, lib, nixvim, ... }:
+
 {
   home.packages = with pkgs; [
     # Add some packages to the user environment.
@@ -28,6 +27,7 @@ in
   imports = [
     ./home
     inputs.hyprland.homeManagerModules.default
+    inputs.nvix..homeManagerModules.nixvim
   ];
   dconf = {
     enable = true;
