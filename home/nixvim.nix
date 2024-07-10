@@ -22,6 +22,7 @@
       # vim-litecorrect
       vim-pencil
       vim-wordy
+      goyo-vim
       # writegood
     ];
     # extraConfigLua = ''
