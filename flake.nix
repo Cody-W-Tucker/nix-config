@@ -47,7 +47,7 @@
         workstation = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs; inherit hardwareConfig; inherit system;
+            inherit inputs; inherit hardwareConfig; inherit system; inherit nvix;
           };
           modules = [
             ./hosts/workstation.nix
