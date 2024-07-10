@@ -18,7 +18,7 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
     let
       system = "x86_64-linux";
       hardwareConfig = {
