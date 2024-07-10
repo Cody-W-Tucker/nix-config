@@ -18,11 +18,11 @@
       direnv.enable = true;
     };
     extraPlugins = with pkgs.vimPlugins; [
-      "limelight"
-      "vim-litecorrect"
-      "vim-pencil"
-      "vim-wordy"
-      "writegood.vim"
+      limelight
+      vim-litecorrect
+      vim-pencil
+      vim-wordy
+      writegood
     ];
     # extraConfigLua = ''
     #   require('examplePlugin').setup({
