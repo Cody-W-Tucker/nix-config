@@ -11,13 +11,13 @@
       relativenumber = true;
       shiftwidth = 2;
     };
-    autoCmd = [
-      {
-        event = [ "BufEnter" "BufWinEnter" ];
-        pattern = [ "*.md" ];
-        command = "Goyo";
-      }
-    ];
+    # autoCmd = [
+    #   {
+    #     event = [ "BufEnter" "BufWinEnter" ];
+    #     pattern = [ "*.md" ];
+    #     command = "Goyo";
+    #   }
+    # ];
     plugins = {
       telescope.enable = true;
       treesitter.enable = true;
