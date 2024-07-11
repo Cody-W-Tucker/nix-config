@@ -137,10 +137,10 @@
   stylix.image = config.lib.stylix.pixel "base0A";
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
 
-  hardware.nvidia.prime = {
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:1:0:0";
-  };
+  # hardware.nvidia.prime = {
+  #   intelBusId = "PCI:0:2:0";
+  #   nvidiaBusId = "PCI:1:0:0";
+  # };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
