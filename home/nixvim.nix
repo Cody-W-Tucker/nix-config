@@ -15,7 +15,12 @@
       {
         event = [ "BufEnter" ];
         pattern = [ "*.md" ];
-        command = "PencilSoft | Goyo";
+        command = "PencilSoft";
+      }
+      {
+        event = [ "BufEnter" ];
+        pattern = [ "*.md" ];
+        command = "Goyo";
       }
     ];
     plugins = {
