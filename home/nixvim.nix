@@ -11,13 +11,13 @@
       relativenumber = true;
       shiftwidth = 2;
     };
-    # autoCmd = [
-    #   {
-    #     event = [ "BufEnter" "BufWinEnter" ];
-    #     pattern = [ "*.md" ];
-    #     command = "Goyo";
-    #   }
-    # ];
+    autoCmd = [
+      {
+        event = [ "BufEnter" ];
+        pattern = [ "*.md" ];
+        command = "PencilSoft | Goyo";
+      }
+    ];
     plugins = {
       telescope.enable = true;
       treesitter.enable = true;
@@ -30,16 +30,32 @@
       vim-pencil
       vim-wordy
       goyo-vim
-      vim-markdown
       vim-LanguageTool
       thesaurus_query-vim
       vim-wordy
       # writegood
     ];
-    # extraConfigLua = ''
-    #   require('examplePlugin').setup({
-    #     foo = "bar"
-    #   })
-    # '';
+    extraConfigLua = ''
+            function! s:goyo_enter()
+        let b:quitting = 0
+        let b:quitting_bang = 0
+        autocmd QuitPre <buffer> let b:quitting = 1
+        cabbrev <buffer> q! let b:quitting_bang = 1 <bar> q!
+      endfunction
+
+      function! s:goyo_leave()
+        " Quit Vim if this is the only remaining buffer
+        if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
+          if b:quitting_bang
+            qa!
+          else
+            qa
+          endif
+        endif
+      endfunction
+
+      autocmd! User GoyoEnter call <SID>goyo_enter()
+      autocmd! User GoyoLeave call <SID>goyo_leave()
+    '';
   };
 }
