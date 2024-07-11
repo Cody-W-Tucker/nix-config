@@ -54,7 +54,7 @@
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-pc-ssd
-            nixos-hardware.nixosModules.common-gpu-nvidia-noprime
+            nixos-hardware.nixosModules.common-gpu-nvidia-nonprime
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
