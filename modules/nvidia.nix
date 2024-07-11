@@ -8,16 +8,15 @@
 
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = [ "nvidia" ];
-  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
+  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" "nvidia-drm.fbdev=1" ];
 
   hardware.nvidia = {
-
-    # Modesetting is required.
     modesetting.enable = true;
 
     # Whether to enable power management thorugh systemd.
     # https://search.nixos.org/options?channel=24.05&show=hardware.nvidia.powerManagement.enable
     powerManagement.enable = true;
+    forceFullCompositionPipeline = true;
 
     # Fine-grained power management. Turns off GPU when not in use.
     # Experimental and only works on modern Nvidia GPUs (Turing or newer).
