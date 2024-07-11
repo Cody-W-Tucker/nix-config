@@ -15,17 +15,7 @@
       {
         event = [ "BufEnter" "BufWinEnter" ];
         pattern = [ "*.md" ];
-        command = "setlocal spell spelllang=en_us";
-      }
-      {
-        event = [ "BufEnter" "BufWinEnter" ];
-        pattern = [ "*.md" ];
         command = "Goyo";
-      }
-      {
-        event = [ "BufEnter" "BufWinEnter" ];
-        pattern = [ "*.md" ];
-        command = "Limelight";
       }
     ];
     plugins = {
