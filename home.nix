@@ -141,7 +141,7 @@
     VISUAL = "nvim";
     TERMINAL = "kitty";
     VDPAU_DRIVER = "va_gl";
-    NIXOS_OZONE_WL = "1";
+    NIXOS_OZONE_WL = 1;
     GDK_BACKEND = "wayland";
     CLUTTER_BACKEND = "wayland";
     SDL_VIDEODRIVER = "wayland";
@@ -149,6 +149,10 @@
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     MOZ_ENABLE_WAYLAND = "1";
+    LIBVA_DRIVER_NAME = "nvidia";
+    XDG_SESSION_TYPE = "wayland";
+    GBM_BACKEND = "nvidia-drm";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
   };
 
   # The state version is required and should stay at the version you originally installed.
