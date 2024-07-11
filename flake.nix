@@ -24,12 +24,12 @@
       hardwareConfig = {
         workstation = {
           workspace = [
-            "1, monitor:DP-0, default:true"
-            "2, monitor:HDMI-0, default:true"
+            "1, monitor:DP-4, default:true"
+            "2, monitor:HDMI-A-4, default:true"
           ];
           monitor = [
-            "HDMI-0,2560x1080@60,0x0,1"
-            "DP-0,2560x1080@60,0x1080,1"
+            "HDMI-A-4,2560x1080@60,0x0,1"
+            "DP-4,2560x1080@60,0x1080,1"
           ];
         };
         family = {
