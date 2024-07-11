@@ -24,8 +24,8 @@
       hardwareConfig = {
         workstation = {
           workspace = [
-            "1, monitor:DP-1, default:true"
-            "2, monitor:DP-2, default:true"
+            "1, monitor:DP-0, default:true"
+            "2, monitor:HDMI-0, default:true"
           ];
           monitor = [
             "DP-2,2560x1080@60,0x0,1"
