@@ -44,72 +44,40 @@
       fsType = "ext4";
     };
 
-  environment.systemPackages = [ pkgs.cifs-utils ];
-
   fileSystems."/home/codyt/Records" = {
-    device = "//192.168.254.25/codythome/Records";
-    fsType = "cifs";
-    options = [
-      "vers=3.0"
-      "credentials=/etc/nixos/secrets/smb"
-      "uid=1000"
-      "gid=1000"
-    ];
+    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Records";
+    fsType = "none";
+    options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Business" = {
-    device = "//192.168.254.25/codythome/Business";
-    fsType = "cifs";
-    options = [
-      "vers=3.0"
-      "credentials=/etc/nixos/secrets/smb"
-      "uid=1000"
-      "gid=1000"
-    ];
+    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Business";
+    fsType = "none";
+    options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Documents" = {
-    device = "//192.168.254.25/codythome/Documents";
-    fsType = "cifs";
-    options = [
-      "vers=3.0"
-      "credentials=/etc/nixos/secrets/smb"
-      "uid=1000"
-      "gid=1000"
-    ];
+    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Documents";
+    fsType = "none";
+    options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Music" = {
-    device = "//192.168.254.25/codythome/Music";
-    fsType = "cifs";
-    options = [
-      "vers=3.0"
-      "credentials=/etc/nixos/secrets/smb"
-      "uid=1000"
-      "gid=1000"
-    ];
+    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Music";
+    fsType = "none";
+    options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Pictures" = {
-    device = "//192.168.254.25/codythome/Pictures";
-    fsType = "cifs";
-    options = [
-      "vers=3.0"
-      "credentials=/etc/nixos/secrets/smb"
-      "uid=1000"
-      "gid=1000"
-    ];
+    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Pictures";
+    fsType = "none";
+    options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Videos" = {
-    device = "//192.168.254.25/codythome/Videos";
-    fsType = "cifs";
-    options = [
-      "vers=3.0"
-      "credentials=/etc/nixos/secrets/smb"
-      "uid=1000"
-      "gid=1000"
-    ];
+    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Videos";
+    fsType = "none";
+    options = [ "bind" ];
   };
 
   swapDevices = [ ];
@@ -134,13 +102,16 @@
   };
 
   # Setting the color theme and default wallpaper
-  stylix.image = config.lib.stylix.pixel "base0A";
+  stylix.image = "/etc/nixos/modules/wallpapers/lex.png";
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
 
   # hardware.nvidia.prime = {
   #   intelBusId = "PCI:0:2:0";
   #   nvidiaBusId = "PCI:1:0:0";
   # };
+
+  # Backup configuration
+  services.syncthing.user = "codyt";
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
