@@ -45,37 +45,37 @@
     };
 
   fileSystems."/home/codyt/Records" = {
-    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Records";
+    device = "/mnt/backup/Share/Records";
     fsType = "none";
     options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Business" = {
-    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Business";
+    device = "/mnt/backup/Share/Business";
     fsType = "none";
     options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Documents" = {
-    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Documents";
+    device = "/mnt/backup/Share/Documents";
     fsType = "none";
     options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Music" = {
-    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Music";
+    device = "/mnt/backup/Share/Music";
     fsType = "none";
     options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Pictures" = {
-    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Pictures";
+    device = "/mnt/backup/Share/Pictures";
     fsType = "none";
     options = [ "bind" ];
   };
 
   fileSystems."/home/codyt/Videos" = {
-    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40/Share/Videos";
+    device = "/mnt/backup/Share/Videos";
     fsType = "none";
     options = [ "bind" ];
   };
