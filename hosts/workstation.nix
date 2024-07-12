@@ -102,7 +102,7 @@
   };
 
   # Setting the color theme and default wallpaper
-  stylix.image = "../modules/wallpapers/lex.png";
+  stylix.image = config.lib.stylix.pixel "base0A";
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
 
   # hardware.nvidia.prime = {
