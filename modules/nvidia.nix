@@ -16,11 +16,11 @@
     # Whether to enable power management thorugh systemd.
     # https://search.nixos.org/options?channel=24.05&show=hardware.nvidia.powerManagement.enable
     powerManagement.enable = true;
-    forceFullCompositionPipeline = true;
+    forceFullCompositionPipeline = false;
 
     # Fine-grained power management. Turns off GPU when not in use.
     # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-    powerManagement.finegrained = false;
+    powerManagement.finegrained = true;
 
     # Use the NVidia open source kernel module (not to be confused with the
     # independent third-party "nouveau" open source driver).
