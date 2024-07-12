@@ -36,14 +36,9 @@
     };
     extraPlugins = with pkgs.vimPlugins; [
       limelight-vim
-      # vim-litecorrect
       vim-pencil
-      vim-wordy
       goyo-vim
-      vim-LanguageTool
-      thesaurus_query-vim
-      vim-wordy
-      # writegood
+      vim-grammarous
     ];
   };
 }
