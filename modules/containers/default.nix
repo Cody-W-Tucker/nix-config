@@ -10,5 +10,6 @@
 
   imports = [
     ./arm.nix
+    ./actualBudget.nix
   ];
 }
