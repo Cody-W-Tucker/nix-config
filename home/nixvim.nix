@@ -22,6 +22,11 @@
         pattern = [ "*.md" ];
         command = "Goyo";
       }
+      {
+        event = [ "BufEnter" ];
+        pattern = [ "*.md" ];
+        command = "Limelight";
+      }
     ];
     plugins = {
       telescope.enable = true;
