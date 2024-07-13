@@ -70,6 +70,11 @@
     bluetooth = {
       enable = true;
       powerOnBoot = true;
+      input = {
+        General = {
+          UserspaceHID = true;
+        };
+      };
     };
   };
 
