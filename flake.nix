@@ -99,7 +99,7 @@
           modules = [
             ./hosts/server.nix
             # Using community hardware configurations
-            nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
+            nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
           ];
