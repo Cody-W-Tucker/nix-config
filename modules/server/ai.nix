@@ -19,8 +19,9 @@
       openFirewall = true;
       host = "0.0.0.0";
     };
+    # TODO: Once the broken tensor flow is fixed, we can enable this.
     open-webui = {
-      enable = true;
+      enable = false;
       port = 11435;
       host = "0.0.0.0";
       openFirewall = true;
