@@ -9,7 +9,6 @@
     ./ai.nix
     ./syncthing.nix
     # ./automation.nix
-    ./social.nix
   ];
 
   # Acme for SSL
