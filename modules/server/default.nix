@@ -5,7 +5,6 @@
     ./media.nix
     ./photos.nix
     ./samba.nix
-    ./homeAssistant.nix
     ./nextcloud.nix
     ./ai.nix
     ./syncthing.nix
