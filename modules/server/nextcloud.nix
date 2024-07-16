@@ -5,14 +5,14 @@
 
   services = {
     nginx.virtualHosts = {
-      "homehub.tv" = {
+      "cloud.homehub.tv" = {
         forceSSL = false;
         enableACME = false;
       };
     };
     nextcloud = {
       enable = true;
-      hostName = "homehub.tv";
+      hostName = "cloud.homehub.tv";
       package = pkgs.nextcloud29;
       database.createLocally = true;
       configureRedis = true;
@@ -35,7 +35,7 @@
       settings = {
         # overwriteprotocol = "https";
         trusted_proxies = [ "127.0.0.1" ];
-        trusted_domains = [ "homehub.tv" "docs.homehub.tv" ];
+        trusted_domains = [ "cloud.homehub.tv" "docs.homehub.tv" ];
       };
     };
   };
