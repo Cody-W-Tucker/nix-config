@@ -28,6 +28,7 @@
       domain = "homehub.tv";
       extraDomainNames = [ "*.homehub.tv" ];
       dnsProvider = "cloudflare";
+      dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;
       credentialFiles = {
         "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
