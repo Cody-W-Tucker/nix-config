@@ -22,7 +22,6 @@
     acceptTerms = true;
     defaults = {
       email = "cody@tmvsocial.com";
-      dnsResolver = "192.168.254.25:53";
     };
     certs."homehub.tv" = {
       domain = "homehub.tv";

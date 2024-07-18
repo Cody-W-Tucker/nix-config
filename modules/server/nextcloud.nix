@@ -6,7 +6,7 @@
   services = {
     nginx.virtualHosts = {
       "cloud.homehub.tv" = {
-        forceSSL = false;
+        forceSSL = true;
         useACMEHost = "homehub.tv";
       };
     };
