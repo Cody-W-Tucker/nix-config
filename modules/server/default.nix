@@ -2,13 +2,14 @@
 
 {
   imports = [
+    ./ai.nix
+    # ./automation.nix
+    ./dns.nix
     ./media.nix
+    ./nextcloud.nix
     ./photos.nix
     ./samba.nix
-    ./nextcloud.nix
-    ./ai.nix
     ./syncthing.nix
-    # ./automation.nix
   ];
 
   # Create the acme secret in sops
