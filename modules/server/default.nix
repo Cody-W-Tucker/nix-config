@@ -13,7 +13,7 @@
 
   # Create the acme secret in sops
   sops.secrets.cloudflare-api-email = { };
-  sops.secrets.cloudflare-api-key = { };
+  sops.secrets.cloudflare-global-api-key = { };
 
   # Acme for SSL
   security.acme = {
@@ -27,10 +27,10 @@
       extraDomainNames = [ "*.homehub.tv" ];
       dnsProvider = "cloudflare";
       dnsPropagationCheck = true;
-      # inspo: https://go-acme.github.io/lego/dns/cloudflare/
-      # credentialFiles = {
-      #   "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets.cloudflare-api-key.path;
-      # };
+      credentialFiles = {
+        "CF_API_EMAIL" = config.sops.secrets.cloudflare-api-email.path;
+        "CF_API_KEY" = config.sops.secrets.cloudflare-global-api-key.path;
+      };
     };
   };
 
