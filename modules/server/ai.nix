@@ -5,8 +5,8 @@
   services = {
     nginx.virtualHosts = {
       "search.homehub.tv" = {
-        enableACME = true;
-        forceSSL = true;
+        enableACME = false;
+        forceSSL = false;
         locations."/" = {
           proxyPass = "http://search.homehub.tv:8888";
           proxyWebsockets = true;
@@ -65,5 +65,5 @@
       };
     };
   };
-  networking.firewall.allowedTCPPorts = [ 8888 11436 ];
+  networking.firewall.allowedTCPPorts = [ 11436 ];
 }
