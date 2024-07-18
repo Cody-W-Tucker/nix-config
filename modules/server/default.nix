@@ -28,8 +28,8 @@
       dnsProvider = "cloudflare";
       dnsPropagationCheck = true;
       credentialFiles = {
-        "CF_API_EMAIL" = config.sops.secrets.cloudflare-api-email.path;
-        "CF_API_KEY" = config.sops.secrets.cloudflare-global-api-key.path;
+        "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
+        "CF_API_KEY_FILE" = config.sops.secrets.cloudflare-global-api-key.path;
       };
     };
   };
