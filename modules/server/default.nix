@@ -24,16 +24,16 @@
       server = "https://acme-staging-v02.api.letsencrypt.org/directory";
       dnsResolver = "192.168.254.25:53";
     };
-    # certs."homehub.tv" = {
-    #   domain = "homehub.tv";
-    #   extraDomainNames = [ "*.homehub.tv" ];
-    #   dnsProvider = "cloudflare";
-    #   dnsPropagationCheck = true;
-    #   credentialFiles = {
-    #     "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
-    #     "CF_API_KEY_FILE" = config.sops.secrets.cloudflare-global-api-key.path;
-    #   };
-    # };
+    certs."homehub.tv" = {
+      domain = "homehub.tv";
+      extraDomainNames = [ "*.homehub.tv" ];
+      dnsProvider = "cloudflare";
+      dnsPropagationCheck = true;
+      credentialFiles = {
+        "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
+        "CF_API_KEY_FILE" = config.sops.secrets.cloudflare-global-api-key.path;
+      };
+    };
   };
 
   users.users.nginx.extraGroups = [ "acme" ];
