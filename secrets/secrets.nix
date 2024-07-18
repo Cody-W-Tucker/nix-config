@@ -1,8 +1,6 @@
 { pkgs, inputs, config, ... }:
 
 {
-  imports = [ <sops-nix/modules/sops> ];
-
   sops.defaultSopsFile = ./secrets.yaml;
 
   # This will automatically import SSH keys as age keys
