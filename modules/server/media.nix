@@ -35,8 +35,8 @@
     recommendedOptimisation = true;
     recommendedProxySettings = true;
     virtualHosts."media.homehub.tv" = {
-      forceSSL = false;
-      enableACME = false;
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
       locations."/" = {
         proxyPass = "http://media.homehub.tv:8096";
         proxyWebsockets = true;
