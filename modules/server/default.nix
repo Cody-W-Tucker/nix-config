@@ -34,6 +34,8 @@
     };
   };
 
+  users.users.nginx.extraGroups = [ "acme" ];
+
   networking.firewall = {
     enable = true;
     allowPing = true;
