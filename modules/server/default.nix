@@ -4,7 +4,7 @@
   imports = [
     ./ai.nix
     # ./automation.nix
-    ./dns.nix
+    # ./dns.nix
     ./media.nix
     ./nextcloud.nix
     ./photos.nix
