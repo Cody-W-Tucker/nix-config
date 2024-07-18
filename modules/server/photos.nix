@@ -44,8 +44,8 @@
     clientMaxBodySize = "500m";
     virtualHosts = {
       "photos.homehub.tv" = {
-        forceSSL = true;
-        enableACME = true;
+        forceSSL = false;
+        enableACME = false;
         http2 = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:2342";
