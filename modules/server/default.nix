@@ -28,9 +28,9 @@
       dnsProvider = "cloudflare";
       dnsPropagationCheck = true;
       # inspo: https://go-acme.github.io/lego/dns/cloudflare/
-      credentialFiles = {
-        "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets.cloudflare-api-key.path;
-      };
+      # credentialFiles = {
+      #   "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets.cloudflare-api-key.path;
+      # };
     };
   };
 
