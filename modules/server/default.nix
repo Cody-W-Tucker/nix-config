@@ -21,6 +21,7 @@
     defaults = {
       email = "cody@tmvsocial.com";
       server = "https://acme-staging-v02.api.letsencrypt.org/directory";
+      dnsResolver = "192.168.254.38:53";
     };
     certs."homehub.tv" = {
       domain = "homehub.tv";
