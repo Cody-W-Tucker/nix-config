@@ -6,7 +6,7 @@
       owner = "nextcloud";
       group = "nextcloud";
     };
-    onlyofficejwtSecretFile = {
+    onlyoffice-jwtSecretFile = {
       owner = "onlyoffice";
       group = "onlyoffice";
     };
@@ -54,7 +54,7 @@
     onlyoffice = {
       enable = true;
       hostname = "docs.homehub.tv";
-      jwtSecretFile = config.sops.secrets.onlyofficejwtSecretFile.path;
+      jwtSecretFile = config.sops.secrets.onlyoffice-jwtSecretFile.path;
     };
   };
 }
