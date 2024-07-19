@@ -16,7 +16,7 @@
         useACMEHost = "homehub.tv";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://192.168.254.25:11434";
+          proxyPass = "http://192.168.254.25:11435";
           proxyWebsockets = true;
         };
       };
