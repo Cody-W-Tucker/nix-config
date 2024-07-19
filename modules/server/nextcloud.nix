@@ -1,9 +1,15 @@
 { config, lib, pkgs, ... }:
 
 {
-  sops.secrets.nextcloud-adminpassfile = {
-    owner = "nextcloud";
-    group = "nextcloud";
+  sops.secrets = {
+    nextcloud-adminpassfile = {
+      owner = "nextcloud";
+      group = "nextcloud";
+    };
+    onlyofficejwtSecretFile = {
+      owner = "onlyoffice";
+      group = "onlyoffice";
+    };
   };
 
   services = {
@@ -48,6 +54,7 @@
     onlyoffice = {
       enable = true;
       hostname = "docs.homehub.tv";
+      jwtSecretFile = config.sops.secrets.onlyofficejwtSecretFile.path;
     };
   };
 }
