@@ -56,4 +56,10 @@
       device = "/mnt/hdd/Photos";
       options = [ "bind" ];
     };
+
+  fileSystems."/var/lib/private/photoprism/import" =
+    {
+      device = "/var/lib/nextcloud/data/codyt/files/InstantUpload/Camera";
+      options = [ "bind" ];
+    };
 }
