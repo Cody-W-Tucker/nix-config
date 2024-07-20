@@ -155,6 +155,7 @@
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
   };
 
+  # Orginally 23.11 but I installed on a new computer at 24.05, not sure which to use.
   # The state version is required and should stay at the version you originally installed.
   home.stateVersion = "24.05";
 }
