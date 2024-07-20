@@ -31,9 +31,6 @@
 
   # NGINX
   services.nginx = {
-    recommendedGzipSettings = true;
-    recommendedOptimisation = true;
-    recommendedProxySettings = true;
     virtualHosts."media.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";

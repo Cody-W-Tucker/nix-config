@@ -16,7 +16,7 @@
         useACMEHost = "homehub.tv";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://192.168.254.25:11435";
+          proxyPass = "http://127.0.0.1:11435";
           proxyWebsockets = true;
         };
       };
@@ -24,7 +24,7 @@
         useACMEHost = "homehub.tv";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://192.168.254.25:11434";
+          proxyPass = "http://127.0.0.1:11434";
         };
       };
     };
@@ -32,12 +32,12 @@
       enable = true;
       port = 11434;
       openFirewall = false;
-      host = "0.0.0.0";
+      host = "127.0.0.1";
     };
     open-webui = {
       enable = true;
       port = 11435;
-      host = "0.0.0.0";
+      host = "127.0.0.1";
       openFirewall = false;
       environment = {
         OLLAMA_API_BASE_URL = "https://ollama.homehub.tv";
@@ -60,7 +60,7 @@
         server = {
           base_url = "http://search.homehub.tv:8888";
           port = 8888;
-          bind_address = "0.0.0.0";
+          bind_address = "127.0.0.1";
           secret_key = "secret";
           limiter = false;
           image_proxy = true;
@@ -80,5 +80,4 @@
       };
     };
   };
-  networking.firewall.allowedTCPPorts = [ 11436 ];
 }

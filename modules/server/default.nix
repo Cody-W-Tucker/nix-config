@@ -37,11 +37,19 @@
     };
   };
 
+  services.nginx = {
+    enable = true;
+    recommendedTlsSettings = true;
+    recommendedOptimisation = true;
+    recommendedGzipSettings = true;
+    recommendedProxySettings = true;
+  };
+
   users.users.nginx.extraGroups = [ "acme" ];
 
   networking.firewall = {
     enable = true;
     allowPing = true;
-    allowedTCPPorts = [ 80 443 8384 ];
+    allowedTCPPorts = [ 80 443 ];
   };
 }
