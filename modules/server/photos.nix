@@ -16,7 +16,7 @@
       PHOTOPRISM_DATABASE_SERVER = "/run/mysqld/mysqld.sock";
       PHOTOPRISM_DATABASE_USER = "photoprism";
       PHOTOPRISM_SITE_URL = "https://photos.homehub.tv:2342";
-      PHOTOPRISM_SITE_TITLE = "My PhotoPrism";
+      PHOTOPRISM_SITE_TITLE = "Photos";
     };
   };
 
@@ -48,6 +48,13 @@
         };
       };
     };
+  };
+
+  # Change the user and group for the systemd service
+  systemd.services.photoprism.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    User = lib.mkForce "codyt";
+    Group = lib.mkForce "users";
   };
 
   # Change the path to the originals directory
