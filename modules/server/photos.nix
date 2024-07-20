@@ -6,7 +6,7 @@
     enable = true;
     port = 2342;
     originalsPath = "/var/lib/private/photoprism/originals";
-    address = "0.0.0.0";
+    address = "127.0.0.1";
     settings = {
       PHOTOPRISM_ADMIN_USER = "admin";
       PHOTOPRISM_ADMIN_PASSWORD = "admin";
@@ -36,11 +36,6 @@
 
   # NGINX
   services.nginx = {
-    enable = true;
-    recommendedTlsSettings = true;
-    recommendedOptimisation = true;
-    recommendedGzipSettings = true;
-    recommendedProxySettings = true;
     clientMaxBodySize = "500m";
     virtualHosts = {
       "photos.homehub.tv" = {
