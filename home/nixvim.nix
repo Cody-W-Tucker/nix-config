@@ -38,7 +38,6 @@
       limelight-vim
       vim-pencil
       goyo-vim
-      vim-grammarous
     ];
   };
 }
