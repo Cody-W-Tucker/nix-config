@@ -7,7 +7,7 @@
       useACMEHost = "homehub.tv";
       http2 = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:8384";
+        proxyPass = "http://127.0.0.1:8384/";
         proxyWebsockets = true;
         extraConfig = ''
           proxy_set_header        Host $host;
