@@ -20,6 +20,7 @@ with lib;
       exec-once = [
         "swww restore || swww-daemon"
         "mako"
+        "exec-once = dbus-update-activation-environment --systemd --all"
       ];
       workspace = hardwareConfig.workspace;
       cursor.no_hardware_cursors = true;
