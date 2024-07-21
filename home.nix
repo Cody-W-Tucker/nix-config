@@ -15,6 +15,7 @@
     mako
     swww
     rofi-wayland
+    zed-editor
     vscode
     openrazer-daemon
     todoist-electron
