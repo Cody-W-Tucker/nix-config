@@ -114,7 +114,7 @@ with lib;
           "$mainMod, KP_Begin, exec, google-chrome-stable --app=https://app.reclaim.ai/planner?taskSort=schedule"
           "$mainMod, KP_Right, exec, google-chrome-stable --app=https://tmvsocial.harvestapp.com/time/week"
           # Number keys (7, 8, 9)
-          "$mainMod, KP_Home, exec, zed"
+          "$mainMod, KP_Home, exec, code"
           # Skipped 8 KP_Up
           "$mainMod, KP_Prior, exec, google-chrome-stable --app=https://tmv-social.odoo.com/web?action=277&model=account.journal&view_type=kanban&cids=1&menu_id=114"
           # Screenshots
