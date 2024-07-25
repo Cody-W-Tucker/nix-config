@@ -7,6 +7,7 @@
     # ./dns.nix
     ./media.nix
     ./nextcloud.nix
+    ./odoo.nix
     ./photos.nix
     ./samba.nix
     ./syncthing.nix
