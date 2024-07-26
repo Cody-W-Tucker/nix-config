@@ -50,6 +50,10 @@
       redisCreateLocally = true;
       settings = {
         use_default_settings = true;
+        outgoing = {
+          request_timeout = 15.0;
+          max_request_timeout = 30.0;
+        };
         server = {
           base_url = "http://search.homehub.tv:8888";
           port = 8888;
