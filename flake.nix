@@ -77,7 +77,7 @@
             ./hosts/family-desktop.nix
             stylix.nixosModules.stylix
             # Using community hardware configurations
-            nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
+            nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
