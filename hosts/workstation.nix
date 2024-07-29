@@ -25,6 +25,7 @@
   # Use the latest kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  boot.supportedFilesystems = [ "ntfs" ];
   fileSystems."/" =
     {
       device = "/dev/disk/by-uuid/9e34e9a8-f360-45a6-b6e2-ceab59a207d9";
@@ -36,6 +37,13 @@
       device = "/dev/disk/by-uuid/DAAA-35C7";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
+    };
+
+  fileSystems."/mnt/local-share" =
+    {
+      device = "/dev/disk/by-uuid/B466DF5B66DF1D44";
+      fsType = "ntfs-3g";
+      options = [ "rw" "uid=1000" ];
     };
 
   fileSystems."/mnt/backup" =
