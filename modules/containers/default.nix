@@ -3,7 +3,13 @@
 {
   # Using Docker
   virtualisation = {
-    docker.enable = true;
+    docker = {
+      enable = true;
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
+    };
     oci-containers.backend = "docker";
   };
 

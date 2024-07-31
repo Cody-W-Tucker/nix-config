@@ -79,16 +79,6 @@
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
             inputs.sops-nix.nixosModules.sops
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                inherit inputs; hardwareConfig = hardwareConfig.family;
-              };
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt = import ./home.nix;
-            }
           ];
         };
         server = nixpkgs.lib.nixosSystem {
