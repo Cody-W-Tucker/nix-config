@@ -75,6 +75,7 @@
     hashedPassword = "$y$j9T$T1YkmagP6ULuI6DvQz8IK0$38YlfZN9eR1jH286/9kZn13flzy.wFtPX74ukXKJhM7";
     packages = with pkgs; [
       # thunderbird
+      krita
     ];
   };
 
