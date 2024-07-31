@@ -3,13 +3,10 @@
 {
   home.packages = with pkgs; [
     # Add some packages to the user environment.
-    dconf
     grim
     slurp
     wl-clipboard
     hyprpicker
-    hyprlock
-    hypridle
     starship
     waybar
     mako
@@ -18,11 +15,8 @@
     zed-editor
     vscode
     openrazer-daemon
-    todoist-electron
-    brightnessctl
     gh
     ripdrag
-    picard
   ];
 
   imports = [
@@ -154,6 +148,7 @@
     XDG_SESSION_TYPE = "wayland";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    NVD_BACKEND = "direct";
   };
 
   # Orginally 23.11 but I installed on a new computer at 24.05, not sure which to use.

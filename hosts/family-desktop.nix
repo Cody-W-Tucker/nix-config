@@ -38,6 +38,19 @@
   # Enable automatic login for the user.
   services.displayManager.autoLogin.user = "jordant";
 
+  users.users.jordant = {
+    isNormalUser = true;
+    description = "Jordan Tucker";
+    extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
+    # hashedPasswordFile = config.sops.secrets.jordant.path;
+    hashedPassword = "$y$j9T$T1YkmagP6ULuI6DvQz8IK0$38YlfZN9eR1jH286/9kZn13flzy.wFtPX74ukXKJhM7";
+    packages = with pkgs; [
+      # thunderbird
+      krita
+    ];
+  };
+
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
