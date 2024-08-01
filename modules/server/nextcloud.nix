@@ -6,19 +6,11 @@
       owner = "nextcloud";
       group = "nextcloud";
     };
-    onlyoffice-jwtSecretFile = {
-      owner = "onlyoffice";
-      group = "onlyoffice";
-    };
   };
 
   services = {
     nginx.virtualHosts = {
       "cloud.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-      };
-      "docs.homehub.tv" = {
         forceSSL = true;
         useACMEHost = "homehub.tv";
       };
@@ -37,7 +29,7 @@
       extraApps = with config.services.nextcloud.package.packages.apps; {
         # List of apps we want to install and are already packaged in
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/servers/nextcloud/packages/nextcloud-apps.json
-        inherit calendar contacts mail notes onlyoffice tasks cookbook;
+        inherit calendar contacts mail notes richdocuments tasks cookbook;
       };
 
       config = {
@@ -50,11 +42,6 @@
         trusted_proxies = [ "127.0.0.1" ];
         trusted_domains = [ "cloud.homehub.tv" "docs.homehub.tv" ];
       };
-    };
-    onlyoffice = {
-      enable = true;
-      hostname = "docs.homehub.tv";
-      jwtSecretFile = config.sops.secrets.onlyoffice-jwtSecretFile.path;
     };
     # Syncthing backup
     syncthing.settings.folders."nextcloud" = {
