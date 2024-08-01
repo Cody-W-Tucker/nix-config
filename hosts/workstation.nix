@@ -120,7 +120,32 @@
   # };
 
   # Backup configuration
-  services.syncthing.user = "codyt";
+  services.syncthing = {
+    user = "codyt";
+    group = "users";
+    settings.folders = {
+      "share" = {
+        path = "/mnt/backup/Share";
+        devices = [ "server" "workstation" ];
+      };
+      "media" = {
+        path = "/mnt/backup/Media";
+        devices = [ "server" "workstation" ];
+      };
+      "photos" = {
+        path = "/mnt/backup/Photos";
+        devices = [ "server" "workstation" ];
+      };
+      "nextcloud" = {
+        path = "/mnt/backup/Nextcloud";
+        devices = [ "server" "workstation" ];
+      };
+      "actualBudget" = {
+        path = "/mnt/backup/ActualBudget";
+        devices = [ "server" "workstation" ];
+      };
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
