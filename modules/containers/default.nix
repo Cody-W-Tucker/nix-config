@@ -17,5 +17,6 @@
   imports = [
     ./arm.nix
     ./actualBudget.nix
+    ./collabora.nix
   ];
 }
