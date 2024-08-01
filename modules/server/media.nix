@@ -40,4 +40,10 @@
       };
     };
   };
+
+  # Syncthing backup
+  services.syncthing.settings.folders."media" = {
+    path = "/mnt/hdd/Media";
+    devices = [ "server" "workstation" ];
+  };
 }

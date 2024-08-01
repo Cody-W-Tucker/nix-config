@@ -20,7 +20,7 @@
     '';
     shares = {
       codytHome = {
-        path = "/home/codyt/Share";
+        path = "/mnt/hdd/Share";
         browseable = "yes";
         "read only" = "no";
         "guest ok" = "no";
@@ -55,5 +55,11 @@
   services.samba-wsdd = {
     enable = true;
     openFirewall = true;
+  };
+
+  # Syncthing backup
+  services.syncthing.settings.folders."share" = {
+    path = "/mnt/hdd/Share";
+    devices = [ "server" "workstation" ];
   };
 }

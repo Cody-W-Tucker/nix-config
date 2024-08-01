@@ -53,7 +53,7 @@
   users.users.codyt = {
     isNormalUser = true;
     description = "Cody Tucker";
-    extraGroups = [ "networkmanager" "wheel" "docker" "photoprism" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
     # hashedPasswordFile = config.sops.secrets.codyt.path;
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
@@ -82,6 +82,12 @@
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
+  };
+
+  # Syncthing shared configuration
+  services.syncthing.settings.devices = {
+    "server" = { id = "RWUUJ5C-MDAHVZZ-M7FK6NB-W5WAWIX-QFFDD4G-7QAQWHG-73ZM7Y5-6X5YCQR"; };
+    "workstation" = { id = "7YDHDRD-FYM5KFG-BKQLPGL-RFP6JFE-DXD27F4-HVJWV3A-TAKVJSX-LGNHNQM"; };
   };
 
   # Enable fail2ban to block brute-force attacks.

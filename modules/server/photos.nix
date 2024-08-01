@@ -50,6 +50,13 @@
     };
   };
 
+  # Syncthing backup
+  services.syncthing.settings.folders."photos" = {
+    path = "/mnt/hdd/Photos";
+    devices = [ "server" "workstation" ];
+    ignorePerms = true;
+  };
+
   # Change the path to the originals directory
   fileSystems."/var/lib/private/photoprism/originals" =
     {
