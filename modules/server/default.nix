@@ -11,7 +11,6 @@
     ./samba.nix
     ./syncthing.nix
     ./social.nix
-    ./security.nix
   ];
 
   # Create the acme secret in sops
