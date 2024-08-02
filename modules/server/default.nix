@@ -10,6 +10,7 @@
     ./photos.nix
     ./samba.nix
     ./syncthing.nix
+    ./social.nix
   ];
 
   # Create the acme secret in sops
