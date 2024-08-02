@@ -12,7 +12,6 @@
     mako
     swww
     rofi-wayland
-    zed-editor
     vscode
     openrazer-daemon
     gh
