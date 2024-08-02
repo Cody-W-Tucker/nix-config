@@ -90,9 +90,6 @@
     "workstation" = { id = "7YDHDRD-FYM5KFG-BKQLPGL-RFP6JFE-DXD27F4-HVJWV3A-TAKVJSX-LGNHNQM"; };
   };
 
-  # Enable fail2ban to block brute-force attacks.
-  services.fail2ban.enable = true;
-
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 }
