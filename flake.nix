@@ -1,13 +1,11 @@
 {
   description = "CodyOS";
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # nix-colors.url = "github:misterio77/nix-colors";
     stylix.url = "github:danth/stylix";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     sops-nix.url = "github:Mic92/sops-nix";
@@ -30,14 +28,6 @@
           monitor = [
             "HDMI-A-4,2560x1080@60,0x0,1"
             "DP-4,2560x1080@60,0x1080,1"
-          ];
-        };
-        family = {
-          workspace = [
-            "1, monitor:DP-1, default:true"
-          ];
-          monitor = [
-            "DP-1,2560x1080@60,0x1080,1"
           ];
         };
       };
@@ -71,7 +61,7 @@
         family = nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
-            inherit inputs; inherit hardwareConfig;
+            inherit inputs;
           };
           modules = [
             ./hosts/family-desktop.nix

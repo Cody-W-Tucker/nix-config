@@ -3,9 +3,9 @@
 {
   imports = [
     ./hyprland.nix
-    ./xdg.nix
+    ./nixvim.nix
     ./rofi.nix
     ./waybar.nix
-    ./nixvim.nix
+    ./xdg.nix
   ];
 }

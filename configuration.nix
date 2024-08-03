@@ -38,6 +38,7 @@
     git
     nixpkgs-fmt
     ranger
+    starship
   ];
 
   # Make passwords uneditable

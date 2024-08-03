@@ -5,7 +5,7 @@
     enable = true;
     presets = [ "nerd-font-symbols" ];
     settings = {
-      add_newline = true;
+      add_newline = false;
     };
   };
 
