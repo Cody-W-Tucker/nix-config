@@ -16,7 +16,6 @@
     };
     settings = {
       exec-once = [
-        "wallpaper"
         "mako"
         "dbus-update-activation-environment --systemd --all"
       ];
