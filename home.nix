@@ -7,13 +7,10 @@
     slurp
     wl-clipboard
     hyprpicker
-    starship
-    waybar
     mako
     swww
     rofi-wayland
     vscode
-    openrazer-daemon
     gh
     ripdrag
   ];

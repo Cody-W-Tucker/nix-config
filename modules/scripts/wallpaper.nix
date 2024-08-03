@@ -20,7 +20,7 @@ pkgs.writeShellScriptBin "wallpaper" ''
   # Function to set a random wallpaper
   set_random_wallpaper() {
     if [ -d "$wallpaperDir" ]; then
-      find ''${wallpaperDir} \
+      find ''${wallpaperDir} -type f \
         | while read -r img; do
             echo "$((RANDOM % 1000)):$img"
         done \
