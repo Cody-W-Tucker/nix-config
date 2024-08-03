@@ -96,7 +96,6 @@
           "$mainMod, V, togglefloating"
           "$mainMod, Tab, exec, rofi-launcher"
           "$mainMod, F, fullscreen"
-          "$mainMod SHIFT, F, fakefullscreen"
           # Number keys (0, -, +)
           "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://ai.homehub.tv"
           "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
