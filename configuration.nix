@@ -39,6 +39,7 @@
     nixpkgs-fmt
     ranger
     starship
+    btop
   ];
 
   # Make passwords uneditable
