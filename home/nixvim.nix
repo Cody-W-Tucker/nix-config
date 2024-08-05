@@ -6,6 +6,12 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
+    clipboard = {
+      # Use system clipboard
+      register = "unnamedplus";
+
+      providers.wl-copy.enable = true;
+    };
     opts = {
       number = true;
       relativenumber = true;
@@ -25,7 +31,12 @@
       {
         event = [ "BufEnter" ];
         pattern = [ "*.md" ];
-        command = "Limelight";
+        command = "Twilight";
+      }
+      {
+        event = [ "BufEnter" ];
+        pattern = [ "*.md" ];
+        command = "setlocal spell spelllang=en_us";
       }
     ];
     plugins = {
@@ -33,11 +44,16 @@
       treesitter.enable = true;
       lsp.enable = true;
       direnv.enable = true;
+      twilight = {
+        enable = true;
+        settings.context = 3;
+      };
+      goyo = {
+        enable = true;
+      };
     };
     extraPlugins = with pkgs.vimPlugins; [
-      limelight-vim
       vim-pencil
-      goyo-vim
     ];
   };
 }
