@@ -46,7 +46,7 @@
       direnv.enable = true;
       twilight = {
         enable = true;
-        settings.context = 3;
+        settings.context = 1;
       };
       goyo = {
         enable = true;

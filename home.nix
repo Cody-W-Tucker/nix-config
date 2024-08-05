@@ -11,6 +11,7 @@
     swww
     rofi-wayland
     vscode
+    zotero
     gh
     ripdrag
   ];
