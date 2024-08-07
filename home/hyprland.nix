@@ -19,6 +19,8 @@
         "mako"
         "dbus-update-activation-environment --systemd --all"
       ];
+      # TODO: Remove explicit_sync when the nvidia driver is fixed
+      # render.explicit_sync = "no";
       workspace = hardwareConfig.workspace;
       cursor.no_hardware_cursors = true;
       animations = {
