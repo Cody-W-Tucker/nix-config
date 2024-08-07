@@ -39,7 +39,7 @@
     nixpkgs-fmt
     ranger
     starship
-    btop
+    (btop.override { cudaSupport = true; })
   ];
 
   # Make passwords uneditable
