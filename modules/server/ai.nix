@@ -1,5 +1,5 @@
 { config, ... }:
-let dataDir = "${config.users.users.codyt.home}/open-webui";
+let userDir = "${config.users.users.codyt.home}/open-webui";
 in
 {
   # docker run --name open-webui --network=host -e PORT=11435 -e OLLAMA_BASE_URL=http://192.168.254.25:11434 -v ~/open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
@@ -7,7 +7,7 @@ in
     autoStart = true;
     image = "ghcr.io/open-webui/open-webui:main";
     ports = [ "3000:8080" ];
-    volumes = [ "${dataDir}:/app/backend/data" ];
+    volumes = [ "${userDir}:/app/backend/data" ];
     extraOptions = [ "--network=host" ];
     environment = {
       OLLAMA_BASE_URL = "http://192.168.254.25:11434";
@@ -16,10 +16,15 @@ in
       ANONYMIZED_TELEMETRY = "False";
       DO_NOT_TRACK = "True";
       SCARF_NO_ANALYTICS = "True";
-      SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
       USER_AGENT = "Ollama";
-      ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION = "False";
       AIOHTTP_CLIENT_TIMEOUT = "600";
+      DOCS_DIR = "${userDir}/docs";
+      ENABLE_RAG_WEB_SEARCH = "True";
+      RAG_WEB_SEARCH_ENGINE = "searxng";
+      SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
+      ENABLE_RAG_HYBRID_SEARCH = "True";
+      RAG_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6";
+      RAG_RERANKING_MODEL = "sentence-transformers/all-MiniLM-L6";
     };
   };
   # Ollama local llm
