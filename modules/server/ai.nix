@@ -1,5 +1,5 @@
 { config, ... }:
-let dataDir = "${config.users.users.mat.home}/open-webui";
+let dataDir = "${config.users.users.codyt.home}/open-webui";
 in
 {
   virtualisation.oci-containers.containers.open-webui = {
