@@ -3,7 +3,7 @@ let dataDir = "${config.users.users.codyt.home}/open-webui";
 in
 {
   virtualisation.oci-containers.containers.open-webui = {
-    autoStart = true;
+    autoStart = false;
     image = "ghcr.io/open-webui/open-webui";
     ports = [ "11435:8080" ];
     volumes = [ "${dataDir}:/app/backend/data" ];
