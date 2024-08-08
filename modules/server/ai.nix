@@ -6,7 +6,7 @@ in
   virtualisation.oci-containers.containers."open-webui" = {
     autoStart = true;
     image = "ghcr.io/open-webui/open-webui:main";
-    ports = [ "11435" ];
+    ports = [ "11435:11435" ];
     volumes = [ "${dataDir}:/app/backend/data" ];
     extraOptions = [ "--network=host" ];
     environment = {
