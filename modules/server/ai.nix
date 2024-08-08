@@ -20,7 +20,6 @@ in
       USER_AGENT = "Ollama";
       ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION = "False";
       AIOHTTP_CLIENT_TIMEOUT = "600";
-      HTTPS_PROXY = "https://ai.homehub.tv";
     };
   };
   # Ollama local llm
@@ -30,7 +29,7 @@ in
         useACMEHost = "homehub.tv";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://search.homehub.tv:8888";
+          proxyPass = "http://127.0.0.1:8888";
           proxyWebsockets = true;
         };
       };
@@ -82,7 +81,7 @@ in
           bind_address = "0.0.0.0";
           secret_key = "secret";
           limiter = false;
-          image_proxy = true;
+          image_proxy = false;
         };
         ui = {
           static_use_hash = true;
