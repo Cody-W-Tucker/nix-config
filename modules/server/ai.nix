@@ -23,7 +23,6 @@ in
       SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
       ENABLE_RAG_HYBRID_SEARCH = "True";
       RAG_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6";
-      RAG_RERANKING_MODEL = "sentence-transformers/all-MiniLM-L6";
     };
   };
   # Ollama local llm
