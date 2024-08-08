@@ -1,6 +1,26 @@
-{ config, pkgs, ... }:
-
+{ config, ... }:
+let dataDir = "${config.users.users.mat.home}/open-webui";
+in
 {
+  virtualisation.oci-containers.containers.open-webui = {
+    autoStart = true;
+    image = "ghcr.io/open-webui/open-webui";
+    ports = [ "11435:8080" ];
+    volumes = [ "${dataDir}:/app/backend/data" ];
+    extraOptions = [ "--network=host" ];
+    environment = {
+      OLLAMA_API_BASE_URL = "http://192.168.254.25:11434";
+      # Disable authentication
+      WEBUI_AUTH = "False";
+      ANONYMIZED_TELEMETRY = "False";
+      DO_NOT_TRACK = "True";
+      SCARF_NO_ANALYTICS = "True";
+      SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
+      USER_AGENT = "Ollama";
+      ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION = "False";
+      AIOHTTP_CLIENT_TIMEOUT = "600";
+    };
+  };
   # Ollama local llm
   services = {
     nginx.virtualHosts = {
@@ -27,24 +47,24 @@
       openFirewall = true;
       host = "0.0.0.0";
     };
-    open-webui = {
-      enable = true;
-      port = 11435;
-      host = "127.0.0.1";
-      openFirewall = false;
-      environment = {
-        OLLAMA_API_BASE_URL = "http://192.168.254.25:11434";
-        # Disable authentication
-        WEBUI_AUTH = "False";
-        ANONYMIZED_TELEMETRY = "False";
-        DO_NOT_TRACK = "True";
-        SCARF_NO_ANALYTICS = "True";
-        SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
-        USER_AGENT = "Ollama";
-        ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION = "False";
-        AIOHTTP_CLIENT_TIMEOUT = "600";
-      };
-    };
+    # open-webui = {
+    #   enable = true;
+    #   port = 11435;
+    #   host = "127.0.0.1";
+    #   openFirewall = false;
+    #   environment = {
+    #     OLLAMA_API_BASE_URL = "http://192.168.254.25:11434";
+    #     # Disable authentication
+    #     WEBUI_AUTH = "False";
+    #     ANONYMIZED_TELEMETRY = "False";
+    #     DO_NOT_TRACK = "True";
+    #     SCARF_NO_ANALYTICS = "True";
+    #     SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
+    #     USER_AGENT = "Ollama";
+    #     ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION = "False";
+    #     AIOHTTP_CLIENT_TIMEOUT = "600";
+    #   };
+    # };
     searx = {
       enable = true;
       redisCreateLocally = true;
