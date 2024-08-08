@@ -7,7 +7,7 @@ in
     autoStart = true;
     image = "ghcr.io/open-webui/open-webui:main";
     ports = [ "3000:8080" ];
-    volumes = [ "${userDir}/open-webui:/app/backend/data" ];
+    volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/docs-for-rag:${userDir}/docs-for-rag" ];
     extraOptions = [ "--network=host" ];
     environment = {
       OLLAMA_BASE_URL = "http://192.168.254.25:11434";
@@ -22,6 +22,7 @@ in
       RAG_WEB_SEARCH_ENGINE = "searxng";
       SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
       ENABLE_RAG_HYBRID_SEARCH = "True";
+      DOCS_DIR = "${userDir}/docs-for-rag";
     };
   };
   # Ollama local llm
