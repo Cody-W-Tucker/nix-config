@@ -2,7 +2,7 @@
 let dataDir = "${config.users.users.codyt.home}/open-webui";
 in
 {
-  # docker run --network=host -e PORT=11435 -e OLLAMA_BASE_URL=http://192.168.254.25:11434 -v ~/open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
+  # docker run --name open-webui --network=host -e PORT=11435 -e OLLAMA_BASE_URL=http://192.168.254.25:11434 -v ~/open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
   virtualisation.oci-containers.containers.open-webui = {
     autoStart = true;
     image = "ghcr.io/open-webui/open-webui:main";
