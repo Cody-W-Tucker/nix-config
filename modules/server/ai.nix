@@ -6,7 +6,7 @@ in
   virtualisation.oci-containers.containers."open-webui" = {
     autoStart = true;
     image = "ghcr.io/open-webui/open-webui:main";
-    ports = [ "11435:11435" ];
+    ports = [ "3000:8080" ];
     volumes = [ "${dataDir}:/app/backend/data" ];
     extraOptions = [ "--network=host" ];
     environment = {
@@ -38,7 +38,7 @@ in
         useACMEHost = "homehub.tv";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:11435";
+          proxyPass = "http://127.0.0.1:8080";
           proxyWebsockets = true;
         };
       };
