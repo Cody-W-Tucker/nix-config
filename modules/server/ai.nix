@@ -20,6 +20,7 @@ in
       USER_AGENT = "Ollama";
       ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION = "False";
       AIOHTTP_CLIENT_TIMEOUT = "600";
+      HTTPS_PROXY = "https://ai.homehub.tv";
     };
   };
   # Ollama local llm
