@@ -25,7 +25,7 @@ in
       DOCS_DIR = "${userDir}/RAG-Docs";
     };
   };
-  filesystems."${userDir}/RAG-Docs" = {
+  fileSystems."${userDir}/RAG-Docs" = {
     device = "/mnt/hdd/Share/Documents/RAG-Docs";
     fsType = "none";
     options = [ "bind" "rw" ];
