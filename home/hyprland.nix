@@ -50,7 +50,6 @@
         "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0C}ff) rgba(${config.lib.stylix.colors.base0D}ff) rgba(${config.lib.stylix.colors.base0B}ff) rgba(${config.lib.stylix.colors.base0E}ff) 45deg";
         "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}cc) rgba(${config.lib.stylix.colors.base01}cc) 45deg";
       };
-      windowrule = "opacity 0.99 0.99, obsidian";
       decoration = {
         rounding = "10";
         blur = {
