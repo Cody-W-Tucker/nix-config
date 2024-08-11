@@ -25,8 +25,18 @@ in
       DOCS_DIR = "${userDir}/RAG-Docs";
     };
   };
-  fileSystems."/home/codyt/RAG-Docs" = {
-    device = "/mnt/hdd/Share/Documents/RAG-Docs";
+  fileSystems."/home/codyt/RAG-Docs/Journal" = {
+    device = "/mnt/hdd/Share/Documents/Journal";
+    fsType = "none";
+    options = [ "bind" "rw" ];
+  };
+  fileSystems."/home/codyt/RAG-Docs/Knowledge" = {
+    device = "/mnt/hdd/Share/Documents/Knowledge";
+    fsType = "none";
+    options = [ "bind" "rw" ];
+  };
+  fileSystems."/home/codyt/RAG-Docs/Projects" = {
+    device = "/mnt/hdd/Share/Documents/Projects";
     fsType = "none";
     options = [ "bind" "rw" ];
   };
