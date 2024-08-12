@@ -25,16 +25,7 @@ in
       DOCS_DIR = "${userDir}/RAG-Docs";
     };
   };
-  fileSystems."/home/codyt/RAG-Docs/Journal" = {
-    device = "/mnt/hdd/Share/Documents/Journal";
-    fsType = "none";
-    options = [ "bind" "rw" ];
-  };
-  fileSystems."/home/codyt/RAG-Docs/Knowledge" = {
-    device = "/mnt/hdd/Share/Documents/Knowledge";
-    fsType = "none";
-    options = [ "bind" "rw" ];
-  };
+  # Adding a bind mount for the Projects directory so that it can be accessed by the container
   fileSystems."/home/codyt/RAG-Docs/Projects" = {
     device = "/mnt/hdd/Share/Documents/Projects";
     fsType = "none";
