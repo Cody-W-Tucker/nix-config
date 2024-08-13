@@ -7,8 +7,8 @@
       configureNginx = true;
       smtp.fromAddress = "noreply@social.homehub.tv"; # Email address used by Mastodon to send emails, replace with your own
       extraConfig = {
-        SINGLE_USER_MODE = "false";
-        LIMITED_FEDERATION_MODE = "true";
+        SINGLE_USER_MODE = "true";
+        LIMITED_FEDERATION_MODE = "false";
       };
       streamingProcesses = 3; # Number of processes used by the mastodon-streaming service. recommended is the amount of your CPU cores minus one.
     };
