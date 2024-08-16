@@ -16,9 +16,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "workstation"; # Define your hostname.
 
-  #Open port for Obsidian Local REST API
-  networking.firewall.allowedTCPPorts = [ 27124 ];
-
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ "nvidia" ];
   boot.kernelModules = [ "kvm-intel" ];
