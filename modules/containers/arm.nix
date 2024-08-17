@@ -148,6 +148,7 @@
 #    1337server/automatic-ripping-machine:latest
 
 {
+  networking.firewall.allowedTCPPorts = [ 9090 ];
   virtualisation.oci-containers.containers."arm-rippers" = {
     autoStart = true; # Assuming you want the container to start automatically on boot
     image = "automaticrippingmachine/automatic-ripping-machine:latest";
