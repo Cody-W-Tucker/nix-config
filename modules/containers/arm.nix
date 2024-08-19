@@ -1,30 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # Overlay to build handbrake with QSV support
-  environment.systemPackages = with pkgs; [
-    (handbrake.override {
-      useGtk = false;
-    })
-  ];
-
-  # Export the environment variable to use the iHD driver
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "iHD";
-  };
-
-  # Installing the graphics drivers
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver
-      intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-      vaapiVdpau
-      libvdpau-va-gl
-      intel-media-sdk # QSV up to 11th gen
-    ];
-  };
-
   # I needed to add the boot.kernelModules line to allow the container to see the disk drive.
   boot.kernelModules = [ "sg" ];
 
@@ -46,8 +22,6 @@
       "/home/arm/logs:/home/arm/logs"
       "/home/arm/media:/home/arm/media"
       "/home/arm/config:/etc/arm/config"
-      "/run/udev:/run/udev:ro"
-      "/run/current-system/sw/bin:/nix-bin:ro"
     ];
     extraOptions = [
       "--device=/dev/sr0:/dev/sr0"
