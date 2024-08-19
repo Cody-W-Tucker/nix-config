@@ -1,9 +1,32 @@
 { config, pkgs, ... }:
+let
+  overlay = final: prev: {
+    handbrake = prev.handbrake.override {
+      useQsv = true;
+    };
+  };
+in
 
 {
-  # Trying to get IntelQSV to work
-  environment.variables = {
+  # Overlay to build handbrake with QSV support
+  nixpkgs.overlays = [ overlay ];
+
+  # Export the environment variable to use the iHD driver
+  environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";
+  };
+
+  # Installing the graphics drivers
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver
+      intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+      vaapiIntel
+      vaapiVdpau
+      libvdpau-va-gl
+      intel-media-sdk # QSV up to 11th gen
+    ];
   };
 
   # I needed to add the boot.kernelModules line to allow the container to see the disk drive.
@@ -27,9 +50,11 @@
       "/home/arm/logs:/home/arm/logs"
       "/home/arm/media:/home/arm/media"
       "/home/arm/config:/etc/arm/config"
+      "/run/udev:/run/udev:ro"
     ];
     extraOptions = [
       "--device=/dev/sr0:/dev/sr0"
+      "--device=/dev/dri:/dev/dri"
       "--privileged"
     ];
   };
@@ -39,7 +64,7 @@
     isNormalUser = true;
     description = "arm";
     group = "arm";
-    extraGroups = [ "arm" "cdrom" "video" "docker" ];
+    extraGroups = [ "arm" "cdrom" "video" "render" "docker" ];
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
   };
 
