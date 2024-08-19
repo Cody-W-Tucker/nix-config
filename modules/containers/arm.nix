@@ -22,7 +22,6 @@ in
     extraPackages = with pkgs; [
       intel-media-driver
       intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-      vaapiIntel
       vaapiVdpau
       libvdpau-va-gl
       intel-media-sdk # QSV up to 11th gen
