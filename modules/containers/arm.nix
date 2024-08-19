@@ -3,6 +3,8 @@ let
   overlay = final: prev: {
     handbrake = prev.handbrake.override {
       useQsv = true;
+      useGTK = false;
+      useFdk = false;
     };
   };
 in
