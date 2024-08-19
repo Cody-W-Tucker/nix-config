@@ -39,7 +39,6 @@
     environment = {
       ARM_UID = "1002";
       ARM_GID = "983";
-      PATH = "/nix-bin:$PATH";
     };
     volumes = [
       "/home/arm:/home/arm"
