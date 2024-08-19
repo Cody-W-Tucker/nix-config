@@ -11,6 +11,11 @@ in
   # Overlay to build handbrake with QSV support
   nixpkgs.overlays = [ overlay ];
 
+  environment.systemPackages = with pkgs; [
+    # Handbrake with QSV support
+    handbrake
+  ];
+
   # Export the environment variable to use the iHD driver
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";
