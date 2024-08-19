@@ -1,21 +1,11 @@
 { config, pkgs, ... }:
-let
-  overlay = final: prev: {
-    handbrake = prev.handbrake.override {
-      useQsv = true;
-      useGTK = false;
-      useFdk = false;
-    };
-  };
-in
 
 {
   # Overlay to build handbrake with QSV support
-  nixpkgs.overlays = [ overlay ];
-
   environment.systemPackages = with pkgs; [
-    # Handbrake with QSV support
-    handbrake
+    (handbrake.override {
+      useGtk = false;
+    })
   ];
 
   # Export the environment variable to use the iHD driver
@@ -49,6 +39,7 @@ in
     environment = {
       ARM_UID = "1002";
       ARM_GID = "983";
+      PATH = "/nix-bin:$PATH";
     };
     volumes = [
       "/home/arm:/home/arm"
@@ -57,6 +48,7 @@ in
       "/home/arm/media:/home/arm/media"
       "/home/arm/config:/etc/arm/config"
       "/run/udev:/run/udev:ro"
+      "/run/current-system/sw/bin:/nix-bin:ro"
     ];
     extraOptions = [
       "--device=/dev/sr0:/dev/sr0"
