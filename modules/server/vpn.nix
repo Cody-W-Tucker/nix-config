@@ -49,7 +49,7 @@ in
         {
           # Cody's phone
           publicKey = "w6E352XQjI+nLmfco70nnL0c5x7vHtjr5kbaAoxS1Q0=";
-          allowedIPs = [ "10.100.0.2/32" ];
+          allowedIPs = [ "10.100.0.2/32" "192.168.254.25/32" ];
         }
       ];
     };
