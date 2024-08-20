@@ -1,13 +1,10 @@
 { config, pkgs, ... }:
 
 let
-  wireguardKeysDir = builtins.getEnv "WIREGUARD_KEYS_DIR";
+  wireguardKeysDir = "/home/codyt/wireguard-keys";
 in
 
 {
-  environment.sessionVariables = {
-    WIREGUARD_KEYS_DIR = "/home/codyt/wireguard-keys";
-  };
   environment.systemPackages = with pkgs; [
     wireguard-tools
   ];
