@@ -23,7 +23,7 @@
   # Configure the ARM container
   virtualisation.oci-containers.containers."arm-rippers" = {
     autoStart = true; # Automatically start the container on boot
-    image = "automaticrippingmachine/automatic-ripping-machine:latest"; # Docker image for ARM
+    image = "custom-arm"; # custom ARM image with handbrake built with intelQSV support. After building the image run docker commit <container_id> custom-arm.
     ports = [ "9090:8080" ]; # Map host port 9090 to container port 8080
     environment = {
       ARM_UID = "1002"; # UID of the 'arm' user on the host system
@@ -37,7 +37,7 @@
       "/home/arm/media:/home/arm/media"
       "/home/arm/config:/etc/arm/config"
     ];
-    # For IntelQSV support, add the GPU device to the container and follow [the IntelQSV instructions in the ARM wiki](https://github.com/automatic-ripping-machine/automatic-ripping-machine/wiki/intel-qsv).
+    # For IntelQSV support, add the GPU device to the container and follow the IntelQSV instructions in the ARM wiki at https://github.com/automatic-ripping-machine/automatic-ripping-machine/wiki/intel-qsv.
     extraOptions = [
       "--device=/dev/sr0:/dev/sr0"
       "--device=/dev/dri:/dev/dri"
