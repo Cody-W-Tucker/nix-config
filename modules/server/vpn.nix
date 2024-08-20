@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  wireguardKeysDir = "/home/codyt/wireguard-keys";
+  wireguard-keys = "${config.users.users.codyt.home}/wireguard-keys";
 in
 
 {
@@ -42,13 +42,13 @@ in
       # Note: The private key can also be included inline via the privateKey option,
       # but this makes the private key world-readable; thus, using privateKeyFile is
       # recommended.
-      privateKeyFile = "${wireguardKeysDir}/private";
+      privateKeyFile = "${wireguard-keys}/private";
 
       peers = [
         # List of allowed peers.
         {
           # Cody's phone
-          publicKey = builtins.readFile "${wireguardKeysDir}/public";
+          publicKey = "w6E352XQjI+nLmfco70nnL0c5x7vHtjr5kbaAoxS1Q0=";
           allowedIPs = [ "10.100.0.2/32" ];
         }
       ];
