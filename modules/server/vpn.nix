@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+
+let
+  wireguard-keys = "${config.users.users.codyt.home}/wireguard-keys";
+in
 
 {
   environment.systemPackages = with pkgs; [
@@ -38,21 +42,14 @@
       # Note: The private key can also be included inline via the privateKey option,
       # but this makes the private key world-readable; thus, using privateKeyFile is
       # recommended.
-      privateKeyFile = "path to private key file";
+      privateKeyFile = "${wireguard-keys}/private";
 
       peers = [
         # List of allowed peers.
         {
-          # Feel free to give a meaning full name
-          # Public key of the peer (not a file path).
-          publicKey = "{client public key}";
-          # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
+          # Cody's phone
+          publicKey = "${wireguard-keys}/public";
           allowedIPs = [ "10.100.0.2/32" ];
-        }
-        {
-          # John Doe
-          publicKey = "{john doe's public key}";
-          allowedIPs = [ "10.100.0.3/32" ];
         }
       ];
     };
