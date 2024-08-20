@@ -42,13 +42,13 @@ in
       # Note: The private key can also be included inline via the privateKey option,
       # but this makes the private key world-readable; thus, using privateKeyFile is
       # recommended.
-      privateKeyFile = "${wireguard-keys}/private";
+      privateKeyFile = builtins.readFile "${wireguard-keys}/private";
 
       peers = [
         # List of allowed peers.
         {
           # Cody's phone
-          publicKey = "${wireguard-keys}/public";
+          publicKey = builtins.readFile "${wireguard-keys}/public";
           allowedIPs = [ "10.100.0.2/32" ];
         }
       ];
