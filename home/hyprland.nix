@@ -19,8 +19,6 @@
         "mako"
         "dbus-update-activation-environment --systemd --all"
       ];
-      # TODO: Remove explicit_sync when the nvidia driver is fixed
-      # render.explicit_sync = "no";
       workspace = hardwareConfig.workspace;
       cursor.no_hardware_cursors = true;
       animations = {
@@ -132,10 +130,11 @@
           "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
           # Hyprpicker color picker
           "$mainMod, mouse:274, exec, hyprpicker -a"
-          # Switching workspaces with mouse wheel
-          "$mainMod, mouse_down,workspace,e-1"
-          "$mainMod, mouse_up,workspace,e+1"
-          # Moving windows to workspaces with mouse wheel
+          # Workspaces created/switched/moved on the active monitor
+          # Switching workspaces
+          "$mainMod, CTRL, left, focusworkspaceoncurrentmonitor,e-1"
+          "$mainMod, CTRL, up, focusworkspaceoncurrentmonitor,e+1"
+          # Moving windows to workspaces
           "$mainMod SHIFT, mouse_down,movetoworkspace,e-1"
           "$mainMod SHIFT, mouse_up,movetoworkspace,e+1"
         ]
