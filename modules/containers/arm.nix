@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  # I needed to add the boot.kernelModules line to allow the container to see the disk drive.
+  # Allows container to see diskdrives
   boot.kernelModules = [ "sg" ];
 
   # Open the port of the webui
@@ -11,7 +11,8 @@
   virtualisation.oci-containers.containers."arm-rippers" = {
     autoStart = true; # Assuming you want the container to start automatically on boot
     image = "automaticrippingmachine/automatic-ripping-machine:latest";
-    ports = [ "9090:8080" ]; #TODO: Change the port to something other than 8080, might have to change env var also
+    ports = [ "9090:8080" ];
+    # Get the UID and GID of the user on the host system
     environment = {
       ARM_UID = "1002";
       ARM_GID = "983";
@@ -30,7 +31,7 @@
     ];
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Create a user for the container
   users.users.arm = {
     isNormalUser = true;
     description = "arm";
