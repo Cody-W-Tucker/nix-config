@@ -132,8 +132,8 @@
           "$mainMod, mouse:274, exec, hyprpicker -a"
           # Workspaces created/switched/moved on the active monitor
           # Switching workspaces
-          "$mainMod, CTRL, left, focusworkspaceoncurrentmonitor,e-1"
-          "$mainMod, CTRL, up, focusworkspaceoncurrentmonitor,e+1"
+          "$mainMod CTRL, left, focusworkspaceoncurrentmonitor,e-1"
+          "$mainMod CTRL, right, focusworkspaceoncurrentmonitor,e+1"
           # Moving windows to workspaces
           "$mainMod SHIFT, mouse_down,movetoworkspace,e-1"
           "$mainMod SHIFT, mouse_up,movetoworkspace,e+1"
