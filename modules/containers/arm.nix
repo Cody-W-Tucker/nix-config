@@ -37,10 +37,11 @@
       "/home/arm/media:/home/arm/media"
       "/home/arm/config:/etc/arm/config"
     ];
+    # For IntelQSV support, add the GPU device to the container and follow [the IntelQSV instructions in the ARM wiki](https://github.com/automatic-ripping-machine/automatic-ripping-machine/wiki/intel-qsv).
     extraOptions = [
-      "--device=/dev/sr0:/dev/sr0" # Pass through the CD/DVD drive
-      "--device=/dev/dri:/dev/dri" # For IntelQSV support, add the GPU device to the container and follow [the IntelQSV instructions in the ARM wiki](https://github.com/automatic-ripping-machine/automatic-ripping-machine/wiki/intel-qsv).
-      "--privileged" # Run the container in privileged mode
+      "--device=/dev/sr0:/dev/sr0"
+      "--device=/dev/dri:/dev/dri"
+      "--privileged"
     ];
   };
 }
