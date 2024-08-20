@@ -1,37 +1,14 @@
-{ config, pkgs, ... }:
-
 {
-  # Allows container to see diskdrives
+  # Load the 'sg' kernel module to allow the container to see disk drives
   boot.kernelModules = [ "sg" ];
 
-  # Open the port of the webui
+  # Enable udev to allow the container to see disk drives and other devices
+  services.udev.enable = true;
+
+  # Open port 9090 for the web UI of the container
   networking.firewall.allowedTCPPorts = [ 9090 ];
 
-  # Set the container for ARM
-  virtualisation.oci-containers.containers."arm-rippers" = {
-    autoStart = true; # Assuming you want the container to start automatically on boot
-    image = "automaticrippingmachine/automatic-ripping-machine:latest";
-    ports = [ "9090:8080" ];
-    # Get the UID and GID of the user on the host system
-    environment = {
-      ARM_UID = "1002";
-      ARM_GID = "983";
-    };
-    volumes = [
-      "/home/arm:/home/arm"
-      "/home/arm/Music:/home/arm/Music"
-      "/home/arm/logs:/home/arm/logs"
-      "/home/arm/media:/home/arm/media"
-      "/home/arm/config:/etc/arm/config"
-    ];
-    extraOptions = [
-      "--device=/dev/sr0:/dev/sr0"
-      "--device=/dev/dri:/dev/dri"
-      "--privileged"
-    ];
-  };
-
-  # Create a user for the container
+  # Create a user 'arm' for the container; set the password with `passwd`
   users.users.arm = {
     isNormalUser = true;
     description = "arm";
@@ -40,9 +17,30 @@
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
   };
 
+  # Create a group 'arm' for the container
   users.groups.arm = { };
 
-  # Enable udev
-  services.udev.enable = true;
-
+  # Configure the ARM container
+  virtualisation.oci-containers.containers."arm-rippers" = {
+    autoStart = true; # Automatically start the container on boot
+    image = "automaticrippingmachine/automatic-ripping-machine:latest"; # Docker image for ARM
+    ports = [ "9090:8080" ]; # Map host port 9090 to container port 8080
+    environment = {
+      ARM_UID = "1002"; # UID of the 'arm' user on the host system
+      ARM_GID = "983"; # GID of the 'arm' group on the host system
+    };
+    # Mount 'host directory' to 'container directory'
+    volumes = [
+      "/home/arm:/home/arm"
+      "/home/arm/Music:/home/arm/Music"
+      "/home/arm/logs:/home/arm/logs"
+      "/home/arm/media:/home/arm/media"
+      "/home/arm/config:/etc/arm/config"
+    ];
+    extraOptions = [
+      "--device=/dev/sr0:/dev/sr0" # Pass through the CD/DVD drive
+      "--device=/dev/dri:/dev/dri" # For IntelQSV support, add the GPU device to the container and follow [the IntelQSV instructions in the ARM wiki](https://github.com/automatic-ripping-machine/automatic-ripping-machine/wiki/intel-qsv).
+      "--privileged" # Run the container in privileged mode
+    ];
+  };
 }
