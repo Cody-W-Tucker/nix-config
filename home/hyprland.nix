@@ -131,8 +131,8 @@
           "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
           # Workspaces created/switched/moved on the active monitor
           # Switching workspaces
-          "$mainMod, mouse_down, workspace, m-1"
-          "$mainMod, mouse_up, workspace, m+1"
+          "$mainMod mouse_down, workspace, m-1"
+          "$mainMod mouse_up, workspace, m+1"
           # Moving windows to workspaces
           "$mainMod SHIFT, mouse_down, movetoworkspace, m-1"
           "$mainMod SHIFT, mouse_up, movetoworkspace, m+1"
