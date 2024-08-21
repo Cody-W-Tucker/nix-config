@@ -18,5 +18,6 @@
     ./actualBudget.nix
     ./collabora.nix
     ./arm.nix
+    ./blogs.nix
   ];
 }
