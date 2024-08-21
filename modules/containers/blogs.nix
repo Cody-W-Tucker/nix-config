@@ -20,24 +20,14 @@
         url = "https://mens-group.homehub.tv";
         NODE_ENV = "development";
 
-        database__client = "mysql";
+        database__client = "sqlite3";
         database__connection__host = "db-mens-group";
         database__connection__user = "root";
         database__connection__password = "example";
         database__connection__database = "ghost";
       };
 
-      dependsOn = [ "db-mens-group" ];
       volumes = [ "/var/lib/ghost/content:/var/lib/ghost/content" ];
-    };
-
-    "db-mens-group" = {
-      image = "mysql:lts";
-      autoStart = true;
-      environment = {
-        MYSQL_ROOT_PASSWORD = "example";
-        MYSQL_DATABASE = "ghost";
-      };
     };
   };
 }
