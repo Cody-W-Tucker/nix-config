@@ -131,11 +131,11 @@
           "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
           # Workspaces created/switched/moved on the active monitor
           # Switching workspaces
-          "bind = $mainMod, mouse_down, exec, hyprctl dispatch workspace e+1"
-          "bind = $mainMod, mouse_up, exec, hyprctl dispatch workspace e-1"
+          "$mainMod, mouse_down, exec, hyprctl dispatch workspace m-1"
+          "$mainMod, mouse_up, exec, hyprctl dispatch workspace m+1"
           # Moving windows to workspaces
-          "$mainMod SHIFT, mouse_down,movetoworkspace,e-1"
-          "$mainMod SHIFT, mouse_up,movetoworkspace,e+1"
+          "$mainMod SHIFT, mouse_down, exec, hyprctl dispatch movetoworkspace m-1"
+          "$mainMod SHIFT, mouse_up, exec, hyprctl dispatch movetoworkspace m+1"
         ]
         ++ (
           # workspaces
@@ -151,7 +151,7 @@
                   builtins.toString (x + 1 - (c * 10));
               in
               [
-                "$mainMod, ${ws}, exec, hyprctl workspace ${toString (x + 1)} && hyprctl dispatch focusworkspaceoncurrentmonitor ${toString (x + 1)}"
+                "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
                 "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
               ]
             )
