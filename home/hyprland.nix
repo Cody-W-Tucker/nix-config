@@ -115,25 +115,24 @@
           # Screenshots
           ''$mainMod, S, exec, grim -g "$(slurp)" "$HOME/Pictures/Screenshots/$(date '+%y%m%d_%H-%M-%S').png"''
           ''$mainMod SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
+          # Hyprpicker color picker
+          "$mainMod, mouse:274, exec, hyprpicker -a"
           # Move focus with mainMod + arrow keys
           "$mainMod, left, movefocus, l"
           "$mainMod, right, movefocus, r"
           "$mainMod, up, movefocus, u"
           "$mainMod, down, movefocus, d"
           # Move windows with mainMod + shift + arrow keys
-          "$mainMod SHIFT, left, movewindow, l"
-          "$mainMod SHIFT, right, movewindow, r"
-          "$mainMod SHIFT, up, movewindow, u"
-          "$mainMod SHIFT, down, movewindow, d"
+          "$mainMod CTRL, left, movewindow, l"
+          "$mainMod CTRL, right, movewindow, r"
+
           # Special workspace (scratchpad)
           "$mainMod, A, togglespecialworkspace, magic"
           "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
-          # Hyprpicker color picker
-          "$mainMod, mouse:274, exec, hyprpicker -a"
           # Workspaces created/switched/moved on the active monitor
           # Switching workspaces
-          "$mainMod CTRL, left, focusworkspaceoncurrentmonitor,e-1"
-          "$mainMod CTRL, right, focusworkspaceoncurrentmonitor,e+1"
+          "$mainMod SHIFT, lefmouse_downt, focusworkspaceoncurrentmonitor,e-1"
+          "$mainMod SHIFT, mouse_up, focusworkspaceoncurrentmonitor,e+1"
           # Moving windows to workspaces
           "$mainMod SHIFT, mouse_down,movetoworkspace,e-1"
           "$mainMod SHIFT, mouse_up,movetoworkspace,e+1"
@@ -152,7 +151,7 @@
                   builtins.toString (x + 1 - (c * 10));
               in
               [
-                "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
+                "$mainMod, ${ws}, exec, hyprctl workspace ${toString (x + 1)} && hyprctl dispatch focusworkspaceoncurrentmonitor ${toString (x + 1)}"
                 "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
               ]
             )
