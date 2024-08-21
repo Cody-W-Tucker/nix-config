@@ -2,6 +2,9 @@
 
 
 {
+  environment.systemPackages = with pkgs; [
+    hyprnome
+  ];
   wayland.windowManager.hyprland = {
     enable = true;
     systemd = {
@@ -131,11 +134,11 @@
           "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
           # Workspaces created/switched/moved on the active monitor
           # Switching workspaces
-          "$mainMod, mouse_down, workspace, m-1"
-          "$mainMod, mouse_up, workspace, m+1"
+          "$mainMod, mouse_down, exec, hyprnome --previous"
+          "$mainMod, mouse_up, exec, hyprnome"
           # Moving windows to workspaces
-          "$mainMod SHIFT, mouse_down, movetoworkspace, m-1"
-          "$mainMod SHIFT, mouse_up, movetoworkspace, m+1"
+          "$mainMod SHIFT, mouse_down, exec, hyprnome --previous --move"
+          "$mainMod SHIFT, mouse_up, exec, hyprnome --move"
         ]
         ++ (
           # workspaces
