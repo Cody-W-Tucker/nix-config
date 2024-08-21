@@ -131,8 +131,8 @@
           "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
           # Workspaces created/switched/moved on the active monitor
           # Switching workspaces
-          "$mainMod SHIFT, lefmouse_downt, focusworkspaceoncurrentmonitor,e-1"
-          "$mainMod SHIFT, mouse_up, focusworkspaceoncurrentmonitor,e+1"
+          "bind = $mainMod, mouse_down, exec, hyprctl dispatch workspace e+1"
+          "bind = $mainMod, mouse_up, exec, hyprctl dispatch workspace e-1"
           # Moving windows to workspaces
           "$mainMod SHIFT, mouse_down,movetoworkspace,e-1"
           "$mainMod SHIFT, mouse_up,movetoworkspace,e+1"
