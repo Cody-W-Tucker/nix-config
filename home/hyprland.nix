@@ -126,8 +126,8 @@
           "$mainMod, up, movefocus, u"
           "$mainMod, down, movefocus, d"
           # Move windows with mainMod + shift + arrow keys
-          "$mainMod CTRL, left, movewindow, l"
-          "$mainMod CTRL, right, movewindow, r"
+          "$mainMod SHIFT, left, movewindow, l"
+          "$mainMod SHIFT, right, movewindow, r"
 
           # Special workspace (scratchpad)
           "$mainMod, A, togglespecialworkspace, magic"
