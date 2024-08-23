@@ -14,6 +14,7 @@
     zotero
     gh
     ripdrag
+    spotify
   ];
 
   imports = [
