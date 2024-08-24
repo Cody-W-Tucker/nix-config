@@ -141,12 +141,6 @@
           # Moving windows to workspaces
           "$mainMod SHIFT, mouse_down, exec, hyprnome --previous --move"
           "$mainMod SHIFT, mouse_up, exec, hyprnome --move"
-          # Switching workspaces with keyboard
-          "$mainMod, CTRL, left, exec, hyprnome --previous"
-          "$mainMod, CTRL, right, exec, hyprnome"
-          # Moving windows to workspaces with keyboard
-          "$mainMod SHIFT, CTRL, left, exec, hyprnome --previous --move"
-          "$mainMod SHIFT, CTRL, right, exec, hyprnome --move"
         ]
         ++ (
           # workspaces
