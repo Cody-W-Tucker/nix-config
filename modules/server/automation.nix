@@ -18,7 +18,7 @@
     };
   };
 
-  virtualHosts."automation.homehub.tv" = {
+  services.nginx.virtualHosts."automation.homehub.tv" = {
     forceSSL = true;
     useACMEHost = "homehub.tv";
     locations."~ ^/(webhook|webhook-test)" = {
