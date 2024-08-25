@@ -3,27 +3,5 @@
   services.n8n = {
     enable = true;
     openFirewall = true;
-    webhookUrl = "https://cic.homehub.tv";
-    settings = {
-      # The top level domain to serve from
-      DOMAIN_NAME = "homehub.tv";
-
-      # The subdomain to serve from
-      SUBDOMAIN = "cic";
-
-      # Optional timezone to set which gets used by Cron-Node by default
-      # If not set New York time will be used
-      GENERIC_TIMEZONE = "America/Chicago";
-    };
-  };
-
-  # Nginx reverse proxy for cic
-  services.nginx.virtualHosts."cic.homehub.tv" = {
-    forceSSL = true;
-    useACMEHost = "homehub.tv";
-    locations."/" = {
-      proxyPass = "http://localhost:5678";
-      proxyWebsockets = true;
-    };
   };
 }
