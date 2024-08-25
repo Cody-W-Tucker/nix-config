@@ -3,8 +3,7 @@
 {
   imports = [
     ./ai.nix
-    # ./automation.nix
-    # ./dns.nix
+    ./automation.nix
     ./media.nix
     ./nextcloud.nix
     ./photos.nix
