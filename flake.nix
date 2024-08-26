@@ -22,10 +22,10 @@
         workstation = {
           workspace = [
             "1, monitor:DP-4, default:true"
-            "2, monitor:HDMI-A-3, default:true"
+            "2, monitor:HDMI-A-4, default:true"
           ];
           monitor = [
-            "HDMI-A-3,2560x1080@60,0x0,1"
+            "HDMI-A-4,2560x1080@60,0x0,1"
             "DP-4,2560x1080@60,0x1080,1"
           ];
         };
