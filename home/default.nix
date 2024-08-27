@@ -9,4 +9,7 @@
     ./waybar.nix
     ./xdg.nix
   ];
+
+  # Clipboard history
+  services.cliphist.enable = true;
 }
