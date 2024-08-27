@@ -12,4 +12,7 @@
 
   # Clipboard history
   services.cliphist.enable = true;
+
+  # Document handling
+  programs.pandoc.enable = true;
 }
