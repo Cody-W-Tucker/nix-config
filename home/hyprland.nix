@@ -18,11 +18,16 @@
       ];
     };
     settings = {
+      # Workspace and monitor set in flake.nix
+      workspace = hardwareConfig.workspace;
+      monitor = hardwareConfig.monitor;
       exec-once = [
         "mako"
         "dbus-update-activation-environment --systemd --all"
+        "wl-clipboard-history -t"
+        "wl-paste --watch cliphist store"
+        ''rm "$HOME/.cache/cliphist/db"'' # Clear clipboard history on startup
       ];
-      workspace = hardwareConfig.workspace;
       cursor.no_hardware_cursors = true;
       animations = {
         enabled = true;
@@ -36,7 +41,6 @@
           "workspaces, 1, 6, default"
         ];
       };
-      monitor = hardwareConfig.monitor;
       input = {
         numlock_by_default = "true";
         follow_mouse = "1";
