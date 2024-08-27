@@ -24,7 +24,13 @@
     gh
     ripdrag
     spotify
-    tectonic
+    (texlive.combine
+      {
+        inherit (pkgs.texlive) scheme-small
+          # Add any additional packages you need
+          pgf
+          standalone;
+      })
   ];
 
   # Clipboard history
@@ -37,7 +43,7 @@
       metadata = {
         author = "Cody W Tucker";
       };
-      pdf-engine = "tectonic";
+      pdf-engine = "pdflatex";
     };
   };
 }
