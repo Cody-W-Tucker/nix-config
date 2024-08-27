@@ -94,7 +94,7 @@
       ];
       bind =
         [
-          "$mainMod, SPACE, exec, cliphist list | wofi --show dmenu -H 600 -W 900 | cliphist decode | wl-copy"
+          "$mainMod, SPACE, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
           "$mainMod, RETURN, exec, pkill waybar && waybar &"
           "$mainMod, Q, exec, kitty"
           "$mainMod, C, killactive"
