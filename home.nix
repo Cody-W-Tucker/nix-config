@@ -1,22 +1,6 @@
 { pkgs, config, inputs, lib, nixvim, ... }:
 
 {
-  home.packages = with pkgs; [
-    # Add some packages to the user environment.
-    grim
-    slurp
-    wl-clipboard
-    hyprpicker
-    mako
-    swww
-    rofi-wayland
-    vscode
-    zotero
-    gh
-    ripdrag
-    spotify
-  ];
-
   imports = [
     ./home
     inputs.hyprland.homeManagerModules.default
