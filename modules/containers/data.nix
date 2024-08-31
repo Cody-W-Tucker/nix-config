@@ -15,7 +15,8 @@
         }
       ];
       extraOptions = [
-        "--link=root_db:root_db --restart=always"
+        "--link=root_db:root_db"
+        "--restart=always"
       ];
     };
 
@@ -28,13 +29,11 @@
       };
       extraOptions = [
         "--restart=always"
+        "--health-cmd=pg_isready -U postgres -d root_db"
+        "--health-interval=10s"
+        "--health-timeout=2s"
+        "--health-retries=10"
       ];
-      healthcheck = {
-        test = "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\"";
-        interval = "10s";
-        timeout = "2s";
-        retries = 10;
-      };
       volumes = [
         {
           source = "${config.users.codyt.home}/data/pg_data";
