@@ -9,10 +9,7 @@
         NC_DB = "pg://root_db:5432?u=postgres&p=password&d=root_db";
       };
       volumes = [
-        {
-          source = "${config.users.users.codyt.home}/data/nc_data";
-          target = "/usr/app/data";
-        }
+        "${config.users.users.codyt.home}/data/nc_data:/usr/app/data"
       ];
       extraOptions = [
         "--link=root_db:root_db"
@@ -35,10 +32,7 @@
         "--health-retries=10"
       ];
       volumes = [
-        {
-          source = "${config.users.users.codyt.home}/data/pg_data";
-          target = "/var/lib/postgresql/data";
-        }
+        "${config.users.users.codyt.home}/data/pg_data:/var/lib/postgresql/data"
       ];
     };
   };
