@@ -1,6 +1,4 @@
 {
-  # Create container for nocoDB database viewer via docker using the following docker run command
-
   virtualisation.oci-containers.containers = {
     nocodb = {
       image = "nocodb/nocodb:latest";
@@ -14,7 +12,9 @@
           target = "/usr/app/data";
         }
       ];
-      depends_on = [ "root_db" ];
+      extraOptions = [
+        "--link=root_db:root_db"
+      ];
       restartPolicy = "always";
     };
 
