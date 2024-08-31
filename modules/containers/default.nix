@@ -19,5 +19,6 @@
     ./collabora.nix
     ./arm.nix
     ./blogs.nix
+    ./data.nix
   ];
 }
