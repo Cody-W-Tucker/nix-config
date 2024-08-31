@@ -10,7 +10,7 @@
       };
       volumes = [
         {
-          source = "${config.users.codyt.home}/data/nc_data";
+          source = "${config.users.users.codyt.home}/data/nc_data";
           target = "/usr/app/data";
         }
       ];
@@ -36,7 +36,7 @@
       ];
       volumes = [
         {
-          source = "${config.users.codyt.home}/data/pg_data";
+          source = "${config.users.users.codyt.home}/data/pg_data";
           target = "/var/lib/postgresql/data";
         }
       ];
