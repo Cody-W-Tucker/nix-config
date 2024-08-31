@@ -1,3 +1,5 @@
+{ config, ... }:
+
 {
   virtualisation.oci-containers.containers = {
     nocodb = {
@@ -8,14 +10,13 @@
       };
       volumes = [
         {
-          source = "/path/to/local/nc_data";
+          source = "${config.users.codyt.home}/data/nc_data";
           target = "/usr/app/data";
         }
       ];
       extraOptions = [
-        "--link=root_db:root_db"
+        "--link=root_db:root_db --restart=always"
       ];
-      restartPolicy = "always";
     };
 
     root_db = {
@@ -25,6 +26,9 @@
         POSTGRES_PASSWORD = "password";
         POSTGRES_USER = "postgres";
       };
+      extraOptions = [
+        "--restart=always"
+      ];
       healthcheck = {
         test = "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\"";
         interval = "10s";
@@ -33,11 +37,10 @@
       };
       volumes = [
         {
-          source = "/path/to/local/db_data";
+          source = "${config.users.codyt.home}/data/pg_data";
           target = "/var/lib/postgresql/data";
         }
       ];
-      restartPolicy = "always";
     };
   };
 }
