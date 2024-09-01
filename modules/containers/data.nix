@@ -8,7 +8,7 @@
     locations."/".proxyPass = "http://localhost:7070";
   };
   virtualisation.oci-containers.containers = {
-    nocodb = {
+    "nocodb" = {
       image = "nocodb/nocodb:latest";
       ports = [ "7070:8080" ];
       environment = {
@@ -25,7 +25,7 @@
       ];
     };
     # Postgres backend for nocodb
-    root_db = {
+    "root_db" = {
       image = "postgres";
       environment = {
         POSTGRES_DB = "root_db";
@@ -44,7 +44,7 @@
       ];
     };
     # Separate database for data
-    data_db = {
+    "data_db" = {
       image = "postgres";
       environment = {
         POSTGRES_DB = "data_db";
