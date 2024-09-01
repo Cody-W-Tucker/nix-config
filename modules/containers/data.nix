@@ -22,6 +22,7 @@
       ];
       extraOptions = [
         "--link=root_db:root_db"
+        "--link=data_db:data_db"
       ];
     };
     # Postgres backend for nocodb
@@ -49,11 +50,11 @@
       image = "postgres";
       environment = {
         POSTGRES_DB = "data_db";
-        POSTGRES_PASSWORD = "data_password";
-        POSTGRES_USER = "data_user";
+        POSTGRES_PASSWORD = "password";
+        POSTGRES_USER = "postgres";
       };
       extraOptions = [
-        "--health-cmd=pg_isready -U data_user -d data_db"
+        "--health-cmd=pg_isready -U postgres -d data_db"
         "--health-interval=10s"
         "--health-timeout=2s"
         "--health-retries=10"
