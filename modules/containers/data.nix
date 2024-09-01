@@ -9,6 +9,7 @@
   };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
+      autoStart = true;
       image = "nocodb/nocodb:latest";
       ports = [ "7070:8080" ];
       environment = {
@@ -21,11 +22,11 @@
       ];
       extraOptions = [
         "--link=root_db:root_db"
-        "--restart=always"
       ];
     };
     # Postgres backend for nocodb
     "root_db" = {
+      autoStart = true;
       image = "postgres";
       environment = {
         POSTGRES_DB = "root_db";
@@ -33,7 +34,6 @@
         POSTGRES_USER = "postgres";
       };
       extraOptions = [
-        "--restart=always"
         "--health-cmd=pg_isready -U postgres -d root_db"
         "--health-interval=10s"
         "--health-timeout=2s"
@@ -45,6 +45,7 @@
     };
     # Separate database for data
     "data_db" = {
+      autoStart = true;
       image = "postgres";
       environment = {
         POSTGRES_DB = "data_db";
@@ -52,7 +53,6 @@
         POSTGRES_USER = "data_user";
       };
       extraOptions = [
-        "--restart=always"
         "--health-cmd=pg_isready -U data_user -d data_db"
         "--health-interval=10s"
         "--health-timeout=2s"
