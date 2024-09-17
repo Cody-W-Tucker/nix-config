@@ -5,15 +5,7 @@
     enable = true;
     securityType = "user";
     openFirewall = true;
-    settings = {
-      workgroup = "WORKGROUP";
-      serverString = "smbnix";
-      netbiosName = "smbnix";
-      golbal.security = "user";
-      hostsAllow = ''192.168.254. 127.0.0.1 localhost'';
-      hostsDeny = "0.0.0.0/0";
-      mapToGuest = "bad user";
-    };
+    # Broken due to replacing extraConfig with settings.
     # extraConfig = ''
     #   workgroup = WORKGROUP
     #   server string = smbnix
