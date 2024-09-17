@@ -10,8 +10,8 @@
       serverString = "smbnix";
       netbiosName = "smbnix";
       golbal.security = "user";
-      hostsAllow = [ "192.168.254." "127.0.0.1" "localhost" ];
-      hostsDeny = [ "0.0.0.0/0" ];
+      hostsAllow = ''192.168.254. 127.0.0.1 localhost'';
+      hostsDeny = "0.0.0.0/0";
       mapToGuest = "bad user";
     };
     # extraConfig = ''
