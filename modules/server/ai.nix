@@ -3,26 +3,28 @@ let userDir = "${config.users.users.codyt.home}";
 in
 {
   # docker run --name open-webui --network=host -e PORT=11435 -e OLLAMA_BASE_URL=http://192.168.254.25:11434 -v ~/open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
-  virtualisation.oci-containers.containers."open-webui" = {
-    autoStart = true;
-    image = "ghcr.io/open-webui/open-webui:latest";
-    ports = [ "3000:8080" ];
-    volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/RAG-Docs:${userDir}/RAG-Docs" ];
-    extraOptions = [ "--network=host" "--pull=always" ];
-    environment = {
-      OLLAMA_BASE_URL = "http://192.168.254.25:11434";
-      # Disable authentication
-      WEBUI_AUTH = "False";
-      ANONYMIZED_TELEMETRY = "False";
-      DO_NOT_TRACK = "True";
-      SCARF_NO_ANALYTICS = "True";
-      USER_AGENT = "Ollama";
-      AIOHTTP_CLIENT_TIMEOUT = "600";
-      ENABLE_RAG_WEB_SEARCH = "True";
-      RAG_WEB_SEARCH_ENGINE = "searxng";
-      SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
-      ENABLE_RAG_HYBRID_SEARCH = "True";
-      DOCS_DIR = "${userDir}/RAG-Docs";
+  virtualisation.oci-containers.containers = {
+    "open-webui" = {
+      autoStart = true;
+      image = "ghcr.io/open-webui/open-webui:main";
+      ports = [ "3000:8080" ];
+      volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/RAG-Docs:${userDir}/RAG-Docs" ];
+      extraOptions = [ "--network=host" "--pull=always" ];
+      environment = {
+        OLLAMA_BASE_URL = "http://192.168.254.25:11434";
+        # Disable authentication
+        WEBUI_AUTH = "False";
+        ANONYMIZED_TELEMETRY = "False";
+        DO_NOT_TRACK = "True";
+        SCARF_NO_ANALYTICS = "True";
+        USER_AGENT = "Ollama";
+        AIOHTTP_CLIENT_TIMEOUT = "600";
+        ENABLE_RAG_WEB_SEARCH = "True";
+        RAG_WEB_SEARCH_ENGINE = "searxng";
+        SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
+        ENABLE_RAG_HYBRID_SEARCH = "True";
+        DOCS_DIR = "${userDir}/RAG-Docs";
+      };
     };
   };
   # Adding a bind mount for the Projects directory so that it can be accessed by the container
