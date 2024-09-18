@@ -32,7 +32,7 @@ in
       image = "ghcr.io/open-webui/pipelines:main";
       ports = [ "9099:9099" ];
       volumes = [ "pipelines:/app/pipelines" ];
-      extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--restart=always" ];
+      extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--pull=always" ];
     };
   };
   # Adding a bind mount for the Projects directory so that it can be accessed by the container
