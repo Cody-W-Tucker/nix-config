@@ -5,10 +5,10 @@ in
   # docker run --name open-webui --network=host -e PORT=11435 -e OLLAMA_BASE_URL=http://192.168.254.25:11434 -v ~/open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
   virtualisation.oci-containers.containers."open-webui" = {
     autoStart = true;
-    image = "ghcr.io/open-webui/open-webui:main";
+    image = "ghcr.io/open-webui/open-webui:latest";
     ports = [ "3000:8080" ];
     volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/RAG-Docs:${userDir}/RAG-Docs" ];
-    extraOptions = [ "--network=host" ];
+    extraOptions = [ "--network=host" "--pull=always" ];
     environment = {
       OLLAMA_BASE_URL = "http://192.168.254.25:11434";
       # Disable authentication
