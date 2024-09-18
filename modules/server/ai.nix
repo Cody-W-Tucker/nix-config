@@ -31,15 +31,20 @@ in
       autoStart = true;
       image = "ghcr.io/open-webui/pipelines:main";
       ports = [ "9099:9099" ];
-      volumes = [ "pipelines:/app/pipelines" ];
+      volumes = [ "${userDir}/pipelines:/app/pipelines" ];
       extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--pull=always" ];
     };
   };
   # Adding a bind mount for the Projects directory so that it can be accessed by the container
-  fileSystems."/home/codyt/RAG-Docs/Projects" = {
-    device = "/mnt/hdd/Share/Documents/Projects";
+  fileSystems."/home/codyt/RAG-Docs/Journal" = {
+    device = "/mnt/hdd/Share/Documents/Personal/Journal";
     fsType = "none";
-    options = [ "bind" "rw" ];
+    options = [ "bind" "ro" ];
+  };
+  fileSystems."/home/codyt/RAG-Docs/Knowledge" = {
+    device = "/mnt/hdd/Share/Documents/Personal/Knowledge";
+    fsType = "none";
+    options = [ "bind" "ro" ];
   };
   # Ollama local llm
   services = {
