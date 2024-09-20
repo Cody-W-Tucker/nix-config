@@ -24,6 +24,7 @@
     gh
     ripdrag
     spotify
+    blueman
     (texlive.combine
       {
         inherit (pkgs.texlive) scheme-small

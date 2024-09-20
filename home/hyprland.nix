@@ -22,6 +22,7 @@
       workspace = hardwareConfig.workspace;
       monitor = hardwareConfig.monitor;
       exec-once = [
+        "blueman-applet"
         "mako"
         "dbus-update-activation-environment --systemd --all"
         "wl-clipboard-history -t"
@@ -94,13 +95,13 @@
       ];
       bind =
         [
-          "$mainMod, SPACE, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+          "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
           "$mainMod, RETURN, exec, pkill waybar && waybar &"
           "$mainMod, Q, exec, kitty"
           "$mainMod, C, killactive"
           "$mainMod, E, exec, kitty -- ranger"
           "$mainMod SHIFT, E, exec, nautilus"
-          "$mainMod, V, togglefloating"
+          "$mainMod, SPACE, togglefloating"
           "$mainMod, Tab, exec, rofi-launcher"
           "$mainMod, F, fullscreen"
           # Number keys (0, -, +)
