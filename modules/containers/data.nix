@@ -69,9 +69,9 @@
         "${config.users.users.codyt.home}/data/data_pg_data:/var/lib/postgresql/data"
       ];
     };
-    # docker run --name baserow -e BASEROW_PUBLIC_URL=https://sheets.homehub.tv -v /var/data/baserow:baserow/data -p 6060:443 baserow/baserow:latest 
+    # docker run --name baserow -e BASEROW_PUBLIC_URL=https://sheets.homehub.tv -v /var/data/baserow:/baserow/data -p 6060:443 baserow/baserow:latest 
     "baserow" = {
-      image = "baserow/baserow:lastest";
+      image = "baserow/baserow:latest";
       autoStart = true;
       volumes = [ "/var/data/baserow:/baserow/data" ];
       ports = [ "6060:443" ];
