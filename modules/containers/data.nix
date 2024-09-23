@@ -7,6 +7,12 @@
     useACMEHost = "homehub.tv";
     locations."/".proxyPass = "http://localhost:7070";
   };
+  # Nginx reverse proxy for baserow
+  services.nginx.virtualHosts."sheets.homehub.tv" = {
+    forceSSL = true;
+    useACMEHost = "homehub.tv";
+    locations."/".proxyPass = "http://localhost:6060";
+  };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
       autoStart = true;
@@ -62,6 +68,15 @@
       volumes = [
         "${config.users.users.codyt.home}/data/data_pg_data:/var/lib/postgresql/data"
       ];
+    };
+    # docker run --name baserow -e BASEROW_PUBLIC_URL=http://server:6060 -v baserow_data:/baserow/data -p 6060:443 baserow/baserow:latest 
+    "baserow" = {
+      image = "baserow/baserow:lastest";
+      volumes = [ "/var/data/baserow:/baserow/data" ];
+      ports = [ "6060:443" ];
+      environment = {
+        BASEROW_PUBLIC_URL = "https://sheets.homehub.tv";
+      };
     };
   };
 }
