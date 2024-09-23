@@ -72,6 +72,7 @@
     # docker run --name baserow -e BASEROW_PUBLIC_URL=http://server:6060 -v baserow_data:/baserow/data -p 6060:443 baserow/baserow:latest 
     "baserow" = {
       image = "baserow/baserow:lastest";
+      autoStart = true;
       volumes = [ "/var/data/baserow:/baserow/data" ];
       ports = [ "6060:443" ];
       environment = {
