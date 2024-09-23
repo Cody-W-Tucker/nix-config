@@ -74,7 +74,7 @@
       image = "baserow/baserow:latest";
       autoStart = true;
       volumes = [ "/var/data/baserow:/baserow/data" ];
-      ports = [ "6060:443" ];
+      ports = [ "6060:80" ];
       environment = {
         BASEROW_PUBLIC_URL = "https://sheets.homehub.tv";
       };
