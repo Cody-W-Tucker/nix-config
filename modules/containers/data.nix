@@ -12,6 +12,7 @@
     forceSSL = true;
     useACMEHost = "homehub.tv";
     locations."/".proxyPass = "http://localhost:6060";
+    proxyWebsockets = true;
   };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
