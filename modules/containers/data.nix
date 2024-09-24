@@ -20,6 +20,7 @@
   services.metabase = {
     enable = true;
     listen.port = 5050;
+    openFirewall = true;
   };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
