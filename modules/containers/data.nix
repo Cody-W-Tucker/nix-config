@@ -11,8 +11,10 @@
   services.nginx.virtualHosts."sheets.homehub.tv" = {
     forceSSL = true;
     useACMEHost = "homehub.tv";
-    locations."/".proxyPass = "http://localhost:6060";
-    proxyWebsockets = true;
+    locations."/" = {
+      proxyPass = "http://localhost:6060";
+      proxyWebsockets = true;
+    };
   };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
