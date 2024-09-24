@@ -16,6 +16,11 @@
       proxyWebsockets = true;
     };
   };
+  # Metabase for data analysis
+  services.metabase = {
+    enable = true;
+    listen.port = 5050;
+  };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
       autoStart = true;
