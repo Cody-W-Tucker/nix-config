@@ -16,7 +16,7 @@ in
         DO_NOT_TRACK = "True";
         SCARF_NO_ANALYTICS = "True";
         USER_AGENT = "Ollama";
-        AIOHTTP_CLIENT_TIMEOUT = "600";
+        AIOHTTP_CLIENT_TIMEOUT = "";
         ENABLE_RAG_WEB_SEARCH = "True";
         RAG_WEB_SEARCH_ENGINE = "searxng";
         SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
