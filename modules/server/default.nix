@@ -7,9 +7,8 @@
     ./media.nix
     ./nextcloud.nix
     ./photos.nix
-    ./samba.nix
+    # ./samba.nix
     ./syncthing.nix
-    ./social.nix
     ./security.nix
   ];
 
