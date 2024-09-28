@@ -42,7 +42,6 @@
     zathura
     pavucontrol
     xdg-utils # xdg-open
-    libreoffice
     hunspell
     vlc
     usbutils
