@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./home
+    ./cody
     inputs.hyprland.homeManagerModules.default
     inputs.nixvim.homeManagerModules.nixvim
   ];
@@ -133,7 +133,6 @@
     NVD_BACKEND = "direct";
   };
 
-  # Orginally 23.11 but I installed on a new computer at 24.05, not sure which to use.
   # The state version is required and should stay at the version you originally installed.
   home.stateVersion = "24.05";
 }
