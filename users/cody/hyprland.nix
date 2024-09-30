@@ -182,7 +182,7 @@
       background = [
         {
           monitor = "";
-          path = "/etc/nixos/modules/wallpapers/lex.png";
+          path = "screenshot";
           color = "rgba(25, 20, 20, 1.0)";
           blur_passes = 2; # 0 disables blurring
           blur_size = 2;
@@ -195,7 +195,7 @@
       ];
       input-field = [
         {
-          monitor = "DP-4";
+          monitor = "DP-1";
           size = "200, 50";
           outline_thickness = 3;
           dots_size = 0.33;

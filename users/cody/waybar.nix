@@ -124,8 +124,8 @@ in
     };
     settings = {
       # Duplicate the bars for each monitor
-      monitor1 = createBar waybarConfig "HDMI-A-4" "bottom";
-      monitor2 = createBar waybarConfig "DP-4" "top";
+      monitor1 = createBar waybarConfig "DP-1" "bottom";
+      monitor2 = createBar waybarConfig "DP-2" "top";
     };
     style = lib.mkForce ''
       * {

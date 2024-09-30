@@ -40,6 +40,7 @@
       }
     ];
     plugins = {
+      web-devicons.enable = true;
       telescope.enable = true;
       treesitter.enable = true;
       lsp.enable = true;

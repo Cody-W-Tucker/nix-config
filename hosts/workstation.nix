@@ -8,7 +8,7 @@
       ../modules/common/desktop
       ../modules/styles.nix
       ../modules/scripts
-      ../modules/nvidia.nix
+      # ../modules/nvidia.nix
     ];
 
   # Bootloader.
@@ -17,7 +17,6 @@
   networking.hostName = "workstation"; # Define your hostname.
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [ "nvidia" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
   time.hardwareClockInLocalTime = true;
@@ -113,11 +112,6 @@
   # Setting the color theme and default wallpaper
   stylix.image = ../modules/wallpapers/lex.png;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tomorrow-night.yaml";
-
-  # hardware.nvidia.prime = {
-  #   intelBusId = "PCI:0:2:0";
-  #   nvidiaBusId = "PCI:1:0:0";
-  # };
 
   # Backup configuration
   services.syncthing = {

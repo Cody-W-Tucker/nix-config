@@ -20,13 +20,14 @@
       system = "x86_64-linux";
       hardwareConfig = {
         workstation = {
+          # Contorls the monitor layout for hyprland
           workspace = [
-            "1, monitor:DP-4, default:true"
-            "2, monitor:HDMI-A-4, default:true"
+            "1, monitor:DP-1, default:true"
+            "2, monitor:DP-2, default:true"
           ];
           monitor = [
-            "HDMI-A-4,2560x1080@60,0x0,1"
-            "DP-4,2560x1080@60,0x1080,1"
+            "DP-1,2560x1080@60,0x0,1"
+            "DP-2,2560x1080@60,0x1080,1"
           ];
         };
       };
@@ -43,7 +44,7 @@
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-pc-ssd
-            nixos-hardware.nixosModules.common-gpu-nvidia-nonprime
+            # nixos-hardware.nixosModules.common-gpu-nvidia-nonprime
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
