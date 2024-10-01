@@ -6,7 +6,7 @@
   services.udev.enable = true;
 
   # Open port 9090 for the web UI of the container
-  networking.firewall.allowedTCPPorts = [ 9090 ];
+  # networking.firewall.allowedTCPPorts = [ 9090 ];
 
   # Create a user 'arm' for the container; set the password with `passwd`
   users.users.arm = {
@@ -19,6 +19,12 @@
 
   # Create a group 'arm' for the container
   users.groups.arm = { };
+
+  services.nginx.virtualHosts."arm.homehub.tv" = {
+    forceSSL = true;
+    useACMEHost = "homehub.tv";
+    locations."/".proxyPass = "http://localhost:9090";
+  };
 
   # Configure the ARM container
   virtualisation.oci-containers.containers."arm-rippers" = {
