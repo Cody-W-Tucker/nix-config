@@ -105,6 +105,13 @@ in
                 siteMonitor = "https://photos.${domain}";
               };
             }
+            {
+              "Automatic Ripping Machine" = {
+                href = "http://server:9090";
+                icon = "http://server:9090/static/img/arm80.png";
+                siteMonitor = "http://server:9090";
+              };
+            }
           ];
         }
       ];
