@@ -9,7 +9,7 @@ in
       image = "ghcr.io/open-webui/open-webui:main";
       ports = [ "3000:8080" ];
       volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/RAG-Docs:${userDir}/RAG-Docs" ];
-      extraOptions = [ "--network=host" "--pull=always" ];
+      extraOptions = [ "--pull=always" ];
       environment = {
         OLLAMA_BASE_URL = "http://server:11434";
         WEBUI_URL = "https://ai.homehub.tv";
