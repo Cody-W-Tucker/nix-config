@@ -31,13 +31,6 @@ in
         {
           Business = [
             {
-              Nextcloud = {
-                href = "https://cloud.${domain}";
-                icon = "nextcloud";
-                siteMonitor = "https://cloud.${domain}";
-              };
-            }
-            {
               Open-WebUI = {
                 href = "https://ai.${domain}";
                 icon = "open-webui";
