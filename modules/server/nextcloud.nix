@@ -15,6 +15,21 @@
         useACMEHost = "homehub.tv";
       };
     };
+    homepage-dashboard = {
+      services = [
+        {
+          Business = [
+            {
+              Nextcloud = {
+                href = "https://cloud.homehub.tv";
+                icon = "nextcloud";
+                siteMonitor = "https://cloud.homehub.tv";
+              };
+            }
+          ];
+        }
+      ];
+    };
     nextcloud = {
       enable = true;
       hostName = "cloud.homehub.tv";
