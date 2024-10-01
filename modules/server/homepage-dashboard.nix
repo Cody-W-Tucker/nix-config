@@ -44,6 +44,26 @@ in
           provider = "google";
         };
       };
+      widgets = [
+        {
+          resources = {
+            label = "Load";
+            cpu = true;
+            memory = true;
+            cputemp = true;
+            tempmin = 30;
+            tempmax = 95;
+          };
+        }
+        {
+          search = {
+            provider = "custom";
+            focus = false;
+            url = "https://search.${domain}/search?q=";
+            target = "_self";
+          };
+        }
+      ];
 
       # https://gethomepage.dev/latest/configs/services/
 
