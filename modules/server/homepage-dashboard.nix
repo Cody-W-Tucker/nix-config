@@ -10,6 +10,7 @@ in
       useACMEHost = "homehub.tv";
       forceSSL = true;
       locations."/".proxyPass = "http://localhost:8082";
+      openFirewall = true;
     };
 
     homepage-dashboard = {
