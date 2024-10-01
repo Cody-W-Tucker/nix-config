@@ -9,6 +9,9 @@ in
     nginx.virtualHosts."homehub.tv" = {
       useACMEHost = "homehub.tv";
       forceSSL = true;
+      locations."/" = {
+        proxyPass = "http://server:8082";
+      };
     };
 
     homepage-dashboard = {
