@@ -29,29 +29,27 @@ in
 
       services = [
         {
-          Business = [
-            {
-              Open-WebUI = {
-                href = "https://ai.${domain}";
-                icon = "open-webui";
-                siteMonitor = "https://ai.${domain}";
-              };
-            }
-            {
-              NocoDB = {
-                href = "https://data.${domain}";
-                icon = "nocodb";
-                siteMonitor = "https://data.${domain}";
-              };
-            }
-            {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                siteMonitor = "https://automation.${domain}";
-              };
-            }
-          ];
+          {
+          Open-WebUI = {
+            href = "https://ai.${domain}";
+            icon = "open-webui";
+            siteMonitor = "https://ai.${domain}";
+          };
+        }
+        {
+          NocoDB = {
+            href = "https://data.${domain}";
+            icon = "nocodb";
+            siteMonitor = "https://data.${domain}";
+          };
+        }
+        {
+          N8N = {
+            href = "https://automation.${domain}";
+            icon = "n8n";
+            siteMonitor = "https://automation.${domain}";
+          };
+        }
         }
         {
           Services = [

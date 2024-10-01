@@ -18,15 +18,13 @@
     homepage-dashboard = {
       services = [
         {
-          Business = [
-            {
-              Nextcloud = {
-                href = "https://cloud.homehub.tv";
-                icon = "nextcloud";
-                siteMonitor = "https://cloud.homehub.tv";
-              };
-            }
-          ];
+          {
+          Nextcloud = {
+            href = "https://cloud.homehub.tv";
+            icon = "nextcloud";
+            siteMonitor = "https://cloud.homehub.tv";
+          };
+        }
         }
       ];
     };
