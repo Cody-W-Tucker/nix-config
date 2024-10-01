@@ -9,8 +9,6 @@ in
     nginx.virtualHosts."homehub.tv" = {
       useACMEHost = "homehub.tv";
       forceSSL = true;
-      locations."/".proxyPass = "http://localhost:8082";
-      openFirewall = true;
     };
 
     homepage-dashboard = {
@@ -19,6 +17,7 @@ in
 
       enable = true;
       listenPort = 8082;
+      openFirewall = true;
 
       # https://gethomepage.dev/latest/configs/settings/
 
