@@ -32,14 +32,14 @@ in
           Services = [
             {
               Nextcloud = {
-                href = "https://nextcloud.${domain}";
+                href = "https://cloud.${domain}";
                 icon = "nextcloud";
               };
             }
             {
               Photos = {
                 href = "https://photos.${domain}";
-                icon = "photos";
+                icon = "photoprism";
               };
             }
           ];
