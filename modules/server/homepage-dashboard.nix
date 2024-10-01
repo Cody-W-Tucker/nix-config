@@ -34,6 +34,28 @@ in
               Nextcloud = {
                 href = "https://cloud.${domain}";
                 icon = "nextcloud";
+                siteMonitor = "https://cloud.${domain}";
+              };
+            }
+            {
+              Open-WebUI = {
+                href = "https://ai.${domain}";
+                icon = "open-webui";
+                siteMonitor = "https://ai.${domain}";
+              };
+            }
+            {
+              NocoDB = {
+                href = "https://data.${domain}";
+                icon = "nocodb";
+                siteMonitor = "https://data.${domain}";
+              };
+            }
+            {
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                siteMonitor = "https://automation.${domain}";
               };
             }
           ];
@@ -42,33 +64,17 @@ in
           Services = [
 
             {
-              Photos = {
-                href = "https://photos.${domain}";
-                icon = "photoprism";
-              };
-            }
-            {
               Syncthing = {
                 href = "https://backup.${domain}";
                 icon = "syncthing";
+                siteMonitor = "https://backup.${domain}";
               };
             }
             {
-              HomeAssistant = {
+              "Home Assistant" = {
                 href = "https://ha.${domain}";
-                icon = "homeAssistant";
-              };
-            }
-            {
-              NocoDB = {
-                href = "https://data.${domain}";
-                icon = "nocodb";
-              };
-            }
-            {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
+                icon = "home-assistant";
+                siteMonitor = "https://ha.${domain}";
               };
             }
             {
@@ -76,12 +82,6 @@ in
                 href = "https://budget.${domain}";
                 icon = "https://budget.${domain}/favicon.ico";
                 siteMonitor = "https://budget.${domain}";
-              };
-            }
-            {
-              "Open-WebUI" = {
-                href = "https://ai.${domain}";
-                icon = "open-webui";
               };
             }
           ];
@@ -92,6 +92,14 @@ in
               Jellyfin = {
                 icon = "jellyfin";
                 href = "https://media.${domain}";
+                siteMonitor = "https://media.${domain}";
+              };
+            }
+            {
+              Photos = {
+                href = "https://photos.${domain}";
+                icon = "photoprism";
+                siteMonitor = "https://photos.${domain}";
               };
             }
           ];
