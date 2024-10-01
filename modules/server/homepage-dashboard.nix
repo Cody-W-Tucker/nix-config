@@ -26,6 +26,23 @@ in
 
       settings = {
         title = "HomeHub.tv";
+        background = "https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80";
+        cardBlur = "sm";
+        layout = {
+          Business = {
+            style = "row";
+            columns = 4;
+          };
+        };
+        headerStyle = "boxed";
+        target = "_self";
+        quicklaunch = {
+          searchDescription = true;
+          hideInternetSearch = true;
+          showSearchSuggestions = true;
+          hideVisitURL = true;
+          provider = "google";
+        };
       };
 
       # https://gethomepage.dev/latest/configs/services/
