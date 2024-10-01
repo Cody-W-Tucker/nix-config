@@ -34,7 +34,7 @@ in
             columns = 4;
           };
         };
-        headerStyle = "boxed";
+        headerStyle = "boxedWidgets";
         target = "_self";
         quicklaunch = {
           searchDescription = true;
