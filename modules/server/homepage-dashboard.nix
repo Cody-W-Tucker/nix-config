@@ -29,7 +29,6 @@ in
 
       services = [
         {
-          {
           Open-WebUI = {
             href = "https://ai.${domain}";
             icon = "open-webui";
@@ -49,7 +48,6 @@ in
             icon = "n8n";
             siteMonitor = "https://automation.${domain}";
           };
-        }
         }
         {
           Services = [
