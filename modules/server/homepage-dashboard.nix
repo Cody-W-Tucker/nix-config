@@ -107,9 +107,9 @@ in
             }
             {
               ARM = {
-                href = "http://server:9090";
-                icon = "arm";
-                siteMonitor = "http://server:9090";
+                href = "https://arm.${domain}";
+                icon = "https://arm.${domain}/static/img/favicon.png";
+                siteMonitor = "https://arm.${domain}";
               };
             }
           ];
