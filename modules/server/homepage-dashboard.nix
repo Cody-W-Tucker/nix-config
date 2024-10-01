@@ -29,13 +29,17 @@ in
 
       services = [
         {
-          Services = [
+          Business = [
             {
               Nextcloud = {
                 href = "https://cloud.${domain}";
                 icon = "nextcloud";
               };
             }
+
+          ];
+          Services = [
+
             {
               Photos = {
                 href = "https://photos.${domain}";
@@ -49,27 +53,28 @@ in
               };
             }
             {
-              "Home Assistant" = {
+              HomeAssistant = {
                 href = "https://ha.${domain}";
-                icon = "homeassistant";
+                icon = "homeAssistant";
               };
             }
             {
-              "NocoDB" = {
+              NocoDB = {
                 href = "https://data.${domain}";
                 icon = "nocodb";
               };
             }
             {
-              "N8N" = {
+              N8N = {
                 href = "https://automation.${domain}";
                 icon = "n8n";
               };
             }
             {
-              "ActualBudget" = {
+              ActualBudget = {
                 href = "https://budget.${domain}";
-                icon = "actualbudget";
+                icon = "https://budget.${domain}/favicon.ico";
+                siteMonitor = "https://budget.${domain}";
               };
             }
             {
