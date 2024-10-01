@@ -36,8 +36,9 @@ in
                 icon = "nextcloud";
               };
             }
-
           ];
+        }
+        {
           Services = [
 
             {
