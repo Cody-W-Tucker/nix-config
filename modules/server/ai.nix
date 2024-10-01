@@ -12,6 +12,7 @@ in
       extraOptions = [ "--network=host" "--pull=always" ];
       environment = {
         OLLAMA_BASE_URL = "http://server:11434";
+        WEBUI_URL = "https://ai.homehub.tv";
         ANONYMIZED_TELEMETRY = "False";
         DO_NOT_TRACK = "True";
         SCARF_NO_ANALYTICS = "True";

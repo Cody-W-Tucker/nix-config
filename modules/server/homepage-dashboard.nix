@@ -74,7 +74,7 @@ in
               "Home Assistant" = {
                 href = "https://ha.${domain}";
                 icon = "home-assistant";
-                siteMonitor = "https://ha.${domain}";
+                siteMonitor = "http://192.168.254.38:8123/";
               };
             }
             {
