@@ -47,20 +47,21 @@ in
       widgets = [
         {
           resources = {
-            label = "Load";
+            label = "System";
             cpu = true;
             memory = true;
+            disk = "/";
             cputemp = true;
             tempmin = 30;
             tempmax = 95;
+            refresh = 3000;
+            uptime = true;
           };
         }
         {
-          search = {
-            provider = "custom";
-            focus = false;
-            url = "https://search.${domain}/search?q=";
-            target = "_self";
+          resources = {
+            label = "HDD";
+            disk = "/mnt/hdd";
           };
         }
       ];
