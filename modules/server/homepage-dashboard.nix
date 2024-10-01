@@ -6,7 +6,7 @@ in
 {
 
   services = {
-    nginx.virtualHosts."dashboard.homehub.tv" = {
+    nginx.virtualHosts."homehub.tv" = {
       useACMEHost = "homehub.tv";
       forceSSL = true;
       locations."/".proxyPass = "http://localhost:8082";
