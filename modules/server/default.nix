@@ -4,6 +4,7 @@
   imports = [
     ./ai.nix
     ./automation.nix
+    ./homepage-dashboard.nix
     ./media.nix
     ./nextcloud.nix
     ./photos.nix
