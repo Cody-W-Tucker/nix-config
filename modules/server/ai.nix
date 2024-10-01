@@ -7,7 +7,7 @@ in
     "open-webui" = {
       autoStart = true;
       image = "ghcr.io/open-webui/open-webui:main";
-      ports = [ "3000:8080" ];
+      ports = [ "3030:8080" ];
       volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/RAG-Docs:${userDir}/RAG-Docs" ];
       extraOptions = [ "--pull=always" ];
       environment = {
@@ -60,7 +60,7 @@ in
         useACMEHost = "homehub.tv";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:8080";
+          proxyPass = "http://127.0.0.1:3030";
           proxyWebsockets = true;
         };
       };
