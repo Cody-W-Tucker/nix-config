@@ -6,6 +6,7 @@
     ./automation.nix
     ./homepage-dashboard.nix
     ./media.nix
+    ./monitoring.nix
     ./nextcloud.nix
     ./photos.nix
     # ./samba.nix
