@@ -108,7 +108,7 @@ in
             {
               ARM = {
                 href = "http://server:9090";
-                icon = "http://server:9090/static/img/favicon.png";
+                icon = "arm";
                 siteMonitor = "http://server:9090";
               };
             }
