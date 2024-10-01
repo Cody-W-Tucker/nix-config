@@ -42,6 +42,42 @@ in
                 icon = "photoprism";
               };
             }
+            {
+              Syncthing = {
+                href = "https://backup.${domain}";
+                icon = "syncthing";
+              };
+            }
+            {
+              "Home Assistant" = {
+                href = "https://ha.${domain}";
+                icon = "homeassistant";
+              };
+            }
+            {
+              "NocoDB" = {
+                href = "https://data.${domain}";
+                icon = "nocodb";
+              };
+            }
+            {
+              "N8N" = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+              };
+            }
+            {
+              "ActualBudget" = {
+                href = "https://budget.${domain}";
+                icon = "actualbudget";
+              };
+            }
+            {
+              "Open-WebUI" = {
+                href = "https://ai.${domain}";
+                icon = "open-webui";
+              };
+            }
           ];
         }
         {
