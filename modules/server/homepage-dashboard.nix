@@ -29,25 +29,36 @@ in
 
       services = [
         {
-          Open-WebUI = {
-            href = "https://ai.${domain}";
-            icon = "open-webui";
-            siteMonitor = "https://ai.${domain}";
-          };
-        }
-        {
-          NocoDB = {
-            href = "https://data.${domain}";
-            icon = "nocodb";
-            siteMonitor = "https://data.${domain}";
-          };
-        }
-        {
-          N8N = {
-            href = "https://automation.${domain}";
-            icon = "n8n";
-            siteMonitor = "https://automation.${domain}";
-          };
+          Business = [
+            {
+              Nextcloud = {
+                href = "https://cloud.${domain}";
+                icon = "nextcloud";
+                siteMonitor = "https://cloud.${domain}";
+              };
+            }
+            {
+              Open-WebUI = {
+                href = "https://ai.${domain}";
+                icon = "open-webui";
+                siteMonitor = "https://ai.${domain}";
+              };
+            }
+            {
+              NocoDB = {
+                href = "https://data.${domain}";
+                icon = "nocodb";
+                siteMonitor = "https://data.${domain}";
+              };
+            }
+            {
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                siteMonitor = "https://automation.${domain}";
+              };
+            }
+          ];
         }
         {
           Services = [
