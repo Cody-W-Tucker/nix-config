@@ -106,9 +106,9 @@ in
               };
             }
             {
-              "Automatic Ripping Machine" = {
+              ARM = {
                 href = "http://server:9090";
-                icon = "http://server:9090/static/img/arm80.png";
+                icon = "http://server:9090/static/img/favicon.png";
                 siteMonitor = "http://server:9090";
               };
             }
