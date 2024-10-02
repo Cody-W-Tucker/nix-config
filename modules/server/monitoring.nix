@@ -5,6 +5,7 @@
       enable = true;
       provision.enable = true;
       settings = {
+        analytics.reporting_enabled = false;
         server = {
           # Listening Address
           http_addr = "127.0.0.1";
@@ -12,7 +13,6 @@
           http_port = 3001;
           # Grafana needs to know on which domain and URL it's running
           domain = "monitoring.homehub.tv";
-          analytics.reporting_enabled = false;
         };
       };
       provision.datasources.settings = {
