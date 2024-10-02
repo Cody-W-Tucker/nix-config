@@ -12,7 +12,7 @@
           http_port = 3001;
           # Grafana needs to know on which domain and URL it's running
           domain = "monitoring.homehub.tv";
-          analytics.reporting.enable = false;
+          analytics.reporting_enabled = false;
         };
       };
       provision.datasources.settings = {
