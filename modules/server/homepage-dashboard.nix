@@ -30,7 +30,7 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 4;
+            columns = 5;
           };
         };
         headerStyle = "boxedWidgets";
@@ -85,17 +85,24 @@ in
               };
             }
             {
-              NocoDB = {
-                href = "https://data.${domain}";
-                icon = "nocodb";
-                siteMonitor = "https://data.${domain}";
-              };
-            }
-            {
               N8N = {
                 href = "https://automation.${domain}";
                 icon = "n8n";
                 siteMonitor = "https://automation.${domain}";
+              };
+            }
+            {
+              Metabase = {
+                href = "https://bi.${domain}";
+                icon = "metabase";
+                siteMonitor = "https://bi.${domain}";
+              };
+            }
+            {
+              NocoDB = {
+                href = "https://data.${domain}";
+                icon = "nocodb";
+                siteMonitor = "https://data.${domain}";
               };
             }
           ];
