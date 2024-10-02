@@ -52,15 +52,15 @@
         }
       ];
     };
-    loki = {
-      enable = true;
-      # Add config later
+    # loki = {
+    #   enable = true;
+    #   # Add config later
 
-    };
-    promtail = {
-      enable = true;
-      # Add config later
-    };
+    # };
+    # promtail = {
+    #   enable = true;
+    #   # Add config later
+    # };
     nginx.virtualHosts."monitoring.homehub.tv" = {
       useACMEHost = "homehub.tv";
       forceSSL = true;
