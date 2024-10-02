@@ -16,20 +16,21 @@
       };
       provision = {
         enable = true;
-        datasources = [
+        datasources =
           {
+            {
             name = "Prometheus";
             type = "prometheus";
             access = "proxy";
             url = "http://127.0.0.1:${toString config.services.prometheus.port}";
           }
-          {
-            name = "Loki";
-            type = "loki";
-            access = "proxy";
-            url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
-          }
-        ];
+            {
+              name = "Loki";
+              type = "loki";
+              access = "proxy";
+              url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
+            }
+          };
       };
     };
     prometheus = {
