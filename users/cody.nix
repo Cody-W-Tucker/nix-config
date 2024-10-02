@@ -118,7 +118,6 @@
     VISUAL = "nvim";
     TERMINAL = "kitty";
     VDPAU_DRIVER = "va_gl";
-    NIXOS_OZONE_WL = 1;
     GDK_BACKEND = "wayland";
     CLUTTER_BACKEND = "wayland";
     SDL_VIDEODRIVER = "wayland";
