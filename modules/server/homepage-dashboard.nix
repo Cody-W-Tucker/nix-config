@@ -30,7 +30,7 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 5;
+            columns = 3;
           };
         };
         headerStyle = "boxedWidgets";
@@ -82,20 +82,6 @@ in
                 href = "https://ai.${domain}";
                 icon = "open-webui";
                 siteMonitor = "https://ai.${domain}";
-              };
-            }
-            {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                siteMonitor = "https://automation.${domain}";
-              };
-            }
-            {
-              Metabase = {
-                href = "https://bi.${domain}";
-                icon = "metabase";
-                siteMonitor = "https://bi.${domain}";
               };
             }
             {
@@ -153,6 +139,31 @@ in
                 href = "https://arm.${domain}";
                 icon = "https://arm.${domain}/static/img/favicon.png";
                 siteMonitor = "https://arm.${domain}";
+              };
+            }
+          ];
+        }
+        {
+          Operations = [
+            {
+              Grafana = {
+                href = "https://monitoring.${domain}";
+                icon = "grafana";
+                siteMonitor = "https://monitoring.${domain}";
+              };
+            }
+            {
+              Metabase = {
+                href = "https://bi.${domain}";
+                icon = "metabase";
+                siteMonitor = "https://bi.${domain}";
+              };
+            }
+            {
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                siteMonitor = "https://automation.${domain}";
               };
             }
           ];
