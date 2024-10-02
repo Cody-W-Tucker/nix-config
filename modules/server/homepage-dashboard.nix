@@ -108,27 +108,26 @@ in
           ];
         }
         {
-          Services = [
-
-            {
-              Syncthing = {
-                href = "https://backup.${domain}";
-                icon = "syncthing";
-                siteMonitor = "https://backup.${domain}";
-              };
-            }
-            {
-              "Home Assistant" = {
-                href = "https://ha.${domain}";
-                icon = "home-assistant";
-                siteMonitor = "http://192.168.254.38:8123/";
-              };
-            }
+          Personal = [
             {
               ActualBudget = {
                 href = "https://budget.${domain}";
                 icon = "https://budget.${domain}/favicon.ico";
                 siteMonitor = "https://budget.${domain}";
+              };
+            }
+            {
+              "Home Assistant" = {
+                href = "http://192.168.254.38:8123/";
+                icon = "home-assistant";
+                siteMonitor = "http://192.168.254.38:8123/";
+              };
+            }
+            {
+              Syncthing = {
+                href = "https://backup.${domain}";
+                icon = "syncthing";
+                siteMonitor = "https://backup.${domain}";
               };
             }
           ];
