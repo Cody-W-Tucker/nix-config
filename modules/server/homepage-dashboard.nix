@@ -15,15 +15,9 @@ in
     };
 
     homepage-dashboard = {
-
-      # These options were already present in my configuration.
-
       enable = true;
       listenPort = 8082;
       openFirewall = true;
-
-      # https://gethomepage.dev/latest/configs/settings/
-
       settings = {
         title = "HomeHub.tv";
         cardBlur = "sm";
@@ -64,9 +58,6 @@ in
           };
         }
       ];
-
-      # https://gethomepage.dev/latest/configs/services/
-
       services = [
         {
           Business = [
@@ -169,39 +160,6 @@ in
           ];
         }
       ];
-
-      # https://gethomepage.dev/latest/configs/docker/
-
-      docker = { };
-
-      # https://gethomepage.dev/latest/configs/bookmarks/
-
-      bookmarks = [
-        {
-          Developer = [
-            {
-              Github = [{
-                icon = "si-github";
-                href = "https://github.com/";
-              }];
-            }
-            {
-              "Nixos Search" = [{
-                icon = "si-nixos";
-                href = "https://search.nixos.org/packages";
-              }];
-            }
-            {
-              "Nixos Wiki" = [{
-                icon = "si-nixos";
-                href = "https://nixos.wiki/";
-              }];
-            }
-          ];
-        }
-      ];
-
     };
   };
-
 }
