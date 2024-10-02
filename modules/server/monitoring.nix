@@ -77,8 +77,8 @@
 
         schema_config = {
           configs = [{
-            from = "2022-06-06";
-            store = "boltdb-shipper";
+            from = "2024-01-01";
+            store = "tsdb";
             object_store = "filesystem";
             schema = "v13";
             index = {
@@ -89,11 +89,8 @@
         };
 
         storage_config = {
-          boltdb_shipper = {
-            active_index_directory = "/var/lib/loki/boltdb-shipper-active";
-            cache_location = "/var/lib/loki/boltdb-shipper-cache";
-            cache_ttl = "24h";
-            # shared_store = "filesystem";
+          tsdb = {
+            dir = "/var/lib/loki/tsdb";
           };
 
           filesystem = {
