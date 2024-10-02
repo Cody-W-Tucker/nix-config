@@ -2,16 +2,22 @@
 
 {
   # Nginx reverse proxy for nocodb
-  services.nginx.virtualHosts."data.homehub.tv" = {
-    forceSSL = true;
-    useACMEHost = "homehub.tv";
-    locations."/".proxyPass = "http://localhost:7070";
+  services.nginx.virtualHosts = {
+    "data.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/".proxyPass = "http://localhost:7070";
+    };
+    "bi.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/".proxyPass = "http://localhost:5050";
+    };
   };
   # Metabase for data analysis
   services.metabase = {
     enable = true;
     listen.port = 5050;
-    openFirewall = true;
   };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
