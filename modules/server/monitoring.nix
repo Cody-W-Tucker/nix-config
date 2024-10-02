@@ -3,6 +3,7 @@
   services = {
     grafana = {
       enable = true;
+      provision.enable = true;
       settings = {
         server = {
           # Listening Address
@@ -14,23 +15,20 @@
           analytics.reporting.enable = false;
         };
       };
-      provision = {
-        enable = true;
-        datasources =
+      provision.datasources.settings = {
+        apiVersion = 1;
+        datasources = [
           {
-            {
             name = "Prometheus";
             type = "prometheus";
-            access = "proxy";
             url = "http://127.0.0.1:${toString config.services.prometheus.port}";
           }
-            {
-              name = "Loki";
-              type = "loki";
-              access = "proxy";
-              url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
-            }
-          };
+          {
+            name = "Loki";
+            type = "loki";
+            url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
+          }
+        ];
       };
     };
     prometheus = {
