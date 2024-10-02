@@ -50,6 +50,10 @@
     ffmpeg
   ];
 
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+  };
+
   # Enable support for removable devices.
   services.gvfs.enable = true;
   services.udisks2.enable = true;
