@@ -3,7 +3,7 @@ let userDir = "${config.users.users.codyt.home}";
 in
 {
   virtualisation.oci-containers.containers = {
-    # docker run --name open-webui --network=host -e PORT=11435 -e OLLAMA_BASE_URL=http://server:11434 -v ~/open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
+    # docker run --name open-webui --add-host=host.docker.internal:host-gateway -e PORT=11435 -e OLLAMA_BASE_URL=http://server:11434 -v ~/open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
     "open-webui" = {
       autoStart = true;
       image = "ghcr.io/open-webui/open-webui:main";
@@ -11,7 +11,7 @@ in
       volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/RAG-Docs:${userDir}/RAG-Docs" ];
       extraOptions = [
         "--pull=always"
-        "--network=host"
+        "--add-host=host.docker.internal:host-gateway"
       ];
       environment = {
         OLLAMA_BASE_URL = "http://server:11434";
