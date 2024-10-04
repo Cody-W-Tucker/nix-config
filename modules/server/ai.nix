@@ -11,7 +11,7 @@ in
       volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/RAG-Docs:${userDir}/RAG-Docs" ];
       extraOptions = [
         "--pull=always"
-        "--link=pipelines:pipelines"
+        "--network=host"
       ];
       environment = {
         OLLAMA_BASE_URL = "http://server:11434";
