@@ -12,6 +12,7 @@ in
       extraOptions = [
         "--pull=always"
         "--add-host=host.docker.internal:host-gateway"
+        "--network=host"
       ];
       environment = {
         OLLAMA_BASE_URL = "http://server:11434";
@@ -63,7 +64,7 @@ in
         useACMEHost = "homehub.tv";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:3030";
+          proxyPass = "http://127.0.0.1:8080";
           proxyWebsockets = true;
         };
       };
