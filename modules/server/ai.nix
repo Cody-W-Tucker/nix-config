@@ -12,6 +12,7 @@ in
       extraOptions = [
         "--pull=always"
         "--add-host=host.docker.internal:host-gateway"
+        "--network=host"
       ];
       environment = {
         OLLAMA_BASE_URL = "http://server:11434";
