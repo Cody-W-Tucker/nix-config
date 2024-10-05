@@ -56,7 +56,7 @@
       enable = true;
       configuration = {
         auth_enabled = false;
-        server.http_listen_port = 3090;
+        server.http_listen_port = 3030;
 
         ingester = {
           lifecycler = {
@@ -88,10 +88,10 @@
         };
 
         storage_config = {
-          boltdb_shipper = {
-            active_index_directory = "/var/lib/loki/boltdb-shipper-active";
-            cache_location = "/var/lib/loki/boltdb-shipper-cache";
-            cache_ttl = "24h";
+          tsdb_shipper = {
+            active_index_directory = "/var/lib/loki/tsdb-active";
+            cache_location = "/var/lib/loki/tsdb-cache";
+            shared_store = "filesystem";
           };
 
           filesystem = {
@@ -99,10 +99,13 @@
           };
         };
 
+        common = {
+          path_prefix = "/var/lib/loki";
+        };
+
         limits_config = {
           reject_old_samples = true;
           reject_old_samples_max_age = "168h";
-          allow_structured_metadata = false;
         };
 
         table_manager = {
