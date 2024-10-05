@@ -88,12 +88,9 @@
         };
 
         storage_config = {
-          tsdb_shipper = {
-            active_index_directory = "/var/lib/loki/tsdb-active";
-            cache_location = "/var/lib/loki/tsdb-cache";
-            shared_store = "filesystem";
+          tsdb = {
+            dir = "/var/lib/loki/tsdb";
           };
-
           filesystem = {
             directory = "/var/lib/loki/chunks";
           };
@@ -101,6 +98,11 @@
 
         common = {
           path_prefix = "/var/lib/loki";
+          storage = {
+            filesystem = {
+              directory = "/var/lib/loki/chunks";
+            };
+          };
         };
 
         limits_config = {
@@ -115,11 +117,8 @@
 
         compactor = {
           working_directory = "/var/lib/loki";
-          compactor_ring = {
-            kvstore = {
-              store = "inmemory";
-            };
-          };
+          compaction_interval = "10m";
+          retention_enabled = false;
         };
       };
     };
