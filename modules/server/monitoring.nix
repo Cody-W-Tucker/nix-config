@@ -102,6 +102,7 @@
         limits_config = {
           reject_old_samples = true;
           reject_old_samples_max_age = "168h";
+          allow_structured_metadata = false;
         };
 
         table_manager = {
