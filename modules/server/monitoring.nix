@@ -77,9 +77,9 @@
         schema_config = {
           configs = [{
             from = "2024-01-01";
-            store = "boltdb-shipper";
+            store = "tsdb";
             object_store = "filesystem";
-            schema = "v11";
+            schema = "v13";
             index = {
               prefix = "index_";
               period = "24h";
