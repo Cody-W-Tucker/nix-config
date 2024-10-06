@@ -65,34 +65,9 @@
             chunks_directory = "${config.services.loki.dataDir}/chunks";
             rules_directory = "${config.services.loki.dataDir}/rules";
           };
-          ring = {
-            kvstore = {
-              store = "inmemory";
-            };
-            instance_addr = "127.0.0.1";
-          };
-        };
-
-        schema_config = {
-          configs = [{
-            from = "2024-01-01";
-            store = "tsdb";
-            object_store = "filesystem";
-            schema = "v13";
-            index = {
-              prefix = "index_";
-              period = "24h";
-            };
-          }];
-        };
-
-        ruler = {
-          storage = {
-            type = "local";
-            local.directory = "${config.services.loki.dataDir}/ruler";
-          };
-          rule_path = "${config.services.loki.dataDir}/rules";
-          alertmanager_url = "http://alertmanager.r";
+          replication_factor = 1;
+          ring.kvstore.store = "inmemory";
+          ring.instance_addr = "127.0.0.1";
         };
 
         ingester.chunk_encoding = "snappy";
@@ -104,22 +79,9 @@
           reject_old_samples_max_age = "12h";
         };
 
-        query_range.cache_results = true;
-        limits_config.split_queries_by_interval = "24h";
-
         table_manager = {
           retention_deletes_enabled = true;
           retention_period = "120h";
-        };
-
-        storage_config = {
-          filesystem = {
-            directory = "/var/lib/loki/chunks";
-          };
-          tsdb_shipper = {
-            active_index_directory = "/var/lib/loki/tsdb-index";
-            cache_location = "/var/lib/loki/tsdb-cache";
-          };
         };
 
         compactor = {
@@ -131,6 +93,20 @@
           retention_delete_worker_count = 150;
           delete_request_store = "filesystem";
         };
+
+        schema_config.configs = [{
+          from = "2024-01-01";
+          store = "tsdb";
+          object_store = "filesystem";
+          schema = "v13";
+          index = {
+            prefix = "index_";
+            period = "24h";
+          };
+        }];
+
+        query_range.cache_results = true;
+        limits_config.split_queries_by_interval = "24h";
       };
     };
 
