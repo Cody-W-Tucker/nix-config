@@ -75,27 +75,22 @@
           filesystem = {
             directory = "/var/lib/loki/chunks";
           };
-          tsdb_shipper = {
-            active_index_directory = "/var/lib/loki/tsdb-index";
-            cache_location = "/var/lib/loki/tsdb-cache";
-          };
         };
 
         limits_config = {
           reject_old_samples = true;
-          reject_old_samples_max_age = "168h"; # Accept logs up to 7 days old
+          reject_old_samples_max_age = "168h";
         };
 
         table_manager = {
-          retention_deletes_enabled = true;
-          retention_period = "168h"; # Retain logs for 7 days
+          retention_deletes_enabled = false;
+          retention_period = "0s";
         };
 
         compactor = {
           working_directory = "/var/lib/loki";
-          compaction_interval = "10m"; # Run compaction every 10 minutes
-          retention_enabled = true;
-          delete_request_store = "/var/lib/loki/delete-store";
+          compaction_interval = "10m";
+          retention_enabled = false;
         };
       };
     };
