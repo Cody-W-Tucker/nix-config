@@ -75,6 +75,10 @@
           filesystem = {
             directory = "/var/lib/loki/chunks";
           };
+          tsdb_shipper = {
+            active_index_directory = "/var/lib/loki/tsdb-index";
+            cache_location = "/var/lib/loki/tsdb-cache";
+          };
         };
 
         limits_config = {
