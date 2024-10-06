@@ -81,21 +81,21 @@
           };
         };
 
-        limits_config = {
-          reject_old_samples = true;
-          reject_old_samples_max_age = "168h";
-        };
+        # limits_config = {
+        #   reject_old_samples = true;
+        #   reject_old_samples_max_age = "168h";
+        # };
 
-        table_manager = {
-          retention_deletes_enabled = false;
-          retention_period = "0s";
-        };
+        # table_manager = {
+        #   retention_deletes_enabled = false;
+        #   retention_period = "0s";
+        # };
 
-        compactor = {
-          working_directory = "/var/lib/loki";
-          compaction_interval = "10m";
-          retention_enabled = false;
-        };
+        # compactor = {
+        #   working_directory = "/var/lib/loki";
+        #   compaction_interval = "10m";
+        #   retention_enabled = false;
+        # };
       };
     };
 
