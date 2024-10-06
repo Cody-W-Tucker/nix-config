@@ -56,23 +56,7 @@
       enable = true;
       configuration = {
         auth_enabled = false;
-        server.http_listen_port = 3030;
-
-        ingester = {
-          lifecycler = {
-            address = "127.0.0.1";
-            ring = {
-              kvstore = {
-                store = "inmemory";
-              };
-              replication_factor = 1;
-            };
-          };
-          chunk_idle_period = "1h";
-          max_chunk_age = "1h";
-          chunk_target_size = 999999;
-          chunk_retain_period = "30s";
-        };
+        server.http_listen_port = 3100;
 
         schema_config = {
           configs = [{
@@ -88,9 +72,6 @@
         };
 
         storage_config = {
-          tsdb = {
-            dir = "/var/lib/loki/tsdb";
-          };
           filesystem = {
             directory = "/var/lib/loki/chunks";
           };
@@ -98,18 +79,18 @@
 
         limits_config = {
           reject_old_samples = true;
-          reject_old_samples_max_age = "168h";
+          reject_old_samples_max_age = "168h"; # Accept logs up to 7 days old
         };
 
         table_manager = {
-          retention_deletes_enabled = false;
-          retention_period = "0s";
+          retention_deletes_enabled = true;
+          retention_period = "168h"; # Retain logs for 7 days
         };
 
         compactor = {
           working_directory = "/var/lib/loki";
-          compaction_interval = "10m";
-          retention_enabled = false;
+          compaction_interval = "10m"; # Run compaction every 10 minutes
+          retention_enabled = true;
         };
       };
     };
