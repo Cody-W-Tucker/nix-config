@@ -58,7 +58,7 @@
         auth_enabled = false;
         server = {
           http_listen_port = 3090;
-          log_level = "debug"; # Temporarily increased for troubleshooting
+          log_level = "info"; # Temporarily increased for troubleshooting
         };
 
         common = {
