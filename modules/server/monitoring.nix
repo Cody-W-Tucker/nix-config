@@ -57,7 +57,7 @@
       configuration = {
         auth_enabled = false;
         server.http_listen_port = 3090;
-        log_level = "warn";
+        server.log_level = "warn";
 
         common = {
           path_prefix = config.services.loki.dataDir;
@@ -68,8 +68,8 @@
           ring = {
             kvstore = {
               store = "inmemory";
-              instance_addr = "127.0.0.1";
             };
+            instance_addr = "127.0.0.1";
           };
         };
 
