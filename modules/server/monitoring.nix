@@ -58,6 +58,14 @@
         auth_enabled = false;
         server.http_listen_port = 3090;
 
+        common = {
+          ring = {
+            kvstore = {
+              store = "inmemory";
+            };
+          };
+        };
+
         schema_config = {
           configs = [{
             from = "2024-01-01";
@@ -81,16 +89,6 @@
           };
         };
 
-        # limits_config = {
-        #   reject_old_samples = true;
-        #   reject_old_samples_max_age = "168h";
-        # };
-
-        # table_manager = {
-        #   retention_deletes_enabled = false;
-        #   retention_period = "0s";
-        # };
-
         compactor = {
           working_directory = "/var/lib/loki";
           compaction_interval = "10m";
@@ -98,6 +96,16 @@
         };
       };
     };
+
+    # limits_config = {
+    #   reject_old_samples = true;
+    #   reject_old_samples_max_age = "168h";
+    # };
+
+    # table_manager = {
+    #   retention_deletes_enabled = false;
+    #   retention_period = "0s";
+    # };
 
     nginx.virtualHosts."monitoring.homehub.tv" = {
       useACMEHost = "homehub.tv";
