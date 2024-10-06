@@ -56,7 +56,7 @@
       enable = true;
       configuration = {
         auth_enabled = false;
-        server.http_listen_port = 3100;
+        server.http_listen_port = 3090;
 
         schema_config = {
           configs = [{
@@ -75,6 +75,10 @@
           filesystem = {
             directory = "/var/lib/loki/chunks";
           };
+          tsdb_shipper = {
+            active_index_directory = "/var/lib/loki/tsdb-index";
+            cache_location = "/var/lib/loki/tsdb-cache";
+          };
         };
 
         limits_config = {
@@ -91,6 +95,7 @@
           working_directory = "/var/lib/loki";
           compaction_interval = "10m"; # Run compaction every 10 minutes
           retention_enabled = true;
+          delete_request_store = "/var/lib/loki/delete-store";
         };
       };
     };
