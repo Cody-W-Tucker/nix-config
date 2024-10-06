@@ -67,6 +67,11 @@ in
           proxyPass = "http://127.0.0.1:8080";
           proxyWebsockets = true;
         };
+        extraConfig = ''
+          gzip on;
+          gzip_buffers 16 8k;  # Increase the number of buffers and their size
+          gzip_comp_level 5;   # Adjust the compression level (1-9, where 9 is the highest compression)
+        '';
       };
     };
     ollama = {
