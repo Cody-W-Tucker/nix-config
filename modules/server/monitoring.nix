@@ -56,8 +56,10 @@
       enable = true;
       configuration = {
         auth_enabled = false;
-        server.http_listen_port = 3090;
-        server.log_level = "warn";
+        server = {
+          http_listen_port = 3090;
+          log_level = "debug"; # Temporarily increased for troubleshooting
+        };
 
         common = {
           path_prefix = config.services.loki.dataDir;
@@ -66,17 +68,25 @@
             rules_directory = "${config.services.loki.dataDir}/rules";
           };
           replication_factor = 1;
-          ring.kvstore.store = "inmemory";
-          ring.instance_addr = "127.0.0.1";
+          ring = {
+            kvstore.store = "inmemory";
+            instance_addr = "127.0.0.1";
+          };
         };
 
-        ingester.chunk_encoding = "snappy";
+        ingester = {
+          chunk_encoding = "snappy";
+          lifecycler = {
+            join_after = "0s"; # Added for quicker startup
+          };
+        };
 
         limits_config = {
           retention_period = "120h";
           ingestion_burst_size_mb = 16;
           reject_old_samples = true;
           reject_old_samples_max_age = "12h";
+          split_queries_by_interval = "24h";
         };
 
         table_manager = {
@@ -88,7 +98,7 @@
           retention_enabled = true;
           compaction_interval = "10m";
           working_directory = "${config.services.loki.dataDir}/compactor";
-          delete_request_cancel_period = "10m"; # don't wait 24h before processing the delete_request
+          delete_request_cancel_period = "10m";
           retention_delete_delay = "2h";
           retention_delete_worker_count = 150;
           delete_request_store = "filesystem";
@@ -106,7 +116,6 @@
         }];
 
         query_range.cache_results = true;
-        limits_config.split_queries_by_interval = "24h";
       };
     };
 
