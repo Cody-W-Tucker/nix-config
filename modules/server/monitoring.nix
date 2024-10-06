@@ -71,6 +71,7 @@
           ring = {
             kvstore.store = "inmemory";
             instance_addr = "127.0.0.1";
+            tokens_file_path = "${config.services.loki.dataDir}/tokens"; # Added tokens file path
           };
         };
 
@@ -78,6 +79,11 @@
           chunk_encoding = "snappy";
           lifecycler = {
             join_after = "0s"; # Added for quicker startup
+            ring = {
+              kvstore.store = "inmemory";
+              instance_addr = "127.0.0.1";
+              tokens_file_path = "${config.services.loki.dataDir}/tokens"; # Ensure tokens file path is set
+            };
           };
         };
 
