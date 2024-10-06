@@ -91,11 +91,11 @@
         #   retention_period = "0s";
         # };
 
-        # compactor = {
-        #   working_directory = "/var/lib/loki";
-        #   compaction_interval = "10m";
-        #   retention_enabled = false;
-        # };
+        compactor = {
+          working_directory = "/var/lib/loki";
+          compaction_interval = "10m";
+          retention_enabled = false;
+        };
       };
     };
 
