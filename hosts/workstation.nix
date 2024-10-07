@@ -130,14 +130,6 @@
         path = "/mnt/backup/Photos";
         devices = [ "server" "workstation" ];
       };
-      "nextcloud" = {
-        path = "/mnt/backup/Nextcloud";
-        devices = [ "server" "workstation" ];
-      };
-      "actualBudget" = {
-        path = "/mnt/backup/ActualBudget";
-        devices = [ "server" "workstation" ];
-      };
     };
   };
 

@@ -9,13 +9,6 @@
     extraOptions = [ "--pull=always" ];
   };
 
-  # Syncthing backup
-  services.syncthing.settings.folders."actualBudget" = {
-    path = "/var/lib/actual-server";
-    devices = [ "server" "workstation" ];
-    ignorePerms = true;
-  };
-
   services.nginx.virtualHosts."budget.homehub.tv" = {
     forceSSL = true;
     useACMEHost = "homehub.tv";
