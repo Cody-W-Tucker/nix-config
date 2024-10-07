@@ -43,8 +43,19 @@
     enable = true;
     recommendedTlsSettings = true;
     recommendedOptimisation = true;
-    recommendedGzipSettings = true;
+    recommendedGzipSettings = false; # Disable recommended settings to use custom ones
     recommendedProxySettings = true;
+
+    commonHttpConfig = ''
+      gzip on;
+      gzip_static on;
+      gzip_vary on;
+      gzip_comp_level 5;
+      gzip_min_length 256;
+      gzip_proxied expired no-cache no-store private auth;
+      gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+      gzip_buffers 64 8k;
+    '';
   };
 
   users.users.nginx.extraGroups = [ "acme" ];

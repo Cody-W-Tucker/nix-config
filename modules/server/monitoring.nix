@@ -156,18 +156,7 @@
         proxyPass = "http://127.0.0.1:${toString config.services.grafana.settings.server.http_port}";
         proxyWebsockets = true;
         recommendedProxySettings = true;
-        recommendedGzipSettings = false;
       };
-      extraConfig = ''
-        gzip on;
-        gzip_static on;
-        gzip_vary on;
-        gzip_comp_level 5;
-        gzip_min_length 256;
-        gzip_proxied expired no-cache no-store private auth;
-        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-        gzip_buffers 16 8k;
-      '';
     };
   };
 }
