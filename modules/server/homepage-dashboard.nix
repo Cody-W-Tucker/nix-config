@@ -31,8 +31,8 @@ in
         target = "_self";
         quicklaunch = {
           searchDescription = true;
-          hideInternetSearch = true;
-          showSearchSuggestions = true;
+          hideInternetSearch = false;
+          showSearchSuggestions = false;
           hideVisitURL = true;
           provider = "google";
         };
