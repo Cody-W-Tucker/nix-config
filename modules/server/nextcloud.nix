@@ -43,11 +43,5 @@
         trusted_domains = [ "cloud.homehub.tv" "docs.homehub.tv" ];
       };
     };
-    # Syncthing backup
-    syncthing.settings.folders."nextcloud" = {
-      path = "/var/lib/nextcloud";
-      devices = [ "server" "workstation" ];
-      ignorePerms = true;
-    };
   };
 }
