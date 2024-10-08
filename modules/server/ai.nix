@@ -37,7 +37,6 @@ in
       extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--pull=always" ];
     };
   };
-  # Ollama local llm
   services = {
     nginx.virtualHosts = {
       "search.homehub.tv" = {
@@ -57,12 +56,19 @@ in
         };
       };
     };
+    # Local AI models
     ollama = {
       enable = true;
       port = 11434;
       openFirewall = true;
       host = "0.0.0.0";
     };
+    # Content extraction
+    tika = {
+      enable = true;
+      port = 9998;
+    };
+    # Search engine
     searx = {
       enable = true;
       redisCreateLocally = true;
