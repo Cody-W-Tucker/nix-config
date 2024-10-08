@@ -73,7 +73,7 @@ in
               Open-WebUI = {
                 href = "https://ai.${domain}";
                 icon = "open-webui";
-                description = "Open source web interface for interacting with AI models";
+                description = "AI chat interface";
                 siteMonitor = "https://ai.${domain}";
               };
             }
