@@ -57,6 +57,26 @@ in
             disk = "/mnt/hdd";
           };
         }
+        {
+          openmeteo = {
+            label = "Weather";
+            # Kearney Nebraska
+            latitude = 40.699670;
+            longitude = -99.010310;
+            timezone = "America/Chicago";
+            units = "imperial";
+            cache = 5;
+            format.maximumFractionDigits = 0;
+          };
+        }
+        {
+          search = {
+            provider = "google";
+            focus = false;
+            showSearchSuggestions = true;
+            target = "_self";
+          };
+        }
       ];
       services = [
         {
