@@ -8,7 +8,7 @@ in
       autoStart = true;
       image = "ghcr.io/open-webui/open-webui:main";
       ports = [ "3030:8080" ];
-      volumes = [ "${userDir}/open-webui:/app/backend/data" "${userDir}/RAG-Docs:${userDir}/RAG-Docs" ];
+      volumes = [ "${userDir}/open-webui:/app/backend/data" ];
       extraOptions = [
         "--pull=always"
         "--add-host=host.docker.internal:host-gateway"
@@ -26,7 +26,6 @@ in
         RAG_WEB_SEARCH_ENGINE = "searxng";
         SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
         ENABLE_RAG_HYBRID_SEARCH = "True";
-        DOCS_DIR = "${userDir}/RAG-Docs";
       };
     };
     # docker run -d -p 9099:9099 --add-host=host.docker.internal:host-gateway -v pipelines:/app/pipelines --name pipelines --restart always ghcr.io/open-webui/pipelines:main
@@ -37,17 +36,6 @@ in
       volumes = [ "${userDir}/pipelines:/app/pipelines" ];
       extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--pull=always" ];
     };
-  };
-  # Adding a bind mount for the Projects directory so that it can be accessed by the container
-  fileSystems."/home/codyt/RAG-Docs/Journal" = {
-    device = "/mnt/hdd/Share/Documents/Personal/Journal";
-    fsType = "none";
-    options = [ "bind" "ro" ];
-  };
-  fileSystems."/home/codyt/RAG-Docs/Knowledge" = {
-    device = "/mnt/hdd/Share/Documents/Personal/Knowledge";
-    fsType = "none";
-    options = [ "bind" "ro" ];
   };
   # Ollama local llm
   services = {
