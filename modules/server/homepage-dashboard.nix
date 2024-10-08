@@ -32,8 +32,8 @@ in
         quicklaunch = {
           searchDescription = true;
           hideInternetSearch = false;
-          showSearchSuggestions = false;
-          hideVisitURL = true;
+          showSearchSuggestions = true;
+          hideVisitURL = false;
           provider = "google";
         };
       };
@@ -58,8 +58,16 @@ in
           };
         }
         {
+          search = {
+            provider = "google";
+            focus = false;
+            showSearchSuggestions = true;
+            target = "_self";
+          };
+        }
+        {
           openmeteo = {
-            label = "Weather";
+            label = "Kearney";
             # Kearney Nebraska
             latitude = 40.699670;
             longitude = -99.010310;
@@ -67,14 +75,6 @@ in
             units = "imperial";
             cache = 5;
             format.maximumFractionDigits = 0;
-          };
-        }
-        {
-          search = {
-            provider = "google";
-            focus = false;
-            showSearchSuggestions = true;
-            target = "_self";
           };
         }
       ];
