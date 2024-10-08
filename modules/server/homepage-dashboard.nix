@@ -65,6 +65,7 @@ in
               Nextcloud = {
                 href = "https://cloud.${domain}";
                 icon = "nextcloud";
+                description = "Could storage and collaboration";
                 siteMonitor = "https://cloud.${domain}";
               };
             }
@@ -72,6 +73,7 @@ in
               Open-WebUI = {
                 href = "https://ai.${domain}";
                 icon = "open-webui";
+                description = "Open source web interface for interacting with AI models";
                 siteMonitor = "https://ai.${domain}";
               };
             }
@@ -79,6 +81,7 @@ in
               NocoDB = {
                 href = "https://data.${domain}";
                 icon = "nocodb";
+                description = "Open source Airtable alternative";
                 siteMonitor = "https://data.${domain}";
               };
             }
@@ -90,6 +93,7 @@ in
               ActualBudget = {
                 href = "https://budget.${domain}";
                 icon = "https://budget.${domain}/favicon.ico";
+                description = "Personal budgeting tool";
                 siteMonitor = "https://budget.${domain}";
               };
             }
@@ -97,6 +101,7 @@ in
               "Home Assistant" = {
                 href = "http://192.168.254.38:8123/";
                 icon = "home-assistant";
+                description = "Open source home automation";
                 siteMonitor = "http://192.168.254.38:8123/";
               };
             }
@@ -104,6 +109,7 @@ in
               Syncthing = {
                 href = "https://backup.${domain}";
                 icon = "syncthing";
+                description = "File synchronization";
                 siteMonitor = "https://backup.${domain}";
               };
             }
@@ -115,6 +121,7 @@ in
               Jellyfin = {
                 icon = "jellyfin";
                 href = "https://media.${domain}";
+                description = "Media server";
                 siteMonitor = "https://media.${domain}";
               };
             }
@@ -122,6 +129,7 @@ in
               Photos = {
                 href = "https://photos.${domain}";
                 icon = "photoprism";
+                description = "Photo management";
                 siteMonitor = "https://photos.${domain}";
               };
             }
@@ -129,6 +137,7 @@ in
               ARM = {
                 href = "https://arm.${domain}";
                 icon = "https://arm.${domain}/static/img/favicon.png";
+                description = "Automatic DVD Ripping Machine";
                 siteMonitor = "https://arm.${domain}";
               };
             }
@@ -140,6 +149,7 @@ in
               Grafana = {
                 href = "https://monitoring.${domain}";
                 icon = "grafana";
+                description = "Metrics dashboard";
                 siteMonitor = "https://monitoring.${domain}";
               };
             }
@@ -147,6 +157,7 @@ in
               Metabase = {
                 href = "https://bi.${domain}";
                 icon = "metabase";
+                description = "Business intelligence";
                 siteMonitor = "https://bi.${domain}";
               };
             }
@@ -154,6 +165,7 @@ in
               N8N = {
                 href = "https://automation.${domain}";
                 icon = "n8n";
+                description = "Workflow automation";
                 siteMonitor = "https://automation.${domain}";
               };
             }
