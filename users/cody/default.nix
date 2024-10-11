@@ -27,4 +27,10 @@
 
   # Clipboard history
   services.cliphist.enable = true;
+
+  # Nextcloud Sync
+  services.nextcloud-client = {
+    enable = true;
+    startInBackground = true;
+  };
 }
