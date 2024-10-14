@@ -36,14 +36,6 @@ in
       volumes = [ "${userDir}/pipelines:/app/pipelines" ];
       extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--pull=always" ];
     };
-    # docker run -p 6333:6333 -p 6334:6334 -v qdrant:/qdrant/storage:z --name qdrant qdrant/qdrant 
-    "qdrant" = {
-      autoStart = true;
-      image = "qdrant/qdrant";
-      ports = [ "6333:6333" "6334:6334" ];
-      volumes = [ "${userDir}/qdrant:/qdrant/storage:z" ];
-      extraOptions = [ "--pull=always" ];
-    };
   };
   services = {
     nginx.virtualHosts = {
@@ -63,6 +55,19 @@ in
           proxyWebsockets = true;
         };
       };
+      "qdrant.homehub.tv" = {
+        useACMEHost = "homehub.tv";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://localhost:6333";
+          proxyWebsockets = true;
+          extraConfig = ''
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-For $remote_addr;
+          '';
+        };
+      };
     };
     # Local AI models
     ollama = {
@@ -75,6 +80,10 @@ in
     tika = {
       enable = true;
       port = 9998;
+    };
+    # Vector Search http port 6333, gRPC port 6334
+    qdrant = {
+      enable = true;
     };
     # Search engine
     searx = {
