@@ -61,11 +61,6 @@ in
         locations."/" = {
           proxyPass = "http://localhost:6333";
           proxyWebsockets = true;
-          extraConfig = ''
-            proxy_http_version 1.1;
-            proxy_set_header Host $host;
-            proxy_set_header X-Forwarded-For $remote_addr;
-          '';
         };
       };
     };
