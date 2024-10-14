@@ -41,7 +41,7 @@ in
       autoStart = true;
       image = "qdrant/qdrant";
       ports = [ "6333:6333" "6334:6334" ];
-      volumes = [ "${userDir}/qdrant/qdrant/storage:z" ];
+      volumes = [ "${userDir}/qdrant:/qdrant/storage:z" ];
       extraOptions = [ "--pull=always" ];
     };
   };
