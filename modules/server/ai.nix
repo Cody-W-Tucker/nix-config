@@ -36,6 +36,14 @@ in
       volumes = [ "${userDir}/pipelines:/app/pipelines" ];
       extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--pull=always" ];
     };
+    # docker run -p 6333:6333 -p 6334:6334 -v qdrant:/qdrant/storage:z --name qdrant qdrant/qdrant 
+    "qdrant" = {
+      autoStart = true;
+      image = "qdrant/qdrant";
+      ports = [ "6333:6333" "6334:6334" ];
+      volumes = [ "${userDir}/qdrant/qdrant/storage:z" ];
+      extraOptions = [ "--pull=always" ];
+    };
   };
   services = {
     nginx.virtualHosts = {
