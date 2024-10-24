@@ -9,7 +9,7 @@
     ./monitoring.nix
     ./nextcloud.nix
     ./photos.nix
-    # ./samba.nix
+    ./samba.nix
     ./syncthing.nix
     ./security.nix
   ];
