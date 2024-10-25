@@ -15,8 +15,6 @@
     slurp
     wl-clipboard
     hyprpicker
-    mako
-    swww
     rofi-wayland
     vscode
     gh
