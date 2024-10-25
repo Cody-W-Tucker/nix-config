@@ -27,9 +27,9 @@ let
       on-click-right = "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r";
       tooltip-format = "<tt><small>{calendar}</small></tt>";
       calendar = {
-        mode = year;
+        mode = "year";
         mode-mon-col = 3;
-        weeks-pos = right;
+        weeks-pos = "right";
         on-scroll = 1;
         format = {
           months = "<span color='#ffead3'><b>{}</b></span>";
