@@ -44,14 +44,6 @@ let
       icon-size = 21;
       spacing = 10;
     };
-    # bluetooth = {
-    #   format = " {status}";
-    #   format-connected = " {num_connections} connected";
-    #   tooltip-format = "{controller_alias}\t{controller_address}";
-    #   tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
-    #   tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
-    #   on-click = "exec bluetoothSwitch";
-    # };
     pulseaudio = {
       format = "{volume}% {icon} {format_source}";
       format-bluetooth = "{volume}% {icon} {format_source}";
