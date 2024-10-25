@@ -10,7 +10,7 @@ pkgs.writeShellScriptBin "media-player" ''
 
   # Check if playerctl returned any information
   if [ -z "$status" ]; then
-    echo '{"text": "No media playing", "class": "custom-media"}'
+    echo '{"icon": "", "text": "No media playing", "class": "custom-media"}'
     exit 0
   fi
 
@@ -28,5 +28,5 @@ pkgs.writeShellScriptBin "media-player" ''
   escaped_title=$(echo "$title" | sed 's/"/\\"/g')
 
   # Output the JSON
-  echo "{\"text\": \"$icon $escaped_artist - $escaped_title\", \"class\": \"custom-media\"}"
+  echo "{\"icon\": \"$icon\", \"text\": \"$escaped_artist - $escaped_title\", \"class\": \"custom-media\"}"
 ''
