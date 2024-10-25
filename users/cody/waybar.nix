@@ -22,9 +22,9 @@ let
       format = "{}";
     };
     "custom/media" = {
-      format = "{text}";
-      format-icons = "{icon}";
+      format = "{icon} - {text}";
       escape = true;
+      interval = 5;
       return-type = "json";
       max-length = 40;
       on-click = "playerctl play-pause";
@@ -81,11 +81,6 @@ let
       modules = [
         {
           type = "screenshare";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
-        {
-          type = "audio-out";
           tooltip = true;
           tooltip-icon-size = 24;
         }
