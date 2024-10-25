@@ -21,6 +21,7 @@
     ripdrag
     spotify
     blueman
+    playerctl
   ];
 
   # Clipboard history
@@ -28,4 +29,5 @@
 
   # Playerctl Daemon to control media players from Waybar
   services.playerctld.enable = true;
+  services.mpris-proxy.enable = true;
 }
