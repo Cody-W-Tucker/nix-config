@@ -24,25 +24,43 @@ let
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
       tooltip = true;
-      tooltip-format = "<big>{:%A, %d.%B %Y }</big>\n<tt><small>{calendar}</small></tt>";
-      on-click-left = "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r";
+      on-click-right = "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r";
+      tooltip-format = "<tt><small>{calendar}</small></tt>";
+      calendar = {
+        mode = year;
+        mode-mon-col = 3;
+        weeks-pos = right;
+        on-scroll = 1;
+        format = {
+          months = "<span color='#ffead3'><b>{}</b></span>";
+          days = "<span color='#ecc6d9'><b>{}</b></span>";
+          weeks = "<span color='#99ffdd'><b>W{}</b></span>";
+          weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+          today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+        };
+      };
+      actions = {
+        on-click-right = "mode";
+        on-scroll-up = [ "tz_up" "shift_up" ];
+        on-scroll-down = [ "tz_down" "shift_down" ];
+      };
     };
     cpu = {
       interval = 5;
-      format = " {usage:2}%";
+      format = "{usage:2}% ";
       tooltip = true;
     };
     memory = {
       interval = 5;
-      format = " {}%";
+      format = "{}% ";
       tooltip = true;
-
     };
     temperature = {
       critical-threshold = 80;
       # thermal-zone = 2;
       hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
-      format = " {temperatureC}°C";
+      format = "{temperatureC}°C ";
+      tooltip = false;
     };
     tray = {
       icon-size = 21;
