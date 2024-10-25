@@ -25,4 +25,7 @@
 
   # Clipboard history
   services.cliphist.enable = true;
+
+  # Playerctl Daemon to control media players from Waybar
+  services.playerctld.enable = true;
 }
