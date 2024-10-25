@@ -22,7 +22,8 @@ let
       format = "{}";
     };
     "custom/media" = {
-      format = "{icon} {text}";
+      format = "{text}";
+      format-icons = "{icon}";
       escape = true;
       return-type = "json";
       max-length = 40;
@@ -31,8 +32,7 @@ let
       smooth-scrolling-threshold = 1;
       on-scroll-up = "playerctl next";
       on-scroll-down = "playerctl previous";
-      exec = "/run/current-system/sw/bin/media-player";
-      interval = 5; # Update every 5 seconds
+      exec = "media-player";
     };
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
@@ -103,7 +103,7 @@ let
       format-muted = " {format_source}";
       format-source = "{volume}% ";
       format-source-muted = "";
-      format-icons = {
+      ss = {
         headphone = "";
         hands-free = "";
         headset = "";
