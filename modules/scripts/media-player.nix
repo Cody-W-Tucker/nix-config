@@ -33,5 +33,7 @@ pkgs.writeShellScriptBin "media-player" ''
   escaped_title=$(echo "$title" | sed 's/"/\\"/g')
 
   # Output the JSON
-  echo "{\"icon\": \"$icon\", \"text\": \"$escaped_artist - $escaped_title\"}"
+  output="{\"icon\": \"$icon\", \"text\": \"$escaped_artist - $escaped_title\"}"
+  echo "Output: $output" >&2  # Debugging: Print the output
+  echo "$output"
 ''
