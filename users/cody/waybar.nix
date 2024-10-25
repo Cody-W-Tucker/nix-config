@@ -23,13 +23,13 @@ let
     };
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
-      tooltip = true;
+      tooltip = false;
       on-click-right = "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r";
-      tooltip-format = "<tt><small>{calendar}</small></tt>";
+      on-click = "<tt><small>{calendar}</small></tt>";
       calendar = {
         mode = "year";
         mode-mon-col = 3;
-        weeks-pos = "right";
+        weeks-pos = "left";
         on-scroll = 1;
         format = {
           months = "<span color='#ffead3'><b>{}</b></span>";
@@ -38,11 +38,6 @@ let
           weekdays = "<span color='#ffcc66'><b>{}</b></span>";
           today = "<span color='#ff6699'><b><u>{}</u></b></span>";
         };
-      };
-      actions = {
-        on-click-right = "mode";
-        on-scroll-up = [ "tz_up" "shift_up" ];
-        on-scroll-down = [ "tz_down" "shift_down" ];
       };
     };
     cpu = {
