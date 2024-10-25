@@ -54,17 +54,17 @@ let
       transition-duration = 250;
       modules = [
         {
-          type = screenshare;
+          type = "screenshare";
           tooltip = true;
           tooltip-icon-size = 24;
         }
         {
-          type = audio-out;
+          type = "audio-out";
           tooltip = true;
           tooltip-icon-size = 24;
         }
         {
-          type = audio-in;
+          type = "audio-in";
           tooltip = true;
           tooltip-icon-size = 24;
         }
