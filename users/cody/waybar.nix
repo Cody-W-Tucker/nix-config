@@ -7,7 +7,7 @@ let
     layer = "top";
     reload_style_on_change = true;
     spacing = 4;
-    modules-center = [ "tray" "clock" "custom/notification" ];
+    modules-center = [ "tray" "clock" "custom/notification" "custom/media" ];
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
       "privacy"
@@ -20,6 +20,19 @@ let
     "hyprland/workspaces" = {
       on-click = "activate";
       format = "{}";
+    };
+    "custom/media" = {
+      format = "{icon} {text}";
+      escape = true;
+      return-type = "json";
+      max-length = 40;
+      on-click = "playerctl play-pause";
+      on-click-right = "playerctl stop";
+      smooth-scrolling-threshold = 1;
+      on-scroll-up = "playerctl next";
+      on-scroll-down = "playerctl previous";
+      exec = "media-player";
+      interval = 5; # Update every 5 seconds
     };
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
