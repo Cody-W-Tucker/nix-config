@@ -31,7 +31,7 @@ let
       smooth-scrolling-threshold = 1;
       on-scroll-up = "playerctl next";
       on-scroll-down = "playerctl previous";
-      exec = "media-player";
+      exec = "/run/current-system/sw/bin/media-player";
       interval = 5; # Update every 5 seconds
     };
     clock = {
