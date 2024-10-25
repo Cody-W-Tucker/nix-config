@@ -23,9 +23,9 @@ let
     };
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
-      tooltip = false;
+      tooltip = true;
       on-click-right = "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r";
-      on-click = "<tt><small>{calendar}</small></tt>";
+      tooltip-format = "<tt><small>{calendar}</small></tt>";
       calendar = {
         mode = "year";
         mode-mon-col = 3;
