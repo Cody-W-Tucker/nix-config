@@ -3,9 +3,9 @@
 {
   imports = [
     ./hyprland.nix
-    ./mako.nix
+    ./notifications.nix
     ./nixvim.nix
-    ./rofi.nix
+    ./appLauncher.nix
     ./waybar.nix
   ];
 
@@ -27,10 +27,4 @@
 
   # Clipboard history
   services.cliphist.enable = true;
-
-  # Nextcloud Sync
-  services.nextcloud-client = {
-    enable = true;
-    startInBackground = true;
-  };
 }
