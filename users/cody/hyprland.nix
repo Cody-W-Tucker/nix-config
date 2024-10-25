@@ -23,7 +23,7 @@
       monitor = hardwareConfig.monitor;
       exec-once = [
         "blueman-applet"
-        "mako"
+        "swaync"
         "dbus-update-activation-environment --systemd --all"
         "wl-clipboard-history -t"
         "wl-paste --watch cliphist store"
