@@ -26,5 +26,5 @@ pkgs.writeShellScriptBin "media-player" ''
   escaped_artist=$(echo "$artist" | sed 's/"/\\"/g')
 
   # Output the JSON
-  echo "{\"icon\": \"$icon\", \"text\": \"$escaped_artist"}"
+  echo "{\"icon\": \"$icon\", \"text\": \"$escaped_artist\", \"class\": \"custom-media\"}"
 ''
