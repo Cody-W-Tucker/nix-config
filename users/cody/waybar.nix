@@ -174,7 +174,7 @@ in
       }
 
       #clock,
-      #custom/notification,
+      #custom-notification,
       #battery,
       #bluetooth,
       #cpu,
