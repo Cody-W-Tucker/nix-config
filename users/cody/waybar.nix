@@ -22,7 +22,7 @@ let
       format = "{}";
     };
     "custom/media" = {
-      format = "{icon} - {text}";
+      format = "{icon} - {}";
       escape = true;
       interval = 5;
       return-type = "json";
