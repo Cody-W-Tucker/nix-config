@@ -5,7 +5,8 @@ pkgs.writeShellScriptBin "media-player" ''
 
   # Get the current player status and metadata
   status=$(playerctl status 2>/dev/null)
-  artist=$(playerctl metadata xesam:artist 2>/dev/null)
+  spotify_status=$(playerctl -p spotify status 2>/dev/null)
+  title=$(playerctl metadata xesam:title 2>/dev/null)
 
   # Check if playerctl returned any information
   if [ -z "$status" ]; then
@@ -14,7 +15,9 @@ pkgs.writeShellScriptBin "media-player" ''
   fi
 
   # Format the output
-  if [ "$status" = "Playing" ]; then
+  if [ "$spotify_status" = "Playing" ]; then
+    icon=""  # Spotify icon
+  elif [ "$status" = "Playing" ]; then
     icon=""
   elif [ "$status" = "Paused" ]; then
     icon=""
@@ -22,9 +25,9 @@ pkgs.writeShellScriptBin "media-player" ''
     icon=""
   fi
 
-  # Escape double quotes in artist and title for JSON output
-  escaped_artist=$(echo "$artist" | sed 's/"/\\"/g')
+  # Escape double quotes in title for JSON output
+  escaped_title=$(echo "$title" | sed 's/"/\\"/g')
 
   # Output the JSON
-  echo "{\"icon\": \"$icon\", \"text\": \"$escaped_artist\", \"class\": \"custom-media\"}"
+  echo "{\"icon\": \"$icon\", \"text\": \"$escaped_title\", \"class\": \"custom-media\"}"
 ''
