@@ -155,13 +155,13 @@ let
       tooltip = false;
       format = "{icon} {}";
       format-icons = {
-        notification = "<span foreground='red'><sup></sup></span>";
+        notification = "<span foreground='${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         none = "";
-        dnd-notification = "<span foreground='red'><sup></sup></span>";
+        dnd-notification = "<span foreground='${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         dnd-none = "";
-        inhibited-notification = "<span foreground='red'><sup></sup></span>";
+        inhibited-notification = "<span foreground='${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         inhibited-none = "";
-        dnd-inhibited-notification = "<span foreground='red'><sup></sup></span>";
+        dnd-inhibited-notification = "<span foreground='${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         dnd-inhibited-none = "";
       };
       return-type = "json";
