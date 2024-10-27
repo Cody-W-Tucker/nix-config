@@ -278,6 +278,9 @@ in
       #temperature,
       #clock,
       #workspaces,
+      #tray,
+      #custom-notification,
+      #custom-media,
       #bluetooth {
         padding: 5px 10px;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
