@@ -11,6 +11,7 @@ let
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
       "privacy"
+      "bluetooth"
       "pulseaudio"
       "cpu"
       "memory"
@@ -73,6 +74,14 @@ let
     tray = {
       icon-size = 21;
       spacing = 10;
+    };
+    bluetooth = {
+      format = " {status}";
+      format-connected = " {num_connections} connected";
+      tooltip-format = "{controller_alias}\t{controller_address}";
+      tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
+      tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+      on-click = "exec bluetoothSwitch";
     };
     privacy = {
       icon-spacing = 4;
@@ -168,7 +177,8 @@ let
       exec-if = "which swaync-client";
       exec = "swaync-client -swb";
       on-click = "sleep 0.1 && swaync-client -t -sw";
-      on-click-right = "sleep 0.1 && swaync-client -d -sw";
+      on-click-right = "swaync-client -C";
+      on-click-middle = "sleep 0.1 && swaync-client -d -sw";
       escape = true;
     };
   };
