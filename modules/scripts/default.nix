@@ -4,6 +4,7 @@ let
   scriptNames = [
     ./rofi-launcher.nix
     ./media-player.nix
+    ./bluetooth-switch.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
