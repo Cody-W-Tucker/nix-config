@@ -7,10 +7,12 @@ let
     layer = "top";
     reload_style_on_change = true;
     spacing = 4;
-    modules-center = [ "tray" "clock" "custom/notification" "custom/media" ];
+    modules-center = [ "custom/notification" "clock" ];
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
       "privacy"
+      "custom/media"
+      "tray"
       "bluetooth"
       "pulseaudio"
       "cpu"
