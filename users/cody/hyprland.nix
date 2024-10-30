@@ -177,7 +177,7 @@
     settings = {
       general = {
         hide_cursor = true;
-        grace = 60;
+        grace = 300;
         ignore_empty_input = true;
       };
       background = [
@@ -246,7 +246,7 @@
           on-resume = "echo 'service resumed'";
         }
         {
-          timeout = 980; # 16min.
+          timeout = 1200; # 20min.
           on-timeout = "hyprctl dispatch dpms off";
           on-resume = "hyprctl dispatch dpms on";
         }
