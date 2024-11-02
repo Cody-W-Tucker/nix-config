@@ -45,7 +45,7 @@
     enableDefaultPackages = true;
     packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk
+      noto-fonts-cjk-sans
       font-awesome
       source-han-sans
       (nerdfonts.override { fonts = [ "Meslo" ]; })
