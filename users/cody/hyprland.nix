@@ -88,7 +88,7 @@
         disable_hyprland_logo = "true";
       };
       # Window rules
-      windowrule = [ "workspace special silent, initialTitle:^(Spotify.*)" ];
+      windowrulev2 = [ "workspace special silent, initialTitle:^(Spotify)$" ];
       # Keybindings
       "$mainMod" = "SUPER";
       bindm = [
