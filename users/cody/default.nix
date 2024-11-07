@@ -39,7 +39,7 @@
       PartOf = [ "graphical-session.target" ];
     };
     Service = {
-      ExecStart = "${pkgs.spotify}/bin/spotify --no-zygote";
+      ExecStart = "${pkgs.spotify}/bin/spotify --no-zygote --minimized";
       Restart = "on-failure";
       RestartSec = "5s";
     };
