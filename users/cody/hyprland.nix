@@ -22,6 +22,7 @@
       workspace = hardwareConfig.workspace;
       monitor = hardwareConfig.monitor;
       exec-once = [
+        "spotify --no-zygote --minimized"
         "blueman-applet"
         "swaync"
         "dbus-update-activation-environment --systemd --all"
