@@ -2,6 +2,7 @@
 {
   stylix = {
     enable = true;
+    targets.hyprland.enable = false;
     polarity = "dark";
     opacity = {
       applications = 0.9;
