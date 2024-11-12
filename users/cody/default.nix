@@ -20,7 +20,6 @@
     gh
     ripdrag
     spotify
-    blueman
     playerctl
   ];
 
