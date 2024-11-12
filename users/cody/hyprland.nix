@@ -22,7 +22,6 @@
       workspace = hardwareConfig.workspace;
       monitor = hardwareConfig.monitor;
       exec-once = [
-        "blueman-applet"
         "swaync"
         "dbus-update-activation-environment --systemd --all"
         "wl-clipboard-history -t"
