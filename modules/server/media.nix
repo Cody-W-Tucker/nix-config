@@ -9,7 +9,7 @@
   environment.systemPackages = [
     pkgs.jellyfin
     pkgs.jellyfin-web
-    # pkgs.jellyfin-ffmpeg
+    pkgs.jellyfin-ffmpeg
   ];
 
   # 1. enable vaapi on OS-level
