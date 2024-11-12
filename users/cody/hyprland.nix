@@ -65,10 +65,12 @@
           new_optimizations = "true";
           ignore_opacity = true;
         };
-        drop_shadow = "yes";
-        shadow_range = "4";
-        shadow_render_power = "3";
-        "col.shadow" = lib.mkForce "rgba(1a1a1aee)";
+        shadow = {
+          enabled = true;
+          render_power = "3";
+          range = "4";
+          color = lib.mkForce "rgba(1a1a1aee)";
+        };
       };
       dwindle = {
         pseudotile = "yes";
