@@ -1,7 +1,9 @@
-{ config, pkgs, lib, inputs, hardwareConfig, ... }:
+{ config, pkgs, lib, inputs, hardwareConfig, stylix, ... }:
 
 
 {
+  # Until stylix updates the decoration:col.shadow option to shadow:color. I will remove it.
+  stylix.targets.hyprland.enable = false;
   home.packages = with pkgs; [
     hyprnome
   ];
