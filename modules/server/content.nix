@@ -1,7 +1,16 @@
 { config, ... }:
 
 {
-  sops.secrets.miniflux = { };
+  sops.secrets.miniflux = {
+    owner = "miniflux";
+    group = "miniflux";
+    mode = "0400";
+  };
+
+  sops.templates."miniflux-credentials".content = ''
+    ADMIN_USERNAME=${config.sops.placeholder.miniflux.ADMIN_USERNAME}
+    ADMIN_PASSWORD=${config.sops.placeholder.miniflux.ADMIN_PASSWORD}
+  '';
 
   # Rss feed
   services.miniflux = {
@@ -11,7 +20,7 @@
       LISTEN_ADDR = "localhost:7777";
       BASE_URL = "https://rss.homehub.tv";
     };
-    adminCredentialsFile = config.sops.secrets.miniflux.path;
+    adminCredentialsFile = config.sops.templates."miniflux-credentials".path;
   };
 
   services.nginx.virtualHosts."rss.homehub.tv" = {
