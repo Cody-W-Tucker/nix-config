@@ -42,7 +42,7 @@ $markdown_content"
 
 # Generate filename
 base_filename="''${title// /_}"
-directory="${config.users.users.codyt.home}/Documents/Personal"
+directory="$HOME/Documents/Personal"
 filename="''${directory}/''${base_filename}.md"
 
 # Check if file exists and add number if it does
