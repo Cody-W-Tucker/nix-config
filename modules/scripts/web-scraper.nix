@@ -14,7 +14,7 @@ pkgs.writeShellScriptBin "web-scraper" ''
       exit 1
   fi
 
-  # URL to fetch (with required prefix)
+  # URL to fetch (From Jina AI Reader)
   url="https://r.jina.ai/$1"
 
   # Fetch the content from the URL
@@ -23,6 +23,9 @@ pkgs.writeShellScriptBin "web-scraper" ''
   # Use awk to extract the title and markdown content while preserving newlines
   title=$(echo "$content" | awk '/^Title: / {print substr($0, 8)}')
   markdown_content=$(echo "$content" | awk '/^Markdown Content:/ {markdown=1; next} markdown {print $0}')
+
+  # Extract all URLs from the markdown content and remove duplicates
+  urls=$(echo "$markdown_content" | grep -Eo '(http|https)://[^ ]+' | sort | uniq)
 
   # Sanitize title for filename (ensure no illegal characters in file paths)
   sanitized_title=$(echo "$title" | sed 's/[^a-zA-Z0-9_-]/_/g')
@@ -54,4 +57,8 @@ pkgs.writeShellScriptBin "web-scraper" ''
   # Save the formatted content to the specified filename
   echo "$formatted_content" > "$filename"
   echo "File saved as: $filename"
+
+  # Output all extracted unique URLs
+  echo "Extracted URLs:"
+  echo "$urls"
 ''
