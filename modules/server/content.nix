@@ -5,6 +5,7 @@
     config = {
       CLEANUP_FREQUENCY = 48;
       LISTEN_ADDR = "localhost:7777";
+      CREATE_ADMIN = 0;
     };
   };
 
