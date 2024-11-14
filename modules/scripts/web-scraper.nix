@@ -14,72 +14,59 @@ pkgs.writeShellScriptBin "web-scraper" ''
       exit 1
   fi
 
-  # URL to fetch from (ensure to use the correct base URL structure here)
+  # URL to fetch (with required prefix)
   url="https://r.jina.ai/$1"
 
-  # Fetch the content
+  # Fetch the content from the URL
   content=$(curl -s "$url")
 
-  # Debugging: Display the fetched content.
+  # Debugging: Ensure we display the content correctly
   echo "Fetched content:"
   echo "$content"
 
-  # Extract the title and markdown content using awk, ensuring multi-line content handling
-  content=$(echo "$content" | awk '
-      BEGIN { title=""; markdown_content=""; markdown=0 }
-      /^Title: / { title = substr($0, 8); next }  # Extract title
-      /^Markdown Content:/ { markdown = 1; next }  # Begin capturing markdown content
-      markdown { markdown_content = markdown_content $0 "\n" }  # Accumulate markdown content preserving newlines
-      END { print title "|" markdown_content }
-  ')
+  # Use awk to extract the title and markdown content while preserving newlines
+  title=$(echo "$content" | awk '/^Title: / {print substr($0, 8)}')
+  markdown_content=$(echo "$content" | awk '/^Markdown Content:/ {markdown=1; next} markdown {print $0}')
 
-  # Confirm extracted content for debugging
-  echo "Extracted content (title and markdown):"
-  echo "$content"
+  # Debugging: Confirm extracted values
+  echo "Extracted Title: $title"
+  echo "Extracted Markdown Content: $markdown_content"
 
-  # Split the content into title and markdown_content using the "|" delimiter
-  IFS='|' read -r title markdown_content <<< "$content"
-
-  # Check extracted values for title and markdown content
-  echo "Parsed title: $title"
-  echo "Parsed markdown content:"
-  echo "$markdown_content"
-
-  # Sanitize title for filename (only include valid characters for filenames)
+  # Sanitize title for filename (ensure no illegal characters in file paths)
   sanitized_title=$(echo "$title" | sed 's/[^a-zA-Z0-9_-]/_/g')
 
-  # Debug: Check sanitized title
+  # Debugging: Display sanitized title for filename
   echo "Sanitized title: $sanitized_title"
 
-  # If title is still empty after sanitization, provide a default filename
+  # If the title is empty, use a fallback default title to avoid empty filename
   if [ -z "$sanitized_title" ]; then
       echo "Warning: Title could not be extracted. Using default filename."
       sanitized_title="default_filename"
   fi
 
-  # Format the content for markdown saving
+  # Create well-formatted markdown content for saving to the file
   formatted_content="---
   title: $title
   url: $1
   ---
   $markdown_content"
 
-  # Debugging: Check formatted_content
+  # Show formatted content for debugging
   echo "Formatted Content:"
   echo "$formatted_content"
 
-  # Generate filename using sanitized title
+  # Define the directory for saving the markdown files
   directory="$HOME/Documents/Personal"
   filename="''${directory}/''${sanitized_title}.md"
 
-  # If a file with the same filename exists, add a counter to the filename
+  # If a file with the same name already exists, append a counter to avoid overwriting
   counter=1
   while [ -e "$filename" ]; do
       filename="''${directory}/''${sanitized_title}_''${counter}.md"
       ((counter++))
   done
 
-  # Save the content to the file
+  # Save the formatted content to the specified filename
   echo "$formatted_content" > "$filename"
   echo "File saved as: $filename"
 ''
