@@ -2,7 +2,7 @@
   # Rss feed
   services.miniflux = {
     enable = true;
-    createDatabaseLocally = false;
+    createDatabaseLocally = true;
     config = {
       CLEANUP_FREQUENCY = 48;
       LISTEN_ADDR = "localhost:7777";
