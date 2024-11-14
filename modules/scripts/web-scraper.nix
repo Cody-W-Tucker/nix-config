@@ -25,7 +25,7 @@ pkgs.writeShellScriptBin "web-scraper" ''
   markdown_content=$(echo "$content" | awk '/^Markdown Content:/ {markdown=1; next} markdown {print $0}')
 
   # Extract all URLs from the markdown content and remove duplicates
-  urls=$(echo "$markdown_content" | grep -Eo '(http|https)://[^ )",.]+[^ )",.]' | sort | uniq)
+  urls=$(echo "$markdown_content" | grep -Eo '(http|https)://[^ )]+' | sort | uniq)
 
   # Sanitize title for filename (ensure no illegal characters in file paths)
   sanitized_title=$(echo "$title" | sed 's/[^a-zA-Z0-9 _-]/_/g')
