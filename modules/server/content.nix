@@ -11,8 +11,8 @@
       LISTEN_ADDR = "localhost:7777";
       BASE_URL = "https://rss.homehub.tv";
       ADMIN_USERNAME = "admin";
+      ADMIN_PASSWORD_FILE = config.sops.secrets.miniflux-admin-password.path;
     };
-    adminCredentialsFile = config.sops.secrets.miniflux-admin-password.path;
   };
 
   services.nginx.virtualHosts."rss.homehub.tv" = {
