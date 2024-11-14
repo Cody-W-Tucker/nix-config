@@ -1,14 +1,17 @@
+{ config, ... }:
+
 {
+  sops.secrets.miniflux-admin-password = { };
+
   # Rss feed
   services.miniflux = {
     enable = true;
-    createDatabaseLocally = true;
     config = {
       CLEANUP_FREQUENCY = 48;
       LISTEN_ADDR = "localhost:7777";
-      CREATE_ADMIN = 0;
       BASE_URL = "https://rss.homehub.tv";
     };
+    adminCredentialsFile = config.sops.secrets.miniflux-admin-password.path;
   };
 
   services.nginx.virtualHosts."rss.homehub.tv" = {
