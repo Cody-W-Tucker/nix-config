@@ -18,7 +18,7 @@ pkgs.writeShellScriptBin "web-scraper" ''
   url="$1"
 
   # Fetch the content
-  content=$(curl -s "$url")
+  content=$(curl -s "https://r.jina.ai/$url")
 
   # Display the fetched content for debugging
   echo "Fetched content:"
