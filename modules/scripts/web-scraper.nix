@@ -21,24 +21,35 @@ url="https://r.jina.ai/$1"
 # Fetch the content
 content=$(curl -s "$url")
 
-# Extract the title, URL, and markdown content using awk
-read -r title source_url markdown_content <<EOF
-$(echo "$content" | awk '
-    /^Title: / { title = substr($0, 8) }
-    /^URL Source: / { source_url = substr($0, 12) }
-    /^Markdown Content:/ { markdown = 1; next }
-    markdown { markdown_content = markdown_content $0 "\n" }
-    END { print title, source_url, markdown_content }
+# Extract content using awk with RS and ORS settings
+content_parsed=$(echo "$content" | awk '
+    BEGIN { RS=""; FS="\n"; ORS="\n" }
+    /^Title:/ { title=substr($0, 7) }
+    /^Markdown Content:/ { 
+        for(i=2;i<=NF;i++) markdown = markdown $i "\n"
+    }
+    END {
+        print title
+        print markdown
+    }
 ')
+
+# Read into variables using careful IFS handling
+IFS=$'\n' read -r title markdown_content << EOF
+$content_parsed
 EOF
 
-# Create the formatted content
-formatted_content="---
-title: $title
-url: $source_url
+# Create formatted content with proper yaml frontmatter
+formatted_content=$(cat << EOF
+---
+title: ''${title}
+url: $1
+date: $(date +%Y-%m-%d)
 ---
 
-$markdown_content"
+''${markdown_content}
+EOF
+)
 
 # Generate filename
 base_filename="''${title// /_}"
