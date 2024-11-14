@@ -186,7 +186,7 @@
         grace = 300;
         ignore_empty_input = true;
       };
-      background = [
+      background = lib.mkForce [
         {
           monitor = "";
           path = "screenshot";
@@ -200,7 +200,7 @@
           vibrancy_darkness = 0.0;
         }
       ];
-      input-field = [
+      input-field = lib.mkForce [
         {
           monitor = "DP-1";
           size = "200, 50";
