@@ -10,8 +10,8 @@ if [ $# -eq 0 ]; then
 fi
 
 # Validate URL input
-if ! [[ "$1" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-    echo "Invalid URL argument."
+if ! [[ "$1" =~ ^https?:// ]]; then
+    echo "Invalid URL argument. URL must start with http:// or https://"
     exit 1
 fi
 
