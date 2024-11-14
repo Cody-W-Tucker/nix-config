@@ -18,7 +18,7 @@
     nextcloud = {
       enable = true;
       hostName = "cloud.homehub.tv";
-      package = pkgs.nextcloud29;
+      package = pkgs.nextcloud30;
       database.createLocally = true;
       configureRedis = true;
       # Increase the maximum file upload size to avoid problems uploading videos.
