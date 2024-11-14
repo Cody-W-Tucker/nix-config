@@ -20,23 +20,12 @@ pkgs.writeShellScriptBin "web-scraper" ''
   # Fetch the content from the URL
   content=$(curl -s "$url")
 
-  # Debugging: Ensure we display the content correctly
-  echo "Fetched content:"
-  echo "$content"
-
   # Use awk to extract the title and markdown content while preserving newlines
   title=$(echo "$content" | awk '/^Title: / {print substr($0, 8)}')
   markdown_content=$(echo "$content" | awk '/^Markdown Content:/ {markdown=1; next} markdown {print $0}')
 
-  # Debugging: Confirm extracted values
-  echo "Extracted Title: $title"
-  echo "Extracted Markdown Content: $markdown_content"
-
   # Sanitize title for filename (ensure no illegal characters in file paths)
   sanitized_title=$(echo "$title" | sed 's/[^a-zA-Z0-9_-]/_/g')
-
-  # Debugging: Display sanitized title for filename
-  echo "Sanitized title: $sanitized_title"
 
   # If the title is empty, use a fallback default title to avoid empty filename
   if [ -z "$sanitized_title" ]; then
@@ -50,10 +39,6 @@ pkgs.writeShellScriptBin "web-scraper" ''
   url: $1
   ---
   $markdown_content"
-
-  # Show formatted content for debugging
-  echo "Formatted Content:"
-  echo "$formatted_content"
 
   # Define the directory for saving the markdown files
   directory="$HOME/Documents/Personal"
