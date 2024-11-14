@@ -1,16 +1,8 @@
 { config, ... }:
 
 {
-  sops.secrets."miniflux/ADMIN_USERNAME" = {
-    owner = "miniflux";
-    group = "miniflux";
-    mode = "0400";
-  };
-  sops.secrets."miniflux/ADMIN_PASSWORD" = {
-    owner = "miniflux";
-    group = "miniflux";
-    mode = "0400";
-  };
+  sops.secrets."miniflux/ADMIN_USERNAME" = { };
+  sops.secrets."miniflux/ADMIN_PASSWORD" = { };
 
   sops.templates."miniflux-credentials".content = ''
     ADMIN_USERNAME=${config.sops.placeholder."miniflux/ADMIN_USERNAME"}
