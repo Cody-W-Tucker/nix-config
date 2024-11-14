@@ -26,7 +26,11 @@ content_parsed=$(echo "$content" | awk '
     BEGIN { RS=""; FS="\n"; ORS="\n" }
     /^Title:/ { title=substr($0, 7) }
     /^Markdown Content:/ { 
-        for(i=2;i<=NF;i++) markdown = markdown $i "\n"
+        # Skip the "Markdown Content:" line and capture rest
+        for(i=2;i<=NF;i++) { 
+            if ($i ~ /^Markdown Content:/) continue
+            markdown = markdown $i "\n" 
+        }
     }
     END {
         print title
