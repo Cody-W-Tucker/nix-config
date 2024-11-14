@@ -41,13 +41,13 @@ url: $source_url
 $markdown_content"
 
 # Generate filename
-base_filename="${title// /_}"
-filename="/Documents/Personal/${base_filename}.md"
+base_filename="''${title// /_}"
+filename="/Documents/Personal/''${base_filename}.md"
 
 # Check if file exists and add number if it does
 counter=1
 while [ -e "$filename" ]; do
-    filename="/Documents/Personal/${base_filename}_${counter}.md"
+    filename="/Documents/Personal/''${base_filename}_''${counter}.md"
     ((counter++))
 done
 
