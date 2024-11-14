@@ -1,4 +1,4 @@
-{ pkgs }:
+{ config, pkgs }:
 
 pkgs.writeShellScriptBin "web-scraper" ''
 
@@ -42,12 +42,13 @@ $markdown_content"
 
 # Generate filename
 base_filename="''${title// /_}"
-filename="/Documents/Personal/''${base_filename}.md"
+directory="${config.users.codyt.home}/Documents/Personal"
+filename="''${directory}/''${base_filename}.md"
 
 # Check if file exists and add number if it does
 counter=1
 while [ -e "$filename" ]; do
-    filename="/Documents/Personal/''${base_filename}_''${counter}.md"
+    filename="''${directory}/''${base_filename}_''${counter}.md"
     ((counter++))
 done
 
