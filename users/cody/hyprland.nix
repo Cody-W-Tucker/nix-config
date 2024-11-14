@@ -3,7 +3,7 @@
 
 {
   # Until stylix updates the decoration:col.shadow option to shadow:color. I will remove it.
-  stylix.targets.hyprland.enable = false;
+  stylix.targets.hyprland.enable = true;
   home.packages = with pkgs; [
     hyprnome
   ];
