@@ -1,10 +1,9 @@
 { config, pkgs }:
 
 let
-  home = {
-    config.users.users.codyt.home};
-    in
-    pkgs.writeShellScriptBin "web-scraper" ''
+  home = "${config.users.users.codyt.home}";
+in
+pkgs.writeShellScriptBin "web-scraper" ''
 
 # Check if URL is provided
 if [ $# -eq 0 ]; then
