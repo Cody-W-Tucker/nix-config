@@ -4,6 +4,7 @@
   imports = [
     ./ai.nix
     ./automation.nix
+    ./content.nix
     ./homepage-dashboard.nix
     ./media.nix
     ./monitoring.nix
