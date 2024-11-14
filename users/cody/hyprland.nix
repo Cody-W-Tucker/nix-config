@@ -110,6 +110,8 @@
           "$mainMod SHIFT, E, exec, nautilus"
           "$mainMod, SPACE, togglefloating"
           "$mainMod, Tab, exec, rofi-launcher"
+          "$mainMod SHIFT, Tab, exec, rofi -show web_scraper -modi 'web_scraper:web-scraper'"
+          "$mainMod, F1, exec, bluetooth-switch"
           "$mainMod, F, fullscreen"
           # Number keys (0, -, +)
           "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://ai.homehub.tv"
