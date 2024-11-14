@@ -1,8 +1,5 @@
 { config, pkgs }:
 
-let
-  home = "${config.users.users.codyt.home}";
-in
 pkgs.writeShellScriptBin "web-scraper" ''
 
 # Check if URL is provided
@@ -44,7 +41,7 @@ $markdown_content"
 
 # Generate filename
 base_filename="''${title// /_}"
-directory="${home}/Documents/Personal"
+directory="$HOME/Documents/Personal"
 filename="''${directory}/''${base_filename}.md"
 
 # Check if file exists and add number if it does
