@@ -1,6 +1,10 @@
 { config, pkgs }:
 
-pkgs.writeShellScriptBin "web-scraper" ''
+let
+  home = {
+    config.users.users.codyt.home};
+    in
+    pkgs.writeShellScriptBin "web-scraper" ''
 
 # Check if URL is provided
 if [ $# -eq 0 ]; then
@@ -21,43 +25,27 @@ url="https://r.jina.ai/$1"
 # Fetch the content
 content=$(curl -s "$url")
 
-# Extract content using awk with RS and ORS settings
-content_parsed=$(echo "$content" | awk '
-    BEGIN { RS=""; FS="\n"; ORS="\n" }
-    /^Title:/ { title=substr($0, 7) }
-    /^Markdown Content:/ { 
-        # Skip the "Markdown Content:" line and capture rest
-        for(i=2;i<=NF;i++) { 
-            if ($i ~ /^Markdown Content:/) continue
-            markdown = markdown $i "\n" 
-        }
-    }
-    END {
-        print title
-        print markdown
-    }
+# Extract the title, URL, and markdown content using awk
+read -r title markdown_content <<EOF
+$(echo "$content" | awk '
+    /^Title: / { title = substr($0, 8) }
+    /^Markdown Content:/ { markdown = 1; next }
+    markdown { markdown_content = markdown_content $0 "\n" }
+    END { print title, markdown_content }
 ')
-
-# Read into variables using careful IFS handling
-IFS=$'\n' read -r title markdown_content << EOF
-$content_parsed
 EOF
 
-# Create formatted content with proper yaml frontmatter
-formatted_content=$(cat << EOF
----
-title: ''${title}
+# Create the formatted content
+formatted_content="---
+title: $title
 url: $1
-date: $(date +%Y-%m-%d)
 ---
 
-''${markdown_content}
-EOF
-)
+$markdown_content"
 
 # Generate filename
 base_filename="''${title// /_}"
-directory="$HOME/Documents/Personal"
+directory="${home}/Documents/Personal"
 filename="''${directory}/''${base_filename}.md"
 
 # Check if file exists and add number if it does
