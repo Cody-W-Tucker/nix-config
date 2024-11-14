@@ -14,41 +14,41 @@ pkgs.writeShellScriptBin "web-scraper" ''
       exit 1
   fi
 
-  # URL to fetch (make sure the URL structure is correct here)
-  url="$1"
+  # URL to fetch from (ensure to use the correct base URL structure here)
+  url="https://r.jina.ai/$1"
 
   # Fetch the content
-  content=$(curl -s "https://r.jina.ai/$url")
+  content=$(curl -s "$url")
 
-  # Display the fetched content for debugging
+  # Debugging: Display the fetched content.
   echo "Fetched content:"
   echo "$content"
 
-  # Extract the title and markdown content using awk
+  # Extract the title and markdown content using awk, ensuring multi-line content handling
   content=$(echo "$content" | awk '
-      BEGIN { title=""; markdown_content="" }
+      BEGIN { title=""; markdown_content=""; markdown=0 }
       /^Title: / { title = substr($0, 8); next }  # Extract title
-      /^Markdown Content:/ { markdown = 1; next }  # Begin extracting markdown content from here
-      markdown { markdown_content = markdown_content $0 "\n" }
-      END { print title "|" markdown_content }  # Use the "|" delimiter
+      /^Markdown Content:/ { markdown = 1; next }  # Begin capturing markdown content
+      markdown { markdown_content = markdown_content $0 "\n" }  # Accumulate markdown content preserving newlines
+      END { print title "|" markdown_content }
   ')
 
-  # Display the extracted content for debugging
+  # Confirm extracted content for debugging
   echo "Extracted content (title and markdown):"
   echo "$content"
 
   # Split the content into title and markdown_content using the "|" delimiter
   IFS='|' read -r title markdown_content <<< "$content"
 
-  # Debugging: Check if the title and markdown_content were correctly parsed
+  # Check extracted values for title and markdown content
   echo "Parsed title: $title"
   echo "Parsed markdown content:"
   echo "$markdown_content"
 
-  # Sanitize title for filename (remove characters that may cause issues: spaces, commas, brackets)
+  # Sanitize title for filename (only include valid characters for filenames)
   sanitized_title=$(echo "$title" | sed 's/[^a-zA-Z0-9_-]/_/g')
 
-  # Debugging: Check sanitized title
+  # Debug: Check sanitized title
   echo "Sanitized title: $sanitized_title"
 
   # If title is still empty after sanitization, provide a default filename
@@ -57,25 +57,29 @@ pkgs.writeShellScriptBin "web-scraper" ''
       sanitized_title="default_filename"
   fi
 
-  # Create the formatted content for markdown file
+  # Format the content for markdown saving
   formatted_content="---
   title: $title
   url: $1
   ---
   $markdown_content"
 
-  # Generate filename using the sanitized title
+  # Debugging: Check formatted_content
+  echo "Formatted Content:"
+  echo "$formatted_content"
+
+  # Generate filename using sanitized title
   directory="$HOME/Documents/Personal"
   filename="''${directory}/''${sanitized_title}.md"
 
-  # Check if file exists and add a number to the filename if it does
+  # If a file with the same filename exists, add a counter to the filename
   counter=1
   while [ -e "$filename" ]; do
       filename="''${directory}/''${sanitized_title}_''${counter}.md"
       ((counter++))
   done
 
-  # Save to Obsidian vault
+  # Save the content to the file
   echo "$formatted_content" > "$filename"
   echo "File saved as: $filename"
 ''
