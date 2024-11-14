@@ -1,7 +1,7 @@
 { config, ... }:
 
 {
-  sops.secrets.miniflux-admin-password = { };
+  sops.secrets.miniflux = { };
 
   # Rss feed
   services.miniflux = {
@@ -11,7 +11,7 @@
       LISTEN_ADDR = "localhost:7777";
       BASE_URL = "https://rss.homehub.tv";
     };
-    adminCredentialsFile = config.sops.secrets.miniflux-admin-password.path;
+    adminCredentialsFile = config.sops.secrets.miniflux.path;
   };
 
   services.nginx.virtualHosts."rss.homehub.tv" = {
