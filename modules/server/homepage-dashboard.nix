@@ -154,6 +154,22 @@ in
               };
             }
             {
+              Miniflux = {
+                href = "https://rss.${domain}";
+                icon = "miniflux";
+                description = "RSS reader";
+                siteMonitor = "https://rss.${domain}";
+              };
+            }
+            {
+              Calibre = {
+                href = "https://ebook.${domain}";
+                icon = "calibre";
+                description = "Ebook reader";
+                siteMonitor = "https://ebook.${domain}";
+              };
+            }
+            {
               ARM = {
                 href = "https://arm.${domain}";
                 icon = "https://arm.${domain}/static/img/favicon.png";
@@ -187,6 +203,14 @@ in
                 icon = "n8n";
                 description = "Workflow automation";
                 siteMonitor = "https://automation.${domain}";
+              };
+            }
+            {
+              Qdrant = {
+                href = "https://qdrant.${domain}";
+                icon = "qdrant";
+                description = "Vector search engine";
+                siteMonitor = "https://search.${domain}";
               };
             }
           ];
