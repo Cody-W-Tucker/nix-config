@@ -55,7 +55,7 @@
   users.users.codyt = {
     isNormalUser = true;
     description = "Cody Tucker";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "media" ];
     shell = pkgs.zsh;
     # hashedPasswordFile = config.sops.secrets.codyt.path;
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
