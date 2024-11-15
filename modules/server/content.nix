@@ -28,17 +28,14 @@
       };
     };
 
-    # Calibre-web ebook server
+    # Calibre-web ebook reader
     calibre-web = {
       enable = true;
+      group = "media";
       options.enableBookUploading = true;
       options.enableBookConversion = true;
       options.enableKepubify = true;
-    };
-    calibre-server = {
-      enable = true;
-      port = 8084;
-      openFirewall = true;
+      options.calibreLibrary = "/mnt/hdd/media/Books";
     };
     nginx.virtualHosts."ebook.homehub.tv" = {
       forceSSL = true;
