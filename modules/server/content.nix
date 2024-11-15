@@ -9,22 +9,44 @@
     ADMIN_PASSWORD=${config.sops.placeholder."miniflux/ADMIN_PASSWORD"}
   '';
 
-  # Rss feed
-  services.miniflux = {
-    enable = true;
-    config = {
-      CLEANUP_FREQUENCY = 48;
-      LISTEN_ADDR = "localhost:7777";
-      BASE_URL = "https://rss.homehub.tv";
+  services = {
+    # Miniflux RSS reader
+    miniflux = {
+      enable = true;
+      config = {
+        CLEANUP_FREQUENCY = 48;
+        LISTEN_ADDR = "localhost:7777";
+        BASE_URL = "https://rss.homehub.tv";
+      };
+      adminCredentialsFile = config.sops.templates."miniflux-credentials".path;
     };
-    adminCredentialsFile = config.sops.templates."miniflux-credentials".path;
-  };
+    nginx.virtualHosts."rss.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/" = {
+        proxyPass = "http://localhost:7777";
+      };
+    };
 
-  services.nginx.virtualHosts."rss.homehub.tv" = {
-    forceSSL = true;
-    useACMEHost = "homehub.tv";
-    locations."/" = {
-      proxyPass = "http://localhost:7777";
+    # Calibre-web ebook server
+    calibre-web = {
+      enable = true;
+      options.enableBookUploading = true;
+      options.enableBookConversion = true;
+      options.enableKepubify = true;
+    };
+    nginx.virtualHosts."ebook.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/" = {
+        proxyPass = "http://localhost:8083";
+        extraConfig = ''
+          client_max_body_size 500M;
+          proxy_busy_buffers_size 1024k;
+          proxy_buffers 4 512k;
+          proxy_buffer_size 1024k;
+        '';
+      };
     };
   };
 }
