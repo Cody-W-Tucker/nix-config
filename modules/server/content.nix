@@ -37,10 +37,6 @@
     };
     calibre-server = {
       enable = true;
-      user = "codyt";
-      libraries = [
-        "/mnt/hdd/Media/Books"
-      ];
     };
     nginx.virtualHosts."ebook.homehub.tv" = {
       forceSSL = true;
