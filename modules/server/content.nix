@@ -35,7 +35,6 @@
       options.enableBookUploading = true;
       options.enableBookConversion = true;
       options.enableKepubify = true;
-      options.calibreLibrary = "/mnt/hdd/media/Books";
     };
     nginx.virtualHosts."ebook.homehub.tv" = {
       forceSSL = true;
