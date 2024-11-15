@@ -37,6 +37,7 @@
     };
     calibre-server = {
       enable = true;
+      port = 8084;
     };
     nginx.virtualHosts."ebook.homehub.tv" = {
       forceSSL = true;
