@@ -210,7 +210,7 @@ in
                 href = "https://qdrant.${domain}";
                 icon = "qdrant";
                 description = "Vector search engine";
-                siteMonitor = "https://search.${domain}";
+                siteMonitor = "https://qdrant.${domain}";
               };
             }
           ];
