@@ -154,6 +154,18 @@ in
               };
             }
             {
+              ARM = {
+                href = "https://arm.${domain}";
+                icon = "https://arm.${domain}/static/img/favicon.png";
+                description = "Automatic DVD Ripping Machine";
+                siteMonitor = "https://arm.${domain}";
+              };
+            }
+          ];
+        }
+        {
+          Reading = [
+            {
               Miniflux = {
                 href = "https://rss.${domain}";
                 icon = "miniflux";
@@ -167,14 +179,6 @@ in
                 icon = "calibre";
                 description = "Ebook reader";
                 siteMonitor = "https://ebook.${domain}";
-              };
-            }
-            {
-              ARM = {
-                href = "https://arm.${domain}";
-                icon = "https://arm.${domain}/static/img/favicon.png";
-                description = "Automatic DVD Ripping Machine";
-                siteMonitor = "https://arm.${domain}";
               };
             }
           ];
@@ -207,10 +211,10 @@ in
             }
             {
               Qdrant = {
-                href = "https://qdrant.${domain}";
-                icon = "qdrant";
+                href = "https://qdrant.${domain}/dashboard";
+                icon = "https://qdrant.${domain}/dashboard/favicon.ico";
                 description = "Vector search engine";
-                siteMonitor = "https://qdrant.${domain}";
+                siteMonitor = "https://qdrant.${domain}/dashboard";
               };
             }
           ];
