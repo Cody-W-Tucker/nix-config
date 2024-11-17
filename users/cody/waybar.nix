@@ -10,12 +10,9 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "custom/timer" "clock" ];
+    modules-center = [ "clock" "custom/timer" ];
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
-      "privacy"
-      "bluetooth"
-      "pulseaudio"
       "group/group-power"
     ];
     "hyprland/workspaces" = {
@@ -58,49 +55,6 @@ let
           today = "<span color='#ff6699'><b><u>{}</u></b></span>";
         };
       };
-    };
-    bluetooth = {
-      format = " {status}";
-      format-connected = " {num_connections} connected";
-      tooltip-format = "{controller_alias}\t{controller_address}";
-      tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
-      tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
-      on-click = "exec bluetoothSwitch";
-    };
-    privacy = {
-      icon-spacing = 4;
-      icon-size = 18;
-      transition-duration = 250;
-      modules = [
-        {
-          type = "screenshare";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
-        {
-          type = "audio-in";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
-      ];
-    };
-    pulseaudio = {
-      format = "{volume}% {icon} {format_source}";
-      format-bluetooth = "{volume}% {icon} {format_source}";
-      format-bluetooth-muted = " {icon} {format_source}";
-      format-muted = " {format_source}";
-      format-source = "{volume}% ";
-      format-source-muted = "";
-      ss = {
-        headphone = "";
-        hands-free = "";
-        headset = "";
-        phone = "";
-        portable = "";
-        car = "";
-        default = [ "" "" "" ];
-      };
-      on-click = "pavucontrol";
     };
     "hyprland/window" = {
       max-length = 200;
@@ -149,13 +103,18 @@ let
   secondaryBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "custom/media" "custom/notification" ];
-    modules-left = [ "hyprland/workspaces" ];
+    modules-center = [
+      "custom/media"
+      "custom/notification"
+      "pulseaudio"
+      "privacy"
+      "bluetooth"
+    ];
+    modules-left = [ "hyprland/workspaces" "tray" ];
     modules-right = [
       "cpu"
       "memory"
       "temperature"
-      "tray"
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
@@ -194,6 +153,49 @@ let
     tray = {
       icon-size = 21;
       spacing = 10;
+    };
+    bluetooth = {
+      format = " {status}";
+      format-connected = " {num_connections} connected";
+      tooltip-format = "{controller_alias}\t{controller_address}";
+      tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
+      tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+      on-click = "exec bluetoothSwitch";
+    };
+    privacy = {
+      icon-spacing = 4;
+      icon-size = 18;
+      transition-duration = 250;
+      modules = [
+        {
+          type = "screenshare";
+          tooltip = true;
+          tooltip-icon-size = 24;
+        }
+        {
+          type = "audio-in";
+          tooltip = true;
+          tooltip-icon-size = 24;
+        }
+      ];
+    };
+    pulseaudio = {
+      format = "{volume}% {icon} {format_source}";
+      format-bluetooth = "{volume}% {icon} {format_source}";
+      format-bluetooth-muted = " {icon} {format_source}";
+      format-muted = " {format_source}";
+      format-source = "{volume}% ";
+      format-source-muted = "";
+      ss = {
+        headphone = "";
+        hands-free = "";
+        headset = "";
+        phone = "";
+        portable = "";
+        car = "";
+        default = [ "" "" "" ];
+      };
+      on-click = "pavucontrol";
     };
     "hyprland/window" = {
       max-length = 200;
