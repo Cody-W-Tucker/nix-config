@@ -22,7 +22,6 @@
     spotify
     playerctl
     libnotify
-    uair
   ];
 
   # Clipboard history
