@@ -105,13 +105,12 @@ let
     spacing = 4;
     modules-center = [
       "custom/media"
-      "pulseaudio"
-      "privacy"
     ];
     modules-left = [ "hyprland/workspaces" "tray" ];
     modules-right = [
-      "bluetooth"
+      "privacy"
       "custom/notification"
+      "pulseaudio"
       "cpu"
       "memory"
       "temperature"
@@ -154,14 +153,6 @@ let
       icon-size = 21;
       spacing = 10;
     };
-    bluetooth = {
-      format = " {status}";
-      format-connected = " {num_connections} connected";
-      tooltip-format = "{controller_alias}\t{controller_address}";
-      tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
-      tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
-      on-click = "exec bluetoothSwitch";
-    };
     privacy = {
       icon-spacing = 4;
       icon-size = 18;
@@ -195,7 +186,8 @@ let
         car = "";
         default = [ "" "" "" ];
       };
-      on-click = "pavucontrol";
+      on-click = "exec bluetoothSwitch";
+      on-click-right = "pavucontrol";
     };
     "hyprland/window" = {
       max-length = 200;
