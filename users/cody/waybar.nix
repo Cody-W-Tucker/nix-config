@@ -7,8 +7,8 @@ let
     layer = "top";
     reload_style_on_change = true;
     spacing = 4;
-    modules-center = [ "custom/media" "clock" "custom/notification" ];
-    modules-left = [ "hyprland/workspaces" "custom/timer" ];
+    modules-center = [ "custom/media" "clock" "custom/timer" "custom/notification" ];
+    modules-left = [ "hyprland/workspaces" ];
     modules-right = [
       "privacy"
       "bluetooth"
@@ -38,8 +38,8 @@ let
       on-click = "waybar-timer new 25 'notify-send \"Session finished\"'";
       on-click-middle = "waybar-timer cancel";
       on-click-right = "waybar-timer togglepause";
-      on-scroll-up = "waybar-timer increase 60 || waybar-timer new 1 'notify-send -u critical \"Timer expired.\"'";
-      on-scroll-down = "waybar-timer increase -60";
+      on-scroll-up = "waybar-timer increase 300 || waybar-timer new 1 'notify-send -u critical \"Timer expired.\"'";
+      on-scroll-down = "waybar-timer increase -300";
     };
     "custom/media" = {
       format = "{}";
