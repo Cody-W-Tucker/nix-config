@@ -6,6 +6,7 @@ let
     ./media-player.nix
     ./bluetooth-switch.nix
     ./web-scraper.nix
+    ./waybar-timer.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
