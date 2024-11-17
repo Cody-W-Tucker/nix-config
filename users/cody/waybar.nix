@@ -262,22 +262,18 @@ in
       #workspaces,
       #tray,
       #custom-notification,
+      #custom-nix-updates,
       #custom-media,
       #custom-timer,
       #custom-power,
       #custom-quit,
       #custom-lock,
-      #custom-reboot {
+      #custom-reboot,
+      #workspaces {
         padding: 5px 10px;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
         background-color: #${config.lib.stylix.colors.base00};
         color: #${config.lib.stylix.colors.base05};
-      }
-
-      #workspaces {
-        padding: 0 15px;
-        color: #${config.lib.stylix.colors.base05};
-        border: 1px solid #${config.lib.stylix.colors.base02};
       }
 
       #workspaces button {
