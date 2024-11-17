@@ -1,22 +1,21 @@
 { config, pkgs, lib, ... }:
 
-# Create a reusable function to create a bar (since I want to duplicate the bar for each monitor)
+# Create a reusable function to create each bar
+# Bottom monitor bar focus on work
+# Top monitor bar gives more information
+# Want varibles to be more clear, "DP-1" is bottom monitor, "top" places the bar at the top of the screen
 let
   createBar = waybarConfig: output: position: waybarConfig // { output = output; position = position; };
-  waybarConfig = {
+  # Productivity Bar Config: This is the main bar for the main monitor.
+  productivityBarConfig = {
     layer = "top";
-    reload_style_on_change = true;
     spacing = 4;
-    modules-center = [ "custom/media" "clock" "custom/timer" "custom/notification" ];
+    modules-center = [ "custom/timer" "clock" ];
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
       "privacy"
       "bluetooth"
-      "tray"
       "pulseaudio"
-      "cpu"
-      "memory"
-      "temperature"
       "group/group-power"
     ];
     "hyprland/workspaces" = {
@@ -41,19 +40,6 @@ let
       on-scroll-up = "waybar-timer increase 300 || waybar-timer new 5 'notify-send -u critical \"Timer expired.\"'";
       on-scroll-down = "waybar-timer increase -300 || 'notify-send -u critical \"Timer expired.\"'";
     };
-    "custom/media" = {
-      format = "{}";
-      escape = true;
-      interval = 5;
-      return-type = "json";
-      max-length = 40;
-      on-click = "playerctl play-pause";
-      on-click-right = "playerctl stop";
-      smooth-scrolling-threshold = 1;
-      on-scroll-up = "playerctl next";
-      on-scroll-down = "playerctl previous";
-      exec = "media-player";
-    };
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
       tooltip = true;
@@ -72,27 +58,6 @@ let
           today = "<span color='#ff6699'><b><u>{}</u></b></span>";
         };
       };
-    };
-    cpu = {
-      interval = 5;
-      format = "{usage:2}% ";
-      tooltip = true;
-    };
-    memory = {
-      interval = 5;
-      format = "{}% ";
-      tooltip = true;
-    };
-    temperature = {
-      critical-threshold = 80;
-      # thermal-zone = 2;
-      hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
-      format = "{temperatureC}°C ";
-      tooltip = false;
-    };
-    tray = {
-      icon-size = 21;
-      spacing = 10;
     };
     bluetooth = {
       format = " {status}";
@@ -179,6 +144,61 @@ let
       tooltip = false;
       on-click = "shutdown now";
     };
+  };
+  # Secondary Config: 
+  secondaryBarConfig = {
+    layer = "top";
+    spacing = 4;
+    modules-center = [ "custom/media" "custom/notification" ];
+    modules-left = [ "hyprland/workspaces" ];
+    modules-right = [
+      "cpu"
+      "memory"
+      "temperature"
+      "tray"
+    ];
+    "hyprland/workspaces" = {
+      on-click = "activate";
+      format = "{}";
+    };
+    "custom/media" = {
+      format = "{}";
+      escape = true;
+      interval = 5;
+      return-type = "json";
+      max-length = 40;
+      on-click = "playerctl play-pause";
+      on-click-right = "playerctl stop";
+      smooth-scrolling-threshold = 1;
+      on-scroll-up = "playerctl next";
+      on-scroll-down = "playerctl previous";
+      exec = "media-player";
+    };
+    cpu = {
+      interval = 5;
+      format = "{usage:2}% ";
+      tooltip = true;
+    };
+    memory = {
+      interval = 5;
+      format = "{}% ";
+      tooltip = true;
+    };
+    temperature = {
+      critical-threshold = 80;
+      # thermal-zone = 2;
+      hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
+      format = "{temperatureC}°C ";
+      tooltip = false;
+    };
+    tray = {
+      icon-size = 21;
+      spacing = 10;
+    };
+    "hyprland/window" = {
+      max-length = 200;
+      separate-outputs = true;
+    };
     "custom/notification" = {
       tooltip = false;
       format = "{icon} {}";
@@ -212,8 +232,8 @@ in
     };
     settings = {
       # Duplicate the bars for each monitor
-      monitor1 = createBar waybarConfig "DP-1" "top";
-      monitor2 = createBar waybarConfig "DP-2" "bottom";
+      monitor1 = createBar productivityBarConfig "DP-1" "top";
+      monitor2 = createBar secondaryBarConfig "DP-2" "bottom";
     };
     style = lib.mkForce ''
       * {
