@@ -21,6 +21,7 @@
     ripdrag
     spotify
     playerctl
+    libnotify
   ];
 
   # Clipboard history

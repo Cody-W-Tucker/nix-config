@@ -31,9 +31,9 @@ let
       signal = 4;
       format = "{icon} {0}";
       format-icons = {
-        standby = "STANDBY";
-        running = "RUNNING";
-        paused = "PAUSE";
+        standby = ""; # Font Awesome pause icon
+        running = ""; # Font Awesome hourglass icon
+        paused = ""; # Font Awesome stop icon
       };
       on-click = "waybar-timer new 25 'notify-send \"Session finished\"'";
       on-click-middle = "waybar-timer cancel";
@@ -261,6 +261,7 @@ in
       #pulseaudio,
       #wireplumber,
       #custom-media,
+      #custom-timer,
       #tray,
       #mode,
       #idle_inhibitor,
@@ -310,6 +311,7 @@ in
       #tray,
       #custom-notification,
       #custom-media,
+      #custom-timer,
       #bluetooth {
         padding: 5px 10px;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
