@@ -106,7 +106,7 @@ let
     modules-center = [
       "custom/media"
     ];
-    modules-left = [ "hyprland/workspaces" "tray" ];
+    modules-left = [ "hyprland/workspaces" "tray" "custom/nix-updates" ];
     modules-right = [
       "privacy"
       "custom/notification"
@@ -118,6 +118,18 @@ let
     "hyprland/workspaces" = {
       on-click = "activate";
       format = "{}";
+    };
+    "custom/nix-updates" = {
+      exec = "update-checker";
+      on-click = "update-checker && notify-send 'The system has been updated'";
+      interval = 86400; # Check once a day
+      tooltip = true;
+      return-type = "json";
+      format = "{} {icon}";
+      format-icons = {
+        has-updates = "";
+        updated = "";
+      };
     };
     "custom/media" = {
       format = "{}";
@@ -241,17 +253,36 @@ in
         border-bottom: 1px solid #${config.lib.stylix.colors.base00};
       }
 
-      #workspaces {
-        padding: 0 15px;
+      #cpu,
+      #memory,
+      #pulseaudio,
+      #pulseaudio.muted,
+      #temperature,
+      #clock,
+      #workspaces,
+      #tray,
+      #custom-notification,
+      #custom-media,
+      #custom-timer,
+      #custom-power,
+      #custom-quit,
+      #custom-lock,
+      #custom-reboot {
+        padding: 5px 10px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
         background-color: #${config.lib.stylix.colors.base00};
         color: #${config.lib.stylix.colors.base05};
+      }
+
+      #workspaces {
+        padding: 0 15px;
+        color: #${config.lib.stylix.colors.base05};
+        border: 1px solid #${config.lib.stylix.colors.base02};
       }
 
       #workspaces button {
         padding: 0 10px;
         margin: 0 2px;
-        background-color: #${config.lib.stylix.colors.base00};
-        color: #${config.lib.stylix.colors.base05};
       }
 
       #workspaces button:hover {
@@ -260,35 +291,6 @@ in
 
       #workspaces button.urgent {
         background-color: #${config.lib.stylix.colors.base09};
-      }
-
-      #clock,
-      #custom-notification,
-      #battery,
-      #bluetooth,
-      #cpu,
-      #memory,
-      #disk,
-      #temperature,
-      #backlight,
-      #network,
-      #pulseaudio,
-      #wireplumber,
-      #custom-media,
-      #custom-timer,
-      #tray,
-      #mode,
-      #idle_inhibitor,
-      #scratchpad,
-      #mpd,
-      #custom-power,
-      #custom-quit,
-      #custom-lock,
-      #custom-reboot,
-      #workspaces {
-        padding: 0 10px;
-        color: #${config.lib.stylix.colors.base05};
-        border: 1px solid #${config.lib.stylix.colors.base02};
       }
 
       /* If workspaces is the leftmost module, omit left margin */
@@ -310,44 +312,6 @@ in
 
       label:focus {
         background-color: #${config.lib.stylix.colors.base00};
-      }
-
-      #cpu,
-      #memory,
-      #disk,
-      #pulseaudio,
-      #pulseaudio.muted,
-      #wireplumber,
-      #wireplumber.muted,
-      #temperature,
-      #clock,
-      #workspaces,
-      #tray,
-      #custom-notification,
-      #custom-media,
-      #custom-timer,
-      #bluetooth {
-        padding: 5px 10px;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
-        background-color: #${config.lib.stylix.colors.base00};
-        color: #${config.lib.stylix.colors.base05};
-      }
-
-      #idle_inhibitor {
-        background-color: #2d3436;
-      }
-
-      #idle_inhibitor.activated {
-        background-color: #ecf0f1;
-        color: #2d3436;
-      }
-
-      #scratchpad {
-        background: rgba(0, 0, 0, 0.2);
-      }
-
-      #scratchpad.empty {
-        background-color: transparent;
       }
 
       #privacy {
