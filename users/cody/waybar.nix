@@ -11,8 +11,8 @@ let
     layer = "top";
     spacing = 4;
     modules-center = [ "custom/notification" "clock" "custom/timer" ];
-    modules-right = [ "hyprland/workspaces" ];
-    modules-left = [
+    modules-left = [ "hyprland/workspaces" ];
+    modules-right = [
       "group/group-power"
     ];
     "hyprland/workspaces" = {
@@ -129,8 +129,9 @@ let
       "pulseaudio"
       "privacy"
     ];
-    modules-right = [ "tray" "hyprland/workspaces" ];
-    modules-left = [
+    modules-left = [ "hyprland/workspaces" ];
+    modules-right = [
+      "tray"
       "cpu"
       "memory"
       "temperature"
