@@ -231,6 +231,7 @@ in
       }
 
       window#waybar {
+        background-color: rgba(0, 0, 0, 0);
         color: #${config.lib.stylix.colors.base05};
       }
 
