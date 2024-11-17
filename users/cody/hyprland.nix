@@ -185,7 +185,7 @@
     settings = {
       general = {
         hide_cursor = true;
-        grace = 300;
+        grace = 900; # 15mins.
         ignore_empty_input = true;
       };
       background = lib.mkForce [
@@ -251,7 +251,7 @@
           on-resume = "echo 'service resumed'";
         }
         {
-          timeout = 1200; # 20min.
+          timeout = 1800; # 30min.
           on-timeout = "hyprctl dispatch dpms off";
           on-resume = "hyprctl dispatch dpms on";
         }
