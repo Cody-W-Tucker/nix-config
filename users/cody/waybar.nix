@@ -38,7 +38,7 @@ let
       on-click = "waybar-timer new 25 'notify-send \"Session finished\"'";
       on-click-middle = "waybar-timer cancel";
       on-click-right = "waybar-timer togglepause";
-      on-scroll-up = "waybar-timer increase 300 || waybar-timer new 1";
+      on-scroll-up = "waybar-timer increase 300 || waybar-timer new 5";
       on-scroll-down = "waybar-timer increase -300 || 'notify-send -u critical \"Timer expired.\"'";
     };
     "custom/media" = {
