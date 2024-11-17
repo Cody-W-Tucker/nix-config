@@ -105,13 +105,13 @@ let
     spacing = 4;
     modules-center = [
       "custom/media"
-      "custom/notification"
       "pulseaudio"
       "privacy"
-      "bluetooth"
     ];
     modules-left = [ "hyprland/workspaces" "tray" ];
     modules-right = [
+      "bluetooth"
+      "custom/notification"
       "cpu"
       "memory"
       "temperature"
