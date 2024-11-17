@@ -11,8 +11,8 @@ let
     layer = "top";
     spacing = 4;
     modules-center = [ "clock" "custom/timer" ];
-    modules-left = [ "hyprland/workspaces" ];
-    modules-right = [
+    modules-right = [ "hyprland/workspaces" ];
+    modules-left = [
       "group/group-power"
     ];
     "hyprland/workspaces" = {
@@ -27,9 +27,9 @@ let
       signal = 4;
       format = "{icon} {0}";
       format-icons = {
-        standby = ""; # Font Awesome pause icon
-        running = ""; # Font Awesome hourglass icon
-        paused = ""; # Font Awesome stop icon
+        standby = "";
+        running = "";
+        paused = "";
       };
       on-click = "waybar-timer new 25 'notify-send -u critical \"Timer expired.\"'";
       on-click-middle = "waybar-timer cancel";
@@ -108,9 +108,8 @@ let
       "pulseaudio"
       "privacy"
     ];
-    modules-left = [ "hyprland/workspaces" "tray" ];
-    modules-right = [
-      "custom/notification"
+    modules-right = [ "custom/notification" "tray" "hyprland/workspaces" ];
+    modules-left = [
       "cpu"
       "memory"
       "temperature"
