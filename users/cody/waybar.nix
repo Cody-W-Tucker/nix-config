@@ -106,7 +106,7 @@ let
     modules-center = [
       "custom/media"
     ];
-    modules-left = [ "hyprland/workspaces" "tray" "custom/nix-updates" ];
+    modules-left = [ "hyprland/workspaces" "tray" ];
     modules-right = [
       "privacy"
       "custom/notification"
@@ -118,18 +118,6 @@ let
     "hyprland/workspaces" = {
       on-click = "activate";
       format = "{}";
-    };
-    "custom/nix-updates" = {
-      exec = "update-checker";
-      on-click = "update-checker && notify-send 'The system has been updated'";
-      interval = 86400; # Check once a day
-      tooltip = true;
-      return-type = "json";
-      format = "{} {icon}";
-      format-icons = {
-        has-updates = "";
-        updated = "";
-      };
     };
     "custom/media" = {
       format = "{}";
@@ -261,7 +249,6 @@ in
       #clock,
       #tray,
       #custom-notification,
-      #custom-nix-updates,
       #custom-media,
       #custom-timer,
       #custom-power,
