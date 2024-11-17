@@ -22,6 +22,7 @@
     spotify
     playerctl
     libnotify
+    nvd # Nix/NixOS package version diff tool
   ];
 
   # Clipboard history

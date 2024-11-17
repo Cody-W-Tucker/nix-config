@@ -259,7 +259,6 @@ in
       #pulseaudio.muted,
       #temperature,
       #clock,
-      #workspaces,
       #tray,
       #custom-notification,
       #custom-nix-updates,
