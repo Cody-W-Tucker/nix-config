@@ -8,7 +8,7 @@ let
     reload_style_on_change = true;
     spacing = 4;
     modules-center = [ "custom/media" "clock" "custom/notification" ];
-    modules-left = [ "hyprland/workspaces" ];
+    modules-left = [ "hyprland/workspaces" "custom/timer" ];
     modules-right = [
       "privacy"
       "bluetooth"
@@ -22,6 +22,24 @@ let
     "hyprland/workspaces" = {
       on-click = "activate";
       format = "{}";
+    };
+    "custom/timer" = {
+      exec = "waybar-timer updateandprint";
+      exec-on-event = true;
+      return-type = "json";
+      interval = 5;
+      signal = 4;
+      format = "{icon} {0}";
+      format-icons = {
+        standby = "STANDBY";
+        running = "RUNNING";
+        paused = "PAUSE";
+      };
+      on-click = "waybar-timer new 25 'notify-send \"Session finished\"'";
+      on-click-middle = "waybar-timer cancel";
+      on-click-right = "waybar-timer togglepause";
+      on-scroll-up = "waybar-timer increase 60 || waybar-timer new 1 'notify-send -u critical \"Timer expired.\"'";
+      on-scroll-down = "waybar-timer increase -60";
     };
     "custom/media" = {
       format = "{}";
