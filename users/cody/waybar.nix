@@ -10,7 +10,7 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "clock" "custom/timer" ];
+    modules-center = [ "custom/notification" "clock" "custom/timer" ];
     modules-right = [ "hyprland/workspaces" ];
     modules-left = [
       "group/group-power"
@@ -98,6 +98,27 @@ let
       tooltip = false;
       on-click = "shutdown now";
     };
+    "custom/notification" = {
+      tooltip = false;
+      format = "{icon} {}";
+      format-icons = {
+        notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        none = "";
+        dnd-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        dnd-none = "";
+        inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        inhibited-none = "";
+        dnd-inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        dnd-inhibited-none = "";
+      };
+      return-type = "json";
+      exec-if = "which swaync-client";
+      exec = "swaync-client -swb";
+      on-click = "sleep 0.1 && swaync-client -t -sw";
+      on-click-right = "swaync-client -C";
+      on-click-middle = "sleep 0.1 && swaync-client -d -sw";
+      escape = true;
+    };
   };
   # Secondary Config: 
   secondaryBarConfig = {
@@ -108,7 +129,7 @@ let
       "pulseaudio"
       "privacy"
     ];
-    modules-right = [ "custom/notification" "tray" "hyprland/workspaces" ];
+    modules-right = [ "tray" "hyprland/workspaces" ];
     modules-left = [
       "cpu"
       "memory"
@@ -188,31 +209,6 @@ let
       on-click = "exec bluetoothSwitch";
       on-click-right = "pavucontrol";
     };
-    "hyprland/window" = {
-      max-length = 200;
-      separate-outputs = true;
-    };
-    "custom/notification" = {
-      tooltip = false;
-      format = "{icon} {}";
-      format-icons = {
-        notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
-        none = "";
-        dnd-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
-        dnd-none = "";
-        inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
-        inhibited-none = "";
-        dnd-inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
-        dnd-inhibited-none = "";
-      };
-      return-type = "json";
-      exec-if = "which swaync-client";
-      exec = "swaync-client -swb";
-      on-click = "sleep 0.1 && swaync-client -t -sw";
-      on-click-right = "swaync-client -C";
-      on-click-middle = "sleep 0.1 && swaync-client -d -sw";
-      escape = true;
-    };
   };
 
 in
@@ -235,9 +231,7 @@ in
       }
 
       window#waybar {
-        background-color: #${config.lib.stylix.colors.base01};
         color: #${config.lib.stylix.colors.base05};
-        border-bottom: 1px solid #${config.lib.stylix.colors.base00};
       }
 
       #cpu,
