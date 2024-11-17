@@ -269,13 +269,13 @@ in
         background-color: #${config.lib.stylix.colors.base09};
       }
 
-      /* If workspaces is the leftmost module, omit left margin */
-      .modules-left > widget:first-child > #workspaces {
+      /* If leftmost module, omit left margin */
+      .modules-left > widget:first-child > #workspaces, #custom-power {
         margin-left: 0;
       }
 
-      /* If workspaces is the rightmost module, omit right margin */
-      .modules-right > widget:last-child > #workspaces {
+      /* If rightmost module, omit right margin */
+      .modules-right > widget:last-child > #workspaces, #custom-power {
         margin-right: 0;
       }
 
