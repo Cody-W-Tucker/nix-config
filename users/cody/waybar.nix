@@ -35,7 +35,7 @@ let
         running = ""; # Font Awesome hourglass icon
         paused = ""; # Font Awesome stop icon
       };
-      on-click = "waybar-timer new 25 'notify-send \"Session finished\"'";
+      on-click = "waybar-timer new 25";
       on-click-middle = "waybar-timer cancel";
       on-click-right = "waybar-timer togglepause";
       on-scroll-up = "waybar-timer increase 300 || waybar-timer new 5";
