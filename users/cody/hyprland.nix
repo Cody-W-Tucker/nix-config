@@ -112,7 +112,7 @@
           "$mainMod SHIFT, Tab, exec, rofi -show web_scraper -modi 'web_scraper:web-scraper'"
           "$mainMod, F1, exec, bluetoothSwitch"
           "$mainMod, F, fullscreen"
-          "$mainMod SHIFT, P, fakefullscreen"
+          "$mainMod SHIFT, P, fullscreenstate"
           "$mainMod, P, pin"
           # Number keys (0, -, +)
           "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://ai.homehub.tv"
