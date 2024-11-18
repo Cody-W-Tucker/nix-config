@@ -20,7 +20,7 @@ pkgs.writeShellScriptBin "bluetoothSwitch" ''
       else
         retry_count=$((retry_count + 1))
         echo "Failed to connect. Retrying... ($retry_count/$max_retries)"
-        sleep 3  # Increase the sleep time between retries.
+        sleep 5  # Increase the sleep time between retries.
       fi
     done
     
