@@ -29,7 +29,7 @@ pkgs.writeShellScriptBin "bluetoothSwitch" ''
   else
     echo "Attempting to connect to device..."
     while [ $retry_count -lt $max_retries ]; do
-      if timeout $timeout connect_device; then
+      if timeout $timeout bash -c "connect_device"; then
         echo "Successfully connected to device."
         break
       fi
@@ -46,9 +46,12 @@ pkgs.writeShellScriptBin "bluetoothSwitch" ''
       bluetoothctl scan on &
       sleep 5
       bluetoothctl scan off
-      bluetoothctl pair "$device"
-      sleep 2
-      connect_device
+      if bluetoothctl pair "$device"; then
+        sleep 2
+        connect_device
+      else
+        echo "Failed to pair with the device."
+      fi
     fi
   fi
 
