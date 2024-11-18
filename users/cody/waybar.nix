@@ -236,14 +236,18 @@ in
         color: #${config.lib.stylix.colors.base05};
       }
 
-      [output="DP-1"] widget {
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px; 
+      #waybar.DP-1 > .modules-center > *,
+      #waybar.DP-1 > .modules-left > *,
+      #waybar.DP-1 > .modules-right > * {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
       }
 
-      [output="DP-2"] widget {
+      #waybar.DP-2 > .modules-center > *,
+      #waybar.DP-2 > .modules-left > *,
+      #waybar.DP-2 > .modules-right > * {
         border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px; 
+        border-bottom-right-radius: 12px;   
       }
 
       #cpu,
