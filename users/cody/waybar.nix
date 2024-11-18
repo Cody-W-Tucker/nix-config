@@ -207,7 +207,7 @@ let
         car = "";
         default = [ "" "" "" ];
       };
-      on-click = "exec bluetoothSwitch";
+      on-click = "bluetoothSwitch";
       on-click-right = "pavucontrol";
     };
   };
@@ -236,18 +236,14 @@ in
         color: #${config.lib.stylix.colors.base05};
       }
 
-      #waybar.DP-1 > .modules-center > *,
-      #waybar.DP-1 > .modules-left > *,
-      #waybar.DP-1 > .modules-right > * {
+      window#waybar.bottom {
         border-top-left-radius: 12px;
         border-top-right-radius: 12px;
       }
 
-      #waybar.DP-2 > .modules-center > *,
-      #waybar.DP-2 > .modules-left > *,
-      #waybar.DP-2 > .modules-right > * {
+      window#waybar.top {
         border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;   
+        border-bottom-right-radius: 12px;
       }
 
       #cpu,
