@@ -101,7 +101,6 @@
       ];
       bind =
         [
-          "$mainMod, P, pin"
           "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
           "$mainMod, RETURN, exec, pkill waybar && waybar &"
           "$mainMod, Q, exec, kitty"
@@ -113,6 +112,8 @@
           "$mainMod SHIFT, Tab, exec, rofi -show web_scraper -modi 'web_scraper:web-scraper'"
           "$mainMod, F1, exec, bluetoothSwitch"
           "$mainMod, F, fullscreen"
+          "$mainMod SHIFT, P, fakefullscreen"
+          "$mainMod, P, pin"
           # Number keys (0, -, +)
           "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://ai.homehub.tv"
           "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
