@@ -101,7 +101,7 @@
       ];
       bind =
         [
-          "$mainMod, Control_L, exec, playerctl play-pause"
+          "$mainMod, P, pin"
           "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
           "$mainMod, RETURN, exec, pkill waybar && waybar &"
           "$mainMod, Q, exec, kitty"
