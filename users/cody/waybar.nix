@@ -236,17 +236,12 @@ in
         color: #${config.lib.stylix.colors.base05};
       }
 
-      /* Styling for top monitor modules */
-      #waybar.dp-1 > .modules-center > widget,
-      #waybar.dp-1 > .modules-left > widget,
-      #waybar.dp-1 > .modules-right > widget {
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px; 
+      [output="DP-1"] widget {
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px; 
       }
-      /* Specific CSS for bottom monitor modules */
-      #waybar.dp-2 > .modules-center > widget,
-      #waybar.dp-2 > .modules-left > widget,
-      #waybar.dp-2 > .modules-right > widget {
+
+      [output="DP-2"] widget {
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px; 
       }
