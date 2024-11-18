@@ -4,61 +4,29 @@ pkgs.writeShellScriptBin "bluetoothSwitch" ''
   device="74:74:46:1C:20:61"
   max_retries=5
   retry_count=0
-  timeout=10
-
-  # Function to check if Bluetooth is powered on
-  check_bluetooth_power() {
-    if ! bluetoothctl show | grep -q "Powered: yes"; then
-      echo "Bluetooth is not powered on. Attempting to power on..."
-      bluetoothctl power on
-      sleep 2
-    fi
-  }
-
-  # Function to attempt connection
-  connect_device() {
-    bluetoothctl connect "$device"
-  }
-
-  # Check Bluetooth power status
-  check_bluetooth_power
-
-  if bluetoothctl info "$device" | grep -q 'Connected: yes'; then
-    echo "Device is already connected. Disconnecting..."
+  
+  # Check if the Bluetooth device is connected
+  if bluetoothctl info "$device" | grep 'Connected: yes' -q; then
+    echo "Device is connected. Disconnecting..."
     bluetoothctl disconnect "$device"
+    sleep 2  # Give time for the disconnect process to complete.
   else
-    echo "Attempting to connect to device..."
+    echo "Device not connected. Trying to connect..."
     while [ $retry_count -lt $max_retries ]; do
-      if timeout $timeout bash -c "connect_device"; then
-        echo "Successfully connected to device."
+      # Attempt to connect
+      if bluetoothctl connect "$device"; then
+        echo "Connected to $device on attempt #$((retry_count+1))."
         break
+      else
+        retry_count=$((retry_count + 1))
+        echo "Failed to connect. Retrying... ($retry_count/$max_retries)"
+        sleep 3  # Increase the sleep time between retries.
       fi
-      retry_count=$((retry_count + 1))
-      echo "Connection attempt $retry_count failed. Retrying in 2 seconds..."
-      sleep 2
     done
-
+    
+    # If all attempts fail
     if [ $retry_count -eq $max_retries ]; then
       echo "Failed to connect after $max_retries attempts."
-      echo "Trying to remove and re-pair the device..."
-      bluetoothctl remove "$device"
-      sleep 2
-      bluetoothctl scan on &
-      sleep 5
-      bluetoothctl scan off
-      if bluetoothctl pair "$device"; then
-        sleep 2
-        connect_device
-      else
-        echo "Failed to pair with the device."
-      fi
     fi
-  fi
-
-  # Final connection check
-  if bluetoothctl info "$device" | grep -q 'Connected: yes'; then
-    echo "Device is now connected."
-  else
-    echo "Failed to connect to the device."
   fi
 ''
