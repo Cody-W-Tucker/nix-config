@@ -4,7 +4,7 @@ pkgs.writeShellScriptBin "obsidian-to-file" ''
   #!/bin/bash
 
   # Set the Obsidian directory path
-  OBSIDIAN_DIR="$HOME/Obsidian"
+  OBSIDIAN_DIR="$HOME/Documents/Personal"
 
   # Create a filename with the current date and time
   FILENAME="terminal_output_$(date +%Y%m%d_%H%M%S).txt"
