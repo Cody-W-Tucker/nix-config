@@ -22,6 +22,7 @@
     spotify
     playerctl
     libnotify
+    lukesmithxyz-bible-kjv
   ];
 
   # Clipboard history
