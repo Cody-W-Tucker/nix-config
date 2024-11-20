@@ -7,6 +7,7 @@ let
     ./bluetooth-switch.nix
     ./web-scraper.nix
     ./waybar-timer.nix
+    ./obsidian-writer.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
