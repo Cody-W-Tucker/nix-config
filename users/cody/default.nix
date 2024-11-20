@@ -23,6 +23,7 @@
     playerctl
     libnotify
     lukesmithxyz-bible-kjv
+    fabric-ai
   ];
 
   # Clipboard history
