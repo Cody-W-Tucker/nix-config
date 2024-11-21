@@ -11,13 +11,17 @@ let
     layer = "top";
     spacing = 4;
     modules-center = [ "custom/notification" "clock" "custom/timer" ];
-    modules-left = [ "hyprland/workspaces" ];
+    modules-left = [ "hyprland/workspaces" "tray" ];
     modules-right = [
       "group/group-power"
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
       format = "{}";
+    };
+    tray = {
+      icon-size = 21;
+      spacing = 10;
     };
     "custom/timer" = {
       exec = "waybar-timer updateandprint";
@@ -131,7 +135,6 @@ let
     ];
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
-      "tray"
       "cpu"
       "memory"
       "temperature"
@@ -169,10 +172,6 @@ let
       hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
       format = "{temperatureC}°C ";
       tooltip = false;
-    };
-    tray = {
-      icon-size = 21;
-      spacing = 10;
     };
     privacy = {
       icon-spacing = 4;
