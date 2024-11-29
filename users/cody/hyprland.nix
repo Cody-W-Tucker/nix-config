@@ -1,17 +1,8 @@
-{ config, pkgs, lib, inputs, hardwareConfig, stylix, packages, ... }:
-let
-  cursor = "HyprBibataModernClassicSVG";
-  cursorPackage = config.packages.bibata-hyprcursor;
-  pointer = config.home.pointerCursor;
-in
+{ config, pkgs, lib, inputs, hardwareConfig, stylix, ... }:
 {
   home.packages = with pkgs; [
     hyprnome
   ];
-
-  # Place the cursor files from default nixos location into the expected Hyprcursor location
-  home.file.".icons/${cursor}".source = "${cursorPackage}/share/icons/${cursor}";
-  xdg.dataFile."icons/${cursor}".source = "${cursorPackage}/share/icons/${cursor}";
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -30,7 +21,6 @@ in
       workspace = hardwareConfig.workspace;
       monitor = hardwareConfig.monitor;
       exec-once = [
-        "hyprctl setcursor ${cursor} ${toString pointer.size}"
         "swaync"
         "dbus-update-activation-environment --systemd --all"
         "wl-clipboard-history -t"
