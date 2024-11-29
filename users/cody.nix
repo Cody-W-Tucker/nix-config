@@ -3,7 +3,6 @@
 {
   imports = [
     ./cody
-    inputs.hyprland.homeManagerModules.default
     inputs.nixvim.homeManagerModules.nixvim
   ];
   dconf = {
