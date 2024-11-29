@@ -58,6 +58,7 @@
         "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}cc) rgba(${config.lib.stylix.colors.base01}cc) 45deg";
       };
       cursor.hide_on_key_press = true;
+      cursor.enable_hyprcursor = false;
       decoration = {
         rounding = "10";
         blur = {
