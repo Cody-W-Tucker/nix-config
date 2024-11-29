@@ -41,7 +41,6 @@
           };
           modules = [
             ./hosts/workstation.nix
-            ./pkgs
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-pc-ssd
