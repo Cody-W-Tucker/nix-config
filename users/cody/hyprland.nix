@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, hardwareConfig, stylix, ... }:
+{ config, pkgs, lib, inputs, hardwareConfig, stylix, packages, ... }:
 let
   cursor = "HyprBibataModernClassicSVG";
   cursorPackage = config.packages.bibata-hyprcursor;
