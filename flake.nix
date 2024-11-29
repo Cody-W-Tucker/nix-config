@@ -13,10 +13,9 @@
     nixvim = {
       url = "github:nix-community/nixvim";
     };
-    imports = [ ./pkgs ];
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nixvim, imports, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
     let
       system = "x86_64-linux";
       hardwareConfig = {
@@ -42,6 +41,7 @@
           };
           modules = [
             ./hosts/workstation.nix
+            ./pkgs
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-pc-ssd
