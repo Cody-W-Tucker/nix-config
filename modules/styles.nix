@@ -10,11 +10,11 @@
       popups = 1.0;
     };
 
-    # cursor = {
-    #   package = pkgs.bibata-cursors;
-    #   name = "Bibata-Modern-Classic";
-    #   size = 24;
-    # };
+    cursor = {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      size = 24;
+    };
 
     # Setting the fonts
     fonts = {
