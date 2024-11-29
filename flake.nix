@@ -36,6 +36,7 @@
       nixosConfigurations = {
         workstation = nixpkgs.lib.nixosSystem {
           system = system;
+          imports = [ ./pkgs ];
           specialArgs = {
             inherit inputs; inherit hardwareConfig;
           };
