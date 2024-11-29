@@ -29,7 +29,7 @@ in
       workspace = hardwareConfig.workspace;
       monitor = hardwareConfig.monitor;
       exec-once = [
-        "hyprctl setcursor ${cursorName} ${toString pointer.size}"
+        "hyprctl setcursor ${cursor} ${toString pointer.size}"
         "swaync"
         "dbus-update-activation-environment --systemd --all"
         "wl-clipboard-history -t"
