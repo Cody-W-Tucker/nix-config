@@ -130,6 +130,10 @@
         path = "/mnt/backup/Photos";
         devices = [ "server" "workstation" ];
       };
+      "Cody's Obsidian" = {
+        path = "/home/codyt/Sync/Cody-Obsidian";
+        devices = [ "workstation" "Cody's Pixel" ];
+      };
     };
   };
 
