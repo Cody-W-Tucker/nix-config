@@ -2,6 +2,7 @@
 let
   cursor = "HyprBibataModernClassicSVG";
   cursorPackage = inputs.self.packages.${pkgs.system}.bibata-hyprcursor;
+  pointer = config.home.pointerCursor;
 in
 {
   home.packages = with pkgs; [
