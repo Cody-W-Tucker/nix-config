@@ -13,9 +13,10 @@
     nixvim = {
       url = "github:nix-community/nixvim";
     };
+    imports = [ ./pkgs ];
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nixvim, imports, ... }:
     let
       system = "x86_64-linux";
       hardwareConfig = {
@@ -36,7 +37,6 @@
       nixosConfigurations = {
         workstation = nixpkgs.lib.nixosSystem {
           system = system;
-          imports = [ ./pkgs ];
           specialArgs = {
             inherit inputs; inherit hardwareConfig;
           };
