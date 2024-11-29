@@ -1,7 +1,7 @@
 { config, pkgs, lib, inputs, hardwareConfig, stylix, ... }:
 let
   cursor = "HyprBibataModernClassicSVG";
-  cursorPackage = inputs.self.packages.${pkgs.system}.bibata-hyprcursor;
+  cursorPackage = config.packages.bibata-hyprcursor;
   pointer = config.home.pointerCursor;
 in
 {
