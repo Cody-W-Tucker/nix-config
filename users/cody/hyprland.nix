@@ -27,7 +27,7 @@
         "wl-paste --watch cliphist store"
         ''rm "$HOME/.cache/cliphist/db"'' # Clear clipboard history on startup
       ];
-      cursor.no_hardware_cursors = true;
+      cursor.use_cpu_buffer = true;
       animations = {
         enabled = true;
         bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
