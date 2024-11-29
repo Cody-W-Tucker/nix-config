@@ -98,7 +98,7 @@
   #   size = 24;
   # };
 
-  home.pointerCursor = {
+  home.pointerCursor = lib.mkForce {
     gtk.enable = true;
     # x11.enable = true;
     package = pkgs.bibata-cursors;
