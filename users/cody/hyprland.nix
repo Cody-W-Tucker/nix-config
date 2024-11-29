@@ -1,12 +1,17 @@
 { config, pkgs, lib, inputs, hardwareConfig, stylix, ... }:
-
-
+let
+  cursor = "HyprBibataModernClassicSVG";
+  cursorPackage = inputs.self.packages.${pkgs.system}.bibata-hyprcursor;
+in
 {
-  # Until stylix updates the decoration:col.shadow option to shadow:color. I will remove it.
-  stylix.targets.hyprland.enable = true;
   home.packages = with pkgs; [
     hyprnome
   ];
+
+  # Place the cursor files from default nixos location into the expected Hyprcursor location
+  home.file.".icons/${cursor}".source = "${cursorPackage}/share/icons/${cursor}";
+  xdg.dataFile."icons/${cursor}".source = "${cursorPackage}/share/icons/${cursor}";
+
   wayland.windowManager.hyprland = {
     enable = true;
     systemd = {
@@ -24,6 +29,7 @@
       workspace = hardwareConfig.workspace;
       monitor = hardwareConfig.monitor;
       exec-once = [
+        "hyprctl setcursor ${cursorName} ${toString pointer.size}"
         "swaync"
         "dbus-update-activation-environment --systemd --all"
         "wl-clipboard-history -t"
@@ -58,7 +64,6 @@
         "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}cc) rgba(${config.lib.stylix.colors.base01}cc) 45deg";
       };
       cursor.hide_on_key_press = true;
-      cursor.enable_hyprcursor = false;
       decoration = {
         rounding = "10";
         blur = {
