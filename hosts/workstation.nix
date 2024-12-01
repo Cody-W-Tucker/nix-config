@@ -21,6 +21,9 @@
   boot.extraModulePackages = [ ];
   time.hardwareClockInLocalTime = true;
 
+  # Use the latest kernel
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   boot.supportedFilesystems = [ "ntfs" ];
   fileSystems."/" =
     {
