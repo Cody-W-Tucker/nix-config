@@ -1,13 +1,13 @@
 {
   description = "CodyOS";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/master";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "github:danth/stylix";
-    # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixvim = {
@@ -15,9 +15,12 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
     let
       system = "x86_64-linux";
+      lib = nixpkgs.lib;
+      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
       hardwareConfig = {
         workstation = {
           # Contorls the monitor layout for hyprland
@@ -35,21 +38,24 @@
     {
       nixosConfigurations = {
         workstation = nixpkgs.lib.nixosSystem {
-          system = system;
+          inherit system;
           specialArgs = {
-            inherit inputs; inherit hardwareConfig;
+            inherit inputs;
+            inherit hardwareConfig;
+            inherit pkgs-unstable;
           };
           modules = [
             ./hosts/workstation.nix
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-pc-ssd
-            # nixos-hardware.nixosModules.common-gpu-nvidia-nonprime
             inputs.sops-nix.nixosModules.sops
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit inputs; hardwareConfig = hardwareConfig.workstation;
+                inherit inputs;
+                inherit pkgs-unstable;
+                hardwareConfig = hardwareConfig.workstation;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -58,23 +64,11 @@
             }
           ];
         };
-        family = nixpkgs.lib.nixosSystem {
-          system = system;
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./hosts/family-desktop.nix
-            stylix.nixosModules.stylix
-            # Using community hardware configurations
-            nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
-            inputs.sops-nix.nixosModules.sops
-          ];
-        };
         server = nixpkgs.lib.nixosSystem {
-          system = system;
+          inherit system;
           specialArgs = {
             inherit inputs;
+            inherit pkgs-unstable;
           };
           modules = [
             ./hosts/server.nix
@@ -84,13 +78,16 @@
             inputs.sops-nix.nixosModules.sops
           ];
         };
-        server1 = nixpkgs.lib.nixosSystem {
-          system = system;
+        family = nixpkgs.lib.nixosSystem {
+          inherit system;
           specialArgs = {
             inherit inputs;
           };
           modules = [
-            ./hosts/server1.nix
+            ./hosts/family-desktop.nix
+            stylix.nixosModules.stylix
+            # Using community hardware configurations
+            nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
             inputs.sops-nix.nixosModules.sops
           ];
         };
