@@ -26,9 +26,7 @@
     ensureUsers = [
       {
         name = "metabase";
-        ensurePermissions = {
-          "DATABASE metabase" = "ALL PRIVILEGES";
-        };
+        ensureDBOwnership = true;
       }
     ];
     authentication = pkgs.lib.mkOverride 10 ''
