@@ -34,6 +34,8 @@
       local all       all                       trust
       host  metabase  metabase  127.0.0.1/32    md5
       host  metabase  metabase  ::1/128         md5
+      host  miniflux  metabase  127.0.0.1/32    md5
+      host  miniflux  metabase  ::1/128         md5
     '';
   };
   virtualisation.oci-containers.containers = {
