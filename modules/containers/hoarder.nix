@@ -6,7 +6,7 @@
     "hoarder.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";
-      locations."/".proxyPass = "http://localhost:2648";
+      locations."/".proxyPass = "http://localhost:2468";
     };
   };
 
