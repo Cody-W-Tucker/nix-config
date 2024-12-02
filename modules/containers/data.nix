@@ -20,7 +20,7 @@
     listen.port = 5050;
   };
   # Create a database for Metabase
-  config.services.postgresql = {
+  services.postgresql = {
     enable = true;
     ensureDatabases = [ "metabase" ];
     ensureUsers = [
