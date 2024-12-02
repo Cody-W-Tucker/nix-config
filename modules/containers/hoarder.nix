@@ -50,7 +50,11 @@
   virtualisation.oci-containers.containers."hoarder-meilisearch" = {
     image = "getmeili/meilisearch:v1.11.1";
     environment = {
+      "HOARDER_VERSION" = "release";
+      "MEILI_MASTER_KEY" = "another_random_string";
       "MEILI_NO_ANALYTICS" = "true";
+      "NEXTAUTH_SECRET" = "super_random_string";
+      "NEXTAUTH_URL" = "http://localhost:3000";
     };
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
@@ -88,7 +92,11 @@
     environment = {
       "BROWSER_WEB_URL" = "http://chrome:9222";
       "DATA_DIR" = "/data";
+      "HOARDER_VERSION" = "release";
       "MEILI_ADDR" = "http://meilisearch:7700";
+      "MEILI_MASTER_KEY" = "another_random_string";
+      "NEXTAUTH_SECRET" = "super_random_string";
+      "NEXTAUTH_URL" = "http://localhost:3000";
     };
     volumes = [
       "hoarder_data:/data:rw"
