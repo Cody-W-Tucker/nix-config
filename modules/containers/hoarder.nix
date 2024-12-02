@@ -2,6 +2,14 @@
 { pkgs, lib, ... }:
 
 {
+  services.nginx.virtualHosts = {
+    "hoarder.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/".proxyPass = "http://localhost:2648";
+    };
+  };
+
   # Runtime
   virtualisation.docker = {
     enable = true;
