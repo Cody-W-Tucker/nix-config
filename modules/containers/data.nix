@@ -19,6 +19,24 @@
     enable = true;
     listen.port = 5050;
   };
+  # Create a database for Metabase
+  config.services.postgresql = {
+    enable = true;
+    ensureDatabases = [ "metabase" ];
+    ensureUsers = [
+      {
+        name = "metabase";
+        ensurePermissions = {
+          "DATABASE metabase" = "ALL PRIVILEGES";
+        };
+      }
+    ];
+    authentication = pkgs.lib.mkOverride 10 ''
+      #type database  DBuser    auth-method
+      local all       all       trust
+      host  metabase  metabase  md5
+    '';
+  };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
       autoStart = true;
