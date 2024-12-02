@@ -20,5 +20,6 @@
     ./arm.nix
     ./blogs.nix
     ./data.nix
+    ./hoarder.nix
   ];
 }
