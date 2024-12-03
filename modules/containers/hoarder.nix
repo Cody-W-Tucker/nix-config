@@ -57,11 +57,11 @@
     image = "getmeili/meilisearch:v1.11.1";
     environment = {
       "HOARDER_VERSION" = "release";
-      "MEILI_MASTER_KEY" = sops.secrets.MEILI_MASTER_KEY;
+      "MEILI_MASTER_KEY" = config.sops.secrets.MEILI_MASTER_KEY;
       "MEILI_NO_ANALYTICS" = "true";
-      "NEXTAUTH_SECRET" = sops.secrets.NEXTAUTH_SECRET;
+      "NEXTAUTH_SECRET" = config.sops.secrets.NEXTAUTH_SECRET;
       "NEXTAUTH_URL" = "http://localhost:3000";
-      "OPENAI_API_KEY" = sops.secrets.OPENAI_API_KEY;
+      "OPENAI_API_KEY" = config.sops.secrets.OPENAI_API_KEY;
     };
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
