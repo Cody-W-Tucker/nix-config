@@ -102,11 +102,11 @@
   # Create an env file to use the creds in docker
   sops.templates."hoarder-web-docker-env" = {
     content = ''
-      BROWSER_WEB_URL = "http://chrome:9222";
-      DATA_DIR = "/data";
-      HOARDER_VERSION = "release";
-      MEILI_ADDR = "http://meilisearch:7700";
-      NEXTAUTH_URL = "http://localhost:3000";
+      BROWSER_WEB_URL="http://chrome:9222";
+      DATA_DIR="/data";
+      HOARDER_VERSION="release";
+      MEILI_ADDR="http://meilisearch:7700";
+      NEXTAUTH_URL="http://localhost:3000";
       MEILI_MASTER_KEY=${config.sops.placeholder."MEILI_MASTER_KEY"}
       NEXTAUTH_SECRET=${config.sops.placeholder."NEXTAUTH_SECRET"}
       OPENAI_API_KEY=${config.sops.placeholder."OPENAI_API_KEY"}
