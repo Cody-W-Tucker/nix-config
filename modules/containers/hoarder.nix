@@ -48,14 +48,32 @@
     ];
   };
 
+  # Get the creds
+  sops.secrets = {
+    OPENAI_API_KEY = { };
+    MEILI_MASTER_KEY = { };
+    NEXTAUTH_SECRET = { };
+  };
+
+  sops.templates = {
+    "MEILI_and_NEXTAUTH".content = ''
+      MEILI_MASTER_KEY=${config.sops.placeholder."MEILI_MASTER_KEY"}
+      NEXTAUTH_SECRET=${config.sops.placeholder."NEXTAUTH_SECRET"}
+    '';
+    "OPENAI_API".content = ''
+      OPENAI_API_KEY=${config.sops.placeholder."OPENAI_API_KEY"}
+    '';
+  };
+
   virtualisation.oci-containers.containers."hoarder-meilisearch" = {
     image = "getmeili/meilisearch:v1.11.1";
+    environmentFiles = [
+      config.sops.templates."MEILI_and_NEXTAUTH".path
+    ];
     environment = {
       "HOARDER_VERSION" = "release";
       "NEXTAUTH_URL" = "http://localhost:3000";
       "MEILI_NO_ANALYTICS" = "true";
-      "MEILI_MASTER_KEY" = "YlTTmaaiyTmyV8LkdNYD72Hsy3UsAEHeEPy5DCLJOiZheJQZ";
-      "NEXTAUTH_SECRET" = "EbCOfV+NUqjfZlrJ0HrM/bLiUuZ4hHk0YeIjlszRiyT/hKMV";
     };
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
@@ -90,13 +108,15 @@
   };
   virtualisation.oci-containers.containers."hoarder-web" = {
     image = "ghcr.io/hoarder-app/hoarder:release";
+    environmentFiles = [
+      config.sops.templates."MEILI_and_NEXTAUTH".path
+      config.sops.templates."OPENAI_API".path
+    ];
     environment = {
       "BROWSER_WEB_URL" = "http://chrome:9222";
       "DATA_DIR" = "/data";
       "HOARDER_VERSION" = "release";
       "MEILI_ADDR" = "http://meilisearch:7700";
-      "MEILI_MASTER_KEY" = "YlTTmaaiyTmyV8LkdNYD72Hsy3UsAEHeEPy5DCLJOiZheJQZ";
-      "NEXTAUTH_SECRET" = "EbCOfV+NUqjfZlrJ0HrM/bLiUuZ4hHk0YeIjlszRiyT/hKMV";
       "NEXTAUTH_URL" = "http://localhost:3000";
     };
     volumes = [
