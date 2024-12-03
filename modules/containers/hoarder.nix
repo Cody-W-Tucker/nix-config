@@ -70,8 +70,8 @@
       "HOARDER_VERSION" = "release";
       "NEXTAUTH_URL" = "http://localhost:3000";
       "MEILI_NO_ANALYTICS" = "true";
-      "MEILI_MASTER_KEY" = builtins.readFile config.sops.templates.MEILI_MASTER_KEY.path;
-      "NEXTAUTH_SECRET" = builtins.readFile config.sops.templates.NEXTAUTH_SECRET.path;
+      "MEILI_MASTER_KEY" = builtins.readFile config.sops.templates.MEILI_MASTER_KEY;
+      "NEXTAUTH_SECRET" = builtins.readFile config.sops.templates.NEXTAUTH_SECRET;
     };
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
@@ -112,9 +112,9 @@
       "HOARDER_VERSION" = "release";
       "MEILI_ADDR" = "http://meilisearch:7700";
       "NEXTAUTH_URL" = "http://localhost:3000";
-      "MEILI_MASTER_KEY" = builtins.readFile config.sops.templates.MEILI_MASTER_KEY.path;
-      "NEXTAUTH_SECRET" = builtins.readFile config.sops.templates.NEXTAUTH_SECRET.path;
-      "OPENAI_API_KEY" = builtins.readFile config.sops.templates.OPENAI_API_KEY.path;
+      "MEILI_MASTER_KEY" = builtins.readFile config.sops.templates.MEILI_MASTER_KEY;
+      "NEXTAUTH_SECRET" = builtins.readFile config.sops.templates.NEXTAUTH_SECRET;
+      "OPENAI_API_KEY" = builtins.readFile config.sops.templates.OPENAI_API_KEY;
     };
     volumes = [
       "hoarder_data:/data:rw"
