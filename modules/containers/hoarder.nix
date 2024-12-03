@@ -53,26 +53,21 @@
   sops.secrets.MEILI_MASTER_KEY = { };
   sops.secrets.NEXTAUTH_SECRET = { };
 
-  # Make a template to use creds as strings in the config
-  sops.templates.OPENAI_API_KEY.content = ''
-    ${config.sops.placeholder."OPENAI_API_KEY"}
-  '';
-  sops.templates.MEILI_MASTER_KEY.content = ''
-    ${config.sops.placeholder."MEILI_MASTER_KEY"}
-  '';
-  sops.templates.NEXTAUTH_SECRET.content = ''
-    ${config.sops.placeholder."NEXTAUTH_SECRET"}
-  '';
+  sops.templates."meilisearch-docker-env" = {
+    content = ''
+      HOARDER_VERSION=release
+      NEXTAUTH_URL=http://localhost:3000
+      MEILI_NO_ANALYTICS=true
+      MEILI_MASTER_KEY=${config.sops.placeholder."MEILI_MASTER_KEY"}
+      NEXTAUTH_SECRET=${config.sops.placeholder."NEXTAUTH_SECRET"}
+    '';
+  };
 
   virtualisation.oci-containers.containers."hoarder-meilisearch" = {
     image = "getmeili/meilisearch:v1.11.1";
-    environment = {
-      "HOARDER_VERSION" = "release";
-      "NEXTAUTH_URL" = "http://localhost:3000";
-      "MEILI_NO_ANALYTICS" = "true";
-      "MEILI_MASTER_KEY" = builtins.readFile config.sops.templates.MEILI_MASTER_KEY;
-      "NEXTAUTH_SECRET" = builtins.readFile config.sops.templates.NEXTAUTH_SECRET;
-    };
+    environmentFiles = [
+      config.sops.templates."meilisearch-docker-env".path
+    ];
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
     ];
@@ -104,18 +99,25 @@
       "docker-compose-hoarder-root.target"
     ];
   };
+  # Create an env file to use the creds in docker
+  sops.templates."hoarder-web-docker-env" = {
+    content = ''
+      BROWSER_WEB_URL = "http://chrome:9222";
+      DATA_DIR = "/data";
+      HOARDER_VERSION = "release";
+      MEILI_ADDR = "http://meilisearch:7700";
+      NEXTAUTH_URL = "http://localhost:3000";
+      MEILI_MASTER_KEY=${config.sops.placeholder."MEILI_MASTER_KEY"}
+      NEXTAUTH_SECRET=${config.sops.placeholder."NEXTAUTH_SECRET"}
+      OPENAI_API_KEY=${config.sops.placeholder."OPENAI_API_KEY"}
+    '';
+  };
+
   virtualisation.oci-containers.containers."hoarder-web" = {
     image = "ghcr.io/hoarder-app/hoarder:release";
-    environment = {
-      "BROWSER_WEB_URL" = "http://chrome:9222";
-      "DATA_DIR" = "/data";
-      "HOARDER_VERSION" = "release";
-      "MEILI_ADDR" = "http://meilisearch:7700";
-      "NEXTAUTH_URL" = "http://localhost:3000";
-      "MEILI_MASTER_KEY" = builtins.readFile config.sops.templates.MEILI_MASTER_KEY;
-      "NEXTAUTH_SECRET" = builtins.readFile config.sops.templates.NEXTAUTH_SECRET;
-      "OPENAI_API_KEY" = builtins.readFile config.sops.templates.OPENAI_API_KEY;
-    };
+    environmentFiles = [
+      config.sops.templates."hoarder-web-docker-env".path
+    ];
     volumes = [
       "hoarder_data:/data:rw"
     ];
