@@ -47,14 +47,21 @@
       "docker-compose-hoarder-root.target"
     ];
   };
+
+  # Get the creds
+  sops.secrets.OPENAI_API_KEY = { };
+  sops.secrets.MEILI_MASTER_KEY = { };
+  sops.secrets.NEXTAUTH_SECRET = { };
+
   virtualisation.oci-containers.containers."hoarder-meilisearch" = {
     image = "getmeili/meilisearch:v1.11.1";
     environment = {
       "HOARDER_VERSION" = "release";
-      "MEILI_MASTER_KEY" = "another_random_string";
+      "MEILI_MASTER_KEY" = sops.secrets.MEILI_MASTER_KEY;
       "MEILI_NO_ANALYTICS" = "true";
-      "NEXTAUTH_SECRET" = "super_random_string";
+      "NEXTAUTH_SECRET" = sops.secrets.NEXTAUTH_SECRET;
       "NEXTAUTH_URL" = "http://localhost:3000";
+      "OPENAI_API_KEY" = sops.secrets.OPENAI_API_KEY;
     };
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
@@ -94,8 +101,8 @@
       "DATA_DIR" = "/data";
       "HOARDER_VERSION" = "release";
       "MEILI_ADDR" = "http://meilisearch:7700";
-      "MEILI_MASTER_KEY" = "another_random_string";
-      "NEXTAUTH_SECRET" = "super_random_string";
+      "MEILI_MASTER_KEY" = "YlTTmaaiyTmyV8LkdNYD72Hsy3UsAEHeEPy5DCLJOiZheJQZ";
+      "NEXTAUTH_SECRET" = "EbCOfV+NUqjfZlrJ0HrM/bLiUuZ4hHk0YeIjlszRiyT/hKMV";
       "NEXTAUTH_URL" = "http://localhost:3000";
     };
     volumes = [
