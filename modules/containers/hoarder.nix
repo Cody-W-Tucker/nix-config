@@ -53,15 +53,26 @@
   sops.secrets.MEILI_MASTER_KEY = { };
   sops.secrets.NEXTAUTH_SECRET = { };
 
+  # Make a template to use creds as strings in the config
+  sops.templates.OPENAI_API_KEY.content = ''
+    ${config.sops.placeholder."OPENAI_API_KEY"}
+  '';
+  sops.templates.MEILI_MASTER_KEY.content = ''
+    ${config.sops.placeholder."MEILI_MASTER_KEY"}
+  '';
+  sops.templates.NEXTAUTH_SECRET.content = ''
+    ${config.sops.placeholder."NEXTAUTH_SECRET"}
+  '';
+
   virtualisation.oci-containers.containers."hoarder-meilisearch" = {
     image = "getmeili/meilisearch:v1.11.1";
     environment = {
       "HOARDER_VERSION" = "release";
-      "MEILI_MASTER_KEY" = config.sops.secrets.MEILI_MASTER_KEY;
+      "MEILI_MASTER_KEY" = config.sops.templates.MEILI_MASTER_KEY.path;
       "MEILI_NO_ANALYTICS" = "true";
-      "NEXTAUTH_SECRET" = config.sops.secrets.NEXTAUTH_SECRET;
+      "NEXTAUTH_SECRET" = config.sops.templates.NEXTAUTH_SECRET.path;
       "NEXTAUTH_URL" = "http://localhost:3000";
-      "OPENAI_API_KEY" = config.sops.secrets.OPENAI_API_KEY;
+      "OPENAI_API_KEY" = config.sops.templates.OPENAI_API_KEY.path;
     };
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
