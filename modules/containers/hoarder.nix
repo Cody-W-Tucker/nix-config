@@ -68,11 +68,10 @@
     image = "getmeili/meilisearch:v1.11.1";
     environment = {
       "HOARDER_VERSION" = "release";
-      "MEILI_MASTER_KEY" = config.sops.templates.MEILI_MASTER_KEY.path;
-      "MEILI_NO_ANALYTICS" = "true";
-      "NEXTAUTH_SECRET" = config.sops.templates.NEXTAUTH_SECRET.path;
       "NEXTAUTH_URL" = "http://localhost:3000";
-      "OPENAI_API_KEY" = config.sops.templates.OPENAI_API_KEY.path;
+      "MEILI_NO_ANALYTICS" = "true";
+      "MEILI_MASTER_KEY" = config.sops.templates.MEILI_MASTER_KEY.path;
+      "NEXTAUTH_SECRET" = config.sops.templates.NEXTAUTH_SECRET.path;
     };
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
@@ -112,9 +111,10 @@
       "DATA_DIR" = "/data";
       "HOARDER_VERSION" = "release";
       "MEILI_ADDR" = "http://meilisearch:7700";
-      "MEILI_MASTER_KEY" = "YlTTmaaiyTmyV8LkdNYD72Hsy3UsAEHeEPy5DCLJOiZheJQZ";
-      "NEXTAUTH_SECRET" = "EbCOfV+NUqjfZlrJ0HrM/bLiUuZ4hHk0YeIjlszRiyT/hKMV";
       "NEXTAUTH_URL" = "http://localhost:3000";
+      "MEILI_MASTER_KEY" = config.sops.templates.MEILI_MASTER_KEY.path;
+      "NEXTAUTH_SECRET" = config.sops.templates.NEXTAUTH_SECRET.path;
+      "OPENAI_API_KEY" = config.sops.templates.OPENAI_API_KEY.path;
     };
     volumes = [
       "hoarder_data:/data:rw"
