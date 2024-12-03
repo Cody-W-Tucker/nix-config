@@ -48,26 +48,15 @@
     ];
   };
 
-  # Get the creds
-  sops.secrets.OPENAI_API_KEY = { };
-  sops.secrets.MEILI_MASTER_KEY = { };
-  sops.secrets.NEXTAUTH_SECRET = { };
-
-  sops.templates."meilisearch-docker-env" = {
-    content = ''
-      HOARDER_VERSION=release
-      NEXTAUTH_URL=http://localhost:3000
-      MEILI_NO_ANALYTICS=true
-      MEILI_MASTER_KEY=${config.sops.placeholder."MEILI_MASTER_KEY"}
-      NEXTAUTH_SECRET=${config.sops.placeholder."NEXTAUTH_SECRET"}
-    '';
-  };
-
   virtualisation.oci-containers.containers."hoarder-meilisearch" = {
     image = "getmeili/meilisearch:v1.11.1";
-    environmentFiles = [
-      config.sops.templates."meilisearch-docker-env".path
-    ];
+    environment = {
+      "HOARDER_VERSION" = "release";
+      "NEXTAUTH_URL" = "http://localhost:3000";
+      "MEILI_NO_ANALYTICS" = "true";
+      "MEILI_MASTER_KEY" = "YlTTmaaiyTmyV8LkdNYD72Hsy3UsAEHeEPy5DCLJOiZheJQZ";
+      "NEXTAUTH_SECRET" = "EbCOfV+NUqjfZlrJ0HrM/bLiUuZ4hHk0YeIjlszRiyT/hKMV";
+    };
     volumes = [
       "hoarder_meilisearch:/meili_data:rw"
     ];
@@ -99,25 +88,17 @@
       "docker-compose-hoarder-root.target"
     ];
   };
-  # Create an env file to use the creds in docker
-  sops.templates."hoarder-web-docker-env" = {
-    content = ''
-      BROWSER_WEB_URL=http://chrome:9222
-      DATA_DIR=/data
-      HOARDER_VERSION=release
-      MEILI_ADDR=http://meilisearch:7700
-      NEXTAUTH_URL=http://localhost:3000
-      MEILI_MASTER_KEY=${config.sops.placeholder."MEILI_MASTER_KEY"}
-      NEXTAUTH_SECRET=${config.sops.placeholder."NEXTAUTH_SECRET"}
-      OPENAI_API_KEY=${config.sops.placeholder."OPENAI_API_KEY"}
-    '';
-  };
-
   virtualisation.oci-containers.containers."hoarder-web" = {
     image = "ghcr.io/hoarder-app/hoarder:release";
-    environmentFiles = [
-      config.sops.templates."hoarder-web-docker-env".path
-    ];
+    environment = {
+      "BROWSER_WEB_URL" = "http://chrome:9222";
+      "DATA_DIR" = "/data";
+      "HOARDER_VERSION" = "release";
+      "MEILI_ADDR" = "http://meilisearch:7700";
+      "MEILI_MASTER_KEY" = "YlTTmaaiyTmyV8LkdNYD72Hsy3UsAEHeEPy5DCLJOiZheJQZ";
+      "NEXTAUTH_SECRET" = "EbCOfV+NUqjfZlrJ0HrM/bLiUuZ4hHk0YeIjlszRiyT/hKMV";
+      "NEXTAUTH_URL" = "http://localhost:3000";
+    };
     volumes = [
       "hoarder_data:/data:rw"
     ];
