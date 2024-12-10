@@ -13,8 +13,8 @@ let
     modules-center = [ "custom/notification" "clock" "custom/timer" ];
     modules-left = [ "hyprland/workspaces" "tray" ];
     modules-right = [
-      "group/group-power"
       "custom/weather"
+      "group/group-power"
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
