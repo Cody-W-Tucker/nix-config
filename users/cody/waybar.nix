@@ -183,7 +183,6 @@ let
       hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
       format = "{temperatureC}°C ";
       format-critical = "{temperatureC}°C ";
-      tooltip = false;
       tooltip-format = "{temperatureF}°F";
       critical-threshold = 85;
     };
