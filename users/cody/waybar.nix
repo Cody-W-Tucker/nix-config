@@ -10,7 +10,7 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "custom/notification" "clock" "custom/timer" ];
+    modules-center = [ "custom/notification" "clock" "custom/timer" "custom/weather" ];
     modules-left = [ "hyprland/workspaces" "tray" ];
     modules-right = [
       "group/group-power"
@@ -22,6 +22,13 @@ let
     tray = {
       icon-size = 21;
       spacing = 10;
+    };
+    "custom/weather" = {
+      exec = "${HOME}/.config/waybar/scripts/get_weather.sh Kearney+Nebraska";
+      return-type = "json";
+      format = "{}";
+      tooltip = true;
+      interval = 3600;
     };
     "custom/timer" = {
       exec = "waybar-timer updateandprint";
