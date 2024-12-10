@@ -261,7 +261,7 @@ in
       #clock,
       #tray,
       #custom-notification,
-      #custom-weather
+      #custom-weather,
       #custom-media,
       #custom-timer,
       #custom-power,
