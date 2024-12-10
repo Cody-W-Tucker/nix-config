@@ -169,11 +169,11 @@ let
       interface = "eno1";
       format = "{ifname}";
       format-wifi = "{essid} ({signalStrength}%) ";
-      format-ethernet = "{ipaddr}/{cidr} 󰊗";
+      format-ethernet = "↓{bandwidthDownBytes}/s ↑{bandwidthUpBytes}/s ";
       format-disconnected = "";
       tooltip-format = "{ifname} via {gwaddr} 󰊗";
-      tooltip-format-wifi = "{essid} ({signalStrength}%) ";
-      tooltip-format-ethernet = "{ifname} ";
+      tooltip-format-wifi = "IP: {ipaddr}/{cidr}\nGateway: {gwaddr}\nFrequency: {frequency} ";
+      tooltip-format-ethernet = "IP: {ipaddr}/{cidr}\nGateway: {gwaddr}";
       tooltip-format-disconnected = "Disconnected";
       max-length = 50;
     };
