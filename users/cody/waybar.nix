@@ -143,7 +143,7 @@ let
     ];
     modules-left = [ "hyprland/workspaces" ];
     modules-right = [
-      "network"
+      "disk"
       "cpu"
       "memory"
       "temperature"
@@ -165,17 +165,8 @@ let
       on-scroll-down = "playerctl previous";
       exec = "media-player";
     };
-    network = {
-      interface = "eno1";
-      format = "{ifname}";
-      format-wifi = "{essid} ({signalStrength}%) ";
-      format-ethernet = "↓{bandwidthDownBytes} ↑{bandwidthUpBytes}";
-      format-disconnected = "";
-      tooltip-format = "{ifname} via {gwaddr} 󰊗";
-      tooltip-format-wifi = "IP: {ipaddr}/{cidr}\nGateway: {gwaddr}\nFrequency: {frequency} ";
-      tooltip-format-ethernet = "IP: {ipaddr}/{cidr}\nGateway: {gwaddr}";
-      tooltip-format-disconnected = "Disconnected";
-      max-length = 50;
+    disk = {
+      format = "{percentage_free}%";
     };
     cpu = {
       interval = 5;
@@ -266,7 +257,7 @@ in
         border-bottom-right-radius: 12px;
       }
 
-      #network,
+      #disk,
       #cpu,
       #memory,
       #pulseaudio,
