@@ -8,6 +8,7 @@ let
     ./web-scraper.nix
     ./waybar-timer.nix
     ./obsidian-writer.nix
+    ./get-weather.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
