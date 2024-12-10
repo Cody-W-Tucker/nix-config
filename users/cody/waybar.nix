@@ -24,7 +24,7 @@ let
       spacing = 10;
     };
     "custom/weather" = {
-      exec = "${HOME}/.config/waybar/scripts/get_weather.sh Kearney+Nebraska";
+      exec = "get-weather Kearney+Nebraska";
       return-type = "json";
       format = "{}";
       tooltip = true;
