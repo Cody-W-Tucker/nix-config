@@ -166,24 +166,26 @@ let
       exec = "media-player";
     };
     disk = {
-      format = "{percentage_free}%";
+      format = "{percentage_free}% ";
     };
     cpu = {
       interval = 5;
-      format = "{usage:2}% ";
+      format = "{usage:2}% ";
       tooltip = true;
     };
     memory = {
       interval = 5;
-      format = "{}% ";
+      format = "{}% ";
       tooltip = true;
     };
     temperature = {
-      critical-threshold = 80;
       # thermal-zone = 2;
       hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
       format = "{temperatureC}°C ";
+      format-critical = "{temperatureC}°C ";
       tooltip = false;
+      tooltip-format = "{temperatureF}°F";
+      critical-threshold = 85;
     };
     privacy = {
       icon-spacing = 4;
