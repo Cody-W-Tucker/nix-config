@@ -14,6 +14,7 @@ let
     modules-left = [ "hyprland/workspaces" "tray" ];
     modules-right = [
       "group/group-power"
+      "custom/weather"
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
@@ -22,6 +23,13 @@ let
     tray = {
       icon-size = 21;
       spacing = 10;
+    };
+    "custom/weather" = {
+      exec = "get-weather Kearney+Nebraska";
+      return-type = "json";
+      format = "{}";
+      tooltip = true;
+      interval = 3600;
     };
     "custom/timer" = {
       exec = "waybar-timer updateandprint";
@@ -129,7 +137,6 @@ let
     layer = "top";
     spacing = 4;
     modules-center = [
-      "custom/weather"
       "custom/media"
       "pulseaudio"
       "privacy"
@@ -143,13 +150,6 @@ let
     "hyprland/workspaces" = {
       on-click = "activate";
       format = "{}";
-    };
-    "custom/weather" = {
-      exec = "get-weather Kearney+Nebraska";
-      return-type = "json";
-      format = "{}";
-      tooltip = true;
-      interval = 3600;
     };
     "custom/media" = {
       format = "{}";
