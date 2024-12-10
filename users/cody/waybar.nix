@@ -169,7 +169,7 @@ let
       interface = "eno1";
       format = "{ifname}";
       format-wifi = "{essid} ({signalStrength}%) ";
-      format-ethernet = "↓{bandwidthDownBytes}/s ↑{bandwidthUpBytes}/s ";
+      format-ethernet = "↓{bandwidthDownBytes} ↑{bandwidthUpBytes}";
       format-disconnected = "";
       tooltip-format = "{ifname} via {gwaddr} 󰊗";
       tooltip-format-wifi = "IP: {ipaddr}/{cidr}\nGateway: {gwaddr}\nFrequency: {frequency} ";
