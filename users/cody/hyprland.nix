@@ -56,8 +56,8 @@
       cursor.hide_on_key_press = true;
       decoration = {
         rounding = "10";
-        active_opacity = "0.7";
-        inactive_opacity = "0.6";
+        active_opacity = "0.9";
+        inactive_opacity = "0.8";
         blur = {
           enabled = "true";
           size = "10";
