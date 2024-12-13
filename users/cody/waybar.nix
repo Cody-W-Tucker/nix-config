@@ -243,21 +243,6 @@ in
         font-size: 15px;
       }
 
-      window#waybar {
-        background-color: rgba(0, 0, 0, 0);
-        color: #${config.lib.stylix.colors.base05};
-      }
-
-      window#waybar.bottom {
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-      }
-
-      window#waybar.top {
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
-      }
-
       #disk,
       #cpu,
       #memory,
@@ -277,6 +262,12 @@ in
       #workspaces {
         padding: 5px 10px;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+        background-color: #${config.lib.stylix.colors.base01};
+        border: 2px solid #${config.lib.stylix.colors.base09}
+        color: #${config.lib.stylix.colors.base05};
+      }
+
+      window#waybar {
         background-color: #${config.lib.stylix.colors.base00};
         color: #${config.lib.stylix.colors.base05};
       }
@@ -287,7 +278,7 @@ in
       }
 
       #workspaces button:hover {
-        background: #${config.lib.stylix.colors.base0D};
+        background: #${config.lib.stylix.colors.base02};
       }
 
       #workspaces button.urgent {
@@ -312,7 +303,7 @@ in
       }
 
       label:focus {
-        background-color: #${config.lib.stylix.colors.base00};
+        background-color: #${config.lib.stylix.colors.base02};
       }
 
       #privacy {
