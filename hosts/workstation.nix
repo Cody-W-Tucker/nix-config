@@ -111,8 +111,8 @@
 
   # Setting the color theme and default wallpaper
   stylix.image = pkgs.fetchurl {
-    url = "https://github.com/zhichaoh/catppuccin-wallpapers/blob/1023077979591cdeca76aae94e0359da1707a60e/landscapes/Rainnight.jpg";
-    sha256 = "1hkqpzv0fqhf9nhlic9yk782mg9r94cgr1amswmrwxhc31fx3n32";
+    url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/refs/heads/main/landscapes/Rainnight.jpg";
+    sha256 = "10jpm91w9js67n8kpcg896fh1gbhhxvhy5qkq8vwhd1nqva41zmf";
   };
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
