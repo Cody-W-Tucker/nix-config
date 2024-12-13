@@ -92,6 +92,7 @@
       };
       # Window rules
       windowrulev2 = [ "workspace special silent, initialTitle:^(Spotify)$" ];
+      windowrule = "noblur,^(kitty)$";
       # Keybindings
       "$mainMod" = "SUPER";
       bindm = [
