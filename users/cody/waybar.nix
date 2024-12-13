@@ -263,7 +263,7 @@ in
         padding: 5px 10px;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
         background-color: #${config.lib.stylix.colors.base01};
-        border: 2px solid #${config.lib.stylix.colors.base09}
+        border: 2px solid #${config.lib.stylix.colors.base09};
         color: #${config.lib.stylix.colors.base05};
       }
 
