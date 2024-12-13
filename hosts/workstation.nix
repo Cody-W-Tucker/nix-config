@@ -110,7 +110,10 @@
   };
 
   # Setting the color theme and default wallpaper
-  stylix.image = ../modules/wallpapers/lex.png;
+  stylix.image = pkgs.fetchurl {
+    url = "https://github.com/zhichaoh/catppuccin-wallpapers/blob/main/landscapes/Rainnight.jpg";
+    sha256 = "0nmbww70jgjd8znpvhylnb7lpsh3bbfhbjwjf8mznhvmgp34c633";
+  };
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
   # Backup configuration
