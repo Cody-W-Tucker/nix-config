@@ -56,12 +56,12 @@
       cursor.hide_on_key_press = true;
       decoration = {
         rounding = "10";
-        active_opacity = "0.90";
+        active_opacity = "0.7";
         inactive_opacity = "0.6";
         blur = {
           enabled = "true";
           size = "10";
-          passes = "1";
+          passes = "3";
           new_optimizations = "true";
           ignore_opacity = true;
           noise = "0";
