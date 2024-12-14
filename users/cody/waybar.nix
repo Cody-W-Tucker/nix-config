@@ -240,26 +240,14 @@ in
     style = lib.mkForce ''
       * {
         font-family: JetBrainsMono, Roboto, Helvetica, Arial, sans-serif;
-        font-size: 15px;
+        font-size: 16px;
       }
 
-      #disk,
-      #cpu,
-      #memory,
-      #pulseaudio,
-      #pulseaudio.muted,
-      #temperature,
-      #clock,
-      #tray,
-      #custom-notification,
-      #custom-weather,
-      #custom-media,
-      #custom-timer,
-      #custom-power,
-      #custom-quit,
-      #custom-lock,
-      #custom-reboot,
-      #workspaces {
+      window#waybar {
+        background-color: #${config.lib.stylix.colors.base01};
+      }
+
+      .module {
         padding: 5px 10px;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
         background-color: #${config.lib.stylix.colors.base01};
@@ -267,9 +255,8 @@ in
         color: #${config.lib.stylix.colors.base05};
       }
 
-      window#waybar {
-        background-color: #${config.lib.stylix.colors.base00};
-        color: #${config.lib.stylix.colors.base05};
+      .module:hover {
+        border-color: #${config.lib.stylix.colors.base03};
       }
 
       #workspaces button {
