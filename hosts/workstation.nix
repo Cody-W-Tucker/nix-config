@@ -114,7 +114,7 @@
   #   url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/refs/heads/main/landscapes/Rainnight.jpg";
   #   sha256 = "10jpm91w9js67n8kpcg896fh1gbhhxvhy5qkq8vwhd1nqva41zmf";
   # };
-  stylix.image = ../modules/wallpapers/lone-figure.png;
+  stylix.image = ../modules/wallpapers/lone-figure.jpg;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
   # Backup configuration
