@@ -58,7 +58,7 @@
   services.gvfs.enable = true;
   services.udisks2.enable = true;
 
-  # Bluetooth support.
+  # Bluetooth support
   hardware = {
     bluetooth = {
       enable = true;
@@ -66,17 +66,15 @@
       settings = {
         General = {
           Enable = "Source,Sink,Media,Socket";
-        };
-      };
-      input = {
-        General = {
-          UserspaceHID = true;
+          Experimental = true; # Enable experimental features
+          FastConnectable = true; # Improve connection speed
+          MultiProfile = "multiple"; # Allow multiple profiles
         };
       };
     };
   };
 
-  # Enable sound with pipewire.
+  # Enable sound with pipewire
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -84,8 +82,25 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    # Uncomment the following line if you need JACK support
     # jack.enable = true;
+
+    # Add these lines to improve Bluetooth audio
+    extraConfig.pipewire = {
+      "context.properties" = {
+        "link.max-buffers" = 16;
+        "log.level" = 2;
+        "default.clock.rate" = 48000;
+        "default.clock.quantum" = 1024;
+        "default.clock.min-quantum" = 32;
+        "default.clock.max-quantum" = 8192;
+      };
+    };
   };
+
+  # Enable Blueman for easier Bluetooth management
+  services.blueman.enable = true;
+
 
   # Enable UPower because chrome said so...
   services.upower.enable = true;
