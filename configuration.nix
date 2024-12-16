@@ -41,6 +41,7 @@
     starship
     (btop.override { cudaSupport = true; })
     wget
+    lynx
   ];
 
   # Make passwords uneditable
