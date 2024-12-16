@@ -40,6 +40,7 @@
     ranger
     starship
     (btop.override { cudaSupport = true; })
+    wget
   ];
 
   # Make passwords uneditable
