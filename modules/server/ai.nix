@@ -59,9 +59,27 @@ in
       "qdrant.homehub.tv" = {
         useACMEHost = "homehub.tv";
         forceSSL = true;
+        # HTTP API (REST API on port 6333)
         locations."/" = {
-          proxyPass = "http://localhost:6333";
-          proxyWebsockets = true;
+          proxyPass = "http://127.0.0.1:6333"; # Forward REST traffic
+          proxyWebsockets = true; # Extra flexibility for WebSockets (not required for REST API)
+          # Optional: Add headers to preserve proxy context
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          '';
+        };
+
+        # gRPC API (on port 6334)
+        locations."/grpc" = {
+          proxyPass = "http://127.0.0.1:6334"; # Forward gRPC traffic
+          extraConfig = ''
+            grpc_set_header Host $host;
+            grpc_set_header X-Real-IP $remote_addr;
+            grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            grpc_pass grpc://127.0.0.1:6334;    # Ensure grpc_pass for gRPC-specific handling
+          '';
         };
       };
     };
