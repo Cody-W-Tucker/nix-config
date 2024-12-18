@@ -38,24 +38,10 @@ in
       extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--pull=always" ];
     };
   };
+  # Opening ports for Qdrant, since I'm not sure how to make grpc work with Nginx 
+  networking.firewall.allowedTCPPorts = [ 6333 6334 ];
   services = {
     nginx.virtualHosts = {
-      "search.homehub.tv" = {
-        useACMEHost = "homehub.tv";
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8888";
-          proxyWebsockets = true;
-        };
-      };
-      "ai.homehub.tv" = {
-        useACMEHost = "homehub.tv";
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8080";
-          proxyWebsockets = true;
-        };
-      };
       "qdrant.homehub.tv" = {
         useACMEHost = "homehub.tv";
         forceSSL = true;
@@ -70,7 +56,6 @@ in
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           '';
         };
-
         # gRPC API (on port 6334)
         locations."/grpc" = {
           proxyPass = "http://127.0.0.1:6334"; # Forward gRPC traffic
@@ -80,6 +65,22 @@ in
             grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             grpc_pass grpc://127.0.0.1:6334;    # Ensure grpc_pass for gRPC-specific handling
           '';
+        };
+      };
+      "search.homehub.tv" = {
+        useACMEHost = "homehub.tv";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8888";
+          proxyWebsockets = true;
+        };
+      };
+      "ai.homehub.tv" = {
+        useACMEHost = "homehub.tv";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8080";
+          proxyWebsockets = true;
         };
       };
     };
