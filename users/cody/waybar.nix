@@ -26,6 +26,7 @@ let
         "kitty" = "";
         "obsidian" = "";
       };
+      window-rewrite-default = "󰏗";
     };
     tray = {
       icon-size = 21;
@@ -165,6 +166,7 @@ let
         "kitty" = "";
         "obsidian" = "";
       };
+      window-rewrite-default = "󰏗";
     };
     "custom/media" = {
       format = "{}";
