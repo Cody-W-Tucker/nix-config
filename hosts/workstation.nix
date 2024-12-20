@@ -141,6 +141,45 @@
     };
   };
 
+  # Monitoring configuration
+  services = {
+    prometheus = {
+      nodeExporter = {
+        enable = true;
+        webListenAddress = ":9002";
+        extraArgs = [ "--collector.systemd" ];
+      };
+    };
+
+    promtail = {
+      enable = true;
+      configuration = {
+        server = {
+          http_listen_port = 9080;
+          grpc_listen_port = 0;
+        };
+        positions = {
+          filename = "/tmp/positions.yaml";
+        };
+        clients = [{
+          url = "http://server:3090/loki/api/v1/push";
+        }];
+        scrape_configs = [{
+          job_name = "system";
+          static_configs = [{
+            targets = [ "localhost" ];
+            labels = {
+              job = "varlogs";
+              host = "workstation";
+              __path__ = "/var/log/*log";
+            };
+          }];
+        }];
+      };
+    };
+  };
+
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

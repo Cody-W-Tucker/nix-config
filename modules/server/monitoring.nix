@@ -50,6 +50,17 @@
             }
           ];
         }
+        {
+          job_name = "client";
+          static_configs = [
+            {
+              targets = [ "workstation:9002" ];
+              labels = {
+                host = "workstation";
+              };
+            }
+          ];
+        }
       ];
     };
     loki = {
