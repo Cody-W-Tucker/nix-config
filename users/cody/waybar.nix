@@ -25,6 +25,12 @@ let
         "code" = "󰨞";
         "kitty" = "";
         "obsidian" = "";
+        "title<.*youtube.*>" = "";
+        "class<google-chrome> title<.*github.*>" = "";
+        "class<google-chrome> title<.*reddit.*>" = "";
+        "class<google-chrome> title<.*facebook.*>" = "";
+        "class<google-chrome> title<.*gmail.*>" = "";
+        "class<google-chrome> title<.*calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
     };
@@ -165,6 +171,12 @@ let
         "code" = "󰨞";
         "kitty" = "";
         "obsidian" = "";
+        "title<.*youtube.*>" = "";
+        "class<google-chrome> title<.*github.*>" = "";
+        "class<google-chrome> title<.*reddit.*>" = "";
+        "class<google-chrome> title<.*facebook.*>" = "";
+        "class<google-chrome> title<.*gmail.*>" = "";
+        "class<google-chrome> title<.*calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
     };
