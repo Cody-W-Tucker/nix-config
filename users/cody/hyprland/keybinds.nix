@@ -1,7 +1,9 @@
 { config, ... }:
 {
   # Keybindings
-  "$mainMod" = "SUPER";
+  wayland.windowManager.hyprland.settings = {
+    "$mainMod" = "SUPER";
+  };
   bindm =
     [
       # Move/resize windows with mainMod + LMB/RMB and dragging
