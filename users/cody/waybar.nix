@@ -18,7 +18,7 @@ let
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
-      format = "{windows}";
+      format = "{icon}: {windows}";
       window-rewrite = {
         "google-chrome" = "";
         "spotify" = "";
@@ -164,7 +164,7 @@ let
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
-      format = "{windows}";
+      format = "{icon}: {windows}";
       window-rewrite = {
         "google-chrome" = "";
         "spotify" = "";
