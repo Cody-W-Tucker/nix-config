@@ -7,9 +7,9 @@ pkgs.writeShellScriptBin "keybind-logger" ''
   timestamp=$(date '+%Y-%m-%d %H:%M:%S')
   cmd="$*"
 
-  # Log the keybind with timestamp
-  echo "$timestamp | $cmd" >> "$LOG_FILE"
+  # Log the keybind with timestamp and all arguments
+  echo "$timestamp | $@" >> "$LOG_FILE"
 
   # Execute the command
-  exec $cmd
+  exec "$@"
 ''
