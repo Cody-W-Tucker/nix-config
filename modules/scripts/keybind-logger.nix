@@ -4,10 +4,12 @@ pkgs.writeShellScriptBin "keybind-logger" ''
   #!/bin/bash
 
   LOG_FILE="/tmp/keybind_usage.log"
-
-  # Get current timestamp
   timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+  cmd="$*"
 
   # Log the keybind with timestamp
-  echo "$timestamp | $1" >> "$LOG_FILE"
+  echo "$timestamp | $cmd" >> "$LOG_FILE"
+
+  # Execute the command
+  exec $cmd
 ''
