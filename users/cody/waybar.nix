@@ -32,7 +32,7 @@ let
         "class<google-chrome> title<.*Gmail.*>" = "";
         "class<google-chrome> title<.*Calendar.*>" = "";
       };
-      window-rewrite-default = "󰏗";
+      window-rewrite-default = "{name}: 󰏗";
     };
     tray = {
       icon-size = 21;
@@ -178,7 +178,7 @@ let
         "class<google-chrome> title<.*Gmail.*>" = "";
         "class<google-chrome> title<.*Calendar.*>" = "";
       };
-      window-rewrite-default = "󰏗";
+      window-rewrite-default = "{name}: 󰏗";
     };
     "custom/media" = {
       format = "{}";
