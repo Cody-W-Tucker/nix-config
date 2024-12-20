@@ -141,6 +141,9 @@
     };
   };
 
+  # Open port 3090 for Loki
+  networking.firewall.allowedTCPPorts = [ 9002 ];
+
   # Monitoring configuration
   services = {
     prometheus = {
