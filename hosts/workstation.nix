@@ -144,10 +144,14 @@
   # Monitoring configuration
   services = {
     prometheus = {
-      nodeExporter = {
-        enable = true;
-        webListenAddress = ":9002";
-        extraArgs = [ "--collector.systemd" ];
+      enable = true;
+      port = 9001;
+      exporters = {
+        node = {
+          enable = true;
+          enabledCollectors = [ "systemd" ];
+          port = 9002;
+        };
       };
     };
 
@@ -165,14 +169,17 @@
           url = "http://server:3090/loki/api/v1/push";
         }];
         scrape_configs = [{
-          job_name = "system";
-          static_configs = [{
-            targets = [ "localhost" ];
+          job_name = "journal";
+          journal = {
+            max_age = "12h";
             labels = {
-              job = "varlogs";
+              job = "systemd-journal";
               host = "workstation";
-              __path__ = "/var/log/*log";
             };
+          };
+          relabel_configs = [{
+            source_labels = [ "__journal__systemd_unit" ];
+            target_label = "unit";
           }];
         }];
       };
