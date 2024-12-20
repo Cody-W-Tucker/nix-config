@@ -26,13 +26,13 @@ let
         "kitty" = "";
         "obsidian" = "";
         "title<.*youtube.*>" = "";
-        "class<google-chrome> title<.*Github.*>" = "";
-        "class<google-chrome> title<.*Reddit.*>" = "";
-        "class<google-chrome> title<.*Facebook.*>" = "";
-        "class<google-chrome> title<.*Gmail.*>" = "";
-        "class<google-chrome> title<.*Calendar.*>" = "";
+        "title<.*Github.*>" = "";
+        "title<.*Reddit.*>" = "";
+        "title<.*Facebook.*>" = "";
+        "title<.*Gmail.*>" = "";
+        "title<.*Calendar.*>" = "";
       };
-      window-rewrite-default = "{name}: 󰏗";
+      window-rewrite-default = "󰏗";
     };
     tray = {
       icon-size = 21;
@@ -172,13 +172,13 @@ let
         "kitty" = "";
         "obsidian" = "";
         "title<.*youtube.*>" = "";
-        "class<google-chrome> title<.*Github.*>" = "";
-        "class<google-chrome> title<.*Reddit.*>" = "";
-        "class<google-chrome> title<.*Facebook.*>" = "";
-        "class<google-chrome> title<.*Gmail.*>" = "";
-        "class<google-chrome> title<.*Calendar.*>" = "";
+        "title<.*Github.*>" = "";
+        "title<.*Reddit.*>" = "";
+        "title<.*Facebook.*>" = "";
+        "title<.*Gmail.*>" = "";
+        "title<.*Calendar.*>" = "";
       };
-      window-rewrite-default = "{name}: 󰏗";
+      window-rewrite-default = "󰏗";
     };
     "custom/media" = {
       format = "{}";
