@@ -8,7 +8,10 @@ pkgs.writeShellScriptBin "keybind-logger" ''
   cmd="$*"
 
   # Log the keybind with timestamp and all arguments
-  echo "$timestamp | $@" >> "$LOG_FILE"
+  echo "$timestamp | \"$cmd\"" >> "$LOG_FILE" || {
+    echo "Failed to write to log file" >&2
+    exit 1
+  }
 
   # Execute the command
   exec "$@"
