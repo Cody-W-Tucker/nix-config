@@ -1,7 +1,17 @@
 { config, pkgs, lib, inputs, hardwareConfig, stylix, ... }:
 
 let
-  wrapWithLogger = cmd: ''keybind-logger "${cmd}"'';
+  # Helper function to wrap commands with logging
+  wrapWithLogger = binding:
+    let
+      parts = builtins.split "," binding;
+      # Extract the command part (everything after the second comma)
+      prefix = builtins.concatStringsSep "," (builtins.head (builtins.split "exec" binding));
+      command = builtins.concatStringsSep "," (builtins.tail (builtins.split "exec" binding));
+    in
+    if builtins.match ".*exec.*" binding != null
+    then "${prefix}, exec, keybind-logger && ${command}"
+    else binding;
 in
 
 {
