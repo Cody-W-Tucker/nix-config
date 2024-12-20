@@ -5,6 +5,10 @@
     hyprnome
   ];
 
+  imports = [
+    ./hyprland/keybinds.nix
+  ];
+
   wayland.windowManager.hyprland = {
     enable = true;
     systemd = {
@@ -94,63 +98,6 @@
       # Window rules
       windowrulev2 = [ "workspace special silent, initialTitle:^(Spotify)$" ];
       windowrule = "noblur,^(kitty)$";
-      # Keybindings
-      "$mainMod" = "SUPER";
-      bindm =
-        [
-          # Move/resize windows with mainMod + LMB/RMB and dragging
-          "$mainMod, mouse:272, movewindow"
-          "$mainMod, mouse:273, resizewindow"
-        ];
-      bind =
-        [
-          "$mainMod, V, exec, keybind-logger cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-          "$mainMod, RETURN, exec, keybind-logger pkill waybar && waybar &"
-          "$mainMod, Q, exec, keybind-logger kitty"
-          "$mainMod, C, killactive"
-          "$mainMod, E, exec, keybind-logger kitty -- ranger"
-          "$mainMod SHIFT, E, exec, keybind-logger nautilus"
-          "$mainMod, SPACE, togglefloating"
-          "$mainMod, Tab, exec, keybind-logger rofi-launcher"
-          "$mainMod SHIFT, Tab, exec, keybind-logger rofi -show web_scraper -modi 'web_scraper:web-scraper'"
-          "$mainMod, F, fullscreen"
-          "$mainMod SHIFT, P, fullscreenstate"
-          "$mainMod, P, pin"
-          # Number keys (0, -, +)
-          "$mainMod, KP_Insert, exec, keybind-logger google-chrome-stable --app=https://ai.homehub.tv"
-          "$mainMod, KP_Add, exec, keybind-logger hyprctl dispatch exec [floating] gnome-calculator"
-          # Number keys (1, 2, 3)
-          "$mainMod, KP_End, exec, keybind-logger google-chrome-stable --app=https://mail.google.com"
-          "$mainMod, KP_Down, exec, keybind-logger google-chrome-stable --app=https://messages.google.com/web/u/0/conversations"
-          "$mainMod, KP_Next, exec, keybind-logger google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
-          # Number keys (7, 8, 9)
-          "$mainMod, KP_Home, exec, keybind-logger code"
-          # Screenshots
-          ''$mainMod, S, exec, keybind-logger grim -g "$(slurp)" "$HOME/Pictures/Screenshots/$(date '+%y%m%d_%H-%M-%S').png"''
-          ''$mainMod SHIFT, S, exec, keybind-logger grim -g "$(slurp)" - | wl-copy''
-          # Hyprpicker color picker
-          "$mainMod, mouse:274, exec, keybind-logger hyprpicker -a"
-          # Move focus with mainMod + arrow keys
-          "$mainMod, left, movefocus, l"
-          "$mainMod, right, movefocus, r"
-          "$mainMod, up, movefocus, u"
-          "$mainMod, down, movefocus, d"
-          # Move windows with mainMod + shift + arrow keys
-          "$mainMod SHIFT, left, movewindow, l"
-          "$mainMod SHIFT, right, movewindow, r"
-          "$mainMod SHIFT, up, movewindow, u"
-          "$mainMod SHIFT, down, movewindow, d"
-          # Special workspace (scratchpad)
-          "$mainMod, A, togglespecialworkspace, magic"
-          "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
-          # Workspaces created/switched/moved on the active monitor
-          # Switching workspaces
-          "$mainMod, mouse_down, exec, keybind-logger hyprnome --previous"
-          "$mainMod, mouse_up, exec, keybind-logger hyprnome"
-          # Moving windows to workspaces
-          "$mainMod SHIFT, mouse_down, exec, keybind-logger hyprnome --previous --move"
-          "$mainMod SHIFT, mouse_up, exec, keybind-logger hyprnome --move"
-        ];
     };
   };
   # Lockscreen
