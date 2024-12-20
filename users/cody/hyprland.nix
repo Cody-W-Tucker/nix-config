@@ -1,4 +1,9 @@
 { config, pkgs, lib, inputs, hardwareConfig, stylix, ... }:
+
+let
+  wrapWithLogger = cmd: ''keybind-logger "${cmd}"'';
+in
+
 {
   home.packages = with pkgs; [
     hyprnome
@@ -95,12 +100,12 @@
       windowrule = "noblur,^(kitty)$";
       # Keybindings
       "$mainMod" = "SUPER";
-      bindm = [
+      bindm = map wrapWithLogger [
         # Move/resize windows with mainMod + LMB/RMB and dragging
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
-      bind =
+      bind = map wrapWithLogger
         [
           "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
           "$mainMod, RETURN, exec, pkill waybar && waybar &"
@@ -111,27 +116,18 @@
           "$mainMod, SPACE, togglefloating"
           "$mainMod, Tab, exec, rofi-launcher"
           "$mainMod SHIFT, Tab, exec, rofi -show web_scraper -modi 'web_scraper:web-scraper'"
-          "$mainMod, F1, exec, bluetoothSwitch"
           "$mainMod, F, fullscreen"
           "$mainMod SHIFT, P, fullscreenstate"
           "$mainMod, P, pin"
           # Number keys (0, -, +)
           "$mainMod, KP_Insert, exec, google-chrome-stable --app=https://ai.homehub.tv"
           "$mainMod, KP_Add, exec, hyprctl dispatch exec [floating] gnome-calculator"
-          "$mainMod, KP_Enter, exec, google-chrome-stable --app=https://task-input-tmv.vercel.app/tasks"
-          "$mainMod, KP_Subtract, exec, google-chrome-stable --app=https://recorder.google.com/"
           # Number keys (1, 2, 3)
           "$mainMod, KP_End, exec, google-chrome-stable --app=https://mail.google.com"
           "$mainMod, KP_Down, exec, google-chrome-stable --app=https://messages.google.com/web/u/0/conversations"
           "$mainMod, KP_Next, exec, google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
-          # Number keys (4, 5, 6)
-          "$mainMod, KP_Left, exec, google-chrome-stable --app=https://trello.com/u/codywt/boards"
-          "$mainMod, KP_Begin, exec, google-chrome-stable --app=https://app.reclaim.ai/planner?taskSort=schedule"
-          "$mainMod, KP_Right, exec, google-chrome-stable --app=https://tmvsocial.harvestapp.com/time/week"
           # Number keys (7, 8, 9)
           "$mainMod, KP_Home, exec, code"
-          # Skipped 8 KP_Up
-          "$mainMod, KP_Prior, exec, google-chrome-stable --app=https://tmv-social.odoo.com/web?action=277&model=account.journal&view_type=kanban&cids=1&menu_id=114"
           # Screenshots
           ''$mainMod, S, exec, grim -g "$(slurp)" "$HOME/Pictures/Screenshots/$(date '+%y%m%d_%H-%M-%S').png"''
           ''$mainMod SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
@@ -147,7 +143,6 @@
           "$mainMod SHIFT, right, movewindow, r"
           "$mainMod SHIFT, up, movewindow, u"
           "$mainMod SHIFT, down, movewindow, d"
-
           # Special workspace (scratchpad)
           "$mainMod, A, togglespecialworkspace, magic"
           "$mainMod SHIFT, A, movetoworkspacesilent, special:magic"
@@ -158,27 +153,7 @@
           # Moving windows to workspaces
           "$mainMod SHIFT, mouse_down, exec, hyprnome --previous --move"
           "$mainMod SHIFT, mouse_up, exec, hyprnome --move"
-        ]
-        ++ (
-          # workspaces
-          # binds $mainMod + [shift +] {1..9} to [move to] workspace {1..9}
-          builtins.concatLists (builtins.genList
-            (
-              x:
-              let
-                ws =
-                  let
-                    c = (x + 1) / 10;
-                  in
-                  builtins.toString (x + 1 - (c * 10));
-              in
-              [
-                "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
-                "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-              ]
-            )
-            10)
-        );
+        ];
     };
   };
   # Lockscreen
