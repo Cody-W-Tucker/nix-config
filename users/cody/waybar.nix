@@ -18,7 +18,14 @@ let
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
-      format = "{}";
+      format = "{icon} {windows}";
+      window-rewrite = {
+        "google-chrome" = "";
+        "spotify" = "";
+        "code" = "󰨞";
+        "kitty" = "";
+        "obsidian" = "";
+      };
     };
     tray = {
       icon-size = 21;
@@ -150,7 +157,14 @@ let
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
-      format = "{}";
+      format = "{icon} {windows}";
+      window-rewrite = {
+        "google-chrome" = "";
+        "spotify" = "";
+        "code" = "󰨞";
+        "kitty" = "";
+        "obsidian" = "";
+      };
     };
     "custom/media" = {
       format = "{}";
@@ -240,7 +254,7 @@ in
     style = lib.mkForce ''
       * {
         font-family: JetBrainsMono, Roboto, Helvetica, Arial, sans-serif;
-        font-size: 16px;
+        font-size: 15px;
       }
 
       window#waybar {
