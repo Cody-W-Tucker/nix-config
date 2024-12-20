@@ -170,4 +170,6 @@
       };
     };
   };
+  # Open port 3090 for Loki
+  networking.firewall.allowedTCPPorts = [ 3090 9001 ];
 }
