@@ -87,6 +87,9 @@
     };
   };
 
+  # Logrotate
+  services.logrotate.enable = true;
+
   # Syncthing shared configuration
   services.syncthing.settings.devices = {
     "server" = { id = "RWUUJ5C-MDAHVZZ-M7FK6NB-W5WAWIX-QFFDD4G-7QAQWHG-73ZM7Y5-6X5YCQR"; };
