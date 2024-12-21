@@ -96,7 +96,6 @@
         disable_hyprland_logo = "true";
       };
       # Window rules
-      windowrulev2 = [ "workspace special silent, initialTitle:^(Spotify)$" ];
       windowrule = "noblur,^(kitty)$";
     };
   };
