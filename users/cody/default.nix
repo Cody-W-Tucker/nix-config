@@ -1,4 +1,4 @@
-{ config, pkgs-unstable, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -9,7 +9,7 @@
     ./waybar.nix
   ];
 
-  home.packages = with pkgs-unstable; [
+  home.packages = with pkgs; [
     # Add some packages to the user environment.
     grim
     slurp
