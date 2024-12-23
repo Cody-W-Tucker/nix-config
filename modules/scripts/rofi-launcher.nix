@@ -8,13 +8,17 @@ pkgs.writeShellScriptBin "rofi-launcher" ''
     exit 0
   fi
 
-  # Launch Rofi and capture the selected app from the user
-  SELECTED_APP=$(rofi -show drun -show-icons)
+  # Launch Rofi and capture the selected app name
+  SELECTED_APP=$(rofi -show drun -show-icons -format 's')
 
-  # Log the selected app using the `rofi-logger` script
-  if [[ -n "$SELECTED_APP" ]]; then
-    rofi-logger "$SELECTED_APP"
-    # Attempt to launch the selected app
-    setsid $SELECTED_APP >/dev/null 2>&1 &
+  # Exit if no selection was made
+  if [[ -z "$SELECTED_APP" ]]; then
+    exit 0
   fi
+
+  # Log the selected app using the logger script
+  rofi-logger "$SELECTED_APP"
+
+  # Attempt to launch the selected application
+  setsid "$SELECTED_APP" >/dev/null 2>&1 &
 ''
