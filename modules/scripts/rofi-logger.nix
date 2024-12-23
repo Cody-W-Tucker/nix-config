@@ -1,13 +1,7 @@
 { pkgs }:
-pkgs.writeShellScriptBin "rofi-launcher" ''
+pkgs.writeShellScriptBin "rofi-launcher-logger" ''
   #!/bin/bash
   LOG_FILE="/tmp/rofi_usage.log"
-
-  if pgrep -x "rofi" > /dev/null; then
-    # Rofi is running, kill it
-    pkill -x rofi
-    exit 0
-  fi
 
   # Launch rofi and get the selected application
   SELECTED_APP=$(rofi -show drun -show-icons)
