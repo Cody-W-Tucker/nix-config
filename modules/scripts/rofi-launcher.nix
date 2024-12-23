@@ -1,26 +1,20 @@
 { pkgs }:
 pkgs.writeShellScriptBin "rofi-launcher" ''
   #!/bin/bash
-  LOG_FILE="/tmp/rofi_usage.log"
 
+  # Check if Rofi is already running and kill it if so
   if pgrep -x "rofi" > /dev/null; then
-    # Rofi is running, kill it
     pkill -x rofi
     exit 0
   fi
 
-  # Launch rofi and get the selected application
-  SELECTED_APP=$(rofi -show drun -show-icons -no-show-empty -matching ".*")
+  # Launch Rofi and capture the selected app from the user
+  SELECTED_APP=$(rofi -show drun -show-icons)
 
-  # Extract application name from Rofi output
-  APP_NAME=$(echo "$SELECTED_APP" | cut -d '|' -f 1)
-
-  # Get current timestamp
-  timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-
-  # Log the launched application with timestamp
-  echo "$timestamp | Launched $APP_NAME" >> "$LOG_FILE"
-
-  # Launch the selected application
-  $SELECTED_APP
+  # Log the selected app using the `rofi-logger` script
+  if [[ -n "$SELECTED_APP" ]]; then
+    rofi-logger "$SELECTED_APP"
+    # Attempt to launch the selected app
+    setsid $SELECTED_APP >/dev/null 2>&1 &
+  fi
 ''
