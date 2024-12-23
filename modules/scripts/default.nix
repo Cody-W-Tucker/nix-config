@@ -10,6 +10,7 @@ let
     ./obsidian-writer.nix
     ./get-weather.nix
     ./keybind-logger.nix
+    ./rofi-logger.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
