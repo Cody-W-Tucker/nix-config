@@ -10,13 +10,16 @@ pkgs.writeShellScriptBin "rofi-launcher" ''
   fi
 
   # Launch rofi and get the selected application
-  SELECTED_APP=$(rofi -show drun -show-icons)
+  SELECTED_APP=$(rofi -show drun -show-icons -no-show-empty -matching ".*")
+
+  # Extract application name from Rofi output
+  APP_NAME=$(echo "$SELECTED_APP" | cut -d '|' -f 1)
 
   # Get current timestamp
   timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   # Log the launched application with timestamp
-  echo "$timestamp | Launched $SELECTED_APP" >> "$LOG_FILE"
+  echo "$timestamp | Launched $APP_NAME" >> "$LOG_FILE"
 
   # Launch the selected application
   $SELECTED_APP
