@@ -7,5 +7,5 @@ pkgs.writeShellScriptBin "rofi-launcher" ''
     pkill -x rofi
     exit 0
   fi
-
+''
 
