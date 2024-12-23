@@ -191,7 +191,6 @@
 
   # More logging
   security.auditd.enable = true;
-  services.syslogd.enable = true;
 
 
   # This value determines the NixOS release from which the default
