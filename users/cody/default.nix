@@ -20,6 +20,7 @@
     gh
     ripdrag
     spotify
+    spotube
     playerctl
     libnotify
     lukesmithxyz-bible-kjv
