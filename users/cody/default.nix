@@ -19,7 +19,6 @@
     vscode
     gh
     ripdrag
-    spotify
     spotube
     playerctl
     libnotify
