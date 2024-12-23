@@ -1,17 +1,14 @@
 { pkgs }:
-pkgs.writeShellScriptBin "rofi-launcher-logger" ''
+pkgs.writeShellScriptBin "rofi-logger" ''
   #!/bin/bash
+
   LOG_FILE="/tmp/rofi_usage.log"
 
-  # Launch rofi and get the selected application
-  SELECTED_APP=$(rofi -show drun -show-icons)
-
-  # Get current timestamp
+  # Get the current timestamp
   timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
-  # Log the launched application with timestamp
-  echo "$timestamp | Launched $SELECTED_APP" >> "$LOG_FILE"
-
-  # Launch the selected application
-  $SELECTED_APP
+  # If provided, log the argument (the app name from the launcher)
+  if [[ -n "$1" ]]; then
+    echo "$timestamp | Launched: $1" >> "$LOG_FILE"
+  fi
 ''
