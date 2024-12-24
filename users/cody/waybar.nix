@@ -299,6 +299,10 @@ in
         color: #${config.lib.stylix.colors.base04};
       }
 
+      #workspaces button.visible {
+        color: #${config.lib.stylix.colors.base05};
+      }
+
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base05};
       }
