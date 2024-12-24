@@ -290,6 +290,14 @@ in
         margin: 0 2px;
       }
 
+      #workspaces button.visible {
+        background-color: #${config.lib.stylix.colors.base03};
+      }
+
+      #workspaces button.active {
+        background-color: #${config.lib.stylix.colors.base0E};
+      }
+
       #workspaces button:hover {
         background: #${config.lib.stylix.colors.base02};
       }
