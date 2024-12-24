@@ -286,8 +286,8 @@ in
       }
 
       #workspaces button {
-        padding: 0 0 0.5em;
-        margin: 0.2em;
+        padding: 0 10px;
+        margin: 0 2px;
       }
 
       #workspaces button.visible {
@@ -295,7 +295,7 @@ in
       }
 
       #workspaces button.active {
-        background-color: #${config.lib.stylix.colors.base0E};
+        background-color: #${config.lib.stylix.colors.base0D};
       }
 
       #workspaces button:hover {
