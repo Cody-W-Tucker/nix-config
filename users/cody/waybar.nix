@@ -11,7 +11,7 @@ let
     layer = "top";
     spacing = 4;
     modules-center = [ "custom/notification" "clock" "custom/timer" ];
-    modules-left = [ "hyprland/workspaces" "tray" ];
+    modules-left = [ "hyprland/workspaces" "tray" "window" ];
     modules-right = [
       "custom/weather"
       "group/group-power"
@@ -82,7 +82,7 @@ let
       };
     };
     "hyprland/window" = {
-      max-length = 200;
+      format = "❯ {title}";
       separate-outputs = true;
     };
     "group/group-power" = {
@@ -154,7 +154,7 @@ let
       "pulseaudio"
       "privacy"
     ];
-    modules-left = [ "hyprland/workspaces" ];
+    modules-left = [ "hyprland/workspaces" "tray" "window" ];
     modules-right = [
       "disk"
       "cpu"
@@ -177,6 +177,14 @@ let
         "class<google-chrome> title<.*Calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
+    };
+    tray = {
+      icon-size = 21;
+      spacing = 10;
+    };
+    "hyprland/window" = {
+      format = "❯ {title}";
+      separate-outputs = true;
     };
     "custom/media" = {
       format = "{}";
