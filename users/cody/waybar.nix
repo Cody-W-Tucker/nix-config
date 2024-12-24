@@ -291,7 +291,8 @@ in
       }
 
       #workspaces button.visible {
-        background-color: #${config.lib.stylix.colors.base03};
+        background-color: #${config.lib.stylix.colors.base01};
+        color: #${config.lib.stylix.colors.base04};
       }
 
       #workspaces button.active {
