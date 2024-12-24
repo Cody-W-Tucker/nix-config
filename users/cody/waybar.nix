@@ -286,8 +286,8 @@ in
       }
 
       #workspaces button {
-        padding: 0 10px;
-        margin: 0 2px;
+        padding: 0 0 0.5em;
+        margin: 0.2em;
       }
 
       #workspaces button.visible {
