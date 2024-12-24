@@ -288,6 +288,7 @@ in
       #workspaces button {
         padding: 0 10px;
         margin: 0 2px;
+        color: #${config.lib.stylix.colors.base05};
       }
 
       #workspaces button.visible {
@@ -297,6 +298,7 @@ in
 
       #workspaces button.active {
         background-color: #${config.lib.stylix.colors.base02};
+        color: #${config.lib.stylix.colors.base05};
       }
 
       #workspaces button:hover {
