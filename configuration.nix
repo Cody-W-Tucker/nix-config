@@ -1,6 +1,6 @@
 # This is the shared config for all machines
 
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, pkgs-unstable, inputs, ... }:
 
 {
   imports =

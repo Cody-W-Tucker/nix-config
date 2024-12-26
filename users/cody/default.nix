@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
   imports = [
@@ -9,22 +9,30 @@
     ./waybar.nix
   ];
 
-  home.packages = with pkgs; [
-    # Add some packages to the user environment.
-    grim
-    slurp
-    wl-clipboard
-    hyprpicker
-    rofi-wayland
-    vscode
-    gh
-    ripdrag
-    spotube
-    playerctl
-    libnotify
-    lukesmithxyz-bible-kjv
-    fabric-ai
-  ];
+  home.packages =
+    (with pkgs; [
+      # list of stable packages go here
+      grim
+      slurp
+      wl-clipboard
+      hyprpicker
+      rofi-wayland
+      gh
+      ripdrag
+      playerctl
+      libnotify
+      lukesmithxyz-bible-kjv
+
+    ])
+
+    ++
+
+    (with pkgs-unstable; [
+      # list of unstable packages go here
+      vscode
+      spotube
+      fabric-ai
+    ]);
 
   # Clipboard history
   services.cliphist.enable = true;

@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, pkgs-unstable, config, lib, inputs, ... }: {
 
   imports = [
     ./clientSyncthing.nix
@@ -26,29 +26,32 @@
   # Enable the Hyprland Desktop Environment.
   programs.hyprland = {
     enable = true;
-    # # set the flake package
-    # package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    # # make sure to also set the portal package, so that they are in sync
-    # portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
 
-  # List packages installed in system profile. To search, run:
-  environment.systemPackages = with pkgs; [
-    google-chrome
-    firefox
-    obsidian
-    feh
-    zathura
-    pavucontrol
-    xdg-utils # xdg-open
-    hunspell
-    vlc
-    usbutils
-    udiskie
-    udisks
-    kitty
-    ffmpeg
-  ];
+  environment.systemPackages =
+    (with pkgs; [
+      # list of stable packages go here
+      feh
+      zathura
+      pavucontrol
+      xdg-utils # xdg-open
+      hunspell
+      vlc
+      usbutils
+      udiskie
+      udisks
+      kitty
+      ffmpeg
+    ])
+
+    ++
+
+    (with pkgs-unstable; [
+      # list of unstable packages go here
+      google-chrome
+      firefox
+      obsidian
+    ]);
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";

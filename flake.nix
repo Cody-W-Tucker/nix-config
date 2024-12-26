@@ -19,8 +19,20 @@
     let
       system = "x86_64-linux";
       lib = nixpkgs.lib;
-      pkgs = nixpkgs.legacyPackages.${system};
-      pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
+      pkgs = import nixpkgs {
+        system = system;
+        config = {
+          allowUnfree = true;
+          allowUnfreePredicate = (_: true);
+        };
+      };
+      pkgs-unstable = import nixpkgs-unstable {
+        system = system;
+        config = {
+          allowUnfree = true;
+          allowUnfreePredicate = (_: true);
+        };
+      };
       hardwareConfig = {
         workstation = {
           # Contorls the monitor layout for hyprland
@@ -54,10 +66,11 @@
             {
               home-manager.extraSpecialArgs = {
                 inherit inputs;
+                inherit pkgs;
                 inherit pkgs-unstable;
                 hardwareConfig = hardwareConfig.workstation;
               };
-              home-manager.useGlobalPkgs = true;
+              home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
               home-manager.users.codyt = import ./users/cody.nix;
