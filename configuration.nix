@@ -6,7 +6,6 @@
   imports =
     [
       ./secrets/secrets.nix
-      ./modules/terminal.nix
     ];
 
   # Networking
@@ -42,6 +41,18 @@
     (btop.override { cudaSupport = true; })
     wget
   ];
+
+  # Terminal defaults
+  programs = {
+    starship = {
+      enable = true;
+      presets = [ "nerd-font-symbols" ];
+    };
+    zsh = {
+      enable = true;
+      autosuggestions.enable = true;
+    };
+  };
 
   # Make passwords uneditable
   users.mutableUsers = false;

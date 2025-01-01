@@ -18,12 +18,14 @@ let
     "${mainMod}, Q, exec, keybind-logger 'kitty'"
     "${mainMod}, E, exec, kitty -- ranger"
     "${mainMod}, E, exec, keybind-logger 'kitty -- ranger'"
-    "${mainMod}, Tab, exec, rofi-launcher"
-    "${mainMod}, Tab, exec, keybind-logger 'rofi-launcher'"
+    "${mainMod} SHIFT, Tab, exec, rofi-launcher"
+    "${mainMod} SHIFT, Tab, exec, keybind-logger 'rofi-launcher'"
+    "${mainMod}, Tab, exec, google-chrome-stable"
+    "${mainMod}, Tab, exec, keybind-logger 'google-chrome-stable'"
     "${mainMod} SHIFT, E, exec, nautilus"
     "${mainMod} SHIFT, E, exec, keybind-logger 'nautilus'"
-    "${mainMod} SHIFT, Tab, exec, rofi -show web_scraper -modi 'web_scraper:web-scraper'"
-    "${mainMod} SHIFT, Tab, exec, keybind-logger 'rofi -show web_scraper -modi 'web_scraper:web-scraper''"
+    "${mainMod} SHIFT, Q, exec, rofi -show web_scraper -modi 'web_scraper:web-scraper'"
+    "${mainMod} SHIFT, Q, exec, keybind-logger 'rofi -show web_scraper -modi 'web_scraper:web-scraper''"
 
     # Quick launch apps
     "${mainMod}, KP_Insert, exec, google-chrome-stable --app=https://ai.homehub.tv"

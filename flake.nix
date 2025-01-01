@@ -89,6 +89,18 @@
             nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                inherit pkgs;
+                inherit pkgs-unstable;
+              };
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.users.codyt = import ./cody/cli.nix;
+            }
           ];
         };
         family = nixpkgs.lib.nixosSystem {
