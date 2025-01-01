@@ -6,7 +6,6 @@
       (modulesPath + "/installer/scan/not-detected.nix")
       ../configuration.nix
       ../modules/server
-      ../modules/containers
     ];
 
   # Bootloader
