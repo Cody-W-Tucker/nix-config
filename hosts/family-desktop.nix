@@ -54,25 +54,14 @@
     ];
   };
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+  # Enables DHCP on each ethernet and wireless interface.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp2s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp3s0.useDHCP = lib.mkDefault true;
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Setting the color theme and default wallpaper
   stylix.image = ../modules/wallpapers/Dancer.png;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }
