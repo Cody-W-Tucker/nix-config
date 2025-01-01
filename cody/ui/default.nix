@@ -44,6 +44,7 @@
       vscode
       spotube
       fabric-ai
+      ferdium
     ]);
 
   # Clipboard history
