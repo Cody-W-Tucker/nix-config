@@ -9,6 +9,13 @@
     extraOptions = [ "--pull=always" ];
   };
 
+  services.actual = {
+    enable = true;
+    port = 5007;
+    # settings.hostname = "budget.homehub.tv";
+    openFirewall = true;
+  };
+
   services.nginx.virtualHosts."budget.homehub.tv" = {
     forceSSL = true;
     useACMEHost = "homehub.tv";
