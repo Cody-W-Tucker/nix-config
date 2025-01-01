@@ -85,6 +85,7 @@
           };
           modules = [
             ./hosts/server.nix
+            stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
