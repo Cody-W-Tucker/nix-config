@@ -46,12 +46,6 @@
   # Make passwords uneditable
   users.mutableUsers = false;
 
-  # Create the passwords so they exist across all hosts
-  # sops.secrets = {
-  #   codyt.neededForUsers = true;
-  #   jordant.neededForUsers = true;
-  # };
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.codyt = {
     isNormalUser = true;
@@ -61,7 +55,6 @@
     # hashedPasswordFile = config.sops.secrets.codyt.path;
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
     packages = with pkgs; [
-      #  thunderbird
     ];
     openssh = {
       authorizedKeys.keys = [

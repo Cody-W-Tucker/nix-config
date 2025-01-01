@@ -93,12 +93,7 @@
   services.displayManager.autoLogin.user = "codyt";
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
@@ -110,10 +105,6 @@
   };
 
   # Setting the color theme and default wallpaper
-  # stylix.image = pkgs.fetchurl {
-  #   url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/refs/heads/main/landscapes/Rainnight.jpg";
-  #   sha256 = "10jpm91w9js67n8kpcg896fh1gbhhxvhy5qkq8vwhd1nqva41zmf";
-  # };
   stylix.image = ../modules/wallpapers/lone-figure.jpg;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
@@ -189,15 +180,6 @@
     };
   };
 
-  # More logging
-  security.auditd.enable = true;
-
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }

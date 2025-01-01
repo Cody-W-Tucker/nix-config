@@ -2,9 +2,15 @@
 
 {
   imports = [
+    ./actualBudget.nix
     ./ai.nix
+    ./arm.nix
     ./automation.nix
+    ./blogs.nix
+    ./collabora.nix
     ./content.nix
+    ./data.nix
+    ./hoarder.nix
     ./homepage-dashboard.nix
     ./media.nix
     ./monitoring.nix
@@ -55,5 +61,17 @@
     enable = true;
     allowPing = true;
     allowedTCPPorts = [ 80 443 ];
+  };
+
+  # Using Docker
+  virtualisation = {
+    docker = {
+      enable = true;
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
+    };
+    oci-containers.backend = "docker";
   };
 }
