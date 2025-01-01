@@ -4,10 +4,26 @@
   imports = [
     ./hyprland.nix
     ./notifications.nix
-    ./nixvim.nix
     ./appLauncher.nix
     ./waybar.nix
   ];
+
+  dconf = {
+    enable = true;
+    settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+      };
+    };
+  };
+
+  gtk = {
+    enable = true;
+    iconTheme = {
+      package = pkgs.adwaita-icon-theme;
+      name = "Adwaita";
+    };
+  };
 
   home.packages =
     (with pkgs; [
@@ -17,16 +33,12 @@
       wl-clipboard
       hyprpicker
       rofi-wayland
-      gh
       ripdrag
       playerctl
       libnotify
       lukesmithxyz-bible-kjv
-
     ])
-
     ++
-
     (with pkgs-unstable; [
       # list of unstable packages go here
       vscode
