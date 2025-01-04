@@ -88,19 +88,20 @@
 
   swapDevices = [ ];
 
-  # Enable automatic login for the user.
-  services.displayManager.autoLogin.user = "codyt";
-
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
+  services.displayManager.autoLogin.enable = lib.mkForce false;
+
   # Getting Hyprlock and keyring to work
   security.pam.services = {
     hyprlock = { };
     greetd.enableGnomeKeyring = true;
+    gdm-password.enableGnomeKeyring = true;
   };
+  environment.variables.XDG_RUNTIME_DIR = "/run/user/$UID"; # set the runtime directory
   hardware.openrazer = {
     enable = true;
     devicesOffOnScreensaver = true;
