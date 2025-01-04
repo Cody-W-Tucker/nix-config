@@ -96,7 +96,11 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  security.pam.services.hyprlock = { };
+  # Getting Hyprlock and keyring to work
+  security.pam.services = {
+    hyprlock = { };
+    greetd.enableGnomeKeyring = true;
+  };
   hardware.openrazer = {
     enable = true;
     devicesOffOnScreensaver = true;
