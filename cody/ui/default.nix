@@ -37,6 +37,7 @@
       playerctl
       libnotify
       lukesmithxyz-bible-kjv
+      discord
     ])
     ++
     (with pkgs-unstable; [
