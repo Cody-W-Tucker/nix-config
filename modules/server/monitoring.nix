@@ -13,6 +13,7 @@
           http_port = 3001;
           # Grafana needs to know on which domain and URL it's running
           domain = "monitoring.homehub.tv";
+          root_url = "https://monitoring.homehub.tv";
         };
       };
       provision.datasources.settings = {
