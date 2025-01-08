@@ -27,8 +27,6 @@ in
         SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
         ENABLE_RAG_HYBRID_SEARCH = "True";
         RAG_RERANKING_MODEL = "";
-        VECTOR_DB = "qdrant";
-        QDRANT_URI = "http://qdrant.homehub.tv";
       };
     };
     # docker run -d -p 9099:9099 --add-host=host.docker.internal:host-gateway -v pipelines:/app/pipelines --name pipelines --restart always ghcr.io/open-webui/pipelines:main
