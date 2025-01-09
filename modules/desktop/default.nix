@@ -101,11 +101,6 @@
     };
   };
 
-  # Enable Blueman for easier Bluetooth management
-  services.blueman.enable = true;
-
-
   # Enable UPower because chrome said so...
   services.upower.enable = true;
-
 }
