@@ -4,6 +4,14 @@ pkgs.writeShellScriptBin "bluetoothSwitch" ''
   device="74:74:46:1C:20:61"
   max_attempts=3
   
+  check_controller() {
+    if ! bluetoothctl show | grep 'Powered: yes' -q; then
+      echo "Controller is powered off. Powering on..."
+      bluetoothctl power on
+      sleep 2
+    fi
+  }
+  
   connect_device() {
     bluetoothctl connect "$device"
     sleep 2
@@ -16,6 +24,9 @@ pkgs.writeShellScriptBin "bluetoothSwitch" ''
     bluetoothctl power on
     sleep 2
   }
+  
+  # Ensure controller is powered on first
+  check_controller
   
   # Check current connection state
   if bluetoothctl info "$device" | grep 'Connected: yes' -q; then
