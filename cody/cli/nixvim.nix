@@ -21,21 +21,6 @@
       {
         event = [ "BufEnter" ];
         pattern = [ "*.md" ];
-        command = "PencilSoft";
-      }
-      {
-        event = [ "BufEnter" ];
-        pattern = [ "*.md" ];
-        command = "Goyo";
-      }
-      {
-        event = [ "BufEnter" ];
-        pattern = [ "*.md" ];
-        command = "Twilight";
-      }
-      {
-        event = [ "BufEnter" ];
-        pattern = [ "*.md" ];
         command = "setlocal spell spelllang=en_us";
       }
     ];
