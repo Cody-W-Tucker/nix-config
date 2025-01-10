@@ -25,8 +25,6 @@
     };
   };
 
-  home.pandoc.enable = true;
-
   home.packages =
     (with pkgs; [
       # list of stable packages go here
@@ -52,6 +50,9 @@
 
   # Clipboard history
   services.cliphist.enable = true;
+
+  # Doc conversion
+  programs.pandoc.enable = true;
 
   # Playerctl Daemon to control media players from Waybar
   services.playerctld.enable = true;
