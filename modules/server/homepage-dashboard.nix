@@ -164,7 +164,7 @@ in
           ];
         }
         {
-          Reading = [
+          Content = [
             {
               Miniflux = {
                 href = "https://rss.${domain}";
@@ -179,6 +179,14 @@ in
                 icon = "calibre";
                 description = "Ebook reader";
                 siteMonitor = "https://ebook.${domain}";
+              };
+            }
+            {
+              Hoarder = {
+                href = "https://hoarder.${domain}";
+                icon = "hoarder";
+                description = "Link collector";
+                siteMonitor = "https://hoarder.${domain}";
               };
             }
           ];
