@@ -11,26 +11,19 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    systemd = {
-      enable = true;
-      variables = [
-        "--all"
-      ];
-      extraCommands = [
-        "systemctl --user stop hyprland-session.target"
-        "systemctl --user start hyprland-session.target"
-      ];
-    };
+    systemd.enable = false;
     settings = {
       # Workspace and monitor set in flake.nix
       workspace = hardwareConfig.workspace;
       monitor = hardwareConfig.monitor;
       exec-once = [
-        "swaync"
-        "dbus-update-activation-environment --systemd --all"
-        "wl-clipboard-history -t"
-        "wl-paste --watch cliphist store"
-        ''rm "$HOME/.cache/cliphist/db"'' # Clear clipboard history on startup
+        "uwsm app -- swaync"
+        "uwsm app -- wl-clipboard-history -t"
+        "uwsm app -- wl-paste --watch cliphist store"
+        ''uwsm app -- rm "$HOME/.cache/cliphist/db"'' # Clear clipboard history on startup
+        "systemctl --user enable --now hypridle.service"
+        "systemctl --user enable --now hyprpaper.service"
+        "systemctl --user enable --now waybar.service"
       ];
       animations = {
         enabled = true;

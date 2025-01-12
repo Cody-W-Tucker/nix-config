@@ -26,7 +26,11 @@
   # Enable the Hyprland Desktop Environment.
   programs.hyprland = {
     enable = true;
+    withUWSM = true;
   };
+
+  # Enable UWSM to manage hyprland session
+  programs.uwsm.enable = true;
 
   environment.systemPackages =
     (with pkgs; [
