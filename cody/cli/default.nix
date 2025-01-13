@@ -20,11 +20,20 @@
   programs.starship = {
     enable = true;
     settings = {
-      add_newline = false;
+      add_newline = true;
     };
   };
 
   programs = {
+    # Remove default package installation prompt "because it's not working"
+    command-not-found.enable = false;
+    # Use fancier nix-index prompt instead TODO: Make nix-index work or switch (Bug causing out of memory.)
+    nix-index = {
+      enable = true;
+      package = pkgs-unstable.nix-index;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+    };
     zsh = {
       enable = true;
       syntaxHighlighting.enable = true;
