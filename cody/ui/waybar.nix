@@ -38,7 +38,7 @@ let
       spacing = 10;
     };
     "custom/weather" = {
-      exec = "get-weather Kearney+Nebraska";
+      exec = "uwsm app -- get-weather Kearney+Nebraska";
       return-type = "json";
       format = "{}";
       tooltip = true;
@@ -65,7 +65,7 @@ let
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
       tooltip = true;
-      on-click-right = "exec google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r";
+      on-click-right = "uwsm app -- google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r";
       tooltip-format = "<tt><small>{calendar}</small></tt>";
       calendar = {
         mode = "year";
@@ -139,7 +139,7 @@ let
       return-type = "json";
       exec-if = "which swaync-client";
       exec = "swaync-client -swb";
-      on-click = "sleep 0.1 && swaync-client -t -sw";
+      on-click = "uwsm app -- sleep 0.1 && swaync-client -t -sw";
       on-click-right = "swaync-client -C";
       on-click-middle = "sleep 0.1 && swaync-client -d -sw";
       escape = true;
@@ -253,8 +253,8 @@ let
         car = "";
         default = [ "" "" "" ];
       };
-      on-click = "bluetoothSwitch";
-      on-click-right = "pavucontrol";
+      on-click = "uwsm app -- bluetoothSwitch";
+      on-click-right = "uwsm app -- pavucontrol";
     };
   };
 
