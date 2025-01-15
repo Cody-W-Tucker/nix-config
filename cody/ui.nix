@@ -12,8 +12,8 @@
     model = "pc105";
   };
 
-  # Consider moving some of these to system environment variables
   home.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD"; # Force intel-media-driver
     BROWSER = "google-chrome";
     VISUAL = "nvim";
     TERMINAL = "kitty";
