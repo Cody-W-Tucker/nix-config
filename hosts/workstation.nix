@@ -136,7 +136,7 @@
     };
   };
 
-  # Open port 3090 for Loki
+  # Open port for Loki
   networking.firewall.allowedTCPPorts = [ 9002 ];
 
   # Monitoring configuration
