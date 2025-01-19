@@ -5,17 +5,17 @@
     ./actualBudget.nix
     ./ai.nix
     ./arm.nix
-    ./automation.nix
-    ./blogs.nix
+    # ./automation.nix
+    # ./blogs.nix
     ./collabora.nix
     ./content.nix
-    ./data.nix
+    # ./data.nix
     ./hoarder.nix
     ./homepage-dashboard.nix
     ./media.nix
     ./monitoring.nix
     ./nextcloud.nix
-    ./photos.nix
+    # ./photos.nix
     ./samba.nix
     ./syncthing.nix
     ./security.nix
