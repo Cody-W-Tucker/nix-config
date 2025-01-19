@@ -97,14 +97,14 @@ in
                 siteMonitor = "https://ai.${domain}";
               };
             }
-            {
-              NocoDB = {
-                href = "https://data.${domain}";
-                icon = "nocodb";
-                description = "Open source Airtable alternative";
-                siteMonitor = "https://data.${domain}";
-              };
-            }
+            # {
+            #   NocoDB = {
+            #     href = "https://data.${domain}";
+            #     icon = "nocodb";
+            #     description = "Open source Airtable alternative";
+            #     siteMonitor = "https://data.${domain}";
+            #   };
+            # }
           ];
         }
         {
@@ -145,14 +145,14 @@ in
                 siteMonitor = "https://media.${domain}";
               };
             }
-            {
-              Photos = {
-                href = "https://photos.${domain}";
-                icon = "photoprism";
-                description = "Photo management";
-                siteMonitor = "https://photos.${domain}";
-              };
-            }
+            # {
+            #   Photos = {
+            #     href = "https://photos.${domain}";
+            #     icon = "photoprism";
+            #     description = "Photo management";
+            #     siteMonitor = "https://photos.${domain}";
+            #   };
+            # }
             {
               ARM = {
                 href = "https://arm.${domain}";
@@ -201,22 +201,22 @@ in
                 siteMonitor = "https://monitoring.${domain}";
               };
             }
-            {
-              Metabase = {
-                href = "https://bi.${domain}";
-                icon = "metabase";
-                description = "Business intelligence";
-                siteMonitor = "https://bi.${domain}";
-              };
-            }
-            {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                description = "Workflow automation";
-                siteMonitor = "https://automation.${domain}";
-              };
-            }
+            # {
+            #   Metabase = {
+            #     href = "https://bi.${domain}";
+            #     icon = "metabase";
+            #     description = "Business intelligence";
+            #     siteMonitor = "https://bi.${domain}";
+            #   };
+            # }
+            # {
+            #   N8N = {
+            #     href = "https://automation.${domain}";
+            #     icon = "n8n";
+            #     description = "Workflow automation";
+            #     siteMonitor = "https://automation.${domain}";
+            #   };
+            # }
             {
               Qdrant = {
                 href = "https://qdrant.${domain}/dashboard";
