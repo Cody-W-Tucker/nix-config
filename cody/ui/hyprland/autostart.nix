@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  wayland.windowManager.hyprland = {
+  wayland.windowManager.hyprland.settings = {
     exec-once = [
       "uwsm app -- swaync"
       "uwsm app -- wl-clipboard-history -t"
@@ -9,6 +9,9 @@
       "systemctl --user enable --now hypridle.service"
       "systemctl --user enable --now hyprpaper.service"
       "systemctl --user enable --now waybar.service"
+      "[workspace 1 silent] uwsm app -- obsidian"
+      "uwsm app -- ferdium"
+      "[workspace special silent] uwsm app -- spotube"
     ];
   };
 }

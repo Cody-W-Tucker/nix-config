@@ -7,6 +7,7 @@
 
   imports = [
     ./hyprland/keybinds.nix
+    ./hyprland/autostart.nix
   ];
 
   wayland.windowManager.hyprland = {
@@ -16,15 +17,6 @@
       # Workspace and monitor set in flake.nix
       workspace = hardwareConfig.workspace;
       monitor = hardwareConfig.monitor;
-      exec-once = [
-        "uwsm app -- swaync"
-        "uwsm app -- wl-clipboard-history -t"
-        "uwsm app -- wl-paste --watch cliphist store"
-        ''uwsm app -- rm "$HOME/.cache/cliphist/db"'' # Clear clipboard history on startup
-        "systemctl --user enable --now hypridle.service"
-        "systemctl --user enable --now hyprpaper.service"
-        "systemctl --user enable --now waybar.service"
-      ];
       animations = {
         enabled = true;
         bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
