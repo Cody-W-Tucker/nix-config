@@ -81,14 +81,14 @@ in
       services = [
         {
           Business = [
-            {
-              Nextcloud = {
-                href = "https://cloud.${domain}";
-                icon = "nextcloud";
-                description = "Could storage and collaboration";
-                siteMonitor = "https://cloud.${domain}";
-              };
-            }
+            # {
+            #   Nextcloud = {
+            #     href = "https://cloud.${domain}";
+            #     icon = "nextcloud";
+            #     description = "Could storage and collaboration";
+            #     siteMonitor = "https://cloud.${domain}";
+            #   };
+            # }
             {
               Open-WebUI = {
                 href = "https://ai.${domain}";
