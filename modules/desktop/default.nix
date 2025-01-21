@@ -97,6 +97,7 @@
       libvdpau-va-gl
       libva
       libva-utils
+      mesa.drivers
     ];
   };
 
