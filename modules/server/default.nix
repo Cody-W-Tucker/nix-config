@@ -7,14 +7,14 @@
     ./arm.nix
     # ./automation.nix
     # ./blogs.nix
-    ./collabora.nix
+    # ./collabora.nix
     ./content.nix
     # ./data.nix
     ./hoarder.nix
     ./homepage-dashboard.nix
     ./media.nix
     ./monitoring.nix
-    ./nextcloud.nix
+    # ./nextcloud.nix
     # ./photos.nix
     ./samba.nix
     ./syncthing.nix
