@@ -6,7 +6,6 @@
     ./ai.nix
     ./arm.nix
     # ./automation.nix
-    # ./blogs.nix
     # ./collabora.nix
     ./content.nix
     # ./data.nix

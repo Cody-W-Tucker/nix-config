@@ -25,6 +25,7 @@
     extraOptions = [
       "--network-alias=chrome"
       "--network=hoarder_default"
+      "--pull=always"
     ];
   };
   systemd.services."docker-hoarder-chrome" = {
@@ -82,6 +83,7 @@
     extraOptions = [
       "--network-alias=meilisearch"
       "--network=hoarder_default"
+      "--pull=always"
     ];
   };
   systemd.services."docker-hoarder-meilisearch" = {
@@ -129,6 +131,7 @@
     extraOptions = [
       "--network-alias=web"
       "--network=hoarder_default"
+      "--pull=always"
     ];
   };
   systemd.services."docker-hoarder-web" = {
