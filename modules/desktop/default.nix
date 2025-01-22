@@ -84,23 +84,6 @@
   # Enabling keyring, because sometime it won't start.
   services.gnome.gnome-keyring.enable = true;
 
-  # Trying to solve graphics issues
-  nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
-  };
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-    extraPackages = with pkgs; [
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      libvdpau-va-gl
-      libva
-      libva-utils
-      mesa.drivers
-    ];
-  };
-
   # Enable sound with pipewire
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;

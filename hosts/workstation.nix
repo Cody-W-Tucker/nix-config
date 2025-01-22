@@ -8,6 +8,7 @@
       ../modules/desktop
       ../modules/styles.nix
       ../modules/scripts
+      ../modules/hardware/nvidia.nix
     ];
 
   # Bootloader.
