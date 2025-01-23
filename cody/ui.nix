@@ -29,8 +29,8 @@
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     # Also install nvidia-vaapi-driver
     NVD_BACKEND = "direct";
-    NIXOS_OZONE_WL = "0";
-    ELECTRON_OZONE_PLATFORM_HINT = "x11";
+    NIXOS_OZONE_WL = "1";
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
   };
 
   # User specific terminal settings
