@@ -26,6 +26,7 @@
   # Enable the Hyprland Desktop Environment.
   programs.hyprland = {
     enable = true;
+    xwayland.enable = true;
     withUWSM = true;
   };
 
@@ -56,10 +57,6 @@
       firefox
       obsidian
     ]);
-
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-  };
 
   # Enable support for removable devices.
   services.gvfs.enable = true;

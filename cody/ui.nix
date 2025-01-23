@@ -13,18 +13,24 @@
   };
 
   home.sessionVariables = {
-    LIBVA_DRIVER_NAME = "iHD"; # Force intel-media-driver
     BROWSER = "google-chrome";
     VISUAL = "nvim";
     TERMINAL = "kitty";
-    VDPAU_DRIVER = "va_gl";
     GDK_BACKEND = "wayland";
     CLUTTER_BACKEND = "wayland";
     SDL_VIDEODRIVER = "wayland";
-    QT_QPA_PLATFORM = "wayland";
+    QT_QPA_PLATFORM = "x11";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     MOZ_ENABLE_WAYLAND = "1";
+    # Nvidia
+    LIBVA_DRIVER_NAME = "nvidia";
+    GBM_BACKEND = "nvidia-drm";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    # Also install nvidia-vaapi-driver
+    NVD_BACKEND = "direct";
+    NIXOS_OZONE_WL = "0";
+    ELECTRON_OZONE_PLATFORM_HINT = "x11";
   };
 
   # User specific terminal settings

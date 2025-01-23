@@ -264,8 +264,8 @@ in
     enable = true;
     settings = {
       # Duplicate the bars for each monitor
-      monitor1 = createBar productivityBarConfig "DP-1" "top";
-      monitor2 = createBar secondaryBarConfig "DP-2" "bottom";
+      monitor1 = createBar productivityBarConfig "DP-4" "top";
+      monitor2 = createBar secondaryBarConfig "HDMI-A-4" "bottom";
     };
     style = lib.mkForce ''
       * {
