@@ -30,9 +30,6 @@
     withUWSM = true;
   };
 
-  # Enable UWSM to manage hyprland session
-  programs.uwsm.enable = true;
-
   environment.systemPackages =
     (with pkgs; [
       # list of stable packages go here
@@ -48,6 +45,7 @@
       kitty
       ffmpeg
       google-chrome # Keep this on stable, Hardware acceleration actually works
+      obsidian
     ])
 
     ++
@@ -55,7 +53,6 @@
     (with pkgs-unstable; [
       # list of unstable packages go here
       firefox
-      obsidian
     ]);
 
   # Enable support for removable devices.

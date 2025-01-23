@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, stylix, ... }:
+{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, stylix, ... }:
 
 {
   imports =
@@ -21,7 +21,7 @@
   time.hardwareClockInLocalTime = true;
 
   # Use the latest kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   boot.supportedFilesystems = [ "ntfs" ];
   fileSystems."/" =
@@ -197,6 +197,8 @@
       # fix flicker
       # source https://wiki.archlinux.org/index.php/Intel_graphics#Screen_flickering
       "i915.enable_psr=0"
+      "nvidia-drm.modeset=1"
+      "nvidia_drm.fbdev=1"
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     ];
   };
@@ -205,19 +207,27 @@
     graphics = {
       enable = true;
       enable32Bit = true;
-      extraPackages = with pkgs; [ nvidia-vaapi-driver ];
+      extraPackages = with pkgs; [ nvidia-vaapi-driver egl-wayland ];
     };
     nvidia = {
       open = true;
-      nvidiaSettings = true;
       modesetting.enable = true;
       powerManagement.enable = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
-      prime = {
-        intelBusId = "PCI:0:2:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
+      # prime = {
+      #   intelBusId = "PCI:0:2:0";
+      #   nvidiaBusId = "PCI:1:0:0";
+      # };
     };
+  };
+
+  environment.sessionVariables = {
+    # Nvidia
+    LIBVA_DRIVER_NAME = "nvidia";
+    GBM_BACKEND = "nvidia-drm"; # Required for NVIDIA GBM backend
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    # Also install nvidia-vaapi-driver
+    NVD_BACKEND = "direct";
   };
 
   services = {
