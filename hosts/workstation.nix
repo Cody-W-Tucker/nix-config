@@ -8,7 +8,6 @@
       ../modules/desktop
       ../modules/styles.nix
       ../modules/scripts
-      ../modules/hardware/nvidia.nix
     ];
 
   # Bootloader.
@@ -183,6 +182,50 @@
         }];
       };
     };
+  };
+
+  # Hardware config
+  boot = {
+    kernelParams = [
+      # fix lspci hanging with nouveau
+      # source https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1803179/comments/149
+      "acpi_rev_override=1"
+      "acpi_osi=Linux"
+      "nouveau.modeset=0"
+      "pcie_aspm=force"
+      "drm.vblankoffdelay=1"
+      "nouveau.runpm=0"
+      "mem_sleep_default=deep"
+      # fix flicker
+      # source https://wiki.archlinux.org/index.php/Intel_graphics#Screen_flickering
+      "i915.enable_psr=0"
+      "nvidia_drm.modeset=1"
+      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+    ];
+  };
+
+  hardware = {
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+      extraPackages = with pkgs; [ nvidia-vaapi-driver ];
+    };
+    nvidia = {
+      open = true;
+      nvidiaSettings = true;
+      modesetting.enable = true;
+      powerManagement.enable = true;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      prime = {
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
+    };
+  };
+
+  services = {
+    fwupd.enable = true;
+    thermald.enable = true;
   };
 
   # Don't change this
