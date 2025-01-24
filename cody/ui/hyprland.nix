@@ -96,7 +96,7 @@
       background = lib.mkForce [
         {
           monitor = "";
-          path = "/etc/nixos/modules/wallpapers/lone-figure.jpg";
+          path = "screenshot";
           color = "rgba(25, 20, 20, 1.0)";
           blur_passes = 2; # 0 disables blurring
           blur_size = 2;
