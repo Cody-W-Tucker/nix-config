@@ -3,7 +3,6 @@
 # Create a reusable function to create each bar
 # Bottom monitor bar focus on work
 # Top monitor bar gives more information
-# Want varibles to be more clear, "DP-1" is bottom monitor, "top" places the bar at the top of the screen
 let
   createBar = waybarConfig: output: position: waybarConfig // { output = output; position = position; };
   # Productivity Bar Config: This is the main bar for the main monitor.
@@ -264,8 +263,9 @@ in
     enable = true;
     settings = {
       # Duplicate the bars for each monitor
-      monitor1 = createBar productivityBarConfig "DP-4" "top";
-      monitor2 = createBar secondaryBarConfig "HDMI-A-4" "bottom";
+      # "DP-1" is bottom monitor, "top" places the bar at the top of the screen
+      monitor1 = createBar productivityBarConfig "DP-1" "top";
+      monitor2 = createBar secondaryBarConfig "DP-2" "bottom";
     };
     style = lib.mkForce ''
       * {

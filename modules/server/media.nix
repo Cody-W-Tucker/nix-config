@@ -24,7 +24,6 @@
       vaapiVdpau
       libvdpau-va-gl
       intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-      vpl-gpu-rt # QSV on 11th gen or newer
       intel-media-sdk # QSV up to 11th gen
     ];
   };
