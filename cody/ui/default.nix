@@ -36,9 +36,7 @@
       ripdrag
       playerctl
       libnotify
-      lukesmithxyz-bible-kjv
       discord
-      texliveMedium
     ])
     ++
     (with pkgs-unstable; [
