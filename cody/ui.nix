@@ -12,21 +12,6 @@
     model = "pc105";
   };
 
-  home.sessionVariables = {
-    BROWSER = "google-chrome";
-    VISUAL = "nvim";
-    TERMINAL = "kitty";
-    # Toolkit Backend Variables
-    GDK_BACKEND = "wayland,x11,*";
-    SDL_VIDEODRIVER = "wayland";
-    CLUTTER_BACKEND = "wayland";
-    # Qt Variables
-    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-    QT_QPA_PLATFORM = "wayland;xcb";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-  };
-
   # User specific terminal settings
   programs.kitty.extraConfig = lib.mkForce ''
     foreground #${config.lib.stylix.colors.base05}

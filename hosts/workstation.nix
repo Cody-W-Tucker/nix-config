@@ -197,9 +197,6 @@
       # fix flicker
       # source https://wiki.archlinux.org/index.php/Intel_graphics#Screen_flickering
       "i915.enable_psr=0"
-      "nvidia-drm.modeset=1"
-      "nvidia_drm.fbdev=1"
-      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     ];
   };
 
@@ -207,27 +204,31 @@
     graphics = {
       enable = true;
       enable32Bit = true;
-      extraPackages = with pkgs; [ nvidia-vaapi-driver egl-wayland ];
-    };
-    nvidia = {
-      open = true;
-      modesetting.enable = true;
-      powerManagement.enable = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      # prime = {
-      #   intelBusId = "PCI:0:2:0";
-      #   nvidiaBusId = "PCI:1:0:0";
-      # };
+      extraPackages = with pkgs; [
+        intel-media-driver
+        intel-vaapi-driver # previously vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+        intel-media-sdk # QSV up to 11th gen
+      ];
     };
   };
 
   environment.sessionVariables = {
-    # Nvidia
-    LIBVA_DRIVER_NAME = "nvidia";
-    GBM_BACKEND = "nvidia-drm"; # Required for NVIDIA GBM backend
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    # Also install nvidia-vaapi-driver
-    NVD_BACKEND = "direct";
+    NIXOS_OZONE_WL = "1";
+    # Toolkit Backend Variables
+    GDK_BACKEND = "wayland";
+    SDL_VIDEODRIVER = "wayland";
+    CLUTTER_BACKEND = "wayland";
+    # Qt Variables
+    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+    QT_QPA_PLATFORM = "wayland";
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+    BROWSER = "google-chrome";
+    VISUAL = "nvim";
+    TERMINAL = "kitty";
   };
 
   services = {
