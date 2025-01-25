@@ -7,11 +7,18 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stylix.url = "github:danth/stylix";
-    sops-nix.url = "github:Mic92/sops-nix";
+    stylix = {
+      url = "github:danth/stylix/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixvim = {
-      url = "github:nix-community/nixvim";
+      url = "github:nix-community/nixvim/nixos-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -83,7 +90,6 @@
           inherit system;
           specialArgs = {
             inherit inputs;
-            inherit pkgs-unstable;
           };
           modules = [
             ./hosts/server.nix
@@ -96,7 +102,6 @@
               home-manager.extraSpecialArgs = {
                 inherit inputs;
                 inherit pkgs;
-                inherit pkgs-unstable;
               };
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
