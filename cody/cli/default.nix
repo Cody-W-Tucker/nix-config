@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-unstable, inputs, lib, ... }:
+{ config, pkgs, inputs, lib, ... }:
 
 {
   imports = [
@@ -8,12 +8,7 @@
 
   home.packages =
     (with pkgs; [
-      # list of stable packages go here
       gh
-    ])
-    ++
-    (with pkgs-unstable; [
-      # list of unstable packages go here
     ]);
 
   # User specific terminal settings
@@ -28,12 +23,6 @@
     # Remove default package installation prompt "because it's not working"
     command-not-found.enable = false;
     # Use fancier nix-index prompt instead TODO: Make nix-index work or switch (Bug causing out of memory.)
-    nix-index = {
-      enable = true;
-      package = pkgs-unstable.nix-index;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
-    };
     zsh = {
       enable = true;
       syntaxHighlighting.enable = true;

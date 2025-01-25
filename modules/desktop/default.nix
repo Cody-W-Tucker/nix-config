@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, config, lib, inputs, ... }: {
+{ pkgs, config, lib, inputs, ... }: {
 
   imports = [
     ./clientSyncthing.nix
@@ -46,12 +46,6 @@
       ffmpeg
       google-chrome # Keep this on stable, Hardware acceleration actually works
       obsidian
-    ])
-
-    ++
-
-    (with pkgs-unstable; [
-      # list of unstable packages go here
       firefox
     ]);
 
