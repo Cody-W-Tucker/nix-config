@@ -10,8 +10,10 @@
       "systemctl --user enable --now hyprpaper.service"
       "systemctl --user enable --now waybar.service"
       "[workspace 1 silent] uwsm app -- obsidian"
-      "uwsm app -- ferdium  --ozone-platform=wayland --enable-features-WaylandWindowDecorations"
+      "[workspace 2 silent] uwsm app -- todoist-electron"
+      "uwsm app -- ferdium"
       "[workspace special silent] uwsm app -- spotube"
+
     ];
   };
 }
