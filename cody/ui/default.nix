@@ -39,7 +39,6 @@
       discord
       todoist #cli client
       todoist-electron
-      vscode
       fabric-ai
     ])
     ++
@@ -47,6 +46,7 @@
       # list of unstable packages go here
       spotube
       ferdium
+      vscode
     ]);
 
   # Clipboard history
