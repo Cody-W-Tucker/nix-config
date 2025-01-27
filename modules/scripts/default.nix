@@ -11,6 +11,7 @@ let
     ./get-weather.nix
     ./keybind-logger.nix
     ./todoist-rofi.nix
+    ./web-search.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
