@@ -45,6 +45,7 @@
       spotube
       fabric-ai
       ferdium
+      todoist #cli client
       todoist-electron
     ]);
 
