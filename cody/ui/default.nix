@@ -45,6 +45,7 @@
       spotube
       fabric-ai
       ferdium
+      todoist-electron
     ]);
 
   # Clipboard history
