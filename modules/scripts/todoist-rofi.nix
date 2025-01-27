@@ -16,27 +16,27 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   # $ echo "export $ROFI_TODOIST_NOTIFICATION=notify-send > ~/.bashrc"
 
   # Set this variable with the path where you clone the project
-  declare project_root="${todoist-rofi}"
+  declare project_root="''${todoist-rofi}"
 
   # Set this variable to define which notification method you'll use
   # Valid entries:
   #   declare notify_command="rofi"
   #   declare notify_command="notify-send"
-  declare notify_command="${ROFI_TODOIST_NOTIFICATION:-rofi}"
+  declare notify_command="''${ROFI_TODOIST_NOTIFICATION:-rofi}"
 
   # Set name of todoist binary
-  declare todoist_command="${ROFI_TODOIST_PATH:-todoist}"
+  declare todoist_command="''${ROFI_TODOIST_PATH:-todoist}"
 
   ## Code - Only change bellow this line if you know what you're doing
 
   function notify() {
   	case $notify_command in
   		"rofi")
-  			rofi -dmenu -l 0 -mesg "${1}"
+  			rofi -dmenu -l 0 -mesg "''${1}"
   			;;
 
   		"notify-send")
-  			notify-send "Rofi Todoist" "${1}" -i "${project_root}/imgs/todoist.png"
+  			notify-send "Rofi Todoist" "''${1}" -i "''${project_root}/imgs/todoist.png"
   			;;
   	esac
   }
@@ -76,7 +76,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   function task_menu {
   	local action=`printf "Show details\nComplete task\nModify task\nExit" | rofi -dmenu -i -l 4 -p 'Pick an action'` 
   	if [ "$action" = Exit ]; then
-  		exec "${project_root}/rofi-todoist";
+  		exec "''${project_root}/rofi-todoist";
   	fi
   	if [ "$action" = "Show details" ]; then
   		$todoist_command show $1 | rofi -dmenu -l 7 -p $1 > /dev/null
@@ -99,7 +99,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   	fi
   	local action=`printf "$tasklist\nExit" | rofi -dmenu -i -p 'Task' -mesg 'Pick a task:'|cut -d' ' -f1`
   	if [ "$action" = Exit ] || [ -z "$action" ]; then
-  		exec "${project_root}/rofi-todoist"
+  		exec "''${project_root}/rofi-todoist"
   	else
   		task_menu $action
   	fi
@@ -108,9 +108,9 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   function list_projects {
   	$todoist_command sync
   	local projectlist=`$todoist_command projects | cut -d' ' -f 2`
-  	local action=`printf "${projectlist}\nExit" | rofi -dmenu -i -p 'Project' -mesg 'Filter by project:'`
+  	local action=`printf "''${projectlist}\nExit" | rofi -dmenu -i -p 'Project' -mesg 'Filter by project:'`
   	if [ "$action" = Exit ]; then
-  		exec "${project_root}/rofi-todoist"
+  		exec "''${project_root}/rofi-todoist"
   	else
   		list_tasks $action
   	fi
@@ -119,9 +119,9 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   function list_labels {
   	$todoist_command sync
   	local labellist=`$todoist_command labels | cut -d' ' -f 2`
-  	local action=`printf "${labellist}\nExit" | rofi -dmenu -i -p 'label' -mesg 'Filter by label:'`
+  	local action=`printf "''${labellist}\nExit" | rofi -dmenu -i -p 'label' -mesg 'Filter by label:'`
   	if [ "$action" = Exit ]; then
-  		exec "${project_root}/rofi-todoist"
+  		exec "''${project_root}/rofi-todoist"
   	else
   		list_tasks $action
   	fi
@@ -154,7 +154,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   	fi
   }
 
-  if [ "${1}" == "fq" ];
+  if [ "''${1}" == "fq" ];
   then
   	quick_add
   else
