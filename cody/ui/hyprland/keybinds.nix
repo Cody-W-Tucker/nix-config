@@ -18,6 +18,8 @@ let
     "${mainMod} SHIFT, Tab, exec, uwsm app -- google-chrome-stable"
     "${mainMod} SHIFT, E, exec, uwsm app -- nautilus"
     "${mainMod} SHIFT, Q, exec, uwsm app -- rofi -show web_scraper -modi 'web_scraper:web-scraper'"
+    "${mainMod}, `, exec, uwsm app -- todoist-rofi quick_add'"
+    "${mainMod} SHIFT, `, exec, uwsm app -- todoist-rofi'"
 
     # Quick launch apps
     "${mainMod}, KP_Insert, exec, uwsm app -- google-chrome-stable --app=https://ai.homehub.tv"

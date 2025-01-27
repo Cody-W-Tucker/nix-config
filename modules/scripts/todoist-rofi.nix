@@ -22,7 +22,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   # Valid entries:
   #   declare notify_command="rofi"
   #   declare notify_command="notify-send"
-  declare notify_command="''${ROFI_TODOIST_NOTIFICATION:-rofi}"
+  declare notify_command="''${ROFI_TODOIST_NOTIFICATION:-notify-send}"
 
   # Set name of todoist binary
   declare todoist_command="''${ROFI_TODOIST_PATH:-todoist}"
@@ -154,7 +154,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   	fi
   }
 
-  if [ "''${1}" == "fq" ];
+  if [ "''${1}" == "quick_add" ];
   then
   	quick_add
   else
