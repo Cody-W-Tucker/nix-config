@@ -15,7 +15,7 @@ let
     "${mainMod}, Q, exec, uwsm app -- kitty"
     "${mainMod}, E, exec, uwsm app -- kitty -- ranger"
     "${mainMod}, Tab, exec, uwsm app -- rofi-launcher"
-    "${mainMod} SHIFT, Tab, exec, uwsm app -- google-chrome-stable"
+    "${mainMod} SHIFT, Tab, exec, uwsm app -- web-search"
     "${mainMod} SHIFT, E, exec, uwsm app -- nautilus"
     "${mainMod} SHIFT, Q, exec, uwsm app -- rofi -show web_scraper -modi 'web_scraper:web-scraper'"
     "${mainMod}, KP_Enter, exec, uwsm app -- todoist-rofi quick_add"
