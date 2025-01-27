@@ -37,16 +37,16 @@
       playerctl
       libnotify
       discord
+      todoist #cli client
+      todoist-electron
+      vscode
+      fabric-ai
     ])
     ++
     (with pkgs-unstable; [
       # list of unstable packages go here
-      vscode
       spotube
-      fabric-ai
       ferdium
-      todoist #cli client
-      todoist-electron
     ]);
 
   # Clipboard history
