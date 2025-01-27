@@ -36,7 +36,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   			;;
 
   		"notify-send")
-  			notify-send "Rofi Todoist" "''${1}" -i "''${project_root}/imgs/todoist.png"
+  			notify-send "Rofi Todoist" "''${1}" -i "/etc/nixos/modules/icons/todoist.png"
   			;;
   	esac
   }
@@ -76,7 +76,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   function task_menu {
   	local action=`printf "Show details\nComplete task\nModify task\nExit" | rofi -dmenu -i -l 4 -p 'Pick an action'` 
   	if [ "$action" = Exit ]; then
-  		exec "''${project_root}/rofi-todoist";
+  		exec "''${project_root}";
   	fi
   	if [ "$action" = "Show details" ]; then
   		$todoist_command show $1 | rofi -dmenu -l 7 -p $1 > /dev/null
@@ -99,7 +99,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   	fi
   	local action=`printf "$tasklist\nExit" | rofi -dmenu -i -p 'Task' -mesg 'Pick a task:'|cut -d' ' -f1`
   	if [ "$action" = Exit ] || [ -z "$action" ]; then
-  		exec "''${project_root}/rofi-todoist"
+  		exec "''${project_root}"
   	else
   		task_menu $action
   	fi
@@ -110,7 +110,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   	local projectlist=`$todoist_command projects | cut -d' ' -f 2`
   	local action=`printf "''${projectlist}\nExit" | rofi -dmenu -i -p 'Project' -mesg 'Filter by project:'`
   	if [ "$action" = Exit ]; then
-  		exec "''${project_root}/rofi-todoist"
+  		exec "''${project_root}"
   	else
   		list_tasks $action
   	fi
@@ -121,7 +121,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   	local labellist=`$todoist_command labels | cut -d' ' -f 2`
   	local action=`printf "''${labellist}\nExit" | rofi -dmenu -i -p 'label' -mesg 'Filter by label:'`
   	if [ "$action" = Exit ]; then
-  		exec "''${project_root}/rofi-todoist"
+  		exec "''${project_root}"
   	else
   		list_tasks $action
   	fi
