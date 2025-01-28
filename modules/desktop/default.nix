@@ -67,6 +67,18 @@
         };
       };
     };
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+      extraPackages = with pkgs; [
+        intel-media-driver
+        intel-vaapi-driver # previously vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+        intel-media-sdk # QSV up to 11th gen
+      ];
+    };
   };
 
   # Enabling keyring, because sometime it won't start.
