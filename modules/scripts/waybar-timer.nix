@@ -22,9 +22,9 @@ pkgs.writeShellScriptBin "waybar-timer" ''
   secondsLeft () { echo $(( $(timerExpiry) - $(now) )) ; }
   minutesLeft () { echo $(( ( $(secondsLeft)  + 59 ) / 60 )) ; }
 
-  printExpiryTime () { notify-send -u low -r 12345 "Timer expires at $( date -d "$(secondsLeft) sec" +%H:%M)" ;}
-  printPaused () { notify-send -u low -r 12345 "Timer paused" ; }
-  removePrinting () { notify-send -C 12345 ; }
+  printExpiryTime () { notify-send -h int:transient:1 -t 1000 -u low -r 12345 "Timer expires at $( date -d "$(secondsLeft) sec" +%H:%M)" ;}
+  printPaused () { notify-send -h int:transient:1 -t 1000 -u low -r 12345 "Timer paused" ; }
+  removePrinting () { notify-send -h int:transient:1 -t 1000 -C 12345 ; }
 
   updateTail () {
     # check whether timer is expired
