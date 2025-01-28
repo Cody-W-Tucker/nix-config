@@ -22,7 +22,7 @@
     }
 
     window { 
-      width: 45%;
+      width: 30%;
       transparency: "real";
       orientation: vertical;
       border: 2px ;

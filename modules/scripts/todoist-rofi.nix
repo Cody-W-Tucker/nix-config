@@ -2,32 +2,15 @@
 
 pkgs.writeShellScriptBin "todoist-rofi" ''
   #!/usr/bin/env bash
-  # TODO: 
-  # Add priority level into list but have it be pretty
-  # add failure messages
-  # maybe more?
+  
+  declare executable_name="''${todoist-rofi}"
 
-  ## Customizations:
-
-  # The variables bellow can be customized editing this file or just
-  # setting those environment variables in your session, adding those
-  # exports in your ~/.bashrc (for Bash users)
-  # Eg.
-  # $ echo "export $ROFI_TODOIST_NOTIFICATION=notify-send > ~/.bashrc"
-
-  # Set this variable with the path where you clone the project
-  declare project_root="''${todoist-rofi}"
-
-  # Set this variable to define which notification method you'll use
-  # Valid entries:
   #   declare notify_command="rofi"
   #   declare notify_command="notify-send"
   declare notify_command="''${ROFI_TODOIST_NOTIFICATION:-notify-send}"
 
   # Set name of todoist binary
   declare todoist_command="''${ROFI_TODOIST_PATH:-todoist}"
-
-  ## Code - Only change bellow this line if you know what you're doing
 
   function notify() {
   	case $notify_command in
@@ -36,121 +19,21 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   			;;
 
   		"notify-send")
-  			notify-send "Rofi Todoist" "''${1}" -i "/etc/nixos/modules/icons/todoist.png"
+  			notify-send -h int:transient:1 -t 3000 "Rofi Todoist" "''${1}" -i "/etc/nixos/modules/icons/todoist.png"
   			;;
   	esac
   }
 
-  function modify_task {
-  	# Add priority level option once that is added everywhere else
-  	local taskid=$1
-  	local action=`printf "Name\nDate" | rofi -dmenu -i -l 2 -p 'Action' -mesg 'What would you like to modify?'`
-  	if [ "$action" = Name ]; then
-  		local newname=`rofi -dmenu -l 0 -p 'Name' -mesg 'Enter new name'`
-  		$todoist_command modify $taskid --content "$(echo $newname)" && notify 'Task successfully modified.'
-  	fi
-  	if [ "$action" = Date ]; then
-  		local newdate=`rofi -dmenu -l 0 -p 'Date' -mesg 'Enter new date'`
-  		$todoist_command modify $taskid --date "$(echo $newdate)" && notify 'Task successfully modified.'
-  	fi
-  }
-
-  function add_task {
-  	taskname=`rofi -dmenu -i -l 0 -p 'Name' -mesg 'Enter name of new task'`
-  	taskdate=`rofi -dmenu -i -l 0 -p 'Date' -mesg 'Enter time and/or date of new task'`
-  	$todoist_command add --priority "$(echo $taskdate)" "$(echo $taskname)" && notify 'Task successfully added.'
-  	main_menu
-  }
-
   function quick_add {
   	local quickterm=`rofi -dmenu -l 0 -p 'Quick add' -mesg 'Enter Quick Add syntax for new task'`
-  	$todoist_command quick "$(echo $quickterm)" && notify 'Task successfully quick added'
-  	main_menu
-  }
-
-  function complete_task {
-  	$todoist_command close $1 && notify 'Task successfully completed'
-  	main_menu
-  }
-
-  function task_menu {
-  	local action=`printf "Show details\nComplete task\nModify task\nExit" | rofi -dmenu -i -l 4 -p 'Pick an action'` 
-  	if [ "$action" = Exit ]; then
-  		exec "''${project_root}";
-  	fi
-  	if [ "$action" = "Show details" ]; then
-  		$todoist_command show $1 | rofi -dmenu -l 7 -p $1 > /dev/null
-  		task_menu $1;
-  	fi
-  	if [ "$action" = 'Complete task' ]; then
-  		complete_task $1;
-  	fi
-  	if [ "$action" = 'Modify task' ]; then
-  		modify_task $1;
-  	fi
-  }
-
-  function list_tasks {
-  	$todoist_command sync
-  	if [ -n "$1" ]; then
-  		local tasklist=`$todoist_command l -f $1 | cut -d' ' -f 1,3,4,8-`
+  	if [ -z "$quickterm" ]; then
+  		exit 0
   	else
-  		local tasklist=`$todoist_command l | cut -d' ' -f 1,3,4,8-`
-  	fi
-  	local action=`printf "$tasklist\nExit" | rofi -dmenu -i -p 'Task' -mesg 'Pick a task:'|cut -d' ' -f1`
-  	if [ "$action" = Exit ] || [ -z "$action" ]; then
-  		exec "''${project_root}"
-  	else
-  		task_menu $action
-  	fi
-  }
-
-  function list_projects {
-  	$todoist_command sync
-  	local projectlist=`$todoist_command projects | cut -d' ' -f 2`
-  	local action=`printf "''${projectlist}\nExit" | rofi -dmenu -i -p 'Project' -mesg 'Filter by project:'`
-  	if [ "$action" = Exit ]; then
-  		exec "''${project_root}"
-  	else
-  		list_tasks $action
-  	fi
-  }
-
-  function list_labels {
-  	$todoist_command sync
-  	local labellist=`$todoist_command labels | cut -d' ' -f 2`
-  	local action=`printf "''${labellist}\nExit" | rofi -dmenu -i -p 'label' -mesg 'Filter by label:'`
-  	if [ "$action" = Exit ]; then
-  		exec "''${project_root}"
-  	else
-  		list_tasks $action
-  	fi
-  }
-
-  function help_menu {
-  	rofi -dmenu -l 0 -mesg 'Use List Tasks option to list tasks. Selecting a task from this menu will prompt with actions to do, such as complete the task or modify it. Use the Add task option to add a task using explicit syntax. Use the Quick Add option to add a task using the Todoist smart Quick Add feature, where it recognizes the time, name, and date of the task by reading a sentence you write. At any time press the escape key to exit, and press the exit option to go up a menu.'	
-  	main_menu
-  }
-
-  function main_menu {
-  	action=`printf "List tasks\nToday's tasks\nProjects\nLabels\nQuick Add task\nAdd task\nHelp\nExit" | rofi -dmenu -i -l 7 -p 'Pick an action'`
-  	if [ "$action" = "List tasks" ]; then
-  		list_tasks
-  	fi
-  	if [ "$action" = "Today's tasks" ]; then
-  		list_tasks "today"
-  	fi
-  	if [ "$action" = "Projects" ]; then
-  		list_projects
-  	fi
-  	if [ "$action" = "Labels" ]; then
-  		list_labels
-  	fi
-  	if [ "$action" = "Quick Add task" ]; then
-  		quick_add
-  	fi
-  	if [ "$action" = "Help" ]; then
-  		help_menu
+  		if $todoist_command quick "$(echo $quickterm)"; then
+  			notify 'Task successfully quick added'
+  		else
+  			notify 'Failed to add task'
+  		fi
   	fi
   }
 
@@ -158,6 +41,6 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   then
   	quick_add
   else
-  	main_menu
+  	exit 0
   fi
 ''

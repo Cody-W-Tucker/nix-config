@@ -5,6 +5,9 @@ pkgs.writeShellScriptBin "web-search" ''
 
     URLS=(
       ["🌎 Search"]="https://www.google.com/search?q="
+      ["🌎 Perplexity"]="https://www.perplexity.ai/search/?q="
+      ["🌎 Nix Options"]="https://mynixos.com/search?q="
+      ["🌎 Hoarder"]="https://hoarder.homehub.tv/dashboard/search?q="
     )
 
     # List for rofi
