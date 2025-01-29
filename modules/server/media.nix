@@ -22,7 +22,7 @@ in
     volumes = [
       "${userDir}/threadfin:/home/threadfin/conf"
       "${userDir}/threadfin:/tmp/threadfin:rw"
-      "${userDir}/threadfin/playlists}:/home/threadfin/playlists"
+      "${userDir}/threadfin/playlists:/home/threadfin/playlists"
     ];
   };
   # NGINX
