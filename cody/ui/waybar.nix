@@ -10,7 +10,11 @@ let
     layer = "top";
     spacing = 4;
     modules-center = [ "custom/notification" "clock" "custom/timer" ];
-    modules-left = [ "hyprland/workspaces" "tray" "hyprland/window" ];
+    modules-left = [
+      "hyprland/workspaces"
+      "tray"
+      "hyprland/window"
+    ];
     modules-right = [
       "custom/weather"
       "group/group-power"
@@ -153,7 +157,11 @@ let
       "pulseaudio"
       "privacy"
     ];
-    modules-left = [ "hyprland/workspaces" "tray" "hyprland/window" ];
+    modules-left = [
+      "hyprland/workspaces"
+      "tray"
+      "hyprland/window"
+    ];
     modules-right = [
       "disk"
       "cpu"
@@ -261,6 +269,7 @@ in
 {
   programs.waybar = {
     enable = true;
+    systemd.enable = true;
     settings = {
       # Duplicate the bars for each monitor
       # "DP-1" is bottom monitor, "top" places the bar at the top of the screen
