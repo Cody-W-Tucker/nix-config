@@ -18,5 +18,5 @@ pkgs.writeShellScriptBin "get-weather" ''
       fi
       sleep 2
   done
-  echo "{\"text\":\"error\", \"tooltip\":\"error\"}"
+  echo "{\"text\":\"Unavailable\", \"tooltip\":\"error\"}"
 ''
