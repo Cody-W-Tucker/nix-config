@@ -52,22 +52,30 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   }
 
   function list_tasks {
-  	$todoist_command sync
-  	if [ -n "$1" ]; then
-  		local tasklist=`$todoist_command --csv l -f $1 | cut -d',' -f 1,6`
-  	else
-  		local tasklist=`$todoist_command --csv l | cut -d',' -f 1,6`
-  	fi
-  	local action=`printf "$tasklist" | rofi -dmenu -i -p 'Task' -mesg 'Pick a task:'|cut -d',' -f1`
-  	if [ -z "$action" ]; then
-  		exit 0
-  	else
-  		task_menu $action
-  	fi
+      $todoist_command sync
+      
+      local filter=""
+      [[ -n "$1" ]] && filter="-f $1"
+      
+      # Read tasks into an associative array
+      declare -A tasks
+      while IFS=',' read -r id description; do
+          tasks["$description"]="$id"
+      done < <($todoist_command --csv l $filter | cut -d',' -f 1,6)
+      
+      # Create a list of descriptions for rofi
+      local descriptions=$(printf '%s\n' "''${!tasks[@]}")
+      
+      # Show rofi menu with descriptions
+      local selection=$(echo "$descriptions" | rofi -dmenu -i -p 'Task'   -mesg 'Pick a task:')
+      
+      if [[ -n "$selection" ]]; then
+          task_menu "''${tasks[$selection]}"
+      fi
   }
 
   function main_menu {
-  	action=`printf "List tasks\nToday's tasks" | rofi -dmenu -i -l 7 -p 'Pick an action'`
+  	action=`printf "List tasks\nToday's tasks" | rofi -dmenu -i -l 2 -p 'Pick an action'`
   	if [ -z "$action" ]; then
   		exit 0
   	fi
