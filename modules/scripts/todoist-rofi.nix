@@ -2,7 +2,7 @@
 
 pkgs.writeShellScriptBin "todoist-rofi" ''
   #!/usr/bin/env bash
-  
+
   declare executable_name="''${todoist-rofi}"
 
   #   declare notify_command="rofi"
@@ -37,10 +37,52 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   	fi
   }
 
+  function complete_task {
+  	$todoist_command close $1 && notify 'Task successfully completed'
+  }
+
+  function task_menu {
+  	local action=`printf "Complete task" | rofi -dmenu -i -l 1 -p 'Pick an action'` 
+  	if [ -z "$action" ]; then
+  		exit 0
+  	fi
+  	if [ "$action" = 'Complete task' ]; then
+  		complete_task $1;
+  	fi
+  }
+
+  function list_tasks {
+  	$todoist_command sync
+  	if [ -n "$1" ]; then
+  		local tasklist=`$todoist_command --csv l -f $1 | cut -d',' -f 1,6`
+  	else
+  		local tasklist=`$todoist_command --csv l | cut -d',' -f 1,6`
+  	fi
+  	local action=`printf "$tasklist" | rofi -dmenu -i -p 'Task' -mesg 'Pick a task:'|cut -d',' -f1`
+  	if [ -z "$action" ]; then
+  		exit 0
+  	else
+  		task_menu $action
+  	fi
+  }
+
+  function main_menu {
+  	action=`printf "List tasks\nToday's tasks" | rofi -dmenu -i -l 7 -p 'Pick an action'`
+  	if [ -z "$action" ]; then
+  		exit 0
+  	fi
+  	if [ "$action" = "Today's tasks" ]; then
+  		list_tasks "today"
+  	fi
+  	if [ "$action" = "List tasks" ]; then
+  		list_tasks
+  	fi
+  }
+
   if [ "''${1}" == "quick_add" ];
   then
   	quick_add
   else
-  	exit 0
+  	main_menu
   fi
 ''
