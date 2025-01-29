@@ -159,7 +159,7 @@ let
     ];
     modules-left = [
       "hyprland/workspaces"
-      "tray"
+      # "tray" Shouldn't have two trays, but I like it
       "hyprland/window"
     ];
     modules-right = [
@@ -269,7 +269,6 @@ in
 {
   programs.waybar = {
     enable = true;
-    systemd.enable = true;
     settings = {
       # Duplicate the bars for each monitor
       # "DP-1" is bottom monitor, "top" places the bar at the top of the screen
