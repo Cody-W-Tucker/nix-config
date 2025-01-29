@@ -93,7 +93,7 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  services.displayManager.autoLogin.enable = lib.mkForce false;
+  services.displayManager.autoLogin.user = "codyt";
 
   # Getting Hyprlock and keyring to work
   security.pam.services = {
@@ -187,7 +187,6 @@
   # Hardware config
   boot = {
     kernelParams = [
-      # fix lspci hanging with nouveau
       # source https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1803179/comments/149
       "acpi_rev_override=1"
       "acpi_osi=Linux"
@@ -202,15 +201,13 @@
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    # Toolkit Backend Variables
-    GDK_BACKEND = "wayland";
-    SDL_VIDEODRIVER = "wayland";
-    CLUTTER_BACKEND = "wayland";
+    WAYLAND_DISPLAY = "wayland-0";
     # Qt Variables
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     QT_QPA_PLATFORM = "wayland";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     MOZ_ENABLE_WAYLAND = "1";
+    # Stuff in the wrong place
     BROWSER = "google-chrome";
     VISUAL = "nvim";
     TERMINAL = "kitty";

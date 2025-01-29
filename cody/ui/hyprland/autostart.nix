@@ -9,8 +9,8 @@
       "systemctl --user enable --now hypridle.service"
       "systemctl --user enable --now hyprpaper.service"
       "systemctl --user enable --now waybar.service"
-      "[workspace 1 silent] uwsm app -- obsidian"
-      "[workspace 2 silent] uwsm app -- todoist-electron --ozone-platform-hint=auto"
+      "[workspace 1 silent ] uwsm app -- obsidian"
+      "[workspace 2 silent ] uwsm app -- todoist-electron --ozone-platform-hint=auto"
       "uwsm app -- ferdium"
       "[workspace special silent] uwsm app -- spotube"
 
