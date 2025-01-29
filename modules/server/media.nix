@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
-
+let userDir = "${config.users.users.codyt.home}";
+in
 {
   services.jellyfin = {
     enable = true;
@@ -10,8 +11,17 @@
   virtualisation.oci-containers.containers."threadfin" = {
     autoStart = true;
     image = "fyb3roptik/threadfin:latest";
-    extraOptions = [ "--pull=always" ];
-    ports = [ "127.0.0.1:34400" ];
+    extraOptions = [ "--pull=always" "--network=host" ];
+    ports = [ "34400:34400" ];
+    environment = {
+      PUID = "1001";
+      PGID = "1001";
+      TZ = "America/Chicago";
+    };
+    volumes = [
+      "${userDir}/threadfin:/home/threadfin/conf"
+      "${userDir}/threadfin:/tmp/threadfin:rw"
+    ];
   };
   # NGINX
   services.nginx = {
