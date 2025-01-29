@@ -6,6 +6,41 @@
     openFirewall = false;
     user = "codyt";
   };
+  # IPTV client
+  virtualisation.oci-containers.containers."threadfin" = {
+    autoStart = true;
+    image = "fyb3roptik/threadfin:latest";
+    extraOptions = [ "--pull=always" ];
+    ports = [ "127.0.0.1:34400" ];
+  };
+  # NGINX
+  services.nginx = {
+    virtualHosts = {
+      "media.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8096";
+          proxyWebsockets = true;
+        };
+      };
+      "threadfin.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:34400";
+          proxyWebsockets = true;
+        };
+      };
+    };
+  };
+
+  # Syncthing backup
+  services.syncthing.settings.folders."media" = {
+    path = "/mnt/hdd/Media";
+    devices = [ "server" "workstation" ];
+  };
+
   environment.systemPackages = [
     pkgs.jellyfin
     pkgs.jellyfin-web
@@ -26,25 +61,5 @@
       intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
       intel-media-sdk # QSV up to 11th gen
     ];
-  };
-
-  # NGINX
-  services.nginx = {
-    virtualHosts = {
-      "media.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8096";
-          proxyWebsockets = true;
-        };
-      };
-    };
-  };
-
-  # Syncthing backup
-  services.syncthing.settings.folders."media" = {
-    path = "/mnt/hdd/Media";
-    devices = [ "server" "workstation" ];
   };
 }
