@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
-let userDir = "${config.users.users.codyt.home}";
+let
+  userDir = "${config.users.users.codyt.home}";
+  uidStr = toString config.users.users.threadfin.uid;
+  gidStr = toString config.users.groups.threadfin.gid;
 in
 {
   services.jellyfin = {
@@ -14,13 +17,15 @@ in
     extraOptions = [ "--pull=always" ];
     ports = [ "127.0.0.1:34400:34400" ];
     environment = {
-      PUID = "1001";
-      PGID = "1001";
+      PUID = uidStr;
+      PGID = gidStr;
       TZ = "America/Chicago";
     };
+    user = "${uidStr}:${gidStr}";
     volumes = [
       "${userDir}/threadfin:/home/threadfin/conf"
       "${userDir}/threadfin:/tmp/threadfin:rw"
+      "${toString ./threadfin/playlists}:/home/threadfin/playlists"
     ];
   };
   # NGINX
