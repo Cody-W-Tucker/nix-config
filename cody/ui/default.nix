@@ -40,6 +40,7 @@
       todoist #cli client
       todoist-electron
       fabric-ai
+      slack
     ])
     ++
     (with pkgs-unstable; [

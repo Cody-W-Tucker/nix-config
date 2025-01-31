@@ -5,7 +5,7 @@
     ./actualBudget.nix
     ./ai.nix
     ./arm.nix
-    # ./automation.nix
+    ./automation.nix
     # ./collabora.nix
     ./content.nix
     # ./data.nix
