@@ -19,6 +19,7 @@ in
 
 {
   environment.systemPackages = with pkgs; [
+    jq # needed with web-search
     # Adding the scripts to the system packages
   ] ++ scriptPackages;
 
