@@ -20,6 +20,9 @@
   boot.extraModulePackages = [ ];
   time.hardwareClockInLocalTime = true;
 
+  # Networking
+  networking.networkmanager.enable = true;
+
   # Use the latest kernel
   boot.kernelPackages = pkgs.linuxPackages_zen;
 

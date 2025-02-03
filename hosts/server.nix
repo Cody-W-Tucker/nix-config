@@ -19,6 +19,9 @@
   boot.kernelParams = [ "i915.enable_guc=2" ];
   boot.extraModulePackages = [ ];
 
+  # Networking
+  networking.networkmanager.enable = true;
+
   # Use the latest kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
