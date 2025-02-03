@@ -126,6 +126,7 @@
             ./secrets/secrets.nix
           ];
         };
+        # nix build /etc/nixos#nixosConfigurations.codyIso.config.system.build.isoImage
         codyIso = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
@@ -133,11 +134,12 @@
             inherit pkgs;
           };
           modules = [
-            ({ config, pkgs, modulesPath, ... }: {
+            ({ config, pkgs, modulesPath, lib, ... }: {
               imports = [
                 (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
                 ./configuration.nix # Import the main config
               ];
+              services.getty.autologinUser = lib.mkForce "codyt";
             })
             inputs.home-manager.nixosModules.home-manager
             {
