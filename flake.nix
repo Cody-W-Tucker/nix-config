@@ -71,6 +71,7 @@
             nixos-hardware.nixosModules.common-pc-ssd
             nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
+            ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
@@ -97,6 +98,7 @@
             nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
+            ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
@@ -121,8 +123,37 @@
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
             inputs.sops-nix.nixosModules.sops
+            ./secrets/secrets.nix
           ];
         };
+        codyIso = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit pkgs;
+          };
+          modules = [
+            ({ config, pkgs, modulesPath, ... }: {
+              imports = [
+                (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
+                ./configuration.nix # Import the main config
+              ];
+            })
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {
+                  inherit inputs;
+                  inherit pkgs;
+                };
+                users.codyt = import ./cody/cli.nix;
+              };
+            }
+          ];
+        };
+
       };
     };
 }

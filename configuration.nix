@@ -3,14 +3,6 @@
 { config, pkgs, inputs, ... }:
 
 {
-  imports =
-    [
-      ./secrets/secrets.nix
-    ];
-
-  # Networking
-  networking.networkmanager.enable = true;
-
   # Set your time zone.
   time.timeZone = "America/Chicago";
 

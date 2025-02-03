@@ -20,6 +20,9 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  # Networking
+  networking.networkmanager.enable = true;
+
   fileSystems."/" =
     {
       device = "/dev/disk/by-uuid/d6c24696-cc34-4a07-a065-9f143a63db02";
