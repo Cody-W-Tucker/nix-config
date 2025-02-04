@@ -8,23 +8,6 @@ in
     openFirewall = false;
     user = "codyt";
   };
-  # IPTV client
-  virtualisation.oci-containers.containers."threadfin" = {
-    autoStart = true;
-    image = "fyb3roptik/threadfin:latest";
-    extraOptions = [ "--pull=always" ];
-    ports = [ "127.0.0.1:34400:34400" ];
-    environment = {
-      PUID = "1001";
-      PGID = "1001";
-      TZ = "America/Chicago";
-    };
-    volumes = [
-      "${userDir}/threadfin:/home/threadfin/conf"
-      "${userDir}/threadfin:/tmp/threadfin:rw"
-      "${userDir}/threadfin/playlists:/home/threadfin/playlists"
-    ];
-  };
   # NGINX
   services.nginx = {
     virtualHosts = {
@@ -33,14 +16,6 @@ in
         useACMEHost = "homehub.tv";
         locations."/" = {
           proxyPass = "http://127.0.0.1:8096";
-          proxyWebsockets = true;
-        };
-      };
-      "threadfin.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:34400";
           proxyWebsockets = true;
         };
       };
