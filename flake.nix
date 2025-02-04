@@ -140,6 +140,7 @@
                 ./configuration.nix # Import the main config
               ];
               services.getty.autologinUser = lib.mkForce "codyt";
+              environment.systemPackages = [ pkgs.parted ];
             })
             inputs.home-manager.nixosModules.home-manager
             {
