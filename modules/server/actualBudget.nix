@@ -22,7 +22,7 @@
     description = "Restart ActualBudget service";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/systemctl restart docker-actualBudget.service";
+      ExecStart = "systemctl restart docker-actualBudget.service";
     };
   };
 
