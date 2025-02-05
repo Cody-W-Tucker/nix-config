@@ -26,7 +26,6 @@
   # Use the latest kernel
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
-  boot.supportedFilesystems = [ "ntfs" ];
   fileSystems."/" =
     {
       device = "/dev/disk/by-uuid/9e34e9a8-f360-45a6-b6e2-ceab59a207d9";
@@ -40,53 +39,47 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  fileSystems."/mnt/local-share" =
-    {
-      device = "/dev/disk/by-uuid/B466DF5B66DF1D44";
-      fsType = "ntfs-3g";
-      options = [ "rw" "uid=1000" ];
-    };
-
   fileSystems."/mnt/backup" =
     {
       device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40";
       fsType = "ext4";
+      options = [ "nofail" ];
     };
 
   fileSystems."/home/codyt/Records" = {
     device = "/mnt/backup/Share/Records";
     fsType = "none";
-    options = [ "bind" ];
+    options = [ "bind" "nofail" ];
   };
 
   fileSystems."/home/codyt/Business" = {
     device = "/mnt/backup/Share/Business";
     fsType = "none";
-    options = [ "bind" ];
+    options = [ "bind" "nofail" ];
   };
 
   fileSystems."/home/codyt/Documents" = {
     device = "/mnt/backup/Share/Documents";
     fsType = "none";
-    options = [ "bind" ];
+    options = [ "bind" "nofail" ];
   };
 
   fileSystems."/home/codyt/Music" = {
     device = "/mnt/backup/Share/Music";
     fsType = "none";
-    options = [ "bind" ];
+    options = [ "bind" "nofail" ];
   };
 
   fileSystems."/home/codyt/Pictures" = {
     device = "/mnt/backup/Share/Pictures";
     fsType = "none";
-    options = [ "bind" ];
+    options = [ "bind" "nofail" ];
   };
 
   fileSystems."/home/codyt/Videos" = {
     device = "/mnt/backup/Share/Videos";
     fsType = "none";
-    options = [ "bind" ];
+    options = [ "bind" "nofail" ];
   };
 
   swapDevices = [ ];
