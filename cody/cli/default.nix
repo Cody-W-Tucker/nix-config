@@ -33,13 +33,6 @@
         ll = "ls -l";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
-        update = ''
-          cd /etc/nixos &&
-          git add . &&
-          git commit -m "Pre-update commit" &&
-          sudo nixos-rebuild switch &&
-          git push
-        '';
         upgrade = ''
           cd /etc/nixos &&
           sudo nix flake update
