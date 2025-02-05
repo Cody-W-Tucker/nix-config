@@ -1,3 +1,4 @@
+{ config, ... }:
 let
 
   domain = "homehub.tv";
