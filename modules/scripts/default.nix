@@ -11,6 +11,7 @@ let
     ./get-weather.nix
     ./keybind-logger.nix
     ./todoist-rofi.nix
+    ./update.nix
     ./web-search.nix
   ];
 

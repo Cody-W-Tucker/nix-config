@@ -10,13 +10,6 @@
     };
   };
 
-  # Runtime
-  virtualisation.docker = {
-    enable = true;
-    autoPrune.enable = true;
-  };
-  virtualisation.oci-containers.backend = "docker";
-
   # Containers
   virtualisation.oci-containers.containers."hoarder-chrome" = {
     image = "gcr.io/zenika-hub/alpine-chrome:123";
