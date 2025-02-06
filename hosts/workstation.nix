@@ -192,6 +192,10 @@
       # fix flicker
       # source https://wiki.archlinux.org/index.php/Intel_graphics#Screen_flickering
       "i915.enable_psr=0"
+      # Enables GuC submission for better GPU performance.
+      "i915.enable_guc=2"
+      # asynchronous page flipping
+      "i915.enable_fbc=1"
     ];
   };
 
@@ -203,10 +207,7 @@
     QT_QPA_PLATFORM = "wayland";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     MOZ_ENABLE_WAYLAND = "1";
-    # Stuff in the wrong place
-    BROWSER = "google-chrome";
-    VISUAL = "nvim";
-    TERMINAL = "kitty";
+    LIBVA_DRIVER_NAME = "iHD";
   };
 
   services = {
