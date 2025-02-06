@@ -71,17 +71,15 @@
     };
     graphics = {
       enable = true;
-      enable32Bit = true;
       extraPackages = with pkgs; [
-        intel-media-driver
-        intel-vaapi-driver # previously vaapiIntel
-        vaapiVdpau
-        vaapiIntel
+        intel-media-driver # LIBVA_DRIVER_NAME=iHD
+        intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
         libvdpau-va-gl
-        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-        intel-media-sdk # QSV up to 11th gen
       ];
     };
+  };
+  nixpkgs.config.packageOverrides = pkgs: {
+    intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
   };
 
   # Enabling keyring, because sometime it won't start.
