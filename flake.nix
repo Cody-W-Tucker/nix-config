@@ -124,6 +124,17 @@
             nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
             inputs.sops-nix.nixosModules.sops
             ./secrets/secrets.nix
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                inherit pkgs;
+              };
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.users.codyt = import ./cody/cli.nix;
+            }
           ];
         };
         # nix build /etc/nixos#nixosConfigurations.codyIso.config.system.build.isoImage
