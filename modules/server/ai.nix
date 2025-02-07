@@ -50,7 +50,7 @@ in
     wantedBy = [ "timers.target" ];
     partOf = [ "restart-open-webui.service" ];
     timerConfig = {
-      OnCalendar = "*-*-* 02:00:00";
+      OnCalendar = "Mon *-*-* 02:00:00";
       RandomizedDelaySec = "2h";
       Persistent = true;
     };
