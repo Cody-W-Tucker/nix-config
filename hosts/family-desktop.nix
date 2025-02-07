@@ -62,6 +62,10 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "i965";
+  };
+
   # Setting the color theme and default wallpaper
   stylix.image = ../modules/wallpapers/Dancer.png;
 
