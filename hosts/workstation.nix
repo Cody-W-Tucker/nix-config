@@ -92,12 +92,9 @@
   services.displayManager.autoLogin.user = "codyt";
 
   # Getting keyring to work
-  security.pam = {
-    enable = true;
-    services = {
-      greetd.enableGnomeKeyring = true;
-      gdm-password.enableGnomeKeyring = true;
-    };
+  security.pam.services = {
+    greetd.enableGnomeKeyring = true;
+    gdm-password.enableGnomeKeyring = true;
   };
   services.systemd.user.services.dbus.enable = true;
   hardware.openrazer = {
