@@ -6,7 +6,6 @@
     ./notifications.nix
     ./appLauncher.nix
     ./waybar.nix
-    ./xdg.nix
   ];
 
   dconf = {
