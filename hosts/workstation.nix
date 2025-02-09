@@ -91,11 +91,28 @@
 
   services.displayManager.autoLogin.user = "codyt";
 
+  # Override Display Manager and Windowing system.
+  services = {
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+    };
+    xserver = {
+      enable = true;
+      displayManager.gdm.enable = lib.mkDefault false;
+      desktopManager.gnome.enable = lib.mkDefault false;
+      xkb = {
+        layout = "us";
+        model = "pc105";
+      };
+    };
+  };
+
   # Getting keyring to work
   security.pam.services = {
-    greetd.enableGnomeKeyring = true;
-    gdm-password.enableGnomeKeyring = true;
+    login.enableGnomeKeyring = true;
   };
+  services.gnome.gnome-keyring.enable = true;
   hardware.openrazer = {
     enable = true;
     devicesOffOnScreensaver = true;
