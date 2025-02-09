@@ -71,9 +71,6 @@
     };
   };
 
-  # Enabling keyring, because sometime it won't start.
-  services.gnome.gnome-keyring.enable = true;
-
   # Enable sound with pipewire
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;

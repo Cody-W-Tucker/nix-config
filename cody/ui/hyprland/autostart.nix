@@ -2,17 +2,28 @@
 {
   wayland.windowManager.hyprland.settings = {
     exec-once = [
-      "uwsm app -- swaync"
-      "uwsm app -- wl-clipboard-history -t"
-      "uwsm app -- wl-paste --watch cliphist store"
-      ''rm "$HOME/.cache/cliphist/db"'' # Clear clipboard history on startup
+      # MUST BE FIRST - Environment setup
+      "uwsm finalize" # Initializes WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE
+
+      # Systemd services that require the above variables
       "systemctl --user enable --now hypridle.service"
       "systemctl --user enable --now hyprpaper.service"
-      "systemctl --user enable --now waybar.service"
-      "[workspace 1 silent ] uwsm app -- obsidian"
-      "[workspace 2 silent ] uwsm app -- todoist-electron --ozone-platform-hint=auto"
+
+      # Clipboard (requires WAYLAND_DISPLAY)
+      "uwsm app -- wl-clipboard-history -t"
+      "uwsm app -- wl-paste --watch cliphist store"
+      ''rm "$HOME/.cache/cliphist/db"''
+
+      # GUI Apps (needs DBUS_SESSION_BUS_ADDRESS from finalize)
+      "uwsm app -- swaync"
+      "uwsm app -- waybar"
+
+      # Workspace-specific apps
+      "[workspace 1 silent] uwsm app -- obsidian"
+      "[workspace 2 silent] uwsm app -- todoist-electron --ozone-platform-hint=auto"
       "uwsm app -- ferdium"
       "[workspace special silent] uwsm app -- spotube"
     ];
   };
+
 }

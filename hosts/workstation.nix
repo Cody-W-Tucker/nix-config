@@ -91,13 +91,11 @@
 
   services.displayManager.autoLogin.user = "codyt";
 
-  # Getting Hyprlock and keyring to work
+  # Getting keyring to work
   security.pam.services = {
-    hyprlock = { };
     greetd.enableGnomeKeyring = true;
     gdm-password.enableGnomeKeyring = true;
   };
-  environment.variables.XDG_RUNTIME_DIR = "/run/user/$UID"; # set the runtime directory
   hardware.openrazer = {
     enable = true;
     devicesOffOnScreensaver = true;
