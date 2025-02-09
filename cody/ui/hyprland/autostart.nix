@@ -16,7 +16,6 @@
 
       # GUI Apps (needs DBUS_SESSION_BUS_ADDRESS from finalize)
       "uwsm app -- swaync"
-      "uwsm app -- waybar"
 
       # Workspace-specific apps
       "[workspace 1 silent] uwsm app -- obsidian"
