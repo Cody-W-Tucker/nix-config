@@ -25,8 +25,6 @@
     };
   };
 
-  services.gvfs.enable = true;
-
   home.packages =
     (with pkgs; [
       # list of stable packages go here
