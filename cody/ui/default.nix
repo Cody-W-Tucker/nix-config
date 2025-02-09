@@ -6,6 +6,7 @@
     ./notifications.nix
     ./appLauncher.nix
     ./waybar.nix
+    ./xdg.nix
   ];
 
   dconf = {
@@ -41,8 +42,8 @@
       todoist-electron
       fabric-ai
       slack
-      gnome.gnome-calculator
-      gnome.nautilus
+      gnome-calculator
+      nautilus
     ])
     ++
     (with pkgs-unstable; [
