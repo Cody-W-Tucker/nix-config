@@ -91,6 +91,9 @@
 
   services.displayManager.autoLogin.user = "codyt";
 
+  # To see trash and network shares in nautilus
+  services.gvfs.enable = true;
+
   # Override Display Manager and Windowing system.
   services = {
     displayManager.sddm = {
