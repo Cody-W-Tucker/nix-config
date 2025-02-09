@@ -92,19 +92,18 @@
   services.displayManager.autoLogin.user = "codyt";
 
   # Override Display Manager and Windowing system.
-  services = {
+  services.xserver = {
+    enable = true;
+    displayManager.gdm.enable = lib.mkDefault false;
+    desktopManager.gnome.enable = lib.mkDefault false;
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
+      autoNumlock = true;
     };
-    xserver = {
-      enable = true;
-      displayManager.gdm.enable = lib.mkDefault false;
-      desktopManager.gnome.enable = lib.mkDefault false;
-      xkb = {
-        layout = "us";
-        model = "pc105";
-      };
+    xkb = {
+      layout = "us";
+      model = "pc105";
     };
   };
 
