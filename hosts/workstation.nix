@@ -96,7 +96,6 @@
     greetd.enableGnomeKeyring = true;
     gdm-password.enableGnomeKeyring = true;
   };
-  services.systemd.user.services.dbus.enable = true;
   hardware.openrazer = {
     enable = true;
     devicesOffOnScreensaver = true;
