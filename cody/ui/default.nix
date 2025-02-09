@@ -25,6 +25,8 @@
     };
   };
 
+  services.gvfs.enable = true;
+
   home.packages =
     (with pkgs; [
       # list of stable packages go here
@@ -41,6 +43,8 @@
       todoist-electron
       fabric-ai
       slack
+      gnome.gnome-calculator
+      gnome.nautilus
     ])
     ++
     (with pkgs-unstable; [
