@@ -45,10 +45,10 @@
       ffmpeg
       google-chrome # Keep this on stable, Hardware acceleration actually works
       obsidian
-      firefox
     ]) ++
     (with pkgs-unstable; [
       # list of unstable packages go here
+      firefox
       firefoxpwa
     ]);
 
