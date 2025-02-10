@@ -118,6 +118,7 @@
       enable = true;
     };
     pam.services = {
+      sddm.enableGnomeKeyring = true;
       login.enableGnomeKeyring = true;
     };
   };
