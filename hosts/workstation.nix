@@ -112,11 +112,6 @@
     };
   };
 
-  # Getting keyring to work
-  security.pam.services = {
-    login.enableGnomeKeyring = true;
-  };
-  services.gnome.gnome-keyring.enable = true;
   hardware.openrazer = {
     enable = true;
     devicesOffOnScreensaver = true;

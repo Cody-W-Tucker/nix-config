@@ -3,12 +3,19 @@
 {
   home.packages = with pkgs; [
     hyprnome
+    polkit_gnome
   ];
 
   imports = [
     ./hyprland/keybinds.nix
     ./hyprland/autostart.nix
   ];
+
+  # Getting keyring to work
+  security.pam.services = {
+    login.enableGnomeKeyring = true;
+  };
+  services.gnome.gnome-keyring.enable = true;
 
   wayland.windowManager.hyprland = {
     enable = true;
