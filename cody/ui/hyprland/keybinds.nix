@@ -67,7 +67,7 @@ let
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:magic"
 
     # Gromit Screendrawing
-    "${mainMod}, F9, exec, uwsm app -- gromit-mpx"
+    "${mainMod}, F9, exec, pidof gromit-mpx && gromit-mpx -q || gromit-mpx -a"
   ];
 in
 {
