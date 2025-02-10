@@ -46,7 +46,6 @@
           workspace = [
             "1, monitor:DP-1, default:true"
             "2, monitor:DP-2, default:true"
-            "special:gromit, gapsin:0, gapsout:0, on-created-empty: gromit-mpx - a;"
           ];
           monitor = [
             "DP-1,2560x1080@60,0x1080,1"

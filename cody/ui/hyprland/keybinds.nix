@@ -65,12 +65,6 @@ let
     # Scratchpad
     "${mainMod}, A, togglespecialworkspace, magic"
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:magic"
-
-    # Gromit
-    "${mainMod}, F5, togglespecialworkspace, gromit"
-    "${mainMod} SHIFT , F5, exec, gromit-mpx --clear"
-    "${mainMod}, F6, exec, gromit-mpx --undo"
-    "${mainMod} SHIFT , F6, exec, gromit-mpx --redo"
   ];
 in
 {
@@ -83,7 +77,7 @@ in
       "noblur, ^(Gromit-mpx)$"
       "opacity 1 override, 1 override, ^(Gromit-mpx)$"
       "noshadow, ^(Gromit-mpx)$"
-      "nofullscreenrequest, ^(Gromit-mpx)$"
+      "suppressevent fullscreen, ^(Gromit-mpx)$"
       "size 100% 100%, ^(Gromit-mpx)$"
       # Kitty
       "noblur,^(kitty)$"
@@ -92,8 +86,6 @@ in
   # Screen drawing
   services.gromit-mpx = {
     enable = true;
-    hotKey = null;
-    undoKey = null;
     opacity = 1.0;
   };
 }
