@@ -121,9 +121,9 @@
   systemd = {
     user.services.polkit-gnome-authentication-agent-1 = {
       description = "polkit-gnome-authentication-agent-1";
-      wantedBy = [ "uwsm.target" ]; # Change from graphical-session.target
-      wants = [ "uwsm.target" ]; # Change from graphical-session.target
-      after = [ "uwsm.target" ]; # Change from graphical-session.target
+      wantedBy = [ "wayland-session@Hyprland.target" ]; # Specific to Hyprland session
+      wants = [ "wayland-session@Hyprland.target" ];
+      after = [ "wayland-session@Hyprland.target" ];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
