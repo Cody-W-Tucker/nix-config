@@ -6,7 +6,6 @@
     ./notifications.nix
     ./appLauncher.nix
     ./waybar.nix
-    ./xdg.nix
   ];
 
   dconf = {
@@ -65,7 +64,16 @@
 
 
   # Clipboard history
-  services.cliphist.enable = true;
+  services.cliphist = {
+    enable = true;
+    allowImages = true;
+    extraOptions = [
+      "-max-dedupe-search"
+      "10"
+      "-max-items"
+      "500"
+    ];
+  };
 
   # Doc conversion
   programs.pandoc.enable = true;
