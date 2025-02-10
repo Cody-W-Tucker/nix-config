@@ -48,13 +48,11 @@
     ]) ++
     (with pkgs-unstable; [
       # list of unstable packages go here
-      firefox
       firefoxpwa
     ]);
 
   programs.firefox = {
     enable = true;
-    package = pkgs-unstable.firefox;
     nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
   };
 
