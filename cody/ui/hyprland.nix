@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     hyprnome
-    polkit_gnome
   ];
 
   imports = [

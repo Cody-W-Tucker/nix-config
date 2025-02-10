@@ -113,36 +113,18 @@
   };
 
   # Getting keyring to work
-  security.pam.services = {
-    login.enableGnomeKeyring = true;
+  security = {
+    polkit = {
+      enable = true;
+      package = pkgs.polkit_gnome;
+    };
+    pam.services = {
+      login.enableGnomeKeyring = true;
+    };
   };
-  services.gnome.gnome-keyring.enable = true;
-
-  systemd = {
-    user.services.polkit-gnome-authentication-agent-1 = {
-      description = "polkit-gnome-authentication-agent-1";
-      wantedBy = [ "wayland-session@Hyprland.target" ]; # Specific to Hyprland session
-      wants = [ "wayland-session@Hyprland.target" ];
-      after = [ "wayland-session@Hyprland.target" ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
-      };
-    };
-    user.services.gnome-keyring = {
-      description = "GNOME Keyring Daemon";
-      wantedBy = [ "wayland-session@Hyprland.target" ]; # Ensures it starts with your Hyprland session
-      after = [ "wayland-session@Hyprland.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh,gpg";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
-      };
-    };
+  services.gnome-keyring = {
+    enable = true;
+    components = [ "secrets" "ssh" ];
   };
 
   hardware.openrazer = {
