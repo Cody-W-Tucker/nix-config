@@ -132,6 +132,17 @@
         TimeoutStopSec = 10;
       };
     };
+    user.services.gnome-keyring = {
+      description = "GNOME Keyring Daemon";
+      wantedBy = [ "wayland-session@Hyprland.target" ]; # Ensures it starts with your Hyprland session
+      after = [ "wayland-session@Hyprland.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh,gpg";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+      };
+    };
   };
 
   hardware.openrazer = {
