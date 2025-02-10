@@ -116,7 +116,6 @@
   security = {
     polkit = {
       enable = true;
-      package = pkgs.polkit_gnome;
     };
     pam.services = {
       login.enableGnomeKeyring = true;
