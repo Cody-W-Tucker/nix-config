@@ -65,6 +65,9 @@ let
     # Scratchpad
     "${mainMod}, A, togglespecialworkspace, magic"
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:magic"
+
+    # Gromit Screendrawing
+    "${mainMod}, F9, exec, uwsm app -- gromit-mpx"
   ];
 in
 {
