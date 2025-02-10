@@ -43,13 +43,13 @@
       slack
       gnome-calculator
       nautilus
-      ferdium
     ])
     ++
     (with pkgs-unstable; [
       # list of unstable packages go here
       vscode
       spotube
+      ferdium
     ]);
 
   # Obs for screenrecording
