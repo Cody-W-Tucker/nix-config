@@ -122,10 +122,6 @@
       login.enableGnomeKeyring = true;
     };
   };
-  services.gnome-keyring = {
-    enable = true;
-    components = [ "secrets" "ssh" ];
-  };
 
   hardware.openrazer = {
     enable = true;

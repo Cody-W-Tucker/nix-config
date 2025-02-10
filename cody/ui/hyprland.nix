@@ -5,6 +5,11 @@
     hyprnome
   ];
 
+  services.gnome-keyring = {
+    enable = true;
+    components = [ "secrets" "ssh" ];
+  };
+
   imports = [
     ./hyprland/keybinds.nix
     ./hyprland/autostart.nix
