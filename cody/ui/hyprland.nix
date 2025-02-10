@@ -80,8 +80,6 @@
         force_default_wallpaper = "0";
         disable_hyprland_logo = "true";
       };
-      # Window rules
-      windowrule = "noblur,^(kitty)$";
     };
   };
   # Lockscreen: blurs after 30mins with another 30mins grace, then turns monitor off and locks

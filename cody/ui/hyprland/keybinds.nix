@@ -80,11 +80,14 @@ in
     bind = keybinds;
     workspace = "special:gromit, gapsin:0, gapsout:0, on-created-empty: gromit-mpx - a;";
     windowrule = [
+      # Gromit
       "noblur, ^(Gromit-mpx)$"
       "opacity 1 override, 1 override, ^(Gromit-mpx)$"
       "noshadow, ^(Gromit-mpx)$"
       "nofullscreenrequest, ^(Gromit-mpx)$"
       "size 100% 100%, ^(Gromit-mpx)$"
+      # Kitty
+      "noblur,^(kitty)$"
     ];
   };
   # Screen drawing
