@@ -68,6 +68,7 @@
             stylix.nixosModules.stylix
             # Using community hardware configurations
             nixos-hardware.nixosModules.common-cpu-intel-cpu-only
+            nixos-hardware.nixosModules.common-gpu-nvidia-disable
             nixos-hardware.nixosModules.common-pc-ssd
             nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
