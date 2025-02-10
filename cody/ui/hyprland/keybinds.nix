@@ -23,7 +23,7 @@ let
     "${mainMod} SHIFT, RETURN, exec, uwsm app -- todoist-rofi"
 
     # Quick launch apps
-    "${mainMod}, KP_Insert, exec, uwsm app -- google-chrome-stable --app=https://ai.homehub.tv"
+    "${mainMod}, KP_Insert, exec, uwsm app -- firefoxpwa site launch 01JKS3GVGR2ZK2ZNMH5X913QP7"
     "${mainMod}, KP_Add, exec, uwsm app -- hyprctl dispatch exec [floating] gnome-calculator"
     "${mainMod}, KP_Home, exec, uwsm app -- code"
 
