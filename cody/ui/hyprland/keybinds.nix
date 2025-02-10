@@ -25,9 +25,6 @@ let
     # Quick launch apps
     "${mainMod}, KP_Insert, exec, uwsm app -- google-chrome-stable --app=https://ai.homehub.tv"
     "${mainMod}, KP_Add, exec, uwsm app -- hyprctl dispatch exec [floating] gnome-calculator"
-    "${mainMod}, KP_End, exec, uwsm app -- google-chrome-stable --app=https://mail.google.com"
-    "${mainMod}, KP_Down, exec, uwsm app -- google-chrome-stable --app=https://messages.google.com/web/u/0/conversations"
-    "${mainMod}, KP_Next, exec, uwsm app -- google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r"
     "${mainMod}, KP_Home, exec, uwsm app -- code"
 
     # Screenshots

@@ -23,16 +23,16 @@ let
       on-click = "activate";
       format = "{icon} {windows}";
       window-rewrite = {
-        "google-chrome" = "";
+        "firefox" = "";
         "spotify" = "";
         "code" = "󰨞";
         "kitty" = "";
         "obsidian" = "";
-        "class<google-chrome> title<.*Github.*>" = "";
-        "class<google-chrome> title<.*Reddit.*>" = "";
-        "class<google-chrome> title<.*Facebook.*>" = "";
-        "class<google-chrome> title<.*Gmail.*>" = "";
-        "class<google-chrome> title<.*Calendar.*>" = "";
+        "class<firefox> title<.*Github.*>" = "";
+        "class<firefox> title<.*Reddit.*>" = "";
+        "class<firefox> title<.*Facebook.*>" = "";
+        "class<firefox> title<.*Gmail.*>" = "";
+        "class<firefox> title<.*Calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
     };
@@ -68,7 +68,7 @@ let
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
       tooltip = true;
-      on-click-right = "uwsm app -- google-chrome-stable --app=https://calendar.google.com/calendar/u/0/r";
+      on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
       tooltip-format = "<tt><small>{calendar}</small></tt>";
       calendar = {
         mode = "year";
@@ -172,16 +172,16 @@ let
       on-click = "activate";
       format = "{icon} {windows}";
       window-rewrite = {
-        "google-chrome" = "";
+        "firefox" = "";
         "spotify" = "";
         "code" = "󰨞";
         "kitty" = "";
         "obsidian" = "";
-        "class<google-chrome> title<.*Github.*>" = "";
-        "class<google-chrome> title<.*Reddit.*>" = "";
-        "class<google-chrome> title<.*Facebook.*>" = "";
-        "class<google-chrome> title<.*Gmail.*>" = "";
-        "class<google-chrome> title<.*Calendar.*>" = "";
+        "class<firefox> title<.*Github.*>" = "";
+        "class<firefox> title<.*Reddit.*>" = "";
+        "class<firefox> title<.*Facebook.*>" = "";
+        "class<firefox> title<.*Gmail.*>" = "";
+        "class<firefox> title<.*Calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
     };

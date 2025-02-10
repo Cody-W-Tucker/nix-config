@@ -46,7 +46,13 @@
       google-chrome # Keep this on stable, Hardware acceleration actually works
       obsidian
       firefox
+      firefoxpwa
     ]);
+
+  programs.firefox = {
+    enable = true;
+    nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
+  };
 
   # Enable support for removable devices.
   services.gvfs.enable = true;
