@@ -67,6 +67,7 @@
   services.cliphist = {
     enable = true;
     allowImages = true;
+    systemdTarget = "wayland-session@Hyprland.target";
     extraOptions = [
       "-max-dedupe-search"
       "10"
