@@ -78,7 +78,6 @@ in
     "$mainMod" = mainMod;
     bindm = mousebinds;
     bind = keybinds;
-    workspace = "special:gromit, gapsin:0, gapsout:0, on-created-empty: gromit-mpx - a;";
     windowrule = [
       # Gromit
       "noblur, ^(Gromit-mpx)$"
