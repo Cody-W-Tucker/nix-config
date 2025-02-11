@@ -23,12 +23,16 @@ pkgs.writeShellScriptBin "web-search" ''
     platform=$(gen_list | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
 
     if [[ -n "$platform" ]]; then
-      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0 -multi-select | xargs)
+        # Capture and sanitize query input
+        query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0 -multi-select | xargs)
+        
+        # Encode query for safe URL usage
+        encoded_query=$(${pkgs.jq}/bin/jq -sRr @uri <<< "$query")
+        
         base_url="''${URLS[$platform]}"
 
-      if [[ -n "$query" ]]; then
-            # Encode and construct URL
-            encoded_query=$(${pkgs.jq}/bin/jq -sRr @uri <<< "$query")
+        if [[ -n "$query" ]]; then
+            # Construct final URL with encoded query
             url="''${base_url}''${encoded_query}"
         else
             # Default to base URL if no query is entered
@@ -38,7 +42,8 @@ pkgs.writeShellScriptBin "web-search" ''
             url="$protocol://$domain/"
         fi
 
-      ${pkgs.xdg-utils}/bin/xdg-open "$url"
+        # Open the URL in a browser
+        ${pkgs.xdg-utils}/bin/xdg-open "$url"
     fi
   }
 
