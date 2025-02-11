@@ -10,6 +10,7 @@
     (with pkgs; [
       gh
       bat
+      fd
     ]);
 
   # User specific terminal settings
@@ -52,6 +53,7 @@
     };
     fzf = {
       enable = true;
+      defaultCommand = "fd --type f --exclude '.*'";
     };
     kitty = {
       enable = true;
