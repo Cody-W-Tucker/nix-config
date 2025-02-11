@@ -97,15 +97,15 @@
   # Override Display Manager and Windowing system.
   environment.systemPackages = [ pkgs.where-is-my-sddm-theme ];
   services = {
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+      autoNumlock = true;
+    };
     xserver = {
       enable = true;
       displayManager.gdm.enable = lib.mkForce false;
       desktopManager.gnome.enable = lib.mkForce false;
-      displayManager.sddm = {
-        enable = true;
-        wayland.enable = false;
-        autoNumlock = true;
-      };
       xkb = {
         layout = "us";
         model = "pc105";
