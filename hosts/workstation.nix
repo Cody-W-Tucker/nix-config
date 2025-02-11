@@ -95,11 +95,13 @@
   services.gvfs.enable = true;
 
   # Override Display Manager and Windowing system.
+  environment.systemPackages = pkgs.where-is-my-sddm-theme;
   services = {
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
       autoNumlock = true;
+      theme = "where_is_my_sddm_theme";
     };
     xserver = {
       enable = true;
