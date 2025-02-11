@@ -99,9 +99,9 @@
   services = {
     displayManager.sddm = {
       enable = true;
-      wayland.enable = true;
+      wayland.enable = false;
       autoNumlock = true;
-      theme = "where_is_my_sddm_theme";
+      theme = "Breeze";
     };
     xserver = {
       enable = true;
