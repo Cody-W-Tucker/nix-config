@@ -11,7 +11,7 @@
   };
 
   imports = [
-    ./hyprland/keybinds.nix
+    ./hyprland/settings.nix
     ./hyprland/autostart.nix
   ];
 

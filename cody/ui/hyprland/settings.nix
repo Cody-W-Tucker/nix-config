@@ -14,8 +14,8 @@ let
     "${mainMod}, RETURN, exec, uwsm app -- pkill waybar && waybar &"
     "${mainMod}, Q, exec, uwsm app -- kitty"
     "${mainMod}, E, exec, uwsm app -- kitty -- ranger"
-    "${mainMod}, Tab, exec, uwsm app -- rofi-launcher"
-    "${mainMod} SHIFT, Tab, exec, uwsm app -- web-search"
+    "${mainMod} SHIFT, Tab, exec, uwsm app -- rofi-launcher"
+    "${mainMod}, Tab, exec, uwsm app -- web-search"
     "${mainMod} SHIFT, E, exec, uwsm app -- nautilus"
     "${mainMod} SHIFT, Q, exec, uwsm app -- rofi -show web_scraper -modi 'web_scraper:web-scraper'"
     "${mainMod}, KP_Enter, exec, uwsm app -- todoist-rofi quick_add"
@@ -81,6 +81,8 @@ in
       "size 100% 100%, ^(Gromit-mpx)$"
       # Kitty
       "noblur,^(kitty)$"
+    ];
+    windowrulev2 = [
       "float, bitwarden"
       "float, title:^(.*Bitwarden Password Manager.*)$"
 
