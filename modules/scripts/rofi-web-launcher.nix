@@ -20,22 +20,25 @@ pkgs.writeShellScriptBin "web-search" ''
   }
 
   main() {
-    # Select platform
-    platform=$(printf "%s\n" "''${!URLS[@]}" | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Platform' -no-custom)
-    [[ -z "$platform" ]] && exit 1  # Exit if no platform selected
+    platform=$(gen_list | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
 
-    # Enter query (remove '-multi-select' to handle spaces as a single input)
-    query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Query' -l 0 | xargs)
-    base_url="''${URLS[$platform]}"
+    if [[ -n "$platform" ]]; then
+      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0)
+      base_url="''${URLS[$platform]}"
 
-    # Encode query and open URL
-    if [[ -n "$query" ]]; then
-      url="''${base_url}$(echo "$query" | ${pkgs.jq}/bin/jq -sRr @uri)"
-    else
-      url="''${base_url%%\?*}"  # Remove existing query params if no input
+      if [[ -n "$query" ]]; then
+        # Build search URL with encoded query
+        url="''${base_url}$(${pkgs.jq}/bin/jq -sRr @uri <<< "$query")"
+      else
+        # Extract base domain (handles URLs with paths/parameters)
+        protocol="''${base_url%%://*}"
+        domain_path="''${base_url#*://}"
+        domain="''${domain_path%%[/?]*}"
+        url="$protocol://$domain/"
+      fi
+
+      ${pkgs.xdg-utils}/bin/xdg-open "$url"
     fi
-
-    ${pkgs.xdg-utils}/bin/xdg-open "$url"
   }
 
   main
