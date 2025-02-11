@@ -31,7 +31,8 @@
       history.size = 10000;
       shellAliases = {
         ssh = "kitty +kitten ssh";
-        fa = "fzf --preview 'bat --style=numbers --color=always {}' | xargs nvim";
+        ff = "fzf --preview 'bat --style=numbers --color=always {}'";
+        fo = "fzf --preview 'bat --style=numbers --color=always {}' | xargs nvim";
         ll = "ls -l";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
