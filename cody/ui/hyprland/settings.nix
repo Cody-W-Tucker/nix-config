@@ -81,8 +81,6 @@ in
       "size 100% 100%, ^(Gromit-mpx)$"
       # Kitty
       "noblur,^(kitty)$"
-      "float, bitwarden"
-      "size 800 600,class:Bitwarden"
     ];
     windowrulev2 = [
       "float, title:^(Picture-in-Picture)$"
