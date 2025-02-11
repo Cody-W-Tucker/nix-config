@@ -95,7 +95,7 @@
   services.gvfs.enable = true;
 
   # Override Display Manager and Windowing system.
-  environment.systemPackages = pkgs.where-is-my-sddm-theme;
+  environment.systemPackages = [ pkgs.where-is-my-sddm-theme ];
   services = {
     displayManager.sddm = {
       enable = true;
