@@ -43,7 +43,6 @@
       udisks
       kitty
       ffmpeg
-      google-chrome # Keep this on stable, Hardware acceleration actually works
       obsidian
     ]) ++
     (with pkgs-unstable; [
