@@ -72,7 +72,7 @@ in
     "$mainMod" = mainMod;
     bindm = mousebinds;
     bind = keybinds;
-    windowrule = [
+    windowrulev2 = [
       # Gromit
       "noblur, ^(Gromit-mpx)$"
       "opacity 1 override, 1 override, ^(Gromit-mpx)$"
@@ -81,8 +81,16 @@ in
       "size 100% 100%, ^(Gromit-mpx)$"
       # Kitty
       "noblur,^(kitty)$"
-      "float,title:Extension: (Bitwarden - Free Password Manager) - Bitwarden — Mozilla Firefox"
-      "float,class:^(pavucontrol)$"
+      "float, bitwarden"
+      "float, title:^(.*Bitwarden Password Manager.*)$"
+
+      "float, title:^(Picture-in-Picture)$"
+      "pin, title:^(Picture-in-Picture)$"
+
+      # throw sharing indicators away
+      "workspace special silent, title:^(Firefox — Sharing Indicator)$"
+      "workspace special silent, title:^(Zen — Sharing Indicator)$"
+      "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
     ];
   };
   # Screen drawing
