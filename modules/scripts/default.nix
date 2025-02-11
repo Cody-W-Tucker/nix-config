@@ -3,6 +3,7 @@
 let
   scriptNames = [
     ./rofi-launcher.nix
+    ./rofi-web-launcher.nix
     ./media-player.nix
     ./bluetooth-switch.nix
     ./web-scraper.nix
@@ -12,7 +13,6 @@ let
     ./keybind-logger.nix
     ./todoist-rofi.nix
     ./update.nix
-    ./web-search.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
