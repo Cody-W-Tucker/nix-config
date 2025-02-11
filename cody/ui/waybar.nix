@@ -106,7 +106,7 @@ let
       format = "󰗼";
       tooltip = true;
       tooltip-format = "Quit";
-      on-click = "hyprctl dispatch exit";
+      on-click = "hyprctl dispatch exec, uwsm stop";
     };
     "custom/lock" = {
       format = "󰍁";
