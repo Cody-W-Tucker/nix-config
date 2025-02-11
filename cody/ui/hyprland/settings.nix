@@ -81,11 +81,10 @@ in
       "size 100% 100%, ^(Gromit-mpx)$"
       # Kitty
       "noblur,^(kitty)$"
+      "float, bitwarden"
+      "size 800 600,class:Bitwarden"
     ];
     windowrulev2 = [
-      "float, bitwarden"
-      "float, title:^(.*Bitwarden Password Manager.*)$"
-
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
 
