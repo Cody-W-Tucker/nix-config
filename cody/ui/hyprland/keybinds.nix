@@ -81,6 +81,8 @@ in
       "size 100% 100%, ^(Gromit-mpx)$"
       # Kitty
       "noblur,^(kitty)$"
+      "float,title:Extension: (Bitwarden - Free Password Manager) - Bitwarden — Mozilla Firefox"
+      "float,class:^(pavucontrol)$"
     ];
   };
   # Screen drawing
