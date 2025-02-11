@@ -72,7 +72,7 @@ in
     "$mainMod" = mainMod;
     bindm = mousebinds;
     bind = keybinds;
-    windowrulev2 = [
+    windowrule = [
       # Gromit
       "noblur, ^(Gromit-mpx)$"
       "opacity 1 override, 1 override, ^(Gromit-mpx)$"
