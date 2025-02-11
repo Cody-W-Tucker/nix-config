@@ -20,31 +20,22 @@ pkgs.writeShellScriptBin "web-search" ''
   }
 
   main() {
-    platform=$(gen_list | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
+    # Select platform
+    platform=$(printf "%s\n" "''${!URLS[@]}" | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Platform' -no-custom)
+    [[ -z "$platform" ]] && exit 1  # Exit if no platform selected
 
-    if [[ -n "$platform" ]]; then
-        # Capture and sanitize query input
-        query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0 -multi-select | xargs)
-        
-        # Encode query for safe URL usage
-        encoded_query=$(${pkgs.jq}/bin/jq -sRr @uri <<< "$query")
-        
-        base_url="''${URLS[$platform]}"
+    # Enter query (remove '-multi-select' to handle spaces as a single input)
+    query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Query' -l 0 | xargs)
+    base_url="''${URLS[$platform]}"
 
-        if [[ -n "$query" ]]; then
-            # Construct final URL with encoded query
-            url="''${base_url}''${encoded_query}"
-        else
-            # Default to base URL if no query is entered
-            protocol="''${base_url%%://*}"
-            domain_path="''${base_url#*://}"
-            domain="''${domain_path%%[/?]*}"
-            url="$protocol://$domain/"
-        fi
-
-        # Open the URL in a browser
-        ${pkgs.xdg-utils}/bin/xdg-open "$url"
+    # Encode query and open URL
+    if [[ -n "$query" ]]; then
+      url="''${base_url}$(echo "$query" | ${pkgs.jq}/bin/jq -sRr @uri)"
+    else
+      url="''${base_url%%\?*}"  # Remove existing query params if no input
     fi
+
+    ${pkgs.xdg-utils}/bin/xdg-open "$url"
   }
 
   main
