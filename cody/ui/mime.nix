@@ -34,7 +34,7 @@
       "image/heif" = "feh.desktop";
       "image/heic" = "feh.desktop";
       "image/svg+xml" = "feh.desktop";
-      "application/pdf" = "feh.desktop";
+      "application/pdf" = "zathura.desktop";
       "image/x-wmf" = "feh.desktop";
       "image/jp2" = "feh.desktop";
       "image/x-xcursor" = "feh.desktop";
