@@ -44,10 +44,10 @@ let
       filename="Scan $date.pdf"
       tmpdir="$(mktemp -d)"
       pushd "$tmpdir"
-      scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Gray --resolution 200dpi
+      scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Color --resolution 300dpi
 
       # Convert any PNM images produced by the scan into a PDF with the date as a name
-      convert image* -density 200 "$filename"
+      convert image* -density 300 "$filename"
       chmod 0666 "$filename"
 
       # Remove temporary PNM images
