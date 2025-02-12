@@ -20,8 +20,8 @@ in
       PAPERLESS_CONSUMER_POLLING = "1"; # Faster processing
       # Reveres proxy stuff to get tika to work
       PAPERLESS_URL = "paperless.homehub.tv";
-      # USE_X_FORWARD_HOST = "true";
-      # USE_X_FORWARD_PORT = "true";
+      USE_X_FORWARD_HOST = "true";
+      USE_X_FORWARD_PORT = "true";
     };
   };
 
@@ -35,7 +35,7 @@ in
       useACMEHost = "homehub.tv";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://localhost:${toString port}";
+        proxyPass = "http://127.0.0.1:${toString port}";
         proxyWebsockets = true;
         # These configuration options are required for WebSockets to work.
         # Without them Tika document conversion wouldn't work
@@ -48,7 +48,6 @@ in
           proxy_set_header Connection "upgrade";
 
           proxy_redirect off;
-          proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Host $server_name;
