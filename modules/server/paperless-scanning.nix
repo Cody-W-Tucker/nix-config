@@ -171,6 +171,7 @@ in
     users.users.scanner = {
       uid = config.ids.uids.scanner;
       group = "scanner";
+      extraGroups = [ "scanner" "lp" ];
     };
 
     environment.etc."scanbd/scanbd.conf".source = scanbdConf;
