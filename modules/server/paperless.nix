@@ -18,6 +18,10 @@ in
       PAPERLESS_CONSUMER_RECURSIVE = "true";
       PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
       PAPERLESS_CONSUMER_POLLING = "1"; # Faster processing
+      # Reveres proxy stuff to get tika to work
+      PAPERLESS_URL = "paperless.homehub.tv";
+      USE_X_FORWARD_HOST = "true";
+      USE_X_FORWARD_PORT = "true";
     };
   };
 
@@ -33,6 +37,24 @@ in
       locations."/" = {
         proxyPass = "http://localhost:${toString port}";
         proxyWebsockets = true;
+        # These configuration options are required for WebSockets to work.
+        # Without them Tika document conversion wouldn't work
+
+        # The default value 1M might be a little too small.
+        extraConfig = ''
+          client_max_body_size 10M;
+        
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+
+          proxy_redirect off;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Host $server_name;
+          add_header Referrer-Policy "strict-origin-when-cross-origin";
+        '';
       };
     };
   };
