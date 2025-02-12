@@ -1,13 +1,13 @@
 { config, ... }:
 let
-  paperless_port = 28981;
+  port = 28981;
 in
 {
   sops.secrets."paperless-password" = { };
 
   services.paperless = {
     enable = true;
-    inherit paperless_port;
+    inherit port;
     mediaDir = "/mnt/hdd/Documents";
     consumptionDirIsPublic = true;
     passwordFile = config.sops.secrets.paperless-password.path;
@@ -26,7 +26,7 @@ in
       useACMEHost = "homehub.tv";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://localhost:${toString paperless_port}";
+        proxyPass = "http://localhost:${toString port}";
         proxyWebsockets = true;
       };
     };
