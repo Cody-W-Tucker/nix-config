@@ -117,6 +117,7 @@
           inherit system;
           specialArgs = {
             inherit inputs;
+            inherit pkgs-unstable;
           };
           modules = [
             ./hosts/family-desktop.nix
