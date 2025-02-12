@@ -19,9 +19,9 @@ in
       PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
       PAPERLESS_CONSUMER_POLLING = "1"; # Faster processing
       # Reveres proxy stuff to get tika to work
-      PAPERLESS_URL = "paperless.homehub.tv";
-      USE_X_FORWARD_HOST = "true";
-      USE_X_FORWARD_PORT = "true";
+      # PAPERLESS_URL = "paperless.homehub.tv";
+      # USE_X_FORWARD_HOST = "true";
+      # USE_X_FORWARD_PORT = "true";
     };
   };
 
@@ -44,7 +44,6 @@ in
         extraConfig = ''
           client_max_body_size 10M;
         
-          proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection "upgrade";
 
