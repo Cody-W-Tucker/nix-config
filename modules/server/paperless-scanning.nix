@@ -155,7 +155,6 @@ in
     environment.systemPackages = with pkgs; [
       # Scanning
       scanbd # Scanner button daemon
-      sane-backends # SANE scanner support
       sane-frontends # Contains scanadf for ADF scanning
 
       # Document processing
