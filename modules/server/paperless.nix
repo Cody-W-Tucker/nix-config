@@ -69,18 +69,6 @@ let
 in
 {
 
-  environment.systemPackages = with pkgs; [
-    # Scanning
-    scanbd # Scanner button daemon
-    sane-backends # SANE scanner support
-    sane-frontends # Contains scanadf for ADF scanning
-
-    # Document processing
-    imagemagick # PDF conversion (convert command)
-    ghostscript # PDF manipulation
-  ];
-
-
   # Scansnap Scanner
   hardware.sane.enable = true;
   hardware.sane.drivers.scanSnap.enable = true;
@@ -199,6 +187,13 @@ in
 
   ###### implementation
   config = mkIf config.services.scanbd.enable {
+    environment.systemPackages = with pkgs; [
+      scanbd
+      sane-backends
+      sane-frontends
+      imagemagick
+      ghostscript
+    ];
 
     users.groups.scanner.gid = config.ids.gids.scanner;
     users.users.scanner = {
