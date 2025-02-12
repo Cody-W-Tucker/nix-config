@@ -250,10 +250,6 @@
     VDPAU_DRIVER = "va_gl";
   };
 
-  # Scansnap Scanner
-  hardware.sane.enable = true;
-  hardware.sane.drivers.scanSnap.enable = true;
-
   services = {
     fwupd.enable = true;
     thermald.enable = true;
