@@ -15,6 +15,7 @@
     ./monitoring.nix
     # ./nextcloud.nix
     ./paperless.nix
+    ./paperless-scanning.nix
     # ./photos.nix
     ./samba.nix
     ./syncthing.nix
