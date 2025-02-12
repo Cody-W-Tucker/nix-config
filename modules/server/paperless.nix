@@ -20,7 +20,7 @@ in
       PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
       PAPERLESS_CONSUMER_POLLING = "1"; # Faster processing
       # Reveres proxy stuff to get tika to work
-      PAPERLESS_URL = "paperless.homehub.tv";
+      PAPERLESS_URL = "https://paperless.homehub.tv";
       USE_X_FORWARD_HOST = "true";
       USE_X_FORWARD_PORT = "true";
     };
