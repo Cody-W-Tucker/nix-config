@@ -166,6 +166,10 @@ in
     hardware.sane.enable = true;
     hardware.sane.drivers.scanSnap.enable = true;
 
+    services.udev.extraRules = ''
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="132b", MODE="0660", GROUP="scanner"
+    '';
+
     users.groups.scanner.gid = config.ids.gids.scanner;
     users.users.scanner = {
       uid = config.ids.uids.scanner;
