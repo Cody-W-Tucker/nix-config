@@ -14,6 +14,7 @@ in
     settings = {
       PAPERLESS_ADMIN_USER = "codyt";
       PAPERLESS_TIKA_ENABLED = "true";
+      PAPERLESS_TIKA_URL = "http://127.0.0.1:9998";
       # Look in consume subdirectories for docs
       PAPERLESS_CONSUMER_RECURSIVE = "true";
       PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
