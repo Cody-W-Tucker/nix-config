@@ -57,7 +57,7 @@
 
   # Auto configure usb etc, when plugedin
   services.udisks2.enable = true;
-  services.polkit.enable = true;
+  security.polkit.enable = true;
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   networking.useDHCP = lib.mkDefault true;
