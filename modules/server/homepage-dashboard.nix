@@ -98,6 +98,14 @@ in
                 siteMonitor = "https://ai.${domain}";
               };
             }
+            {
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                description = "Workflow automation";
+                siteMonitor = "https://automation.${domain}";
+              };
+            }
             # {
             #   NocoDB = {
             #     href = "https://data.${domain}";
@@ -195,6 +203,22 @@ in
         {
           Operations = [
             {
+              Qdrant = {
+                href = "https://qdrant.${domain}/dashboard";
+                icon = "https://qdrant.${domain}/dashboard/favicon.ico";
+                description = "Vector search engine";
+                siteMonitor = "https://qdrant.${domain}/dashboard";
+              };
+            }
+            {
+              Paperless = {
+                href = "https://paperless.${domain}";
+                icon = "paperless";
+                description = "Document Management";
+                siteMonitor = "https://paperless.${domain}";
+              };
+            }
+            {
               Grafana = {
                 href = "https://monitoring.${domain}";
                 icon = "grafana";
@@ -210,22 +234,6 @@ in
             #     siteMonitor = "https://bi.${domain}";
             #   };
             # }
-            # {
-            #   N8N = {
-            #     href = "https://automation.${domain}";
-            #     icon = "n8n";
-            #     description = "Workflow automation";
-            #     siteMonitor = "https://automation.${domain}";
-            #   };
-            # }
-            {
-              Qdrant = {
-                href = "https://qdrant.${domain}/dashboard";
-                icon = "https://qdrant.${domain}/dashboard/favicon.ico";
-                description = "Vector search engine";
-                siteMonitor = "https://qdrant.${domain}/dashboard";
-              };
-            }
           ];
         }
       ];
