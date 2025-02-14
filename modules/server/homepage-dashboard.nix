@@ -81,7 +81,7 @@ in
       ];
       services = [
         {
-          Business = [
+          Tools = [
             # {
             #   Nextcloud = {
             #     href = "https://cloud.${domain}";
@@ -99,11 +99,11 @@ in
               };
             }
             {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                description = "Workflow automation";
-                siteMonitor = "https://automation.${domain}";
+              Paperless = {
+                href = "https://paperless.${domain}";
+                icon = "paperless";
+                description = "Document Management";
+                siteMonitor = "https://paperless.${domain}";
               };
             }
             # {
@@ -114,6 +114,14 @@ in
             #     siteMonitor = "https://data.${domain}";
             #   };
             # }
+            {
+              Stirling-PDF = {
+                href = "https://pdf.${domain}";
+                icon = "stirling-pdf";
+                description = "PDF Editing";
+                siteMonitor = "https://pdf.${domain}";
+              };
+            }
           ];
         }
         {
@@ -211,19 +219,19 @@ in
               };
             }
             {
-              Paperless = {
-                href = "https://paperless.${domain}";
-                icon = "paperless";
-                description = "Document Management";
-                siteMonitor = "https://paperless.${domain}";
-              };
-            }
-            {
               Grafana = {
                 href = "https://monitoring.${domain}";
                 icon = "grafana";
                 description = "Metrics dashboard";
                 siteMonitor = "https://monitoring.${domain}";
+              };
+            }
+            {
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                description = "Workflow automation";
+                siteMonitor = "https://automation.${domain}";
               };
             }
             # {
