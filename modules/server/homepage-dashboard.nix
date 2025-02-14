@@ -87,7 +87,6 @@ in
             #     href = "https://cloud.${domain}";
             #     icon = "nextcloud";
             #     description = "Could storage and collaboration";
-            #     siteMonitor = "https://cloud.${domain}";
             #   };
             # }
             {
@@ -95,7 +94,6 @@ in
                 href = "https://ai.${domain}";
                 icon = "open-webui";
                 description = "AI chat interface";
-                siteMonitor = "https://ai.${domain}";
               };
             }
             {
@@ -103,7 +101,6 @@ in
                 href = "https://paperless.${domain}";
                 icon = "paperless";
                 description = "Document Management";
-                siteMonitor = "https://paperless.${domain}";
               };
             }
             # {
@@ -111,7 +108,6 @@ in
             #     href = "https://data.${domain}";
             #     icon = "nocodb";
             #     description = "Open source Airtable alternative";
-            #     siteMonitor = "https://data.${domain}";
             #   };
             # }
             {
@@ -119,7 +115,6 @@ in
                 href = "https://pdf.${domain}";
                 icon = "stirling-pdf";
                 description = "PDF Editing";
-                siteMonitor = "https://pdf.${domain}";
               };
             }
           ];
@@ -131,7 +126,6 @@ in
                 href = "https://budget.${domain}";
                 icon = "https://budget.${domain}/favicon.ico";
                 description = "Personal budgeting tool";
-                siteMonitor = "https://budget.${domain}";
               };
             }
             {
@@ -139,7 +133,6 @@ in
                 href = "http://192.168.254.38:8123/";
                 icon = "home-assistant";
                 description = "Open source home automation";
-                siteMonitor = "http://192.168.254.38:8123/";
               };
             }
             {
@@ -147,7 +140,6 @@ in
                 href = "https://backup.${domain}";
                 icon = "syncthing";
                 description = "File synchronization";
-                siteMonitor = "https://backup.${domain}";
               };
             }
           ];
@@ -159,7 +151,6 @@ in
                 icon = "jellyfin";
                 href = "https://media.${domain}";
                 description = "Media server";
-                siteMonitor = "https://media.${domain}";
               };
             }
             # {
@@ -167,7 +158,6 @@ in
             #     href = "https://photos.${domain}";
             #     icon = "photoprism";
             #     description = "Photo management";
-            #     siteMonitor = "https://photos.${domain}";
             #   };
             # }
             {
@@ -175,7 +165,6 @@ in
                 href = "https://arm.${domain}";
                 icon = "https://arm.${domain}/static/img/favicon.png";
                 description = "Automatic DVD Ripping Machine";
-                siteMonitor = "https://arm.${domain}";
               };
             }
           ];
@@ -187,7 +176,6 @@ in
                 href = "https://rss.${domain}";
                 icon = "miniflux";
                 description = "RSS reader";
-                siteMonitor = "https://rss.${domain}";
               };
             }
             {
@@ -195,7 +183,6 @@ in
                 href = "https://ebook.${domain}";
                 icon = "calibre";
                 description = "Ebook reader";
-                siteMonitor = "https://ebook.${domain}";
               };
             }
             {
@@ -203,7 +190,6 @@ in
                 href = "https://hoarder.${domain}";
                 icon = "hoarder";
                 description = "Link collector";
-                siteMonitor = "https://hoarder.${domain}";
               };
             }
           ];
@@ -215,7 +201,6 @@ in
                 href = "https://qdrant.${domain}/dashboard";
                 icon = "https://qdrant.${domain}/dashboard/favicon.ico";
                 description = "Vector search engine";
-                siteMonitor = "https://qdrant.${domain}/dashboard";
               };
             }
             {
@@ -223,7 +208,6 @@ in
                 href = "https://monitoring.${domain}";
                 icon = "grafana";
                 description = "Metrics dashboard";
-                siteMonitor = "https://monitoring.${domain}";
               };
             }
             {
@@ -231,7 +215,6 @@ in
                 href = "https://automation.${domain}";
                 icon = "n8n";
                 description = "Workflow automation";
-                siteMonitor = "https://automation.${domain}";
               };
             }
             # {
@@ -239,7 +222,6 @@ in
             #     href = "https://bi.${domain}";
             #     icon = "metabase";
             #     description = "Business intelligence";
-            #     siteMonitor = "https://bi.${domain}";
             #   };
             # }
           ];
