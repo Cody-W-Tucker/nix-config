@@ -16,6 +16,7 @@
     # ./nextcloud.nix
     ./paperless.nix
     ./paperless-scanning.nix
+    ./stirling-pdf.nix
     # ./photos.nix
     ./samba.nix
     ./syncthing.nix
