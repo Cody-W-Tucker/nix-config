@@ -23,7 +23,7 @@ in
         title = "HomeHub.tv";
         cardBlur = "sm";
         layout = {
-          Business = {
+          Tools = {
             style = "row";
             columns = 3;
           };
