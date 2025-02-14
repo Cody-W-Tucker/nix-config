@@ -19,6 +19,10 @@ in
     locations."/" = {
       proxyPass = "http://127.0.0.1:${toString PORT}/";
       proxyWebsockets = true;
+      # The default value 1M might be a little too small.
+      extraConfig = ''
+        client_max_body_size 100M;
+      '';
     };
   };
 }
