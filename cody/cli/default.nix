@@ -65,5 +65,6 @@
         cursor_shape = "block";
       };
     };
+    zoxide.enable = true;
   };
 }
