@@ -33,7 +33,7 @@
       shellAliases = {
         ssh = "kitty +kitten ssh";
         ff = "fzf --preview 'bat --style=numbers --color=always {}'";
-        fo = "fzf --preview 'bat --style=numbers --color=always {}' | xargs nvim";
+        fo = "fzf --preview 'bat --style=numbers --color=always {}' | xargs -I {} xdg-open '{}'";
         ll = "ls -l";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
