@@ -13,6 +13,7 @@ let
     ./keybind-logger.nix
     ./todoist-rofi.nix
     ./update.nix
+    ./file-contents-search.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
