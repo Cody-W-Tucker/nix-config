@@ -66,5 +66,6 @@
       };
     };
     zoxide.enable = true;
+    ripgrep.enable = true;
   };
 }
