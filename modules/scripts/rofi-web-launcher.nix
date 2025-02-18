@@ -1,7 +1,5 @@
 { pkgs }:
 
-# TODO: get obsidian to work (XDG magic): ["🟪 Obsidian"]="obsidian://search?vault=your_vault_name&query="
-
 pkgs.writeShellScriptBin "web-search" ''
   declare -A URLS
 
@@ -23,11 +21,12 @@ pkgs.writeShellScriptBin "web-search" ''
     platform=$(gen_list | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
 
     if [[ -n "$platform" ]]; then
-      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0)
+      # Remove newline from rofi output using tr
+      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0 | tr -d '\n')
       base_url="''${URLS[$platform]}"
 
       if [[ -n "$query" ]]; then
-        # Build search URL with encoded query
+        # Properly encode query including spaces
         url="''${base_url}$(${pkgs.jq}/bin/jq -sRr @uri <<< "$query")"
       else
         # Extract base domain (handles URLs with paths/parameters)
