@@ -14,7 +14,10 @@ pkgs.writeShellScriptBin "web-search" ''
   )
 
   gen_list() {
-    printf "%s\n" "''${!URLS[@]}"
+    for i in "''${!URLS[@]}"
+    do
+      echo "$i"
+    done
   }
 
   main() {
