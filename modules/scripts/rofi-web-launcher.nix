@@ -18,16 +18,16 @@ pkgs.writeShellScriptBin "web-search" ''
   }
 
   main() {
-    platform=$(gen_list | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom  | tr -d '\n')
+    platform=$(gen_list | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
 
     if [[ -n "$platform" ]]; then
       # Remove newline from rofi output using tr
-      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0  | tr -d '\n')
+      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0)
       base_url="''${URLS[$platform]}"
 
       if [[ -n "$query" ]]; then
         # Properly encode query including spaces
-        url="''${base_url}$(${pkgs.jq}/bin/jq -sRr @uri <<< "$query")"
+        url="''${base_url}$(${pkgs.jq}/bin/jq -R @uri <<< "$query")"
       else
         # Extract base domain (handles URLs with paths/parameters)
         protocol="''${base_url%%://*}"
