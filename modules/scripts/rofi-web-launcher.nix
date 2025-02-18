@@ -22,7 +22,7 @@ pkgs.writeShellScriptBin "web-search" ''
 
     if [[ -n "$platform" ]]; then
       # Remove newline from rofi output using tr
-      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0 | tr -d '\n' | sed 's/\r//g')
+      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0 | awk '{$1=$1};1')
       base_url="''${URLS[$platform]}"
 
       if [[ -n "$query" ]]; then
