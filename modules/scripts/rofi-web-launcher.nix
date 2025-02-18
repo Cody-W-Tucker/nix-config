@@ -26,11 +26,11 @@ pkgs.writeShellScriptBin "web-search" ''
     if [[ -n "$platform" ]]; then
       # Remove newline from rofi output using tr
       query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0)
-      base_url="''${URLS[$platform]}"
+      base_url=''${URLS[$platform]}
 
       if [[ -n "$query" ]]; then
         # Properly encode query including spaces
-        url="''${base_url}$(${pkgs.jq}/bin/jq -R @uri <<< "$query")"
+        url=''${base_url}$(${pkgs.jq}/bin/jq -R @uri <<< "$query")
       else
         # Extract base domain (handles URLs with paths/parameters)
         protocol="''${base_url%%://*}"
