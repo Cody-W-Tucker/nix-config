@@ -18,7 +18,7 @@ pkgs.writeShellScriptBin "web-search" ''
   }
 
   main() {
-    platform=$(gen_list | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
+    platform=$(gen_list | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom -no-newline)
 
     if [[ -n "$platform" ]]; then
       # Remove newline from rofi output using tr
