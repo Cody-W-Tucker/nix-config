@@ -78,6 +78,11 @@
     ];
   };
 
+  programs.taskwarrior = {
+    enable = true;
+    package = pkgs.taskwarrior3;
+  };
+
   # Doc conversion
   programs.pandoc.enable = true;
 
