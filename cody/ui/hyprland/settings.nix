@@ -11,16 +11,17 @@ let
   keybinds = [
     # Application launchers
     "${mainMod}, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-    # "${mainMod}, RETURN, exec, uwsm app -- pkill waybar && waybar &"
     "${mainMod}, Q, exec, uwsm app -- kitty"
     "${mainMod}, E, exec, uwsm app -- kitty -- ranger"
     "${mainMod} SHIFT, Tab, exec, uwsm app -- rofi-launcher"
     "${mainMod}, Tab, exec, uwsm app -- web-search"
     "${mainMod} SHIFT, E, exec, uwsm app -- nautilus"
     "${mainMod} SHIFT, Q, exec, uwsm app -- rofi -show web_scraper -modi 'web_scraper:web-scraper'"
-    "${mainMod}, KP_Enter, exec, uwsm app -- taskwarrior-rofi quick_add"
-    "${mainMod} SHIFT, KP_Enter, exec, uwsm app -- taskwarrior-rofi"
-    "${mainMod} SHIFT, RETURN, exec, uwsm app -- taskwarrior-rofi"
+    "${mainMod}, RETURN, exec, uwsm app -- todoist-rofi quick_add"
+    "${mainMod} SHIFT, RETURN, exec, uwsm app -- todoist-rofi"
+    "${mainMod}, KP_Enter, exec, uwsm app -- todoist-rofi quick_add"
+    "${mainMod} SHIFT, KP_Enter, exec, uwsm app -- todoist-rofi"
+    "${mainMod} SHIFT, RETURN, exec, uwsm app -- todoist-rofi"
 
     # Quick launch apps
     "${mainMod}, KP_Insert, exec, uwsm app -- firefoxpwa site launch 01JKS3GVGR2ZK2ZNMH5X913QP7"
