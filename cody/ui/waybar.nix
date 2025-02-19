@@ -9,7 +9,7 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "custom/notification" "clock" "custom/timer" ];
+    modules-center = [ "custom/notification" "clock" "custom/timer" "custom/tasks" ];
     modules-left = [
       "hyprland/workspaces"
       "tray"
@@ -64,6 +64,12 @@ let
       on-click-right = "waybar-timer togglepause";
       on-scroll-up = "waybar-timer increase 300 || waybar-timer new 5 'notify-send -u critical \"Timer expired.\"'";
       on-scroll-down = "waybar-timer increase -300 || 'notify-send -u critical \"Timer expired.\"'";
+    };
+    "custom/tasks" = {
+      exec = "waybar-tasks";
+      format = "<span foreground='#f5c2e7'>TODO: </span>{}";
+      interval = 60;
+      tooltip = false;
     };
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
@@ -172,7 +178,7 @@ let
       on-click = "activate";
       format = "{icon} {windows}";
       window-rewrite = {
-        "firefox" = "";
+        "firefox" = "";
         "spotify" = "";
         "code" = "󰨞";
         "kitty" = "";
