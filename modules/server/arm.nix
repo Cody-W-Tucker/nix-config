@@ -29,7 +29,7 @@
   # Configure the ARM container
   virtualisation.oci-containers.containers."arm-rippers" = {
     autoStart = true; # Automatically start the container on boot
-    image = "1337server/automatic-ripping-machine:latest"; # custom ARM image with handbrake built with intelQSV support. After building the image run docker commit <container_id> custom-arm.
+    image = "automatic-ripping-machine/automatic-ripping-machine:latest"; # custom ARM image with handbrake built with intelQSV support. After building the image run docker commit <container_id> custom-arm.
     ports = [ "9090:8080" ]; # Map host port 9090 to container port 8080
     environment = {
       ARM_UID = "1002"; # UID of the 'arm' user on the host system
