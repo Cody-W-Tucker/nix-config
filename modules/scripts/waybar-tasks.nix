@@ -3,23 +3,27 @@
 pkgs.writeShellScriptBin "waybar-tasks" ''
   #!/bin/bash
 
-  # Fetch the most urgent task from Taskwarrior
-  task=$(task +READY -blocked export | jq -r 'sort_by(.urgency) | reverse | .[0] | "\(.description)"')
+  # Get the most urgent task (ID + description) in one query
+  task_data=$(task +READY -blocked export | jq -r 'sort_by(-.urgency) | .[0] | "\(.id) \(.description)"')
 
-  # Display task or placeholder
-  if [ "$task" != "null ()" ]; then
-      echo "$task"
+  # Split into ID and description
+  task_id=$(echo "$task_data" | awk '{print $1}')
+  task_desc=$(echo "$task_data" | cut -d' ' -f2-)
+
+  # Handle completion request
+  if [ "$1" == "complete" ]; then
+      if [ "$task_id" != "null" ] && [ -n "$task_id" ]; then
+          task "$task_id" done rc.confirmation=no >/dev/null
+          waybar -s "tasks_updated"  # Immediate refresh
+      fi
+      exit 0
+  fi
+
+  # Normal display mode
+  if [ "$task_id" != "null" ] && [ -n "$task_id" ]; then
+      echo "$task_desc"
   else
       echo "No urgent tasks"
   fi
 
-  # Handle completion when called with 'complete' argument
-  if [ "$1" == "complete" ]; then
-      task_id=$(task +READY -blocked limit:1 _ids)
-      if [ -n "$task_id" ]; then
-          task done $task_id
-      fi
-      # Refresh Waybar
-      waybar-signal -r custom/tasks
-  fi
 ''
