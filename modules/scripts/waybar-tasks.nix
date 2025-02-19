@@ -14,7 +14,7 @@ pkgs.writeShellScriptBin "waybar-tasks" ''
   if [ "$1" == "complete" ]; then
       if [ "$task_id" != "null" ] && [ -n "$task_id" ]; then
           task "$task_id" done rc.confirmation=no >/dev/null
-          waybar -s "tasks_updated"  # Immediate refresh
+          waybar -s "waybar-tasks"  # Immediate refresh
       fi
       exit 0
   fi
