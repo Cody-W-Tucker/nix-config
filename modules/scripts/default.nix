@@ -23,6 +23,7 @@ in
 {
   environment.systemPackages = with pkgs; [
     jq # needed with web-search
+    inotify-tools # needed with waybar tasks
     # Adding the scripts to the system packages
   ] ++ scriptPackages;
 
