@@ -72,7 +72,7 @@ let
       interval = 60;
       tooltip = false;
       on-click = "waybar-tasks complete";
-      signal = "waybar-tasks";
+      signal = "1";
     };
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
