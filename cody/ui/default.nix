@@ -50,7 +50,6 @@
     (with pkgs-unstable; [
       # list of unstable packages go here
       vscode
-      code-cursor
       spotube
       ferdium
     ]);
