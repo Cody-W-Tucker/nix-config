@@ -71,7 +71,7 @@ let
       format = "<span foreground='#f5c2e7'>TODO: </span>{}";
       interval = 60;
       tooltip = false;
-      on-click = "waybar-tasks waybar-tasks complete-and-update";
+      on-click = "waybar-tasks waybar-tasks complete";
     };
     clock = {
       format = "{:%m/%d/%Y - %I:%M %p}";
