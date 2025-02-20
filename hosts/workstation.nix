@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, stylix, ... }:
+{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, stylix, ... }:
 
 {
   imports =
@@ -95,7 +95,6 @@
   services.gvfs.enable = true;
 
   # Override Display Manager and Windowing system.
-  environment.systemPackages = [ pkgs.where-is-my-sddm-theme ];
   services = {
     displayManager.sddm = {
       enable = true;
@@ -254,6 +253,17 @@
     fwupd.enable = true;
     thermald.enable = true;
   };
+
+  # Machine specific packages
+  environment.systemPackages =
+    (with pkgs; [
+      # list of stable packages go here
+      where-is-my-sddm-theme
+    ]) ++
+    (with pkgs-unstable; [
+      # list of unstable packages go here
+      code-cursor
+    ]);
 
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
