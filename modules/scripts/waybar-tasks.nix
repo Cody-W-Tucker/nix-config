@@ -3,39 +3,42 @@
 pkgs.writeShellScriptBin "waybar-tasks" ''
   #!/bin/bash
 
-  # Function to fetch the most urgent task (ID + description)
+  # Function to fetch the most urgent task
   fetch_task() {
-      task_data=$(task +READY -blocked due:today export | jq -r 'sort_by(-.urgency) | .[0] | "\(.id) \(.description)"')
-      task_id=$(echo "$task_data" | awk '{print $1}')
-      task_desc=$(echo "$task_data" | cut -d' ' -f2-)
+    task +READY -blocked due:today export | jq -r 'sort_by(-.urgency) | .[0] | "\(.id) \(.description)"'
   }
 
-  # Handle completion and immediate update
+  # Fetch initial task data
+  task_data=$(fetch_task)
+
+  # Split into ID and description
+  task_id=$(echo "$task_data" | awk '{print $1}')
+  task_desc=$(echo "$task_data" | cut -d' ' -f2-)
+
+  # Handle completion request
   if [ "$1" == "complete-and-update" ]; then
-      # Fetch current task info
-      fetch_task
-
-      # Mark current task as done if it exists
       if [ "$task_id" != "null" ] && [ -n "$task_id" ]; then
+          # Mark the current task as done
           task "$task_id" done rc.confirmation=no >/dev/null
+
+          # Fetch the next task after completing the current one
+          task_data=$(fetch_task)
+          task_id=$(echo "$task_data" | awk '{print $1}')
+          task_desc=$(echo "$task_data" | cut -d' ' -f2-)
+
+          # Immediately update Waybar with the next task
+          if [ "$task_id" != "null" ] && [ -n "$task_id" ]; then
+              echo "$task_desc"
+          else
+              echo "No urgent tasks"
+          fi
+
+          exit 0
       fi
-
-      # Fetch the next task after completion
-      fetch_task
-
-      # Output the next task or fallback message
-      if [ "$task_id" != "null" ] && [ -n "$task_id" ]; then
-          echo "$task_desc"
-      else
-          echo "No urgent tasks"
-      fi
-
       exit 0
   fi
 
-  # Normal display mode: fetch and display the most urgent task
-  fetch_task
-
+  # Normal display mode (when no arguments are passed)
   if [ "$task_id" != "null" ] && [ -n "$task_id" ]; then
       echo "$task_desc"
   else
