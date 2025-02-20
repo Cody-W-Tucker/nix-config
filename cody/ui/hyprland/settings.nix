@@ -27,6 +27,7 @@ let
     "${mainMod}, KP_Insert, exec, uwsm app -- firefoxpwa site launch 01JKS3GVGR2ZK2ZNMH5X913QP7"
     "${mainMod}, KP_Add, exec, uwsm app -- hyprctl dispatch exec [floating] gnome-calculator"
     "${mainMod}, KP_Home, exec, uwsm app -- code"
+    "${mainMod} SHIFT, KP_Home, exec, uwsm app -- cursor"
 
     # Screenshots
     ''${mainMod}, S, exec, uwsm app -- grim -g "$(slurp)" "$HOME/Pictures/Screenshots/$(date '+%y%m%d_%H-%M-%S').png"''
