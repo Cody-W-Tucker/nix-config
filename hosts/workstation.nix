@@ -262,7 +262,6 @@
     ]) ++
     (with pkgs-unstable; [
       # list of unstable packages go here
-      code-cursor
     ]);
 
   # Don't change this
