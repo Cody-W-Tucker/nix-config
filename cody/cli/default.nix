@@ -32,6 +32,7 @@
       history.size = 10000;
       shellAliases = {
         ssh = "kitty +kitten ssh";
+        cd = "z";
         ff = "fzf --preview 'bat --style=numbers --color=always {}'";
         fo = "fzf --preview 'bat --style=numbers --color=always {}' | xargs -I {} xdg-open '{}'";
         ll = "ls -l";
