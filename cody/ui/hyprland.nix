@@ -84,6 +84,7 @@
         key_press_enables_dpms = "true";
         force_default_wallpaper = "0";
         disable_hyprland_logo = "true";
+        focus_on_activate = "true";
       };
     };
   };
