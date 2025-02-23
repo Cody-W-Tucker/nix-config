@@ -88,13 +88,13 @@
       };
     };
   };
-  # Lockscreen: blurs after 30mins with another 30mins grace, then turns monitor off and locks
+  # Lockscreen: blurs after 15mins with another 15mins grace, then turns monitor off and locks
   programs.hyprlock = {
     enable = true;
     settings = {
       general = {
         hide_cursor = true;
-        grace = 1800; # 30mins.
+        grace = 900; # 15mins.
         ignore_empty_input = true;
       };
       background = lib.mkForce [
@@ -155,12 +155,12 @@
 
       listener = [
         {
-          timeout = 1800; # 30min.
+          timeout = 900; # 15min.
           on-timeout = "loginctl lock-session";
           on-resume = "echo 'service resumed'";
         }
         {
-          timeout = 3600; # 60min.
+          timeout = 1800; # 30min.
           on-timeout = "hyprctl dispatch dpms off";
           on-resume = "hyprctl dispatch dpms on";
         }
