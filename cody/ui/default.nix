@@ -45,7 +45,7 @@
       slack
       gnome-calculator
       nautilus
-      libreoffice-qt
+      libreoffice
       hunspell
     ])
     ++
