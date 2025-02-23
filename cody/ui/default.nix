@@ -45,6 +45,8 @@
       slack
       gnome-calculator
       nautilus
+      libreoffice-qt
+      hunspell
     ])
     ++
     (with pkgs-unstable; [
