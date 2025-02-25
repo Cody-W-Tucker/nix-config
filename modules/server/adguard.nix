@@ -4,7 +4,7 @@
   services.adguardhome = {
     enable = true;
   };
-  services.nginx.virtualHosts."adguardhome.homehub.tv" = {
+  services.nginx.virtualHosts."adguard.homehub.tv" = {
     useACMEHost = "homehub.tv";
     forceSSL = true;
     locations."/" = {
