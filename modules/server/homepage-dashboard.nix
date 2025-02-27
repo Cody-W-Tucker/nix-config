@@ -129,6 +129,13 @@ in
               };
             }
             {
+              AdGuard = {
+                href = "https://adguard.${domain}";
+                icon = "adguard-home";
+                description = "Network wide adblocking";
+              };
+            }
+            {
               "Home Assistant" = {
                 href = "http://192.168.254.38:8123/";
                 icon = "home-assistant";
