@@ -3,7 +3,7 @@
 pkgs.writeShellScriptBin "waybar-tasks" ''
   #!/bin/bash
 
-  # Get the most urgent task (ID + description) in one query sorted by lowest first
+  # Fetch task (ID + description) in one query sorted by lowest first
   task_data=$(task +READY -blocked +OVERDUE export | jq -r 'sort_by(.urgency) | .[0] // empty | "\(.id) \(.description)"')
 
   # Split into ID and description
