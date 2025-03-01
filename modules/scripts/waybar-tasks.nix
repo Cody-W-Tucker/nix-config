@@ -4,7 +4,7 @@ pkgs.writeShellScriptBin "waybar-tasks" ''
   #!/bin/bash
 
   # Get the most urgent task (ID + description) in one query
-  task_data=$(task +READY -blocked due:today export | jq -r 'sort_by(-.urgency) | .[0] | "\(.id) \(.description)"')
+  task_data=$(task +READY -blocked overdue export | jq -er 'sort_by(.urgency) | reverse | .[0] // empty | "\(.id) \(.description)"')
 
   # Split into ID and description
   task_id=$(echo "$task_data" | awk '{print $1}')
