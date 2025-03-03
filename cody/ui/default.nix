@@ -55,6 +55,7 @@
       code-cursor
       spotube
       ferdium
+      zoom-us
     ]);
 
   # Obs for screenrecording
