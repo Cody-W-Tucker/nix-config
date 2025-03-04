@@ -97,24 +97,10 @@ in
               };
             }
             {
-              Paperless = {
-                href = "https://paperless.${domain}";
-                icon = "paperless";
-                description = "Document Management";
-              };
-            }
-            {
               NocoDB = {
                 href = "https://data.${domain}";
                 icon = "nocodb";
                 description = "Open source Airtable alternative";
-              };
-            }
-            {
-              Stirling-PDF = {
-                href = "https://pdf.${domain}";
-                icon = "stirling-pdf";
-                description = "PDF Editing";
               };
             }
           ];
@@ -199,6 +185,13 @@ in
                 description = "Link collector";
               };
             }
+            {
+              Paperless = {
+                href = "https://paperless.${domain}";
+                icon = "paperless";
+                description = "Document Management";
+              };
+            }
           ];
         }
         {
@@ -222,6 +215,13 @@ in
                 href = "https://automation.${domain}";
                 icon = "n8n";
                 description = "Workflow automation";
+              };
+            }
+            {
+              Stirling-PDF = {
+                href = "https://pdf.${domain}";
+                icon = "stirling-pdf";
+                description = "PDF Editing";
               };
             }
             # {
