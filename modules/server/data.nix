@@ -8,33 +8,6 @@
       useACMEHost = "homehub.tv";
       locations."/".proxyPass = "http://localhost:7070";
     };
-    "bi.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/".proxyPass = "http://localhost:5050";
-    };
-  };
-  # Metabase for data analysis
-  services.metabase = {
-    enable = true;
-    listen.port = 5050;
-  };
-  # Create a database for Metabase
-  services.postgresql = {
-    enable = true;
-    ensureDatabases = [ "metabase" ];
-    ensureUsers = [
-      {
-        name = "metabase";
-        ensureDBOwnership = true;
-      }
-    ];
-    authentication = pkgs.lib.mkOverride 10 ''
-      #type database  DBuser    address         auth-method
-      local all       all                       md5
-      host  metabase  metabase  127.0.0.1/32    md5
-      host  metabase  metabase  ::1/128         md5
-    '';
   };
   virtualisation.oci-containers.containers = {
     "nocodb" = {
