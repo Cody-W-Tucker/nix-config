@@ -9,7 +9,7 @@
     ./automation.nix
     # ./collabora.nix
     ./content.nix
-    # ./data.nix
+    ./data.nix
     ./hoarder.nix
     ./homepage-dashboard.nix
     ./media.nix
