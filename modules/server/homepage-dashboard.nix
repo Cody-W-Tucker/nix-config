@@ -103,6 +103,13 @@ in
                 description = "Open source Airtable alternative";
               };
             }
+            {
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                description = "Workflow automation";
+              };
+            }
           ];
         }
         {
@@ -208,13 +215,6 @@ in
                 href = "https://monitoring.${domain}";
                 icon = "grafana";
                 description = "Metrics dashboard";
-              };
-            }
-            {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                description = "Workflow automation";
               };
             }
             {
