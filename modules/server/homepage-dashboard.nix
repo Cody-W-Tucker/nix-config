@@ -103,13 +103,13 @@ in
                 description = "Document Management";
               };
             }
-            # {
-            #   NocoDB = {
-            #     href = "https://data.${domain}";
-            #     icon = "nocodb";
-            #     description = "Open source Airtable alternative";
-            #   };
-            # }
+            {
+              NocoDB = {
+                href = "https://data.${domain}";
+                icon = "nocodb";
+                description = "Open source Airtable alternative";
+              };
+            }
             {
               Stirling-PDF = {
                 href = "https://pdf.${domain}";
