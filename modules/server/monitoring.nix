@@ -48,6 +48,9 @@
           static_configs = [
             {
               targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
+              labels = {
+                host = "server";
+              };
             }
           ];
         }
@@ -64,15 +67,12 @@
         }
         {
           job_name = "syslog";
-          syslog = {
-            listen_address = "0.0.0.0:514"; # Listen on port 514 for syslog messages
-            idle_timeout = "60s"; # Timeout for idle connections
-            label_structured_data = true; # Include structured data as labels
-          };
-          relabel_configs = [
+          static_configs = [
             {
-              source_labels = [ "__syslog_message_hostname" ];
-              target_label = "Router"; # Label logs with the hostname of the sender
+              targets = [ "192.168.254.254:514" ]; # Listen on port 514 for syslog messages
+              labels = {
+                host = "router";
+              };
             }
           ];
         }
