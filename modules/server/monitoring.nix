@@ -165,7 +165,9 @@
             job_name = "syslog";
             syslog = {
               listen_address = "0.0.0.0:1514";
-              listen_protocol = "udp"; # Explicitly set UDP
+              label_structured_data = false;
+              idle_timeout = "60s";
+              listen_protocol = "udp";
               labels = {
                 job = "syslog";
                 host = "router";
