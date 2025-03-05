@@ -6,7 +6,7 @@
     "hoarder.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";
-      locations."/".proxyPass = "http://localhost:2468";
+      locations."/".proxyPass = "http://127.0.0.1:2468";
     };
   };
 
@@ -66,7 +66,7 @@
     ];
     environment = {
       "HOARDER_VERSION" = "release";
-      "NEXTAUTH_URL" = "http://localhost:3000";
+      "NEXTAUTH_URL" = "http://127.0.0.1:3000";
       "MEILI_NO_ANALYTICS" = "true";
     };
     volumes = [
@@ -112,7 +112,7 @@
       "DATA_DIR" = "/data";
       "HOARDER_VERSION" = "release";
       "MEILI_ADDR" = "http://meilisearch:7700";
-      "NEXTAUTH_URL" = "http://localhost:3000";
+      "NEXTAUTH_URL" = "http://127.0.0.1:3000";
     };
     volumes = [
       "hoarder_data:/data:rw"

@@ -15,7 +15,7 @@
       enable = true;
       config = {
         CLEANUP_FREQUENCY = 48;
-        LISTEN_ADDR = "localhost:7777";
+        LISTEN_ADDR = "127.0.0.1:7777";
         BASE_URL = "https://rss.homehub.tv";
       };
       adminCredentialsFile = config.sops.templates."miniflux-credentials".path;
@@ -24,7 +24,7 @@
       forceSSL = true;
       useACMEHost = "homehub.tv";
       locations."/" = {
-        proxyPass = "http://localhost:7777";
+        proxyPass = "http://127.0.0.1:7777";
       };
     };
 
@@ -40,7 +40,7 @@
       forceSSL = true;
       useACMEHost = "homehub.tv";
       locations."/" = {
-        proxyPass = "http://localhost:8083";
+        proxyPass = "http://127.0.0.1:8083";
         extraConfig = ''
           client_max_body_size 500M;
           proxy_busy_buffers_size 1024k;
