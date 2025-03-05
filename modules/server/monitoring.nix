@@ -69,7 +69,7 @@
           job_name = "syslog";
           static_configs = [
             {
-              targets = [ "192.168.254.254:514" ]; # Listen on port 514 for syslog messages
+              targets = [ "0.0.0.0:514" ]; # Listen on port 514 for syslog messages
               labels = {
                 host = "router";
               };
