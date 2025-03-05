@@ -1,6 +1,5 @@
 { config, pkgs, ... }:
 {
-  services.rsyslogd.enable = true;
   services = {
     grafana = {
       enable = true;
@@ -165,7 +164,8 @@
           {
             job_name = "syslog";
             syslog = {
-              listen_address = "127.0.0.1:1514";
+              listen_address = "0.0.0.0:1514";
+              listen_protocol = "udp"; # Explicitly set UDP
               labels = {
                 job = "syslog";
                 host = "router";
