@@ -165,7 +165,7 @@
           {
             job_name = "syslog";
             syslog = {
-              listen_address = "127.0.0.1:514";
+              listen_address = "127.0.0.1:1514";
               labels = {
                 job = "syslog";
                 host = "router";
