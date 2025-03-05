@@ -166,7 +166,6 @@
             job_name = "syslog";
             syslog = {
               listen_address = "0.0.0.0:514";
-              max_age = "12h";
               labels = {
                 job = "syslog";
                 host = "router";
