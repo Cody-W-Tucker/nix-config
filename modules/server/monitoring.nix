@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 {
+  services.rsyslogd.enable = true;
   services = {
     grafana = {
       enable = true;
@@ -61,17 +62,6 @@
               targets = [ "workstation:9002" ];
               labels = {
                 host = "workstation";
-              };
-            }
-          ];
-        }
-        {
-          job_name = "syslog";
-          static_configs = [
-            {
-              targets = [ "0.0.0.0:514" ]; # Listen on port 514 for syslog messages
-              labels = {
-                host = "router";
               };
             }
           ];
@@ -157,20 +147,37 @@
         clients = [{
           url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
         }];
-        scrape_configs = [{
-          job_name = "journal";
-          journal = {
-            max_age = "12h";
-            labels = {
-              job = "systemd-journal";
-              host = "server";
+        scrape_configs = [
+          {
+            job_name = "journal";
+            journal = {
+              max_age = "12h";
+              labels = {
+                job = "systemd-journal";
+                host = "server";
+              };
             };
-          };
-          relabel_configs = [{
-            source_labels = [ "__journal__systemd_unit" ];
-            target_label = "unit";
-          }];
-        }];
+            relabel_configs = [{
+              source_labels = [ "__journal__systemd_unit" ];
+              target_label = "unit";
+            }];
+          }
+          {
+            job_name = "syslog";
+            syslog = {
+              listen_address = "0.0.0.0:514";
+              max_age = "12h";
+              labels = {
+                job = "syslog";
+                host = "router";
+              };
+            };
+            relabel_configs = [{
+              source_labels = [ "__syslog_message_hostname" ];
+              target_label = "host";
+            }];
+          }
+        ];
       };
       # extraFlags
     };
@@ -186,5 +193,6 @@
     };
   };
   # Open port 3090 for Loki
-  networking.firewall.allowedTCPPorts = [ 3090 9001 514 ];
+  networking.firewall.allowedTCPPorts = [ 3090 9001 ];
+  networking.firewall.allowedUDPPorts = [ 514 ];
 }
