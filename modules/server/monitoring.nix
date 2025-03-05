@@ -161,23 +161,6 @@
               target_label = "unit";
             }];
           }
-          {
-            job_name = "syslog";
-            syslog = {
-              listen_address = "0.0.0.0:1514";
-              label_structured_data = false;
-              idle_timeout = "60s";
-              listen_protocol = "udp";
-              labels = {
-                job = "syslog";
-                host = "router";
-              };
-            };
-            relabel_configs = [{
-              source_labels = [ "__syslog_message_hostname" ];
-              target_label = "host";
-            }];
-          }
         ];
       };
       # extraFlags
@@ -195,5 +178,4 @@
   };
   # Open port 3090 for Loki
   networking.firewall.allowedTCPPorts = [ 3090 9001 ];
-  networking.firewall.allowedUDPPorts = [ 1514 ];
 }
