@@ -62,6 +62,20 @@
             }
           ];
         }
+        {
+          job_name = "syslog";
+          syslog = {
+            listen_address = "0.0.0.0:514"; # Listen on port 514 for syslog messages
+            idle_timeout = "60s"; # Timeout for idle connections
+            label_structured_data = true; # Include structured data as labels
+          };
+          relabel_configs = [
+            {
+              source_labels = [ "__syslog_message_hostname" ];
+              target_label = "Router"; # Label logs with the hostname of the sender
+            }
+          ];
+        }
       ];
     };
     loki = {
@@ -172,5 +186,5 @@
     };
   };
   # Open port 3090 for Loki
-  networking.firewall.allowedTCPPorts = [ 3090 9001 ];
+  networking.firewall.allowedTCPPorts = [ 3090 9001 514 ];
 }
