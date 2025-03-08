@@ -45,8 +45,7 @@
       slack
       gnome-calculator
       nautilus
-      libreoffice
-      hunspell
+      onlyoffice-desktopeditors
       nixd
     ])
     ++
