@@ -100,11 +100,11 @@
       wayland.enable = true;
       autoNumlock = true;
     };
-    gdm.enable = lib.mkForce false;
     autoLogin.user = "codyt";
     };
     xserver = {
       enable = true;
+      displayManager.gdm.enable = lib.mkForce false;
       desktopManager.gnome.enable = lib.mkForce false;
       xkb = {
         layout = "us";
