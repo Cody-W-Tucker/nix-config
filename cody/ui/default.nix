@@ -47,6 +47,7 @@
       nautilus
       libreoffice
       hunspell
+      nixd
     ])
     ++
     (with pkgs-unstable; [
