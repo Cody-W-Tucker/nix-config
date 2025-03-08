@@ -45,7 +45,7 @@
       slack
       gnome-calculator
       nautilus
-      onlyoffice-desktopeditors
+      wpsoffice
       nixd
     ])
     ++
