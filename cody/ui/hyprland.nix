@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, hardwareConfig, stylix, ... }:
+{ config, pkgs, lib, hardwareConfig, ... }:
 
 {
   home.packages = with pkgs; [

@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   virtualisation.oci-containers.containers."actualBudget" = {
     autoStart = true;

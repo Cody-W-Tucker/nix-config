@@ -1,4 +1,4 @@
-{ pkgs, inputs, config, ... }:
+{ pkgs, ... }:
 
 {
   sops.defaultSopsFile = ./secrets.yaml;

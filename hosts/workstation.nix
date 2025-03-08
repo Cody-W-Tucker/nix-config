@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-unstable, modulesPath, inputs, stylix, ... }:
+{ config, lib, pkgs, modulesPath, ... }:
 
 {
   imports =
@@ -89,21 +89,22 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  services.displayManager.autoLogin.user = "codyt";
-
   # To see trash and network shares in nautilus
   services.gvfs.enable = true;
 
   # Override Display Manager and Windowing system.
   services = {
-    displayManager.sddm = {
+    displayManager = {
+      sddm = {
       enable = true;
       wayland.enable = true;
       autoNumlock = true;
     };
+    gdm.enable = lib.mkForce false;
+    autoLogin.user = "codyt";
+    };
     xserver = {
       enable = true;
-      displayManager.gdm.enable = lib.mkForce false;
       desktopManager.gnome.enable = lib.mkForce false;
       xkb = {
         layout = "us";
@@ -259,9 +260,6 @@
     (with pkgs; [
       # list of stable packages go here
       where-is-my-sddm-theme
-    ]) ++
-    (with pkgs-unstable; [
-      # list of unstable packages go here
     ]);
 
   # Don't change this

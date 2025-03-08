@@ -1,7 +1,4 @@
-{ config, pkgs, ... }:
-let
-  userDir = "${config.users.users.codyt.home}";
-in
+{ pkgs, ... }:
 {
   services.jellyfin = {
     enable = true;

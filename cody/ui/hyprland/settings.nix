@@ -1,4 +1,3 @@
-{ config, ... }:
 let
   mainMod = "SUPER";
 

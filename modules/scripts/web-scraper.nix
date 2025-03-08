@@ -1,4 +1,4 @@
-{ config, pkgs }:
+{ pkgs }:
 
 pkgs.writeShellScriptBin "web-scraper" ''
   # Check if URL is provided

@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   networking.firewall.allowedUDPPorts = [ 53 ];
   services.adguardhome = {

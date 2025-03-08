@@ -1,4 +1,3 @@
-{ config, ... }:
 let
   HOST = "pdf.homehub.tv";
   PORT = 44302;
