@@ -25,7 +25,6 @@
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
     let
       system = "x86_64-linux";
-      lib = nixpkgs.lib;
       pkgs = import nixpkgs {
         system = system;
         config = {
@@ -148,7 +147,7 @@
             inherit pkgs;
           };
           modules = [
-            ({ config, pkgs, modulesPath, lib, ... }: {
+            ({ pkgs, modulesPath, lib, ... }: {
               imports = [
                 (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
                 ./configuration.nix # Import the main config

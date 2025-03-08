@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   xdg.mime.enable = true;
   xdg.mimeApps = {

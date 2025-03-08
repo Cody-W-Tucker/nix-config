@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, ... }:
 let
   inherit (pkgs) writeText;
   inherit (config) xdg;

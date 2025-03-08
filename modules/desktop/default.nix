@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, config, lib, inputs, ... }: {
+{ pkgs, pkgs-unstable, ... }: {
 
   imports = [
     ./clientSyncthing.nix

@@ -1,5 +1,3 @@
-{ pkgs, config, lib, ... }:
-
 {
   imports = [
     ./cli

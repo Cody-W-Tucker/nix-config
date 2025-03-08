@@ -1,6 +1,6 @@
 # This is the shared config for all machines
 
-{ config, pkgs, inputs, ... }:
+{ pkgs, ... }:
 
 {
   # Set your time zone.
@@ -57,8 +57,6 @@
     shell = pkgs.zsh;
     # hashedPasswordFile = config.sops.secrets.codyt.path;
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
-    packages = with pkgs; [
-    ];
     openssh = {
       authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJkUAtqd1GcKYejbmpxjLzXdMoDojpVuNXEEBhYQjVgY cody@tmvsocial.com"

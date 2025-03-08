@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   services = {
     nginx.virtualHosts."backup.homehub.tv" = {

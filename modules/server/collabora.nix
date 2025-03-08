@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   # Online document editing
   virtualisation.oci-containers.containers."collabora" = {

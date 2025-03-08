@@ -1,5 +1,3 @@
-{ config, ... }:
-
 # Broken due to replacing extraConfig with settings.
 {
   # services.samba = {
