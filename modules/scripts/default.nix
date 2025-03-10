@@ -15,6 +15,7 @@ let
     ./update.nix
     ./file-contents-search.nix
     ./waybar-tasks.nix
+    ./rofi-taskwarrior.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
