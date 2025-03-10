@@ -42,6 +42,22 @@ function complete_task() {
     fi
 }
 
+function start_task() {
+    if [ -n "$1" ]; then
+        $TASKWARRIOR_COMMAND start "$1" && notify 'Task successfully started'
+    else
+        notify 'No task ID provided'
+    fi
+}
+
+function stop_task() {
+    if [ -n "$1" ]; then
+        $TASKWARRIOR_COMMAND stop "$1" && notify 'Task successfully stopped'
+    else
+        notify 'No task ID provided'
+    fi
+}
+
 function delete_task() {
     if [ -n "$1" ]; then
         $TASKWARRIOR_COMMAND delete "$1" && notify 'Task successfully deleted'
@@ -71,6 +87,12 @@ function task_menu() {
         'Complete task')
             complete_task "$1"
             ;;
+        'Start task')
+            start_task "$1"
+            ;;
+        'Stop task')
+            stop_task "$1"
+            ;;
         'Delete task')
             delete_task "$1"
             ;;
@@ -91,7 +113,7 @@ function list_tasks() {
     local task_data=$(mktemp)
     
     # Use _query command to get clean output
-    $TASKWARRIOR_COMMAND "$filter" rc._forcecolor=off rc.defaultwidth=0 rc.detection=off rc.verbose=nothing rc.report.minimal.columns=id,priority,project,description,due rc.report.minimal.labels=ID,P,Project,Description,Due > "$task_data"
+    $TASKWARRIOR_COMMAND "$filter" rc._forcecolor=off rc.defaultwidth=0 rc.detection=off rc.verbose=nothing rc.report.minimal.columns=id,description, rc.report.minimal.labels=ID,Description > "$task_data"
     
     if [ ! -s "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
