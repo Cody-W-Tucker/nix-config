@@ -47,6 +47,7 @@
       nautilus
       onlyoffice-desktopeditors
       nixd
+      timewarrior
     ])
     ++
     (with pkgs-unstable; [
