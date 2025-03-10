@@ -1,7 +1,7 @@
 { pkgs }:
 
 pkgs.writeShellScriptBin "taskwarrior-rofi" ''
-  #!/usr/bin/env bash
+#!/usr/bin/env bash
 
 # Taskwarrior Rofi integration script
 
@@ -87,9 +87,11 @@ function list_tasks() {
     local filter=""
     [[ -n "$1" ]] && filter="$1"
     
-    # Create a formatted output for display
+    # Get tasks using the task command with a simpler format
     local task_data=$(mktemp)
-    $TASKWARRIOR_COMMAND rc.verbose=nothing "$filter" export rc.json.array=off | jq -r '.[] | "\(.id)|\(.description)|\(.project // "No project")|\(.due // "No due date")|\(.priority // "None")"' > "$task_data"
+    
+    # Use _query command to get clean output
+    $TASKWARRIOR_COMMAND "$filter" rc._forcecolor=off rc.defaultwidth=0 rc.detection=off rc.verbose=nothing rc.report.minimal.columns=id,priority,project,description,due rc.report.minimal.labels=ID,P,Project,Description,Due > "$task_data"
     
     if [ ! -s "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
@@ -97,40 +99,27 @@ function list_tasks() {
         return
     fi
     
-    # Format task data for display in rofi
+    # Read the data from the task_data file, skip the header and footer lines
     local formatted_tasks=""
-    local max_desc_length=50
+    local line_count=$(wc -l < "$task_data")
     
-    while IFS='|' read -r id description project due priority; do
-        # Truncate description if too long
-        if [ ''${#description} -gt $max_desc_length ]; then
-            description="''${description:0:$max_desc_length}..."
-        fi
-        
-        # Format due date if it exists
-        if [ "$due" != "No due date" ]; then
-            due=$(date -d "$due" "+%Y-%m-%d" 2>/dev/null || echo "$due")
-        fi
-        
-        # Add priority indicator
-        local priority_indicator=""
-        case "$priority" in
-            "H") priority_indicator="!" ;;
-            "M") priority_indicator="+" ;;
-            "L") priority_indicator="-" ;;
-            *) priority_indicator=" " ;;
-        esac
-        
-        formatted_tasks+="$id: $priority_indicator [$project] $description ($due)\n"
-    done < "$task_data"
+    if [ "$line_count" -le 3 ]; then
+        notify "No tasks found matching filter '$filter'"
+        rm "$task_data"
+        return
+    fi
+    
+    # Get all lines except the first two and the last one (header and summary rows)
+    formatted_tasks=$(sed -e '1,2d' -e '$d' "$task_data")
     
     rm "$task_data"
     
     # Show rofi menu with formatted tasks
-    local selection=$(echo -e "$formatted_tasks" | rofi -dmenu -i -p 'Task' -mesg "Tasks $filter ($(echo -e "$formatted_tasks" | wc -l) total)")
+    local selection=$(echo "$formatted_tasks" | rofi -dmenu -i -width 100 -p 'Task' -mesg "Tasks $filter")
     
     if [ -n "$selection" ]; then
-        local task_id=$(echo "$selection" | cut -d':' -f1)
+        # Extract the task ID (first field)
+        local task_id=$(echo "$selection" | awk '{print $1}')
         task_menu "$task_id"
     fi
 }
