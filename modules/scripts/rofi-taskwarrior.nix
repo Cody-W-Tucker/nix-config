@@ -103,12 +103,12 @@ function task_menu() {
 }
 
 function list_tasks() {
-    local filter=""
+    local filter="-reminder"
     [[ -n "$1" ]] && filter="$1"
-    
     local task_data=$(mktemp)
+
     # List all tasks matching the filter, sorted by urgency
-    $TASKWARRIOR_COMMAND "$filter" +READY -reminder export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
+    $TASKWARRIOR_COMMAND "$filter" export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
     
     if [ ! -s "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
@@ -116,18 +116,13 @@ function list_tasks() {
         return
     fi
     
-    if [ -z "$task_data" ]; then
-        notify "No tasks found matching filter '$filter'"
-        return
-    fi
-    
-    # Show rofi menu with formatted tasks
-    local selection=$(echo "$task_data" | rofi -dmenu -i -width 100 -p 'Task' -mesg "Tasks $filter")
-    
+    # Show rofi menu with tasks
+    local selection=$(cat "$task_data" | rofi -dmenu -i -width 100 -p 'Task' -mesg "Tasks $filter")
     if [ -n "$selection" ]; then
         local task_id=$(echo "$selection" | awk '{print $1}')
         task_menu "$task_id"
     fi
+    rm "$task_data"
 }
 
 function filter_menu() {
