@@ -78,7 +78,7 @@ function modify_task() {
 }
 
 function task_menu() {
-    local action=$(printf "Complete task\nDelete task\nModify task" | rofi -dmenu -i -l 3 -p 'Pick an action')
+    local action=$(printf "Complete task\nDelete task\nModify task" | rofi -dmenu -i -l 5 -p 'Pick an action')
     if [ -z "$action" ]; then
         exit 0
     fi
@@ -106,11 +106,9 @@ function list_tasks() {
     local filter=""
     [[ -n "$1" ]] && filter="$1"
     
-    # Get tasks using the task command with a simpler format
     local task_data=$(mktemp)
-    
-    # Use _query command to get clean output
-    $TASKWARRIOR_COMMAND "$filter" +READY export | jq -r 'sort_by(.urgency) | .[0] // empty | "\(.id) \(.description)"' > "$task_data"
+    # List all tasks matching the filter, sorted by urgency
+    $TASKWARRIOR_COMMAND "$filter" export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
     
     if [ ! -s "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
@@ -118,26 +116,19 @@ function list_tasks() {
         return
     fi
     
-    # Read the data from the task_data file, skip the header and footer lines
-    local formatted_tasks=""
-    local line_count=$(wc -l < "$task_data")
+    # Extract tasks, removing any header and footer lines if present
+    local formatted_tasks=$(sed -e '1,2d' -e '$d' "$task_data")
+    rm "$task_data"
     
-    if [ "$line_count" -le 3 ]; then
+    if [ -z "$formatted_tasks" ]; then
         notify "No tasks found matching filter '$filter'"
-        rm "$task_data"
         return
     fi
-    
-    # Get all lines except the first two and the last one (header and summary rows)
-    formatted_tasks=$(sed -e '1,2d' -e '$d' "$task_data")
-    
-    rm "$task_data"
     
     # Show rofi menu with formatted tasks
     local selection=$(echo "$formatted_tasks" | rofi -dmenu -i -width 100 -p 'Task' -mesg "Tasks $filter")
     
     if [ -n "$selection" ]; then
-        # Extract the task ID (first field)
         local task_id=$(echo "$selection" | awk '{print $1}')
         task_menu "$task_id"
     fi
