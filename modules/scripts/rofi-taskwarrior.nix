@@ -103,9 +103,6 @@ function task_menu() {
 }
 
 function list_tasks() {
-    # Sync tasks first
-    $TASKWARRIOR_COMMAND sync >/dev/null 2>&1
-    
     local filter=""
     [[ -n "$1" ]] && filter="$1"
     
@@ -113,7 +110,7 @@ function list_tasks() {
     local task_data=$(mktemp)
     
     # Use _query command to get clean output
-    $TASKWARRIOR_COMMAND "$filter" rc._forcecolor=off rc.defaultwidth=0 rc.detection=off rc.verbose=nothing rc.report.minimal.columns=id,description, rc.report.minimal.labels=ID,Description > "$task_data"
+    $TASKWARRIOR_COMMAND "$filter" +READY export | jq -r 'sort_by(.urgency) | .[0] // empty | "\(.id) \(.description)"' > "$task_data"
     
     if [ ! -s "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
@@ -147,7 +144,7 @@ function list_tasks() {
 }
 
 function filter_menu() {
-    local filter=$(printf "all\npending\ntoday\noverdue\nweek\npriority:H\nproject:personal\nproject:work\ncustom" | rofi -dmenu -i -l 9 -p 'Filter')
+    local filter=$(printf "all\npending\ntoday\noverdue\nweek\npriority:H" | rofi -dmenu -i -l 6 -p 'Filter')
     
     if [ -z "$filter" ]; then
         exit 0
@@ -172,23 +169,11 @@ function filter_menu() {
         "priority:H") 
             list_tasks "priority:H" 
             ;;
-        "project:personal") 
-            list_tasks "project:personal" 
-            ;;
-        "project:work") 
-            list_tasks "project:work" 
-            ;;
-        "custom")
-            local custom_filter=$(rofi -dmenu -l 0 -p 'Custom filter' -mesg 'Enter taskwarrior filter')
-            if [ -n "$custom_filter" ]; then
-                list_tasks "$custom_filter"
-            fi
-            ;;
     esac
 }
 
 function main_menu() {
-    local action=$(printf "List tasks\nFilter tasks\nQuick add task\nSync tasks" | rofi -dmenu -i -l 4 -p 'Taskwarrior')
+    local action=$(printf "List tasks\nFilter tasks\nQuick add task" | rofi -dmenu -i -l 3 -p 'Taskwarrior')
     
     if [ -z "$action" ]; then
         exit 0
@@ -203,9 +188,6 @@ function main_menu() {
             ;;
         "Quick add task")
             quick_add
-            ;;
-        "Sync tasks")
-            $TASKWARRIOR_COMMAND sync && notify "Tasks successfully synced"
             ;;
     esac
 }
