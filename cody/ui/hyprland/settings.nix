@@ -18,6 +18,7 @@ let
     "${mainMod} SHIFT, Q, exec, uwsm app -- rofi -show web_scraper -modi 'web_scraper:web-scraper'"
     "${mainMod}, KP_Enter, exec, uwsm app -- taskwarrior-rofi quick_add"
     "${mainMod} SHIFT, KP_Enter, exec, uwsm app -- taskwarrior-rofi"
+    "${mainMod}, GRAVE, exec, uwsm app -- todoist-rofi quick_add"
 
     # Quick launch apps
     "${mainMod}, KP_Insert, exec, uwsm app -- firefoxpwa site launch 01JKS3GVGR2ZK2ZNMH5X913QP7"
