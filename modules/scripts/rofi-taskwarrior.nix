@@ -108,7 +108,7 @@ function list_tasks() {
     
     local task_data=$(mktemp)
     # List all tasks matching the filter, sorted by urgency
-    $TASKWARRIOR_COMMAND "$filter" export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
+    $TASKWARRIOR_COMMAND "$filter" +READY export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
     
     if [ ! -s "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
