@@ -78,7 +78,7 @@ function modify_task() {
 }
 
 function task_menu() {
-    local action=$(printf "Complete task\nDelete task\nModify task" | rofi -dmenu -i -l 5 -p 'Pick an action')
+    local action=$(printf "Complete task\nStart task\nStop task\nDelete task\nModify task" | rofi -dmenu -i -l 5 -p 'Pick an action')
     if [ -z "$action" ]; then
         exit 0
     fi
@@ -108,7 +108,7 @@ function list_tasks() {
     
     local task_data=$(mktemp)
     # List all tasks matching the filter, sorted by urgency
-    $TASKWARRIOR_COMMAND "$filter" +READY export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
+    $TASKWARRIOR_COMMAND "$filter" +READY -reminder export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
     
     if [ ! -s "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
@@ -116,17 +116,13 @@ function list_tasks() {
         return
     fi
     
-    # Extract tasks, removing any header and footer lines if present
-    local formatted_tasks=$(sed -e '1,2d' -e '$d' "$task_data")
-    rm "$task_data"
-    
-    if [ -z "$formatted_tasks" ]; then
+    if [ -z "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
         return
     fi
     
     # Show rofi menu with formatted tasks
-    local selection=$(echo "$formatted_tasks" | rofi -dmenu -i -width 100 -p 'Task' -mesg "Tasks $filter")
+    local selection=$(echo "$task_data" | rofi -dmenu -i -width 100 -p 'Task' -mesg "Tasks $filter")
     
     if [ -n "$selection" ]; then
         local task_id=$(echo "$selection" | awk '{print $1}')
