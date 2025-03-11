@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{ config, lib, modulesPath, ... }:
 
 {
   imports =
@@ -21,9 +21,6 @@
 
   # Networking
   networking.networkmanager.enable = true;
-
-  # Use the latest kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   fileSystems."/" =
     {
