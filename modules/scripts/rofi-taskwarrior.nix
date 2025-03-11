@@ -58,27 +58,8 @@ function stop_task() {
     fi
 }
 
-function delete_task() {
-    if [ -n "$1" ]; then
-        $TASKWARRIOR_COMMAND delete "$1" && notify 'Task successfully deleted'
-    else
-        notify 'No task ID provided'
-    fi
-}
-
-function modify_task() {
-    if [ -n "$1" ]; then
-        local modification=$(rofi -dmenu -l 0 -p 'Modify' -mesg "Enter modification for task $1")
-        if [ -n "$modification" ]; then
-            $TASKWARRIOR_COMMAND modify "$1" "$modification" && notify 'Task successfully modified'
-        fi
-    else
-        notify 'No task ID provided'
-    fi
-}
-
 function task_menu() {
-    local action=$(printf "Complete task\nStart task\nStop task\nDelete task\nModify task" | rofi -dmenu -i -l 5 -p 'Pick an action')
+    local action=$(printf "Complete task\nStart task\nStop task" | rofi -dmenu -i -l 3 -p 'Pick an action')
     if [ -z "$action" ]; then
         exit 0
     fi
@@ -93,22 +74,16 @@ function task_menu() {
         'Stop task')
             stop_task "$1"
             ;;
-        'Delete task')
-            delete_task "$1"
-            ;;
-        'Modify task')
-            modify_task "$1"
-            ;;
     esac
 }
 
 function list_tasks() {
-    local filter="-reminder"
+    local filter=""
     [[ -n "$1" ]] && filter="$1"
     local task_data=$(mktemp)
 
     # List all tasks matching the filter, sorted by urgency
-    $TASKWARRIOR_COMMAND "$filter" export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
+    $TASKWARRIOR_COMMAND "$filter" -reminder export | jq -r 'sort_by(.urgency) | .[] | "\(.id) \(.description)"' > "$task_data"
     
     if [ ! -s "$task_data" ]; then
         notify "No tasks found matching filter '$filter'"
