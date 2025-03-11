@@ -53,7 +53,8 @@
 
   programs.firefox = {
     enable = true;
-    nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
+    package = pkgs-unstable.firefox;
+    nativeMessagingHosts.packages = [ pkgs-unstable.firefoxpwa ];
   };
 
   # Enable support for removable devices.
