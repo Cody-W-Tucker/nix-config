@@ -4,7 +4,7 @@ pkgs.writeShellScriptBin "waybar-tasks" ''
   #!/bin/bash
 
   # Fetch task (ID + description) in one query sorted by lowest first
-  task_data=$(task export | jq -r 'sort_by(.urgency) | .[0] // empty | "\(.id) \(.description)"')
+  task_data=$(task +READY export | jq -r 'sort_by(.urgency) | .[0] // empty | "\(.id) \(.description)"')
 
   # Split into ID and description
   task_id=$(echo "$task_data" | awk '{print $1}')
