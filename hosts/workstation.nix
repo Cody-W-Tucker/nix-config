@@ -144,7 +144,7 @@
   };
 
   # Setting the color theme and default wallpaper
-  stylix.image = ../modules/wallpapers/lone-figure.jpg;
+  stylix.image = ../modules/wallpapers/lex.png;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
   # Backup configuration
