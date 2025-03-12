@@ -27,7 +27,7 @@ let
     "${mainMod} SHIFT, KP_Home, exec, uwsm app -- cursor"
 
     # Screenshots
-    ''$${mainMod}, S, exec, uwsm app -- screenshot-ocr''
+    ''${mainMod}, S, exec, uwsm app -- screenshot-ocr''
     ''${mainMod} SHIFT, S, exec, uwsm app -- grim -g "$(slurp)" - | wl-copy''
 
     # Color picker
