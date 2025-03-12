@@ -33,6 +33,16 @@
       grim
       slurp
       wl-clipboard
+      tesseract4
+      (pkgs.writeScriptBin "screenshot-ocr" ''
+        #!/bin/sh
+        imgname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S).png"
+        txtname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S)"
+        txtfname=$txtname.txt
+        grim -g "$(slurp)" $imgname;
+        tesseract $imgname $txtname;
+        wl-copy -n < $txtfname
+      '')
       hyprpicker
       rofi-wayland
       ripdrag
