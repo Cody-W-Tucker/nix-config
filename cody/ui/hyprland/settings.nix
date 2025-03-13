@@ -1,3 +1,5 @@
+{config, lib, hardwareConfig, ...}:
+
 let
   mainMod = "SUPER";
 
@@ -90,6 +92,73 @@ in
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
     ];
+    # Workspace and monitor set in flake.nix
+      workspace = hardwareConfig.workspace;
+      monitor = hardwareConfig.monitor;
+      animations = {
+        enabled = true;
+        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+        animation = [
+          "windows, 1, 5, myBezier"
+          "windowsOut, 1, 4, default, popin 80%"
+          "border, 1, 10, default"
+          "borderangle, 1, 8, default"
+          "fade, 1, 5, default"
+          "workspaces, 1, 5, default"
+        ];
+      };
+      input = {
+        numlock_by_default = "true";
+        follow_mouse = "1";
+        sensitivity = "-.7";
+        kb_layout = "us";
+      };
+      general = {
+        border_size = "2";
+        gaps_in = "5";
+        gaps_out = "10";
+        layout = "master";
+        "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0C}ff) rgba(${config.lib.stylix.colors.base0D}ff) rgba(${config.lib.stylix.colors.base0B}ff) rgba(${config.lib.stylix.colors.base0E}ff) 45deg";
+        "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}cc) rgba(${config.lib.stylix.colors.base01}cc) 45deg";
+      };
+      cursor.hide_on_key_press = true;
+      decoration = {
+        rounding = "10";
+        active_opacity = "0.8";
+        inactive_opacity = "0.75";
+        blur = {
+          enabled = "true";
+          size = "10";
+          passes = "3";
+          new_optimizations = "true";
+          ignore_opacity = true;
+          noise = "0";
+          brightness = "0.60";
+        };
+        shadow = {
+          enabled = true;
+          render_power = "3";
+          range = "4";
+          color = lib.mkForce "rgba(1a1a1aee)";
+        };
+      };
+      dwindle = {
+        pseudotile = "yes";
+        preserve_split = "yes";
+      };
+      master = {
+        new_status = "master";
+      };
+      gestures = {
+        workspace_swipe = "off";
+      };
+      misc = {
+        mouse_move_enables_dpms = "true";
+        key_press_enables_dpms = "true";
+        force_default_wallpaper = "0";
+        disable_hyprland_logo = "true";
+        focus_on_activate = "true";
+      };
   };
   # Screen drawing
   services.gromit-mpx = {
