@@ -6,5 +6,5 @@ pkgs.writeShellScriptBin "rofi-launcher" ''
     pkill -x rofi
     exit 0
   fi
-  rofi -show drun -run-command "uwsm app -- {cmd}"
+  rofi -show drun -run-command "uwsm-app -- {cmd}"
 ''
