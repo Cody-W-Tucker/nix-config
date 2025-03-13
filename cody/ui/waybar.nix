@@ -42,7 +42,7 @@ let
       spacing = 10;
     };
     "custom/weather" = {
-      exec = "uwsm app -- get-weather Kearney+Nebraska";
+      exec = "uwsm-app -- get-weather Kearney+Nebraska";
       return-type = "json";
       format = "{}";
       tooltip = true;
@@ -150,7 +150,7 @@ let
       return-type = "json";
       exec-if = "which swaync-client";
       exec = "swaync-client -swb";
-      on-click = "uwsm app -- sleep 0.1 && swaync-client -t -sw";
+      on-click = "uwsm-app -- sleep 0.1 && swaync-client -t -sw";
       on-click-right = "swaync-client -C";
       on-click-middle = "sleep 0.1 && swaync-client -d -sw";
       escape = true;
@@ -268,8 +268,8 @@ let
         car = "";
         default = [ "" "" "" ];
       };
-      on-click = "uwsm app -- bluetoothSwitch";
-      on-click-right = "uwsm app -- pavucontrol";
+      on-click = "uwsm-app -- bluetoothSwitch";
+      on-click-right = "uwsm-app -- pavucontrol";
     };
   };
 
