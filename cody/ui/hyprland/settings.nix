@@ -11,7 +11,7 @@ let
     # Application launchers
     "${mainMod}, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod}, Q, exec, uwsm app -- kitty"
-    "${mainMod}, E, exec, uwsm app -- kitty -- ranger"
+    "${mainMod}, E, exec, kitty ranger"
     "${mainMod} SHIFT, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod}, Tab, exec, uwsm app -- web-search"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
