@@ -24,6 +24,7 @@ let
 
     # Quick launch apps
     "${mainMod}, KP_Insert, exec, uwsm-app -- firefoxpwa site launch 01JKS3GVGR2ZK2ZNMH5X913QP7"
+    "${mainMod}, KP_End, exec, uwsm-app -- firefoxpwa site launch 01JP8BGVPA74TVCYY24KX56ZPA"
     "${mainMod}, KP_Add, exec, uwsm-app -- hyprctl dispatch exec [floating] gnome-calculator"
     "${mainMod}, KP_Home, exec, uwsm-app -- code"
     "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor"
