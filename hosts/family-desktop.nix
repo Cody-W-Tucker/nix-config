@@ -67,7 +67,7 @@
   };
 
   # Setting the color theme and default wallpaper
-  stylix.image = ../modules/wallpapers/Dancer.png;
+  stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
 
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
