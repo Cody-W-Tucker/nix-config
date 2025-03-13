@@ -71,7 +71,7 @@
           Enable = "Source,Sink,Media,Socket";
           Experimental = true; # Enable experimental features
           FastConnectable = true; # Improve connection speed
-          controllerMode = "dual"; # Allow low energy mode?
+          controllerMode = "bredr"; # Allow low energy mode?
           MultiProfile = "multiple"; # Allow multiple profiles
           AutoEnable = true;
         };
