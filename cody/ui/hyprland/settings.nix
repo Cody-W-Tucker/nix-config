@@ -116,15 +116,15 @@ in
       general = {
         border_size = "2";
         gaps_in = "5";
-        gaps_out = "10";
+        gaps_out = "5";
         layout = "master";
-        "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0C}ff) rgba(${config.lib.stylix.colors.base0D}ff) rgba(${config.lib.stylix.colors.base0B}ff) rgba(${config.lib.stylix.colors.base0E}ff) 45deg";
-        "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}cc) rgba(${config.lib.stylix.colors.base01}cc) 45deg";
+        "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0C}aa) rgba(${config.lib.stylix.colors.base0D}aa) rgba(${config.lib.stylix.colors.base0B}aa) rgba(${config.lib.stylix.colors.base0E}aa) 45deg";
+        "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}99) rgba(${config.lib.stylix.colors.base01}99) 45deg";
       };
       cursor.hide_on_key_press = true;
       decoration = {
         rounding = "10";
-        active_opacity = "0.8";
+        active_opacity = "0.95";
         inactive_opacity = "0.75";
         blur = {
           enabled = "true";
