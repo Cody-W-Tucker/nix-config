@@ -12,6 +12,11 @@
       fd
     ]);
 
+  home.sessionVariables = {
+    VISUAL = "nvim";
+    TERMINAL = "kitty";
+  };
+
   # User specific terminal settings
   programs.starship = {
     enable = true;
