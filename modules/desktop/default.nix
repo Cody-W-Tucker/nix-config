@@ -65,7 +65,7 @@
   hardware = {
     bluetooth = {
       enable = true;
-      package = pkgs.bluez5-experimental;
+      package = pkgs-unstable.bluez5-experimental;
       powerOnBoot = true;
       settings = {
         General = {
