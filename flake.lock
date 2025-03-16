@@ -546,7 +546,8 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "sops-nix": "sops-nix",
-        "stylix": "stylix"
+        "stylix": "stylix",
+        "zen-browser": "zen-browser"
       }
     },
     "sops-nix": {
@@ -702,6 +703,26 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "zen-browser": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1741838758,
+        "narHash": "sha256-nGTC/y9e+1+QIVCzIbiSpPiXM2HfS8YwIDCp52CcOQ4=",
+        "owner": "youwen5",
+        "repo": "zen-browser-flake",
+        "rev": "03a7fc89bc48344aed00e01b409c1d6ffc4c52ce",
+        "type": "github"
+      },
+      "original": {
+        "owner": "youwen5",
+        "repo": "zen-browser-flake",
         "type": "github"
       }
     }
