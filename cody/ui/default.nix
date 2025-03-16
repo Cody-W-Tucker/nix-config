@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, ... }:
+{ inputs, pkgs, pkgs-unstable, ... }:
 
 {
   imports = [
@@ -58,6 +58,7 @@
       onlyoffice-desktopeditors
       nixd
       timewarrior
+      inputs.zen-browser.packages.${pkgs.system}.default
     ])
     ++
     (with pkgs-unstable; [
