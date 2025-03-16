@@ -64,9 +64,9 @@
       "text/x-c" = "nvim.desktop";
       "text/x-c++" = "nvim.desktop";
 
-      # Use firefox for http/s
-      "x-scheme-handler/http" = "firefox.desktop";
-      "x-scheme-handler/https" = "firefox.desktop";
+      # Use zen for http/s
+      "x-scheme-handler/http" = "zen.desktop";
+      "x-scheme-handler/https" = "zen.desktop";
     };
   };
 }

@@ -24,16 +24,16 @@ let
       on-click = "activate";
       format = "{icon} {windows}";
       window-rewrite = {
-        "firefox" = "";
+        "Zen Browser" = "";
         "spotify" = "";
         "code" = "󰨞";
         "kitty" = "";
         "obsidian" = "";
-        "class<firefox> title<.*Github.*>" = "";
-        "class<firefox> title<.*Reddit.*>" = "";
-        "class<firefox> title<.*Facebook.*>" = "";
-        "class<firefox> title<.*Gmail.*>" = "";
-        "class<firefox> title<.*Calendar.*>" = "";
+        "class<Zen Browser> title<.*Github.*>" = "";
+        "class<Zen Browser> title<.*Reddit.*>" = "";
+        "class<Zen Browser> title<.*Facebook.*>" = "";
+        "class<Zen Browser> title<.*Gmail.*>" = "";
+        "class<Zen Browser> title<.*Calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
     };
@@ -180,16 +180,16 @@ let
       on-click = "activate";
       format = "{icon} {windows}";
       window-rewrite = {
-        "firefox" = "";
+        "Zen Browser" = "";
         "spotify" = "";
         "code" = "󰨞";
         "kitty" = "";
         "obsidian" = "";
-        "class<firefox> title<.*Github.*>" = "";
-        "class<firefox> title<.*Reddit.*>" = "";
-        "class<firefox> title<.*Facebook.*>" = "";
-        "class<firefox> title<.*Gmail.*>" = "";
-        "class<firefox> title<.*Calendar.*>" = "";
+        "class<Zen Browser> title<.*Github.*>" = "";
+        "class<Zen Browser> title<.*Reddit.*>" = "";
+        "class<Zen Browser> title<.*Facebook.*>" = "";
+        "class<Zen Browser> title<.*Gmail.*>" = "";
+        "class<Zen Browser> title<.*Calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
     };
