@@ -2,7 +2,7 @@
   services.immich = {
     enable = true;
     port = 2283;
-    host = "http://127.0.0.1";
+    host = "127.0.0.1";
   };
 
   users.users.immich.extraGroups = [ "video" "render" "media" ];
