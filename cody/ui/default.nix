@@ -59,6 +59,7 @@
       nixd
       timewarrior
       inputs.zen-browser.packages.${pkgs.system}.default
+      kdenlive
     ])
     ++
     (with pkgs-unstable; [
