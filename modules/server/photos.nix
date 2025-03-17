@@ -4,6 +4,7 @@
     port = 2283;
     host = "127.0.0.1";
     mediaLocation = "/mnt/hdd/Photos";
+    group = "media";
   };
 
   users.users.immich.extraGroups = [ "video" "render" "media" ];
