@@ -3,9 +3,8 @@
     enable = true;
     port = 2283;
     mediaLocation = "/mnt/hdd/Photos";
+    group = "media";
   };
-
-  users.users.immich.extraGroups = [ "video" "render" "media" ];
 
   # NGINX
   services.nginx.virtualHosts."photos.homehub.tv" = {
