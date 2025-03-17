@@ -2,7 +2,6 @@
   services.immich = {
     enable = true;
     port = 2283;
-    group = "media";
     host = "http://127.0.0.1";
   };
 
