@@ -4,6 +4,7 @@
     port = 2283;
     mediaLocation = "/mnt/hdd/Photos";
     group = "media";
+    host = "http://127.0.0.1";
   };
 
   # NGINX
