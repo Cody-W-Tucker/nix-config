@@ -19,7 +19,6 @@
       # Workspace-specific apps
       "[workspace 1 silent] uwsm app -- obsidian"
       "[workspace 2 silent] uwsm app -- todoist-electron --ozone-platform-hint=auto"
-      "uwsm app -- ferdium"
       "[workspace special silent] uwsm app -- spotube"
     ];
   };
