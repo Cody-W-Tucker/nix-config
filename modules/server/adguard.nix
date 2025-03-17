@@ -1,5 +1,8 @@
 {
-  networking.firewall.allowedUDPPorts = [ 53 ];
+  networking.firewall = {
+    allowedUDPPorts = [ 53 ];
+    allowedTCPPorts = [ 53 ];
+  };
   services.adguardhome = {
     enable = true;
     openFirewall = true;
