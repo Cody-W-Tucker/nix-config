@@ -152,13 +152,13 @@ in
                 description = "Media server";
               };
             }
-            # {
-            #   Photos = {
-            #     href = "https://photos.${domain}";
-            #     icon = "photoprism";
-            #     description = "Photo management";
-            #   };
-            # }
+            {
+              Photos = {
+                href = "https://photos.${domain}";
+                icon = "immich";
+                description = "Photo management";
+              };
+            }
             {
               ARM = {
                 href = "https://arm.${domain}";
