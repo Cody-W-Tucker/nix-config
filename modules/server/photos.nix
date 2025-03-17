@@ -5,6 +5,8 @@
     host = "http://127.0.0.1";
   };
 
+  users.users.immich.extraGroups = [ "video" "render" "media" ];
+
   # NGINX
   services.nginx.virtualHosts."photos.homehub.tv" = {
     forceSSL = true;
