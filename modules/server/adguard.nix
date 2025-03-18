@@ -1,8 +1,4 @@
 {
-  networking.firewall = {
-    allowedUDPPorts = [ 53 ];
-    allowedTCPPorts = [ 53 ];
-  };
   services.adguardhome = {
     enable = true;
     openFirewall = true;
@@ -49,4 +45,16 @@
       ];
     };
   };
+
+  # Networking
+  networking.firewall = {
+    allowedUDPPorts = [ 53 ];
+    allowedTCPPorts = [ 53 ];
+  };
+
+  # Add a fallback to ensure server will reboot
+  networking.nameservers = [ 
+    "127.0.0.1"  # Local resolver
+    "1.1.1.1"    # Cloudflare fallback
+  ];
 }
