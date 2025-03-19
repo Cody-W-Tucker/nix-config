@@ -10,6 +10,7 @@
     # ./collabora.nix
     ./content.nix
     ./data.nix
+    ./excalidraw.nix
     ./hoarder.nix
     ./homepage-dashboard.nix
     ./media.nix

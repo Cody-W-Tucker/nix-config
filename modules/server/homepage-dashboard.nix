@@ -104,9 +104,9 @@ in
             }
             {
               N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                description = "Workflow automation";
+                href = "https://draw.${domain}";
+                icon = "excalidraw";
+                description = "Whiteboard drawings";
               };
             }
           ];
@@ -221,6 +221,13 @@ in
                 href = "https://pdf.${domain}";
                 icon = "stirling-pdf";
                 description = "PDF Editing";
+              };
+            }
+            {
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                description = "Workflow automation";
               };
             }
             # {
