@@ -103,7 +103,7 @@ in
               };
             }
             {
-              N8N = {
+              ExcaliDraw = {
                 href = "https://draw.${domain}";
                 icon = "excalidraw";
                 description = "Whiteboard drawings";
