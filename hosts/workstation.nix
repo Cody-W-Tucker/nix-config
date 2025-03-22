@@ -262,6 +262,11 @@
       where-is-my-sddm-theme
     ]);
 
+
+  # Virtualization
+  programs.virt-manager.enable = true;
+  users.groups.libvirtd.members = ["codyt"];
+
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }
