@@ -266,6 +266,7 @@
   # Virtualization
   programs.virt-manager.enable = true;
   users.groups.libvirtd.members = ["codyt"];
+  virtualisation.spiceUSBRedirection.enable = true;
 
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
