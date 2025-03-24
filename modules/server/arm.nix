@@ -48,6 +48,24 @@
       "--device=/dev/sr0:/dev/sr0"
       "--device=/dev/dri:/dev/dri"
       "--privileged"
+      "--pull=always"
     ];
+  };
+  # Service to keep arm-rippers updated
+  systemd.services.restart-arm-rippers = {
+    description = "Restart arm-rippers service";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "systemctl restart docker-arm-rippers.service";
+    };
+  };
+  systemd.timers.restart-arm-rippers = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "restart-arm-rippers.service" ];
+    timerConfig = {
+      OnCalendar = "Sun *-*-* 02:00:00";
+      RandomizedDelaySec = "2h";
+      Persistent = true;
+    };
   };
 }
