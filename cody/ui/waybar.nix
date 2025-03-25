@@ -69,10 +69,11 @@ let
     "custom/goal" = {
         format = "🞋 {}";
         exec = "waybar-goal";
+        return-type = "json";
+        interval = 10;
         on-click = "waybar-goal click";
         on-scroll-up = "waybar-goal scroll-up";
         on-scroll-down = "waybar-goal scroll-down";
-        interval = 10;
     };
     "custom/tasks" = {
       exec = "waybar-tasks";
