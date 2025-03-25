@@ -9,7 +9,7 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "custom/notification" "clock" "custom/timer" ];
+    modules-center = [ "custom/notification" "clock" "custom/timer" "custom/waybar-goal" ];
     modules-left = [
       "hyprland/workspaces"
       "tray"
@@ -24,7 +24,7 @@ let
       on-click = "activate";
       format = "{icon} {windows}";
       window-rewrite = {
-        "Zen Browser" = "";
+        "Zen Browser" = "🞋";
         "spotify" = "";
         "code" = "󰨞";
         "kitty" = "";
@@ -65,6 +65,14 @@ let
       on-click-right = "waybar-timer togglepause";
       on-scroll-up = "waybar-timer increase 300 || waybar-timer new 5 'notify-send -u critical \"Timer expired.\"'";
       on-scroll-down = "waybar-timer increase -300 || 'notify-send -u critical \"Timer expired.\"'";
+    };
+    "custom/goal" = {
+        format = "🞋 {}";
+        exec = "waybar-goal";
+        on-click = "waybar-goal click";
+        on-scroll-up = "waybar-goal scroll-up";
+        on-scroll-down = "waybar-goal scroll-down";
+        interval = 10;
     };
     "custom/tasks" = {
       exec = "waybar-tasks";
@@ -180,7 +188,7 @@ let
       on-click = "activate";
       format = "{icon} {windows}";
       window-rewrite = {
-        "Zen Browser" = "";
+        "Zen Browser" = "🞋";
         "spotify" = "";
         "code" = "󰨞";
         "kitty" = "";
