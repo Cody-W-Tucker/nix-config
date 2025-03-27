@@ -60,14 +60,13 @@
       timewarrior
       inputs.zen-browser.packages.${pkgs.system}.default
       kdenlive
+      vscode
+      code-cursor
     ])
     ++
     (with pkgs-unstable; [
       # list of unstable packages go here
-      vscode
-      code-cursor
       spotube
-      ferdium
       zoom-us
     ]);
 
