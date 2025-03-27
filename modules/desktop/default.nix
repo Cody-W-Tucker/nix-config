@@ -45,6 +45,7 @@
       kitty
       ffmpeg
       obsidian
+      chromium
     ]) ++
     (with pkgs-unstable; [
       # list of unstable packages go here

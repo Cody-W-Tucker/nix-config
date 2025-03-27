@@ -32,7 +32,6 @@
     starship
     (btop.override { cudaSupport = true; })
     wget
-    chromium
   ];
 
   # Terminal defaults
