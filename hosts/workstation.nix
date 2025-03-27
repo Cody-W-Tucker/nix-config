@@ -269,6 +269,13 @@
   users.groups.libvirtd.members = ["codyt"];
   virtualisation.spiceUSBRedirection.enable = true;
 
+  # Nvidia PRIME
+  hardware.nvidia.prime = {
+		# Make sure to use the correct Bus ID values for your system!
+		intelBusId = "PCI:0:2:0";
+		nvidiaBusId = "PCI:10:0:0";
+	};
+
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }
