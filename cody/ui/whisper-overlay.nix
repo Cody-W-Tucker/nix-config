@@ -18,5 +18,5 @@
 
   # Add the whisper-overlay package so you can start it manually.
   # Alternatively add it to the autostart of your display environment or window manager.
-  home.packages = [inputs.whisper-overlay.packages.${pkgs.system}.default];
+  home.packages = [pkgs.whisper-overlay];
 }
