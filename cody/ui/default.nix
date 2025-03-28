@@ -8,6 +8,7 @@
     ./waybar.nix
     ./mime.nix
     ./xdg.nix
+    # ./whisper-overlay.nix
   ];
 
   dconf = {
@@ -48,20 +49,16 @@
       ripdrag
       playerctl
       libnotify
-      discord
       todoist #cli client
       todoist-electron
-      fabric-ai
       slack
       gnome-calculator
       nautilus
-      onlyoffice-desktopeditors
       nixd
       timewarrior
       inputs.zen-browser.packages.${pkgs.system}.default
       kdenlive
       vscode
-      code-cursor
     ])
     ++
     (with pkgs-unstable; [

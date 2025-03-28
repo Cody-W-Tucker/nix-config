@@ -37,7 +37,6 @@
       zathura
       pavucontrol
       xdg-utils # xdg-open
-      hunspell
       vlc
       usbutils
       udiskie
