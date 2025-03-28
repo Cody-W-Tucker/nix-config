@@ -39,6 +39,12 @@
           allowUnfree = true;
           allowUnfreePredicate = (_: true);
         };
+        overlays = [
+          (final: prev: {
+            # Add whisper-overlay package to pkgs
+            whisper-overlay = inputs.whisper-overlay.packages.${system}.default;
+          })
+        ];
       };
       pkgs-unstable = import nixpkgs-unstable {
         system = system;
