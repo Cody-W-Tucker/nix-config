@@ -30,7 +30,7 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, whisper-overlay, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -39,12 +39,6 @@
           allowUnfree = true;
           allowUnfreePredicate = (_: true);
         };
-        overlays = [
-          (final: prev: {
-            # Add whisper-overlay package to pkgs
-            whisper-overlay = inputs.whisper-overlay.packages.${system}.default;
-          })
-        ];
       };
       pkgs-unstable = import nixpkgs-unstable {
         system = system;
