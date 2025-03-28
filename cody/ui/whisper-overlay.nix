@@ -1,4 +1,4 @@
-{inputs, pkgs, ...}:
+{inputs, system, ...}:
 
 {
   imports = [
@@ -18,5 +18,5 @@
 
   # Add the whisper-overlay package so you can start it manually.
   # Alternatively add it to the autostart of your display environment or window manager.
-  home.packages = [pkgs.whisper-overlay];
+  home.packages = [inputs.whisper-overlay.packages.${system}.whisper-overlay];
 }
