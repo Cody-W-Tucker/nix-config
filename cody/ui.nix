@@ -12,6 +12,8 @@
     model = "pc105";
   };
 
+  home.sessionVariables.CUDA_CACHE_PATH = "\${HOME}/.cache/nv";
+
   # User specific terminal settings
   programs.kitty.extraConfig = lib.mkForce ''
     foreground #${config.lib.stylix.colors.base05}
