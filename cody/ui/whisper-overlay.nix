@@ -15,8 +15,8 @@
       # If you want to automatically start the service with your graphical session,
       # enable this too. If you want to start and stop the service on demand to save
       # resources, don't enable this and use `systemctl --user <start|stop> realtime-stt-server`.
-      autoStart = true;
-    package = inputs.whisper-overlay.packages.${pkgs.system}.default;  # Or .whisper-overlay
+      autoStart = false;
+      package = inputs.whisper-overlay.packages.${pkgs.system}.default;  # Or .whisper-overlay
   };
 
   # Add the whisper-overlay package so you can start it manually.
