@@ -235,6 +235,8 @@ let
       };
       return-type = "json";
       tooltip = true;
+      on-click = "systemctl --user start realtime-stt-server";
+      on-click-right = "systemctl --user stop realtime-stt-server";
     };
     disk = {
       format = "{percentage_free}% ";

@@ -26,7 +26,7 @@
   };
 
   programs = {
-    # Remove default package installation prompt "because it's not working"
+    # Remove default package installation prompt because it's not working
     command-not-found.enable = false;
     # Use fancier nix-index prompt instead TODO: Make nix-index work or switch (Bug causing out of memory.)
     zsh = {
