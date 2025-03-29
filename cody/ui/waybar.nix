@@ -180,7 +180,6 @@ let
       "hyprland/window"
     ];
     modules-right = [
-      "custom/whisper_overlay"
       "disk"
       "cpu"
       "memory"
@@ -223,20 +222,6 @@ let
       on-scroll-up = "playerctl next";
       on-scroll-down = "playerctl previous";
       exec = "media-player";
-    };
-    "custom/whisper_overlay" = {
-      escape = true;
-      exec = "whisper-overlay waybar-status";
-      format = "{icon} {}";
-      format-icons = {
-          disconnected = "<span foreground='gray'></span>";
-          connected = "<span foreground='#4ab0fa'></span>";
-          connected-active = "<span foreground='red'></span>";
-      };
-      return-type = "json";
-      tooltip = true;
-      on-click = "systemctl --user start realtime-stt-server";
-      on-click-right = "systemctl --user stop realtime-stt-server";
     };
     disk = {
       format = "{percentage_free}% ";

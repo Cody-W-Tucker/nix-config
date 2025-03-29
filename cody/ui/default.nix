@@ -8,7 +8,6 @@
     ./waybar.nix
     ./mime.nix
     ./xdg.nix
-    ./whisper-overlay.nix
   ];
 
   dconf = {
