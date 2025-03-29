@@ -33,6 +33,7 @@
       enable = true;
       syntaxHighlighting.enable = true;
       autosuggestion.enable = true;
+      enableCompletion = true;
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       history.size = 10000;
       shellAliases = {
