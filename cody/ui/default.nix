@@ -58,6 +58,7 @@
       inputs.zen-browser.packages.${pkgs.system}.default
       kdenlive
       vscode
+      unzip
     ])
     ++
     (with pkgs-unstable; [
