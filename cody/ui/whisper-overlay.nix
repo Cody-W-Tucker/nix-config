@@ -9,12 +9,15 @@
   # be painfully slow. But be prepared to let your computer build packages for 2-3 hours.
   nixpkgs.config.cudaSupport = true;
 
-  # Enable the user service
-  services.realtime-stt-server.enable = true;
-  # If you want to automatically start the service with your graphical session,
-  # enable this too. If you want to start and stop the service on demand to save
-  # resources, don't enable this and use `systemctl --user <start|stop> realtime-stt-server`.
-  services.realtime-stt-server.autoStart = true;
+    services.realtime-stt-server = {
+      # Enable the user service
+      enable = true;
+      # If you want to automatically start the service with your graphical session,
+      # enable this too. If you want to start and stop the service on demand to save
+      # resources, don't enable this and use `systemctl --user <start|stop> realtime-stt-server`.
+      autoStart = true;
+    package = inputs.whisper-overlay.packages.${pkgs.system}.default;  # Or .whisper-overlay
+  };
 
   # Add the whisper-overlay package so you can start it manually.
   # Alternatively add it to the autostart of your display environment or window manager.
