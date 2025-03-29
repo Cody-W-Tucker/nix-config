@@ -16,7 +16,7 @@
       # enable this too. If you want to start and stop the service on demand to save
       # resources, don't enable this and use `systemctl --user <start|stop> realtime-stt-server`.
       autoStart = false;
-      package = inputs.whisper-overlay.packages.${pkgs.system}.default;  # Or .whisper-overlay
+      package = inputs.whisper-overlay.packages.${pkgs.system}.whisper-overlay;
   };
 
   # Add the whisper-overlay package so you can start it manually.
