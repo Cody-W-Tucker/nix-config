@@ -28,6 +28,7 @@ in
         ENABLE_RAG_HYBRID_SEARCH = "True";
         RAG_RERANKING_MODEL = "";
         QDRANT_URI = "https://qdrant.homehub.tv";
+        VECTOR_DB = "qdrant";
       };
     };
     # docker run -d -p 9099:9099 --add-host=host.docker.internal:host-gateway -v pipelines:/app/pipelines --name pipelines --restart always ghcr.io/open-webui/pipelines:main
