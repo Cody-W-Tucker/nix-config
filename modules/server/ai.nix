@@ -27,7 +27,7 @@ in
         SEARXNG_QUERY_URL = "https://search.homehub.tv/search?q=<query>";
         ENABLE_RAG_HYBRID_SEARCH = "True";
         RAG_RERANKING_MODEL = "";
-        QDRANT_URI = "https://qdrant.homehub.tv";
+        QDRANT_URI = "http://qdrant.homehub.tv";
         VECTOR_DB = "qdrant";
       };
     };
