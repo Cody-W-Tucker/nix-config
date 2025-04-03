@@ -35,7 +35,7 @@ in
       image = "ghcr.io/open-webui/pipelines:main";
       ports = [ "9099:9099" ];
       volumes = [ "${userDir}/pipelines:/app/pipelines" ];
-      extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--pull=always" ];
+      extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--network=host" "--pull=always" ];
     };
   };
   # Service to keep open-webui updated
