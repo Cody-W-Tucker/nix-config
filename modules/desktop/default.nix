@@ -45,16 +45,11 @@
       ffmpeg
       obsidian
       chromium
-    ]) ++
-    (with pkgs-unstable; [
-      # list of unstable packages go here
-      firefoxpwa
     ]);
 
   programs.firefox = {
     enable = true;
     package = pkgs-unstable.firefox;
-    nativeMessagingHosts.packages = [ pkgs-unstable.firefoxpwa ];
   };
 
   # Enable support for removable devices.
