@@ -53,12 +53,14 @@
       slack
       gnome-calculator
       nautilus
+      # nix language server
       nixd
       timewarrior
       inputs.zen-browser.packages.${pkgs.system}.default
       kdenlive
       vscode
       unzip
+      baobab # Gnome disk usage app
     ])
     ++
     (with pkgs-unstable; [
@@ -72,7 +74,6 @@
     enable = true;
     plugins = with pkgs.obs-studio-plugins; [
       wlrobs
-      obs-backgroundremoval
       obs-pipewire-audio-capture
     ];
   };
