@@ -10,7 +10,6 @@ let
         export GBM_BACKEND=nvidia-drm
         exec "$@"
       '';
-
 in
 
 {
@@ -262,7 +261,6 @@ in
     MOZ_ENABLE_WAYLAND = "1";
     LIBVA_DRIVER_NAME = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    VDPAU_DRIVER = "va_gl";
     NVD_BACKEND = "direct";
   };
 
@@ -277,6 +275,7 @@ in
       # list of stable packages go here
       where-is-my-sddm-theme
       nvidia-offload
+      nvidia-vaapi-driver
     ]);
 
 
