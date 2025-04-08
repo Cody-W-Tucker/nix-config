@@ -116,7 +116,7 @@
         text-color = mkLiteral "inherit";
         cursor = mkLiteral "pointer";
       };
-      "button selected" = {
+      "button selected" = lib.mkForce {
         background-color = mkLiteral "@selected";
         text-color = mkLiteral "@foreground";
       };
