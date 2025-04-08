@@ -79,7 +79,6 @@
         padding = mkLiteral "10px";
         border-radius = mkLiteral "10px";
         background-color = mkLiteral "@bg-alt";
-        text-color = mkLiteral "@foreground";
         children = map mkLiteral [
           "textbox-prompt-colon"
           "entry"
