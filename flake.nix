@@ -25,9 +25,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nextmeeting = {
-      url = "github:chmouel/nextmeeting?dir=packaging";
+      url = "github:Cody-W-Tucker/nextmeeting-waybar?dir=packaging";
       inputs.nixpkgs.follows = "nixpkgs";
-      flake = false;
     };
   };
 
