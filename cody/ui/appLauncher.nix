@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 {
   programs.rofi = {
     enable = true;
     plugins =[pkgs.rofi-calc];
-    font = "JetBrains Nerd Font 16";
+    font = lib.mkForce "JetBrains Nerd Font 16";
     extraConfig = {
       modi = "run,filebrowser,drun";
       show-icons = true;
