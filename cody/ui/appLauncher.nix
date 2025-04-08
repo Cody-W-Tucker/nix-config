@@ -29,7 +29,7 @@
         border-color = mkLiteral "#${config.lib.stylix.colors.base0F}";
         urgent = mkLiteral "#${config.lib.stylix.colors.base0E}";
       };
-      "window" = {
+      "window" = lib.mkForce {
         transparency = "real";
         width = mkLiteral "30%";
         location = mkLiteral "center";
@@ -42,7 +42,7 @@
         border-radius = mkLiteral "15px";
         background-color = mkLiteral "@bg";
       };
-      "mainbox" = {
+      "mainbox" = lib.mkForce {
         enabled = true;
         spacing = mkLiteral "0px";
         orientation = mkLiteral "horizontal";
@@ -52,7 +52,7 @@
         ];
         background-color = mkLiteral "transparent";
       };
-      "imagebox" = {
+      "imagebox" = lib.mkForce {
         padding = mkLiteral "20px";
         background-color = mkLiteral "transparent";
         background-image = mkLiteral ''url("~/Pictures/Wallpapers/Rainnight.jpg", height)'';
@@ -63,7 +63,7 @@
           "mode-switcher"
         ];
       };
-      "listbox" = {
+      "listbox" = lib.mkForce {
         spacing = mkLiteral "20px";
         padding = mkLiteral "20px";
         background-color = mkLiteral "transparent";
@@ -73,10 +73,10 @@
           "listview"
         ];
       };
-      "dummy" = {
+      "dummy" = lib.mkForce {
         background-color = mkLiteral "transparent";
       };
-      "inputbar" = {
+      "inputbar" = lib.mkForce {
         enabled = true;
         spacing = mkLiteral "10px";
         padding = mkLiteral "10px";
@@ -88,14 +88,14 @@
           "entry"
         ];
       };
-      "textbox-prompt-colon" = {
+      "textbox-prompt-colon" = lib.mkForce {
         enabled = true;
         expand = false;
         str = "";
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "inherit";
       };
-      "entry" = {
+      "entry" = lib.mkForce {
         enabled = true;
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "inherit";
@@ -103,7 +103,7 @@
         placeholder = "Search";
         placeholder-color = mkLiteral "inherit";
       };
-      "mode-switcher" = {
+      "mode-switcher" = lib.mkForce {
         enabled = true;
         spacing = mkLiteral "20px";
         background-color = mkLiteral "transparent";
@@ -120,7 +120,7 @@
         background-color = mkLiteral "@selected";
         text-color = mkLiteral "@foreground";
       };
-      "listview" = {
+      "listview" = lib.mkForce {
         enabled = true;
         columns = 1;
         lines = 8;
@@ -136,7 +136,7 @@
         text-color = mkLiteral "@foreground";
         cursor = "default";
       };
-      "element" = {
+      "element" = lib.mkForce {
         enabled = true;
         spacing = mkLiteral "15px";
         padding = mkLiteral "8px";
