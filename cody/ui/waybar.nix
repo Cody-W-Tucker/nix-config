@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, inputs, pkgs, ... }:
 
 # Create a reusable function to create each bar
 # Bottom monitor bar focus on work
@@ -50,8 +50,8 @@ let
     };
     "custom/agenda" = {
       format = "{}";
-      exec = "nextmeeting --max-title-length 30 --waybar";
-      on-click = "nextmeeting --open-meet-url";
+      exec = "${inputs.nextmeeting.packages.${pkgs.system}.default}/bin/nextmeeting --max-title-length 30 --waybar";
+      on-click = "${inputs.nextmeeting.packages.${pkgs.system}.default}/bin/nextmeeting --open-meet-url";
       interval = 59;
       return-type = "json";
       tooltip = true;
