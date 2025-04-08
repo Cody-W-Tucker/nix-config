@@ -9,7 +9,7 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "custom/notification" "clock" "custom/timer" "custom/goal" ];
+    modules-center = [ "custom/notification" "clock" "custom/agenda" "custom/timer" "custom/goal" ];
     modules-left = [
       "hyprland/workspaces"
       "tray"
@@ -47,6 +47,14 @@ let
       format = "{}";
       tooltip = true;
       interval = 3600;
+    };
+    "custom/agenda" = {
+      format = "{}";
+      exec = "nextmeeting --max-title-length 30 --waybar";
+      on-click = "nextmeeting --open-meet-url";
+      interval = 59;
+      return-type = "json";
+      tooltip = true;
     };
     "custom/timer" = {
       exec = "waybar-timer updateandprint";
