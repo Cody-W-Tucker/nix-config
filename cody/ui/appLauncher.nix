@@ -95,7 +95,6 @@
       "entry" = {
         enabled = true;
         background-color = mkLiteral "inherit";
-        text-color = mkLiteral "inherit";
         cursor = mkLiteral "text";
         placeholder = "Search";
         placeholder-color = mkLiteral "inherit";
