@@ -24,7 +24,10 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nextmeeting.url = "github:chmouel/nextmeeting?dir=packaging";
+    nextmeeting = {
+      url = "github:chmouel/nextmeeting?dir=packaging";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
