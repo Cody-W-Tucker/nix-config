@@ -48,14 +48,6 @@ let
       tooltip = true;
       interval = 3600;
     };
-    "custom/agenda" = {
-      format = "{}";
-      exec = "${inputs.nextmeeting.packages.${pkgs.system}.default}/bin/nextmeeting --max-title-length 30 --waybar";
-      on-click = "${inputs.nextmeeting.packages.${pkgs.system}.default}/bin/nextmeeting --open-meet-url";
-      interval = 59;
-      return-type = "json";
-      tooltip = true;
-    };
     "custom/timer" = {
       exec = "waybar-timer updateandprint";
       exec-on-event = true;
