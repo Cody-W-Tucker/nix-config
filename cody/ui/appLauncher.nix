@@ -113,7 +113,6 @@
         cursor = mkLiteral "pointer";
       };
       "button selected" = {
-        background-color = mkLiteral "@selected";
         text-color = mkLiteral "@foreground";
       };
       "listview" = {
