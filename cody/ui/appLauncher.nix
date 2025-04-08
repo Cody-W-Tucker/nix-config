@@ -3,7 +3,6 @@
 {
   programs.rofi = {
     enable = true;
-    plugins =[pkgs.rofi-calc];
     package = pkgs.rofi-wayland;
     extraConfig = {
       modi = "run,filebrowser,drun";
@@ -18,7 +17,7 @@
     theme = let
         inherit (config.lib.formats.rasi) mkLiteral;
     in {
-      "*" = lib.mkForce {
+      "*" = {
         bg = mkLiteral "#${config.lib.stylix.colors.base00}";
         bg-alt = mkLiteral "#${config.lib.stylix.colors.base09}";
         foreground = mkLiteral "#${config.lib.stylix.colors.base01}";
@@ -29,7 +28,7 @@
         border-color = mkLiteral "#${config.lib.stylix.colors.base0F}";
         urgent = mkLiteral "#${config.lib.stylix.colors.base0E}";
       };
-      "window" = lib.mkForce {
+      "window" = {
         transparency = "real";
         width = mkLiteral "30%";
         location = mkLiteral "center";
@@ -42,7 +41,7 @@
         border-radius = mkLiteral "15px";
         background-color = mkLiteral "@bg";
       };
-      "mainbox" = lib.mkForce {
+      "mainbox" = {
         enabled = true;
         spacing = mkLiteral "0px";
         orientation = mkLiteral "horizontal";
@@ -52,7 +51,7 @@
         ];
         background-color = mkLiteral "transparent";
       };
-      "imagebox" = lib.mkForce {
+      "imagebox" = {
         padding = mkLiteral "20px";
         background-color = mkLiteral "transparent";
         background-image = mkLiteral ''url("~/Pictures/Wallpapers/Rainnight.jpg", height)'';
@@ -63,7 +62,7 @@
           "mode-switcher"
         ];
       };
-      "listbox" = lib.mkForce {
+      "listbox" = {
         spacing = mkLiteral "20px";
         padding = mkLiteral "20px";
         background-color = mkLiteral "transparent";
@@ -73,10 +72,10 @@
           "listview"
         ];
       };
-      "dummy" = lib.mkForce {
+      "dummy" = {
         background-color = mkLiteral "transparent";
       };
-      "inputbar" = lib.mkForce {
+      "inputbar" = {
         enabled = true;
         spacing = mkLiteral "10px";
         padding = mkLiteral "10px";
@@ -88,14 +87,14 @@
           "entry"
         ];
       };
-      "textbox-prompt-colon" = lib.mkForce {
+      "textbox-prompt-colon" = {
         enabled = true;
         expand = false;
         str = "";
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "inherit";
       };
-      "entry" = lib.mkForce {
+      "entry" = {
         enabled = true;
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "inherit";
@@ -103,24 +102,24 @@
         placeholder = "Search";
         placeholder-color = mkLiteral "inherit";
       };
-      "mode-switcher" = lib.mkForce {
+      "mode-switcher" = {
         enabled = true;
         spacing = mkLiteral "20px";
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "@foreground";
       };
-      "button" = lib.mkForce {
+      "button" = {
         padding = mkLiteral "15px";
         border-radius = mkLiteral "10px";
         background-color = mkLiteral "@bg-alt";
         text-color = mkLiteral "inherit";
         cursor = mkLiteral "pointer";
       };
-      "button selected" = lib.mkForce {
+      "button selected" = {
         background-color = mkLiteral "@selected";
         text-color = mkLiteral "@foreground";
       };
-      "listview" = lib.mkForce {
+      "listview" = {
         enabled = true;
         columns = 1;
         lines = 8;
@@ -136,7 +135,7 @@
         text-color = mkLiteral "@foreground";
         cursor = "default";
       };
-      "element" = lib.mkForce {
+      "element" = {
         enabled = true;
         spacing = mkLiteral "15px";
         padding = mkLiteral "8px";
@@ -145,47 +144,47 @@
         text-color = mkLiteral "@text-color";
         cursor = mkLiteral "pointer";
       };
-      "element normal.normal" = lib.mkForce {
+      "element normal.normal" = {
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "@text-color";
       };
-      "element normal.urgent" = lib.mkForce {
+      "element normal.urgent" = {
         background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-color";
       };
-      "element normal.active" = lib.mkForce {
+      "element normal.active" = {
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "@text-color";
       };
-      "element selected.normal" = lib.mkForce {
+      "element selected.normal" = {
         background-color = mkLiteral "@selected";
         text-color = mkLiteral "@foreground";
       };
-      "element selected.urgent" = lib.mkForce {
+      "element selected.urgent" = {
         background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-selected";
       };
-      "element selected.active" = lib.mkForce {
+      "element selected.active" = {
         background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-selected";
       };
-      "element-icon" = lib.mkForce {
+      "element-icon" = {
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "inherit";
         size = mkLiteral "36px";
         cursor = mkLiteral "inherit";
       };
-      "element-text" = lib.mkForce {
+      "element-text" = {
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "inherit";
         cursor = mkLiteral "inherit";
         vertical-align = mkLiteral "0.5";
         horizontal-align = mkLiteral "0.0";
       };
-      "message" = lib.mkForce {
+      "message" = {
         background-color = mkLiteral "transparent";
       };
-      "textbox" = lib.mkForce {
+      "textbox" = {
         padding = mkLiteral "15px";
         border-radius = mkLiteral "10px";
         background-color = mkLiteral "@bg-alt";
@@ -193,7 +192,7 @@
         vertical-align = mkLiteral "0.5";
         horizontal-align = mkLiteral "0.0";
       };
-      "error-message" = lib.mkForce {
+      "error-message" = {
         padding = mkLiteral "15px";
         border-radius = mkLiteral "20px";
         background-color = mkLiteral "@bg";
