@@ -149,7 +149,7 @@
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "@text-color";
       };
-      "element normal.urgent" = {
+      "element normal.urgent" = lib.mkForce {
         background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-color";
       };
@@ -169,23 +169,23 @@
         background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-selected";
       };
-      "element-icon" = {
+      "element-icon" = lib.mkForce {
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "inherit";
         size = mkLiteral "36px";
         cursor = mkLiteral "inherit";
       };
-      "element-text" = {
+      "element-text" = lib.mkForce {
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "inherit";
         cursor = mkLiteral "inherit";
         vertical-align = mkLiteral "0.5";
         horizontal-align = mkLiteral "0.0";
       };
-      "message" = {
+      "message" = lib.mkForce {
         background-color = mkLiteral "transparent";
       };
-      "textbox" = {
+      "textbox" = lib.mkForce {
         padding = mkLiteral "15px";
         border-radius = mkLiteral "10px";
         background-color = mkLiteral "@bg-alt";
@@ -193,7 +193,7 @@
         vertical-align = mkLiteral "0.5";
         horizontal-align = mkLiteral "0.0";
       };
-      "error-message" = {
+      "error-message" = lib.mkForce {
         padding = mkLiteral "15px";
         border-radius = mkLiteral "20px";
         background-color = mkLiteral "@bg";
