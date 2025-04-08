@@ -1,6 +1,7 @@
-{ lib, config, ... }:
+{ lib, config, pkgs, ... }:
 
 {
+  home-manager.users.codyt.programs.rofi.plugins =[pkgs.rofi-calc];
   home.file.".config/rofi/config.rasi".text = lib.mkForce ''
     @theme "/dev/null"
 
