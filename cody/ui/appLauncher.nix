@@ -19,15 +19,15 @@
         inherit (config.lib.formats.rasi) mkLiteral;
     in {
       "*" = {
-        bg = mkLiteral "#${config.stylix.base16Scheme.base00}";
-        bg-alt = mkLiteral "#${config.stylix.base16Scheme.base09}";
-        # foreground = mkLiteral "#${config.stylix.base16Scheme.base01}";
-        # selected = mkLiteral "#${config.stylix.base16Scheme.base08}";
-        # active = mkLiteral "#${config.stylix.base16Scheme.base0B}";
-        # text-selected = mkLiteral "#${config.stylix.base16Scheme.base00}";
-        # text-color = mkLiteral "#${config.stylix.base16Scheme.base05}";
-        # border-color = mkLiteral "#${config.stylix.base16Scheme.base0F}";
-        # urgent = mkLiteral "#${config.stylix.base16Scheme.base0E}";
+        bg = mkLiteral "#${config.lib.stylix.base16Scheme.base00}";
+        bg-alt = mkLiteral "#${config.lib.stylix.base16Scheme.base09}";
+        foreground = mkLiteral "#${config.lib.stylix.base16Scheme.base01}";
+        selected = mkLiteral "#${config.lib.stylix.base16Scheme.base08}";
+        active = mkLiteral "#${config.lib.stylix.base16Scheme.base0B}";
+        text-selected = mkLiteral "#${config.lib.stylix.base16Scheme.base00}";
+        text-color = mkLiteral "#${config.lib.stylix.base16Scheme.base05}";
+        border-color = mkLiteral "#${config.lib.stylix.base16Scheme.base0F}";
+        urgent = mkLiteral "#${config.lib.stylix.base16Scheme.base0E}";
       };
       "window" = {
         transparency = "real";
