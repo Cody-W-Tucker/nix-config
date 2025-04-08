@@ -25,7 +25,6 @@
         active = mkLiteral "#${config.lib.stylix.colors.base0B}";
         text-selected = mkLiteral "#${config.lib.stylix.colors.base00}";
         text-color = mkLiteral "#${config.lib.stylix.colors.base05}";
-        border-color = mkLiteral "#${config.lib.stylix.colors.base0F}";
         urgent = mkLiteral "#${config.lib.stylix.colors.base0E}";
       };
       "window" = {
