@@ -137,24 +137,6 @@
         text-color = mkLiteral "@text-color";
         cursor = mkLiteral "pointer";
       };
-      "element normal.normal" = {
-        text-color = mkLiteral "@text-color";
-      };
-      "element normal.urgent" = {
-        text-color = mkLiteral "@text-color";
-      };
-      "element normal.active" = {
-        text-color = mkLiteral "@text-color";
-      };
-      "element selected.normal" = {
-        text-color = mkLiteral "@foreground";
-      };
-      "element selected.urgent" = {
-        text-color = mkLiteral "@text-selected";
-      };
-      "element selected.active" = {
-        text-color = mkLiteral "@text-selected";
-      };
       "element-icon" = {
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "inherit";
