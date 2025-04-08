@@ -1,14 +1,15 @@
-{ lib, config, pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.rofi = {
     enable = true;
     plugins =[pkgs.rofi-calc];
-    font = lib.mkForce "JetBrains Nerd Font 16";
+    package = pkgs.rofi-wayland;
     extraConfig = {
       modi = "run,filebrowser,drun";
       show-icons = true;
       icon-theme = "Papirus";
+      font = "JetBrains Nerd Font 16";
       drun-display-format = "{icon} {name}";
       display-drun = "   Apps ";
       display-run = "   Run ";
