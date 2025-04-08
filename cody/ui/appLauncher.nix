@@ -109,11 +109,11 @@
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "@foreground";
       };
-      "button" = {
+      "button" = lib.mkForce {
         padding = mkLiteral "15px";
         border-radius = mkLiteral "10px";
         background-color = mkLiteral "@bg-alt";
-        text-color = mkLiteral "@foreground";
+        text-color = mkLiteral "inherit";
         cursor = mkLiteral "pointer";
       };
       "button selected" = {
