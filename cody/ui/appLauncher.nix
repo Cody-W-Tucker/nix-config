@@ -141,23 +141,18 @@
         text-color = mkLiteral "@text-color";
       };
       "element normal.urgent" = {
-        background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-color";
       };
       "element normal.active" = {
-        background-color = mkLiteral "inherit";
         text-color = mkLiteral "@text-color";
       };
       "element selected.normal" = {
-        background-color = mkLiteral "@selected";
         text-color = mkLiteral "@foreground";
       };
       "element selected.urgent" = {
-        background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-selected";
       };
       "element selected.active" = {
-        background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-selected";
       };
       "element-icon" = {
