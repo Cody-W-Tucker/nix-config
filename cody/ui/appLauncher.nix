@@ -157,15 +157,15 @@
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "@text-color";
       };
-      "element selected.normal" = {
+      "element selected.normal" = lib.mkForce {
         background-color = mkLiteral "@selected";
         text-color = mkLiteral "@foreground";
       };
-      "element selected.urgent" = {
+      "element selected.urgent" = lib.mkForce {
         background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-selected";
       };
-      "element selected.active" = {
+      "element selected.active" = lib.mkForce {
         background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-selected";
       };
