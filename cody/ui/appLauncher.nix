@@ -138,7 +138,6 @@
         cursor = mkLiteral "pointer";
       };
       "element normal.normal" = {
-        background-color = mkLiteral "inherit";
         text-color = mkLiteral "@text-color";
       };
       "element normal.urgent" = {
