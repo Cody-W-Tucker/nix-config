@@ -8,7 +8,7 @@
     plugins = [
       (pkgs.fetchurl {
         url = "https://github.com/mattermost/mattermost-plugin-boards/releases/download/v9.1.2/mattermost-plugin-boards-v9.1.2-linux-amd64.tar.gz";
-        hash = "";
+        hash = "sha256-vOCL51VCFkiTIro+LSx0N4f2kuqw1t+o0pSNzArdN9E=";
       })
     ];
   };
