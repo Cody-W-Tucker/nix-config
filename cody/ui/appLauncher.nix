@@ -37,7 +37,6 @@
         cursor = "default";
         enabled = true;
         border-radius = mkLiteral "15px";
-        background-color = mkLiteral "@bg";
       };
       "mainbox" = {
         enabled = true;
