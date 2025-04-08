@@ -27,6 +27,7 @@
     nextmeeting = {
       url = "github:chmouel/nextmeeting?dir=packaging";
       inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
   };
 
