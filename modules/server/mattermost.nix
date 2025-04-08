@@ -1,8 +1,16 @@
+{ pkgs, ...}:
+
 {
 
   services.mattermost = {
     enable = true;
     siteUrl = "https://chat.homehub.tv";
+    plugins = [
+      (pkgs.fetchurl {
+        url = "https://github.com/mattermost/mattermost-plugin-boards/releases/download/v9.1.2/mattermost-plugin-boards-v9.1.2-linux-amd64.tar.gz";
+        hash = "";
+      })
+    ];
   };
 
   services.nginx.virtualHosts."chat.homehub.tv" = {
