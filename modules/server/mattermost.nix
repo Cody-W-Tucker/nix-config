@@ -1,14 +1,12 @@
-{ pkgs, pkgs-unstable, ...}:
-let 
-mattermost = pkgs-unstable.mattermost;
-in 
+{ pkgs, ...}:
+
 {
 
   services.mattermost = {
     enable = true;
     siteUrl = "https://chat.homehub.tv";
     preferNixConfig = true;
-    package = mattermost;
+    package = pkgs.mattermostLatest;
     plugins = [
       (pkgs.fetchurl {
         url = "https://github.com/mattermost/mattermost-plugin-boards/releases/download/v9.1.2/mattermost-plugin-boards-v9.1.2-linux-amd64.tar.gz";
