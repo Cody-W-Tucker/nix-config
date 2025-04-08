@@ -143,7 +143,6 @@
         cursor = mkLiteral "inherit";
       };
       "element-text" = {
-        background-color = mkLiteral "transparent";
         text-color = mkLiteral "inherit";
         cursor = mkLiteral "inherit";
         vertical-align = mkLiteral "0.5";
