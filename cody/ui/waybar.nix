@@ -1,4 +1,4 @@
-{ config, lib, inputs, pkgs, ... }:
+{ config, lib, ... }:
 
 # Create a reusable function to create each bar
 # Bottom monitor bar focus on work

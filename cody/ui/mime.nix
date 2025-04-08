@@ -32,10 +32,12 @@
       "image/heif" = "feh.desktop";
       "image/heic" = "feh.desktop";
       "image/svg+xml" = "feh.desktop";
-      "application/pdf" = "zathura.desktop";
       "image/x-wmf" = "feh.desktop";
       "image/jp2" = "feh.desktop";
       "image/x-xcursor" = "feh.desktop";
+
+      # Set Zathura for PDFs
+      "application/pdf" = "zathura.desktop"; 
 
       # Set nvim as the default for all text types
       "application/rtf" = "nvim.desktop";
