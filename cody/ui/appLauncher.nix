@@ -112,9 +112,6 @@
         background-color = mkLiteral "@bg-alt";
         cursor = mkLiteral "pointer";
       };
-      "button selected" = {
-        text-color = mkLiteral "@foreground";
-      };
       "listview" = {
         enabled = true;
         columns = 1;
