@@ -113,7 +113,7 @@
         padding = mkLiteral "15px";
         border-radius = mkLiteral "10px";
         background-color = mkLiteral "@bg-alt";
-        text-color = mkLiteral "inherit";
+        text-color = mkLiteral "@foreground";
         cursor = mkLiteral "pointer";
       };
       "button selected" = {
