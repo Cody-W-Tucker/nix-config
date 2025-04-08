@@ -138,7 +138,6 @@
         cursor = mkLiteral "pointer";
       };
       "element-icon" = {
-        background-color = mkLiteral "transparent";
         text-color = mkLiteral "inherit";
         size = mkLiteral "36px";
         cursor = mkLiteral "inherit";
