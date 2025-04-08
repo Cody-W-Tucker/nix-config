@@ -37,7 +37,8 @@
       "image/x-xcursor" = "feh.desktop";
 
       # Set Zathura for PDFs
-      "application/pdf" = "zathura.desktop"; 
+      "application/epub+zip" = "org.pwmt.zathura.desktop";
+      "application/pdf" = "org.pwmt.zathura.desktop";
 
       # Set nvim as the default for all text types
       "application/rtf" = "nvim.desktop";
