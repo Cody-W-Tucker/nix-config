@@ -153,7 +153,7 @@
         background-color = mkLiteral "@urgent";
         text-color = mkLiteral "@text-color";
       };
-      "element normal.active" = {
+      "element normal.active" = lib.mkForce {
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "@text-color";
       };
