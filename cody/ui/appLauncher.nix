@@ -153,7 +153,6 @@
         padding = mkLiteral "15px";
         border-radius = mkLiteral "10px";
         background-color = mkLiteral "@bg-alt";
-        text-color = mkLiteral "@foreground";
         vertical-align = mkLiteral "0.5";
         horizontal-align = mkLiteral "0.0";
       };
