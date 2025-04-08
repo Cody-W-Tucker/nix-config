@@ -1,129 +1,203 @@
-{ lib, config, pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
-  programs.rofi.plugins =[pkgs.rofi-calc];
-  home.file.".config/rofi/config.rasi".text = lib.mkForce ''
-    @theme "/dev/null"
-
-    * {
-      bg: #${config.lib.stylix.colors.base00};
-      background-color: @bg;
-    }
-
-    configuration {
-      modi:		    "run,filebrowser,drun";
-      show-icons:	    true;
-      icon-theme:	    "Papirus";
-      location:		    0;
-      font:		    "JetBrains Nerd Font 16";	
-      drun-display-format:  "{icon} {name}";
-      display-drun:	    "   Apps ";
-      display-run:	    "   Run ";
-      display-filebrowser:  "   File ";
-    }
-
-    window { 
-      width: 30%;
-      transparency: "real";
-      orientation: vertical;
-      border: 2px ;
-      border-color: #${config.lib.stylix.colors.base0F};
-      border-radius: 10px;
-    }
-
-    mainbox {
-      children: [ inputbar, listview, mode-switcher ];
-    }
-
-    // ELEMENT
-    // -----------------------------------
-
-    element {
-      padding: 8 14;
-      text-color: #${config.lib.stylix.colors.base05};
-      border-radius: 5px;
-    }
-
-    element selected {
-      text-color: #${config.lib.stylix.colors.base01};
-      background-color: #${config.lib.stylix.colors.base0C};
-    }
-
-    element-text {
-      background-color: inherit;
-      text-color: inherit;
-    }
-
-    element-icon {
-      size: 24 px;
-      background-color: inherit;
-      padding: 0 6 0 0;
-      alignment: vertical;
-    }
-
-    listview {
-      columns: 1;
-      lines: 9;
-      padding: 8 0;
-      fixed-height: true;
-      fixed-columns: true;
-      fixed-lines: true;
-      border: 0 10 6 10;
-    }
-
-    // INPUT BAR 
-    //------------------------------------------------
-
-    entry {
-      text-color: #${config.lib.stylix.colors.base05};
-      padding: 10 10 0 0;
-      margin: 0 -2 0 0;
-    }
-
-    inputbar {
-      padding: 20 0 0;
-      margin: 0 0 0 0;
-    } 
-
-    prompt {
-      text-color: #${config.lib.stylix.colors.base0D};
-      padding: 10 6 0 10;
-      margin: 0 -2 0 0;
-    }
-
-    // Mode Switcher
-    //------------------------------------------------
-
-    mode-switcher {
-      border-color:   #${config.lib.stylix.colors.base0F};
-      spacing:	      0;
-    }
-
-    button {
-      padding:	      10px;
-      background-color: @bg;
-      text-color:	      #${config.lib.stylix.colors.base03};
-      vertical-align:   0.5; 
-      horizontal-align: 0.5;
-    }
-
-    button selected {
-      background-color: @bg;
-      text-color: #${config.lib.stylix.colors.base0F};
-    }
-
-    message {
-      background-color: @bg;
-      margin: 2px;
-      padding: 2px;
-      border-radius: 5px;
-    }
-
-    textbox {
-      padding: 6px;
-      margin: 20px 0px 0px 20px;
-      text-color: #${config.lib.stylix.colors.base0F};
-      background-color: @bg;
-    }
-  '';
+  programs.rofi = {
+    enable = true;
+    plugins =[pkgs.rofi-calc];
+    font = "JetBrains Nerd Font 16";
+    extraConfig = {
+      modi = "run,filebrowser,drun";
+      show-icons = true;
+      icon-theme = "Papirus";
+      drun-display-format = "{icon} {name}";
+      display-drun = "   Apps ";
+      display-run = "   Run ";
+      display-filebrowser = "   File ";
+    };
+    theme = let
+        inherit (config.lib.formats.rasi) mkLiteral;
+    in {
+      "*" = {
+        bg = mkLiteral "#${config.stylix.base16Scheme.base00}";
+        bg-alt = mkLiteral "#${config.stylix.base16Scheme.base09}";
+        foreground = mkLiteral "#${config.stylix.base16Scheme.base01}";
+        selected = mkLiteral "#${config.stylix.base16Scheme.base08}";
+        active = mkLiteral "#${config.stylix.base16Scheme.base0B}";
+        text-selected = mkLiteral "#${config.stylix.base16Scheme.base00}";
+        text-color = mkLiteral "#${config.stylix.base16Scheme.base05}";
+        border-color = mkLiteral "#${config.stylix.base16Scheme.base0F}";
+        urgent = mkLiteral "#${config.stylix.base16Scheme.base0E}";
+      };
+      "window" = {
+        transparency = "real";
+        width = mkLiteral "30%";
+        location = mkLiteral "center";
+        anchor = mkLiteral "center";
+        fullscreen = false;
+        x-offset = mkLiteral "0px";
+        y-offset = mkLiteral "0px";
+        cursor = "default";
+        enabled = true;
+        border-radius = mkLiteral "15px";
+        background-color = mkLiteral "@bg";
+      };
+      "mainbox" = {
+        enabled = true;
+        spacing = mkLiteral "0px";
+        orientation = mkLiteral "horizontal";
+        children = map mkLiteral [
+          "imagebox"
+          "listbox"
+        ];
+        background-color = mkLiteral "transparent";
+      };
+      "imagebox" = {
+        padding = mkLiteral "20px";
+        background-color = mkLiteral "transparent";
+        background-image = mkLiteral ''url("~/Pictures/Wallpapers/Rainnight.jpg", height)'';
+        orientation = mkLiteral "vertical";
+        children = map mkLiteral [
+          "inputbar"
+          "dummy"
+          "mode-switcher"
+        ];
+      };
+      "listbox" = {
+        spacing = mkLiteral "20px";
+        padding = mkLiteral "20px";
+        background-color = mkLiteral "transparent";
+        orientation = mkLiteral "vertical";
+        children = map mkLiteral [
+          "message"
+          "listview"
+        ];
+      };
+      "dummy" = {
+        background-color = mkLiteral "transparent";
+      };
+      "inputbar" = {
+        enabled = true;
+        spacing = mkLiteral "10px";
+        padding = mkLiteral "10px";
+        border-radius = mkLiteral "10px";
+        background-color = mkLiteral "@bg-alt";
+        text-color = mkLiteral "@foreground";
+        children = map mkLiteral [
+          "textbox-prompt-colon"
+          "entry"
+        ];
+      };
+      "textbox-prompt-colon" = {
+        enabled = true;
+        expand = false;
+        str = "";
+        background-color = mkLiteral "inherit";
+        text-color = mkLiteral "inherit";
+      };
+      "entry" = {
+        enabled = true;
+        background-color = mkLiteral "inherit";
+        text-color = mkLiteral "inherit";
+        cursor = mkLiteral "text";
+        placeholder = "Search";
+        placeholder-color = mkLiteral "inherit";
+      };
+      "mode-switcher" = {
+        enabled = true;
+        spacing = mkLiteral "20px";
+        background-color = mkLiteral "transparent";
+        text-color = mkLiteral "@foreground";
+      };
+      "button" = {
+        padding = mkLiteral "15px";
+        border-radius = mkLiteral "10px";
+        background-color = mkLiteral "@bg-alt";
+        text-color = mkLiteral "inherit";
+        cursor = mkLiteral "pointer";
+      };
+      "button selected" = {
+        background-color = mkLiteral "@selected";
+        text-color = mkLiteral "@foreground";
+      };
+      "listview" = {
+        enabled = true;
+        columns = 1;
+        lines = 8;
+        cycle = true;
+        dynamic = true;
+        scrollbar = false;
+        layout = mkLiteral "vertical";
+        reverse = false;
+        fixed-height = true;
+        fixed-columns = true;
+        spacing = mkLiteral "10px";
+        background-color = mkLiteral "transparent";
+        text-color = mkLiteral "@foreground";
+        cursor = "default";
+      };
+      "element" = {
+        enabled = true;
+        spacing = mkLiteral "15px";
+        padding = mkLiteral "8px";
+        border-radius = mkLiteral "10px";
+        background-color = mkLiteral "transparent";
+        text-color = mkLiteral "@text-color";
+        cursor = mkLiteral "pointer";
+      };
+      "element normal.normal" = {
+        background-color = mkLiteral "inherit";
+        text-color = mkLiteral "@text-color";
+      };
+      "element normal.urgent" = {
+        background-color = mkLiteral "@urgent";
+        text-color = mkLiteral "@text-color";
+      };
+      "element normal.active" = {
+        background-color = mkLiteral "inherit";
+        text-color = mkLiteral "@text-color";
+      };
+      "element selected.normal" = {
+        background-color = mkLiteral "@selected";
+        text-color = mkLiteral "@foreground";
+      };
+      "element selected.urgent" = {
+        background-color = mkLiteral "@urgent";
+        text-color = mkLiteral "@text-selected";
+      };
+      "element selected.active" = {
+        background-color = mkLiteral "@urgent";
+        text-color = mkLiteral "@text-selected";
+      };
+      "element-icon" = {
+        background-color = mkLiteral "transparent";
+        text-color = mkLiteral "inherit";
+        size = mkLiteral "36px";
+        cursor = mkLiteral "inherit";
+      };
+      "element-text" = {
+        background-color = mkLiteral "transparent";
+        text-color = mkLiteral "inherit";
+        cursor = mkLiteral "inherit";
+        vertical-align = mkLiteral "0.5";
+        horizontal-align = mkLiteral "0.0";
+      };
+      "message" = {
+        background-color = mkLiteral "transparent";
+      };
+      "textbox" = {
+        padding = mkLiteral "15px";
+        border-radius = mkLiteral "10px";
+        background-color = mkLiteral "@bg-alt";
+        text-color = mkLiteral "@foreground";
+        vertical-align = mkLiteral "0.5";
+        horizontal-align = mkLiteral "0.0";
+      };
+      "error-message" = {
+        padding = mkLiteral "15px";
+        border-radius = mkLiteral "20px";
+        background-color = mkLiteral "@bg";
+        text-color = mkLiteral "@foreground";
+      };
+    };
+  };
 }
