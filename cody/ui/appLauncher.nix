@@ -145,7 +145,7 @@
         text-color = mkLiteral "@text-color";
         cursor = mkLiteral "pointer";
       };
-      "element normal.normal" = {
+      "element normal.normal" = lib.mkForce {
         background-color = mkLiteral "inherit";
         text-color = mkLiteral "@text-color";
       };
