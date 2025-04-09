@@ -61,13 +61,13 @@
       vscode
       unzip
       baobab # Gnome disk usage app
+      code-cursor
     ])
     ++
     (with pkgs-unstable; [
       # list of unstable packages go here
       spotube
       zoom-us
-      code-cursor
     ]);
 
   # Obs for screenrecording
