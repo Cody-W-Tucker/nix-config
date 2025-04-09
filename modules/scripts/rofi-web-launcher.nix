@@ -22,14 +22,12 @@ pkgs.writeShellScriptBin "web-search" ''
   handle_selection() {
     platform="$1"
     base_url="''${URLS[$platform]}"
-    
-    # Use the user's input from ROFI_INFO or rofi's -kb-custom-1
-    query="$ROFI_INFO"
-    if [[ -z "$query" ]]; then
-      # Fallback to a default behavior if no query is provided
-      url="$base_url"
-    else
+    query="$ROFI_TEXT"  # Use the text from rofi's input bar
+
+    if [[ -n "$query" ]]; then
       url="''${base_url}$(echo "$query" | ${pkgs.jq}/bin/jq -Rr @uri)"
+    else
+      url="$base_url"
     fi
     ${pkgs.xdg-utils}/bin/xdg-open "$url"
   }
@@ -37,6 +35,6 @@ pkgs.writeShellScriptBin "web-search" ''
   # Rofi script mode logic
   case "$ROFI_RETV" in
     0) gen_list ;;                # Initial call: show the list
-    1) handle_selection "$1" ;;   # Selection made: process it
+    1) handle_selection "$1" ;;   # Selection made: process with input bar text
   esac
 ''
