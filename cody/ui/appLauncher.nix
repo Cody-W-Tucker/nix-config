@@ -55,7 +55,6 @@
         padding = mkLiteral "20px";
         background-color = mkLiteral "transparent";
         background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", width)'';
-        background-size = mkLiteral "cover";
         orientation = mkLiteral "vertical";
         children = map mkLiteral [
           "inputbar"
