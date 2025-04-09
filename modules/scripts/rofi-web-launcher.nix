@@ -1,16 +1,16 @@
 { pkgs }:
 
 pkgs.writeShellScriptBin "web-search" ''
+  #!/usr/bin/env bash
 
+  # Check if Rofi is already running
   if pgrep -x "rofi" > /dev/null; then
-    # Rofi is running, kill it
     pkill -x rofi
     exit 0
   fi
 
-  declare -A URLS
-
-  URLS=(
+  # Declare search platforms and their base URLs
+  declare -A URLS=(
     ["🔍 Google"]="https://www.google.com/search?q="
     ["🧠 Perplexity"]="https://www.perplexity.ai/search/?q="
     ["🗃️ Hoarder"]="https://hoarder.homehub.tv/dashboard/search?q="
@@ -20,32 +20,35 @@ pkgs.writeShellScriptBin "web-search" ''
     ["📚 Wikipedia"]="https://en.wikipedia.org/wiki/Special:Search?search="
   )
 
+  # Generate list of search platforms for Rofi
   gen_list() {
-    for i in "''${!URLS[@]}"
-    do
-      echo "$i"
+    for platform in "''${!URLS[@]}"; do
+      echo "$platform"
     done
   }
 
+  # Main function
   main() {
-    platform=$( (gen_list) | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
+    # Prompt user to select a platform using Rofi
+    platform=$(gen_list | rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
 
+    # If a platform is selected, prompt for a search query
     if [[ -n "$platform" ]]; then
-      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0)
-      base_url=''${URLS[$platform]}
+      query=$(rofi -dmenu -p 'Enter Search Query' -l 0)
+
+      # Get the base URL for the selected platform
+      base_url="''${URLS[$platform]}"
 
       if [[ -n "$query" ]]; then
-        # Properly encode query including spaces
-        url=''${base_url}$(${pkgs.jq}/bin/jq -Rr @uri <<< "$query")
+        # Encode the query string properly
+        url="''${base_url}$(echo "$query" | jq -Rr @uri)"
       else
-        # Extract base domain (handles URLs with paths/parameters)
-        protocol="''${base_url%%://*}"
-        domain_path="''${base_url#*://}"
-        domain="''${domain_path%%[/?]*}"
-        url="$protocol://$domain/"
+        # If no query is entered, open the base URL
+        url="$base_url"
       fi
 
-      ${pkgs.xdg-utils}/bin/xdg-open "$url"
+      # Open the URL in the default browser
+      xdg-open "$url"
     fi
   }
 
