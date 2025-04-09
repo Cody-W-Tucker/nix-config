@@ -22,21 +22,20 @@ pkgs.writeShellScriptBin "web-search" ''
   handle_selection() {
     platform="$1"
     base_url="''${URLS[$platform]}"
-
-    # Prompt for query using rofi -dmenu after selection
-    query=$(${pkgs.rofi}/bin/rofi -dmenu -p "Query for $platform" -l 0)
+    query="$2"  # Query passed via ROFI_INFO or custom keybinding
 
     if [[ -n "$query" ]]; then
       url="''${base_url}$(echo "$query" | ${pkgs.jq}/bin/jq -Rr @uri)"
     else
       url="$base_url"
     fi
-    ${pkgs.xdg-utils}/bin/xdg-open "$url" &  # Run in background to avoid blocking
+    ${pkgs.xdg-utils}/bin/xdg-open "$url" &
   }
 
   # Rofi script mode logic
   case "$ROFI_RETV" in
     0) gen_list ;;                # Initial call: show the list
-    1) handle_selection "$1" ;;   # Selection made: prompt for query and open URL
+    1) handle_selection "$1" "$ROFI_TEXT" ;;  # Normal Enter: use input bar text
+    10) handle_selection "$1" "" ;;  # Custom key (e.g., Ctrl+Enter): no query
   esac
 ''
