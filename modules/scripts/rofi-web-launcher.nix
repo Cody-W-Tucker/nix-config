@@ -1,9 +1,16 @@
 { pkgs }:
 
 pkgs.writeShellScriptBin "web-search" ''
-  #!/usr/bin/env bash
+#!/usr/bin/env bash
+  if pgrep -x "rofi" > /dev/null; then
+    # Rofi is running, kill it
+    pkill -x rofi
+    exit 0
+  fi
 
-  declare -A URLS=(
+  declare -A URLS
+
+  URLS=(
     ["🔍 Google"]="https://www.google.com/search?q="
     ["🧠 Perplexity"]="https://www.perplexity.ai/search/?q="
     ["🗃️ Hoarder"]="https://hoarder.homehub.tv/dashboard/search?q="
@@ -14,28 +21,33 @@ pkgs.writeShellScriptBin "web-search" ''
   )
 
   gen_list() {
-    for platform in "''${!URLS[@]}"; do
-      echo -en "$platform\0info\x1f''${URLS[$platform]}\n"
+    for i in "''${!URLS[@]}"
+    do
+      echo "$i"
     done
   }
 
-  handle_selection() {
-    platform="$1"
-    base_url="''${URLS[$platform]}"
-    query="$2"
+  main() {
+    platform=$( (gen_list) | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
 
-    if [[ -n "$query" && "$query" != " " ]]; then  # Ignore empty or space-only input
-      url="''${base_url}$(echo "$query" | ${pkgs.jq}/bin/jq -Rr @uri)"
-    else
-      url="$base_url"
+    if [[ -n "$platform" ]]; then
+      query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0)
+      base_url=''${URLS[$platform]}
+
+      if [[ -n "$query" ]]; then
+        # Properly encode query including spaces
+        url=''${base_url}$(${pkgs.jq}/bin/jq -Rr @uri <<< "$query")
+      else
+        # Extract base domain (handles URLs with paths/parameters)
+        protocol="''${base_url%%://*}"
+        domain_path="''${base_url#*://}"
+        domain="''${domain_path%%[/?]*}"
+        url="$protocol://$domain/"
+      fi
+
+      ${pkgs.xdg-utils}/bin/xdg-open "$url"
     fi
-    ${pkgs.xdg-utils}/bin/xdg-open "$url" &
   }
 
-  # Rofi script mode logic
-  case "$ROFI_RETV" in
-    0) gen_list ;;                # Initial call: show the list
-    1) handle_selection "$1" "" ;;  # Enter: select platform, no query (base URL)
-    10) handle_selection "$1" "$ROFI_TEXT" ;;  # Ctrl+Enter: select with query
-  esac
+  main
 ''
