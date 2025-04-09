@@ -5,7 +5,7 @@
     enable = true;
     package = pkgs.rofi-wayland;
     extraConfig = {
-      modi = "custom:web-search,drun";
+      modi = "web-search:web-search,drun";
       show-icons = true;
       icon-theme = "Papirus";
       location = 0;
