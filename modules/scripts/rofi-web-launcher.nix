@@ -22,7 +22,9 @@ pkgs.writeShellScriptBin "web-search" ''
   handle_selection() {
     platform="$1"
     base_url="''${URLS[$platform]}"
-    query=$(echo -en "\0prompt\x1fQuery for $platform\n" | ${pkgs.rofi}/bin/rofi -dmenu -l 0)
+    
+    # Prompt the user for a search query using Rofi's -prompt argument
+    query=$(${pkgs.rofi}/bin/rofi -dmenu -p "Query for $platform" -l 0)
 
     if [[ -n "$query" ]]; then
       url="''${base_url}$(echo "$query" | ${pkgs.jq}/bin/jq -Rr @uri)"
