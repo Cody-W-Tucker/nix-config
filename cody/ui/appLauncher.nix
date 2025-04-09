@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   programs.rofi = {
@@ -18,7 +18,7 @@
     theme = let
         inherit (config.lib.formats.rasi) mkLiteral;
     in {
-      "*" = {
+      "*" = lib.mkForce {
         bg = mkLiteral "#${config.lib.stylix.colors.base00}";
         bg-alt = mkLiteral "#${config.lib.stylix.colors.base01}";
         selected = mkLiteral "#${config.lib.stylix.colors.base02}";
