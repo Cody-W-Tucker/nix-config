@@ -12,6 +12,7 @@
       font = "JetBrains Nerd Font 16";
       drun-display-format = "{icon} {name}";
       display-web-search = "";
+      kb-custom-1 = "Control+Return";  # Select platform without query
       display-drun = "";
       # display-filebrowser = "";
     };
