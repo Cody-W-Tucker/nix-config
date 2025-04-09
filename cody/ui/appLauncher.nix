@@ -168,11 +168,6 @@
         background-color = mkLiteral "@bg";
         text-color = mkLiteral "@foreground";
       };
-      "@media (min-width: 800px)" = {
-        window = {
-          width = mkLiteral "50%"; # Percentage-based for larger screens
-        };
-      };
     };
   };
 }
