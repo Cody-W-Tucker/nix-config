@@ -62,7 +62,7 @@
       unzip
       baobab # Gnome disk usage app
       code-cursor
-      rustdesk
+      rustdesk-flutter
     ])
     ++
     (with pkgs-unstable; [
