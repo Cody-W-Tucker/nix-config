@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.rofi = {
@@ -8,6 +8,7 @@
       modi = "run,filebrowser,drun";
       show-icons = true;
       icon-theme = "Papirus";
+      location = 0;
       font = "JetBrains Nerd Font 16";
       drun-display-format = "{icon} {name}";
       display-drun = "   Apps ";
@@ -19,12 +20,13 @@
     in {
       "*" = {
         bg = mkLiteral "#${config.lib.stylix.colors.base00}";
-        bg-alt = mkLiteral "#${config.lib.stylix.colors.base09}";
-        selected = mkLiteral "#${config.lib.stylix.colors.base08}";
-        active = mkLiteral "#${config.lib.stylix.colors.base0B}";
-        text-selected = mkLiteral "#${config.lib.stylix.colors.base00}";
+        bg-alt = mkLiteral "#${config.lib.stylix.colors.base01}";
+        selected = mkLiteral "#${config.lib.stylix.colors.base02}";
+        active = mkLiteral "#${config.lib.stylix.colors.base0D}";
+        text-selected = mkLiteral "#${config.lib.stylix.colors.base01}";
         text-color = mkLiteral "#${config.lib.stylix.colors.base05}";
         urgent = mkLiteral "#${config.lib.stylix.colors.base0E}";
+        border-color = mkLiteral "#${config.lib.stylix.colors.base0F}";
       };
       "window" = {
         transparency = "real";
@@ -36,6 +38,7 @@
         y-offset = mkLiteral "0px";
         cursor = "default";
         enabled = true;
+        border-color = mkLiteral "@border-color";
         border-radius = mkLiteral "15px";
       };
       "mainbox" = {
@@ -51,7 +54,7 @@
       "imagebox" = {
         padding = mkLiteral "20px";
         background-color = mkLiteral "transparent";
-        background-image = mkLiteral ''url("~/Pictures/Wallpapers/Rainnight.jpg", height)'';
+        background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", height)'';
         orientation = mkLiteral "vertical";
         children = map mkLiteral [
           "inputbar"
@@ -133,6 +136,9 @@
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "@text-color";
         cursor = mkLiteral "pointer";
+      };
+      "element selected" = {
+        text-color = "@text-color";
       };
       "element-icon" = {
         text-color = mkLiteral "inherit";
