@@ -17,7 +17,6 @@ let
     "${mainMod} SHIFT, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod}, Tab, exec, uwsm app -- web-search"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
-    "${mainMod} SHIFT, Q, exec, uwsm app -- rofi -show web_scraper -modi 'web_scraper:web-scraper'"
     "${mainMod}, KP_Enter, exec, uwsm app -- taskwarrior-rofi quick_add"
     "${mainMod}, Return, exec, uwsm app -- taskwarrior-rofi quick_add"
     "${mainMod} SHIFT, KP_Enter, exec, uwsm app -- taskwarrior-rofi"
