@@ -5,14 +5,14 @@
     enable = true;
     package = pkgs.rofi-wayland;
     extraConfig = {
-      modi = "custom:web-search,custom:web-scrape,todoist-rofi,filebrowser,drun";
+      modi = "filebrowser,drun";
       show-icons = true;
       icon-theme = "Papirus";
       location = 0;
       font = "JetBrains Nerd Font 16";
       drun-display-format = "{icon} {name}";
       display-drun = "";
-      display-web-search = "";
+      # display-web-search = "";
       display-filebrowser = "";
     };
     theme = let
