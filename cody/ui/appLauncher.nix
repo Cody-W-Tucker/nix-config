@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.rofi = {
@@ -29,7 +29,8 @@
       };
       "window" = {
         transparency = "real";
-        width = mkLiteral "30%";
+        width = mkLiteral "800px";
+        height = mkLiteral "600px";
         location = mkLiteral "center";
         anchor = mkLiteral "center";
         fullscreen = false;
@@ -53,7 +54,8 @@
       "imagebox" = {
         padding = mkLiteral "20px";
         background-color = mkLiteral "transparent";
-        background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", height)'';
+        background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", width)'';
+        background-size = mkLiteral "cover";
         orientation = mkLiteral "vertical";
         children = map mkLiteral [
           "inputbar"
@@ -116,7 +118,7 @@
         columns = 1;
         lines = 8;
         cycle = true;
-        dynamic = true;
+        dynamic = false;
         scrollbar = false;
         layout = mkLiteral "vertical";
         reverse = false;
@@ -165,6 +167,11 @@
         border-radius = mkLiteral "20px";
         background-color = mkLiteral "@bg";
         text-color = mkLiteral "@foreground";
+      };
+      "@media (min-width: 800px)" = {
+        window = {
+          width = mkLiteral "50%"; # Percentage-based for larger screens
+        };
       };
     };
   };
