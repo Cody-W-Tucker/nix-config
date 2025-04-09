@@ -5,15 +5,15 @@
     enable = true;
     package = pkgs.rofi-wayland;
     extraConfig = {
-      modi = "filebrowser,drun";
+      modi = "custom:web-search,drun";
       show-icons = true;
       icon-theme = "Papirus";
       location = 0;
       font = "JetBrains Nerd Font 16";
       drun-display-format = "{icon} {name}";
       display-drun = "";
-      # display-web-search = "";
-      display-filebrowser = "";
+      display-web-search = "";
+      # display-filebrowser = "";
     };
     theme = let
         inherit (config.lib.formats.rasi) mkLiteral;
