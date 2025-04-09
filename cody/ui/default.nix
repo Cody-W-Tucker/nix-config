@@ -67,6 +67,7 @@
       # list of unstable packages go here
       spotube
       zoom-us
+      code-cursor
     ]);
 
   # Obs for screenrecording
