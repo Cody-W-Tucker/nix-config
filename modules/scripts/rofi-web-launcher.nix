@@ -22,9 +22,9 @@ pkgs.writeShellScriptBin "web-search" ''
   handle_selection() {
     platform="$1"
     base_url="''${URLS[$platform]}"
-    query="$2"  # Query passed via ROFI_INFO or custom keybinding
+    query="$2"
 
-    if [[ -n "$query" ]]; then
+    if [[ -n "$query" && "$query" != " " ]]; then  # Ignore empty or space-only input
       url="''${base_url}$(echo "$query" | ${pkgs.jq}/bin/jq -Rr @uri)"
     else
       url="$base_url"
@@ -35,7 +35,7 @@ pkgs.writeShellScriptBin "web-search" ''
   # Rofi script mode logic
   case "$ROFI_RETV" in
     0) gen_list ;;                # Initial call: show the list
-    1) handle_selection "$1" "$ROFI_TEXT" ;;  # Normal Enter: use input bar text
-    10) handle_selection "$1" "" ;;  # Custom key (e.g., Ctrl+Enter): no query
+    1) handle_selection "$1" "" ;;  # Enter: select platform, no query (base URL)
+    10) handle_selection "$1" "$ROFI_TEXT" ;;  # Ctrl+Enter: select with query
   esac
 ''
