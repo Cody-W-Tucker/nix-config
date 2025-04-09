@@ -11,9 +11,9 @@
       location = 0;
       font = "JetBrains Nerd Font 16";
       drun-display-format = "{icon} {name}";
-      display-drun = "   Apps ";
-      display-run = "   Run ";
-      display-filebrowser = "   File ";
+      display-drun = "";
+      display-run = "";
+      display-filebrowser = "";
     };
     theme = let
         inherit (config.lib.formats.rasi) mkLiteral;
