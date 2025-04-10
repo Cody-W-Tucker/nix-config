@@ -48,6 +48,10 @@
       rustdesk-flutter
     ]);
 
+    # Open ports for rustdesk
+    networking.firewall.allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
+    networking.firewall.allowedUDPPorts = [ 21115 21116 21117 21118 21119 ];
+
   programs.firefox = {
     enable = true;
     package = pkgs-unstable.firefox;
