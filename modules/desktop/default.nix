@@ -45,6 +45,7 @@
       ffmpeg
       obsidian
       chromium
+      rustdesk-flutter
     ]);
 
   programs.firefox = {
