@@ -27,6 +27,7 @@ let
     "${mainMod}, KP_Insert, exec, uwsm-app -- nvidia-offload zen"
     "${mainMod}, KP_Add, exec, uwsm-app -- hyprctl dispatch exec [floating] gnome-calculator"
     "${mainMod}, KP_Home, exec, uwsm-app -- code"
+    "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor"
 
     # Screenshots
     ''${mainMod}, S, exec, uwsm app -- screenshot-ocr''
