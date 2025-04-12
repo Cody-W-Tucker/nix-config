@@ -62,6 +62,7 @@
       unzip
       baobab # Gnome disk usage app
       code-cursor
+      fastfetch
     ])
     ++
     (with pkgs-unstable; [
