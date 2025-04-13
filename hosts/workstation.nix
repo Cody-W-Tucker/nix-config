@@ -9,7 +9,7 @@
       ../modules/styles.nix
       ../modules/scripts
       ../modules/desktop/nvidia.nix
-      ../modules/desktop/vpn.nix
+      # ../modules/desktop/vpn.nix
     ];
 
   # Bootloader.
