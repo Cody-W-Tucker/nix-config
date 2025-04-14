@@ -88,6 +88,12 @@ in
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
 
+      # Handle fullscreen inside of hyprland instead of the app
+      # Will make fullscreen event 
+      "fullscreenstate 0 2,class:(firefox)"
+      "fullscreenstate 0 2,class:(zen)"
+      "fullscreenstate 0 2,class:(chromium-browser)"
+
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
