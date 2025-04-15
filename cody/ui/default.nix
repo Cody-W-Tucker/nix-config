@@ -58,10 +58,8 @@
       timewarrior
       inputs.zen-browser.packages.${pkgs.system}.default
       kdenlive
-      vscode
       unzip
       baobab # Gnome disk usage app
-      code-cursor
       fastfetch
     ])
     ++
@@ -69,6 +67,8 @@
       # list of unstable packages go here
       spotube
       zoom-us
+      code-cursor
+      vscode
     ]);
 
   # Obs for screenrecording
