@@ -11,11 +11,12 @@
 
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"];
+  boot.blacklistedKernelModules = [ "nouveau" ];
 
   hardware.nvidia = {
     modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
+    powerManagement.enable = true;
+    powerManagement.finegrained = true;
     open = true;
     package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
