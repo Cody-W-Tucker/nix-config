@@ -241,9 +241,11 @@
   };
 
   environment.sessionVariables = {
-    NIXOS_OZONE_WL = 1;
+    # Electron use x11
+    NIXOS_OZONE_WL = 0;
+    ELECTRON_OZONE_PLATFORM_HINT = "x11";
+    # Firefox and zen wayland
     MOZ_ENABLE_WAYLAND = 1;
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
     # Qt Variables
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     QT_QPA_PLATFORM = "wayland";
