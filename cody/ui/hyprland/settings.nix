@@ -26,8 +26,8 @@ let
     # Quick launch apps
     "${mainMod}, KP_Insert, exec, uwsm-app -- zen"
     "${mainMod}, KP_Add, exec, uwsm-app -- hyprctl dispatch exec [floating] gnome-calculator"
-    "${mainMod}, KP_Home, exec, uwsm-app -- code"
-    "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor"
+    "${mainMod}, KP_Home, exec, uwsm-app -- code --enable-features=WaylandLinuxDrmSyncobj"
+    "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor --enable-features=WaylandLinuxDrmSyncobj"
 
     # Screenshots
     ''${mainMod}, S, exec, uwsm app -- screenshot-ocr''
