@@ -243,6 +243,7 @@
   environment.sessionVariables = {
     NIXOS_OZONE_WL = 1;
     MOZ_ENABLE_WAYLAND = 1;
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
     # Qt Variables
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     QT_QPA_PLATFORM = "wayland";
