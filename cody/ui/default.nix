@@ -61,14 +61,14 @@
       unzip
       baobab # Gnome disk usage app
       fastfetch
-      code-cursor
-      vscode
     ])
     ++
     (with pkgs-unstable; [
       # list of unstable packages go here
       spotube
       zoom-us
+      code-cursor
+      vscode
     ]);
 
   # Obs for screenrecording
