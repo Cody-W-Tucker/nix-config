@@ -242,15 +242,15 @@
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = 1;
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
-    WAYLAND_DISPLAY = "wayland-0";
+    MOZ_ENABLE_WAYLAND = 1;
     # Qt Variables
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
     QT_QPA_PLATFORM = "wayland";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-    NVD_BACKEND = "direct";
+    # Nvidia
     LIBVA_DRIVER_NAME = "nvidia";
+    NVD_BACKEND = "direct";
+    GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
   };
 
