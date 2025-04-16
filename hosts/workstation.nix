@@ -242,7 +242,6 @@
 
   environment.sessionVariables = {
     # Electron use x11
-    NIXOS_OZONE_WL = 0;
     ELECTRON_OZONE_PLATFORM_HINT = "x11";
     # Firefox and zen wayland
     MOZ_ENABLE_WAYLAND = 1;
