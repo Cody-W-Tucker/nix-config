@@ -12,8 +12,8 @@ let
   keybinds = [
     # Application launchers
     "${mainMod}, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-    "${mainMod}, Q, exec, uwsm app -- nvidia-offload kitty"
-    "${mainMod}, E, exec, uwsm app -- nvidia-offload kitty ranger"
+    "${mainMod}, Q, exec, uwsm app -- kitty"
+    "${mainMod}, E, exec, uwsm app -- kitty ranger"
     "${mainMod} SHIFT, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod}, Tab, exec, uwsm app -- web-search"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
@@ -24,7 +24,7 @@ let
     "${mainMod}, GRAVE, exec, uwsm app -- todoist-rofi quick_add"
 
     # Quick launch apps
-    "${mainMod}, KP_Insert, exec, uwsm-app -- nvidia-offload zen"
+    "${mainMod}, KP_Insert, exec, uwsm-app -- zen"
     "${mainMod}, KP_Add, exec, uwsm-app -- hyprctl dispatch exec [floating] gnome-calculator"
     "${mainMod}, KP_Home, exec, uwsm-app -- code"
     "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor"
