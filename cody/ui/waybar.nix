@@ -1,8 +1,10 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 # Create a reusable function to create each bar
 # Bottom monitor bar focus on work
 # Top monitor bar gives more information
+let nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.system}.default;
+in 
 let
   createBar = waybarConfig: output: position: waybarConfig // { output = output; position = position; };
   # Productivity Bar Config: This is the main bar for the main monitor.
@@ -40,6 +42,13 @@ let
     tray = {
       icon-size = 21;
       spacing = 10;
+    };
+    "custom/agenda" = {
+          exec = nextmeeting + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
+          format = "󰃶 {}";
+          return-type = "json";
+          interval = 59;
+          tooltip = true;
     };
     "custom/weather" = {
       exec = "uwsm-app -- get-weather Kearney+Nebraska";
