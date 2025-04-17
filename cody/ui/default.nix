@@ -60,7 +60,7 @@
       kdenlive
       unzip
       baobab # Gnome disk usage app
-      fastfetch
+      gcalcli
     ])
     ++
     (with pkgs-unstable; [

@@ -10,6 +10,7 @@
     (with pkgs; [
       gh
       fd
+      fastfetch
     ]);
 
   home.sessionVariables = {
