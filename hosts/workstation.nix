@@ -237,6 +237,8 @@
       "i915.enable_guc=2"
       # asynchronous page flipping
       "i915.enable_fbc=1"
+      # nvidia stuff
+      "nvidia_drm.fbdev=1"
     ];
   };
 
@@ -276,14 +278,6 @@ environment.sessionVariables = {
   GBM_BACKEND = "nvidia-drm";
   # Use Nvidia's GLX implementation
   __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-  # Vulkan layer for Nvidia Optimus laptops (discrete GPU selection)
-  __VK_LAYER_NV_optimus = "NVIDIA_only";
-  # Allow G-Sync (Nvidia variable refresh rate)
-  __GL_GSYNC_ALLOWED = "1";
-  # Allow VRR (Variable Refresh Rate) with Nvidia
-  __GL_VRR_ALLOWED = "1";
-  # Set max frames allowed for Nvidia GL
-  __GL_MaxFramesAllowed = "1";
 
   # ---------------------------
   # Wayland & Compositor Settings
@@ -295,17 +289,8 @@ environment.sessionVariables = {
   SDL_VIDEODRIVER = "wayland";
   # Clutter (GNOME graphics library) to use Wayland
   CLUTTER_BACKEND = "wayland";
-  # Disable hardware cursors in wlroots compositors (may fix cursor issues)
-  WLR_NO_HARDWARE_CURSORS = "1";
-  # Disable atomic DRM in wlroots compositors (may help with some Nvidia setups)
-  WLR_DRM_NO_ATOMIC = "1";
   # Use libinput for input devices in wlroots compositors
   WLR_USE_LIBINPUT = "1";
-  # Allow software rendering in wlroots compositors (fallback if GPU fails)
-  WLR_RENDERER_ALLOW_SOFTWARE = "1";
-
-  # Disable glamor acceleration in XWayland (may require gamescope for gaming)
-  XWAYLAND_NO_GLAMOR = "1";
 
   # ---------------------------
   # Application-Specific
@@ -313,8 +298,6 @@ environment.sessionVariables = {
 
   # Java AWT: tell Java to not reparent windows (improves compatibility on Wayland)
   _JAVA_AWT_WM_NONREPARENTING = "1";
-  # Enable Nvidia NGX updater in Proton (Steam Play)
-  PROTON_ENABLE_NGX_UPDATER = "1";
 };
 
   services = {
