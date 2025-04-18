@@ -48,7 +48,6 @@
       "--device=/dev/sr0:/dev/sr0"
       "--device=/dev/dri:/dev/dri"
       "--privileged"
-      "--pull=always"
     ];
   };
   # Service to keep arm-rippers updated
