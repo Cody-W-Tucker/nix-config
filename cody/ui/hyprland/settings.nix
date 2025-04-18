@@ -64,9 +64,6 @@ let
     # Scratchpad
     "${mainMod}, A, togglespecialworkspace, magic"
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:magic"
-
-    # Gromit Screendrawing
-    "${mainMod}, F9, exec, pidof gromit-mpx && gromit-mpx -q || gromit-mpx -a"
   ];
 in
 {
@@ -75,12 +72,6 @@ in
     bindm = mousebinds;
     bind = keybinds;
     windowrule = [
-      # Gromit
-      "noblur, ^(Gromit-mpx)$"
-      "opacity 1 override, 1 override, ^(Gromit-mpx)$"
-      "noshadow, ^(Gromit-mpx)$"
-      "suppressevent fullscreen, ^(Gromit-mpx)$"
-      "size 100% 100%, ^(Gromit-mpx)$"
       # Kitty
       "noblur,^(kitty)$"
     ];
@@ -160,10 +151,5 @@ in
         disable_hyprland_logo = lib.mkForce "true";
         focus_on_activate = "true";
       };
-  };
-  # Screen drawing
-  services.gromit-mpx = {
-    enable = true;
-    opacity = 1.0;
   };
 }
