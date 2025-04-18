@@ -45,7 +45,7 @@ let
       spacing = 10;
     };
     "custom/agenda" = {
-          exec = nextmeeting + " --skip-all-day-meeting --max-title-length 30 --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
+          exec = nextmeeting + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
           on-click = nextmeeting + "--open-meet-url";
           format = "󰃶 {}";
           return-type = "json";
