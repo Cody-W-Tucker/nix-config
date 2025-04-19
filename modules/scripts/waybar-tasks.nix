@@ -22,6 +22,6 @@ pkgs.writeShellScriptBin "waybar-tasks" ''
   if [ "$task_id" != "null" ] && [ -n "$task_id" ]; then
       echo "$task_desc"
   else
-      echo "No urgent tasks"
+      echo "No running tasks"
   fi
 ''

@@ -88,7 +88,7 @@ let
     };
     "custom/tasks" = {
       exec = "waybar-tasks";
-      format = "<span foreground='#f5c2e7'>TODO: </span>{}";
+      format = "<span foreground='#f5c2e7'>AI: </span>{}";
       interval = 30;
       tooltip = false;
       on-click = "waybar-tasks complete";
