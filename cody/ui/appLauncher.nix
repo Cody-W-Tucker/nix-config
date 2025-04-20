@@ -3,7 +3,10 @@
 {
   programs.rofi = {
     enable = true;
-    plugins = [pkgs.rofi-calc ];
+    package = pkgs.rofi-wayland;
+    plugins = with pkgs; [
+			(rofi-calc.override { rofi-unwrapped = rofi-wayland-unwrapped; })
+		];
     extraConfig = {
       modi = "drun";
       show-icons = true;
