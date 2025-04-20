@@ -44,7 +44,6 @@
         wl-copy -n < $txtfname
       '')
       hyprpicker
-      rofi-wayland
       ripdrag
       playerctl
       libnotify
