@@ -8,7 +8,7 @@
         (pkgs.rofi-calc.override { rofi-unwrapped = pkgs.rofi-wayland-unwrapped; })
       ];
       extraConfig = {
-        modi = "drun";
+        modi = "drun,calc";
         show-icons = true;
         icon-theme = "Papirus";
         location = 0;
