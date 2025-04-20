@@ -25,7 +25,7 @@ let
 
     # Quick launch apps
     "${mainMod}, KP_Insert, exec, uwsm-app -- zen --enable-features=WaylandLinuxDrmSyncobj"
-    "${mainMod}, KP_Add, exec, uwsm-app -- hyprctl dispatch exec [floating] gnome-calculator"
+    "${mainMod}, KP_Add, exec, uwsm-app -- rofi -show calc -modi calc -no-show-match -no-sort"
     "${mainMod}, KP_Home, exec, uwsm-app -- code --enable-features=WaylandLinuxDrmSyncobj"
     "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor --enable-features=WaylandLinuxDrmSyncobj"
 
