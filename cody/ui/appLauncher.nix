@@ -1,20 +1,22 @@
-{ config, pkgs, pkgs-unstable, ... }:
+{ config, pkgs, ... }:
 
 {
     programs.rofi = {
-    enable = true;
-    package = pkgs.rofi-wayland;
-    plugins = [ pkgs-unstable.rofi-calc ];
-    extraConfig = {
-      modi = "drun";
-      show-icons = true;
-      icon-theme = "Papirus";
-      location = 0;
-      font = "JetBrains Nerd Font 16";
-      drun-display-format = "{icon} {name}";
-      # display-web-search = "";
-      display-drun = "";
-      # display-filebrowser = "";
+      enable = true;
+      package = pkgs.rofi-wayland;
+      plugins = [
+        (pkgs.rofi-calc.override { rofi-unwrapped = pkgs.rofi-wayland-unwrapped; })
+      ];
+      extraConfig = {
+        modi = "drun";
+        show-icons = true;
+        icon-theme = "Papirus";
+        location = 0;
+        font = "JetBrains Nerd Font 16";
+        drun-display-format = "{icon} {name}";
+        # display-web-search = "";
+        display-drun = "";
+        # display-filebrowser = "";
     };
     theme = let
         inherit (config.lib.formats.rasi) mkLiteral;
