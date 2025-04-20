@@ -1,17 +1,10 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
-  nixpkgs.overlays = [
-		(final: prev: {
-			rofi-calc = prev.rofi-calc.override {
-				rofi-unwrapped = prev.rofi-wayland-unwrapped;
-			};
-		})
-	];
-  programs.rofi = {
+    programs.rofi = {
     enable = true;
     package = pkgs.rofi-wayland;
-    plugins = [ pkgs.rofi-calc ];
+    plugins = [ pkgs-unstable.rofi-calc ];
     extraConfig = {
       modi = "drun";
       show-icons = true;
