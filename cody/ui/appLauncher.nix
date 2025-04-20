@@ -1,12 +1,17 @@
 { config, pkgs, ... }:
 
 {
+  nixpkgs.overlays = [
+		(final: prev: {
+			rofi-calc = prev.rofi-calc.override {
+				rofi-unwrapped = prev.rofi-wayland-unwrapped;
+			};
+		})
+	];
   programs.rofi = {
     enable = true;
     package = pkgs.rofi-wayland;
-    plugins = with pkgs; [
-			(rofi-calc.override { rofi-unwrapped = rofi-wayland-unwrapped; })
-		];
+    plugins = [ pkgs.rofi-calc ];
     extraConfig = {
       modi = "drun";
       show-icons = true;
