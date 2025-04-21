@@ -79,6 +79,18 @@
     ];
   };
 
+  # Docker for dev stuff
+  virtualisation = {
+    docker = {
+      enable = true;
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
+    };
+    oci-containers.backend = "docker";
+  };
+
 
   # Clipboard history
   services.cliphist = {
