@@ -49,7 +49,7 @@
       };
       hardwareConfig = {
         workstation = {
-          # Contorls the monitor layout for hyprland
+          # Controls the monitor layout for hyprland
           workspace = [
             "1, monitor:DP-4, default:true"
             "2, monitor:HDMI-A-4, default:true"
