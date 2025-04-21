@@ -1,28 +1,13 @@
-{pkgs, ...}:
-
-{
-  mcp-servers.lib.mkConfig pkgs {
-  format = "yaml";
-  fileName = "config.yaml";
-  
-  # Configure built-in modules
-  programs = {
-    filesystem = {
-      enable = true;
-      args = [ "/path/to/allowed/directory" ];
+{ pkgs, mcp-servers-nix, ...}:
+let
+  mcp-servers = mcp-servers-nix.lib.mkConfig pkgs {
+    programs = {
+      playwright.enable = true;
     };
   };
-  
-  # Add custom MCP servers
-  settings.servers = {
-    mcp-obsidian = {
-      command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-      args = [
-        "-y"
-        "mcp-obsidian"
-        "/path/to/obsidian/vault"
-      ];
-    };
-  };
-}
+in
+pkgs.concatTextFile {
+  name = "mcp-servers.json";
+  destination = "/config/mcp-servers.json";
+  files = [ mcp-servers ];
 }
