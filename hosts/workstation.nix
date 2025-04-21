@@ -9,7 +9,6 @@
       ../modules/styles.nix
       ../modules/scripts
       ../modules/desktop/nvidia.nix
-      ../modules/desktop/mcp-servers.nix
       # ../modules/desktop/vpn.nix
     ];
 
