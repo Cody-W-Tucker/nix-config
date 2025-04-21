@@ -28,10 +28,6 @@
       url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    mcp-servers-nix = {
-      url = "github:natsukium/mcp-servers-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, mcp-servers-nix, ... }:
@@ -74,6 +70,7 @@
             inherit hardwareConfig;
             inherit pkgs-unstable;
           };
+          
           modules = [
             ./hosts/workstation.nix
             stylix.nixosModules.stylix
