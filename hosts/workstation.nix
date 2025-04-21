@@ -291,13 +291,6 @@ environment.sessionVariables = {
   CLUTTER_BACKEND = "wayland";
   # Use libinput for input devices in wlroots compositors
   WLR_USE_LIBINPUT = "1";
-
-  # ---------------------------
-  # Application-Specific
-  # ---------------------------
-
-  # Java AWT: tell Java to not reparent windows (improves compatibility on Wayland)
-  _JAVA_AWT_WM_NONREPARENTING = "1";
 };
 
   services = {
@@ -318,6 +311,18 @@ environment.sessionVariables = {
   programs.virt-manager.enable = true;
   users.groups.libvirtd.members = ["codyt"];
   virtualisation.spiceUSBRedirection.enable = true;
+
+  # Docker for dev stuff
+  virtualisation = {
+    docker = {
+      enable = true;
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
+    };
+    oci-containers.backend = "docker";
+  };
 
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
