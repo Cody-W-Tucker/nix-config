@@ -312,17 +312,8 @@ environment.sessionVariables = {
   users.groups.libvirtd.members = ["codyt"];
   virtualisation.spiceUSBRedirection.enable = true;
 
-  # Docker for dev stuff
-  virtualisation = {
-    docker = {
-      enable = true;
-      autoPrune = {
-        enable = true;
-        dates = "weekly";
-      };
-    };
-    oci-containers.backend = "docker";
-  };
+  # Open the 3000 port for mobile dev
+  networking.firewall.allowedTCPPortRanges = [ 3000 ];
 
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
