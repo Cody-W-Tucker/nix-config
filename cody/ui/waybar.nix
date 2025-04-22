@@ -47,6 +47,7 @@ let
     "custom/agenda" = {
           exec = nextmeeting + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
           on-click = nextmeeting + "--open-meet-url";
+          on-click-right = "xdg-open https://app.reclaim.ai/planner";
           format = "󰃶 {}";
           return-type = "json";
           interval = 59;
