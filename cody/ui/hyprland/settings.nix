@@ -14,8 +14,7 @@ let
     "${mainMod}, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod}, Q, exec, uwsm app -- kitty"
     "${mainMod}, E, exec, uwsm app -- kitty ranger"
-    "${mainMod} SHIFT, Tab, exec, uwsm-app -- rofi-launcher"
-    "${mainMod}, Tab, exec, uwsm app -- web-search"
+    "${mainMod}, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
     "${mainMod}, KP_Enter, exec, uwsm app -- taskwarrior-rofi quick_add"
     "${mainMod}, Return, exec, uwsm app -- taskwarrior-rofi quick_add"
@@ -24,10 +23,11 @@ let
     "${mainMod}, GRAVE, exec, uwsm app -- todoist-rofi quick_add"
 
     # Quick launch apps
-    "${mainMod}, KP_Insert, exec, uwsm-app -- zen --enable-features=WaylandLinuxDrmSyncobj"
+    "${mainMod}, KP_Insert, exec, uwsm-app -- web-search"
+    "${mainMod} SHIFT, KP_Insert, exec, uwsm-app -- zen"
     "${mainMod}, KP_Add, exec, uwsm-app -- rofi -show calc -modi calc -no-show-match -no-sort"
-    "${mainMod}, KP_Home, exec, uwsm-app -- code --enable-features=WaylandLinuxDrmSyncobj"
-    "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor --enable-features=WaylandLinuxDrmSyncobj"
+    "${mainMod}, KP_Home, exec, uwsm-app -- code --enable-features=WaylandLinuxDrmSyncobj --enable-features=UseOzonePlatform --ozone-platform=wayland"
+    "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor --enable-features=WaylandLinuxDrmSyncobj --enable-features=UseOzonePlatform --ozone-platform=wayland"
 
     # Screenshots
     ''${mainMod}, S, exec, uwsm app -- screenshot-ocr''
