@@ -312,6 +312,20 @@ environment.sessionVariables = {
   users.groups.libvirtd.members = ["codyt"];
   virtualisation.spiceUSBRedirection.enable = true;
 
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
+    autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
+    oci-containers.backend = "docker";
+  };
+
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }
