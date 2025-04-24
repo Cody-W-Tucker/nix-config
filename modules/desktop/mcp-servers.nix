@@ -2,14 +2,11 @@
 
 {
   # Get secrets
-  sops.secrets = {
-    OBSIDIAN_API_KEY = { };
-  };
+  sops.secrets.OBSIDIAN_API_KEY = { };
 
   sops.templates = {
     "mcp_obsidian".content = ''
       OBSIDIAN_API_KEY=${config.sops.placeholder."OBSIDIAN_API_KEY"}
-      OBSIDIAN_HOST="https://127.0.0.1:27124"
     '';
   };
 
