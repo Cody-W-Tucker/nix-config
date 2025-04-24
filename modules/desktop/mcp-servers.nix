@@ -1,4 +1,12 @@
 {
+  # Get secrets later
+  # sops.secrets.OBSIDIAN_API_KEY = { };
+
+  # sops.templates = {
+  #   "mcp_obsidian".content = ''
+  #     OBSIDIAN_API_KEY=${config.sops.placeholder."OBSIDIAN_API_KEY"}
+  #   '';
+  # };
 
   # MCPO converts an mcp server to the openAPI standard
   virtualisation.oci-containers.containers.mcpo = {
