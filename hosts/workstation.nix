@@ -323,8 +323,8 @@ environment.sessionVariables = {
         enable = true;
         dates = "weekly";
       };
-    oci-containers.backend = "docker";
   };
+  virtualisation.oci-containers.backend = "docker";
 
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
