@@ -1,21 +1,12 @@
-{ config, ...}:
-
 {
-  # Get secrets
-  sops.secrets.OBSIDIAN_API_KEY = { };
-
-  sops.templates = {
-    "mcp_obsidian".content = ''
-      OBSIDIAN_API_KEY=${config.sops.placeholder."OBSIDIAN_API_KEY"}
-    '';
-  };
 
   # MCPO converts an mcp server to the openAPI standard
   virtualisation.oci-containers.containers.mcpo = {
     image = "ghcr.io/open-webui/mcpo:main";
-    environmentFiles = [
-      config.sops.templates."mcp_obsidian".path
-    ];
+    environment = {
+      OBSIDIAN_API_KEY = "15d02c59d760876ed625ec46ddcc7959cf13a489b72c7b50402fd9f4e1f97fd4";
+      OBSIDIAN_HOST = "https://127.0.0.1:27124";
+    };
     extraOptions = [
       "--network=host"
     ];
