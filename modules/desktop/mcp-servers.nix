@@ -1,7 +1,6 @@
 let
   mcpoConfig = {
     mcpServers = {
-      # Read and interact with Local Obsidian Notes
       mcp-obsidian = {
         command = "uvx";
         args = [ "mcp-obsidian" ];
@@ -10,7 +9,6 @@ let
           OBSIDIAN_HOST = "https://127.0.0.1:27124";
         };
       };
-      # Allows searches for Nixos Packages, system options and Home manager settings.
       nixos = {
         command = "uvx";
         args = ["mcp-nixos"];
