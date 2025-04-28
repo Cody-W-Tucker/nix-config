@@ -32,8 +32,10 @@ let
         args = [
           "-y"
           "@modelcontextprotocol/server-memory"
-          "/data/memory"
         ];
+        env = {
+          MEMORY_FILE_PATH = "/data/memory";
+        };
       };
     };
   };
