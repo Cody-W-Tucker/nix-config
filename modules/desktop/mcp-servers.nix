@@ -1,24 +1,25 @@
 {
   virtualisation.oci-containers.containers.mcpo = {
     image = "ghcr.io/open-webui/mcpo:main";
-
-    # Mount the JSON config file into the container
-    volumeMounts = [
+    mounts = [
       {
         source = "/etc/mcpo-config.json";
         target = "/config.json";
-        type = "ro"; # Read-only for safety
+        type = "bind";
+        options = [ "ro" ];
       }
     ];
 
-    # Pass the config.json file location as an argument to the `mcpo` server
+    # Pass the configuration file location to mcpo
     cmd = [
       "--config"
       "/config.json"
     ];
 
+    # Provide any additional container options
     extraOptions = [ "--network=host" ];
 
+    # Environment variables for the container
     environment = {
       OBSIDIAN_API_KEY = "15d02c59d760876ed625ec46ddcc7959cf13a489b72c7b50402fd9f4e1f97fd4";
       OBSIDIAN_HOST = "https://127.0.0.1:27124";
