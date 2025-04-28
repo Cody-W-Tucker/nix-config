@@ -24,7 +24,7 @@ let
         args = [
           "-y"
           "@modelcontextprotocol/server-filesystem"
-          "/${userDir}/Public"
+          "${userDir}/Public"
         ];
       };
       memory = {
@@ -32,7 +32,7 @@ let
         args = [
           "-y"
           "@modelcontextprotocol/server-memory"
-          "/${userDir}/.local/share/memory"
+          "${userDir}/.local/share/memory"
         ];
       };
     };
