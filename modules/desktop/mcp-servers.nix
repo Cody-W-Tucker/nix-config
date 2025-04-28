@@ -1,3 +1,9 @@
+{config, ...}:
+
+let 
+userDir = "${config.users.users.codyt.home}";
+in
+
 let
   mcpoConfig = {
     mcpServers = {
@@ -12,6 +18,22 @@ let
       nixos = {
         command = "uvx";
         args = ["mcp-nixos"];
+      };
+      fileSystem = {
+        command = "npx";
+        args = [
+          "-y"
+          "@modelcontextprotocol/server-filesystem"
+          "/${userDir}/Public"
+        ];
+      };
+      memory = {
+        command = "npx";
+        args = [
+          "-y"
+          "@modelcontextprotocol/server-memory"
+          "/${userDir}/.local/share/memory"
+        ];
       };
     };
   };
