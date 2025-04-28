@@ -21,6 +21,7 @@ in
 {
   # MCPO converts an mcp server to the openAPI standard
   virtualisation.oci-containers.containers.mcpo = {
+    autoStart = true;
     image = "ghcr.io/open-webui/mcpo:main";
     volumes = [
       "${configJsonFile}:/etc/mcpo/config.json"
