@@ -24,7 +24,7 @@ let
         args = [
           "-y"
           "@modelcontextprotocol/server-filesystem"
-          "${userDir}/Public"
+          "/data/public"
         ];
       };
       memory = {
@@ -32,7 +32,7 @@ let
         args = [
           "-y"
           "@modelcontextprotocol/server-memory"
-          "${userDir}/.local/share/memory"
+          "/data/memory"
         ];
       };
     };
@@ -46,7 +46,9 @@ in
     autoStart = true;
     image = "ghcr.io/open-webui/mcpo:main";
     volumes = [
-      "${configJsonFile}:/etc/mcpo/config.json"
+      "${configJsonFile}:/etc/mcpo/config.json:ro"
+      "${userDir}/Public:/data/public"
+      "${userDir}/.local/share/memory:/data/memory"
     ];
 
     cmd = [
