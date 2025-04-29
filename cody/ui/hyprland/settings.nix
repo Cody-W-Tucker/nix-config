@@ -23,8 +23,8 @@ let
     "${mainMod}, GRAVE, exec, uwsm app -- todoist-rofi quick_add"
 
     # Quick launch apps
-    "${mainMod}, KP_Insert, exec, uwsm-app -- web-search"
-    "${mainMod} SHIFT, KP_Insert, exec, uwsm-app -- zen"
+    "${mainMod}SHIFT, KP_Insert, exec, uwsm-app -- web-search"
+    "${mainMod}, KP_Insert, exec, uwsm-app -- zen"
     "${mainMod}, KP_Add, exec, uwsm-app -- rofi -show calc -modi calc -no-show-match -no-sort"
     "${mainMod}, KP_Home, exec, uwsm-app -- code --enable-features=WaylandLinuxDrmSyncobj --enable-features=UseOzonePlatform --ozone-platform=wayland"
     "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor --enable-features=WaylandLinuxDrmSyncobj --enable-features=UseOzonePlatform --ozone-platform=wayland"
