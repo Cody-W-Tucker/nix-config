@@ -7,6 +7,7 @@
     ./appLauncher.nix
     ./waybar.nix
     ./mime.nix
+    ./pipewire.nix
     ./xdg.nix
   ];
 
