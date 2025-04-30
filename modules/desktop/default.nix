@@ -46,6 +46,7 @@
       obsidian
       chromium
       rustdesk-flutter
+      alsa-utils
     ]);
 
     # Open ports for rustdesk
