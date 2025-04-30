@@ -46,7 +46,6 @@
       obsidian
       chromium
       rustdesk-flutter
-      alsa-utils
     ]);
 
     # Open ports for rustdesk
@@ -91,7 +90,7 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     # Uncomment the following line if you need JACK support
-    jack.enable = true;
+    # jack.enable = true;
 
     # Add these lines to improve Bluetooth audio
     extraConfig.pipewire = {
