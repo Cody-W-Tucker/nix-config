@@ -69,6 +69,7 @@
       zoom-us
       code-cursor
       vscode
+      legcord
     ]);
 
   # Obs for screenrecording
