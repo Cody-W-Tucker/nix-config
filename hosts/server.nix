@@ -61,12 +61,6 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  
-  # Virtualization
-  users.groups.libvirtd.members = ["codyt"];
-  virtualisation.libvirtd.enable = true;
-  virtualisation.spiceUSBRedirection.enable = true;
-
   # Don't change this
   system.stateVersion = "23.11"; # Did you read the comment?
 }
