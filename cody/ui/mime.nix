@@ -67,7 +67,7 @@
       "text/x-c++" = "nvim.desktop";
 
       # Obsidian for markdown
-      "text/markdown" = "markdown=obsidian.desktop";
+      "text/markdown" = "obsidian.desktop";
 
       # Use zen for http/s
       "x-scheme-handler/http" = "zen.desktop";
