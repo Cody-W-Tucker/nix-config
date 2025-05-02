@@ -81,7 +81,7 @@ in
 
       # File switcher
       "float, class:^(kitty)$, title:^(quick-kitty)$"
-      "size 900 500, class:^(kitty)$, title:^(quick-kitty)$"
+      "size 1280 720, class:^(kitty)$, title:^(quick-kitty)$"
       "center, class:^(kitty)$, title:^(quick-kitty)$"
 
       # throw sharing indicators away
