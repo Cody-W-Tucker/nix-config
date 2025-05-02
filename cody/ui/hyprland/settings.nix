@@ -14,7 +14,7 @@ let
     "${mainMod}, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod}, Q, exec, uwsm app -- kitty"
     "${mainMod}, E, exec, uwsm app -- kitty ranger"
-    "${mainMod}, R, exec, kitty find-and-open-file"
+    "${mainMod}, R, exec, [float] uwsm app -- kitty find-and-open-file"
     "${mainMod}, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
     "${mainMod}, KP_Enter, exec, uwsm app -- taskwarrior-rofi quick_add"
