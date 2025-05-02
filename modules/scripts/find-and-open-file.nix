@@ -6,20 +6,21 @@ pkgs.writeShellScriptBin "find-and-open-file" ''
 VAULT="Personal"
 VAULT_PATH="Documents/Personal"
 
-  smart_open() {
-    local file="$1"
-    file="$(echo "$file" | xargs)"
-    if [[ "''${file:l}" == *.md ]]; then
-      local file_clean="''${file#./}"
-      file_clean="''${file_clean#$VAULT_PATH/}"
-      local file_uri
-      file_uri=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$file_clean")
-      local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
-      xdg-open "$uri" >/dev/null 2>&1 &
-    else
-      xdg-open "$file" >/dev/null 2>&1 &
-    fi
-  }
+smart_open() {
+  local file="$1"
+  file="$(echo "$file" | xargs)"
+  if [[ "''${file,,}" == *.md ]]; then
+    # Remove leading ./ and vault path
+    local file_clean="''${file#./}"
+    file_clean="''${file_clean#$VAULT_PATH/}"
+    local file_uri
+    file_uri=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$file_clean")
+    local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
+    xdg-open "$uri" &
+  else
+    xdg-open "$file" &
+  fi
+}
 
 
 
