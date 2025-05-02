@@ -10,17 +10,17 @@ VAULT_PATH="Documents/Personal"
     local file="$1"
     file="$(echo "$file" | xargs)"
     if [[ "''${file:l}" == *.md ]]; then
-      # Remove leading ./ and vault path
       local file_clean="''${file#./}"
       file_clean="''${file_clean#$VAULT_PATH/}"
       local file_uri
       file_uri=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$file_clean")
       local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
-      xdg-open "$uri"
+      xdg-open "$uri" >/dev/null 2>&1 &
     else
-      xdg-open "$file"
+      xdg-open "$file" >/dev/null 2>&1 &
     fi
   }
+
 
 
   # Handle two modes: search-based (with arg) or fuzzy-open (no arg)
