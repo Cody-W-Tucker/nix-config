@@ -13,7 +13,6 @@ let
     ./keybind-logger.nix
     ./todoist-rofi.nix
     ./update.nix
-    ./file-contents-search.nix
     ./waybar-tasks.nix
     ./rofi-taskwarrior.nix
     ./waybar-goal-tracker.nix
