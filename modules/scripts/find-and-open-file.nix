@@ -26,7 +26,7 @@ VAULT_PATH="Documents/Personal"
   # Handle two modes: search-based (with arg) or fuzzy-open (no arg)
   if [ -z "$1" ]; then
     # Mode 1: Fuzzy open any file (no search term)
-    selected_file=$(fzf --preview 'bat --style=numbers --color=always {}')
+    selected_file=$(fd --type f --exclude '.*' | fzf --preview 'bat --style=numbers --color=always {}')
     if [ -n "$selected_file" ]; then
       smart_open "$selected_file"
     else
