@@ -70,6 +70,7 @@
         confirm_os_window_close = "0";
         wayland_titlebar_color = "system";
         cursor_shape = "block";
+        enable_audio_bell = "no";
       };
     };
     bat = {
