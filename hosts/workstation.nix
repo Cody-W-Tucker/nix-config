@@ -302,12 +302,6 @@ environment.sessionVariables = {
       egl-wayland
     ]);
 
-
-  # Virtualization
-  programs.virt-manager.enable = true;
-  users.groups.libvirtd.members = ["codyt"];
-  virtualisation.spiceUSBRedirection.enable = true;
-
   # Docker
   virtualisation.docker = {
     enable = true;
