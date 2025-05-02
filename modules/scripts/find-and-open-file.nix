@@ -16,9 +16,9 @@ VAULT_PATH="Documents/Personal"
       local file_uri
       file_uri=$(jq -rn --arg x "$file_clean" '$x|@uri')
       local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
-      xdg-open "$uri"
+      xdg-open "$uri" >/dev/null 2>&1 &
     else
-      xdg-open "$file"
+      xdg-open "$file" >/dev/null 2>&1 &
     fi
   }
 
