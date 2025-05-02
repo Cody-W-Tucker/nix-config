@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{ config, lib, pkgs, pkgs-unstable, modulesPath, ... }:
 
 {
   imports =
@@ -125,12 +125,6 @@
       sddm.enableGnomeKeyring = true;
       login.enableGnomeKeyring = true;
     };
-  };
-
-  hardware.openrazer = {
-    enable = true;
-    devicesOffOnScreensaver = true;
-    users = [ "codyt" ];
   };
 
   hardware.graphics = {
@@ -305,6 +299,7 @@ environment.sessionVariables = {
       # list of stable packages go here
       where-is-my-sddm-theme
       nvidia-vaapi-driver
+      egl-wayland
     ]);
 
 
