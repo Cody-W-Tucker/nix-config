@@ -6,22 +6,21 @@ pkgs.writeShellScriptBin "find-and-open-file" ''
 VAULT="Personal"
 VAULT_PATH="Documents/Personal"
 
-smart_open() {
-  local file="$1"
-  file="$(echo "$file" | xargs)"
-  if [[ "''${file,,}" == *.md ]]; then
-    # Remove leading ./ and vault path
-    local file_clean="''${file#./}"
-    file_clean="''${file_clean#$VAULT_PATH/}"
-    local file_uri
-    file_uri=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$file_clean")
-    local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
-    xdg-open "$uri" &
-  else
-    xdg-open "$file" &
-  fi
-}
-
+  smart_open() {
+    local file="$1"
+    file="$(echo "$file" | xargs)"
+    if [[ "''${file:l}" == *.md ]]; then
+      # Remove leading ./ and vault path
+      local file_clean="''${file#./}"
+      file_clean="''${file_clean#$VAULT_PATH/}"
+      local file_uri
+      file_uri=$(jq -rn --arg x "$file_clean" '$x|@uri')
+      local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
+      xdg-open "$uri"
+    else
+      xdg-open "$file"
+    fi
+  }
 
 
   # Handle two modes: search-based (with arg) or fuzzy-open (no arg)
