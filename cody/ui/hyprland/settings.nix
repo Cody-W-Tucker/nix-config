@@ -62,8 +62,8 @@ let
     "${mainMod} SHIFT, down, movewindow, d"
 
     # Scratchpad
-    "${mainMod}, A, togglespecialworkspace, magic"
-    "${mainMod} SHIFT, A, movetoworkspacesilent, special:magic"
+    "${mainMod} SHIFT, A, togglespecialworkspace, magic"
+    "${mainMod}, A, movetoworkspacesilent, special:magic"
   ];
 in
 {

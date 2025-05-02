@@ -25,6 +25,7 @@ let
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
+      show-special = true;
       format = "{icon} {windows}";
       window-rewrite = {
         "Zen Browser" = "🞋";
@@ -199,6 +200,7 @@ let
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
+      show-special = true;
       format = "{icon} {windows}";
       window-rewrite = {
         "Zen Browser" = "🞋";
