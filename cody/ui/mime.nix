@@ -50,7 +50,6 @@
       "application/zip" = "nvim.desktop";
       "text/english" = "nvim.desktop";
       "text/html" = "nvim.desktop";
-      "text/markdown" = "nvim.desktop";
       "text/plain" = "nvim.desktop";
       "text/x-log" = "nvim.desktop";
       "text/x-makefile" = "nvim.desktop";
@@ -66,6 +65,9 @@
       "text/xml" = "nvim.desktop";
       "text/x-c" = "nvim.desktop";
       "text/x-c++" = "nvim.desktop";
+
+      # Obsidian for markdown
+      "text/markdown" = "markdown=obsidian.desktop";
 
       # Use zen for http/s
       "x-scheme-handler/http" = "zen.desktop";
