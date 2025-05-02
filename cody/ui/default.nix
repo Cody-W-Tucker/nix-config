@@ -61,7 +61,6 @@
       unzip
       baobab # Gnome disk usage app
       gcalcli
-      psmisc #killall command
     ])
     ++
     (with pkgs-unstable; [
