@@ -3,24 +3,27 @@
 pkgs.writeShellScriptBin "find-and-open-file" ''
   #!/usr/bin/env bash
 
-  VAULT="Personal"  # Set your Obsidian vault name here
+VAULT="Personal"
+VAULT_PATH="Documents/Personal"
 
-  # Function to smartly open files
-smart_open() {
-  local file="$1"
-  file="$(echo "$file" | xargs)"
-  echo "Selected file: '$file'"
-  if [[ "''${file:l}" == *.md ]]; then
-    echo "Opening in Obsidian: $file"
-    local file_clean="''${file#./}"
-    local file_uri
-    file_uri=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$file_clean")
-    local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
-    xdg-open "$uri"
-  else
-    xdg-open "$file"
-  fi
-}
+  smart_open() {
+    local file="$1"
+    file="$(echo "$file" | xargs)"
+    echo "Selected file: '$file'"
+    if [[ "''${file:l}" == *.md ]]; then
+      echo "Opening in Obsidian: $file"
+      # Remove leading ./ and vault path
+      local file_clean="''${file#./}"
+      file_clean="''${file_clean#$VAULT_PATH/}"
+      local file_uri
+      file_uri=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$file_clean")
+      local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
+      echo "Obsidian URI: $uri"
+      xdg-open "$uri"
+    else
+      xdg-open "$file"
+    fi
+  }
 
 
   # Handle two modes: search-based (with arg) or fuzzy-open (no arg)
