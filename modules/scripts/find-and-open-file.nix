@@ -6,20 +6,22 @@ pkgs.writeShellScriptBin "find-and-open-file" ''
   VAULT="Personal"  # Set your Obsidian vault name here
 
   # Function to smartly open files
-  smart_open() {
-    local file="$1"
-    if [[ "$file" == *.md ]]; then
-      # Remove leading ./ if present
-      local file_clean="''${file#./}"
-      # URL-encode the file path
-      local file_uri
-      file_uri=$(jq -rn --arg x "$file_clean" '$x|@uri')
-      local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
-      xdg-open "$uri"
-    else
-      xdg-open "$file"
-    fi
-  }
+smart_open() {
+  local file="$1"
+  file="$(echo "$file" | xargs)"
+  echo "Selected file: '$file'"
+  if [[ "''${file:l}" == *.md ]]; then
+    echo "Opening in Obsidian: $file"
+    local file_clean="''${file#./}"
+    local file_uri
+    file_uri=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$file_clean")
+    local uri="obsidian://open?vault=''${VAULT}&file=''${file_uri}"
+    xdg-open "$uri"
+  else
+    xdg-open "$file"
+  fi
+}
+
 
   # Handle two modes: search-based (with arg) or fuzzy-open (no arg)
   if [ -z "$1" ]; then

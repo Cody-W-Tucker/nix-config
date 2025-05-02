@@ -65,6 +65,7 @@
       "text/xml" = "nvim.desktop";
       "text/x-c" = "nvim.desktop";
       "text/x-c++" = "nvim.desktop";
+      "text/markdown" = "nvim.desktop";
 
       # Use zen for http/s
       "x-scheme-handler/http" = "zen.desktop";
