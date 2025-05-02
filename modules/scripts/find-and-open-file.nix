@@ -9,7 +9,6 @@ VAULT_PATH="Documents/Personal"
   smart_open() {
     local file="$1"
     file="$(echo "$file" | xargs)"
-    echo "Selected file: '$file'"
     if [[ "''${file:l}" == *.md ]]; then
       # Remove leading ./ and vault path
       local file_clean="''${file#./}"
