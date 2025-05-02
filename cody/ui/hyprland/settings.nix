@@ -14,8 +14,8 @@ let
     "${mainMod}, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod}, Q, exec, uwsm app -- kitty"
     "${mainMod}, E, exec, uwsm app -- kitty ranger"
-    "${mainMod}, P, exec, [float] uwsm app -- kitty find-and-open-file"
-    "${mainMod}, R, exec, [float] uwsm app -- kitty find-and-open-file"
+    "${mainMod}, P, exec, uwsm app -- kitty find-and-open-file"
+    "${mainMod}, R, exec, uwsm app -- kitty find-and-open-file"
     "${mainMod}, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
     "${mainMod}, KP_Enter, exec, uwsm app -- taskwarrior-rofi quick_add"
@@ -78,6 +78,11 @@ in
     windowrulev2 = [
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
+
+      # File switcher
+      "float, class:^(kitty)$, title:^(find-and-open-file)$"
+      "size 800 500, class:^(kitty)$, title:^(find-and-open-file)$"
+      "center, class:^(kitty)$, title:^(find-and-open-file)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
