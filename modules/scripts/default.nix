@@ -17,6 +17,7 @@ let
     ./rofi-taskwarrior.nix
     ./waybar-goal-tracker.nix
     ./find-and-open-file.nix
+    ./streamer-mode.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
