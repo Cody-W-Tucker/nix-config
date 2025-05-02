@@ -80,9 +80,9 @@ in
       "pin, title:^(Picture-in-Picture)$"
 
       # File switcher
-      "float, class:^(kitty)$, title:^(find-and-open-file)$"
-      "size 800 500, class:^(kitty)$, title:^(find-and-open-file)$"
-      "center, class:^(kitty)$, title:^(find-and-open-file)$"
+      "float, title:^(find-and-open-file)$"
+      "size 800 500, title:^(find-and-open-file)$"
+      "center, title:^(find-and-open-file)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
