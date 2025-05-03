@@ -1,5 +1,9 @@
 { inputs, pkgs, pkgs-unstable, ... }:
 
+let 
+obs-studio = pkgs-unstable.obs-studio;
+in
+
 {
   imports = [
     ./hyprland.nix
@@ -75,6 +79,7 @@
   # Obs for screenrecording
   programs.obs-studio = {
     enable = true;
+    package = obs-studio;
     plugins = with pkgs.obs-studio-plugins; [
       wlrobs
       obs-pipewire-audio-capture
