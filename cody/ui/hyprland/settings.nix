@@ -13,7 +13,7 @@ let
     # Application launchers
     "${mainMod}, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod}, Q, exec, uwsm app -- kitty"
-    "${mainMod}, E, exec, uwsm app -- kitty --title ranger"
+    "${mainMod}, E, exec, uwsm app -- kitty ranger"
     "${mainMod}, P, exec, uwsm app -- kitty --title quick-kitty find-and-open-file"
     "${mainMod}, R, exec, uwsm app -- kitty --title quick-kitty find-and-open-file"
     "${mainMod}, Tab, exec, uwsm-app -- rofi-launcher"
