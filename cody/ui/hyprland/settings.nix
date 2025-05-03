@@ -97,10 +97,13 @@ in
       monitor = hardwareConfig.monitor;
       animations = {
         enabled = true;
-        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+        bezier = [
+          "easeInExpo, 0.7, 0, 0.84, 0"
+          "easeOutExpo, 0.16, 1, 0.3, 1"
+          ];
         animation = [
-          "windows, 1, 3, myBezier, slide 80%"
-          "windowsOut, 1, 3, myBezier, slide 80%"
+          "windows, 1, 3, easeInExpo, slide 80%"
+          "windowsOut, 1, 3, easeOutExpo, slide 80%"
           "border, 1, 10, default"
           "borderangle, 1, 8, default"
           "fade, 1, 2, default"
