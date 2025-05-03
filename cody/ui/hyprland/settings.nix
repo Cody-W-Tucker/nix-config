@@ -102,8 +102,8 @@ in
           "easeOutExpo, 0.16, 1, 0.3, 1"
           ];
         animation = [
-          "windows, 1, 1, easeInExpo, slide 80%"
-          "windowsOut, 1, 1, easeOutExpo, slide 80%"
+          "windows, 1, 1, easeInExpo, slide 50%"
+          "windowsOut, 1, 1, easeOutExpo, slide"
           "border, 1, 10, default"
           "borderangle, 1, 8, default"
           "fade, 1, 2, default"
