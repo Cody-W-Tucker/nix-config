@@ -18,7 +18,6 @@
     modesetting.enable = true;
     powerManagement.enable = true;
     powerManagement.finegrained = false;
-    nvidiaSettings = true;
     open = true;
     # package = config.boot.kernelPackages.nvidiaPackages.stable;
     # pin driver version https://www.nvidia.com/en-us/drivers/unix/
