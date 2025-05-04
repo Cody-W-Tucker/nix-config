@@ -193,11 +193,24 @@ let
       "hyprland/window"
     ];
     modules-right = [
+      "custom/whisper_overlay"
       "disk"
       "cpu"
       "memory"
       "temperature"
     ];
+    "custom/whisper_overlay" = {
+      escape = true;
+      exec = "whisper-overlay waybar-status";
+      format = "{icon} {}";
+      format-icons = {
+          disconnected = "<span foreground='gray'></span>";
+          connected = "<span foreground='#4ab0fa'></span>";
+          connected-active = "<span foreground='red'></span>";
+      };
+      return-type = "json";
+      tooltip = true;
+    };
     "hyprland/workspaces" = {
       on-click = "activate";
       show-special = true;

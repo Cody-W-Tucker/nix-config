@@ -52,7 +52,6 @@
       todoist #cli client
       todoist-electron
       slack
-      gnome-calculator
       nautilus
       # nix language server
       nixd
