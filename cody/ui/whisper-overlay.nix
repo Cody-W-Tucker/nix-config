@@ -1,4 +1,4 @@
-{inputs, system, ...}:
+{inputs, pkgs, ...}:
 
 # This is a home-manager config module
 {
@@ -19,5 +19,5 @@
 
   # Add the whisper-overlay package so you can start it manually.
   # Alternatively add it to the autostart of your display environment or window manager.
-  home.packages = [ inputs.whisper-overlay.packages.${system}.whisper-overlay ];
+  home.packages = [ pkgs.whisper-overlay ];
 }
