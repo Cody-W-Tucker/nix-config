@@ -10,6 +10,7 @@
       ../modules/scripts
       ../modules/desktop/nvidia.nix
       ../modules/desktop/mcp-servers.nix
+      ../modules/desktop/whisper-overlay.nix
       # ../modules/desktop/vpn.nix
     ];
 
