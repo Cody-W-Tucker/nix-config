@@ -42,7 +42,6 @@
       udiskie
       udisks
       kitty
-      ffmpeg
       obsidian
       chromium
       rustdesk-flutter
