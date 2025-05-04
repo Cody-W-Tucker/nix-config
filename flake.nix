@@ -88,6 +88,7 @@
             {
               home-manager.extraSpecialArgs = {
                 inherit inputs;
+                inherit whisper-overlay;
                 inherit pkgs;
                 inherit pkgs-unstable;
                 hardwareConfig = hardwareConfig.workstation;
