@@ -161,9 +161,9 @@ in
       force_default_wallpaper = "0";
       disable_hyprland_logo = lib.mkForce "true";
       focus_on_activate = "true";
-      cursor = {
+    };
+    cursor = {
         no_hardware_cursors = true;
       };
-    };
   };
 }
