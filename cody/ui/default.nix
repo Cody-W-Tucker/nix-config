@@ -9,7 +9,6 @@
     ./mime.nix
     ./pipewire.nix
     ./xdg.nix
-    ./whisper-overlay.nix
   ];
 
   dconf = {
