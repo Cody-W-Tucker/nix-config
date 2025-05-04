@@ -14,7 +14,7 @@
 
   services.realtime-stt-server = {
     enable = true;
-    host = "127.0.0.1";
+    host = "http://127.0.0.1";
     port = 7007;
     model = "base";
     # If you want to automatically start the service with your graphical session,
