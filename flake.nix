@@ -73,8 +73,8 @@
             inherit inputs;
             inherit hardwareConfig;
             inherit pkgs-unstable;
+            inherit whisper-overlay;
           };
-          
           modules = [
             ./hosts/workstation.nix
             stylix.nixosModules.stylix
