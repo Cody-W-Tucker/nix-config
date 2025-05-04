@@ -1,6 +1,6 @@
 {inputs, pkgs, ...}:
 
-# This is a home-manager config module
+# This is a NixOS config module
 {
   imports = [
     inputs.whisper-overlay.homeManagerModules.default
@@ -14,9 +14,9 @@
 
   services.realtime-stt-server = {
     enable = true;
+    openFirewall = true;
     host = "127.0.0.1";
     port = 7007;
-    model = "base";
     # If you want to automatically start the service with your graphical session,
     # enable this too. If you want to start and stop the service on demand to save
     # resources, don't enable this and use `systemctl --user <start|stop> realtime-stt-server`.
@@ -26,5 +26,5 @@
 
   # Add the whisper-overlay package so you can start it manually.
   # Alternatively add it to the autostart of your display environment or window manager.
-  home.packages = [ pkgs.whisper-overlay ];
+  environment.systemPackages = [ pkgs.whisper-overlay ];
 }
