@@ -15,7 +15,7 @@
   # If you want to automatically start the service with your graphical session,
   # enable this too. If you want to start and stop the service on demand to save
   # resources, don't enable this and use `systemctl --user <start|stop> realtime-stt-server`.
-  services.realtime-stt-server.autoStart = true;
+  services.realtime-stt-server.autoStart = false;
 
   # Add the whisper-overlay package so you can start it manually.
   # Alternatively add it to the autostart of your display environment or window manager.
