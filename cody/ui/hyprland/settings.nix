@@ -162,8 +162,5 @@ in
       disable_hyprland_logo = lib.mkForce "true";
       focus_on_activate = "true";
     };
-    cursor = {
-        no_hardware_cursors = true;
-      };
   };
 }
