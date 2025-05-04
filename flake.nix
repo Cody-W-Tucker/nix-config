@@ -89,6 +89,7 @@
                 inherit inputs;
                 inherit pkgs;
                 inherit pkgs-unstable;
+                inherit system;
                 hardwareConfig = hardwareConfig.workstation;
               };
               home-manager.useGlobalPkgs = false;
