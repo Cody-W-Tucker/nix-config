@@ -73,7 +73,6 @@
             inherit inputs;
             inherit hardwareConfig;
             inherit pkgs-unstable;
-            inherit whisper-overlay;
           };
           modules = [
             ./hosts/workstation.nix
@@ -88,7 +87,6 @@
             {
               home-manager.extraSpecialArgs = {
                 inherit inputs;
-                inherit whisper-overlay;
                 inherit pkgs;
                 inherit pkgs-unstable;
                 hardwareConfig = hardwareConfig.workstation;
