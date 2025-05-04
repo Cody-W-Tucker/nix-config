@@ -39,7 +39,7 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         system = system;
-        # overlays = [ inputs.whisper-overlay.overlays.default ];
+        overlays = [ inputs.whisper-overlay.overlays.default ];
         config = {
           allowUnfree = true;
           allowUnfreePredicate = (_: true);
