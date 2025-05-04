@@ -93,74 +93,77 @@ in
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
     ];
     # Workspace and monitor set in flake.nix
-      workspace = hardwareConfig.workspace;
-      monitor = hardwareConfig.monitor;
-      animations = {
-        enabled = true;
-        bezier = [
-          "easeInExpo, 0.7, 0, 0.84, 0"
-          "easeOutExpo, 0.16, 1, 0.3, 1"
-          ];
-        animation = [
-          "windows, 1, 1, easeInExpo, slide"
-          "windowsOut, 1, 1, easeOutExpo, slide"
-          "border, 1, 10, default"
-          "borderangle, 1, 8, default"
-          "fade, 1, 2, default"
-          "workspaces, 1, 2, default"
+    workspace = hardwareConfig.workspace;
+    monitor = hardwareConfig.monitor;
+    animations = {
+      enabled = true;
+      bezier = [
+        "easeInExpo, 0.7, 0, 0.84, 0"
+        "easeOutExpo, 0.16, 1, 0.3, 1"
         ];
+      animation = [
+        "windows, 1, 1, easeInExpo, slide"
+        "windowsOut, 1, 1, easeOutExpo, slide"
+        "border, 1, 10, default"
+        "borderangle, 1, 8, default"
+        "fade, 1, 2, default"
+        "workspaces, 1, 2, default"
+      ];
+    };
+    input = {
+      numlock_by_default = "true";
+      follow_mouse = "1";
+      sensitivity = "-.7";
+      kb_layout = "us";
+    };
+    general = {
+      border_size = "2";
+      gaps_in = "5";
+      gaps_out = "5";
+      layout = "master";
+      "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0C}aa) rgba(${config.lib.stylix.colors.base0D}aa) rgba(${config.lib.stylix.colors.base0B}aa) rgba(${config.lib.stylix.colors.base0E}aa) 45deg";
+      "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}99) rgba(${config.lib.stylix.colors.base01}99) 45deg";
+    };
+    cursor.hide_on_key_press = true;
+    decoration = {
+      rounding = "10";
+      active_opacity = "0.95";
+      inactive_opacity = "0.75";
+      blur = {
+        enabled = "true";
+        size = "10";
+        passes = "3";
+        new_optimizations = "true";
+        ignore_opacity = true;
+        noise = "0";
+        brightness = "0.60";
       };
-      input = {
-        numlock_by_default = "true";
-        follow_mouse = "1";
-        sensitivity = "-.7";
-        kb_layout = "us";
+      shadow = {
+        enabled = true;
+        render_power = "3";
+        range = "4";
+        color = lib.mkForce "rgba(1a1a1aee)";
       };
-      general = {
-        border_size = "2";
-        gaps_in = "5";
-        gaps_out = "5";
-        layout = "master";
-        "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0C}aa) rgba(${config.lib.stylix.colors.base0D}aa) rgba(${config.lib.stylix.colors.base0B}aa) rgba(${config.lib.stylix.colors.base0E}aa) 45deg";
-        "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}99) rgba(${config.lib.stylix.colors.base01}99) 45deg";
+    };
+    dwindle = {
+      pseudotile = "yes";
+      preserve_split = "yes";
+    };
+    master = {
+      new_status = "master";
+    };
+    gestures = {
+      workspace_swipe = "off";
+    };
+    misc = {
+      mouse_move_enables_dpms = "true";
+      key_press_enables_dpms = "true";
+      force_default_wallpaper = "0";
+      disable_hyprland_logo = lib.mkForce "true";
+      focus_on_activate = "true";
+      cursor = {
+        no_hardware_cursors = true;
       };
-      cursor.hide_on_key_press = true;
-      decoration = {
-        rounding = "10";
-        active_opacity = "0.95";
-        inactive_opacity = "0.75";
-        blur = {
-          enabled = "true";
-          size = "10";
-          passes = "3";
-          new_optimizations = "true";
-          ignore_opacity = true;
-          noise = "0";
-          brightness = "0.60";
-        };
-        shadow = {
-          enabled = true;
-          render_power = "3";
-          range = "4";
-          color = lib.mkForce "rgba(1a1a1aee)";
-        };
-      };
-      dwindle = {
-        pseudotile = "yes";
-        preserve_split = "yes";
-      };
-      master = {
-        new_status = "master";
-      };
-      gestures = {
-        workspace_swipe = "off";
-      };
-      misc = {
-        mouse_move_enables_dpms = "true";
-        key_press_enables_dpms = "true";
-        force_default_wallpaper = "0";
-        disable_hyprland_logo = lib.mkForce "true";
-        focus_on_activate = "true";
-      };
+    };
   };
 }
