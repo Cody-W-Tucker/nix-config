@@ -33,6 +33,9 @@ let
           "-y"
           "@modelcontextprotocol/server-memory"
         ];
+        env = {
+          MEMORY_FILE_PATH = "/data/memory/memory.json";
+        };
       };
     };
   };
@@ -47,6 +50,7 @@ in
     volumes = [
       "${configJsonFile}:/etc/mcpo/config.json:ro"
       "${userDir}/Public:/data/public"
+      "${userDir}/.config/mcp:/data/memory"
     ];
 
     cmd = [
