@@ -3,15 +3,16 @@
 let 
 userDir = "${config.users.users.codyt.home}";
 in
+{
+  sops.secrets."OBSIDIAN_API_KEY" = { };
 
-let
-  mcpoConfig = {
+  sops.templates."mcpo-config.json".content = builtins.toJSON {
     mcpServers = {
       mcp-obsidian = {
         command = "uvx";
         args = [ "mcp-obsidian" ];
         env = {
-          OBSIDIAN_API_KEY = "15d02c59d760876ed625ec46ddcc7959cf13a489b72c7b50402fd9f4e1f97fd4";
+          OBSIDIAN_API_KEY = "${config.sops.placeholder.OBSIDIAN_API_KEY}";
           OBSIDIAN_HOST = "https://127.0.0.1:27124";
         };
       };
@@ -40,15 +41,12 @@ let
     };
   };
 
-  configJsonFile = builtins.toFile "mcpo-config.json" (builtins.toJSON mcpoConfig);
-in
-{
   # MCPO converts an mcp server to the openAPI standard
   virtualisation.oci-containers.containers.mcpo = {
     autoStart = true;
     image = "ghcr.io/open-webui/mcpo:main";
     volumes = [
-      "${configJsonFile}:/etc/mcpo/config.json:ro"
+      "${config.sops.templates."mcpo-config.json".path}:/etc/mcpo/config.json:ro"
       "${userDir}/Public:/data/public"
       "${userDir}/.config/mcp:/data/memory"
     ];
