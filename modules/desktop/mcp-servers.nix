@@ -5,6 +5,7 @@ userDir = "${config.users.users.codyt.home}";
 in
 {
   sops.secrets."OBSIDIAN_API_KEY" = { };
+  sops.secrets."TODOIST_API_TOKEN" = { };
 
   sops.templates."mcpo-config.json".content = builtins.toJSON {
     mcpServers = {
@@ -36,6 +37,16 @@ in
         ];
         env = {
           MEMORY_FILE_PATH = "/data/memory/memory.json";
+        };
+      };
+      todoist = {
+        command = "npx";
+        args = [
+          "-y"
+          "@abhiz123/todoist-mcp-server"
+        ];
+        env = {
+          TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
         };
       };
     };
