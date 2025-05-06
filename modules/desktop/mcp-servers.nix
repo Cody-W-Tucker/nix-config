@@ -73,6 +73,12 @@ in
       "--network=host"
     ];
 
-    restartIfChanged = [ config.sops.templates."mcpo-config.json".path ];
+    # Add a systemd override to restart on config changes
+    extraConfig = ''
+      [Unit]
+      # Restart the container if the config file changes
+      BindsTo=${config.sops.templates."mcpo-config.json".path}
+      After=${config.sops.templates."mcpo-config.json".path}
+    '';
   };
 }
