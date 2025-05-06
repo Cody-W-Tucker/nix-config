@@ -43,7 +43,7 @@ in
         command = "npx";
         args = [
           "-y"
-          "@abhiz123/todoist-mcp-server"
+          "todoist-mcp-server"
         ];
         env = {
           TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
