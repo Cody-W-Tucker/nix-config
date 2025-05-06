@@ -72,5 +72,7 @@ in
     extraOptions = [
       "--network=host"
     ];
+
+    restartIfChanged = [ config.sops.templates."mcpo-config.json".path ];
   };
 }
