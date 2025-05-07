@@ -4,9 +4,19 @@ let
 userDir = "${config.users.users.codyt.home}";
 in
 {
-  sops.secrets."OBSIDIAN_API_KEY" = { };
-  sops.secrets."TODOIST_API_TOKEN" = { };
 
+  sops.secrets = {
+    # Obsidian Tool
+    "OBSIDIAN_API_KEY" = { };
+    # Todoist
+    "TODOIST_API_TOKEN" = { };
+    # Sanity CMS
+    "SANITY_PROJECT_ID" = { };
+    "SANITY_DATASET" = { };
+    "SANITY_API_TOKEN" = { };
+  };
+
+  # TODO: Need to manually restart "systemctl restart docker-mcpo" because the docker service doesn't notice we changed the config file.
   sops.templates."mcpo-config.json".content = builtins.toJSON {
     mcpServers = {
       mcp-obsidian = {
@@ -47,6 +57,18 @@ in
         ];
         env = {
           TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
+        };
+      };
+      tmv-sanity-cms = {
+        command = "npx";
+        args = [
+          "-y"
+          "@sanity/mcp-server@latest"
+        ];
+        env = {
+          SANITY_PROJECT_ID = "${config.sops.placeholder.SANITY_PROJECT_ID}";
+          SANITY_DATASET = "${config.sops.placeholder.SANITY_DATASET}";
+          SANITY_API_TOKEN = "${config.sops.placeholder.SANITY_API_TOKEN}";
         };
       };
     };
