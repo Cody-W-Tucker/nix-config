@@ -59,7 +59,7 @@ in
           TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
         };
       };
-      tmv-sanity-cms = {
+      sanity = {
         command = "npx";
         args = [
           "-y"
