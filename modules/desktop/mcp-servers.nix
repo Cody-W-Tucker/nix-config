@@ -59,18 +59,22 @@ in
           TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
         };
       };
-      sanity = {
-        command = "npx";
-        args = [
-          "-y"
-          "@sanity/mcp-server@latest"
-        ];
-        env = {
-          SANITY_PROJECT_ID = "${config.sops.placeholder.SANITY_PROJECT_ID}";
-          SANITY_DATASET = "${config.sops.placeholder.SANITY_DATASET}";
-          SANITY_API_TOKEN = "${config.sops.placeholder.SANITY_API_TOKEN}";
-        };
-      };
+      # TODO: Currently broken due to: MCPO NameError: Fields must not use names with leading underscores; e.g., use 'type' instead of '_type'.
+
+      # But we could use this directly in Cursor.
+
+      # sanity = {
+      #   command = "npx";
+      #   args = [
+      #     "-y"
+      #     "@sanity/mcp-server@latest"
+      #   ];
+      #   env = {
+      #     SANITY_PROJECT_ID = "${config.sops.placeholder.SANITY_PROJECT_ID}";
+      #     SANITY_DATASET = "${config.sops.placeholder.SANITY_DATASET}";
+      #     SANITY_API_TOKEN = "${config.sops.placeholder.SANITY_API_TOKEN}";
+      #   };
+      # };
     };
   };
 
