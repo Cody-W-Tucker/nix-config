@@ -316,26 +316,6 @@ environment.sessionVariables = {
   };
   virtualisation.oci-containers.backend = "docker";
 
-  # WirePlumber device priority rules
-  services.pipewire.wireplumber.extraConfig = {
-    "50-disable-yeti-output" = {
-      "alsa_monitor.rules" = [
-        {
-          matches = [
-            {
-              "node.name" = "alsa_output.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-output-0";
-            }
-          ];
-          actions = {
-            update-props = {
-              "node.disabled" = true;
-            };
-          };
-        }
-      ];
-    };
-  };
-
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }
