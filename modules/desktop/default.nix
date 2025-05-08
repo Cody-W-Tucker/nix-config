@@ -88,36 +88,6 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     wireplumber.enable = true;  # Required for priority rules
-
-    # WirePlumber device priority rules
-    wireplumber.extraConfig = {
-      "10-pixel-buds-priority" = {
-        "bluez_monitor.rules" = [
-          {
-            matches = [
-              { "node.name" = "bluez_output.74_74_46_1C_20_61.1"; }
-            ];
-            actions.update-props = {
-              "priority.driver" = 1100;  # Highest priority (defaults are ~1000)
-              "priority.session" = 1100;
-            };
-          }
-        ];
-      };
-      "20-soundbar-priority" = {
-        "alsa_monitor.rules" = [
-          {
-            matches = [
-              { "node.name" = "alsa_output.usb-Dell_Dell_AC511_USB_SoundBar-00.analog-stereo"; }
-            ];
-            actions.update-props = {
-              "priority.driver" = 1050;  # Second-highest priority
-              "priority.session" = 1050;
-            };
-          }
-        ];
-      };
-    };
   };
 
   # Enable UPower because chrome said so...
