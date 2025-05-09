@@ -68,7 +68,6 @@
       code-cursor
       vscode
       legcord
-      zed-editor
     ]);
 
   # Obs for screenrecording
