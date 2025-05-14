@@ -45,7 +45,6 @@
         wl-copy -n < $txtfname
       '')
       hyprpicker
-      ripdrag
       playerctl
       libnotify
       todoist #cli client
@@ -57,9 +56,8 @@
       timewarrior
       inputs.zen-browser.packages.${pkgs.system}.default
       kdenlive
-      unzip
       baobab # Gnome disk usage app
-      gcalcli
+      gcalcli # Google Calendar CLI tool
       libreoffice
     ])
     ++

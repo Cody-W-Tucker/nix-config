@@ -11,6 +11,7 @@
       gh
       fd
       fastfetch
+      unzip
       zip
     ]);
 
@@ -32,6 +33,15 @@
     enable = true;
     git = true;
     icons = "auto";
+  };
+
+  # Ranger file viewer
+  programs.ranger = {
+    enable = true;
+    settings = {
+      "preview_images" = true;
+      "preview_images_method" = "kitty";
+    };
   };
 
   programs = {
