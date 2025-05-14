@@ -70,7 +70,7 @@ let
         on-scroll-down = "waybar-goal scroll-down";
     };
     clock = {
-      format = "{:%a, %B %d - %I:%M %p}";
+      format = "{:%a (%d) - %I:%M %p}";
       tooltip = true;
       on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
       tooltip-format = "<tt><small>{calendar}</small></tt>";
