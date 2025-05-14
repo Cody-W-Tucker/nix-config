@@ -60,6 +60,7 @@
       unzip
       baobab # Gnome disk usage app
       gcalcli
+      libreoffice
     ])
     ++
     (with pkgs-unstable; [
