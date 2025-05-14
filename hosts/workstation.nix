@@ -316,6 +316,61 @@ environment.sessionVariables = {
   };
   virtualisation.oci-containers.backend = "docker";
 
+
+  # WirePlumber device priorities (system-wide)
+  environment.etc."wireplumber/main.lua.d/50-device-priorities.lua".text = ''
+    alsa_monitor.rules = {
+      {
+        matches = {
+          { "node.name", "equals", "alsa_output.usb-Dell_Dell_AC511_USB_SoundBar-00.iec958-stereo" },
+        },
+        apply_properties = {
+          ["priority.session"] = 100,
+          ["api.alsa.use-acp"] = true,
+          ["log.level"] = 4,
+        },
+      },
+      {
+        matches = {
+          { "node.name", "equals", "bluez_output.74_74_46_1C_20_61.1" },
+        },
+        apply_properties = {
+          ["priority.session"] = 200,
+          ["log.level"] = 4,
+        },
+      },
+      {
+        matches = {
+          { "node.name", "equals", "alsa_output.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-output-0" },
+        },
+        apply_properties = {
+          ["priority.session"] = 0,
+          ["node.disabled"] = true,
+          ["log.level"] = 4,
+        },
+      },
+      {
+        matches = {
+          { "node.name", "equals", "alsa_input.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-input-0" },
+        },
+        apply_properties = {
+          ["priority.session"] = 300,
+          ["api.alsa.use-acp"] = true,
+          ["log.level"] = 4,
+        },
+      },
+      {
+        matches = {
+          { "node.name", "equals", "rnnoise_source" },
+        },
+        apply_properties = {
+          ["priority.session"] = 400,
+          ["log.level"] = 4,
+        },
+      },
+    }
+  '';
+
   # Automatic sink switching
   systemd.user.services.pipewire-switch-on-connect = {
     description = "Load PipeWire module-switch-on-connect";
