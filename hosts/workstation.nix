@@ -321,23 +321,23 @@ environment.sessionVariables = {
     rule = {
       matches = {
         {
-          { "node.name", "equals", "alsa_output.usb-AC511_Sound_Bar" },
+          { "device.name", "equals", "alsa_card.usb-Dell_Dell_AC511_USB_SoundBar-00" },
         },
         {
-          { "node.name", "equals", "bluez_output.74_74_46_1C_20_61.1" },
+          { "device.name", "equals", "bluez_card.74_74_46_1C_20_61" },
         },
         {
-          { "node.name", "equals", "alsa_output.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-output-0" },
+          { "device.name", "equals", "alsa_card.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00" },
         },
         {
           { "node.name", "equals", "alsa_input.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-input-0" },
         },
       },
       apply_properties = {
-        ["priority.session"] = 100, -- Sound bar
-        ["priority.session"] = 200, -- Bluetooth headset
-        ["priority.session"] = 0,   -- Disable Yeti output
-        ["priority.session"] = 300, -- Yeti input
+        ["priority.session"] = 100,
+        ["priority.session"] = 200,
+        ["priority.session"] = 0,
+        ["priority.session"] = 300,
       },
     }
     table.insert(alsa_monitor.rules, rule)
