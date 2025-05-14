@@ -26,6 +26,13 @@
     };
   };
 
+  # Use esa instead of ls
+  programs.eza = {
+    enable = true;
+    git = true;
+    icons = "auto";
+  };
+
   programs = {
     # Remove default package installation prompt because it's not working
     command-not-found.enable = false;
@@ -40,7 +47,8 @@
       shellAliases = {
         ssh = "kitty +kitten ssh";
         cd = "z";
-        ll = "ls -l";
+        ll = "eza -l";
+        ls = "eza";
         fo = "find-and-open-file";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
