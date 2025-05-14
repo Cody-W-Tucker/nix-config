@@ -321,22 +321,26 @@ environment.sessionVariables = {
     rule = {
       matches = {
         {
-          { "device.name", "equals", "alsa_card.usb-Dell_Dell_AC511_USB_SoundBar-00" },
+          { "node.name", "equals", "alsa_output.usb-Dell_Dell_AC511_USB_SoundBar-00.iec958-stereo" },
         },
         {
-          { "device.name", "equals", "bluez_card.74_74_46_1C_20_61" },
+          { "node.name", "equals", "bluez_output.74_74_46_1C_20_61.1" },
         },
         {
-          { "device.name", "equals", "alsa_card.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00" },
+          { "node.name", "equals", "alsa_output.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-output-0" },
         },
         {
           { "node.name", "equals", "alsa_input.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-input-0" },
+        },
+        {
+          { "node.name", "equals", "rnnoise_source" },
         },
       },
       apply_properties = {
         ["priority.session"] = 100,
         ["priority.session"] = 200,
         ["priority.session"] = 0,
+        ["priority.session"] = 300,
         ["priority.session"] = 300,
       },
     }
