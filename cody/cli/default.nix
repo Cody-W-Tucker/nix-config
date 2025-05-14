@@ -11,6 +11,7 @@
       gh
       fd
       fastfetch
+      zip
     ]);
 
   home.sessionVariables = {
