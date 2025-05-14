@@ -316,6 +316,44 @@ environment.sessionVariables = {
   };
   virtualisation.oci-containers.backend = "docker";
 
+  # WirePlumber device priorities
+  environment.etc."wireplumber/main.lua.d/50-device-priorities.lua".text = ''
+    rule = {
+      matches = {
+        {
+          { "node.name", "equals", "alsa_output.usb-AC511_Sound_Bar" },
+        },
+        {
+          { "node.name", "equals", "bluez_output.74_74_46_1C_20_61.1" },
+        },
+        {
+          { "node.name", "equals", "alsa_output.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-output-0" },
+        },
+        {
+          { "node.name", "equals", "alsa_input.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-input-0" },
+        },
+      },
+      apply_properties = {
+        ["priority.session"] = 100, -- Sound bar
+        ["priority.session"] = 200, -- Bluetooth headset
+        ["priority.session"] = 0,   -- Disable Yeti output
+        ["priority.session"] = 300, -- Yeti input
+      },
+    }
+    table.insert(alsa_monitor.rules, rule)
+  '';
+
+  # Automatic sink switching
+  systemd.user.services.pipewire-switch-on-connect = {
+    description = "Load PipeWire module-switch-on-connect";
+    wantedBy = [ "pipewire.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.pulseaudio}/bin/pactl load-module module-switch-on-connect";
+      RemainAfterExit = true;
+    };
+  };
+
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }
