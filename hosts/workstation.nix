@@ -317,58 +317,34 @@ environment.sessionVariables = {
   virtualisation.oci-containers.backend = "docker";
 
 
-  # WirePlumber device priorities (system-wide)
-  environment.etc."wireplumber/main.lua.d/50-device-priorities.lua".text = ''
-    alsa_monitor.rules = {
+  # WirePlumber device priorities
+  environment.etc."wireplumber/policy-device.conf.d/50-device-priorities.conf".text = ''
+    device.match = [
       {
-        matches = {
-          { "node.name", "equals", "alsa_output.usb-Dell_Dell_AC511_USB_SoundBar-00.iec958-stereo" },
-        },
-        apply_properties = {
-          ["priority.session"] = 100,
-          ["api.alsa.use-acp"] = true,
-          ["log.level"] = 4,
-        },
+        node.name = "alsa_output.usb-Dell_Dell_AC511_USB_SoundBar-00.iec958-stereo"
+        priority = 100
+        profile = "iec958-stereo"
       },
       {
-        matches = {
-          { "node.name", "equals", "bluez_output.74_74_46_1C_20_61.1" },
-        },
-        apply_properties = {
-          ["priority.session"] = 200,
-          ["log.level"] = 4,
-        },
+        node.name = "bluez_output.74_74_46_1C_20_61.1"
+        priority = 200
+        profile = "a2dp-sink"
       },
       {
-        matches = {
-          { "node.name", "equals", "alsa_output.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-output-0" },
-        },
-        apply_properties = {
-          ["priority.session"] = 0,
-          ["node.disabled"] = true,
-          ["log.level"] = 4,
-        },
+        node.name = "alsa_output.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-output-0"
+        priority = 0
+        enabled = false
       },
       {
-        matches = {
-          { "node.name", "equals", "alsa_input.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-input-0" },
-        },
-        apply_properties = {
-          ["priority.session"] = 300,
-          ["api.alsa.use-acp"] = true,
-          ["log.level"] = 4,
-        },
+        node.name = "alsa_input.usb-Blue_Microphones_Yeti_Stereo_Microphone_797_2018_01_30_47703-00.pro-input-0"
+        priority = 300
+        profile = "pro-input-0"
       },
       {
-        matches = {
-          { "node.name", "equals", "rnnoise_source" },
-        },
-        apply_properties = {
-          ["priority.session"] = 400,
-          ["log.level"] = 4,
-        },
-      },
-    }
+        node.name = "rnnoise_source"
+        priority = 400
+      }
+    ]
   '';
 
   # Automatic sink switching
