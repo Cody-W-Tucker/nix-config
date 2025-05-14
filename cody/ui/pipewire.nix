@@ -3,24 +3,15 @@ let
   inherit (pkgs) rnnoise-plugin;
 in
 {
+  # RNNoise configuration
   xdg.configFile."pipewire/pipewire.conf.d/99-rnnoise.conf" = {
     text = builtins.toJSON {
-      "context.properties" = {
-        "link.max-buffers" = 16;
-        "core.daemon" = true;
-        "core.name" = "pipewire-0";
-        "module.x11.bell" = false;
-        "module.access" = true;
-        "module.jackdbus-detect" = false;
-      };
-
       "context.modules" = [
         {
           name = "libpipewire-module-filter-chain";
           args = {
             "node.description" = "Noise Canceling source";
             "media.name" = "Noise Canceling source";
-
             "filter.graph" = {
               nodes = [
                 {
@@ -36,13 +27,11 @@ in
                 }
               ];
             };
-
             "capture.props" = {
               "node.name" = "capture.rnnoise_source";
               "node.passive" = true;
               "audio.rate" = 48000;
             };
-
             "playback.props" = {
               "node.name" = "rnnoise_source";
               "media.class" = "Audio/Source";
