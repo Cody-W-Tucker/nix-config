@@ -11,7 +11,7 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "custom/notification" "clock" "custom/timer" "custom/goal" ];
+    modules-center = [ "custom/notification" "clock" "custom/goal" ];
     modules-left = [
       "hyprland/workspaces"
       "tray"
@@ -19,7 +19,6 @@ let
     ];
     modules-right = [
       "custom/agenda"
-      "custom/tasks"
       "custom/weather"
       "group/group-power"
     ];
@@ -61,24 +60,6 @@ let
       tooltip = true;
       interval = 3600;
     };
-    "custom/timer" = {
-      exec = "waybar-timer updateandprint";
-      exec-on-event = true;
-      return-type = "json";
-      interval = 5;
-      signal = 4;
-      format = "{icon} {0}";
-      format-icons = {
-        standby = "";
-        running = "";
-        paused = "";
-      };
-      on-click = "waybar-timer new 25 'notify-send -u critical \"Timer expired.\"'";
-      on-click-middle = "waybar-timer cancel";
-      on-click-right = "waybar-timer togglepause";
-      on-scroll-up = "waybar-timer increase 300 || waybar-timer new 5 'notify-send -u critical \"Timer expired.\"'";
-      on-scroll-down = "waybar-timer increase -300 || 'notify-send -u critical \"Timer expired.\"'";
-    };
     "custom/goal" = {
         format = "🞋 {}";
         exec = "waybar-goal";
@@ -88,15 +69,8 @@ let
         on-scroll-up = "waybar-goal scroll-up";
         on-scroll-down = "waybar-goal scroll-down";
     };
-    "custom/tasks" = {
-      exec = "waybar-tasks";
-      format = "<span foreground='#f5c2e7'>AI: </span>{}";
-      interval = 30;
-      tooltip = false;
-      on-click = "waybar-tasks complete";
-    };
     clock = {
-      format = "{:%m/%d/%Y - %I:%M %p}";
+      format = "{:%d - %I:%M %p}";
       tooltip = true;
       on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
       tooltip-format = "<tt><small>{calendar}</small></tt>";
