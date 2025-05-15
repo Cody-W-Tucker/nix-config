@@ -28,7 +28,7 @@ pkgs.writeShellScriptBin "web-search" ''
   }
 
   main() {
-    platform=$( (gen_list) | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom)
+    platform=$( (gen_list) | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom -theme-str 'imagebox { enabled: false; width: 0px; }')
 
     if [[ -n "$platform" ]]; then
       query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0)

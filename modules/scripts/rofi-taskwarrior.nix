@@ -22,7 +22,7 @@ function notify() {
 }
 
 function quick_add() {
-    local quickterm=$(rofi -dmenu -l 0 -p 'Quick add' -mesg 'Enter Quick Add syntax for new task')
+    local quickterm=$(rofi -dmenu -l 0 -p 'Quick add' -mesg 'Enter Quick Add syntax for new task' -theme-str 'imagebox { enabled: false; width: 0px; }')
     if [ -z "$quickterm" ]; then
         exit 0
     else
