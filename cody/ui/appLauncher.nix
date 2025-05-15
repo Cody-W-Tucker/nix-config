@@ -60,7 +60,6 @@
         background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", width)'';
         orientation = mkLiteral "vertical";
         children = map mkLiteral [
-          "inputbar"
           "dummy"
           "mode-switcher"
         ];
@@ -71,6 +70,7 @@
         background-color = mkLiteral "transparent";
         orientation = mkLiteral "vertical";
         children = map mkLiteral [
+          "inputbar"
           "message"
           "listview"
         ];
