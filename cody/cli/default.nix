@@ -43,7 +43,7 @@
       "preview_images_method" = "kitty";
     };
     extraConfig = ''
-      "default_linemode devicons"
+      default_linemode devicons
     '';
   };
 
