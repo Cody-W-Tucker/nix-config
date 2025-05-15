@@ -4,6 +4,7 @@ let
   rangerDevicons = pkgs.fetchFromGitHub {
     owner = "alexanderjeurissen";
     repo = "ranger_devicons";
+    rev = "f227f212e14996fbb366f945ec3ecaf5dc5f44b0";
     sha256 = ""; 
   };
 in
