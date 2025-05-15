@@ -1,5 +1,7 @@
 { config, pkgs, inputs, ... }:
-
+let 
+userDir = "${config.users.users.codyt.home}";
+in
 {
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
@@ -43,7 +45,7 @@
       "preview_images_method" = "kitty";
     };
     plugins = [
-      ./plugins/ranger_devicons
+      "${userDir}/.config/ranger/plugins/ranger_devicons"
     ];
   };
 
