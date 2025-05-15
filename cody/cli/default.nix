@@ -42,6 +42,9 @@
       "preview_images" = true;
       "preview_images_method" = "kitty";
     };
+    plugins = [
+      ./plugins/ranger_devicons
+    ];
   };
 
   programs = {
