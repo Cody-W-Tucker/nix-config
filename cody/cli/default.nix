@@ -59,7 +59,7 @@ in
       "preview_images_method" = "kitty";
     };
     plugins = [
-      "${rangerDevicons}/ranger_devicons"
+      "${rangerDevicons}"
     ];
   };
 
