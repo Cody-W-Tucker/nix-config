@@ -1,21 +1,5 @@
 { config, pkgs, inputs, ... }:
 
-let
-  rangerDevicons = pkgs.stdenv.mkDerivation {
-    name = "ranger-devicons";
-    src = pkgs.fetchFromGitHub {
-      owner = "alexanderjeurissen";
-      repo = "ranger_devicons";
-      rev = "f227f212e14996fbb366f945ec3ecaf5dc5f44b0";
-      sha256 = "sha256-ck53eG+mGIQ706sUnEHbJ6vY1/LYnRcpq94JXzwnGTQ=";
-    };
-    installPhase = ''
-      mkdir -p $out/ranger_devicons
-      cp $src/devicons.py $out/ranger_devicons/
-    '';
-  };
-in
-
 {
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
@@ -58,9 +42,6 @@ in
       "preview_images" = true;
       "preview_images_method" = "kitty";
     };
-    plugins = [
-      "${rangerDevicons}"
-    ];
   };
 
   programs = {
