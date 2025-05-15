@@ -29,8 +29,7 @@
 
   # Create the acme secret in sops
   sops.secrets.cloudflare-api-email = { };
-  sops.secrets.cloudflare-zone-edit-api-key = { };
-  sops.secrets.cloudflare-zone-read-api-key = { };
+  sops.secrets.cloudflare-api-key = { };
 
   # Acme for SSL
   security.acme = {
@@ -46,8 +45,7 @@
       dnsPropagationCheck = true;
       credentialFiles = {
         "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
-        "CF_DNS_API_TOKEN_FILE" = config.sops.secrets.cloudflare-zone-edit-api-key.path;
-        "CF_ZONE_API_TOKEN_FILE" = config.sops.secrets.cloudflare-zone-read-api-key.path;
+        "CF_API_TOKEN_FILE" = config.sops.secrets.cloudflare-api-key.path;
       };
     };
   };
