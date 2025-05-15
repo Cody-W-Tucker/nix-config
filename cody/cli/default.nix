@@ -41,6 +41,7 @@
     settings = {
       "preview_images" = true;
       "preview_images_method" = "kitty";
+      "default_linemode" = "devicons";
     };
   };
 
