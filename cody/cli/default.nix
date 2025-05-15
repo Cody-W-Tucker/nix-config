@@ -43,15 +43,15 @@
       "preview_images_method" = "kitty";
     };
     extraConfig = ''
-      default_linemode devicons2
+      default_linemode devicons
     '';
     plugins = [
       {
-        name = "ranger-devicons2";
+        name = "ranger-devicons";
         src = builtins.fetchGit {
-          url = "https://github.com/cdump/ranger-devicons2";
-          ref = "master";
-          rev = "94bdcc19218681debb252475fd9d11cfd274d9b1";
+          url = "https://github.com/alexanderjeurissen/ranger_devicons";
+          ref = "main";
+          rev = "f227f212e14996fbb366f945ec3ecaf5dc5f44b0";
         };
       }
     ];
