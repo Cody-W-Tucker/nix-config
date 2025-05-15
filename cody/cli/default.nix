@@ -52,7 +52,7 @@ in
       "preview_images_method" = "kitty";
     };
     plugins = [
-      "${rangerDevicons}"
+      rangerDevicons
     ];
   };
 
