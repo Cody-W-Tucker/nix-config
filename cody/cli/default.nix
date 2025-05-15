@@ -10,9 +10,9 @@ let
       sha256 = "sha256-ck53eG+mGIQ706sUnEHbJ6vY1/LYnRcpq94JXzwnGTQ=";
     };
     installPhase = ''
-      mkdir -p $out/devicons
-      cp $src/devicons.py $out/devicons/
-      cp -r $src/devicons $out/devicons/
+      mkdir -p $out/ranger_devicons
+      cp $src/devicons.py $out/ranger_devicons/
+      cp -r $src/devicons $out/ranger_devicons/
     '';
   };
 in
@@ -60,7 +60,7 @@ in
       "preview_images_method" = "kitty";
     };
     plugins = [
-      "${rangerDevicons}"
+      "${rangerDevicons}/ranger_devicons"
     ];
   };
 
