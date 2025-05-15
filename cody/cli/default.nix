@@ -12,7 +12,6 @@ let
     installPhase = ''
       mkdir -p $out/ranger_devicons
       cp $src/devicons.py $out/ranger_devicons/
-      cp -r $src/devicons $out/ranger_devicons/
     '';
   };
 in
