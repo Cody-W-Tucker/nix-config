@@ -1,6 +1,6 @@
 { config, pkgs, inputs, ... }:
 let 
-userDir = "${config.users.users.codyt.home}";
+userDir = config.home.homeDirectory;
 in
 {
   imports = [
