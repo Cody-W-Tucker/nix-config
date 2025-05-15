@@ -25,7 +25,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
   }
 
   function quick_add {
-  	local quickterm=`rofi -dmenu -l 0 -p 'Quick add' -mesg 'Enter Quick Add syntax for new task'`
+  	local quickterm=`rofi -dmenu -l 0 -p 'Quick add' -mesg 'Enter Quick Add syntax for new task' -theme-str 'imagebox { enabled: false; width: 0px; }'`
   	if [ -z "$quickterm" ]; then
   		exit 0
   	else
@@ -67,7 +67,7 @@ pkgs.writeShellScriptBin "todoist-rofi" ''
       local descriptions=$(printf '%s\n' "''${!tasks[@]}")
       
       # Show rofi menu with descriptions
-      local selection=$(echo "$descriptions" | rofi -dmenu -i -p 'Task'   -mesg 'Pick a task:')
+      local selection=$(echo "$descriptions" | rofi -dmenu -i -p 'Task'   -mesg 'Pick a task:' )
       
       if [[ -n "$selection" ]]; then
           task_menu "''${tasks[$selection]}"
