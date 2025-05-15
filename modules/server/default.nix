@@ -24,7 +24,6 @@
     ./samba.nix
     ./syncthing.nix
     ./security.nix
-    # ./vpn.nix
   ];
 
   # Create the acme secret in sops
