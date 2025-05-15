@@ -1,7 +1,13 @@
 { config, pkgs, inputs, ... }:
-let 
-userDir = config.home.homeDirectory;
+
+let
+  rangerDevicons = pkgs.fetchFromGitHub {
+    owner = "alexanderjeurissen";
+    repo = "ranger_devicons";
+    sha256 = ""; 
+  };
 in
+
 {
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
@@ -45,7 +51,7 @@ in
       "preview_images_method" = "kitty";
     };
     plugins = [
-      "${userDir}/.config/ranger/plugins/ranger_devicons"
+      "${rangerDevicons}"
     ];
   };
 
