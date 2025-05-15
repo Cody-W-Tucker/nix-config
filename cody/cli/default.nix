@@ -5,7 +5,7 @@ let
     owner = "alexanderjeurissen";
     repo = "ranger_devicons";
     rev = "f227f212e14996fbb366f945ec3ecaf5dc5f44b0";
-    sha256 = ""; 
+    sha256 = "sha256-ck53eG+mGIQ706sUnEHbJ6vY1/LYnRcpq94JXzwnGTQ="; 
   };
 in
 
