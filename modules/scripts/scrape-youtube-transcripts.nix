@@ -10,25 +10,29 @@ if [ -z "''${1:-}" ]; then
 fi
 
 URL="$1"
-OUTDIR="transcripts_$(date +%Y%m%d_%H%M%S)"
+OUTDIR="transcripts"
 mkdir -p "$OUTDIR"
 
-# Get video metadata (id, title, channel, upload_date)
-mapfile -t meta_lines < <(
-  yt-dlp --flat-playlist --print "%(id)s|||%(title)s|||%(uploader)s|||%(upload_date)s" "$URL"
-)
+# Get video IDs from the playlist or single video
+mapfile -t video_ids < <(yt-dlp --flat-playlist --get-id "$URL")
 
-for meta in "''${meta_lines[@]}"; do
-  IFS='|||' read -r video_id title channel upload_date <<< "$meta"
-  # Download subtitles for this video and convert to srt
-  yt-dlp --skip-download --write-subs --write-auto-subs \
-    --sub-lang en --convert-subs srt \
+for video_id in "''${video_ids[@]}"; do
+  # Download subtitles and print metadata in one call, with sleep between videos
+  meta_line=$(yt-dlp \
+    --skip-download \
+    --write-subs --write-auto-subs --sub-lang en --convert-subs srt \
+    --sleep-interval 2 --max-sleep-interval 5 \
     --output "$OUTDIR/$video_id.%(ext)s" \
+    --print "%(title)s|||%(uploader)s|||%(upload_date)s" \
     "https://www.youtube.com/watch?v=$video_id"
+  )
 
   # Find the SRT file (could be .en.srt or just .srt)
   srt=$(find "$OUTDIR" -type f -name "$video_id*.srt" | head -n1)
   [ -e "$srt" ] || { echo "No SRT for $video_id"; continue; }
+
+  # Parse metadata
+  IFS='|||' read -r title channel upload_date <<< "$meta_line"
 
   # Format date as YYYY-MM-DD if available
   if [[ "$upload_date" =~ ^[0-9]{8}$ ]]; then
