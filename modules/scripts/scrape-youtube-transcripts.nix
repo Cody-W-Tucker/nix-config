@@ -2,7 +2,6 @@
 
 pkgs.writeShellScriptBin "scrape-youtube-transcripts" ''
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 if [ -z "''${1:-}" ]; then
@@ -14,18 +13,21 @@ URL="$1"
 OUTDIR="transcripts_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$OUTDIR"
 
-# Get metadata for all videos
+# Get video metadata (id, title, channel, upload_date)
 mapfile -t meta_lines < <(
-  yt-dlp --skip-download --write-subs --write-auto-subs \
-    --sub-lang en --sub-format ttml --convert-subs srt \
-    --output "$OUTDIR/%(id)s.%(ext)s" \
-    --print "%(id)s|||%(title)s|||%(uploader)s|||%(upload_date)s" \
-    "$URL"
+  yt-dlp --flat-playlist --print "%(id)s|||%(title)s|||%(uploader)s|||%(upload_date)s" "$URL"
 )
 
 for meta in "''${meta_lines[@]}"; do
   IFS='|||' read -r video_id title channel upload_date <<< "$meta"
-  srt="$OUTDIR/$video_id.en.srt"
+  # Download subtitles for this video
+  yt-dlp --skip-download --write-subs --write-auto-subs \
+    --sub-lang en --sub-format srt \
+    --output "$OUTDIR/$video_id.%(ext)s" \
+    "https://www.youtube.com/watch?v=$video_id"
+
+  # Find the SRT file (could be .en.srt or just .srt)
+  srt=$(find "$OUTDIR" -type f -name "$video_id*.srt" | head -n1)
   [ -e "$srt" ] || continue
 
   # Format date as YYYY-MM-DD if available
@@ -37,6 +39,7 @@ for meta in "''${meta_lines[@]}"; do
 
   # Sanitize title for filename
   safe_title=$(echo "$title" | tr '/:*?"<>|' '_' | sed 's/  */ /g' | tr -d "'")
+  [ -n "$safe_title" ] || safe_title="untitled"
   filename="''${safe_title} [''${video_id}]"
 
   # Clean and flatten transcript
@@ -63,6 +66,5 @@ for meta in "''${meta_lines[@]}"; do
   rm "$srt"
 done
 
-echo "All transcripts saved in $OUTDIR/ as TITLE [VIDEO_ID].txt with YAML frontmatter"
-
+echo "All transcripts saved in $OUTDIR/ as TITLE [VIDEO_ID].md"
 ''
