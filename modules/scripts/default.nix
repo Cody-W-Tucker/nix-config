@@ -18,6 +18,7 @@ let
     ./waybar-goal-tracker.nix
     ./find-and-open-file.nix
     ./streamer-mode.nix
+    ./scrape-youtube-transcripts.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
