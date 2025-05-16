@@ -20,15 +20,15 @@ mapfile -t meta_lines < <(
 
 for meta in "''${meta_lines[@]}"; do
   IFS='|||' read -r video_id title channel upload_date <<< "$meta"
-  # Download subtitles for this video
+  # Download subtitles for this video and convert to srt
   yt-dlp --skip-download --write-subs --write-auto-subs \
-    --sub-lang en --sub-format srt \
+    --sub-lang en --convert-subs srt \
     --output "$OUTDIR/$video_id.%(ext)s" \
     "https://www.youtube.com/watch?v=$video_id"
 
   # Find the SRT file (could be .en.srt or just .srt)
   srt=$(find "$OUTDIR" -type f -name "$video_id*.srt" | head -n1)
-  [ -e "$srt" ] || continue
+  [ -e "$srt" ] || { echo "No SRT for $video_id"; continue; }
 
   # Format date as YYYY-MM-DD if available
   if [[ "$upload_date" =~ ^[0-9]{8}$ ]]; then
