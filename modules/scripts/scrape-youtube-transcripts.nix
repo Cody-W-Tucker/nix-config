@@ -16,7 +16,7 @@ mkdir -p "$OUTDIR"
 # Get video IDs from the playlist or single video
 mapfile -t video_ids < <(yt-dlp --flat-playlist --get-id "$URL")
 
-for video_id in "''${video_ids[@]}"; do
+for video_id in ''${video_ids[@]}; do
   # Download subtitles and print metadata in one call, with sleep between videos
   meta_line=$(yt-dlp \
     --skip-download \
