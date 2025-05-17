@@ -22,6 +22,10 @@ in
         title = "HomeHub.tv";
         cardBlur = "sm";
         layout = {
+          Business = {
+            style = "row";
+            columns = 2;
+          };
           Tools = {
             style = "row";
             columns = 3;
@@ -79,8 +83,8 @@ in
         }
       ];
       services = [
-        {
-          Tools = [
+          {
+          Business = [
             # {
             #   Nextcloud = {
             #     href = "https://cloud.${domain}";
@@ -89,10 +93,10 @@ in
             #   };
             # }
             {
-              Open-WebUI = {
-                href = "https://ai.${domain}";
-                icon = "open-webui";
-                description = "AI chat interface";
+              mattermost = {
+                href = "https://chat.${domain}";
+                icon = "mattermost";
+                description = "Open Sourced Slack";
               };
             }
             {
@@ -102,6 +106,17 @@ in
                 description = "Open source Airtable alternative";
               };
             }
+          ];
+        }
+        {
+          Tools = [
+            {
+              Open-WebUI = {
+                href = "https://ai.${domain}";
+                icon = "open-webui";
+                description = "AI chat interface";
+              };
+            }
             {
               ExcaliDraw = {
                 href = "https://draw.${domain}";
@@ -109,24 +124,17 @@ in
                 description = "Whiteboard drawings";
               };
             }
+            {
+              Stirling-PDF = {
+                href = "https://pdf.${domain}";
+                icon = "stirling-pdf";
+                description = "PDF Editing";
+              };
+            }
           ];
         }
         {
-          Personal = [
-            {
-              ActualBudget = {
-                href = "https://budget.${domain}";
-                icon = "https://budget.${domain}/favicon.ico";
-                description = "Personal budgeting tool";
-              };
-            }
-            {
-              Photos = {
-                href = "https://photos.${domain}";
-                icon = "immich";
-                description = "Photo management";
-              };
-            }
+          Network = [
             {
               AdGuard = {
                 href = "https://adguard.${domain}";
@@ -151,7 +159,25 @@ in
           ];
         }
         {
-          Multimedia = [
+          Personal = [
+            {
+              ActualBudget = {
+                href = "https://budget.${domain}";
+                icon = "https://budget.${domain}/favicon.ico";
+                description = "Personal budgeting tool";
+              };
+            }
+            {
+              Photos = {
+                href = "https://photos.${domain}";
+                icon = "immich";
+                description = "Photo management";
+              };
+            }
+          ];
+        }
+        {
+          Watch = [
             {
               Jellyfin = {
                 icon = "jellyfin";
@@ -190,19 +216,12 @@ in
           ];
         }
         {
-          Content = [
+          Read = [
             {
               Miniflux = {
                 href = "https://rss.${domain}";
                 icon = "miniflux";
                 description = "RSS reader";
-              };
-            }
-            {
-              Calibre = {
-                href = "https://ebook.${domain}";
-                icon = "calibre";
-                description = "Ebook reader";
               };
             }
             {
@@ -238,26 +257,12 @@ in
               };
             }
             {
-              Stirling-PDF = {
-                href = "https://pdf.${domain}";
-                icon = "stirling-pdf";
-                description = "PDF Editing";
-              };
-            }
-            {
               N8N = {
                 href = "https://automation.${domain}";
                 icon = "n8n";
                 description = "Workflow automation";
               };
             }
-            # {
-            #   Metabase = {
-            #     href = "https://bi.${domain}";
-            #     icon = "metabase";
-            #     description = "Business intelligence";
-            #   };
-            # }
           ];
         }
       ];
