@@ -1,7 +1,5 @@
 let
-
   domain = "homehub.tv";
-
 in
 {
 
@@ -10,7 +8,7 @@ in
       useACMEHost = "homehub.tv";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://server:8082";
+        proxyPass = "http://127.0.0.1:8082";
       };
     };
 
@@ -38,7 +36,6 @@ in
           hideInternetSearch = true;
           showSearchSuggestions = true;
           hideVisitURL = true;
-          provider = "google";
         };
       };
       widgets = [
