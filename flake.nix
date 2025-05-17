@@ -83,7 +83,6 @@
             inputs.nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
-            inputs.nixvim.homeManagerModules.nixvim
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {
@@ -113,7 +112,6 @@
             inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
             inputs.nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
-            inputs.nixvim.homeManagerModules.nixvim
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {
