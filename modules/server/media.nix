@@ -40,6 +40,14 @@
           proxyPass = "http://127.0.0.1:8989";
         };
       };
+      "deluge.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://127.0.0.1:8112";
+        };
+      };
     };
   };
 
@@ -56,6 +64,11 @@
     # Indexer Manager
     prowlarr = {
       enable = true;
+    };
+
+    deluge = {
+      enable = true;
+      web.enable = true;
     };
   };
 
