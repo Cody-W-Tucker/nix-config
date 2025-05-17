@@ -69,6 +69,8 @@
     deluge = {
       enable = true;
       web.enable = true;
+      declarative = false;
+      openFirewall = true;
     };
   };
 
