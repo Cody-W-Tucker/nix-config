@@ -1,4 +1,4 @@
-{ pkgs, nixarr, ... }:
+{ pkgs, ... }:
 {
   services.jellyfin = {
     enable = true;
