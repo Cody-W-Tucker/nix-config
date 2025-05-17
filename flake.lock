@@ -482,7 +482,7 @@
     "nixarr": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs-unstable"
         ],
         "vpnconfinement": "vpnconfinement",
         "website-builder": "website-builder"
