@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -57,7 +57,6 @@
   };
 
   programs = {
-    command-not-found.enable = true;
     zsh = {
       enable = true;
       syntaxHighlighting.enable = true;
