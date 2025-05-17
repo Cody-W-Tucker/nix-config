@@ -97,6 +97,9 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
               home-manager.users.codyt = import ./cody/ui.nix;
+              home-manager.modules = [
+                inputs.nixvim.homeManagerModules.nixvim
+              ];
             }
           ];
         };
@@ -123,6 +126,9 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
               home-manager.users.codyt = import ./cody/cli.nix;
+              home-manager.modules = [
+                inputs.nixvim.homeManagerModules.nixvim
+              ];
             }
           ];
         };
@@ -153,37 +159,6 @@
             }
           ];
         };
-        # nix build /etc/nixos#nixosConfigurations.codyIso.config.system.build.isoImage
-        codyIso = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs;
-            inherit pkgs;
-          };
-          modules = [
-            ({ pkgs, modulesPath, lib, ... }: {
-              imports = [
-                (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
-                ./configuration.nix # Import the main config
-              ];
-              services.getty.autologinUser = lib.mkForce "codyt";
-              environment.systemPackages = [ pkgs.parted ];
-            })
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {
-                  inherit inputs;
-                  inherit pkgs;
-                };
-                users.codyt = import ./cody/cli.nix;
-              };
-            }
-          ];
-        };
-
       };
     };
 }
