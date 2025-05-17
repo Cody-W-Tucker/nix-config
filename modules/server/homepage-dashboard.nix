@@ -24,15 +24,11 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 2;
+            columns = 4;
           };
           Tools = {
             style = "row";
-            columns = 3;
-          };
-          Operations = {
-            style = "row";
-            columns = 3;
+            columns = 4;
           };
         };
         headerStyle = "boxedWidgets";
@@ -63,14 +59,6 @@ in
           resources = {
             label = "HDD";
             disk = "/mnt/hdd";
-          };
-        }
-        {
-          search = {
-            provider = "google";
-            focus = false;
-            showSearchSuggestions = true;
-            target = "_self";
           };
         }
         {
@@ -110,10 +98,13 @@ in
                 description = "Open source Airtable alternative";
               };
             }
-          ];
-        }
-        {
-          Tools = [
+            {
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                description = "Workflow automation";
+              };
+            }
             {
               Open-WebUI = {
                 href = "https://ai.${domain}";
@@ -121,24 +112,10 @@ in
                 description = "AI chat interface";
               };
             }
-            {
-              ExcaliDraw = {
-                href = "https://draw.${domain}";
-                icon = "excalidraw";
-                description = "Whiteboard drawings";
-              };
-            }
-            {
-              Stirling-PDF = {
-                href = "https://pdf.${domain}";
-                icon = "stirling-pdf";
-                description = "PDF Editing";
-              };
-            }
           ];
         }
         {
-          Operations = [
+          Tools = [
             {
               Qdrant = {
                 href = "https://qdrant.${domain}/dashboard";
@@ -154,10 +131,17 @@ in
               };
             }
             {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                description = "Workflow automation";
+              ExcaliDraw = {
+                href = "https://draw.${domain}";
+                icon = "excalidraw";
+                description = "Whiteboard drawings";
+              };
+            }
+            {
+              Stirling-PDF = {
+                href = "https://pdf.${domain}";
+                icon = "stirling-pdf";
+                description = "PDF Editing";
               };
             }
           ];
