@@ -16,8 +16,7 @@
           proxyWebsockets = true;
         };
       };
-    };
-    "prowlarr.homehub.tv" = {
+      "prowlarr.homehub.tv" = {
         forceSSL = true;
         useACMEHost = "homehub.tv";
         locations."/" = {
@@ -25,20 +24,21 @@
           proxyPass = "http://127.0.0.1:9696";
         };
       };
-    "radarr.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        recommendedProxySettings = true;
-        proxyPass = "http://127.0.0.1:7878";
+      "radarr.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://127.0.0.1:7878";
+        };
       };
-    };
-    "sonarr.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        recommendedProxySettings = true;
-        proxyPass = "http://127.0.0.1:8989";
+      "sonarr.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://127.0.0.1:8989";
+        };
       };
     };
   };
