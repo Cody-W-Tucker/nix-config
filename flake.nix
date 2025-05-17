@@ -28,6 +28,10 @@
       url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flake-programs-sqlite = {
+      url = "github:wamserma/flake-programs-sqlite";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
@@ -78,6 +82,7 @@
             nixos-hardware.nixosModules.common-pc-ssd
             nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
+            inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {
