@@ -126,7 +126,7 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
               home-manager.users.codyt.imports = [ 
-                ./cody/ui.nix
+                ./cody/cli.nix
                 inputs.nixvim.homeManagerModules.nixvim
               ];
             }
