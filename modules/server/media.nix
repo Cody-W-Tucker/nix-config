@@ -17,6 +17,41 @@
         };
       };
     };
+    "prowlarr.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://127.0.0.1:9696";
+        };
+      };
+
+      "radarr.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://127.0.0.1:7878";
+        };
+      };
+
+      "sonarr.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://127.0.0.1:8989";
+        };
+      };
+  };
+
+  nixarr = {
+    enable = true;
+    stateDir = "/var/lib/nixarr";
+
+    prowlarr.enable = true;
+    radarr.enable = true;
+    sonarr.enable = true;
   };
 
   # Syncthing backup
@@ -45,5 +80,9 @@
       intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
       intel-media-sdk # QSV up to 11th gen
     ];
+  };
+
+  systemd = {
+    tmpfiles.rules = ["d /var/lib/nixarr 0755 root root"];
   };
 }
