@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, nixarr, ... }:
 {
   services.jellyfin = {
     enable = true;
@@ -25,24 +25,22 @@
           proxyPass = "http://127.0.0.1:9696";
         };
       };
-
-      "radarr.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:7878";
-        };
+    "radarr.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/" = {
+        recommendedProxySettings = true;
+        proxyPass = "http://127.0.0.1:7878";
       };
-
-      "sonarr.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:8989";
-        };
+    };
+    "sonarr.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/" = {
+        recommendedProxySettings = true;
+        proxyPass = "http://127.0.0.1:8989";
       };
+    };
   };
 
   nixarr = {
