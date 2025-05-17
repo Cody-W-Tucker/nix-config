@@ -43,18 +43,20 @@
     };
   };
 
-# Media Management
-  sonarr = {
-    enable = true;
-  };
+  # Media Management
+  services = {
+    sonarr = {
+      enable = true;
+    };
 
-  radarr = {
-    enable = true;
-  };
+    radarr = {
+      enable = true;
+    };
 
-  # Indexer Manager
-  prowlarr = {
-    enable = true;
+    # Indexer Manager
+    prowlarr = {
+      enable = true;
+    };
   };
 
   # Syncthing backup
