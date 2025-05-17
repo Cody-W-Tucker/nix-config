@@ -121,6 +121,13 @@ in
               };
             }
             {
+              Photos = {
+                href = "https://photos.${domain}";
+                icon = "immich";
+                description = "Photo management";
+              };
+            }
+            {
               AdGuard = {
                 href = "https://adguard.${domain}";
                 icon = "adguard-home";
@@ -153,31 +160,24 @@ in
               };
             }
             {
-              Photos = {
-                href = "https://photos.${domain}";
-                icon = "immich";
-                description = "Photo management";
-              };
-            }
-            {
               Sonarr = {
                 href = "https://sonarr.${domain}";
                 icon = "sonarr";
-                description = "Automatic DVD Ripping Machine";
+                description = "Media Management";
               };
             }
             {
               Radarr = {
                 href = "https://radarr.${domain}";
                 icon = "radarr";
-                description = "Automatic DVD Ripping Machine";
+                description = "Media Management";
               };
             }
             {
               Prowlarr = {
                 href = "https://prowlarr.${domain}";
                 icon = "prowlarr";
-                description = "Automatic DVD Ripping Machine";
+                description = "Media Management";
               };
             }
             {
