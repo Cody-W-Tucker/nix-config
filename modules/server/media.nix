@@ -1,11 +1,46 @@
 { pkgs, ... }:
 {
-  services.jellyfin = {
-    enable = true;
-    openFirewall = false;
-    user = "codyt";
+  # Create user groups for different services
+  users.groups.media = { };
+
+  # Media Management
+  services = {
+    jellyfin = {
+      enable = true;
+      openFirewall = false;
+      group = "media";
+    };
+
+    jellyseerr = {
+      enable = true;
+    };
+
+    sonarr = {
+      enable = true;
+      group = "media";
+    };
+
+    radarr = {
+      enable = true;
+      group = "media";
+    };
+
+    # Indexer Manager
+    prowlarr = {
+      enable = true;
+      group = "media";
+    };
+
+    deluge = {
+      enable = true;
+      web.enable = true;
+      declarative = false;
+      openFirewall = true;
+      group = "media";
+    };
   };
-  # NGINX
+
+    # NGINX
   services.nginx = {
     virtualHosts = {
       "media.homehub.tv" = {
@@ -13,6 +48,14 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           proxyPass = "http://127.0.0.1:8096";
+          proxyWebsockets = true;
+        };
+      };
+      "request.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:5055";
           proxyWebsockets = true;
         };
       };
@@ -51,29 +94,6 @@
     };
   };
 
-  # Media Management
-  services = {
-    sonarr = {
-      enable = true;
-    };
-
-    radarr = {
-      enable = true;
-    };
-
-    # Indexer Manager
-    prowlarr = {
-      enable = true;
-    };
-
-    deluge = {
-      enable = true;
-      web.enable = true;
-      declarative = false;
-      openFirewall = true;
-    };
-  };
-
   # Syncthing backup
   services.syncthing.settings.folders."media" = {
     path = "/mnt/hdd/Media";
@@ -100,9 +120,5 @@
       intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
       intel-media-sdk # QSV up to 11th gen
     ];
-  };
-
-  systemd = {
-    tmpfiles.rules = ["d /var/lib/nixarr 0755 root root"];
   };
 }

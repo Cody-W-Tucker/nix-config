@@ -49,9 +49,6 @@
 
   swapDevices = [ ];
 
-  # Create user groups for different services
-  users.groups.media = { };
-
   # Auto configure usb etc, when plugedin
   services.udisks2.enable = true;
   security.polkit.enable = true;
