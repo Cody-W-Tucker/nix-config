@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, pkgs-unstable, inputs, ... }:
 
 {
   imports = [
@@ -62,6 +62,7 @@
     command-not-found.enable = false;
     nix-index = {
       enable = true;
+      package = pkgs-unstable.nix-index;
       enableZshIntegration = true;
       enableBashIntegration = true;
     };
