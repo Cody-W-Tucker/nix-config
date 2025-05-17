@@ -45,6 +45,7 @@
 
   nixarr = {
     enable = true;
+    package = pkgs-unstable.nixarr;
     stateDir = "/var/lib/nixarr";
 
     prowlarr = {
