@@ -160,6 +160,27 @@ in
               };
             }
             {
+              Sonarr = {
+                href = "https://sonarr.${domain}";
+                icon = "sonarr";
+                description = "Automatic DVD Ripping Machine";
+              };
+            }
+            {
+              Radarr = {
+                href = "https://radarr.${domain}";
+                icon = "radarr";
+                description = "Automatic DVD Ripping Machine";
+              };
+            }
+            {
+              Prowlarr = {
+                href = "https://prowlarr.${domain}";
+                icon = "prowlarr";
+                description = "Automatic DVD Ripping Machine";
+              };
+            }
+            {
               ARM = {
                 href = "https://arm.${domain}";
                 icon = "https://arm.${domain}/static/img/favicon.png";
