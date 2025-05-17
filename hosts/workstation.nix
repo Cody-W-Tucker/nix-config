@@ -328,7 +328,6 @@ environment.sessionVariables = {
   };
 
   programs.command-not-found.enable = true;
-  programs.command-not-found.dbPath = "${inputs.flake-programs-sqlite.packages.${pkgs.system}.programs-sqlite}/programs.sqlite";
 
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
