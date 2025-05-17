@@ -35,9 +35,9 @@ in
         target = "_self";
         quicklaunch = {
           searchDescription = true;
-          hideInternetSearch = false;
+          hideInternetSearch = true;
           showSearchSuggestions = true;
-          hideVisitURL = false;
+          hideVisitURL = true;
           provider = "google";
         };
       };
