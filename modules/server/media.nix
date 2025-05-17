@@ -28,7 +28,6 @@
     # Indexer Manager
     prowlarr = {
       enable = true;
-      group = "media";
     };
 
     deluge = {
