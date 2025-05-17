@@ -110,7 +110,7 @@
             nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
-            nixarr.nixosModules.default
+            # nixarr.nixosModules.default
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {
