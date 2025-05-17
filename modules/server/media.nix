@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 {
   services.jellyfin = {
     enable = true;
@@ -47,9 +47,18 @@
     enable = true;
     stateDir = "/var/lib/nixarr";
 
-    prowlarr.enable = true;
-    radarr.enable = true;
-    sonarr.enable = true;
+    prowlarr = {
+      enable = true;
+      package = pkgs-unstable.prowlarr;
+    };
+    radarr = {
+      enable = true;
+      package = pkgs-unstable.radarr;
+    };
+    sonarr = {
+      enable = true;
+      package = pkgs-unstable.sonarr;
+    };
   };
 
   # Syncthing backup
