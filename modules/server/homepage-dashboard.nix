@@ -30,6 +30,10 @@ in
             style = "row";
             columns = 3;
           };
+          Operations = {
+            style = "row";
+            columns = 3;
+          };
         };
         headerStyle = "boxedWidgets";
         target = "_self";
@@ -134,26 +138,26 @@ in
           ];
         }
         {
-          Network = [
+          Operations = [
             {
-              AdGuard = {
-                href = "https://adguard.${domain}";
-                icon = "adguard-home";
-                description = "Network wide adblocking";
+              Qdrant = {
+                href = "https://qdrant.${domain}/dashboard";
+                icon = "https://qdrant.${domain}/dashboard/favicon.ico";
+                description = "Vector search engine";
               };
             }
             {
-              "Home Assistant" = {
-                href = "http://192.168.254.38:8123/";
-                icon = "home-assistant";
-                description = "Open source home automation";
+              Grafana = {
+                href = "https://monitoring.${domain}";
+                icon = "grafana";
+                description = "Metrics dashboard";
               };
             }
             {
-              Syncthing = {
-                href = "https://backup.${domain}";
-                icon = "syncthing";
-                description = "File synchronization";
+              N8N = {
+                href = "https://automation.${domain}";
+                icon = "n8n";
+                description = "Workflow automation";
               };
             }
           ];
@@ -174,10 +178,6 @@ in
                 description = "Photo management";
               };
             }
-          ];
-        }
-        {
-          Watch = [
             {
               Jellyfin = {
                 icon = "jellyfin";
@@ -185,6 +185,35 @@ in
                 description = "Media server";
               };
             }
+          ];
+        }
+        {
+          Read = [
+            {
+              Miniflux = {
+                href = "https://rss.${domain}";
+                icon = "miniflux";
+                description = "RSS reader";
+              };
+            }
+            {
+              Hoarder = {
+                href = "https://hoarder.${domain}";
+                icon = "hoarder";
+                description = "Link collector";
+              };
+            }
+            {
+              Paperless = {
+                href = "https://paperless.${domain}";
+                icon = "paperless";
+                description = "Document Management";
+              };
+            }
+          ];
+        }
+        {
+          Media = [
             {
               Sonarr = {
                 href = "https://sonarr.${domain}";
@@ -216,51 +245,26 @@ in
           ];
         }
         {
-          Read = [
+          Network = [
             {
-              Miniflux = {
-                href = "https://rss.${domain}";
-                icon = "miniflux";
-                description = "RSS reader";
+              AdGuard = {
+                href = "https://adguard.${domain}";
+                icon = "adguard-home";
+                description = "Network wide adblocking";
               };
             }
             {
-              Hoarder = {
-                href = "https://hoarder.${domain}";
-                icon = "hoarder";
-                description = "Link collector";
+              "Home Assistant" = {
+                href = "http://192.168.254.38:8123/";
+                icon = "home-assistant";
+                description = "Open source home automation";
               };
             }
             {
-              Paperless = {
-                href = "https://paperless.${domain}";
-                icon = "paperless";
-                description = "Document Management";
-              };
-            }
-          ];
-        }
-        {
-          Operations = [
-            {
-              Qdrant = {
-                href = "https://qdrant.${domain}/dashboard";
-                icon = "https://qdrant.${domain}/dashboard/favicon.ico";
-                description = "Vector search engine";
-              };
-            }
-            {
-              Grafana = {
-                href = "https://monitoring.${domain}";
-                icon = "grafana";
-                description = "Metrics dashboard";
-              };
-            }
-            {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                description = "Workflow automation";
+              Syncthing = {
+                href = "https://backup.${domain}";
+                icon = "syncthing";
+                description = "File synchronization";
               };
             }
           ];
