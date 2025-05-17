@@ -1,8 +1,7 @@
-{ config, pkgs, pkgs-unstable, inputs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
-    inputs.nixvim.homeManagerModules.nixvim
     ./nixvim.nix
   ];
 

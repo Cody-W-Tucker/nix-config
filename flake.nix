@@ -34,7 +34,7 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -76,13 +76,14 @@
           };
           modules = [
             ./hosts/workstation.nix
-            stylix.nixosModules.stylix
+            inputs.stylix.nixosModules.stylix
             # Using community hardware configurations
-            nixos-hardware.nixosModules.common-cpu-intel-cpu-only
-            nixos-hardware.nixosModules.common-pc-ssd
-            nixos-hardware.nixosModules.common-pc
+            inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
+            inputs.nixos-hardware.nixosModules.common-pc-ssd
+            inputs.nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
+            inputs.nixvim.homeManagerModules.nixvim
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {
@@ -109,9 +110,10 @@
           modules = [
             ./hosts/server.nix
             # Using community hardware configurations
-            nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
-            nixos-hardware.nixosModules.common-pc-ssd
+            inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
+            inputs.nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
+            inputs.nixvim.homeManagerModules.nixvim
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {
@@ -134,9 +136,9 @@
           };
           modules = [
             ./hosts/family-desktop.nix
-            stylix.nixosModules.stylix
+            inputs.stylix.nixosModules.stylix
             # Using community hardware configurations
-            nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
+            inputs.nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
             inputs.sops-nix.nixosModules.sops
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
