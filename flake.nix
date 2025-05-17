@@ -28,10 +28,10 @@
       url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixarr = {
-      url = "github:rasmus-kirk/nixarr";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # nixarr = {
+    #   url = "github:rasmus-kirk/nixarr";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # };
   };
 
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, nixarr, ... }:
