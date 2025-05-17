@@ -92,21 +92,21 @@ in
               NocoDB = {
                 href = "https://data.${domain}";
                 icon = "nocodb";
-                description = "Open source Airtable alternative";
+                description = "Open source Airtable";
               };
             }
             {
               N8N = {
                 href = "https://automation.${domain}";
                 icon = "n8n";
-                description = "Workflow automation";
+                description = "Automation";
               };
             }
             {
               Open-WebUI = {
                 href = "https://ai.${domain}";
                 icon = "open-webui";
-                description = "AI chat interface";
+                description = "AI Chat Interface";
               };
             }
           ];
@@ -117,21 +117,21 @@ in
               Qdrant = {
                 href = "https://qdrant.${domain}/dashboard";
                 icon = "https://qdrant.${domain}/dashboard/favicon.ico";
-                description = "Vector search engine";
+                description = "Vector DB";
               };
             }
             {
               Grafana = {
                 href = "https://monitoring.${domain}";
                 icon = "grafana";
-                description = "Metrics dashboard";
+                description = "Logging & Dashboard";
               };
             }
             {
               ExcaliDraw = {
                 href = "https://draw.${domain}";
                 icon = "excalidraw";
-                description = "Whiteboard drawings";
+                description = "Whiteboard";
               };
             }
             {
@@ -149,21 +149,28 @@ in
               ActualBudget = {
                 href = "https://budget.${domain}";
                 icon = "https://budget.${domain}/favicon.ico";
-                description = "Personal budgeting tool";
+                description = "Personal Budget";
               };
             }
             {
               Photos = {
                 href = "https://photos.${domain}";
                 icon = "immich";
-                description = "Photo management";
+                description = "Photo Management";
               };
             }
             {
               Jellyfin = {
                 icon = "jellyfin";
                 href = "https://media.${domain}";
-                description = "Media server";
+                description = "Media Server";
+              };
+            }
+            {
+              Jellyseerr = {
+                icon = "jellyseerr";
+                href = "https://request.${domain}";
+                description = "Request Media Service";
               };
             }
           ];
@@ -174,14 +181,14 @@ in
               Miniflux = {
                 href = "https://rss.${domain}";
                 icon = "miniflux";
-                description = "RSS reader";
+                description = "RSS Reader";
               };
             }
             {
               Hoarder = {
                 href = "https://hoarder.${domain}";
                 icon = "hoarder";
-                description = "Link collector";
+                description = "Link Collector";
               };
             }
             {
@@ -231,21 +238,21 @@ in
               AdGuard = {
                 href = "https://adguard.${domain}";
                 icon = "adguard-home";
-                description = "Network wide adblocking";
+                description = "Network Wide Adblocking";
               };
             }
             {
               "Home Assistant" = {
                 href = "http://192.168.254.38:8123/";
                 icon = "home-assistant";
-                description = "Open source home automation";
+                description = "Open Source Home Automation";
               };
             }
             {
               Syncthing = {
                 href = "https://backup.${domain}";
                 icon = "syncthing";
-                description = "File synchronization";
+                description = "File Synchronization";
               };
             }
           ];
