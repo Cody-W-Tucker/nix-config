@@ -58,14 +58,7 @@
   };
 
   programs = {
-    # Use fancier nix-index prompt instead
-    command-not-found.enable = false;
-    nix-index = {
-      enable = true;
-      package = pkgs-unstable.nix-index;
-      enableZshIntegration = true;
-      enableBashIntegration = true;
-    };
+    command-not-found.enable = true;
     zsh = {
       enable = true;
       syntaxHighlighting.enable = true;
