@@ -30,7 +30,7 @@
     };
     nixarr = {
       url = "github:rasmus-kirk/nixarr";
-      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
@@ -103,6 +103,7 @@
           inherit system;
           specialArgs = {
             inherit inputs;
+            inherit pkgs-unstable;
           };
           modules = [
             ./hosts/server.nix
