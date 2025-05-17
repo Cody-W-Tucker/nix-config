@@ -7,7 +7,6 @@
   services = {
     jellyfin = {
       enable = true;
-      openFirewall = false;
       group = "media";
     };
 
