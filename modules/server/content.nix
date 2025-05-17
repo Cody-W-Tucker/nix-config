@@ -27,27 +27,5 @@
         proxyPass = "http://127.0.0.1:7777";
       };
     };
-
-    # Calibre-web ebook reader
-    calibre-web = {
-      enable = true;
-      group = "media";
-      options.enableBookUploading = true;
-      options.enableBookConversion = true;
-      options.enableKepubify = true;
-    };
-    nginx.virtualHosts."ebook.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8083";
-        extraConfig = ''
-          client_max_body_size 500M;
-          proxy_busy_buffers_size 1024k;
-          proxy_buffers 4 512k;
-          proxy_buffer_size 1024k;
-        '';
-      };
-    };
   };
 }
