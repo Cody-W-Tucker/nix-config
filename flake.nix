@@ -28,13 +28,13 @@
       url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # nixarr = {
-    #   url = "github:rasmus-kirk/nixarr";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
+    nixarr = {
+      url = "github:rasmus-kirk/nixarr";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, ... }:
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, sops-nix, nixos-hardware, stylix, nixvim, nixarr, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -110,7 +110,7 @@
             nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
-            # nixarr.nixosModules.default
+            nixarr.nixosModules.default
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {

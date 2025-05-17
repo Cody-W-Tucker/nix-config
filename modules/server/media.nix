@@ -43,23 +43,23 @@
     };
   };
 
-  # nixarr = {
-  #   enable = true;
-  #   stateDir = "/var/lib/nixarr";
+  nixarr = {
+    enable = true;
+    stateDir = "/var/lib/nixarr";
 
-  #   prowlarr = {
-  #     enable = true;
-  #     package = pkgs-unstable.prowlarr;
-  #   };
-  #   radarr = {
-  #     enable = true;
-  #     package = pkgs-unstable.radarr;
-  #   };
-  #   sonarr = {
-  #     enable = true;
-  #     package = pkgs-unstable.sonarr;
-  #   };
-  # };
+    prowlarr = {
+      enable = true;
+      package = pkgs-unstable.prowlarr;
+    };
+    radarr = {
+      enable = true;
+      package = pkgs-unstable.radarr;
+    };
+    sonarr = {
+      enable = true;
+      package = pkgs-unstable.sonarr;
+    };
+  };
 
   # Syncthing backup
   services.syncthing.settings.folders."media" = {
