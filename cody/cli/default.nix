@@ -58,9 +58,13 @@
   };
 
   programs = {
-    # Remove default package installation prompt because it's not working
+    # Use fancier nix-index prompt instead
     command-not-found.enable = false;
-    # Use fancier nix-index prompt instead TODO: Make nix-index work or switch (Bug causing out of memory.)
+    nix-index = {
+      enable = true;
+      enableZshIntegration = true;
+      enableBashIntegration = true;
+    };
     zsh = {
       enable = true;
       syntaxHighlighting.enable = true;
@@ -74,6 +78,7 @@
         ll = "eza -l";
         ls = "eza";
         fo = "find-and-open-file";
+        rr = "ranger";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
         upgrade = ''
