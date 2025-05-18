@@ -51,7 +51,7 @@
         alt-speed-time-enabled = true;    # Enable scheduled speed limit
         alt-speed-time-begin = 480;       # Start at 8:00 (8am), in minutes after midnight
         alt-speed-time-end = 1380;        # End at 23:00 (11pm), in minutes after midnight
-        alt-speed-time-day = 127;         # Days of week (bitmask: 127 = every day)
+        alt-speed-time-day = 126;         # Monday–Saturday only
       };
     };
   };
