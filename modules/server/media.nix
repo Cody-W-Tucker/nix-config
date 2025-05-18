@@ -43,6 +43,15 @@
         encryption = 1; # Prefer encrypted peers
         download-queue-enabled = true;
         download-queue-size = 5;
+
+        # timing
+        alt-speed-enabled = true;         # Enable alternative speed limits
+        alt-speed-down = 0;               # 0 KB/s download during restricted hours
+        alt-speed-up = 0;                 # 0 KB/s upload during restricted hours
+        alt-speed-time-enabled = true;    # Enable scheduled speed limit
+        alt-speed-time-begin = 480;       # Start at 8:00 (8am), in minutes after midnight
+        alt-speed-time-end = 1380;        # End at 23:00 (11pm), in minutes after midnight
+        alt-speed-time-day = 127;         # Days of week (bitmask: 127 = every day)
       };
     };
   };
