@@ -1,8 +1,5 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
-  # Create user groups for different services
-  users.groups.media = { };
-
   # Media Management
   services = {
     jellyfin = {
@@ -30,8 +27,9 @@
     };
 
     deluge = {
-      enable = true;
+      enable = false;
       web.enable = true;
+      authFile = config.sops.secrets.deluge_auth_file.path;
       group = "media";
       declarative = true;
       config = {

@@ -68,6 +68,9 @@
     };
   };
 
+  # Create user groups for different services
+  users.groups.media = { };
+
   # Optimization settings and garbage collection automation
   nix = {
     settings = {
