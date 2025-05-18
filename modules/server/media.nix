@@ -25,6 +25,26 @@
     prowlarr = {
       enable = true;
     };
+
+    transmission = {
+      enable = true;
+      group = "media";
+      openRPCPort = true; # Allows Sonarr/Radarr to connect
+      openPeerPorts = false; # Allows torrent peers to connect
+      settings = {
+        download-dir = "/mnt/hdd/Media/Downloads"; # Adjust as needed
+        incomplete-dir = "/mnt/hdd/Media/Downloads/incomplete";
+        incomplete-dir-enabled = true;
+        rpc-bind-address = "127.0.0.1"; # Only accessible locally (change if remote access needed)
+        rpc-whitelist-enabled = false;  # Allow all local connections (tighten for security)
+        rpc-authentication-required = false; # No password (set to true for security)
+        umask = 2; # Group write permissions (so Sonarr/Radarr can move files)
+        dht-enabled = true;
+        encryption = 1; # Prefer encrypted peers
+        download-queue-enabled = true;
+        download-queue-size = 5;
+      };
+    };
   };
 
     # NGINX
