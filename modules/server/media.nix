@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
   # Media Management
   services = {
@@ -24,26 +24,6 @@
     # Indexer Manager
     prowlarr = {
       enable = true;
-    };
-
-    deluge = {
-      enable = false;
-      web.enable = true;
-      authFile = config.sops.secrets.deluge_auth_file.path;
-      group = "media";
-      declarative = true;
-      config = {
-        download_location = "/srv/torrents/";
-        max_upload_speed = "1000.0";
-        share_ratio_limit = "2.0";
-        allow_remote = true;
-        daemon_port = 58846;
-        listen_ports = [ 6881 6889 ];
-        enabled_plugins = [
-        "Extractor"
-        "Label"
-        ];
-      };
     };
   };
 
@@ -88,14 +68,6 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://127.0.0.1:8989";
-        };
-      };
-      "deluge.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:8112";
         };
       };
     };
