@@ -33,7 +33,19 @@
       enable = true;
       web.enable = true;
       group = "media";
-      extraPackages = ["Label"];
+      declarative = true;
+      config = {
+        download_location = "/srv/torrents/";
+        max_upload_speed = "1000.0";
+        share_ratio_limit = "2.0";
+        allow_remote = true;
+        daemon_port = 58846;
+        listen_ports = [ 6881 6889 ];
+        enabled_plugins = [
+        "Extractor"
+        "Label"
+        ];
+      };
     };
   };
 
