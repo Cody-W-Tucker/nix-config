@@ -58,6 +58,9 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
+   # Use mullvad VPN for external traffic
+   services.mullvad-vpn.enable = true;
+
   # Don't change this
   system.stateVersion = "23.11"; # Did you read the comment?
 }
