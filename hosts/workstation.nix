@@ -152,14 +152,6 @@
         path = "/mnt/backup/Share";
         devices = [ "server" "workstation" ];
       };
-      "media" = {
-        path = "/mnt/backup/Media";
-        devices = [ "server" "workstation" ];
-      };
-      "photos" = {
-        path = "/mnt/backup/Photos";
-        devices = [ "server" "workstation" ];
-      };
       "Cody's Obsidian" = {
         path = "/home/codyt/Sync/Cody-Obsidian";
         devices = [ "workstation" "Cody's Pixel" ];
