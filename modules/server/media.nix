@@ -50,7 +50,7 @@
         alt-speed-up = 13;                 # 0 KB/s upload during restricted hours
         alt-speed-time-enabled = true;    # Enable scheduled speed limit
         alt-speed-time-begin = 480;       # Start at 8:00 (8am), in minutes after midnight
-        alt-speed-time-end = 1020;        # End at 17:00 (5pm), in minutes after midnight
+        alt-speed-time-end = 1380;        # End at 22:00 (11pm), in minutes after midnight
         alt-speed-time-day = 126;         # Monday–Saturday only
       };
     };
