@@ -26,10 +26,10 @@
     };
   };
 
-  # Syncthing backup
-  services.syncthing.settings.folders."photos" = {
-    path = "/mnt/hdd/Photos";
-    devices = [ "server" "workstation" ];
-    ignorePerms = true;
-  };
+  # Syncthing backup TODO: Remove in favor of Restic backups
+  # services.syncthing.settings.folders."photos" = {
+  #   path = "/mnt/hdd/Photos";
+  #   devices = [ "server" "workstation" ];
+  #   ignorePerms = true;
+  # };
 }
