@@ -102,11 +102,11 @@
     };
   };
 
-  # Syncthing backup
-  services.syncthing.settings.folders."media" = {
-    path = "/mnt/hdd/Media";
-    devices = [ "server" "workstation" ];
-  };
+  # Syncthing backup TODO: Remove in favor of Restic backups
+  # services.syncthing.settings.folders."media" = {
+  #   path = "/mnt/hdd/Media";
+  #   devices = [ "server" "workstation" ];
+  # };
 
   environment.systemPackages = [
     pkgs.jellyfin
