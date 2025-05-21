@@ -321,6 +321,12 @@ environment.sessionVariables = {
 
   programs.command-not-found.enable = true;
 
+  # Use mullvad VPN for external traffic
+  services.mullvad-vpn = {
+    enable = true;
+    package = pkgs.mullvad-vpn;
+  };
+
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }
