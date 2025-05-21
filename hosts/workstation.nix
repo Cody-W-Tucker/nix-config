@@ -54,12 +54,6 @@
     options = [ "bind" "nofail" ];
   };
 
-  fileSystems."/home/codyt/Business" = {
-    device = "/mnt/backup/Share/Business";
-    fsType = "none";
-    options = [ "bind" "nofail" ];
-  };
-
   fileSystems."/home/codyt/Documents" = {
     device = "/mnt/backup/Share/Documents";
     fsType = "none";
