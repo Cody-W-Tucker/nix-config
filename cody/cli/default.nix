@@ -63,7 +63,7 @@
       autosuggestion.enable = true;
       enableCompletion = true;
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
-      history.size = 5000;
+      history.size = 10000;
       shellAliases = {
         ssh = "kitty +kitten ssh";
         cd = "z";
