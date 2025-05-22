@@ -18,7 +18,8 @@
   programs.kitty = {
     settings = {
       cursor_trail = 1;
-      cursor_trail_start_threshold = 2;
+      cursor_trail_start_threshold = 3;
+      cursor_trail_decay = "0.1 0.4";
       tab_bar_style = "powerline";
     };
     extraConfig = lib.mkForce ''
