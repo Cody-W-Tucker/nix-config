@@ -15,7 +15,13 @@
   home.sessionVariables.CUDA_CACHE_PATH = "\${HOME}/.cache/nv";
 
   # User specific terminal settings
-  programs.kitty.extraConfig = lib.mkForce ''
+  programs.kitty = {
+    settings = {
+      cursor_trail = 1;
+      cursor_trail_start_threshold = 2;
+      tab_bar_style = "powerline";
+    };
+    extraConfig = lib.mkForce ''
     foreground #${config.lib.stylix.colors.base05}
     background #${config.lib.stylix.colors.base00}
     color0  #${config.lib.stylix.colors.base03}
@@ -60,6 +66,7 @@
     inactive_tab_font_style bold
     tab_bar_background #${config.lib.stylix.colors.base00}
   '';
+  };
 
   # The state version is required and should stay at the version you originally installed.
   home.stateVersion = "24.05";
