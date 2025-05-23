@@ -56,6 +56,12 @@
     ];
   };
 
+  # Yazi file viewer
+  programs.yazi = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   programs = {
     zsh = {
       enable = true;
@@ -70,7 +76,7 @@
         ll = "eza -l";
         ls = "eza";
         fo = "find-and-open-file";
-        rr = "ranger";
+        rr = "yazi";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
         upgrade = ''
