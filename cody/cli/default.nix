@@ -60,6 +60,9 @@
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
+    plugins = {
+      "smart-enter" = pkgs.yaziPlugins.smart-enter;
+    };
   };
 
   programs = {
