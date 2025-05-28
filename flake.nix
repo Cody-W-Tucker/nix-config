@@ -99,6 +99,7 @@
               home-manager.users.codyt.imports = [ 
                 ./cody/ui.nix
                 inputs.nixvim.homeManagerModules.nixvim
+                inputs.sops-nix.nixosModules.sops
               ];
             }
           ];
