@@ -96,11 +96,14 @@
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt.imports = [ 
-                ./cody/ui.nix
-                inputs.nixvim.homeManagerModules.nixvim
-                inputs.sops-nix.nixosModules.sops
-              ];
+              home-manager.users.codyt = {
+                system = system;
+                imports = [ 
+                  ./cody/ui.nix
+                  inputs.nixvim.homeManagerModules.nixvim
+                  inputs.sops-nix.nixosModules.sops
+                ];
+              };
             }
           ];
         };
@@ -123,14 +126,18 @@
               home-manager.extraSpecialArgs = {
                 inherit inputs;
                 inherit pkgs;
+                inherit system;
               };
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt.imports = [ 
+              home-manager.users.codyt = {
+                system = system;
+                imports = [ 
                 ./cody/cli.nix
                 inputs.nixvim.homeManagerModules.nixvim
               ];
+              };
             }
           ];
         };
