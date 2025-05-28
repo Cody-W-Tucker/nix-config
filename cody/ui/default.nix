@@ -1,4 +1,4 @@
-{ inputs, pkgs, pkgs-unstable, ... }:
+{ config, inputs, pkgs, pkgs-unstable, ... }:
 
 {
   imports = [
@@ -69,6 +69,11 @@
       legcord
       codex
     ]);
+
+  # Securely export OpenAI API key to Shell for Codex
+  programs.zsh.initExtra = ''
+    export OPENAI_API_KEY=$(cat ${config.sops.secrets.OPENAI_API_KEY.path})
+  '';
 
   # Obs for screenrecording
   programs.obs-studio = {
