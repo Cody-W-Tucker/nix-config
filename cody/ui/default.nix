@@ -67,6 +67,7 @@
       code-cursor
       vscode
       legcord
+      codex
     ]);
 
   # Obs for screenrecording
