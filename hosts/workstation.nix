@@ -273,6 +273,11 @@ environment.sessionVariables = {
   WLR_USE_LIBINPUT = "1";
 };
 
+  # Securely export OpenAI API key to interactive Shell for Codex
+  programs.zsh.initExtra = ''
+    export OPENAI_API_KEY=$(cat ${config.sops.secrets.OPENAI_API_KEY.path})
+  '';
+
   services = {
     fwupd.enable = true;
     thermald.enable = true;
