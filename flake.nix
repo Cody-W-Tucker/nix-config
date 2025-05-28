@@ -101,6 +101,7 @@
               ];
               home-manager.users.codyt.imports = [ 
                 ./cody/ui.nix
+                ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
               ];
             }
