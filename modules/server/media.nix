@@ -42,7 +42,7 @@
         dht-enabled = true;
         encryption = 1; # Prefer encrypted peers
         download-queue-enabled = true;
-        download-queue-size = 5;
+        download-queue-size = 10;
 
         # timing
         alt-speed-enabled = true;         # Enable alternative speed limits
