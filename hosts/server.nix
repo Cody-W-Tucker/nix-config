@@ -1,4 +1,4 @@
-{ config, lib, modulesPath, ... }:
+{ config, lib, modulesPath, pkgs, ... }:
 
 {
   imports =
@@ -60,6 +60,9 @@
 
    # Use mullvad VPN for external traffic
    services.mullvad-vpn.enable = true;
+
+  stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
   # Don't change this
   system.stateVersion = "23.11"; # Did you read the comment?
