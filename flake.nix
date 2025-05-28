@@ -70,7 +70,6 @@
         workstation = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit system;
             inherit inputs;
             inherit hardwareConfig;
             inherit pkgs-unstable;
@@ -97,21 +96,20 @@
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt = {
-                system = system;
-                imports = [ 
-                  ./cody/ui.nix
-                  inputs.nixvim.homeManagerModules.nixvim
-                  inputs.sops-nix.nixosModules.sops
-                ];
-              };
+              home-manager.sharedModules = [
+                inputs.sops-nix.homeManagerModules.sops
+              ];
+              home-manager.users.codyt.imports = [ 
+                ./cody/ui.nix
+                inputs.nixvim.homeManagerModules.nixvim
+                inputs.sops-nix.nixosModules.sops
+              ];
             }
           ];
         };
         server = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit system;
             inherit inputs;
             inherit pkgs-unstable;
           };
@@ -128,18 +126,14 @@
               home-manager.extraSpecialArgs = {
                 inherit inputs;
                 inherit pkgs;
-                inherit system;
               };
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt = {
-                system = system;
-                imports = [ 
+              home-manager.users.codyt.imports = [ 
                 ./cody/cli.nix
                 inputs.nixvim.homeManagerModules.nixvim
               ];
-              };
             }
           ];
         };
