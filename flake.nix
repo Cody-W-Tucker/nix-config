@@ -70,6 +70,7 @@
         workstation = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
+            inherit system;
             inherit inputs;
             inherit hardwareConfig;
             inherit pkgs-unstable;
@@ -110,6 +111,7 @@
         server = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
+            inherit system;
             inherit inputs;
             inherit pkgs-unstable;
           };
