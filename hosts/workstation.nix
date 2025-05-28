@@ -321,6 +321,9 @@ environment.sessionVariables = {
     package = pkgs.mullvad-vpn;
   };
 
+  # Securely add OPENAI API key
+  sops.secrets.OPENAI_API_KEY = { };
+
   # Don't change this
   system.stateVersion = "24.05"; # Did you read the comment?
 }
