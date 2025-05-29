@@ -44,6 +44,7 @@
         anti-brute-force-threshold = 10;
         blocklist-enabled = true;
         blocklist-url = "https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz";
+        idle-seeding-limit = 30;
 
         # Download Schedule
         alt-speed-enabled = true;         # Enable alternative speed limits
@@ -72,7 +73,7 @@
   # Define VPN network namespace
   vpnNamespaces.wg = {
     enable = true;
-    wireguardConfigFile = /etc/nixos/secrets/server-wg.conf;
+    wireguardConfigFile = /var/lib/secrets/server-wg.conf;
     accessibleFrom = [
       "192.168.0.0/24"
     ];
