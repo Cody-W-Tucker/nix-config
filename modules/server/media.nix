@@ -91,18 +91,6 @@
     vpnNamespace = "wg";
   };
 
-  systemd.services."vpn-killswitch" = {
-    description = "VPN Kill Switch for wg namespace";
-    wantedBy = [ "network-online.target" ];
-    after = [ "network-online.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = ''
-        ip netns exec wg iptables -A OUTPUT ! -o wg0 -j DROP
-      '';
-    };
-  };
-
   # NGINX
   services.nginx = {
     virtualHosts = {
