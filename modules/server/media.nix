@@ -72,7 +72,7 @@
   };
   # Get the encrypted file
   sops.secrets."server-wg.conf" = {
-    sopsFile = ./secrets/server-wg.conf;
+    sopsFile = /. + "/secrets/wg0.conf";
     mode = "0400"; # Only root can read
   };
 
