@@ -1,6 +1,12 @@
 { pkgs, ... }:
 let
-  wgConfig = builtins.readFile ./secrets/server-wg.conf;
+  wgConfig = builtins.readFile (pkgs.stdenvNoCC.mkDerivation {
+    name = "server-wg.conf";
+    src = ./secrets/server-wg.conf;
+    installPhase = ''
+      cp $src $out
+    '';
+  });
 in
 {
   # Media Management
@@ -76,7 +82,7 @@ in
   # Define VPN network namespace
   vpnNamespaces.wg = {
     enable = true;
-    wireguardConfigFile = wgConfig;
+    wireguardConfigFile = "${wgConfig}";
     accessibleFrom = [
       "192.168.0.0/24"
     ];
