@@ -58,7 +58,7 @@
         # VPN
         rpc-whitelist-enabled = true;
         rpc-whitelist = "192.168.15.5";
-        rpc-authentication-required = true;
+        rpc-authentication-required = false;
         rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
         bind-address-ipv4 = "192.168.15.1";
         bind-address-ipv6 = ""; # or "" if no IPv6 in VPN namespace
