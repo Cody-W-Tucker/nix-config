@@ -58,9 +58,6 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-   # Use mullvad VPN for external traffic
-   services.mullvad-vpn.enable = true;
-
   stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
