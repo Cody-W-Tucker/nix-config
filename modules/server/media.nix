@@ -2,7 +2,7 @@
 let
   wgConfig = builtins.readFile (pkgs.stdenvNoCC.mkDerivation {
     name = "server-wg.conf";
-    src = ./secrets/server-wg.conf;
+    src = /. + "/secrets/wg0.conf";
     installPhase = ''
       cp $src $out
     '';
