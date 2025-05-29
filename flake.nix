@@ -32,6 +32,10 @@
       url = "github:wamserma/flake-programs-sqlite";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    vpn-confinement = {
+      url = "github:Maroka-chan/VPN-Confinement";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, ... }:
@@ -120,6 +124,7 @@
             inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
             inputs.nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
+            inputs.vpn-confinement.nixosModules.default
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             {

@@ -35,16 +35,17 @@
         download-dir = "/mnt/hdd/Media/Downloads"; # Adjust as needed
         incomplete-dir = "/mnt/hdd/Media/Downloads/incomplete";
         incomplete-dir-enabled = true;
-        rpc-bind-address = "127.0.0.1"; # Only accessible locally (change if remote access needed)
-        rpc-whitelist-enabled = false;  # Allow all local connections (tighten for security)
-        rpc-authentication-required = false; # No password (set to true for security)
         umask = 2; # Group write permissions (so Sonarr/Radarr can move files)
         dht-enabled = true;
         encryption = 1; # Prefer encrypted peers
         download-queue-enabled = true;
         download-queue-size = 10;
+        anti-brute-force-enabled = true;
+        anti-brute-force-threshold = 10;
+        blocklist-enabled = true;
+        blocklist-url = "https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz";
 
-        # timing
+        # Download Schedule
         alt-speed-enabled = true;         # Enable alternative speed limits
         alt-speed-down = 256;               # KB/s download during restricted hours
         alt-speed-up = 13;                 # KB/s upload during restricted hours
@@ -52,8 +53,42 @@
         alt-speed-time-begin = 480;       # Start at 8:00 (8am), in minutes after midnight
         alt-speed-time-end = 1380;        # End at 22:00 (11pm), in minutes after midnight
         alt-speed-time-day = 126;         # Monday–Saturday only
+
+        # VPN
+        rpc-whitelist-enabled = true;
+        rpc-whitelist = "192.168.15.5";
+        rpc-authentication-required = true;
+        rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
+        bind-address-ipv4 = "192.168.15.1";
+        bind-address-ipv6 = ""; # or "" if no IPv6 in VPN namespace
+
+        # Disable UPnP and NAT-PMP to prevent port forwarding leaks
+        port-forwarding-enabled = false;
+        upnp-enabled = false;
+        natpmp-enabled = false;
       };
     };
+  };
+  # Define VPN network namespace
+  vpnNamespaces.wg = {
+    enable = true;
+    wireguardConfigFile = /. + "/secrets/wg0.conf";
+    accessibleFrom = [
+      "192.168.0.0/24"
+    ];
+    portMappings = [
+      { from = 9091; to = 9091; }
+    ];
+    openVPNPorts = [{
+      port = 60729;
+      protocol = "both";
+    }];
+  };
+
+  # Add systemd service to VPN network namespace
+  systemd.services.transmission.vpnConfinement = {
+    enable = true;
+    vpnNamespace = "wg";
   };
 
     # NGINX
