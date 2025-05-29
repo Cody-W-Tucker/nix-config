@@ -89,8 +89,17 @@
     pulse.enable = true;
     wireplumber.enable = true; # Required for priority rules
     wireplumber.extraConfig = {
-      "monitor.bluez.properties" = {
-        "bluez5.headset-roles" = [ "a2dp_sink" ];
+      "bluetooth-no-mic" = {
+        "monitor.bluez.rules" = [
+          {
+            matches = [
+              { "node.name" = "~bluez_input.*"; }
+            ];
+            actions = {
+              "remove" = true;
+            };
+          }
+        ];
       };
     };
   };
