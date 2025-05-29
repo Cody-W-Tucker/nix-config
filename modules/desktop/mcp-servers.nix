@@ -1,7 +1,7 @@
-{config, ...}:
+{ config, ... }:
 
-let 
-userDir = "${config.users.users.codyt.home}";
+let
+  userDir = "${config.users.users.codyt.home}";
 in
 {
 
@@ -10,10 +10,6 @@ in
     "OBSIDIAN_API_KEY" = { };
     # Todoist
     "TODOIST_API_TOKEN" = { };
-    # Sanity CMS
-    "SANITY_PROJECT_ID" = { };
-    "SANITY_DATASET" = { };
-    "SANITY_API_TOKEN" = { };
   };
 
   # TODO: Need to manually restart "systemctl restart docker-mcpo" because the docker service doesn't notice we changed the config file.
@@ -29,7 +25,7 @@ in
       };
       nixos = {
         command = "uvx";
-        args = ["mcp-nixos"];
+        args = [ "mcp-nixos" ];
       };
       fileSystem = {
         command = "npx";
@@ -59,22 +55,6 @@ in
           TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
         };
       };
-      # TODO: Currently broken due to: MCPO NameError: Fields must not use names with leading underscores; e.g., use 'type' instead of '_type'.
-
-      # But we could use this directly in Cursor.
-
-      # sanity = {
-      #   command = "npx";
-      #   args = [
-      #     "-y"
-      #     "@sanity/mcp-server@latest"
-      #   ];
-      #   env = {
-      #     SANITY_PROJECT_ID = "${config.sops.placeholder.SANITY_PROJECT_ID}";
-      #     SANITY_DATASET = "${config.sops.placeholder.SANITY_DATASET}";
-      #     SANITY_API_TOKEN = "${config.sops.placeholder.SANITY_API_TOKEN}";
-      #   };
-      # };
     };
   };
 
