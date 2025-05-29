@@ -32,10 +32,7 @@
       url = "github:wamserma/flake-programs-sqlite";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    vpn-confinement = {
-      url = "github:Maroka-chan/VPN-Confinement";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
   };
 
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, ... }:
