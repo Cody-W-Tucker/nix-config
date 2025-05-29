@@ -62,11 +62,6 @@
         rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
         bind-address-ipv4 = "192.168.15.1";
         bind-address-ipv6 = ""; # or "" if no IPv6 in VPN namespace
-
-        # Disable UPnP and NAT-PMP to prevent port forwarding leaks
-        port-forwarding-enabled = false;
-        upnp-enabled = false;
-        natpmp-enabled = false;
       };
     };
   };
