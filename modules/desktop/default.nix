@@ -47,9 +47,9 @@
       rustdesk-flutter
     ]);
 
-    # Open ports for rustdesk
-    networking.firewall.allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
-    networking.firewall.allowedUDPPorts = [ 21115 21116 21117 21118 21119 ];
+  # Open ports for rustdesk
+  networking.firewall.allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
+  networking.firewall.allowedUDPPorts = [ 21115 21116 21117 21118 21119 ];
 
   programs.firefox = {
     enable = true;
@@ -87,9 +87,13 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    wireplumber.enable = true;  # Required for priority rules
+    wireplumber.enable = true; # Required for priority rules
+    wireplumber.extraConfig = {
+      "monitor.bluez.properties" = {
+        "bluez5.headset-roles" = [ "a2dp_sink" ];
+      };
+    };
   };
 
-  # Enable UPower because chrome said so...
   services.upower.enable = true;
 }
