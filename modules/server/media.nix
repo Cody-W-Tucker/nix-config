@@ -39,12 +39,21 @@
         dht-enabled = true;
         encryption = 1; # Prefer encrypted peers
         download-queue-enabled = true;
-        download-queue-size = 10;
+        download-queue-size = 3;
         anti-brute-force-enabled = true;
         anti-brute-force-threshold = 10;
         blocklist-enabled = true;
         blocklist-url = "https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz";
         idle-seeding-limit = 30;
+
+        # Speed tweaks
+        peer-limit-global = 100;
+        peer-limit-per-torrent = 40;
+        speed-limit-up = 100;
+        speed-limit-up-enabled = true;
+        seed-queue-size = 2;
+        preallocation = 1;
+        lazy-bitfield-enabled = true;
 
         # Download Schedule
         alt-speed-enabled = true;         # Enable alternative speed limits
