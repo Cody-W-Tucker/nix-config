@@ -1,4 +1,7 @@
 { pkgs, ... }:
+let
+  wgConfig = builtins.readFile ./secrets/server-wg.conf;
+in
 {
   # Media Management
   services = {
@@ -73,7 +76,7 @@
   # Define VPN network namespace
   vpnNamespaces.wg = {
     enable = true;
-    wireguardConfigFile = /var/lib/secrets/server-wg.conf;
+    wireguardConfigFile = wgConfig;
     accessibleFrom = [
       "192.168.0.0/24"
     ];
