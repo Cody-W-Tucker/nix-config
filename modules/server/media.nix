@@ -1,13 +1,4 @@
-{ pkgs, ... }:
-let
-  wgConfigDerivation = pkgs.stdenvNoCC.mkDerivation {
-    name = "server-wg.conf";
-    src = /. + "/secrets/wg0.conf";
-    installPhase = ''
-      cp $src $out
-    '';
-  };
-in
+{ pkgs, config, ... }:
 {
   # Media Management
   services = {
@@ -79,10 +70,16 @@ in
       };
     };
   };
+  # Get the encrypted file
+  sops.secrets."server-wg.conf" = {
+    sopsFile = ./secrets/server-wg.conf;
+    mode = "0400"; # Only root can read
+  };
+
   # Define VPN network namespace
   vpnNamespaces.wg = {
     enable = true;
-    wireguardConfigFile = "${wgConfigDerivation}";
+    wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
     accessibleFrom = [
       "192.168.0.0/24"
     ];
