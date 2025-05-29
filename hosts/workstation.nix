@@ -303,6 +303,13 @@
 
   programs.command-not-found.enable = true;
 
+  # Ensure headset doesn't switch profiles
+  services.pipewire.wireplumber.extraConfig."11-bluetooth-policy" = {
+    "wireplumber.settings" = {
+      "bluetooth.autoswitch-to-headset-profile" = false;
+    };
+  };
+
   # Use mullvad VPN for external traffic
   services.mullvad-vpn = {
     enable = true;
