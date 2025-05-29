@@ -24,6 +24,7 @@
         send_timeout         600s;
       '';
     };
+    kTLS = true;
   };
 
   # Syncthing backup TODO: Remove in favor of Restic backups

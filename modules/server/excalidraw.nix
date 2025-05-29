@@ -22,6 +22,7 @@
         proxy_set_header X-Forwarded-Proto $scheme;
         client_max_body_size 10M; # Allow uploads up to 10MB (adjust as needed)
       '';
+      kTLS = true;
     };
   };
 }

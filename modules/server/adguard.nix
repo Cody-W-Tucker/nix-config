@@ -11,6 +11,7 @@
       proxyPass = "http://127.0.0.1:8000";
       proxyWebsockets = true;
     };
+    kTLS = true;
   };
   services.unbound = {
     enable = true;

@@ -21,6 +21,7 @@
   services.nginx.virtualHosts."automation.homehub.tv" = {
     forceSSL = true;
     useACMEHost = "homehub.tv";
+    kTLS = true;
     locations."~ ^/(webhook|webhook-test)" = {
       proxyPass = "http://127.0.0.1:${toString config.services.n8n.settings.port}";
 
