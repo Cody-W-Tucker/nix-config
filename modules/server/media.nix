@@ -101,6 +101,7 @@
           proxyPass = "http://127.0.0.1:8096";
           proxyWebsockets = true;
         };
+        kTLS = true;
       };
       "request.homehub.tv" = {
         forceSSL = true;
@@ -109,6 +110,7 @@
           proxyPass = "http://127.0.0.1:5055";
           proxyWebsockets = true;
         };
+        kTLS = true;
       };
       "prowlarr.homehub.tv" = {
         forceSSL = true;
@@ -117,6 +119,7 @@
           recommendedProxySettings = true;
           proxyPass = "http://127.0.0.1:9696";
         };
+        kTLS = true;
       };
       "radarr.homehub.tv" = {
         forceSSL = true;
@@ -125,6 +128,7 @@
           recommendedProxySettings = true;
           proxyPass = "http://127.0.0.1:7878";
         };
+        kTLS = true;
       };
       "sonarr.homehub.tv" = {
         forceSSL = true;
@@ -133,6 +137,7 @@
           recommendedProxySettings = true;
           proxyPass = "http://127.0.0.1:8989";
         };
+        kTLS = true;
       };
     };
   };

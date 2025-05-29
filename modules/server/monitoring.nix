@@ -174,6 +174,7 @@
         proxyWebsockets = true;
         recommendedProxySettings = true;
       };
+      kTLS = true;
     };
   };
   # Open port 3090 for Loki

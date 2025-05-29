@@ -7,6 +7,7 @@
       forceSSL = true;
       useACMEHost = "homehub.tv";
       locations."/".proxyPass = "http://127.0.0.1:7070";
+      kTLS = true;
     };
   };
   virtualisation.oci-containers.containers = {
