@@ -72,7 +72,7 @@
   # Define VPN network namespace
   vpnNamespaces.wg = {
     enable = true;
-    wireguardConfigFile = ./secrets/server-wg.conf;
+    wireguardConfigFile = /etc/nixos/secrets/server-wg.conf;
     accessibleFrom = [
       "192.168.0.0/24"
     ];
