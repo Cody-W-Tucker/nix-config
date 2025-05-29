@@ -97,6 +97,7 @@ in
       "ai.homehub.tv" = {
         useACMEHost = "homehub.tv";
         forceSSL = true;
+        kTLS = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:8080";
           proxyWebsockets = true;
