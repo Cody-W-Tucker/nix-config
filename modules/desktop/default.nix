@@ -87,21 +87,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    wireplumber.enable = true; # Required for priority rules
-    wireplumber.extraConfig = {
-      "bluetooth-no-mic" = {
-        "monitor.bluez.rules" = [
-          {
-            matches = [
-              { "node.name" = "~bluez_input.*"; }
-            ];
-            actions = {
-              "remove" = true;
-            };
-          }
-        ];
-      };
-    };
+    wireplumber.enable = true; # Required for priority rules in host specific configs
   };
 
   services.upower.enable = true;

@@ -92,11 +92,11 @@
   services = {
     displayManager = {
       sddm = {
-      enable = true;
-      wayland.enable = true;
-      autoNumlock = true;
-    };
-    autoLogin.user = "codyt";
+        enable = true;
+        wayland.enable = true;
+        autoNumlock = true;
+      };
+      autoLogin.user = "codyt";
     };
     xserver = {
       enable = true;
@@ -222,56 +222,56 @@
     ];
   };
 
-environment.sessionVariables = {
-  # ---------------------------
-  # Electron and Browser Support
-  # ---------------------------
+  environment.sessionVariables = {
+    # ---------------------------
+    # Electron and Browser Support
+    # ---------------------------
 
-  # Force Electron apps to use X11 backend
-  ELECTRON_OZONE_PLATFORM_HINT = "x11";
+    # Force Electron apps to use X11 backend
+    ELECTRON_OZONE_PLATFORM_HINT = "x11";
 
-  # Enable Wayland backend for Firefox (and other Mozilla apps)
-  MOZ_ENABLE_WAYLAND = "1";
-  # Disable RDD sandbox in Mozilla (may help with Nvidia or video decoding issues)
-  MOZ_DISABLE_RDD_SANDBOX = "1";
+    # Enable Wayland backend for Firefox (and other Mozilla apps)
+    MOZ_ENABLE_WAYLAND = "1";
+    # Disable RDD sandbox in Mozilla (may help with Nvidia or video decoding issues)
+    MOZ_DISABLE_RDD_SANDBOX = "1";
 
-  # ---------------------------
-  # Qt Toolkit Configuration
-  # ---------------------------
+    # ---------------------------
+    # Qt Toolkit Configuration
+    # ---------------------------
 
-  # Automatically scale Qt apps based on screen DPI
-  QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-  # Use Wayland as the Qt platform
-  QT_QPA_PLATFORM = "wayland";
-  # Disable window decorations in Qt on Wayland
-  QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    # Automatically scale Qt apps based on screen DPI
+    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+    # Use Wayland as the Qt platform
+    QT_QPA_PLATFORM = "wayland";
+    # Disable window decorations in Qt on Wayland
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
 
-  # ---------------------------
-  # Nvidia & Graphics Drivers
-  # ---------------------------
+    # ---------------------------
+    # Nvidia & Graphics Drivers
+    # ---------------------------
 
-  # Use Nvidia driver for VA-API (hardware video decoding)
-  LIBVA_DRIVER_NAME = "nvidia";
-  # Set Nvidia backend for NVDEC/NVENC
-  NVD_BACKEND = "direct";
-  # Use Nvidia GBM backend for DRM (Direct Rendering Manager)
-  GBM_BACKEND = "nvidia-drm";
-  # Use Nvidia's GLX implementation
-  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    # Use Nvidia driver for VA-API (hardware video decoding)
+    LIBVA_DRIVER_NAME = "nvidia";
+    # Set Nvidia backend for NVDEC/NVENC
+    NVD_BACKEND = "direct";
+    # Use Nvidia GBM backend for DRM (Direct Rendering Manager)
+    GBM_BACKEND = "nvidia-drm";
+    # Use Nvidia's GLX implementation
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
 
-  # ---------------------------
-  # Wayland & Compositor Settings
-  # ---------------------------
+    # ---------------------------
+    # Wayland & Compositor Settings
+    # ---------------------------
 
-  # Preferred GDK (GTK) backends (Wayland, fallback to X11)
-  GDK_BACKEND = "wayland,x11";
-  # SDL (Simple DirectMedia Layer) to use Wayland
-  SDL_VIDEODRIVER = "wayland";
-  # Clutter (GNOME graphics library) to use Wayland
-  CLUTTER_BACKEND = "wayland";
-  # Use libinput for input devices in wlroots compositors
-  WLR_USE_LIBINPUT = "1";
-};
+    # Preferred GDK (GTK) backends (Wayland, fallback to X11)
+    GDK_BACKEND = "wayland,x11";
+    # SDL (Simple DirectMedia Layer) to use Wayland
+    SDL_VIDEODRIVER = "wayland";
+    # Clutter (GNOME graphics library) to use Wayland
+    CLUTTER_BACKEND = "wayland";
+    # Use libinput for input devices in wlroots compositors
+    WLR_USE_LIBINPUT = "1";
+  };
 
   services = {
     fwupd.enable = true;
@@ -295,23 +295,11 @@ environment.sessionVariables = {
       setSocketVariable = true;
     };
     autoPrune = {
-        enable = true;
-        dates = "weekly";
-      };
-  };
-  virtualisation.oci-containers.backend = "docker";
-
-
-  # Automatic sink switching
-  systemd.user.services.pipewire-switch-on-connect = {
-    description = "Load PipeWire module-switch-on-connect";
-    wantedBy = [ "pipewire.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.pulseaudio}/bin/pactl load-module module-switch-on-connect";
-      RemainAfterExit = true;
+      enable = true;
+      dates = "weekly";
     };
   };
+  virtualisation.oci-containers.backend = "docker";
 
   programs.command-not-found.enable = true;
 
