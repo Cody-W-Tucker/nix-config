@@ -27,10 +27,14 @@
     kTLS = true;
   };
 
-  # Syncthing backup TODO: Remove in favor of Restic backups
-  # services.syncthing.settings.folders."photos" = {
-  #   path = "/mnt/hdd/Photos";
-  #   devices = [ "server" "workstation" ];
-  #   ignorePerms = true;
-  # };
+  # Backup photos to workstation hard drive
+  services.borgbackup.jobs.photos = {
+    user = "codyt";
+    paths = "/mnt/hdd/Photos";
+    encryption.mode = "none";
+    environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
+    repo = "codyt@192.168.254.36:/mnt/backup/Photos";
+    compression = "lz4";
+    startAt = "daily";
+  };
 }
