@@ -26,10 +26,6 @@ in
     };
   };
 
-  users.groups.documents = { };
-  users.users.codyt.extraGroups = [ "documents" ];
-
-
   # Backup documents to workstation hard drive
   services.borgbackup.jobs.documents = {
     user = "codyt";
