@@ -160,6 +160,7 @@
     repo = "codyt@192.168.254.36:/mnt/backup/Media";
     compression = "lz4";
     startAt = "daily";
+    exclude = [ "/mnt/hdd/Downloads" ];
   };
 
   environment.systemPackages = [
