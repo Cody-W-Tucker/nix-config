@@ -31,7 +31,7 @@
   services.borgbackup.jobs.photos = {
     user = "codyt";
     group = "media";
-    paths = "/mnt/hdd/Photos";
+    paths = "/mnt/hdd/Photos/originals";
     encryption.mode = "none";
     environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
     repo = "codyt@192.168.254.36:/mnt/backup/Photos";
