@@ -161,7 +161,7 @@
     compression = "lz4";
     startAt = "daily";
     exclude = [
-      "/mnt/hdd/Downloads"
+      "/mnt/hdd/Media/Downloads"
       "*/movie.nfo"
       "*/backdrop.jpg"
       "*/folder.jpg"
