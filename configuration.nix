@@ -58,7 +58,7 @@
   users.users.codyt = {
     isNormalUser = true;
     description = "Cody Tucker";
-    extraGroups = [ "networkmanager" "wheel" "docker" "media" "scanner" "lp" "bluetooth" "input" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "media" "scanner" "lp" "bluetooth" "input" "documents" ];
     shell = pkgs.zsh;
     # hashedPasswordFile = config.sops.secrets.codyt.path;
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
@@ -71,6 +71,7 @@
 
   # Create user groups for different services
   users.groups.media = { };
+  users.groups.documents = { };
 
   # Optimization settings and garbage collection automation
   nix = {
