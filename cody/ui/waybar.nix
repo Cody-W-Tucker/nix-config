@@ -225,8 +225,8 @@ let
       tooltip = true;
     };
     temperature = {
-      # thermal-zone = 2;
-      hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
+      thermal-zone = 2;
+      # hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
       format = "{temperatureC}°C ";
       format-critical = "{temperatureC}°C ";
       tooltip-format = "{temperatureF}°F";
