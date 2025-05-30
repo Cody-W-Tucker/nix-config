@@ -169,6 +169,7 @@
       "*/landscape.jpg"
       "*/poster.jpg"
       "*/fanart.jpg"
+      "*/logo.svg"
     ];
   };
 
