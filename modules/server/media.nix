@@ -153,6 +153,7 @@
 
   # Backup media to workstation hard drive
   services.borgbackup.jobs.media = {
+    user = "codyt";
     paths = "/mnt/hdd/Media";
     encryption.mode = "none";
     environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
