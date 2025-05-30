@@ -32,6 +32,7 @@
     starship
     (btop.override { cudaSupport = true; })
     wget
+    borgbackup
   ];
 
   # Terminal defaults
