@@ -167,6 +167,8 @@
       "*/folder.jpg"
       "*/logo.png"
       "*/landscape.jpg"
+      "*/poster.jpg"
+      "*/fanart.jpg"
     ];
   };
 
