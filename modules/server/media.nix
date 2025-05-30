@@ -39,7 +39,7 @@
         dht-enabled = true;
         encryption = 1; # Prefer encrypted peers
         download-queue-enabled = true;
-        download-queue-size = 3;
+        download-queue-size = 5;
         anti-brute-force-enabled = true;
         anti-brute-force-threshold = 10;
         blocklist-enabled = true;
