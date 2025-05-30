@@ -151,11 +151,15 @@
     };
   };
 
-  # Syncthing backup TODO: Remove in favor of Restic backups
-  # services.syncthing.settings.folders."media" = {
-  #   path = "/mnt/hdd/Media";
-  #   devices = [ "server" "workstation" ];
-  # };
+  # Backup media to workstation hard drive
+  services.borgbackup.jobs.media = {
+    paths = "/mnt/hdd/Media";
+    encryption.mode = "none";
+    environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
+    repo = "codyt@workstation:/mnt/backup/Media";
+    compression = "lz4";
+    startAt = "daily";
+  };
 
   environment.systemPackages = [
     pkgs.jellyfin
