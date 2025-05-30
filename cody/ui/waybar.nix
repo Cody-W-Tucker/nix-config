@@ -4,7 +4,7 @@
 # Bottom monitor bar focus on work
 # Top monitor bar gives more information
 let nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.system}.default;
-in 
+in
 let
   createBar = waybarConfig: output: position: waybarConfig // { output = output; position = position; };
   # Productivity Bar Config: This is the main bar for the main monitor.
@@ -45,13 +45,13 @@ let
       spacing = 10;
     };
     "custom/agenda" = {
-          exec = nextmeeting + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
-          on-click = nextmeeting + "--open-meet-url";
-          on-click-right = "xdg-open https://app.reclaim.ai/planner";
-          format = "󰃶 {}";
-          return-type = "json";
-          interval = 59;
-          tooltip = true;
+      exec = nextmeeting + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
+      on-click = nextmeeting + "--open-meet-url";
+      on-click-right = "xdg-open https://app.reclaim.ai/planner";
+      format = "󰃶 {}";
+      return-type = "json";
+      interval = 59;
+      tooltip = true;
     };
     "custom/weather" = {
       exec = "uwsm-app -- get-weather Kearney+Nebraska";
@@ -61,13 +61,13 @@ let
       interval = 3600;
     };
     "custom/goal" = {
-        format = "🞋 {}";
-        exec = "waybar-goal";
-        return-type = "json";
-        interval = 10;
-        on-click = "waybar-goal click";
-        on-scroll-up = "waybar-goal scroll-up";
-        on-scroll-down = "waybar-goal scroll-down";
+      format = "🞋 {}";
+      exec = "waybar-goal";
+      return-type = "json";
+      interval = 10;
+      on-click = "waybar-goal click";
+      on-scroll-up = "waybar-goal scroll-up";
+      on-scroll-down = "waybar-goal scroll-down";
     };
     clock = {
       format = "{:%a (%d) - %I:%M %p}";
@@ -226,7 +226,7 @@ let
     };
     temperature = {
       # thermal-zone = 2;
-      hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
+      hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
       format = "{temperatureC}°C ";
       format-critical = "{temperatureC}°C ";
       tooltip-format = "{temperatureF}°F";
