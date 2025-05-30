@@ -26,9 +26,25 @@ in
     };
   };
 
+  users.groups.documents = { };
+  users.users.codyt.extraGroups = [ "documents" ];
+
+
+  # Backup documents to workstation hard drive
+  services.borgbackup.jobs.documents = {
+    user = "codyt";
+    group = "documents";
+    paths = "/mnt/hdd/Documents";
+    encryption.mode = "none";
+    environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
+    repo = "codyt@192.168.254.36:/mnt/backup/Documents";
+    compression = "lz4";
+    startAt = "daily";
+  };
+
   # Enable scan button daemon and paperless-scanning.nix
   services.scanbd = {
-    enable = true;
+    enable = false;
   };
 
   services.nginx = {
