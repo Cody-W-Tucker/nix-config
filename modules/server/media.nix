@@ -162,14 +162,10 @@
     startAt = "daily";
     exclude = [
       "/mnt/hdd/Media/Downloads"
-      "*/movie.nfo"
-      "*/backdrop.jpg"
-      "*/folder.jpg"
-      "*/logo.png"
-      "*/landscape.jpg"
-      "*/poster.jpg"
-      "*/fanart.jpg"
-      "*/logo.svg"
+      "*.nfo"
+      "*.jpg"
+      "*.png"
+      "*.svg"
     ];
   };
 
