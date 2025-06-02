@@ -29,6 +29,7 @@ in
         RAG_RERANKING_MODEL = "";
         QDRANT_URI = "http://qdrant.homehub.tv";
         VECTOR_DB = "qdrant";
+        ENABLE_QDRANT_MULTITENANCY_MODE = "True";
         WEBUI_SECRET_KEY = "local-only";
       };
     };
