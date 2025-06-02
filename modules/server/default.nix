@@ -41,7 +41,7 @@
       dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;
       credentialFiles = {
-        "dns_cloudflare_api_key_FILE" = config.sops.secrets.cloudflare-api-key.path;
+        "dns_cloudflare_api_token_FILE" = config.sops.secrets.cloudflare-api-key.path;
       };
     };
   };
