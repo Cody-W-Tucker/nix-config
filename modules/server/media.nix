@@ -47,8 +47,8 @@
         idle-seeding-limit = 30;
 
         # Speed tweaks
-        peer-limit-global = 100;
-        peer-limit-per-torrent = 40;
+        peer-limit-global = 200;
+        peer-limit-per-torrent = 100;
         speed-limit-up = 100;
         speed-limit-up-enabled = true;
         seed-queue-size = 2;
