@@ -26,7 +26,6 @@
   ];
 
   # Create the acme secret in sops
-  sops.secrets.cloudflare-api-email = { };
   sops.secrets.cloudflare-api-key = { };
 
   # Acme for SSL
@@ -42,7 +41,6 @@
       dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;
       credentialFiles = {
-        "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
         "dns_cloudflare_api_key_FILE" = config.sops.secrets.cloudflare-api-key.path;
       };
     };
