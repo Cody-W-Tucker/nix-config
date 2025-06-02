@@ -43,7 +43,7 @@
       dnsPropagationCheck = true;
       credentialFiles = {
         "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
-        "CLOUDFLARE_API_KEY" = config.sops.secrets.cloudflare-api-key.path;
+        "CLOUDFLARE_API_KEY_FILE" = config.sops.secrets.cloudflare-api-key.path;
       };
     };
   };
