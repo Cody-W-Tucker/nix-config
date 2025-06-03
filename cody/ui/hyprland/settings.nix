@@ -1,4 +1,4 @@
-{config, lib, hardwareConfig, ...}:
+{ config, lib, hardwareConfig, ... }:
 
 let
   mainMod = "SUPER";
@@ -60,8 +60,8 @@ let
     "${mainMod} SHIFT, down, movewindow, d"
 
     # Scratchpad
-    "${mainMod} SHIFT, A, togglespecialworkspace, magic"
-    "${mainMod}, A, movetoworkspacesilent, special:magic"
+    "${mainMod}, A, togglespecialworkspace, magic"
+    "${mainMod} SHIFT, A, movetoworkspacesilent, special:magic"
 
     # Toggle waybar
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
@@ -98,7 +98,7 @@ in
       bezier = [
         "easeInExpo, 0.7, 0, 0.84, 0"
         "easeOutExpo, 0.16, 1, 0.3, 1"
-        ];
+      ];
       animation = [
         "windows, 1, 1, easeInExpo, slide"
         "windowsOut, 1, 1, easeOutExpo, slide"
