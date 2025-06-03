@@ -38,8 +38,8 @@
         umask = 2; # Group write permissions (so Sonarr/Radarr can move files)
         dht-enabled = true;
         encryption = 1; # Prefer encrypted peers
-        download-queue-enabled = true;
-        download-queue-size = 5;
+        # download-queue-enabled = true;
+        # download-queue-size = 5;
         anti-brute-force-enabled = true;
         anti-brute-force-threshold = 10;
         blocklist-enabled = true;
