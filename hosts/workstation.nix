@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{ inputs, config, lib, pkgs, modulesPath, ... }:
 
 {
   imports =
@@ -285,6 +285,7 @@
       where-is-my-sddm-theme
       nvidia-vaapi-driver
       egl-wayland
+      inputs.web-downloader.packages.${pkgs.system}.default
     ]);
 
   # Docker
