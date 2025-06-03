@@ -33,6 +33,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
+    web-downloader.url = "github:Cody-W-Tucker/web-downloader";
   };
 
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, ... }:
@@ -100,7 +101,7 @@
               home-manager.sharedModules = [
                 inputs.sops-nix.homeManagerModules.sops
               ];
-              home-manager.users.codyt.imports = [ 
+              home-manager.users.codyt.imports = [
                 ./cody/ui.nix
                 ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
@@ -132,7 +133,7 @@
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt.imports = [ 
+              home-manager.users.codyt.imports = [
                 ./cody/cli.nix
                 inputs.nixvim.homeManagerModules.nixvim
               ];
