@@ -38,8 +38,8 @@
         umask = 2; # Group write permissions (so Sonarr/Radarr can move files)
         dht-enabled = true;
         encryption = 1; # Prefer encrypted peers
-        # download-queue-enabled = true;
-        # download-queue-size = 5;
+        download-queue-enabled = true;
+        download-queue-size = 5;
         anti-brute-force-enabled = true;
         anti-brute-force-threshold = 10;
         blocklist-enabled = true;
@@ -47,6 +47,14 @@
         idle-seeding-limit = 30;
 
         # Speed tweaks
+        peer-limit-global = 100;
+        peer-limit-per-torrent = 40;
+        upload-slots-per-torrent = 4;
+        speed-limit-up = 100;
+        speed-limit-up-enabled = true;
+        speed-limit-down = 1400;
+        speed-limit-down-enabled = true;
+        seed-queue-size = 2;
         preallocation = 1;
         lazy-bitfield-enabled = true;
 
