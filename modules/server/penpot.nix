@@ -22,6 +22,8 @@
       "${matchAll}".allowedUDPPorts = [ 53 ];
     };
 
+  virtualisation.oci-containers.backend = "docker";
+
   # Containers
   virtualisation.oci-containers.containers."penpot-penpot-backend" = {
     image = "penpotapp/backend:latest";
@@ -33,7 +35,7 @@
       "PENPOT_FLAGS" = "disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies";
       "PENPOT_HTTP_SERVER_MAX_BODY_SIZE" = "31457280";
       "PENPOT_HTTP_SERVER_MAX_MULTIPART_BODY_SIZE" = "367001600";
-      "PENPOT_PUBLIC_URI" = "https://design.homehub.tv";
+      "PENPOT_PUBLIC_URI" = "http://localhost:8080";
       "PENPOT_REDIS_URI" = "redis://penpot-redis/0";
       "PENPOT_SMTP_DEFAULT_FROM" = "no-reply@example.com";
       "PENPOT_SMTP_DEFAULT_REPLY_TO" = "no-reply@example.com";
@@ -80,7 +82,7 @@
   virtualisation.oci-containers.containers."penpot-penpot-exporter" = {
     image = "penpotapp/exporter:latest";
     environment = {
-      "PENPOT_PUBLIC_URI" = "http://penpot-frontend:8888";
+      "PENPOT_PUBLIC_URI" = "https://design.homehub.tv";
       "PENPOT_REDIS_URI" = "redis://penpot-redis/0";
     };
     dependsOn = [
@@ -120,7 +122,7 @@
       "penpot_penpot_assets:/opt/data/assets:rw"
     ];
     ports = [
-      "8888:8080/tcp"
+      "9999:8080/tcp"
     ];
     dependsOn = [
       "penpot-penpot-backend"
