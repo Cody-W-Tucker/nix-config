@@ -33,7 +33,7 @@ in
     paths = "/mnt/hdd/Documents/documents/originals";
     encryption.mode = "none";
     environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
-    repo = "codyt@192.168.254.36:/mnt/backup/Documents";
+    repo = "codyt@192.168.1.238:/mnt/backup/Documents";
     compression = "lz4";
     startAt = "daily";
   };

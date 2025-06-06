@@ -51,7 +51,7 @@
         proxy_buffering off;
         proxy_cache off;
 
-        allow 192.168.254.0/24;
+        allow 192.168.1.0/24;
         deny all;
       '';
     };
