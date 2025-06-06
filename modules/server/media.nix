@@ -46,17 +46,17 @@
         lazy-bitfield-enabled = true;
 
         # Speed Limits
-        speed-limit-up = 110;
+        speed-limit-up = 640;
         speed-limit-up-enabled = true;
-        speed-limit-down = 1400;
+        speed-limit-down = 6400;
         speed-limit-down-enabled = true;
         download-queue-enabled = true;
-        download-queue-size = 5;
+        download-queue-size = 10;
 
         # Speed tweaks
-        peer-limit-global = 100;
-        peer-limit-per-torrent = 40;
-        upload-slots-per-torrent = 4;
+        peer-limit-global = 200;
+        peer-limit-per-torrent = 60;
+        upload-slots-per-torrent = 8;
 
         # Download Schedule
         alt-speed-enabled = true; # Enable alternative speed limits
