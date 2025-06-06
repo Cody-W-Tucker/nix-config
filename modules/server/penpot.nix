@@ -13,16 +13,16 @@
     };
   };
 
-  # Enable container name DNS for all Podman networks.
+  # Enable container name DNS for all docker networks.
   networking.firewall.interfaces =
     let
-      matchAll = if !config.networking.nftables.enable then "podman+" else "podman*";
+      matchAll = if !config.networking.nftables.enable then "docker+" else "docker*";
     in
     {
       "${matchAll}".allowedUDPPorts = [ 53 ];
     };
 
-  virtualisation.oci-containers.backend = "podman";
+  virtualisation.oci-containers.backend = "docker";
 
   # Containers
   virtualisation.oci-containers.containers."penpot-penpot-backend" = {
@@ -60,23 +60,23 @@
       "--network=penpot_penpot"
     ];
   };
-  systemd.services."podman-penpot-penpot-backend" = {
+  systemd.services."docker-penpot-penpot-backend" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-penpot_penpot.service"
-      "podman-volume-penpot_penpot_assets.service"
+      "docker-network-penpot_penpot.service"
+      "docker-volume-penpot_penpot_assets.service"
     ];
     requires = [
-      "podman-network-penpot_penpot.service"
-      "podman-volume-penpot_penpot_assets.service"
+      "docker-network-penpot_penpot.service"
+      "docker-volume-penpot_penpot_assets.service"
     ];
     partOf = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
     wantedBy = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
   };
   virtualisation.oci-containers.containers."penpot-penpot-exporter" = {
@@ -94,21 +94,21 @@
       "--network=penpot_penpot"
     ];
   };
-  systemd.services."podman-penpot-penpot-exporter" = {
+  systemd.services."docker-penpot-penpot-exporter" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-penpot_penpot.service"
+      "docker-network-penpot_penpot.service"
     ];
     requires = [
-      "podman-network-penpot_penpot.service"
+      "docker-network-penpot_penpot.service"
     ];
     partOf = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
     wantedBy = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
   };
   virtualisation.oci-containers.containers."penpot-penpot-frontend" = {
@@ -134,23 +134,23 @@
       "--network=penpot_penpot"
     ];
   };
-  systemd.services."podman-penpot-penpot-frontend" = {
+  systemd.services."docker-penpot-penpot-frontend" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-penpot_penpot.service"
-      "podman-volume-penpot_penpot_assets.service"
+      "docker-network-penpot_penpot.service"
+      "docker-volume-penpot_penpot_assets.service"
     ];
     requires = [
-      "podman-network-penpot_penpot.service"
-      "podman-volume-penpot_penpot_assets.service"
+      "docker-network-penpot_penpot.service"
+      "docker-volume-penpot_penpot_assets.service"
     ];
     partOf = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
     wantedBy = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
   };
   virtualisation.oci-containers.containers."penpot-penpot-mailcatch" = {
@@ -164,21 +164,21 @@
       "--network=penpot_penpot"
     ];
   };
-  systemd.services."podman-penpot-penpot-mailcatch" = {
+  systemd.services."docker-penpot-penpot-mailcatch" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-penpot_penpot.service"
+      "docker-network-penpot_penpot.service"
     ];
     requires = [
-      "podman-network-penpot_penpot.service"
+      "docker-network-penpot_penpot.service"
     ];
     partOf = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
     wantedBy = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
   };
   virtualisation.oci-containers.containers."penpot-penpot-postgres" = {
@@ -203,23 +203,23 @@
       "--network=penpot_penpot"
     ];
   };
-  systemd.services."podman-penpot-penpot-postgres" = {
+  systemd.services."docker-penpot-penpot-postgres" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-penpot_penpot.service"
-      "podman-volume-penpot_penpot_postgres_v15.service"
+      "docker-network-penpot_penpot.service"
+      "docker-volume-penpot_penpot_postgres_v15.service"
     ];
     requires = [
-      "podman-network-penpot_penpot.service"
-      "podman-volume-penpot_penpot_postgres_v15.service"
+      "docker-network-penpot_penpot.service"
+      "docker-volume-penpot_penpot_postgres_v15.service"
     ];
     partOf = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
     wantedBy = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
   };
   virtualisation.oci-containers.containers."penpot-penpot-redis" = {
@@ -235,69 +235,69 @@
       "--network=penpot_penpot"
     ];
   };
-  systemd.services."podman-penpot-penpot-redis" = {
+  systemd.services."docker-penpot-penpot-redis" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-penpot_penpot.service"
+      "docker-network-penpot_penpot.service"
     ];
     requires = [
-      "podman-network-penpot_penpot.service"
+      "docker-network-penpot_penpot.service"
     ];
     partOf = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
     wantedBy = [
-      "podman-compose-penpot-root.target"
+      "docker-compose-penpot-root.target"
     ];
   };
 
   # Networks
-  systemd.services."podman-network-penpot_penpot" = {
-    path = [ pkgs.podman ];
+  systemd.services."docker-network-penpot_penpot" = {
+    path = [ pkgs.docker ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStop = "podman network rm -f penpot_penpot";
+      ExecStop = "docker network rm -f penpot_penpot";
     };
     script = ''
-      podman network inspect penpot_penpot || podman network create penpot_penpot
+      docker network inspect penpot_penpot || docker network create penpot_penpot
     '';
-    partOf = [ "podman-compose-penpot-root.target" ];
-    wantedBy = [ "podman-compose-penpot-root.target" ];
+    partOf = [ "docker-compose-penpot-root.target" ];
+    wantedBy = [ "docker-compose-penpot-root.target" ];
   };
 
   # Volumes
-  systemd.services."podman-volume-penpot_penpot_assets" = {
-    path = [ pkgs.podman ];
+  systemd.services."docker-volume-penpot_penpot_assets" = {
+    path = [ pkgs.docker ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
     };
     script = ''
-      podman volume inspect penpot_penpot_assets || podman volume create penpot_penpot_assets
+      docker volume inspect penpot_penpot_assets || docker volume create penpot_penpot_assets
     '';
-    partOf = [ "podman-compose-penpot-root.target" ];
-    wantedBy = [ "podman-compose-penpot-root.target" ];
+    partOf = [ "docker-compose-penpot-root.target" ];
+    wantedBy = [ "docker-compose-penpot-root.target" ];
   };
-  systemd.services."podman-volume-penpot_penpot_postgres_v15" = {
-    path = [ pkgs.podman ];
+  systemd.services."docker-volume-penpot_penpot_postgres_v15" = {
+    path = [ pkgs.docker ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
     };
     script = ''
-      podman volume inspect penpot_penpot_postgres_v15 || podman volume create penpot_penpot_postgres_v15
+      docker volume inspect penpot_penpot_postgres_v15 || docker volume create penpot_penpot_postgres_v15
     '';
-    partOf = [ "podman-compose-penpot-root.target" ];
-    wantedBy = [ "podman-compose-penpot-root.target" ];
+    partOf = [ "docker-compose-penpot-root.target" ];
+    wantedBy = [ "docker-compose-penpot-root.target" ];
   };
 
   # Root service
   # When started, this will automatically create all resources and start
   # the containers. When stopped, this will teardown all resources.
-  systemd.targets."podman-compose-penpot-root" = {
+  systemd.targets."docker-compose-penpot-root" = {
     unitConfig = {
       Description = "Root target generated by compose2nix.";
     };
