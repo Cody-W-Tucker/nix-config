@@ -8,7 +8,7 @@
       forceSSL = true;
       useACMEHost = "homehub.tv";
       locations."/" = {
-        proxyPass = "http://localhost:8888";
+        proxyPass = "http://localhost:9999";
       };
     };
   };
@@ -33,7 +33,7 @@
       "PENPOT_FLAGS" = "disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies";
       "PENPOT_HTTP_SERVER_MAX_BODY_SIZE" = "31457280";
       "PENPOT_HTTP_SERVER_MAX_MULTIPART_BODY_SIZE" = "367001600";
-      "PENPOT_PUBLIC_URI" = "http://localhost:8888";
+      "PENPOT_PUBLIC_URI" = "https://design.homehub.tv";
       "PENPOT_REDIS_URI" = "redis://penpot-redis/0";
       "PENPOT_SMTP_DEFAULT_FROM" = "no-reply@example.com";
       "PENPOT_SMTP_DEFAULT_REPLY_TO" = "no-reply@example.com";
@@ -42,7 +42,7 @@
       "PENPOT_SMTP_SSL" = "false";
       "PENPOT_SMTP_TLS" = "false";
       "PENPOT_STORAGE_ASSETS_FS_DIRECTORY" = "/opt/data/assets";
-      "PENPOT_TELEMETRY_ENABLED" = "true";
+      "PENPOT_TELEMETRY_ENABLED" = "false";
       "PENPOT_TELEMETRY_REFERER" = "compose";
     };
     volumes = [
