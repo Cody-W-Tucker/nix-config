@@ -244,7 +244,7 @@ in
             }
             {
               "Home Assistant" = {
-                href = "http://192.168.254.38:8123/";
+                href = "http://homeassistant:8123/";
                 icon = "home-assistant";
                 description = "Open Source Home Automation";
               };
