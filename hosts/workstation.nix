@@ -286,7 +286,6 @@
       nvidia-vaapi-driver
       egl-wayland
       inputs.web-downloader.packages.${pkgs.system}.default
-      penpot-desktop
     ]);
 
   # Docker
