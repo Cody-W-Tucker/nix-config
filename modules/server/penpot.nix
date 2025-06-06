@@ -8,7 +8,7 @@
       forceSSL = true;
       useACMEHost = "homehub.tv";
       locations."/" = {
-        proxyPass = "http://localhost:3000";
+        proxyPass = "http://localhost:8888";
       };
     };
   };
@@ -21,8 +21,6 @@
     {
       "${matchAll}".allowedUDPPorts = [ 53 ];
     };
-
-  virtualisation.oci-containers.backend = "docker";
 
   # Containers
   virtualisation.oci-containers.containers."penpot-penpot-backend" = {
@@ -82,7 +80,7 @@
   virtualisation.oci-containers.containers."penpot-penpot-exporter" = {
     image = "penpotapp/exporter:latest";
     environment = {
-      "PENPOT_PUBLIC_URI" = "http://penpot-frontend:8080";
+      "PENPOT_PUBLIC_URI" = "http://penpot-frontend:8888";
       "PENPOT_REDIS_URI" = "redis://penpot-redis/0";
     };
     dependsOn = [
