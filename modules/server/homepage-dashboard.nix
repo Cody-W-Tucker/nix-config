@@ -86,14 +86,14 @@ in
               mattermost = {
                 href = "https://chat.${domain}";
                 icon = "mattermost";
-                description = "Open Sourced Slack";
+                description = "Open Source Slack";
               };
             }
             {
               NocoDB = {
                 href = "https://data.${domain}";
                 icon = "nocodb";
-                description = "Open source Airtable";
+                description = "Open Source Airtable";
               };
             }
             {
@@ -140,6 +140,13 @@ in
                 href = "https://pdf.${domain}";
                 icon = "stirling-pdf";
                 description = "PDF Editing";
+              };
+            }
+            {
+              Penpot = {
+                href = "https://design.${domain}";
+                icon = "penpot";
+                description = "Open Source Figma Alternative";
               };
             }
           ];
