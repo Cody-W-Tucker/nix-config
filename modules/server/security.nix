@@ -6,7 +6,7 @@
     maxretry = 5;
     ignoreIP = [
       # Whitelist LAN subnet
-      "192.168.254.0/24"
+      "192.168.1.0/24"
     ];
     bantime = "24h"; # Ban IPs for one day on the first ban
     bantime-increment = {
