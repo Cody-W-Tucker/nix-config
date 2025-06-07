@@ -51,7 +51,7 @@
         speed-limit-down = 10240;
         speed-limit-down-enabled = true;
         download-queue-enabled = true;
-        download-queue-size = 10;
+        download-queue-size = 20;
 
         # Speed tweaks
         peer-limit-global = 200;
