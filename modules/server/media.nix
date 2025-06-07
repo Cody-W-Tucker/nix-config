@@ -46,9 +46,9 @@
         lazy-bitfield-enabled = true;
 
         # Speed Limits
-        speed-limit-up = 640;
+        speed-limit-up = 1280;
         speed-limit-up-enabled = true;
-        speed-limit-down = 6400;
+        speed-limit-down = 10240;
         speed-limit-down-enabled = true;
         download-queue-enabled = true;
         download-queue-size = 10;
@@ -60,8 +60,8 @@
 
         # Download Schedule
         alt-speed-enabled = true; # Enable alternative speed limits
-        alt-speed-down = 2560; # KB/s download during restricted hours
-        alt-speed-up = 256; # KB/s upload during restricted hours
+        alt-speed-down = 5120; # KB/s download during restricted hours
+        alt-speed-up = 512; # KB/s upload during restricted hours
         alt-speed-time-enabled = true; # Enable scheduled speed limit
         alt-speed-time-begin = 480; # Start at 8:00 (8am), in minutes after midnight
         alt-speed-time-end = 1380; # End at 22:00 (11pm), in minutes after midnight
