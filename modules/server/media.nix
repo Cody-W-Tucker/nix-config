@@ -45,6 +45,10 @@
         preallocation = 1;
         lazy-bitfield-enabled = true;
 
+        # Limit Seeding
+        ratio-limit = 2.0;
+        ratio-limit-enabled = true;
+
         # Speed Limits
         speed-limit-up = 1280;
         speed-limit-up-enabled = true;
