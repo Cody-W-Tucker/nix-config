@@ -98,6 +98,7 @@
   programs.taskwarrior = {
     enable = true;
     package = pkgs.taskwarrior3;
+    colorTheme = "dark-yellow-green-256.theme";
   };
 
   # Doc conversion
