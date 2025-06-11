@@ -58,7 +58,7 @@
       kdenlive
       baobab # Gnome disk usage app
       gcalcli # Google Calendar CLI tool
-      libreoffice
+      taskwarrior-tui
     ])
     ++
     (with pkgs-unstable; [
