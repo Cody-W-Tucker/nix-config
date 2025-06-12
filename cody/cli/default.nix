@@ -49,7 +49,7 @@
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       history.size = 10000;
       shellAliases = {
-        ssh = "kitty +kitten ssh";
+        kssh = "kitty +kitten ssh";
         cd = "z";
         ll = "eza -l";
         ls = "eza";
