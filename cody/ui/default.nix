@@ -60,6 +60,7 @@
       gcalcli # Google Calendar CLI tool
       taskwarrior-tui
       feishin
+      picard
     ])
     ++
     (with pkgs-unstable; [
