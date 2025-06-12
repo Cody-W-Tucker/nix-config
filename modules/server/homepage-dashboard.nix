@@ -149,10 +149,6 @@ in
                 description = "Open Source Figma Alternative";
               };
             }
-          ];
-        }
-        {
-          Personal = [
             {
               ActualBudget = {
                 href = "https://budget.${domain}";
@@ -165,6 +161,24 @@ in
                 href = "https://photos.${domain}";
                 icon = "immich";
                 description = "Photo Management";
+              };
+            }
+          ];
+        }
+        {
+          Watch = [
+            {
+              Jellyfin = {
+                icon = "jellyfin";
+                href = "https://media.${domain}";
+                description = "Media Server";
+              };
+            }
+            {
+              Jellyseerr = {
+                icon = "jellyseerr";
+                href = "https://request.${domain}";
+                description = "Request Media Service";
               };
             }
           ];
@@ -195,21 +209,7 @@ in
           ];
         }
         {
-          Media = [
-            {
-              Jellyfin = {
-                icon = "jellyfin";
-                href = "https://media.${domain}";
-                description = "Media Server";
-              };
-            }
-            {
-              Jellyseerr = {
-                icon = "jellyseerr";
-                href = "https://request.${domain}";
-                description = "Request Media Service";
-              };
-            }
+          Manage = [
             {
               Sonarr = {
                 href = "https://sonarr.${domain}";
