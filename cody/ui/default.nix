@@ -59,16 +59,15 @@
       baobab # Gnome disk usage app
       gcalcli # Google Calendar CLI tool
       taskwarrior-tui
+      feishin
     ])
     ++
     (with pkgs-unstable; [
       # list of unstable packages go here
-      spotube
       code-cursor
       vscode
       legcord
       codex
-      feishin
     ]);
 
   sops.secrets.OPENAI_API_KEY = { };
