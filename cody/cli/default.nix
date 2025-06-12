@@ -62,7 +62,7 @@
           sudo nix flake update
           sudo nixos-rebuild switch
         '';
-        gcCleanup = "sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
+        gcCleanup = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       };
     };
     bash = {
