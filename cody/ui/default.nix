@@ -98,7 +98,30 @@
   programs.taskwarrior = {
     enable = true;
     package = pkgs.taskwarrior3;
-    colorTheme = "dark-blue-256";
+    extraConfig = ''
+      color.header           = color4
+      color.footnote         = color8
+      color.label            = color6
+
+      color.overdue          = color1
+      color.due              = color3
+      color.active           = color2
+      color.completed        = color8
+      color.deleted          = color5
+      color.recurring        = color13
+      color.scheduled        = color11
+      color.waiting          = color14
+
+      color.pri.H            = color1
+      color.pri.M            = color3
+      color.pri.L            = color2
+
+      color.tagged           = color10
+      color.blocked          = color9
+      color.blocking         = color12
+
+      color=on
+    '';
   };
 
   # Doc conversion
