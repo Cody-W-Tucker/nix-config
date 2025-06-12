@@ -136,6 +136,13 @@ in
               };
             }
             {
+              ActualBudget = {
+                href = "https://budget.${domain}";
+                icon = "https://budget.${domain}/favicon.ico";
+                description = "Personal Budget";
+              };
+            }
+            {
               Stirling-PDF = {
                 href = "https://pdf.${domain}";
                 icon = "stirling-pdf";
@@ -149,24 +156,10 @@ in
                 description = "Open Source Figma Alternative";
               };
             }
-            {
-              ActualBudget = {
-                href = "https://budget.${domain}";
-                icon = "https://budget.${domain}/favicon.ico";
-                description = "Personal Budget";
-              };
-            }
-            {
-              Photos = {
-                href = "https://photos.${domain}";
-                icon = "immich";
-                description = "Photo Management";
-              };
-            }
           ];
         }
         {
-          Watch = [
+          View = [
             {
               Jellyfin = {
                 icon = "jellyfin";
@@ -179,6 +172,13 @@ in
                 icon = "jellyseerr";
                 href = "https://request.${domain}";
                 description = "Request Media Service";
+              };
+            }
+            {
+              Photos = {
+                href = "https://photos.${domain}";
+                icon = "immich";
+                description = "Photo Management";
               };
             }
           ];
