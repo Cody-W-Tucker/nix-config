@@ -21,6 +21,11 @@
       group = "media";
     };
 
+    lidarr = {
+      enable = true;
+      group = "media";
+    };
+
     # Indexer Manager
     prowlarr = {
       enable = true;
@@ -152,6 +157,15 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://127.0.0.1:8989";
+        };
+        kTLS = true;
+      };
+      "lidarr.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://127.0.0.1:8686";
         };
         kTLS = true;
       };
