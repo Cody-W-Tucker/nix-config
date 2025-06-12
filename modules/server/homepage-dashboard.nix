@@ -167,20 +167,6 @@ in
                 description = "Photo Management";
               };
             }
-            {
-              Jellyfin = {
-                icon = "jellyfin";
-                href = "https://media.${domain}";
-                description = "Media Server";
-              };
-            }
-            {
-              Jellyseerr = {
-                icon = "jellyseerr";
-                href = "https://request.${domain}";
-                description = "Request Media Service";
-              };
-            }
           ];
         }
         {
@@ -211,6 +197,20 @@ in
         {
           Media = [
             {
+              Jellyfin = {
+                icon = "jellyfin";
+                href = "https://media.${domain}";
+                description = "Media Server";
+              };
+            }
+            {
+              Jellyseerr = {
+                icon = "jellyseerr";
+                href = "https://request.${domain}";
+                description = "Request Media Service";
+              };
+            }
+            {
               Sonarr = {
                 href = "https://sonarr.${domain}";
                 icon = "sonarr";
@@ -221,6 +221,13 @@ in
               Radarr = {
                 href = "https://radarr.${domain}";
                 icon = "radarr";
+                description = "Media Management";
+              };
+            }
+            {
+              Lidarr = {
+                href = "https://lidarr.${domain}";
+                icon = "lidarr";
                 description = "Media Management";
               };
             }
