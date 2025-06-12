@@ -68,6 +68,7 @@
       vscode
       legcord
       codex
+      feishin
     ]);
 
   sops.secrets.OPENAI_API_KEY = { };
