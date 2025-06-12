@@ -1,9 +1,9 @@
 {
   services.samba = {
     enable = true;
-    securityType = "user";
     openFirewall = true;
     settings = {
+      securityType = "user";
       global = {
         "workgroup" = "WORKGROUP";
         "server string" = "smbnix";
@@ -17,27 +17,27 @@
         "guest account" = "nobody";
         "map to guest" = "bad user";
       };
-    };
-    shares = {
-      codytHome = {
-        path = "/mnt/hdd/Share";
-        browseable = "yes";
-        "read only" = "no";
-        "guest ok" = "no";
-        "create mask" = "0644";
-        "directory mask" = "0755";
-        "force user" = "codyt";
-        "force group" = "users";
-      };
-      Music = {
-        path = "/mnt/hdd/Media/Music";
-        browseable = "yes";
-        "read only" = "no";
-        "guest ok" = "no";
-        "create mask" = "0644";
-        "directory mask" = "0755";
-        "force user" = "codyt";
-        "force group" = "users";
+      shares = {
+        codytHome = {
+          path = "/mnt/hdd/Share";
+          browseable = "yes";
+          "read only" = "no";
+          "guest ok" = "no";
+          "create mask" = "0644";
+          "directory mask" = "0755";
+          "force user" = "codyt";
+          "force group" = "users";
+        };
+        Music = {
+          path = "/mnt/hdd/Media/Music";
+          browseable = "yes";
+          "read only" = "no";
+          "guest ok" = "no";
+          "create mask" = "0644";
+          "directory mask" = "0755";
+          "force user" = "codyt";
+          "force group" = "users";
+        };
       };
     };
   };
