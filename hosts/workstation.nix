@@ -82,6 +82,8 @@
   services.scanbd = {
     enable = true;
   };
+
+  # Create the mount for the paperless consume service. Workstation Consume -> Server Consume
   fileSystems."/var/lib/paperless/consume" = {
     device = "//server/PaperlessConsume";
     fsType = "cifs";
