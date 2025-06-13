@@ -43,6 +43,8 @@
         "guest ok" = "yes";
         "create mask" = "0666";
         "directory mask" = "0777";
+        "force user" = "paperless";
+        "force group" = "paperless";
       };
     };
   };
