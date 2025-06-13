@@ -36,6 +36,14 @@
         "force user" = "codyt";
         "force group" = "media";
       };
+      PaperlessConsume = {
+        "path" = "/var/lib/paperless/consume";
+        "browseable" = "yes";
+        "read only" = "no";
+        "guest ok" = "yes";
+        "create mask" = "0666";
+        "directory mask" = "0777";
+      };
     };
   };
 

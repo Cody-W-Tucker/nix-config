@@ -38,11 +38,6 @@ in
     startAt = "daily";
   };
 
-  # Enable scan button daemon and paperless-scanning.nix
-  services.scanbd = {
-    enable = false;
-  };
-
   services.nginx = {
     virtualHosts."paperless.homehub.tv" = {
       useACMEHost = "homehub.tv";
