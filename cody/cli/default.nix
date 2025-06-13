@@ -127,10 +127,10 @@
         tab_bar_style fade
         tab_fade 1
         active_tab_foreground   #${config.lib.stylix.colors.base05}
-        active_tab_background   #${config.lib.stylix.colors.base00}
+        active_tab_background   #${config.lib.stylix.colors.base01}
         active_tab_font_style   bold
         inactive_tab_foreground #${config.lib.stylix.colors.base07}
-        inactive_tab_background #${config.lib.stylix.colors.base01}
+        inactive_tab_background #${config.lib.stylix.colors.base00}
         inactive_tab_font_style normal
         tab_bar_background #${config.lib.stylix.colors.base00}
       '';
