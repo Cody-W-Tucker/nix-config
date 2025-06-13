@@ -41,10 +41,10 @@
         "browseable" = "yes";
         "read only" = "no";
         "guest ok" = "yes";
-        "create mask" = "0666";
-        "directory mask" = "0777";
         "force user" = "paperless";
         "force group" = "paperless";
+        "create mask" = "0664";
+        "directory mask" = "2775";
       };
     };
   };
