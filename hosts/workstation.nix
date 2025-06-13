@@ -78,6 +78,24 @@
     options = [ "bind" "nofail" ];
   };
 
+  # Enable scan button daemon and paperless-scanning.nix
+  services.scanbd = {
+    enable = true;
+  };
+  fileSystems."/var/lib/paperless/consume" = {
+    device = "//server/PaperlessConsume";
+    fsType = "cifs";
+    options = [
+      "guest"
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=60"
+      "x-systemd.device-timeout=5s"
+      "x-systemd.mount-timeout=5s"
+    ];
+  };
+
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
@@ -286,6 +304,7 @@
       nvidia-vaapi-driver
       egl-wayland
       inputs.web-downloader.packages.${pkgs.system}.default
+      cifs-utils
     ]);
 
   # Docker
