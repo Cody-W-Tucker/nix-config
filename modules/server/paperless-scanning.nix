@@ -4,7 +4,7 @@ with lib;
 
 let
   configDir = "/etc/scanbd";
-  saneConfigDir = "${configDir}/sane.d";
+  # saneConfigDir = "${configDir}/sane.d";
 
   scanbdConf = pkgs.writeText "scanbd.conf"
     ''
