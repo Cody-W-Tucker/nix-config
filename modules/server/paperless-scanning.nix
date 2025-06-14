@@ -172,11 +172,20 @@ in
       sha256 = "00cv25v4xlrgp3di9bdfd07pffh9jq2j0hncmjv3c65m8bqhjglq";
     };
 
-    services.udev.enable = true;
-
     services.udev.extraRules = ''
       SUBSYSTEM=="usb", ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="132b", MODE="0660", GROUP="scanner"
     '';
+
+    systemd.tmpfiles.rules = [
+      "d /var/lib/scanbd 0770 scanner scanner -"
+    ];
+
+    systemd.services.scanbd.environment = {
+      SANE_STATE_DIR = "/var/lib/scanbd";
+      SANE_LOCK_DIR = "/var/lib/scanbd";
+      HOME = "/var/lib/scanbd";
+    };
+
 
     users.groups.scanner.gid = config.ids.gids.scanner;
     users.users.scanner = {
