@@ -172,6 +172,8 @@ in
       sha256 = "00cv25v4xlrgp3di9bdfd07pffh9jq2j0hncmjv3c65m8bqhjglq";
     };
 
+    services.udev.enable = true;
+
     services.udev.extraRules = ''
       SUBSYSTEM=="usb", ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="132b", MODE="0660", GROUP="scanner"
     '';
