@@ -2,9 +2,6 @@
   # Load the 'sg' kernel module to allow the container to see disk drives
   boot.kernelModules = [ "sg" ];
 
-  # Enable udev to allow the container to see disk drives and other devices
-  services.udev.enable = true;
-
   # Open port 9090 for the web UI of the container
   # networking.firewall.allowedTCPPorts = [ 9090 ];
 
