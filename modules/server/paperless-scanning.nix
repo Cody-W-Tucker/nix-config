@@ -166,12 +166,6 @@ in
     hardware.sane.enable = true;
     hardware.sane.drivers.scanSnap.enable = true;
 
-    nixpkgs.config.sane.snapscanFirmware = pkgs.fetchurl {
-      # https://wiki.ubuntuusers.de/Scanner/Epson_Perfection/#Unterstuetzte-Geraete
-      url = "https://media-cdn.ubuntu-de.org/wiki/attachments/52/46/Esfw41.bin"; #Epson Perfection 2480
-      sha256 = "00cv25v4xlrgp3di9bdfd07pffh9jq2j0hncmjv3c65m8bqhjglq";
-    };
-
     services.udev.extraRules = ''
       SUBSYSTEM=="usb", ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="132b", MODE="0660", GROUP="scanner"
     '';
