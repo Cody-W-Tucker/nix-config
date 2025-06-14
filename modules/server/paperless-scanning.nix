@@ -4,7 +4,7 @@ with lib;
 
 let
   configDir = "/etc/scanbd";
-  # saneConfigDir = "${configDir}/sane.d";
+  saneConfigDir = "${configDir}/sane.d";
 
   scanbdConf = pkgs.writeText "scanbd.conf"
     ''
@@ -174,6 +174,11 @@ in
       # Enable Fujitsu ScanSnap iX500
       usb 0x04c5 0x132b
     '';
+
+    environment.etc."sane.d/epjitsu.conf".text = ''
+      usb 0x04c5 0x132b
+    '';
+
 
 
     users.groups.scanner.gid = config.ids.gids.scanner;
