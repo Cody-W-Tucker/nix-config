@@ -90,7 +90,7 @@
     fsType = "cifs";
     options = [
       "guest"
-      "uid=1000" # codyt user
+      "uid=59" # scanner user
       "gid=59" # Scanner group
       "x-systemd.automount"
       "noauto"
