@@ -178,17 +178,6 @@ in
       SUBSYSTEM=="usb", ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="132b", MODE="0660", GROUP="scanner"
     '';
 
-    environment.etc."sane.d/fujitsu.conf".text = ''
-      # Enable Fujitsu ScanSnap iX500
-      usb 0x04c5 0x132b
-    '';
-
-    environment.etc."sane.d/epjitsu.conf".text = ''
-      usb 0x04c5 0x132b
-    '';
-
-
-
     users.groups.scanner.gid = config.ids.gids.scanner;
     users.users.scanner = {
       uid = config.ids.uids.scanner;
