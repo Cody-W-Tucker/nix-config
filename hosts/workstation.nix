@@ -19,7 +19,7 @@
   networking.hostName = "workstation"; # Define your hostname.
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "sd_mod" "ehci_pci" "usb_storage" ];
-  boot.kernelModules = [ "kvm-intel" "btusb" "btintel" ];
+  boot.kernelModules = [ "kvm-intel" "btusb" "btintel" "sg" ];
   boot.extraModulePackages = [ ];
   time.hardwareClockInLocalTime = true;
 
