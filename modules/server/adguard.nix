@@ -33,17 +33,7 @@
         hide-identity = true;
         hide-version = true;
       };
-      forward-zone = [
-        # Example config with quad9
-        {
-          name = ".";
-          forward-addr = [
-            "9.9.9.9#dns.quad9.net"
-            "149.112.112.112#dns.quad9.net"
-          ];
-          forward-tls-upstream = true;  # Protected DNS
-        }
-      ];
+      forward-zone = [ ];
     };
   };
 
@@ -54,8 +44,8 @@
   };
 
   # Add a fallback to ensure server will reboot
-  networking.nameservers = [ 
-    "127.0.0.1"  # Local resolver
-    "1.1.1.1"    # Cloudflare fallback
+  networking.nameservers = [
+    "127.0.0.1" # Local resolver
+    "1.1.1.1" # Cloudflare fallback
   ];
 }
