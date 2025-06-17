@@ -30,12 +30,12 @@
     environment = {
       "PENPOT_ASSETS_STORAGE_BACKEND" = "assets-fs";
       "PENPOT_DATABASE_PASSWORD" = "penpot";
-      "PENPOT_DATABASE_URI" = "postgresql://penpot-postgres/penpot";
+      "PENPOT_DATABASE_URI" = "postgresql://penpot-penpot-postgres/penpot";
       "PENPOT_DATABASE_USERNAME" = "penpot";
       "PENPOT_FLAGS" = "disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies";
       "PENPOT_HTTP_SERVER_MAX_BODY_SIZE" = "31457280";
       "PENPOT_HTTP_SERVER_MAX_MULTIPART_BODY_SIZE" = "367001600";
-      "PENPOT_PUBLIC_URI" = "http://localhost:8080";
+      "PENPOT_PUBLIC_URI" = "https://design.homehub.tv";
       "PENPOT_REDIS_URI" = "redis://penpot-redis/0";
       "PENPOT_SMTP_DEFAULT_FROM" = "no-reply@example.com";
       "PENPOT_SMTP_DEFAULT_REPLY_TO" = "no-reply@example.com";
