@@ -21,6 +21,11 @@
       group = "media";
     };
 
+    bazarr = {
+      enable = true;
+      group = "media";
+    };
+
     lidarr = {
       enable = true;
       group = "media";
@@ -148,6 +153,15 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://127.0.0.1:7878";
+        };
+        kTLS = true;
+      };
+      "bazarr.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://127.0.0.1:6767";
         };
         kTLS = true;
       };
