@@ -50,6 +50,7 @@
       history.size = 10000;
       shellAliases = {
         ssh- = "kitty +kitten ssh";
+        cat = "bat";
         cd = "z";
         ll = "eza -l";
         ls = "eza";
