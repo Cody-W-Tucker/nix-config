@@ -23,6 +23,7 @@
     ./syncthing.nix
     ./security.nix
     ./penpot.nix
+    ./supabase.nix
   ];
 
   # Create the acme secret in sops

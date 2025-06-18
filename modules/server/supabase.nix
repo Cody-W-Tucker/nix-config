@@ -2,21 +2,14 @@
 { pkgs, lib, config, ... }:
 
 {
-  # Runtime
-  virtualisation.podman = {
-    enable = true;
-    autoPrune.enable = true;
-    dockerCompat = true;
-  };
-
-  # Enable container name DNS for all Podman networks.
-  networking.firewall.interfaces = let
-    matchAll = if !config.networking.nftables.enable then "podman+" else "podman*";
-  in {
-    "${matchAll}".allowedUDPPorts = [ 53 ];
-  };
-
-  virtualisation.oci-containers.backend = "podman";
+  # Enable container name DNS for all docker networks.
+  networking.firewall.interfaces =
+    let
+      matchAll = if !config.networking.nftables.enable then "docker+" else "docker*";
+    in
+    {
+      "${matchAll}".allowedUDPPorts = [ 53 ];
+    };
 
   # Containers
   virtualisation.oci-containers.containers."realtime-dev.supabase-realtime" = {
@@ -56,21 +49,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-realtime-dev.supabase-realtime" = {
+  systemd.services."docker-realtime-dev.supabase-realtime" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-analytics" = {
@@ -111,21 +104,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-analytics" = {
+  systemd.services."docker-supabase-analytics" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-auth" = {
@@ -177,21 +170,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-auth" = {
+  systemd.services."docker-supabase-auth" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-db" = {
@@ -235,23 +228,23 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-db" = {
+  systemd.services."docker-supabase-db" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
-      "podman-volume-supabase_db-config.service"
+      "docker-network-supabase_default.service"
+      "docker-volume-supabase_db-config.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
-      "podman-volume-supabase_db-config.service"
+      "docker-network-supabase_default.service"
+      "docker-volume-supabase_db-config.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-edge-functions" = {
@@ -280,21 +273,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-edge-functions" = {
+  systemd.services."docker-supabase-edge-functions" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-imgproxy" = {
@@ -321,21 +314,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-imgproxy" = {
+  systemd.services."docker-supabase-imgproxy" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-kong" = {
@@ -372,21 +365,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-kong" = {
+  systemd.services."docker-supabase-kong" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-meta" = {
@@ -412,21 +405,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-meta" = {
+  systemd.services."docker-supabase-meta" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-pooler" = {
@@ -474,21 +467,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-pooler" = {
+  systemd.services."docker-supabase-pooler" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-rest" = {
@@ -516,21 +509,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-rest" = {
+  systemd.services."docker-supabase-rest" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-storage" = {
@@ -571,21 +564,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-storage" = {
+  systemd.services."docker-supabase-storage" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-studio" = {
@@ -622,21 +615,21 @@
       "--network=supabase_default"
     ];
   };
-  systemd.services."podman-supabase-studio" = {
+  systemd.services."docker-supabase-studio" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
   virtualisation.oci-containers.containers."supabase-vector" = {
@@ -663,57 +656,57 @@
       "--security-opt=label=disable"
     ];
   };
-  systemd.services."podman-supabase-vector" = {
+  systemd.services."docker-supabase-vector" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     requires = [
-      "podman-network-supabase_default.service"
+      "docker-network-supabase_default.service"
     ];
     partOf = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
     wantedBy = [
-      "podman-compose-supabase-root.target"
+      "docker-compose-supabase-root.target"
     ];
   };
 
   # Networks
-  systemd.services."podman-network-supabase_default" = {
-    path = [ pkgs.podman ];
+  systemd.services."docker-network-supabase_default" = {
+    path = [ pkgs.docker ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStop = "podman network rm -f supabase_default";
+      ExecStop = "docker network rm -f supabase_default";
     };
     script = ''
-      podman network inspect supabase_default || podman network create supabase_default
+      docker network inspect supabase_default || docker network create supabase_default
     '';
-    partOf = [ "podman-compose-supabase-root.target" ];
-    wantedBy = [ "podman-compose-supabase-root.target" ];
+    partOf = [ "docker-compose-supabase-root.target" ];
+    wantedBy = [ "docker-compose-supabase-root.target" ];
   };
 
   # Volumes
-  systemd.services."podman-volume-supabase_db-config" = {
-    path = [ pkgs.podman ];
+  systemd.services."docker-volume-supabase_db-config" = {
+    path = [ pkgs.docker ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
     };
     script = ''
-      podman volume inspect supabase_db-config || podman volume create supabase_db-config
+      docker volume inspect supabase_db-config || docker volume create supabase_db-config
     '';
-    partOf = [ "podman-compose-supabase-root.target" ];
-    wantedBy = [ "podman-compose-supabase-root.target" ];
+    partOf = [ "docker-compose-supabase-root.target" ];
+    wantedBy = [ "docker-compose-supabase-root.target" ];
   };
 
   # Root service
   # When started, this will automatically create all resources and start
   # the containers. When stopped, this will teardown all resources.
-  systemd.targets."podman-compose-supabase-root" = {
+  systemd.targets."docker-compose-supabase-root" = {
     unitConfig = {
       Description = "Root target generated by compose2nix.";
     };
