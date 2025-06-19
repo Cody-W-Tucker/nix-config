@@ -112,7 +112,12 @@ in
       numlock_by_default = "true";
       follow_mouse = "1";
       sensitivity = "-.7";
+      force_no_accel = 0;
       kb_layout = "us";
+      device = {
+        name = "2e474b20";
+        sensitivity = 1;
+      };
     };
     general = {
       border_size = "2";
