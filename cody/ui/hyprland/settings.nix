@@ -117,7 +117,7 @@ in
     };
     device = {
       name = "apple-wireless-trackpad";
-      sensitivity = ".3";
+      sensitivity = "0.1";
     };
     general = {
       border_size = "2";
