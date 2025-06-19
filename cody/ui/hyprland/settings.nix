@@ -111,11 +111,12 @@ in
     input = {
       numlock_by_default = "true";
       follow_mouse = "1";
+      sensitivity = "-.7";
       force_no_accel = 0;
       kb_layout = "us";
     };
     device = {
-      name = "2e474b20";
+      name = "apple-wireless-trackpad";
       sensitivity = 1;
     };
     general = {
