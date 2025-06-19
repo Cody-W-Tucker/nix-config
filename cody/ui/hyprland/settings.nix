@@ -114,10 +114,10 @@ in
       sensitivity = "-.7";
       force_no_accel = 0;
       kb_layout = "us";
-      device = {
-        name = "2e474b20";
-        sensitivity = 1;
-      };
+    };
+    device = {
+      name = "2e474b20";
+      sensitivity = 1;
     };
     general = {
       border_size = "2";
