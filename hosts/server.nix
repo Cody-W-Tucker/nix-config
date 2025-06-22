@@ -62,6 +62,10 @@
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
   # Nvidia
+  # Enable OpenGL
+  hardware.graphics = {
+    enable = true;
+  };
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
 
   # Don't change this
