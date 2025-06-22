@@ -61,14 +61,6 @@
   stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
-  # Nvidia
-  nixpkgs.config.nvidia.acceptLicense = true;
-  # Enable OpenGL
-  hardware.graphics = {
-    enable = true;
-  };
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
-
   # Don't change this
   system.stateVersion = "23.11"; # Did you read the comment?
 }
