@@ -649,6 +649,7 @@
   virtualisation.oci-containers.containers."supabase-vector" = {
     image = "timberio/vector:0.28.1-alpine";
     environment = {
+      "LOGFLARE_PRIVATE_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-private";
       "LOGFLARE_PUBLIC_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-public";
     };
     volumes = [
