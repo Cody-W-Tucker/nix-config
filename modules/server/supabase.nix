@@ -7,7 +7,7 @@
       forceSSL = true;
       useACMEHost = "homehub.tv";
       locations."/" = {
-        proxyPass = "http://localhost:3000";
+        proxyPass = "http://localhost:8800";
         proxyWebsockets = true;
       };
     };
@@ -608,7 +608,6 @@
       "supabase-analytics"
     ];
     log-driver = "journald";
-    ports = [ "3000:3000/tcp" ];
     extraOptions = [
       "--health-cmd=node -e \"require('http').get('http://' + require('os').hostname() + ':3000/api/platform/profile', r => process.exit(r.statusCode === 200 ? 0 : 1))\""
       "--health-interval=5s"
