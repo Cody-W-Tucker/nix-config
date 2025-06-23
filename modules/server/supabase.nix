@@ -1,25 +1,13 @@
 # Auto-generated using compose2nix v0.3.2-pre.
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, ... }:
 
 {
-  # Enable container name DNS for all docker networks.
-  networking.firewall.interfaces =
-    let
-      matchAll = if !config.networking.nftables.enable then "docker+" else "docker*";
-    in
-    {
-      "${matchAll}".allowedUDPPorts = [ 53 ];
-    };
-
-  services.nginx.virtualHosts = {
-    "supabase.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://localhost:8123";
-      };
-    };
+  # Runtime
+  virtualisation.docker = {
+    enable = true;
+    autoPrune.enable = true;
   };
+  virtualisation.oci-containers.backend = "docker";
 
   # Containers
   virtualisation.oci-containers.containers."realtime-dev.supabase-realtime" = {
@@ -59,6 +47,9 @@
   systemd.services."docker-realtime-dev.supabase-realtime" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -111,6 +102,9 @@
   systemd.services."docker-supabase-analytics" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -128,7 +122,7 @@
   virtualisation.oci-containers.containers."supabase-auth" = {
     image = "supabase/gotrue:v2.174.0";
     environment = {
-      "API_EXTERNAL_URL" = "http://localhost:8123";
+      "API_EXTERNAL_URL" = "http://localhost:8000";
       "GOTRUE_API_HOST" = "0.0.0.0";
       "GOTRUE_API_PORT" = "9999";
       "GOTRUE_DB_DATABASE_URL" = "postgres://supabase_auth_admin:your-super-secret-and-long-postgres-password@db:5432/postgres";
@@ -174,6 +168,9 @@
   systemd.services."docker-supabase-auth" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -229,6 +226,9 @@
   systemd.services."docker-supabase-db" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -271,6 +271,9 @@
   systemd.services."docker-supabase-edge-functions" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -309,6 +312,9 @@
   systemd.services."docker-supabase-imgproxy" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -341,7 +347,7 @@
       "/home/codyt/supabase-docker/volumes/api/kong.yml:/home/kong/temp.yml:ro,z"
     ];
     ports = [
-      "8123:8000/tcp"
+      "8000:8000/tcp"
       "8443:8443/tcp"
     ];
     dependsOn = [
@@ -357,6 +363,9 @@
   systemd.services."docker-supabase-kong" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -394,6 +403,9 @@
   systemd.services."docker-supabase-meta" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -453,6 +465,9 @@
   systemd.services."docker-supabase-pooler" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -492,6 +507,9 @@
   systemd.services."docker-supabase-rest" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -544,6 +562,9 @@
   systemd.services."docker-supabase-storage" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -572,7 +593,7 @@
       "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "STUDIO_PG_META_URL" = "http://meta:8080";
       "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
-      "SUPABASE_PUBLIC_URL" = "http://localhost:8123";
+      "SUPABASE_PUBLIC_URL" = "http://localhost:8000";
       "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
       "SUPABASE_URL" = "http://kong:8000";
     };
@@ -592,6 +613,9 @@
   systemd.services."docker-supabase-studio" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
@@ -630,6 +654,9 @@
   systemd.services."docker-supabase-vector" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
       "docker-network-supabase_default.service"
