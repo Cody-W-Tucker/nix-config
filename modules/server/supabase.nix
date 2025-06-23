@@ -2,6 +2,16 @@
 { pkgs, lib, ... }:
 
 {
+  services.nginx.virtualHosts = {
+    "supabase.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/" = {
+        proxyPass = "http://localhost:8123";
+      };
+    };
+  };
+
   # Runtime
   virtualisation.docker = {
     enable = true;
@@ -122,7 +132,7 @@
   virtualisation.oci-containers.containers."supabase-auth" = {
     image = "supabase/gotrue:v2.174.0";
     environment = {
-      "API_EXTERNAL_URL" = "http://localhost:8000";
+      "API_EXTERNAL_URL" = "http://localhost:8800";
       "GOTRUE_API_HOST" = "0.0.0.0";
       "GOTRUE_API_PORT" = "9999";
       "GOTRUE_DB_DATABASE_URL" = "postgres://supabase_auth_admin:your-super-secret-and-long-postgres-password@db:5432/postgres";
@@ -347,7 +357,7 @@
       "/home/codyt/supabase-docker/volumes/api/kong.yml:/home/kong/temp.yml:ro,z"
     ];
     ports = [
-      "8000:8000/tcp"
+      "8800:8000/tcp"
       "8443:8443/tcp"
     ];
     dependsOn = [
@@ -593,7 +603,7 @@
       "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "STUDIO_PG_META_URL" = "http://meta:8080";
       "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
-      "SUPABASE_PUBLIC_URL" = "http://localhost:8000";
+      "SUPABASE_PUBLIC_URL" = "http://localhost:8800";
       "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
       "SUPABASE_URL" = "http://kong:8000";
     };

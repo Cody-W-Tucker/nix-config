@@ -2,13 +2,13 @@
   services.adguardhome = {
     enable = true;
     openFirewall = false;
-    port = 8001;
+    port = 8000;
   };
   services.nginx.virtualHosts."adguard.homehub.tv" = {
     useACMEHost = "homehub.tv";
     forceSSL = true;
     locations."/" = {
-      proxyPass = "http://localhost:8001";
+      proxyPass = "http://localhost:8000";
       proxyWebsockets = true;
     };
     kTLS = true;
