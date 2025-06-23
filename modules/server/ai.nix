@@ -114,7 +114,7 @@ in
     ollama = {
       enable = true;
       port = 11434;
-      openFirewall = true;
+      openFirewall = false;
       host = "0.0.0.0";
     };
     # Content extraction
