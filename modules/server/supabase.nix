@@ -358,7 +358,7 @@
       "/home/codyt/supabase-docker/volumes/api/kong.yml:/home/kong/temp.yml:ro"
     ];
     extraOptions = [
-      "--entrypoint=sh"
+      "--entrypoint=bash"
       "--network=supabase_default"
     ];
     cmd = [
