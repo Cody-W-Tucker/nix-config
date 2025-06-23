@@ -8,7 +8,7 @@
         analytics.reporting_enabled = false;
         server = {
           # Listening Address
-          http_addr = "localhost";
+          http_addr = "127.0.0.1";
           # and Port
           http_port = 3001;
           # Grafana needs to know on which domain and URL it's running
@@ -47,7 +47,7 @@
           job_name = "server";
           static_configs = [
             {
-              targets = [ "localhost:${toString config.services.prometheus.exporters.node.port}" ];
+              targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
               labels = {
                 host = "server";
               };
@@ -84,7 +84,7 @@
           replication_factor = 1;
           ring = {
             kvstore.store = "inmemory";
-            instance_addr = "localhost";
+            instance_addr = "127.0.0.1";
           };
         };
 
