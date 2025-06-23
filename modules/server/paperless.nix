@@ -14,7 +14,7 @@ in
     settings = {
       PAPERLESS_ADMIN_USER = "codyt";
       PAPERLESS_TIKA_ENABLED = "true";
-      PAPERLESS_TIKA_URL = "http://127.0.0.1:9998";
+      PAPERLESS_TIKA_URL = "http://localhost:9998";
       # Look in consume subdirectories for docs
       PAPERLESS_CONSUMER_RECURSIVE = "true";
       PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
@@ -43,7 +43,7 @@ in
       useACMEHost = "homehub.tv";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString port}";
+        proxyPass = "http://localhost:${toString port}";
         proxyWebsockets = true;
         # These configuration options are required for WebSockets to work.
         # Without them Tika document conversion wouldn't work

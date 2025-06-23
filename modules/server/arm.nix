@@ -20,7 +20,7 @@
   services.nginx.virtualHosts."arm.homehub.tv" = {
     forceSSL = true;
     useACMEHost = "homehub.tv";
-    locations."/".proxyPass = "http://127.0.0.1:9090";
+    locations."/".proxyPass = "http://localhost:9090";
     kTLS = true;
   };
 

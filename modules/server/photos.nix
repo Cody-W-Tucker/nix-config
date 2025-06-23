@@ -2,7 +2,7 @@
   services.immich = {
     enable = true;
     port = 2283;
-    host = "127.0.0.1";
+    host = "localhost";
     mediaLocation = "/mnt/hdd/Photos";
     group = "media";
   };
@@ -14,7 +14,7 @@
     forceSSL = true;
     useACMEHost = "homehub.tv";
     locations."/" = {
-      proxyPass = "http://127.0.0.1:2283";
+      proxyPass = "http://localhost:2283";
       proxyWebsockets = true;
       recommendedProxySettings = true;
       extraConfig = ''

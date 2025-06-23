@@ -16,7 +16,7 @@ in
     useACMEHost = "homehub.tv";
     forceSSL = true;
     locations."/" = {
-      proxyPass = "http://127.0.0.1:${toString PORT}/";
+      proxyPass = "http://localhost:${toString PORT}/";
       proxyWebsockets = true;
       # The default value 1M might be a little too small.
       extraConfig = ''

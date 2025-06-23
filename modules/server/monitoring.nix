@@ -8,7 +8,7 @@
         analytics.reporting_enabled = false;
         server = {
           # Listening Address
-          http_addr = "127.0.0.1";
+          http_addr = "localhost";
           # and Port
           http_port = 3001;
           # Grafana needs to know on which domain and URL it's running
@@ -22,12 +22,12 @@
           {
             name = "Prometheus";
             type = "prometheus";
-            url = "http://127.0.0.1:${toString config.services.prometheus.port}";
+            url = "http://localhost:${toString config.services.prometheus.port}";
           }
           # {
           #   name = "Loki";
           #   type = "loki";
-          #   url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
+          #   url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}";
           # }
         ];
       };
@@ -47,7 +47,7 @@
           job_name = "server";
           static_configs = [
             {
-              targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
+              targets = [ "localhost:${toString config.services.prometheus.exporters.node.port}" ];
               labels = {
                 host = "server";
               };
@@ -84,7 +84,7 @@
           replication_factor = 1;
           ring = {
             kvstore.store = "inmemory";
-            instance_addr = "127.0.0.1";
+            instance_addr = "localhost";
           };
         };
 
@@ -144,7 +144,7 @@
           filename = "/tmp/positions.yaml";
         };
         clients = [{
-          url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
+          url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
         }];
         scrape_configs = [
           {
@@ -170,7 +170,7 @@
       useACMEHost = "homehub.tv";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString config.services.grafana.settings.server.http_port}";
+        proxyPass = "http://localhost:${toString config.services.grafana.settings.server.http_port}";
         proxyWebsockets = true;
         recommendedProxySettings = true;
       };

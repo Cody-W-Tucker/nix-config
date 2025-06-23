@@ -68,7 +68,7 @@ in
         forceSSL = true;
         # HTTP API (REST API on port 6333)
         locations."/" = {
-          proxyPass = "http://127.0.0.1:6333"; # Forward REST traffic
+          proxyPass = "http://localhost:6333"; # Forward REST traffic
           proxyWebsockets = true; # Extra flexibility for WebSockets (not required for REST API)
           # Optional: Add headers to preserve proxy context
           extraConfig = ''
@@ -79,12 +79,12 @@ in
         };
         # gRPC API (on port 6334)
         locations."/grpc" = {
-          proxyPass = "http://127.0.0.1:6334"; # Forward gRPC traffic
+          proxyPass = "http://localhost:6334"; # Forward gRPC traffic
           extraConfig = ''
             grpc_set_header Host $host;
             grpc_set_header X-Real-IP $remote_addr;
             grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            grpc_pass grpc://127.0.0.1:6334;    # Ensure grpc_pass for gRPC-specific handling
+            grpc_pass grpc://localhost:6334;    # Ensure grpc_pass for gRPC-specific handling
           '';
         };
       };
@@ -92,7 +92,7 @@ in
         useACMEHost = "homehub.tv";
         forceSSL = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:8888";
+          proxyPass = "http://localhost:8888";
           proxyWebsockets = true;
         };
       };
@@ -101,7 +101,7 @@ in
         forceSSL = true;
         kTLS = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:8080";
+          proxyPass = "http://localhost:8080";
           proxyWebsockets = true;
           extraConfig = ''
             proxy_buffering off;
