@@ -46,7 +46,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"curl\", \"-sSfL\", \"--head\", \"-o\", \"/dev/null\", \"-H\", \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE\", \"http://localhost:4000/api/tenants/realtime-dev/health\"]"
+      "--health-cmd=curl -sSfL --head -o /dev/null -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE http://localhost:4000/api/tenants/realtime-dev/health"
       "--health-interval=5s"
       "--health-retries=3"
       "--health-timeout=5s"
@@ -101,7 +101,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"curl\", \"http://localhost:4000/health\"]"
+      "--health-cmd=curl http://localhost:4000/health"
       "--health-interval=5s"
       "--health-retries=10"
       "--health-timeout=5s"
@@ -167,7 +167,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"wget\", \"--no-verbose\", \"--tries=1\", \"--spider\", \"http://localhost:9999/health\"]"
+      "--health-cmd=wget --no-verbose --tries=1 --spider http://localhost:9999/health"
       "--health-interval=5s"
       "--health-retries=3"
       "--health-timeout=5s"
@@ -225,7 +225,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"pg_isready\", \"-U\", \"postgres\", \"-h\", \"localhost\"]"
+      "--health-cmd=pg_isready -U postgres -h localhost"
       "--health-interval=5s"
       "--health-retries=10"
       "--health-timeout=5s"
@@ -311,7 +311,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"imgproxy\", \"health\"]"
+      "--health-cmd=imgproxy health"
       "--health-interval=5s"
       "--health-retries=3"
       "--health-timeout=5s"
@@ -464,7 +464,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"curl\", \"-sSfL\", \"--head\", \"-o\", \"/dev/null\", \"http://127.0.0.1:4000/api/health\"]"
+      "--health-cmd=curl -sSfL --head -o /dev/null\ http://127.0.0.1:4000/api/health"
       "--health-interval=10s"
       "--health-retries=5"
       "--health-timeout=5s"
@@ -561,7 +561,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"wget\", \"--no-verbose\", \"--tries=1\", \"--spider\", \"http://storage:5000/status\"]"
+      "--health-cmd=wget --no-verbose --tries=1 --spider http://storage:5000/status"
       "--health-interval=5s"
       "--health-retries=3"
       "--health-timeout=5s"
@@ -612,7 +612,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"node\", \"-e\", \"fetch('http://studio:3000/api/platform/profile').then((r) => {if (r.status !== 200) throw new Error(r.status)})\"]"
+      "--health-cmd=curl -sf -o /dev/null http://studio:3000/api/platform/profile"
       "--health-interval=5s"
       "--health-retries=3"
       "--health-timeout=10s"
@@ -652,7 +652,7 @@
     cmd = [ "--config" "/etc/vector/vector.yml" ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=[\"wget\", \"--no-verbose\", \"--tries=1\", \"--spider\", \"http://vector:9001/health\"]"
+      "--health-cmd=wget --no-verbose --tries=1 --spider http://vector:9001/health"
       "--health-interval=5s"
       "--health-retries=3"
       "--health-timeout=5s"
