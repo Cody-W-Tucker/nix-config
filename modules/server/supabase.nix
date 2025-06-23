@@ -3,11 +3,11 @@
 
 {
   services.nginx.virtualHosts = {
-    "supabase.homehub.tv" = {
+    "studio.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";
       locations."/" = {
-        proxyPass = "http://localhost:8123";
+        proxyPass = "http://localhost:3000";
       };
     };
   };
