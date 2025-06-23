@@ -363,7 +363,7 @@
     ];
     cmd = [
       "-c"
-      "'eval \"echo \"$$(cat /home/kong/temp.yml)\"\" > /home/kong/kong.yml && /docker-entrypoint.sh kong docker-start'"
+      "eval echo \"$$(cat /home/kong/temp.yml)\" > /home/kong/kong.yml && /docker-entrypoint.sh kong docker-start"
     ];
     ports = [
       "8800:8000/tcp"
