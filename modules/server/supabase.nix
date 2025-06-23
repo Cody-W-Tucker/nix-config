@@ -363,7 +363,7 @@
     ];
     cmd = [
       "-c"
-      "while IFS= read -r line; do eval echo \"$line\"; done < /home/kong/temp.yml > /home/kong/kong.yml && exec /docker-entrypoint.sh kong docker-start"
+      "'eval \"echo \"$$(cat ~/temp.yml)\"\" > ~/kong.yml && /docker-entrypoint.sh kong docker-start'"
     ];
     ports = [
       "8800:8000/tcp"
