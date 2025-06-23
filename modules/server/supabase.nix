@@ -365,7 +365,10 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--entrypoint=bash -c 'eval \"echo \\\"$(cat ~/temp.yml)\\\"\" > ~/kong.yml && /docker-entrypoint.sh kong docker-start'"
+      "--entrypoint=sh"
+      "--"
+      "-c"
+      "eval \"echo \\\"$(cat /home/kong/temp.yml)\\\"\" > /home/kong/kong.yml && /docker-entrypoint.sh kong docker-start"
       "--network=supabase_default"
     ];
   };
