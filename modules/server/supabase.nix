@@ -357,7 +357,14 @@
     volumes = [
       "/home/codyt/supabase-docker/volumes/api/kong.yml:/home/kong/kong.yml:ro"
     ];
-
+    extraOptions = [
+      "--entrypoint=sh"
+      "--network=supabase_default"
+    ];
+    command = [
+      "-c"
+      "envsubst < /home/kong/temp.yml > /home/kong/kong.yml && exec /docker-entrypoint.sh kong docker-start"
+    ];
     ports = [
       "8800:8000/tcp"
       "8443:8443/tcp"
