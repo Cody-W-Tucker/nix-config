@@ -361,7 +361,7 @@
       "--entrypoint=sh"
       "--network=supabase_default"
     ];
-    command = [
+    cmd = [
       "-c"
       "envsubst < /home/kong/temp.yml > /home/kong/kong.yml && exec /docker-entrypoint.sh kong docker-start"
     ];
