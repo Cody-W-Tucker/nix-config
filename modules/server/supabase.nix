@@ -42,9 +42,6 @@
       "SECRET_KEY_BASE" = "UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq";
       "SEED_SELF_HOST" = "true";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     dependsOn = [
       "supabase-analytics"
       "supabase-db"
@@ -95,9 +92,6 @@
       "POSTGRES_BACKEND_SCHEMA" = "_analytics";
       "POSTGRES_BACKEND_URL" = "postgresql://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/_supabase";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     ports = [
       "4000:4000/tcp"
     ];
@@ -163,9 +157,6 @@
       "GOTRUE_SMTP_USER" = "fake_mail_user";
       "GOTRUE_URI_ALLOW_LIST" = "";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     dependsOn = [
       "supabase-analytics"
       "supabase-db"
@@ -210,9 +201,6 @@
       "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "POSTGRES_PORT" = "5432";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     volumes = [
       "/home/codyt/supabase-docker/volumes/db/_supabase.sql:/docker-entrypoint-initdb.d/migrations/97-_supabase.sql:rw,Z"
       "/home/codyt/supabase-docker/volumes/db/data:/var/lib/postgresql/data:rw,Z"
@@ -267,9 +255,6 @@
       "SUPABASE_URL" = "http://kong:8000";
       "VERIFY_JWT" = "false";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     volumes = [
       "/home/codyt/supabase-docker/volumes/functions:/home/deno/functions:rw,Z"
     ];
@@ -308,9 +293,6 @@
       "IMGPROXY_LOCAL_FILESYSTEM_ROOT" = "/";
       "IMGPROXY_USE_ETAG" = "true";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     volumes = [
       "/home/codyt/supabase-docker/volumes/storage:/var/lib/storage:rw,z"
     ];
@@ -355,9 +337,6 @@
       "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
       "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     volumes = [
       "/home/codyt/supabase-docker/volumes/api/kong.yml:/home/kong/temp.yml:ro,z"
     ];
@@ -402,9 +381,6 @@
       "PG_META_DB_USER" = "supabase_admin";
       "PG_META_PORT" = "8080";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     dependsOn = [
       "supabase-analytics"
       "supabase-db"
@@ -452,9 +428,6 @@
       "SECRET_KEY_BASE" = "UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq";
       "VAULT_ENC_KEY" = "your-encryption-key-32-chars-min";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     volumes = [
       "/home/codyt/supabase-docker/volumes/pooler/pooler.exs:/etc/pooler/pooler.exs:ro,z"
     ];
@@ -505,9 +478,6 @@
       "PGRST_DB_USE_LEGACY_GUCS" = "false";
       "PGRST_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     cmd = [ "postgrest" ];
     dependsOn = [
       "supabase-analytics"
@@ -553,9 +523,6 @@
       "STORAGE_BACKEND" = "file";
       "TENANT_ID" = "stub";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     volumes = [
       "/home/codyt/supabase-docker/volumes/storage:/var/lib/storage:rw,z"
     ];
@@ -609,9 +576,6 @@
       "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
       "SUPABASE_URL" = "http://kong:8000";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     dependsOn = [
       "supabase-analytics"
     ];
@@ -647,9 +611,6 @@
     environment = {
       "LOGFLARE_PUBLIC_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-public";
     };
-    environmentFiles = [
-      "/home/codyt/supabase-docker/.env"
-    ];
     volumes = [
       "/home/codyt/supabase-docker/volumes/logs/vector.yml:/etc/vector/vector.yml:ro,z"
       "/var/run/docker.sock:/var/run/docker.sock:ro,z"
