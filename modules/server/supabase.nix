@@ -601,6 +601,7 @@
       "DEFAULT_ORGANIZATION_NAME" = "Default Organization";
       "DEFAULT_PROJECT_NAME" = "Default Project";
       "LOGFLARE_PRIVATE_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-private";
+      "LOGFLARE_PUBLIC_ACCESS_TOKEN" = "your-secret-public-key";
       "LOGFLARE_URL" = "http://analytics:4000";
       "NEXT_ANALYTICS_BACKEND_PROVIDER" = "postgres";
       "NEXT_PUBLIC_ENABLE_LOGS" = "true";
