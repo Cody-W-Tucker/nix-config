@@ -454,7 +454,7 @@
       "/home/codyt/supabase-docker/volumes/pooler/pooler.exs:/etc/pooler/pooler.exs:ro,z"
     ];
     ports = [
-      "5432:5432/tcp"
+      "15432:5432/tcp"
       "6543:6543/tcp"
     ];
     cmd = [ "/bin/sh" "-c" "/app/bin/migrate && /app/bin/supavisor eval \"$(cat /etc/pooler/pooler.exs)\" && /app/bin/server" ];
