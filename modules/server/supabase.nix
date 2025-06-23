@@ -611,7 +611,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=node -e \"require('http').get('http://localhost:3000/api/platform/profile', r => process.exit(r.statusCode === 200 ? 0 : 1))\""
+      "--health-cmd=node -e \"require('http').get('http://0.0.0.0:3000/api/platform/profile', r => process.exit(r.statusCode === 200 ? 0 : 1))\""
       "--health-interval=5s"
       "--health-retries=3"
       "--health-timeout=10s"
