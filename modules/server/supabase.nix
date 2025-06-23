@@ -86,7 +86,7 @@
       "DB_USERNAME" = "supabase_admin";
       "LOGFLARE_FEATURE_FLAG_OVERRIDE" = "multibackend=true";
       "LOGFLARE_MIN_CLUSTER_SIZE" = "1";
-      "LOGFLARE_NODE_HOST" = "127.0.0.1";
+      "LOGFLARE_NODE_HOST" = "0.0.0.0";
       "LOGFLARE_PRIVATE_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-private";
       "LOGFLARE_PUBLIC_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-public";
       "LOGFLARE_SINGLE_TENANT" = "true";
@@ -107,6 +107,7 @@
       "--health-retries=10"
       "--health-timeout=5s"
       "--network-alias=analytics"
+      "--network-alias=logflare_db"
       "--network=supabase_default"
     ];
   };
@@ -221,9 +222,6 @@
       "supabase_db-config:/etc/postgresql-custom:rw"
     ];
     cmd = [ "postgres" "-c" "config_file=/etc/postgresql/postgresql.conf" "-c" "log_min_messages=fatal" ];
-    dependsOn = [
-      "supabase-vector"
-    ];
     log-driver = "journald";
     extraOptions = [
       "--health-cmd=pg_isready -U postgres -h localhost"
@@ -272,6 +270,7 @@
     cmd = [ "start" "--main-service" "/home/deno/functions/main" ];
     dependsOn = [
       "supabase-analytics"
+      "supabase-db"
     ];
     log-driver = "journald";
     extraOptions = [
@@ -360,6 +359,7 @@
     extraOptions = [
       "--entrypoint=bash"
       "--network=supabase_default"
+      "--network-alias=kong"
     ];
     cmd = [
       "-c"
@@ -469,7 +469,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=curl -sSfL --head -o /dev/null\ http://127.0.0.1:4000/api/health"
+      "--health-cmd=curl -sSfL --head -o /dev/null http://127.0.0.1:4000/api/health"
       "--health-interval=10s"
       "--health-retries=5"
       "--health-timeout=5s"
