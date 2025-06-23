@@ -26,14 +26,25 @@
         harden-glue = true;
         harden-dnssec-stripped = true;
         use-caps-for-id = false;
-        prefetch = true;
         edns-buffer-size = 1232;
 
         # Custom settings
         hide-identity = true;
         hide-version = true;
+
+        # Speed improvements
+        num-threads = 4;
+        msg-cache-size = "512m";
+        rrset-cache-size = "1024m";
+        cache-max-ttl = 14400;
+        cache-min-ttl = 300;
+        prefetch = true;
+        prefetch-key = true;
+        minimal-responses = true;
+        so-rcvbuf = "4m";
+        so-sndbuf = "4m";
       };
-      forward-zone = [ ];
+      forward-zone = [ ]; # leave empty for full recursive
     };
   };
 
