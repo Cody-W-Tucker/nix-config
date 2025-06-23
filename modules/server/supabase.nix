@@ -364,13 +364,6 @@
       "supabase-analytics"
     ];
     log-driver = "journald";
-    extraOptions = [
-      "--entrypoint=sh"
-      "--network=supabase_default"
-      "--"
-      "-c"
-      "eval \"echo \\\"$(cat /home/kong/temp.yml)\\\"\" > /home/kong/kong.yml && /docker-entrypoint.sh kong docker-start"
-    ];
   };
   systemd.services."docker-supabase-kong" = {
     serviceConfig = {
