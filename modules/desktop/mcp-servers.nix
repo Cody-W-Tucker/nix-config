@@ -20,7 +20,7 @@ in
         args = [ "mcp-obsidian" ];
         env = {
           OBSIDIAN_API_KEY = "${config.sops.placeholder.OBSIDIAN_API_KEY}";
-          OBSIDIAN_HOST = "https://127.0.0.1:27124";
+          OBSIDIAN_HOST = "https://localhost:27124";
         };
       };
       nixos = {

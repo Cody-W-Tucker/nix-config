@@ -14,7 +14,7 @@
     "draw.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";
-      locations."/".proxyPass = "http://127.0.0.1:2919";
+      locations."/".proxyPass = "http://localhost:2919";
       extraConfig = ''
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

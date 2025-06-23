@@ -11,7 +11,7 @@
     forceSSL = true;
     useACMEHost = "homehub.tv";
     locations."/" = {
-      proxyPass = "http://127.0.0.1:5006";
+      proxyPass = "http://localhost:5006";
       proxyWebsockets = true;
     };
     kTLS = true;
