@@ -1,7 +1,7 @@
 {
   services.adguardhome = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
     port = 8000;
   };
   services.nginx.virtualHosts."adguard.homehub.tv" = {

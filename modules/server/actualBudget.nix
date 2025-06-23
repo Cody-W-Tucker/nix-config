@@ -41,7 +41,6 @@
   #   enable = true;
   #   port = 5007;
   #   settings.hostname = "budget.homehub.tv";
-  #   openFirewall = true;
   # };
 
 }
