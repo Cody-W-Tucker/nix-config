@@ -267,7 +267,7 @@
     volumes = [
       "/home/codyt/supabase-docker/volumes/functions:/home/deno/functions:rw,Z"
     ];
-    cmd = [ "start" "--main-service" "/home/deno/functions/main" ];
+    cmd = [ "start" ];
     dependsOn = [
       "supabase-analytics"
       "supabase-db"
