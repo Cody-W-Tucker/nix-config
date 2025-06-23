@@ -363,7 +363,7 @@
     ];
     cmd = [
       "-c"
-      "envsubst < /home/kong/temp.yml > /home/kong/kong.yml && exec /docker-entrypoint.sh kong docker-start"
+      "eval \"echo \\\"\\\$(cat /home/kong/temp.yml)\\\"\" > /home/kong/kong.yml && exec /docker-entrypoint.sh kong docker-start"
     ];
     ports = [
       "8800:8000/tcp"
