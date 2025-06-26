@@ -1,5 +1,5 @@
 # Auto-generated using compose2nix v0.3.2-pre.
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   services.nginx.virtualHosts = {
@@ -20,7 +20,65 @@
   };
   virtualisation.oci-containers.backend = "docker";
 
-  # Containers
+  # Secrets
+  sops.secrets = {
+    SUPABASE_AUTH_JWT_SECRET = { }; # shared JWT secret
+    SUPABASE_POSTGRES_PASSWORD = { }; # db super-user password
+    SUPABASE_ANON_KEY = { }; # signed JWT
+    SUPABASE_SERVICE_ROLE_KEY = { }; # signed JWT
+    SUPABASE_SECRET_KEY_BASE = { }; # for realtime / pooler
+    OPENAI_API_KEY = { }; # optional
+    VAULT_ENC_KEY = { }; # optional
+    DB_ENC_KEY = { }; # optional
+  };
+
+  # Studio dashboard
+  virtualisation.oci-containers.containers."supabase-studio" = {
+    image = "supabase/studio:2025.06.02-sha-8f2993d";
+    environment = {
+      # "AUTH_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      "DEFAULT_ORGANIZATION_NAME" = "TMV Social";
+      "DEFAULT_PROJECT_NAME" = "Business Backend";
+      "NEXT_ANALYTICS_BACKEND_PROVIDER" = "postgres";
+      "NEXT_PUBLIC_ENABLE_LOGS" = "false";
+      # "OPENAI_API_KEY" = "";
+      # "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
+      "STUDIO_PG_META_URL" = "http://meta:8080";
+      # "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
+      "SUPABASE_PUBLIC_URL" = "https://studio.homehub.tv";
+      # "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
+      "SUPABASE_URL" = "http://kong:8000";
+    };
+    log-driver = "journald";
+    extraOptions = [
+      "--health-cmd=node -e \"require('http').get('http://' + require('os').hostname() + ':3000/api/platform/profile', r => process.exit(r.statusCode === 200 ? 0 : 1))\""
+      "--health-interval=5s"
+      "--health-retries=3"
+      "--health-timeout=10s"
+      "--network-alias=studio"
+      "--network=supabase_default"
+    ];
+  };
+  systemd.services."docker-supabase-studio" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
+    };
+    after = [
+      "docker-network-supabase_default.service"
+    ];
+    requires = [
+      "docker-network-supabase_default.service"
+    ];
+    partOf = [
+      "docker-compose-supabase-root.target"
+    ];
+    wantedBy = [
+      "docker-compose-supabase-root.target"
+    ];
+  };
   virtualisation.oci-containers.containers."realtime-dev.supabase-realtime" = {
     image = "supabase/realtime:v2.34.47";
     environment = {
@@ -30,7 +88,7 @@
       "DB_ENC_KEY" = "supabaserealtime";
       "DB_HOST" = "db";
       "DB_NAME" = "postgres";
-      "DB_PASSWORD" = "your-super-secret-and-long-postgres-password";
+      # "DB_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "DB_PORT" = "5432";
       "DB_USER" = "supabase_admin";
       "DNS_NODES" = "''";
@@ -38,7 +96,7 @@
       "PORT" = "4000";
       "RLIMIT_NOFILE" = "10000";
       "RUN_JANITOR" = "true";
-      "SECRET_KEY_BASE" = "UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq";
+      # "SECRET_KEY_BASE" = "UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq";
       "SEED_SELF_HOST" = "true";
     };
     dependsOn = [
@@ -80,7 +138,7 @@
       "API_EXTERNAL_URL" = "http://localhost:8800";
       "GOTRUE_API_HOST" = "0.0.0.0";
       "GOTRUE_API_PORT" = "9999";
-      "GOTRUE_DB_DATABASE_URL" = "postgres://supabase_auth_admin:your-super-secret-and-long-postgres-password@db:5432/postgres";
+      # "GOTRUE_DB_DATABASE_URL" = "postgres://supabase_auth_admin:your-super-secret-and-long-postgres-password@db:5432/postgres";
       "GOTRUE_DB_DRIVER" = "postgres";
       "GOTRUE_DISABLE_SIGNUP" = "false";
       "GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED" = "false";
@@ -90,7 +148,7 @@
       "GOTRUE_JWT_AUD" = "authenticated";
       "GOTRUE_JWT_DEFAULT_GROUP_NAME" = "authenticated";
       "GOTRUE_JWT_EXP" = "3600";
-      "GOTRUE_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      # "GOTRUE_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "GOTRUE_MAILER_AUTOCONFIRM" = "false";
       "GOTRUE_MAILER_URLPATHS_CONFIRMATION" = "/auth/v1/verify";
       "GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE" = "/auth/v1/verify";
@@ -143,13 +201,13 @@
     image = "supabase/postgres:15.8.1.060";
     environment = {
       "JWT_EXP" = "3600";
-      "JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      # "JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "PGDATABASE" = "postgres";
-      "PGPASSWORD" = "your-super-secret-and-long-postgres-password";
+      # "PGPASSWORD" = "your-super-secret-and-long-postgres-password";
       "PGPORT" = "5432";
       "POSTGRES_DB" = "postgres";
       "POSTGRES_HOST" = "/var/run/postgresql";
-      "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
+      # "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "POSTGRES_PORT" = "5432";
     };
     volumes = [
@@ -199,10 +257,10 @@
   virtualisation.oci-containers.containers."supabase-edge-functions" = {
     image = "supabase/edge-runtime:v1.67.4";
     environment = {
-      "JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
-      "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
-      "SUPABASE_DB_URL" = "postgresql://postgres:your-super-secret-and-long-postgres-password@db:5432/postgres";
-      "SUPABASE_SERVICE_ROLE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
+      # "JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      # "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
+      # "SUPABASE_DB_URL" = "postgresql://postgres:your-super-secret-and-long-postgres-password@db:5432/postgres";
+      # "SUPABASE_SERVICE_ROLE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
       "SUPABASE_URL" = "http://kong:8000";
       "VERIFY_JWT" = "false";
     };
@@ -283,7 +341,7 @@
   virtualisation.oci-containers.containers."supabase-kong" = {
     image = "kong:2.8.1";
     environment = {
-      "DASHBOARD_PASSWORD" = "this_password_is_insecure_and_should_be_updated";
+      # "DASHBOARD_PASSWORD" = "this_password_is_insecure_and_should_be_updated";
       "DASHBOARD_USERNAME" = "supabase";
       "KONG_DATABASE" = "off";
       "KONG_DECLARATIVE_CONFIG" = "/home/kong/kong.yml";
@@ -291,8 +349,8 @@
       "KONG_NGINX_PROXY_PROXY_BUFFERS" = "64 160k";
       "KONG_NGINX_PROXY_PROXY_BUFFER_SIZE" = "160k";
       "KONG_PLUGINS" = "request-transformer,cors,key-auth,acl,basic-auth";
-      "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
-      "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
+      # "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
+      # "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
     };
     volumes = [
       "/home/codyt/supabase-docker/volumes/api/kong.yml:/home/kong/temp.yml:ro,z"
@@ -338,7 +396,7 @@
     environment = {
       "PG_META_DB_HOST" = "db";
       "PG_META_DB_NAME" = "postgres";
-      "PG_META_DB_PASSWORD" = "your-super-secret-and-long-postgres-password";
+      # "PG_META_DB_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "PG_META_DB_PORT" = "5432";
       "PG_META_DB_USER" = "supabase_admin";
       "PG_META_PORT" = "8080";
@@ -375,22 +433,22 @@
   virtualisation.oci-containers.containers."supabase-pooler" = {
     image = "supabase/supavisor:2.5.1";
     environment = {
-      "API_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      # "API_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "CLUSTER_POSTGRES" = "true";
-      "DATABASE_URL" = "ecto://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/_supabase";
+      # "DATABASE_URL" = "ecto://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/_supabase";
       "ERL_AFLAGS" = "-proto_dist inet_tcp";
-      "METRICS_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      # "METRICS_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "POOLER_DEFAULT_POOL_SIZE" = "20";
       "POOLER_MAX_CLIENT_CONN" = "100";
       "POOLER_POOL_MODE" = "transaction";
       "POOLER_TENANT_ID" = "your-tenant-id";
       "PORT" = "4000";
       "POSTGRES_DB" = "postgres";
-      "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
+      # "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "POSTGRES_PORT" = "5432";
       "REGION" = "local";
-      "SECRET_KEY_BASE" = "UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq";
-      "VAULT_ENC_KEY" = "your-encryption-key-32-chars-min";
+      # "SECRET_KEY_BASE" = "UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq";
+      # "VAULT_ENC_KEY" = "your-encryption-key-32-chars-min";
     };
     volumes = [
       "/home/codyt/supabase-docker/volumes/pooler/pooler.exs:/etc/pooler/pooler.exs:ro,z"
@@ -437,12 +495,12 @@
     image = "postgrest/postgrest:v12.2.12";
     environment = {
       "PGRST_APP_SETTINGS_JWT_EXP" = "3600";
-      "PGRST_APP_SETTINGS_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      # "PGRST_APP_SETTINGS_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "PGRST_DB_ANON_ROLE" = "anon";
       "PGRST_DB_SCHEMAS" = "public,storage,graphql_public";
-      "PGRST_DB_URI" = "postgres://authenticator:your-super-secret-and-long-postgres-password@db:5432/postgres";
+      # "PGRST_DB_URI" = "postgres://authenticator:your-super-secret-and-long-postgres-password@db:5432/postgres";
       "PGRST_DB_USE_LEGACY_GUCS" = "false";
-      "PGRST_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      # "PGRST_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
     };
     cmd = [ "postgrest" ];
     dependsOn = [
@@ -477,17 +535,17 @@
   virtualisation.oci-containers.containers."supabase-storage" = {
     image = "supabase/storage-api:v1.23.0";
     environment = {
-      "ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
-      "DATABASE_URL" = "postgres://supabase_storage_admin:your-super-secret-and-long-postgres-password@db:5432/postgres";
+      # "ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
+      # "DATABASE_URL" = "postgres://supabase_storage_admin:your-super-secret-and-long-postgres-password@db:5432/postgres";
       "ENABLE_IMAGE_TRANSFORMATION" = "true";
       "FILE_SIZE_LIMIT" = "52428800";
       "FILE_STORAGE_BACKEND_PATH" = "/var/lib/storage";
       "GLOBAL_S3_BUCKET" = "stub";
       "IMGPROXY_URL" = "http://imgproxy:5001";
-      "PGRST_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
+      # "PGRST_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "POSTGREST_URL" = "http://rest:3000";
       "REGION" = "stub";
-      "SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
+      # "SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
       "STORAGE_BACKEND" = "file";
       "TENANT_ID" = "stub";
     };
@@ -510,52 +568,6 @@
     ];
   };
   systemd.services."docker-supabase-storage" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-      RestartMaxDelaySec = lib.mkOverride 90 "1m";
-      RestartSec = lib.mkOverride 90 "100ms";
-      RestartSteps = lib.mkOverride 90 9;
-    };
-    after = [
-      "docker-network-supabase_default.service"
-    ];
-    requires = [
-      "docker-network-supabase_default.service"
-    ];
-    partOf = [
-      "docker-compose-supabase-root.target"
-    ];
-    wantedBy = [
-      "docker-compose-supabase-root.target"
-    ];
-  };
-  virtualisation.oci-containers.containers."supabase-studio" = {
-    image = "supabase/studio:2025.06.02-sha-8f2993d";
-    environment = {
-      "AUTH_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
-      "DEFAULT_ORGANIZATION_NAME" = "Default Organization";
-      "DEFAULT_PROJECT_NAME" = "Default Project";
-      "NEXT_ANALYTICS_BACKEND_PROVIDER" = "postgres";
-      "NEXT_PUBLIC_ENABLE_LOGS" = "false";
-      "OPENAI_API_KEY" = "";
-      "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
-      "STUDIO_PG_META_URL" = "http://meta:8080";
-      "SUPABASE_ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
-      "SUPABASE_PUBLIC_URL" = "https://studio.homehub.tv";
-      "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
-      "SUPABASE_URL" = "http://kong:8000";
-    };
-    log-driver = "journald";
-    extraOptions = [
-      "--health-cmd=node -e \"require('http').get('http://' + require('os').hostname() + ':3000/api/platform/profile', r => process.exit(r.statusCode === 200 ? 0 : 1))\""
-      "--health-interval=5s"
-      "--health-retries=3"
-      "--health-timeout=10s"
-      "--network-alias=studio"
-      "--network=supabase_default"
-    ];
-  };
-  systemd.services."docker-supabase-studio" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
       RestartMaxDelaySec = lib.mkOverride 90 "1m";
