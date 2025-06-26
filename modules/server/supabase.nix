@@ -42,7 +42,6 @@
       "SEED_SELF_HOST" = "true";
     };
     dependsOn = [
-      "supabase-analytics"
       "supabase-db"
     ];
     log-driver = "journald";
@@ -56,62 +55,6 @@
     ];
   };
   systemd.services."docker-realtime-dev.supabase-realtime" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-      RestartMaxDelaySec = lib.mkOverride 90 "1m";
-      RestartSec = lib.mkOverride 90 "100ms";
-      RestartSteps = lib.mkOverride 90 9;
-    };
-    after = [
-      "docker-network-supabase_default.service"
-    ];
-    requires = [
-      "docker-network-supabase_default.service"
-    ];
-    partOf = [
-      "docker-compose-supabase-root.target"
-    ];
-    wantedBy = [
-      "docker-compose-supabase-root.target"
-    ];
-  };
-  virtualisation.oci-containers.containers."supabase-analytics" = {
-    image = "supabase/logflare:1.14.2";
-    environment = {
-      "DB_DATABASE" = "_supabase";
-      "DB_HOSTNAME" = "db";
-      "DB_PASSWORD" = "your-super-secret-and-long-postgres-password";
-      "DB_PORT" = "5432";
-      "DB_SCHEMA" = "_analytics";
-      "DB_USERNAME" = "supabase_admin";
-      "LOGFLARE_FEATURE_FLAG_OVERRIDE" = "multibackend=true";
-      "LOGFLARE_MIN_CLUSTER_SIZE" = "1";
-      "LOGFLARE_NODE_HOST" = "0.0.0.0";
-      "LOGFLARE_PRIVATE_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-private";
-      "LOGFLARE_PUBLIC_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-public";
-      "LOGFLARE_SINGLE_TENANT" = "true";
-      "LOGFLARE_SUPABASE_MODE" = "true";
-      "POSTGRES_BACKEND_SCHEMA" = "_analytics";
-      "POSTGRES_BACKEND_URL" = "postgresql://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/_supabase";
-    };
-    ports = [
-      "4000:4000/tcp"
-    ];
-    dependsOn = [
-      "supabase-db"
-    ];
-    log-driver = "journald";
-    extraOptions = [
-      "--health-cmd=curl http://localhost:4000/health"
-      "--health-interval=5s"
-      "--health-retries=10"
-      "--health-timeout=5s"
-      "--network-alias=analytics"
-      "--network-alias=logflare_db"
-      "--network=supabase_default"
-    ];
-  };
-  systemd.services."docker-supabase-analytics" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "always";
       RestartMaxDelaySec = lib.mkOverride 90 "1m";
@@ -164,7 +107,6 @@
       "GOTRUE_URI_ALLOW_LIST" = "";
     };
     dependsOn = [
-      "supabase-analytics"
       "supabase-db"
     ];
     log-driver = "journald";
@@ -269,7 +211,6 @@
     ];
     cmd = [ "start" ];
     dependsOn = [
-      "supabase-analytics"
       "supabase-db"
     ];
     log-driver = "journald";
@@ -370,9 +311,6 @@
       "8800:8000/tcp"
       "8443:8443/tcp"
     ];
-    dependsOn = [
-      "supabase-analytics"
-    ];
     log-driver = "journald";
   };
   systemd.services."docker-supabase-kong" = {
@@ -406,7 +344,6 @@
       "PG_META_PORT" = "8080";
     };
     dependsOn = [
-      "supabase-analytics"
       "supabase-db"
     ];
     log-driver = "journald";
@@ -464,7 +401,6 @@
     ];
     cmd = [ "/bin/sh" "-c" "/app/bin/migrate && /app/bin/supavisor eval \"$(cat /etc/pooler/pooler.exs)\" && /app/bin/server" ];
     dependsOn = [
-      "supabase-analytics"
       "supabase-db"
     ];
     log-driver = "journald";
@@ -510,7 +446,6 @@
     };
     cmd = [ "postgrest" ];
     dependsOn = [
-      "supabase-analytics"
       "supabase-db"
     ];
     log-driver = "journald";
@@ -600,11 +535,8 @@
       "AUTH_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "DEFAULT_ORGANIZATION_NAME" = "Default Organization";
       "DEFAULT_PROJECT_NAME" = "Default Project";
-      "LOGFLARE_PRIVATE_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-private";
-      "LOGFLARE_PUBLIC_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-public";
-      "LOGFLARE_URL" = "http://analytics:4000";
       "NEXT_ANALYTICS_BACKEND_PROVIDER" = "postgres";
-      "NEXT_PUBLIC_ENABLE_LOGS" = "true";
+      "NEXT_PUBLIC_ENABLE_LOGS" = "false";
       "OPENAI_API_KEY" = "";
       "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "STUDIO_PG_META_URL" = "http://meta:8080";
@@ -613,9 +545,6 @@
       "SUPABASE_SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
       "SUPABASE_URL" = "http://kong:8000";
     };
-    dependsOn = [
-      "supabase-analytics"
-    ];
     log-driver = "journald";
     extraOptions = [
       "--health-cmd=node -e \"require('http').get('http://' + require('os').hostname() + ':3000/api/platform/profile', r => process.exit(r.statusCode === 200 ? 0 : 1))\""
@@ -646,49 +575,6 @@
       "docker-compose-supabase-root.target"
     ];
   };
-  virtualisation.oci-containers.containers."supabase-vector" = {
-    image = "timberio/vector:0.28.1-alpine";
-    environment = {
-      "LOGFLARE_PRIVATE_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-private";
-      "LOGFLARE_PUBLIC_ACCESS_TOKEN" = "your-super-secret-and-long-logflare-key-public";
-    };
-    volumes = [
-      "/home/codyt/supabase-docker/volumes/logs/vector.yml:/etc/vector/vector.yml:ro,z"
-      "/var/run/docker.sock:/var/run/docker.sock:ro,z"
-    ];
-    cmd = [ "--config" "/etc/vector/vector.yml" ];
-    log-driver = "journald";
-    extraOptions = [
-      "--health-cmd=wget --no-verbose --tries=1 --spider http://vector:9001/health"
-      "--health-interval=5s"
-      "--health-retries=3"
-      "--health-timeout=5s"
-      "--network-alias=vector"
-      "--network=supabase_default"
-      "--security-opt=label=disable"
-    ];
-  };
-  systemd.services."docker-supabase-vector" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-      RestartMaxDelaySec = lib.mkOverride 90 "1m";
-      RestartSec = lib.mkOverride 90 "100ms";
-      RestartSteps = lib.mkOverride 90 9;
-    };
-    after = [
-      "docker-network-supabase_default.service"
-    ];
-    requires = [
-      "docker-network-supabase_default.service"
-    ];
-    partOf = [
-      "docker-compose-supabase-root.target"
-    ];
-    wantedBy = [
-      "docker-compose-supabase-root.target"
-    ];
-  };
-
   # Networks
   systemd.services."docker-network-supabase_default" = {
     path = [ pkgs.docker ];
