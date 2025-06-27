@@ -21,7 +21,7 @@
   sops.templates = {
     "rest".content = ''
       PGRST_APP_SETTINGS_JWT_SECRET=${config.sops.placeholder."SUPABASE_JWT_SECRET"}
-      PGRST_DB_URI=postgres://authenticator:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres"
+      PGRST_DB_URI=postgres://authenticator:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres
       PGRST_JWT_SECRET=${config.sops.placeholder."SUPABASE_JWT_SECRET"}
     '';
   };
