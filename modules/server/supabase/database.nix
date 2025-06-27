@@ -19,7 +19,7 @@
 
   sops.templates = {
     "auth".content = ''
-      GOTRUE_DB_DATABASE_URL=postgres://authenticator:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres
+      GOTRUE_DB_DATABASE_URL=postgres://supabase_auth_admin:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres
       GOTRUE_JWT_SECRET=${config.sops.placeholder."SUPABASE_JWT_SECRET"}
     '';
   };
@@ -33,7 +33,7 @@
   sops.templates = {
     "pooler".content = ''
       API_JWT_SECRET=${config.sops.placeholder."SUPABASE_JWT_SECRET"}
-      DATABASE_URL=postgres://authenticator:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres
+      DATABASE_URL=postgres://supabase_admin:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres
       METRICS_JWT_SECRET=${config.sops.placeholder."SUPABASE_JWT_SECRET"}
       POSTGRES_PASSWORD=${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}
       SECRET_KEY_BASE=${config.sops.placeholder."SUPABASE_SECRET_KEY_BASE"}

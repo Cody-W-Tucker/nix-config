@@ -12,7 +12,7 @@
   sops.templates = {
     "storage".content = ''
       ANON_KEY=${config.sops.placeholder."SUPABASE_ANON_KEY"}
-      DATABASE_URL=postgres://authenticator:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres
+      DATABASE_URL=postgres://supabase_storage_admin:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres
       PGRST_JWT_SECRET=${config.sops.placeholder."SUPABASE_JWT_SECRET"}
       SERVICE_KEY=${config.sops.placeholder."SUPABASE_SERVICE_ROLE_KEY"}
     '';

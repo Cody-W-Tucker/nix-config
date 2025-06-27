@@ -13,7 +13,7 @@
     "edge-functions".content = ''
       JWT_SECRET=${config.sops.placeholder."SUPABASE_JWT_SECRET"}
       SUPABASE_ANON_KEY=${config.sops.placeholder."SUPABASE_ANON_KEY"}
-      SUPABASE_DB_URL=postgres://authenticator:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres"
+      SUPABASE_DB_URL=postgres://postgres:${config.sops.placeholder."SUPABASE_POSTGRES_PASSWORD"}@db:5432/postgres"
       SUPABASE_SERVICE_ROLE_KEY=${config.sops.placeholder."SUPABASE_SERVICE_ROLE_KEY"}
     '';
   };
