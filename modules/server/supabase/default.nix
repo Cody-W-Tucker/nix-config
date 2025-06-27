@@ -13,7 +13,7 @@
     ./api.nix
     ./database.nix
     # ./functions.nix
-    # ./storage.nix
+    ./storage.nix
     ./studio.nix
   ];
 
