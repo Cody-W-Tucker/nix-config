@@ -43,20 +43,6 @@
     wantedBy = [ "docker-compose-supabase-root.target" ];
   };
 
-  # Volumes
-  systemd.services."docker-volume-supabase_db-config" = {
-    path = [ pkgs.docker ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      docker volume inspect supabase_db-config || docker volume create supabase_db-config
-    '';
-    partOf = [ "docker-compose-supabase-root.target" ];
-    wantedBy = [ "docker-compose-supabase-root.target" ];
-  };
-
   # Root service
   # When started, this will automatically create all resources and start
   # the containers. When stopped, this will teardown all resources.
