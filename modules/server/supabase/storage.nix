@@ -24,17 +24,13 @@
       config.sops.templates."storage".path
     ];
     environment = {
-      # "ANON_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
-      # "DATABASE_URL" = "postgres://supabase_storage_admin:your-super-secret-and-long-postgres-password@db:5432/postgres";
       "ENABLE_IMAGE_TRANSFORMATION" = "true";
       "FILE_SIZE_LIMIT" = "52428800";
       "FILE_STORAGE_BACKEND_PATH" = "/var/lib/storage";
       "GLOBAL_S3_BUCKET" = "stub";
       "IMGPROXY_URL" = "http://imgproxy:5001";
-      # "PGRST_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "POSTGREST_URL" = "http://rest:3000";
       "REGION" = "stub";
-      # "SERVICE_KEY" = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q";
       "STORAGE_BACKEND" = "file";
       "TENANT_ID" = "stub";
     };

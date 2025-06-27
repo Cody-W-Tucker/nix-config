@@ -4,10 +4,10 @@
   # Secrets
   sops.secrets = {
     SUPABASE_DASHBOARD_PASSWORD = { };
-    SUPABASE_ANON_KEY = { }; # signed JWT
-    SUPABASE_JWT_SECRET = { }; # shared JWT secret
-    SUPABASE_POSTGRES_PASSWORD = { }; # db super-user password
-    SUPABASE_SERVICE_ROLE_KEY = { }; # signed JWT
+    SUPABASE_ANON_KEY = { };
+    SUPABASE_JWT_SECRET = { };
+    SUPABASE_POSTGRES_PASSWORD = { };
+    SUPABASE_SERVICE_ROLE_KEY = { };
   };
 
   sops.templates = {
@@ -90,12 +90,9 @@
     ];
     environment = {
       "PGRST_APP_SETTINGS_JWT_EXP" = "3600";
-      # "PGRST_APP_SETTINGS_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "PGRST_DB_ANON_ROLE" = "anon";
       "PGRST_DB_SCHEMAS" = "public,storage,graphql_public";
-      # "PGRST_DB_URI" = "postgres://authenticator:your-super-secret-and-long-postgres-password@db:5432/postgres";
       "PGRST_DB_USE_LEGACY_GUCS" = "false";
-      # "PGRST_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
     };
     cmd = [ "postgrest" ];
     dependsOn = [

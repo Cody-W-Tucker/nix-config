@@ -3,10 +3,10 @@
 {
   # Secrets
   sops.secrets = {
-    SUPABASE_JWT_SECRET = { }; # shared JWT secret
-    SUPABASE_POSTGRES_PASSWORD = { }; # db super-user password
-    SUPABASE_SECRET_KEY_BASE = { }; # for realtime / pooler
-    SUPABASE_VAULT_ENC_KEY = { }; # optional
+    SUPABASE_JWT_SECRET = { };
+    SUPABASE_POSTGRES_PASSWORD = { };
+    SUPABASE_SECRET_KEY_BASE = { };
+    SUPABASE_VAULT_ENC_KEY = { };
   };
 
   sops.templates = {
@@ -48,13 +48,10 @@
     ];
     environment = {
       "JWT_EXP" = "3600";
-      # "JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "PGDATABASE" = "postgres";
-      # "PGPASSWORD" = "your-super-secret-and-long-postgres-password";
       "PGPORT" = "5432";
       "POSTGRES_DB" = "postgres";
       "POSTGRES_HOST" = "/var/run/postgresql";
-      # "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "POSTGRES_PORT" = "5432";
     };
     volumes = [
@@ -111,7 +108,6 @@
       "API_EXTERNAL_URL" = "http://localhost:8800";
       "GOTRUE_API_HOST" = "0.0.0.0";
       "GOTRUE_API_PORT" = "9999";
-      # "GOTRUE_DB_DATABASE_URL" = "postgres://supabase_auth_admin:your-super-secret-and-long-postgres-password@db:5432/postgres";
       "GOTRUE_DB_DRIVER" = "postgres";
       "GOTRUE_DISABLE_SIGNUP" = "false";
       "GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED" = "false";
@@ -121,7 +117,6 @@
       "GOTRUE_JWT_AUD" = "authenticated";
       "GOTRUE_JWT_DEFAULT_GROUP_NAME" = "authenticated";
       "GOTRUE_JWT_EXP" = "3600";
-      # "GOTRUE_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "GOTRUE_MAILER_AUTOCONFIRM" = "false";
       "GOTRUE_MAILER_URLPATHS_CONFIRMATION" = "/auth/v1/verify";
       "GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE" = "/auth/v1/verify";
@@ -179,7 +174,6 @@
     environment = {
       "PG_META_DB_HOST" = "db";
       "PG_META_DB_NAME" = "postgres";
-      # "PG_META_DB_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "PG_META_DB_PORT" = "5432";
       "PG_META_DB_USER" = "supabase_admin";
       "PG_META_PORT" = "8080";
@@ -220,22 +214,16 @@
       config.sops.templates."pooler".path
     ];
     environment = {
-      # "API_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "CLUSTER_POSTGRES" = "true";
-      # "DATABASE_URL" = "ecto://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/_supabase";
       "ERL_AFLAGS" = "-proto_dist inet_tcp";
-      # "METRICS_JWT_SECRET" = "your-super-secret-jwt-token-with-at-least-32-characters-long";
       "POOLER_DEFAULT_POOL_SIZE" = "20";
       "POOLER_MAX_CLIENT_CONN" = "100";
       "POOLER_POOL_MODE" = "transaction";
       "POOLER_TENANT_ID" = "your-tenant-id";
       "PORT" = "4000";
       "POSTGRES_DB" = "postgres";
-      # "POSTGRES_PASSWORD" = "your-super-secret-and-long-postgres-password";
       "POSTGRES_PORT" = "5432";
       "REGION" = "local";
-      # "SECRET_KEY_BASE" = "UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq";
-      # "VAULT_ENC_KEY" = "your-encryption-key-32-chars-min";
     };
     volumes = [
       "/home/codyt/supabase-docker/volumes/pooler/pooler.exs:/etc/pooler/pooler.exs:ro,z"
