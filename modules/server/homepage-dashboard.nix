@@ -90,17 +90,17 @@ in
               };
             }
             {
-              NocoDB = {
-                href = "https://data.${domain}";
-                icon = "nocodb";
-                description = "Open Source Airtable";
-              };
-            }
-            {
               N8N = {
                 href = "https://automation.${domain}";
                 icon = "n8n";
                 description = "Automation";
+              };
+            }
+            {
+              Supabase = {
+                href = "https://studio.${domain}";
+                icon = "supabase";
+                description = "BaaS";
               };
             }
             {
