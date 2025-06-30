@@ -61,6 +61,7 @@
       taskwarrior-tui
       feishin
       picard
+      postman
     ])
     ++
     (with pkgs-unstable; [
