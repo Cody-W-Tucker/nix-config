@@ -75,7 +75,7 @@
       };
       # Securely export ai API key to interactive Shell for Codex and Gemini
       initExtra = ''
-        export OPENAI_API_KEY="$(cat ${config.sops.secrets.GOOGLE_CLOUD_PROJECT_ID.path})"
+        export GOOGLE_CLOUD_PROJECT="$(cat ${config.sops.secrets.GOOGLE_CLOUD_PROJECT_ID.path})"
         export OPENAI_API_KEY="$(cat ${config.sops.secrets.OPENAI_API_KEY.path})"
       '';
     };
