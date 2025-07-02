@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, pkgs-unstable, lib, ... }:
 
 {
   imports = [
@@ -12,6 +12,11 @@
       fastfetch
       unzip
       zip
+    ])
+    ++
+    (with pkgs-unstable; [
+      # list of unstable packages go here
+      gemini-cli
     ]);
 
   home.sessionVariables = {
