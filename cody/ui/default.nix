@@ -71,7 +71,6 @@
       codex
     ]);
 
-  sops.secrets.OPENAI_API_KEY = { };
 
   # Obs for screenrecording
   programs.obs-studio = {

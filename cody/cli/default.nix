@@ -45,7 +45,8 @@
     enableZshIntegration = true;
   };
 
-  programs.zsh.
+  sops.secrets.OPENAI_API_KEY = { };
+  sops.secrets.GOOGLE_CLOUD_PROJECT_ID = { };
 
   programs = {
     zsh = {
