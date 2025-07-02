@@ -45,6 +45,8 @@
     enableZshIntegration = true;
   };
 
+  programs.zsh.
+
   programs = {
     zsh = {
       enable = true;
@@ -70,6 +72,11 @@
         '';
         gcCleanup = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       };
+      # Securely export ai API key to interactive Shell for Codex and Gemini
+      initExtra = ''
+        export OPENAI_API_KEY="$(cat ${config.sops.secrets.GOOGLE_CLOUD_PROJECT_ID.path})"
+        export OPENAI_API_KEY="$(cat ${config.sops.secrets.OPENAI_API_KEY.path})"
+      '';
     };
     bash = {
       historyFile = "${config.xdg.dataHome}/bash/bash_history";
