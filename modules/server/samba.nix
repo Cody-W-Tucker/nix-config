@@ -16,6 +16,16 @@
         "guest account" = "nobody";
         "map to guest" = "bad user";
       };
+      media = {
+        "path" = "/mnt/media";
+        "browseable" = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "create mask" = "0644";
+        "directory mask" = "0755";
+        "force user" = "codyt";
+        "force group" = "media";
+      };
       codytHome = {
         "path" = "/mnt/hdd/Share";
         "browseable" = "yes";
