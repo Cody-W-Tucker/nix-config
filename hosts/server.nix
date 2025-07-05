@@ -34,9 +34,16 @@
       fsType = "vfat";
     };
 
-  fileSystems."/mnt/hdd" =
+  # fileSystems."/mnt/hdd" =
+  #   {
+  #     device = "/dev/disk/by-uuid/7e4d866f-4494-41c6-850b-a5dc2cd8367a";
+  #     fsType = "ext4";
+  #     options = [ "nofail" ];
+  #   };
+
+  fileSystems."/mnt/media" =
     {
-      device = "/dev/disk/by-uuid/7e4d866f-4494-41c6-850b-a5dc2cd8367a";
+      device = "/dev/disk/by-uuid/27ddc2ef-8f21-401d-b9eb-3ed4541c16c9";
       fsType = "ext4";
       options = [ "nofail" ];
     };
