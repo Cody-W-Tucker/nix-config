@@ -133,6 +133,9 @@
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
+              home-manager.sharedModules = [
+                inputs.sops-nix.homeManagerModules.sops
+              ];
               home-manager.users.codyt.imports = [
                 ./cody/cli.nix
                 ./secrets/home-secrets.nix
