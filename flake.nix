@@ -129,6 +129,8 @@
               home-manager.extraSpecialArgs = {
                 inherit inputs;
                 inherit pkgs;
+                inherit pkgs-unstable;
+                inherit system;
               };
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
