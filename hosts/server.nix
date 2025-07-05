@@ -38,6 +38,7 @@
     {
       device = "/dev/disk/by-uuid/7e4d866f-4494-41c6-850b-a5dc2cd8367a";
       fsType = "ext4";
+      options = [ "nofail" ];
     };
 
   fileSystems."/mnt/dev/sr0" =
