@@ -135,6 +135,7 @@
               home-manager.backupFileExtension = "backup";
               home-manager.users.codyt.imports = [
                 ./cody/cli.nix
+                ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
               ];
             }
