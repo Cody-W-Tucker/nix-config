@@ -1,13 +1,13 @@
 {
   services.immich = {
-    enable = false;
+    enable = true;
     port = 2283;
     host = "localhost";
     mediaLocation = "/mnt/media/Photos";
     group = "media";
   };
 
-  # users.users.immich.extraGroups = [ "video" "render" "media" ];
+  users.users.immich.extraGroups = [ "video" "render" "media" ];
 
   # NGINX
   services.nginx.virtualHosts."photos.homehub.tv" = {
