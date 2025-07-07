@@ -1,5 +1,18 @@
 { pkgs, config, ... }:
 {
+  # Folder structure
+  systemd.tmpfiles.rules = [
+    # Set main media directory
+    "d /mnt/media/Media 2775 root media - -"
+    # Set subdirectories with setgid for group inheritance
+    "d /mnt/media/Media/Books 2775 root media - -"
+    "d /mnt/media/Media/Channels 2775 root media - -"
+    "d /mnt/media/Media/Downloads 2775 root media - -"
+    "d /mnt/media/Media/Movies 2775 root media - -"
+    "d /mnt/media/Media/Music 2775 root media - -"
+    "d /mnt/media/Media/TV\\x20Shows 2775 root media - -"
+  ];
+
   # Media Management
   services = {
     jellyfin = {
