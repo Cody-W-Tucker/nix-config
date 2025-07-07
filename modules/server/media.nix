@@ -42,8 +42,8 @@
       openRPCPort = true; # Allows Sonarr/Radarr to connect
       openPeerPorts = false; # Allows torrent peers to connect
       settings = {
-        download-dir = "/mnt/hdd/Media/Downloads"; # Adjust as needed
-        incomplete-dir = "/mnt/hdd/Media/Downloads/incomplete";
+        download-dir = "/mnt/media/Media/Downloads"; # Adjust as needed
+        incomplete-dir = "/mnt/media/Media/Downloads/incomplete";
         incomplete-dir-enabled = true;
         umask = 2; # Group write permissions (so Sonarr/Radarr can move files)
         dht-enabled = true;
@@ -53,10 +53,9 @@
         blocklist-enabled = true;
         blocklist-url = "https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz";
         preallocation = 1;
-        lazy-bitfield-enabled = true;
 
         # Limit Seeding
-        ratio-limit = 2.0;
+        ratio-limit = 1.0;
         ratio-limit-enabled = true;
 
         # Speed Limits
@@ -189,14 +188,14 @@
   # Backup media to workstation hard drive
   services.borgbackup.jobs.media = {
     user = "codyt";
-    paths = "/mnt/hdd/Media";
+    paths = "/mnt/media/Media";
     encryption.mode = "none";
     environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
     repo = "codyt@192.168.1.238:/mnt/backup/Media";
     compression = "lz4";
     startAt = "daily";
     exclude = [
-      "/mnt/hdd/Media/Downloads"
+      "/mnt/media/Media/Downloads"
       "*.nfo"
       "*.jpg"
       "*.png"

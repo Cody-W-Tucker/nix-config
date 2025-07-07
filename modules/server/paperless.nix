@@ -8,7 +8,7 @@ in
   services.paperless = {
     enable = true;
     inherit port;
-    mediaDir = "/mnt/hdd/Documents";
+    mediaDir = "/mnt/media/Documents";
     consumptionDirIsPublic = true;
     passwordFile = config.sops.secrets.paperless-password.path;
     settings = {
@@ -30,7 +30,7 @@ in
   services.borgbackup.jobs.documents = {
     user = "codyt";
     group = "documents";
-    paths = "/mnt/hdd/Documents/documents/originals";
+    paths = "/mnt/media/Documents/documents/originals";
     encryption.mode = "none";
     environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
     repo = "codyt@192.168.1.238:/mnt/backup/Documents";

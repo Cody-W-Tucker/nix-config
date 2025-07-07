@@ -56,7 +56,7 @@ in
         {
           resources = {
             label = "HDD";
-            disk = "/mnt/hdd";
+            disk = "/mnt/media";
           };
         }
         {

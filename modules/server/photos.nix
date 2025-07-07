@@ -3,7 +3,7 @@
     enable = true;
     port = 2283;
     host = "localhost";
-    mediaLocation = "/mnt/hdd/Photos";
+    mediaLocation = "/mnt/media/Photos";
     group = "media";
   };
 
@@ -31,7 +31,7 @@
   services.borgbackup.jobs.photos = {
     user = "codyt";
     group = "media";
-    paths = "/mnt/hdd/Photos/originals";
+    paths = "/mnt/media/Photos/originals";
     encryption.mode = "none";
     environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
     repo = "codyt@192.168.1.238:/mnt/backup/Photos";
