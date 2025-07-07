@@ -27,7 +27,7 @@
         "force group" = "media";
       };
       codytHome = {
-        "path" = "/mnt/hdd/Share";
+        "path" = "/mnt/media/Share";
         "browseable" = "yes";
         "read only" = "no";
         "guest ok" = "no";
@@ -37,7 +37,7 @@
         "force group" = "users";
       };
       Music = {
-        "path" = "/mnt/hdd/Media/Music";
+        "path" = "/mnt/media/Media/Music";
         "browseable" = "yes";
         "read only" = "no";
         "guest ok" = "no";
@@ -66,7 +66,7 @@
 
   # Syncthing backup
   services.syncthing.settings.folders."share" = {
-    path = "/mnt/hdd/Share";
+    path = "/mnt/media/Share";
     devices = [ "server" "workstation" ];
   };
 }
