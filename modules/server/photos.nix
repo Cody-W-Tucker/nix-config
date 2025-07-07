@@ -1,6 +1,6 @@
 {
   services.immich = {
-    enable = true;
+    enable = false;
     port = 2283;
     host = "localhost";
     mediaLocation = "/mnt/media/Photos";
