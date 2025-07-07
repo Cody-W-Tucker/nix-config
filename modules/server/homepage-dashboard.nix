@@ -232,6 +232,13 @@ in
               };
             }
             {
+              Bazarr = {
+                href = "https://bazarr.${domain}";
+                icon = "bazarr";
+                description = "Media Management";
+              };
+            }
+            {
               Prowlarr = {
                 href = "https://prowlarr.${domain}";
                 icon = "prowlarr";
