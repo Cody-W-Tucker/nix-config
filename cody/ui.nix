@@ -10,7 +10,7 @@
     model = "pc105";
   };
   # Set the wallpaper
-  home-manager.users.codyt.stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
+  stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
 
   home.sessionVariables.CUDA_CACHE_PATH = "\${HOME}/.cache/nv";
 
