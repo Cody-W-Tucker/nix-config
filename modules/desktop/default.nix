@@ -45,7 +45,6 @@
         udisks
         kitty
         obsidian
-        chromium
         rustdesk-flutter
       ]);
 

@@ -160,19 +160,6 @@
     # Setting the color theme and default wallpaper
     stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
     stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-    lib.stylix.colors = {
-      bright-yellow = "f2cdcd";
-      base00-hex = "1e1e2e";
-      red = "f38ba8";
-      green = "a6e3a1";
-      yellow = "f9e2af";
-      blue = "89b4fa";
-      magenta = "f5c2e7";
-      cyan = "94e2d5";
-      base05-hex = "cdd6f4";
-      base03-hex = "313244";
-      base07-hex = "f5e0dc";
-    };
 
     # Backup configuration
     services.syncthing = {
