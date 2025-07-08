@@ -69,8 +69,10 @@ let
 in
 {
   wayland.windowManager.hyprland.settings = {
-    no_update_news = true;
-    no_donation_nag = true;
+    ecosystem = {
+      no_update_news = true;
+      no_donation_nag = true;
+    };
     "$mainMod" = mainMod;
     bindm = mousebinds;
     bind = keybinds;
