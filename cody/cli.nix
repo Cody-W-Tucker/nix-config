@@ -42,17 +42,6 @@
       };
     };
 
-    # Installing system wide fonts
-    fonts = {
-      packages = with pkgs; [
-        noto-fonts
-        noto-fonts-cjk-sans
-        font-awesome
-        source-han-sans
-        nerd-fonts.meslo-lg
-      ];
-    };
-
     # The state version is required and should stay at the version you originally installed.
     home.stateVersion = "24.05";
   };

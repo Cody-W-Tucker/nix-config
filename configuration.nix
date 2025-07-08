@@ -51,6 +51,18 @@
       };
     };
 
+    # Installing system wide fonts
+    fonts = {
+      enableDefaultPackages = true;
+      packages = with pkgs; [
+        noto-fonts
+        noto-fonts-cjk-sans
+        font-awesome
+        source-han-sans
+        nerd-fonts.meslo-lg
+      ];
+    };
+
     # Make passwords uneditable
     users.mutableUsers = false;
 
