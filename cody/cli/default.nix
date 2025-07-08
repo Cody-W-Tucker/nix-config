@@ -94,49 +94,49 @@
         tab_bar_style = "powerline";
       };
       extraConfig = lib.mkForce ''
-        foreground #${config.lib.stylix.colors.base05}
-        background #${config.lib.stylix.colors.base00}
-        color0  #${config.lib.stylix.colors.base03}
-        color1  #${config.lib.stylix.colors.base08}
-        color2  #${config.lib.stylix.colors.base0B}
-        color3  #${config.lib.stylix.colors.base09}
-        color4  #${config.lib.stylix.colors.base0D}
-        color5  #${config.lib.stylix.colors.base0E}
-        color6  #${config.lib.stylix.colors.base0C}
-        color7  #${config.lib.stylix.colors.base06}
-        color8  #${config.lib.stylix.colors.base04}
-        color9  #${config.lib.stylix.colors.base08}
-        color10 #${config.lib.stylix.colors.base0B}
-        color11 #${config.lib.stylix.colors.base0A}
-        color12 #${config.lib.stylix.colors.base0C}
-        color13 #${config.lib.stylix.colors.base0E}
-        color14 #${config.lib.stylix.colors.base0C}
-        color15 #${config.lib.stylix.colors.base07}
-        color16 #${config.lib.stylix.colors.base00}
-        color17 #${config.lib.stylix.colors.base0F}
-        color18 #${config.lib.stylix.colors.base0B}
-        color19 #${config.lib.stylix.colors.base09}
-        color20 #${config.lib.stylix.colors.base0D}
-        color21 #${config.lib.stylix.colors.base0E}
-        color22 #${config.lib.stylix.colors.base0C}
-        color23 #${config.lib.stylix.colors.base06}
-        cursor  #${config.lib.stylix.colors.base07}
-        cursor_text_color #${config.lib.stylix.colors.base00}
-        selection_foreground #${config.lib.stylix.colors.base01}
-        selection_background #${config.lib.stylix.colors.base0D}
-        url_color #${config.lib.stylix.colors.base0C}
-        active_border_color #${config.lib.stylix.colors.base04}
-        inactive_border_color #${config.lib.stylix.colors.base00}
-        bell_border_color #${config.lib.stylix.colors.base03}
+        foreground #${lib.stylix.colors.base05}
+        background #${lib.stylix.colors.base00}
+        color0  #${lib.stylix.colors.base03}
+        color1  #${lib.stylix.colors.base08}
+        color2  #${lib.stylix.colors.base0B}
+        color3  #${lib.stylix.colors.base09}
+        color4  #${lib.stylix.colors.base0D}
+        color5  #${lib.stylix.colors.base0E}
+        color6  #${lib.stylix.colors.base0C}
+        color7  #${lib.stylix.colors.base06}
+        color8  #${lib.stylix.colors.base04}
+        color9  #${lib.stylix.colors.base08}
+        color10 #${lib.stylix.colors.base0B}
+        color11 #${lib.stylix.colors.base0A}
+        color12 #${lib.stylix.colors.base0C}
+        color13 #${lib.stylix.colors.base0E}
+        color14 #${lib.stylix.colors.base0C}
+        color15 #${lib.stylix.colors.base07}
+        color16 #${lib.stylix.colors.base00}
+        color17 #${lib.stylix.colors.base0F}
+        color18 #${lib.stylix.colors.base0B}
+        color19 #${lib.stylix.colors.base09}
+        color20 #${lib.stylix.colors.base0D}
+        color21 #${lib.stylix.colors.base0E}
+        color22 #${lib.stylix.colors.base0C}
+        color23 #${lib.stylix.colors.base06}
+        cursor  #${lib.stylix.colors.base07}
+        cursor_text_color #${lib.stylix.colors.base00}
+        selection_foreground #${lib.stylix.colors.base01}
+        selection_background #${lib.stylix.colors.base0D}
+        url_color #${lib.stylix.colors.base0C}
+        active_border_color #${lib.stylix.colors.base04}
+        inactive_border_color #${lib.stylix.colors.base00}
+        bell_border_color #${lib.stylix.colors.base03}
         tab_bar_style fade
         tab_fade 1
-        active_tab_foreground   #${config.lib.stylix.colors.base05}
-        active_tab_background   #${config.lib.stylix.colors.base01}
+        active_tab_foreground   #${lib.stylix.colors.base05}
+        active_tab_background   #${lib.stylix.colors.base01}
         active_tab_font_style   bold
-        inactive_tab_foreground #${config.lib.stylix.colors.base07}
-        inactive_tab_background #${config.lib.stylix.colors.base00}
+        inactive_tab_foreground #${lib.stylix.colors.base07}
+        inactive_tab_background #${lib.stylix.colors.base00}
         inactive_tab_font_style normal
-        tab_bar_background #${config.lib.stylix.colors.base00}
+        tab_bar_background #${lib.stylix.colors.base00}
       '';
     };
     bat = {
