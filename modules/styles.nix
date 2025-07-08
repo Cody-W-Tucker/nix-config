@@ -38,6 +38,9 @@
         name = "Noto Color Emoji";
       };
     };
+    starship = {
+      enable = false;
+    };
   };
 
   programs.starship = {
