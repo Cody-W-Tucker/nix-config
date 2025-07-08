@@ -1,18 +1,18 @@
 { inputs, config, lib, pkgs, modulesPath, ... }:
 
 {
+  imports =
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
+      ../configuration.nix
+      ../modules/desktop
+      ../modules/styles.nix
+      ../modules/scripts
+      ../modules/desktop/nvidia.nix
+      ../modules/desktop/mcp-servers.nix
+      ../modules/server/paperless-scanning.nix
+    ];
   config = {
-    imports =
-      [
-        (modulesPath + "/installer/scan/not-detected.nix")
-        ../configuration.nix
-        ../modules/desktop
-        ../modules/styles.nix
-        ../modules/scripts
-        ../modules/desktop/nvidia.nix
-        ../modules/desktop/mcp-servers.nix
-        ../modules/server/paperless-scanning.nix
-      ];
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
