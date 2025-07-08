@@ -339,11 +339,6 @@
       package = pkgs.mullvad-vpn;
     };
 
-    # Set the wallpaper
-    stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
-    # Set the color theme
-    stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-
     # Don't change this
     system.stateVersion = "24.05"; # Did you read the comment?
   };
