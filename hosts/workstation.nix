@@ -164,6 +164,8 @@
       bright-yellow = "#f2cdcd";
       base00-hex = "#1e1e2e";
       red = "#f38ba8";
+      green = "#a6e3a1";
+      yellow = "#f9e2af";
     };
 
     # Backup configuration
