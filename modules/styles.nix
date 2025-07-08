@@ -56,7 +56,7 @@
       noto-fonts-cjk-sans
       font-awesome
       source-han-sans
-      (nerdfonts.override { fonts = [ "Meslo" ]; })
+      pkgs.nerd-fonts.meslo
     ];
   };
 }
