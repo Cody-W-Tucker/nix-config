@@ -105,6 +105,7 @@
                 ./cody/ui.nix
                 ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
+                inputs.stylix.homeModules.stylix
               ];
             }
           ];
@@ -142,7 +143,7 @@
                 ./cody/cli.nix
                 ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
-                inputs.stylix.homeManagerModules.stylix
+                inputs.stylix.homeModules.stylix
               ];
             }
           ];

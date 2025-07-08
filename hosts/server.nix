@@ -1,4 +1,4 @@
-{ config, lib, modulesPath, pkgs, ... }:
+{ config, lib, modulesPath, ... }:
 
 {
   imports =
@@ -57,9 +57,6 @@
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-  stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
   # Don't change this
   system.stateVersion = "23.11"; # Did you read the comment?
