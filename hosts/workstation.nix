@@ -166,6 +166,8 @@
       red = "#f38ba8";
       green = "#a6e3a1";
       yellow = "#f9e2af";
+      blue = "#89b4fa";
+      magenta = "#f5c2e7";
     };
 
     # Backup configuration
