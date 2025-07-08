@@ -42,13 +42,6 @@
       };
     };
 
-    programs.starship = {
-      enable = true;
-      settings = {
-        add_newline = false;
-      };
-    };
-
     # Installing system wide fonts
     fonts = {
       enableDefaultPackages = true;
