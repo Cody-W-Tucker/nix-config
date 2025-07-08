@@ -3,7 +3,7 @@
 {
   imports = [
     ./ui
-    ./cli
+    ./cli.nix
   ];
 
   config = {
