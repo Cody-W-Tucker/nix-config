@@ -142,6 +142,7 @@
                 ./cody/cli.nix
                 ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
+                inputs.stylix.homeManagerModules.stylix
               ];
             }
           ];
