@@ -74,16 +74,11 @@ in
     bind = keybinds;
     windowrule = [
       # Kitty
-      "noblur,^(kitty)$"
+      "noblur,title:kitty"
     ];
     windowrulev2 = [
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
-
-      # File switcher
-      "float, class:^(kitty)$, title:^(quick-kitty)$"
-      "size 1280 720, class:^(kitty)$, title:^(quick-kitty)$"
-      "center, class:^(kitty)$, title:^(quick-kitty)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
