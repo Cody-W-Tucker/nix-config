@@ -38,7 +38,7 @@
         name = "Noto Color Emoji";
       };
     };
-    starship = {
+    targets.starship = {
       enable = false;
     };
   };
