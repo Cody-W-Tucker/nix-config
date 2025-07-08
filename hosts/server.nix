@@ -58,6 +58,12 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
+  stylix.targets.gtk.enable = false;
+  stylix.targets.gnome.enable = false;
+  stylix.targets.kde.enable = false;
+  stylix.targets.fonts.enable = false; # If you don't want font settings at all
+
+
   # Don't change this
   system.stateVersion = "23.11"; # Did you read the comment?
 }
