@@ -12,7 +12,6 @@
     ./excalidraw.nix
     ./hoarder.nix
     ./homepage-dashboard.nix
-    ./mattermost.nix
     ./media.nix
     ./monitoring.nix
     # ./nextcloud.nix

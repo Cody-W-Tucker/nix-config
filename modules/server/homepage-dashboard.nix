@@ -24,7 +24,7 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 4;
+            columns = 3;
           };
           Tools = {
             style = "row";
@@ -83,13 +83,6 @@ in
             #     description = "Could storage and collaboration";
             #   };
             # }
-            {
-              mattermost = {
-                href = "https://chat.${domain}";
-                icon = "mattermost";
-                description = "Open Source Slack";
-              };
-            }
             {
               N8N = {
                 href = "https://automation.${domain}";
