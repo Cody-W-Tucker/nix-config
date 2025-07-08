@@ -1,10 +1,10 @@
 { pkgs, pkgs-unstable, ... }:
 
 {
+  imports = [
+    ./clientSyncthing.nix
+  ];
   config = {
-    imports = [
-      ./clientSyncthing.nix
-    ];
 
     services.displayManager.autoLogin.enable = true;
 
