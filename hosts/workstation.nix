@@ -162,6 +162,7 @@
     stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     lib.stylix.colors = {
       bright-yellow = "#f2cdcd";
+      base00-hex = "#1e1e2e";
     };
 
     # Backup configuration
