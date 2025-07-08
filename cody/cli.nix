@@ -1,5 +1,3 @@
-{ pkgs, ... }:
-
 {
   imports = [
     ./cli
@@ -11,35 +9,6 @@
     home.keyboard = {
       layout = "us";
       model = "pc105";
-    };
-
-    # Stylix configuration
-    stylix = {
-      enable = true;
-      polarity = "dark";
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-      # Setting the fonts
-      fonts = {
-        serif = {
-          package = pkgs.dejavu_fonts;
-          name = "DejaVu Serif";
-        };
-
-        sansSerif = {
-          package = pkgs.dejavu_fonts;
-          name = "DejaVu Sans";
-        };
-
-        monospace = {
-          package = pkgs.nerd-fonts.jetbrains-mono;
-          name = "JetBrainsMono Nerd Font Mono";
-        };
-
-        emoji = {
-          package = pkgs.noto-fonts-emoji;
-          name = "Noto Color Emoji";
-        };
-      };
     };
 
     # The state version is required and should stay at the version you originally installed.
