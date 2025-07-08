@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   imports = [
     ./ui
@@ -10,8 +12,25 @@
       layout = "us";
       model = "pc105";
     };
-    # Set the wallpaper
-    stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
+
+    stylix = {
+      enable = true;
+      polarity = "dark";
+      opacity = {
+        applications = 0.9;
+        terminal = 0.8;
+        desktop = 1.0;
+        popups = 1.0;
+      };
+
+      cursor = {
+        package = pkgs.bibata-cursors;
+        name = "Bibata-Modern-Classic";
+        size = 24;
+      };
+
+      image = ../modules/wallpapers/galaxy-waves.jpg;
+    };
 
     home.sessionVariables.CUDA_CACHE_PATH = "\${HOME}/.cache/nv";
 
