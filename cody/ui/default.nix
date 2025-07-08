@@ -55,7 +55,7 @@
       nixd
       timewarrior
       inputs.zen-browser.packages.${pkgs.system}.default
-      kdenlive
+      kdePackages.kdenlive
       baobab # Gnome disk usage app
       gcalcli # Google Calendar CLI tool
       taskwarrior-tui
