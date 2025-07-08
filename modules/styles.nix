@@ -41,7 +41,7 @@
   };
 
   programs.starship = {
-    enable = true;
+    enable = false;
     presets = [ "nerd-font-symbols" ];
     settings = {
       add_newline = false;
@@ -56,7 +56,7 @@
       noto-fonts-cjk-sans
       font-awesome
       source-han-sans
-      pkgs.nerd-fonts.meslo
+      nerd-fonts.meslo
     ];
   };
 }
