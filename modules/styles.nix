@@ -50,7 +50,7 @@
         noto-fonts-cjk-sans
         font-awesome
         source-han-sans
-        nerd-fonts.meslo
+        nerd-fonts.meslo-lg
       ];
     };
   };
