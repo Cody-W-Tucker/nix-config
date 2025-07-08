@@ -170,6 +170,7 @@
       magenta = "#f5c2e7";
       cyan = "#94e2d5";
       base05-hex = "#cdd6f4";
+      base03-hex = "#313244";
     };
 
     # Backup configuration
