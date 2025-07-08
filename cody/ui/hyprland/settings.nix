@@ -78,7 +78,7 @@ in
     bind = keybinds;
     windowrule = [
       # Kitty
-      "noblur,title:kitty"
+      "noblur,class:kitty"
     ];
     windowrulev2 = [
       "float, title:^(Picture-in-Picture)$"
