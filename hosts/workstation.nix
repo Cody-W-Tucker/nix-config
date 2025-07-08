@@ -163,6 +163,7 @@
     lib.stylix.colors = {
       bright-yellow = "#f2cdcd";
       base00-hex = "#1e1e2e";
+      red = "#f38ba8";
     };
 
     # Backup configuration
