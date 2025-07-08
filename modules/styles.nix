@@ -41,8 +41,7 @@
   };
 
   programs.starship = {
-    enable = false;
-    presets = [ "nerd-font-symbols" ];
+    enable = true;
     settings = {
       add_newline = false;
     };
