@@ -100,12 +100,12 @@
               home-manager.backupFileExtension = "backup";
               home-manager.sharedModules = [
                 inputs.sops-nix.homeManagerModules.sops
+                inputs.stylix.homeModules.stylix
               ];
               home-manager.users.codyt.imports = [
                 ./cody/ui.nix
                 ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
-                inputs.stylix.homeModules.stylix
               ];
             }
           ];
@@ -138,12 +138,12 @@
               home-manager.backupFileExtension = "backup";
               home-manager.sharedModules = [
                 inputs.sops-nix.homeManagerModules.sops
+                inputs.stylix.homeModules.stylix
               ];
               home-manager.users.codyt.imports = [
                 ./cody/cli.nix
                 ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
-                inputs.stylix.homeModules.stylix
               ];
             }
           ];
