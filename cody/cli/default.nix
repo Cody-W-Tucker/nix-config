@@ -24,14 +24,6 @@
     TERMINAL = "kitty";
   };
 
-  # User specific terminal settings
-  programs.starship = {
-    enable = true;
-    settings = {
-      add_newline = true;
-    };
-  };
-
   # Use esa instead of ls
   programs.eza = {
     enable = true;
