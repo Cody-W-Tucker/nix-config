@@ -157,10 +157,6 @@
       intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
     };
 
-    # Setting the color theme and default wallpaper
-    stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
-    stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-
     # Backup configuration
     services.syncthing = {
       user = "codyt";
