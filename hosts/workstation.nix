@@ -6,7 +6,6 @@
       (modulesPath + "/installer/scan/not-detected.nix")
       ../configuration.nix
       ../modules/desktop
-      ../modules/styles.nix
       ../modules/scripts
       ../modules/desktop/nvidia.nix
       ../modules/desktop/mcp-servers.nix
