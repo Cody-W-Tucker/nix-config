@@ -78,7 +78,6 @@
           };
           modules = [
             ./hosts/workstation.nix
-            inputs.stylix.nixosModules.stylix
             # Using community hardware configurations
             inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
             inputs.nixos-hardware.nixosModules.common-pc-ssd
