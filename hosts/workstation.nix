@@ -168,6 +168,8 @@
       yellow = "#f9e2af";
       blue = "#89b4fa";
       magenta = "#f5c2e7";
+      cyan = "#94e2d5";
+      base05-hex = "#cdd6f4";
     };
 
     # Backup configuration
