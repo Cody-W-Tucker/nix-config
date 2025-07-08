@@ -30,6 +30,7 @@
     # Use the latest kernel
     boot.kernelPackages = pkgs.linuxPackages_zen;
 
+
     fileSystems."/" =
       {
         device = "/dev/disk/by-uuid/9e34e9a8-f360-45a6-b6e2-ceab59a207d9";
@@ -337,6 +338,9 @@
       enable = true;
       package = pkgs.mullvad-vpn;
     };
+
+    # Set the wallpaper
+    stylix.image = ../modules/wallpapers/galaxy-waves.jpg;
 
     # Don't change this
     system.stateVersion = "24.05"; # Did you read the comment?
