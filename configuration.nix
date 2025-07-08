@@ -39,7 +39,6 @@
   programs = {
     starship = {
       enable = true;
-      presets = [ "nerd-font-symbols" ];
     };
     zsh = {
       enable = true;
