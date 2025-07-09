@@ -160,7 +160,6 @@
         where-is-my-sddm-theme
         nvidia-vaapi-driver
         egl-wayland
-        inputs.web-downloader.packages.${pkgs.system}.default
         cifs-utils
       ]);
 
