@@ -8,8 +8,8 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
       ../configuration.nix
-      ../modules/desktop/nvidia.nix
       ../modules/desktop
+      ../modules/desktop/nvidia.nix
       ../modules/scripts
     ];
 
@@ -24,6 +24,10 @@
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ "kvm-intel" ];
     boot.extraModulePackages = [ ];
+    time.hardwareClockInLocalTime = true;
+
+    # Networking
+    networking.networkmanager.enable = true;
 
     fileSystems."/" =
       {
@@ -40,10 +44,58 @@
 
     swapDevices = [ ];
 
-    # Enables DHCP on each ethernet and wireless interface.
+    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
     networking.useDHCP = lib.mkDefault true;
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+    # To see trash and network shares in nautilus
+    services.gvfs.enable = true;
+
+    # Override Display Manager and Windowing system.
+    services = {
+      displayManager = {
+        sddm = {
+          enable = true;
+          wayland.enable = true;
+          autoNumlock = true;
+        };
+        autoLogin.user = "codyt";
+      };
+      xserver = {
+        enable = true;
+        displayManager.gdm.enable = lib.mkForce false;
+        desktopManager.gnome.enable = lib.mkForce false;
+        xkb = {
+          layout = "us";
+          model = "pc105";
+        };
+      };
+    };
+
+    # Getting keyring to work
+    security = {
+      polkit = {
+        enable = true;
+      };
+      pam.services = {
+        sddm.enableGnomeKeyring = true;
+        login.enableGnomeKeyring = true;
+      };
+    };
+
+    hardware.graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        intel-media-driver # LIBVA_DRIVER_NAME=iHD
+        intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+        libvdpau-va-gl
+        intel-media-sdk # Enable QSV
+      ];
+    };
+    nixpkgs.config.packageOverrides = pkgs: {
+      intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
+    };
 
     environment.sessionVariables = {
       # ---------------------------
