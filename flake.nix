@@ -69,6 +69,46 @@
     in
     {
       nixosConfigurations = {
+        beast = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit hardwareConfig;
+            inherit pkgs-unstable;
+          };
+          modules = [
+            ./hosts/beast.nix
+            # Using community hardware configurations
+            inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
+            inputs.nixos-hardware.nixosModules.common-pc-ssd
+            inputs.nixos-hardware.nixosModules.common-pc
+            inputs.sops-nix.nixosModules.sops
+            inputs.flake-programs-sqlite.nixosModules.programs-sqlite
+            ./secrets/secrets.nix
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                inherit pkgs;
+                inherit pkgs-unstable;
+                inherit system;
+                hardwareConfig = hardwareConfig.beast;
+              };
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.sharedModules = [
+                inputs.sops-nix.homeManagerModules.sops
+                inputs.stylix.homeModules.stylix
+              ];
+              home-manager.users.codyt.imports = [
+                ./cody/ui.nix
+                ./secrets/home-secrets.nix
+                inputs.nixvim.homeManagerModules.nixvim
+              ];
+            }
+          ];
+        };
         workstation = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
