@@ -92,7 +92,7 @@
                 inherit pkgs;
                 inherit pkgs-unstable;
                 inherit system;
-                hardwareConfig = hardwareConfig.beast;
+                hardwareConfig = hardwareConfig.workstation;
               };
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
