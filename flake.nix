@@ -58,9 +58,14 @@
           # Controls the monitor layout for hyprland
           workspace = [
             "1, monitor:DP-1, default:true"
+            "2, monitor:DP-3, default:true"
+            "3, monitor:HDMI-A-3, default:true"
           ];
           monitor = [
             "DP-1,2560x1440@240,0x0,1"
+            # Vertical monitors
+            "DP-3,1080x2560@60,2560x0,1"
+            "HDMI-A-3,1080x2560@60,3640x0,1"
           ];
         };
         workstation = {
