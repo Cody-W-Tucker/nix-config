@@ -54,6 +54,15 @@
         };
       };
       hardwareConfig = {
+        beast = {
+          # Controls the monitor layout for hyprland
+          workspace = [
+            "1, monitor:HDMI-A-3, default:true"
+          ];
+          monitor = [
+            "HDMI-A-3,2560x1440@240,0x0,1"
+          ];
+        };
         workstation = {
           # Controls the monitor layout for hyprland
           workspace = [
@@ -92,7 +101,7 @@
                 inherit pkgs;
                 inherit pkgs-unstable;
                 inherit system;
-                hardwareConfig = hardwareConfig.workstation;
+                hardwareConfig = hardwareConfig.beast;
               };
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
