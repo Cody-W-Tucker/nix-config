@@ -63,8 +63,8 @@
             "3, monitor:HDMI-A-3, default:true"
 
             # Set the layout for the vertical monitors
-            "2, layout:dwindle"
-            "3, layout:dwindle"
+            "2, layoutopt:orientation:top"
+            "3, layoutopt:orientation:top"
           ];
           monitor = [
             "DP-1,2560x1440@240,0x0,1"
