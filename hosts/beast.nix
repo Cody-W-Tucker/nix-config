@@ -42,6 +42,53 @@
         options = [ "fmask=0077" "dmask=0077" ];
       };
 
+    # Backup configuration
+    services.syncthing = {
+      user = "codyt";
+      group = "users";
+      settings.folders = {
+        "share" = {
+          path = "/mnt/backup/Share";
+          devices = [ "server" "workstation" ];
+        };
+        "Cody's Obsidian" = {
+          path = "/home/codyt/Sync/Cody-Obsidian";
+          devices = [ "workstation" "Cody's Pixel" ];
+        };
+      };
+    };
+
+
+    fileSystems."/home/codyt/Records" = {
+      device = "/mnt/backup/Share/Records";
+      fsType = "none";
+      options = [ "bind" "nofail" ];
+    };
+
+    fileSystems."/home/codyt/Documents" = {
+      device = "/mnt/backup/Share/Documents";
+      fsType = "none";
+      options = [ "bind" "nofail" ];
+    };
+
+    fileSystems."/home/codyt/Music" = {
+      device = "/mnt/backup/Share/Music";
+      fsType = "none";
+      options = [ "bind" "nofail" ];
+    };
+
+    fileSystems."/home/codyt/Pictures" = {
+      device = "/mnt/backup/Share/Pictures";
+      fsType = "none";
+      options = [ "bind" "nofail" ];
+    };
+
+    fileSystems."/home/codyt/Videos" = {
+      device = "/mnt/backup/Share/Videos";
+      fsType = "none";
+      options = [ "bind" "nofail" ];
+    };
+
     swapDevices = [ ];
 
     # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
