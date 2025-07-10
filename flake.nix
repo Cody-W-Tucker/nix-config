@@ -64,8 +64,8 @@
           monitor = [
             "DP-1,2560x1440@240,0x0,1"
             # Vertical monitors
-            "DP-3,1080x2560@60,-1080x0,1,transform,1"
-            "HDMI-A-3,1080x2560@60,-2160x0,1,transform,3"
+            "DP-3,2560x1080@60,-1080x0,1,transform,1"
+            "HDMI-A-3,2560x1080@60,-2160x0,1,transform,3"
           ];
         };
         workstation = {
