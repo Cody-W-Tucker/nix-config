@@ -46,6 +46,7 @@
     services.syncthing = {
       user = "codyt";
       group = "users";
+      configDir = "/home/codyt/.config/syncthing";
       settings.folders = {
         "share" = {
           path = "/mnt/backup/Share";
