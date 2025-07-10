@@ -44,7 +44,7 @@
       ];
       input-field = lib.mkForce [
         {
-          monitor = "DP-4";
+          monitor = "DP-1";
           size = "200, 50";
           outline_thickness = 3;
           dots_size = 0.33;
