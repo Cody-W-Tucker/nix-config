@@ -54,7 +54,7 @@
         };
         "Cody's Obsidian" = {
           path = "/home/codyt/Sync/Cody-Obsidian";
-          devices = [ "workstation" "Cody's Pixel" ];
+          devices = [ "Cody's Pixel" ];
         };
       };
     };
