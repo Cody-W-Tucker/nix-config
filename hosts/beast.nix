@@ -90,6 +90,12 @@
       options = [ "bind" "nofail" ];
     };
 
+    fileSystems."/home/codyt/Sync/Cody-Obsidian" = {
+      device = "/mnt/backup/Share/Documents/Personal";
+      fsType = "none";
+      options = [ "bind" "nofail" ];
+    };
+
     swapDevices = [ ];
 
     # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
