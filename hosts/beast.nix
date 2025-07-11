@@ -119,7 +119,7 @@
         vt = 2;
       };
       xserver = {
-        enable = false;
+        enable = lib.mkForce false;
         displayManager.gdm.enable = lib.mkForce false;
         desktopManager.gnome.enable = lib.mkForce false;
         xkb = {
