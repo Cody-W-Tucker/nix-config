@@ -13,6 +13,20 @@ in
       "TODOIST_API_TOKEN" = { };
     };
 
+    # Docker
+    virtualisation.docker = {
+      enable = true;
+      rootless = {
+        enable = true;
+        setSocketVariable = true;
+      };
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
+    };
+    virtualisation.oci-containers.backend = "docker";
+
     # TODO: Need to manually restart "systemctl restart docker-mcpo" because the docker service doesn't notice we changed the config file.
     sops.templates."mcpo-config.json".content = builtins.toJSON {
       mcpServers = {

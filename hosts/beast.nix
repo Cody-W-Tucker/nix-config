@@ -8,6 +8,7 @@
       ../modules/desktop
       ../modules/desktop/nvidia.nix
       ../modules/scripts
+      ../modules/desktop/mcp-servers.nix
     ];
 
   config = {

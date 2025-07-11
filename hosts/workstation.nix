@@ -308,20 +308,6 @@
         cifs-utils
       ]);
 
-    # Docker
-    virtualisation.docker = {
-      enable = true;
-      rootless = {
-        enable = true;
-        setSocketVariable = true;
-      };
-      autoPrune = {
-        enable = true;
-        dates = "weekly";
-      };
-    };
-    virtualisation.oci-containers.backend = "docker";
-
     programs.command-not-found.enable = true;
 
     # Ensure headset doesn't switch profiles
