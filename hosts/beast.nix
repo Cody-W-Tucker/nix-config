@@ -118,6 +118,9 @@
         };
         vt = 2;
       };
+      displayManager = {
+        autoLogin = lib.mkForce false;
+      };
       xserver = {
         enable = lib.mkForce false;
         displayManager.gdm.enable = lib.mkForce false;
