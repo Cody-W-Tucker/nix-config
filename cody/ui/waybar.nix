@@ -11,7 +11,12 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ "custom/notification" "clock" "custom/goal" ];
+    modules-center = [
+      "custom/notification"
+      "custom/media"
+      "clock"
+      "custom/goal"
+    ];
     modules-left = [
       "hyprland/workspaces"
       "tray"
@@ -48,6 +53,19 @@ let
       format-critical = "{temperatureC}°C ";
       tooltip-format = "{temperatureF}°F";
       critical-threshold = 85;
+    };
+    "custom/media" = {
+      format = "{}";
+      escape = true;
+      interval = 5;
+      return-type = "json";
+      max-length = 40;
+      on-click = "playerctl play-pause";
+      on-click-right = "playerctl stop";
+      smooth-scrolling-threshold = 1;
+      on-scroll-up = "playerctl next";
+      on-scroll-down = "playerctl previous";
+      exec = "media-player";
     };
     tray = {
       icon-size = 21;
@@ -206,19 +224,6 @@ let
     "hyprland/window" = {
       format = "❯ {title}";
       separate-outputs = true;
-    };
-    "custom/media" = {
-      format = "{}";
-      escape = true;
-      interval = 5;
-      return-type = "json";
-      max-length = 40;
-      on-click = "playerctl play-pause";
-      on-click-right = "playerctl stop";
-      smooth-scrolling-threshold = 1;
-      on-scroll-up = "playerctl next";
-      on-scroll-down = "playerctl previous";
-      exec = "media-player";
     };
     disk = {
       format = "{percentage_free}% ";
