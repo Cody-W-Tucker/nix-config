@@ -9,16 +9,11 @@
       "systemctl --user enable --now hyprpaper.service"
       "systemctl --user enable --now waybar.service"
 
-      # Clipboard (requires WAYLAND_DISPLAY)
-      "wl-clipboard-history -t"
-      "wl-paste --watch cliphist store"
-      ''rm "$HOME/.cache/cliphist/db"''
-
       # GUI Apps (needs DBUS_SESSION_BUS_ADDRESS from finalize)
       "swaync"
 
       # Workspace-specific apps
-      "[workspace 1 silent] uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
+      "[workspace 3 silent] uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
       "uwsm app -- feishin"
     ];
   };
