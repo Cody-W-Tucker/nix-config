@@ -110,6 +110,11 @@
     services = {
       displayManager = {
         # autoLogin.user = "codyt";
+        sddm = {
+          enable = true;
+          wayland.enable = true;
+          autoNumlock = true;
+        };
       };
       xserver = {
         enable = true;
