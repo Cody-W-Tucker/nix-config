@@ -15,17 +15,17 @@ let
       "custom/notification"
       "custom/media"
       "clock"
-      "custom/goal"
     ];
     modules-left = [
       "hyprland/workspaces"
       "tray"
       "hyprland/window"
+      "custom/agenda"
+      "custom/goal"
     ];
     modules-right = [
       "privacy"
       "pulseaudio"
-      "custom/agenda"
       "temperature"
       "disk"
       "cpu"
