@@ -7,6 +7,7 @@
       # Systemd services that require the above variables
       "systemctl --user enable --now hypridle.service"
       "systemctl --user enable --now hyprpaper.service"
+      "systemctl --user enable --now waybar.service"
 
       # Clipboard (requires WAYLAND_DISPLAY)
       "wl-clipboard-history -t"
