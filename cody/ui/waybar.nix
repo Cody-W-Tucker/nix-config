@@ -278,7 +278,8 @@ in
       # Duplicate the bars for each monitor
       # "DP-1" is bottom monitor, "top" places the bar at the top of the screen
       monitor1 = createBar productivityBarConfig "DP-1" "top";
-      # monitor2 = createBar secondaryBarConfig "HDMI-A-3" "bottom";
+      monitor2 = createBar secondaryBarConfig "HDMI-A-3" "top";
+      monitor3 = createBar secondaryBarConfig "DP-3" "top";
     };
     style = lib.mkForce ''
       * {
