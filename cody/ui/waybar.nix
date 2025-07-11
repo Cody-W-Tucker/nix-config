@@ -19,6 +19,7 @@ let
     ];
     modules-right = [
       "custom/agenda"
+      "temperature"
       "custom/weather"
       "group/group-power"
     ];
@@ -39,6 +40,14 @@ let
         "class<Zen Browser> title<.*Calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
+    };
+    temperature = {
+      hwmon-path-abs = "/sys/devices/platform/coretemp.0/hwmon";
+      input-filename = "temp2_input";
+      format = "{temperatureC}°C ";
+      format-critical = "{temperatureC}°C ";
+      tooltip-format = "{temperatureF}°F";
+      critical-threshold = 85;
     };
     tray = {
       icon-size = 21;
@@ -170,7 +179,7 @@ let
       "disk"
       "cpu"
       "memory"
-      "temperature"
+
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
@@ -223,14 +232,6 @@ let
       interval = 5;
       format = "{}% ";
       tooltip = true;
-    };
-    temperature = {
-      hwmon-path-abs = "/sys/devices/platform/coretemp.0/hwmon";
-      input-filename = "temp2_input";
-      format = "{temperatureC}°C ";
-      format-critical = "{temperatureC}°C ";
-      tooltip-format = "{temperatureF}°F";
-      critical-threshold = 85;
     };
     privacy = {
       icon-spacing = 4;
