@@ -9,13 +9,9 @@
       "systemctl --user enable --now hyprpaper.service"
       "systemctl --user enable --now waybar.service"
 
-      # GUI Apps (needs DBUS_SESSION_BUS_ADDRESS from finalize)
-      "swaync"
-
       # Workspace-specific apps
       "[workspace 3 silent] uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
       "uwsm app -- feishin"
     ];
   };
-
 }
