@@ -13,8 +13,8 @@ let
     spacing = 4;
     modules-center = [
       "custom/notification"
-      "custom/media"
       "clock"
+      "custom/media"
     ];
     modules-left = [
       "hyprland/workspaces"
