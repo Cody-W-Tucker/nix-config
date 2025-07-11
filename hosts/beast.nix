@@ -112,7 +112,7 @@
         enable = true;
         settings = {
           default_session = {
-            command = "Hyprland";
+            command = "uwsm start hyprland-uwsm.desktop";
             user = "codyt";
           };
         };
