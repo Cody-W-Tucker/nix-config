@@ -21,12 +21,15 @@ let
       "hyprland/workspaces"
       "tray"
       "hyprland/window"
-      "pulseaudio"
-      "privacy"
     ];
     modules-right = [
+      "privacy"
+      "pulseaudio"
       "custom/agenda"
       "temperature"
+      "disk"
+      "cpu"
+      "memory"
       "custom/weather"
       "group/group-power"
     ];
@@ -216,24 +219,31 @@ let
       on-click-middle = "sleep 0.1 && swaync-client -d -sw";
       escape = true;
     };
+    disk = {
+      format = "{percentage_free}% ";
+    };
+    cpu = {
+      interval = 5;
+      format = "{usage:2}% ";
+      tooltip = true;
+    };
+    memory = {
+      interval = 5;
+      format = "{}% ";
+      tooltip = true;
+    };
   };
   # Secondary Config: 
   secondaryBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [
-    ];
+    modules-center = [ ];
     modules-left = [
       "hyprland/workspaces"
       # "tray" Shouldn't have two trays, but I like it
       "hyprland/window"
     ];
-    modules-right = [
-      "disk"
-      "cpu"
-      "memory"
-
-    ];
+    modules-right = [ ];
     "hyprland/workspaces" = {
       on-click = "activate";
       show-special = true;
@@ -255,19 +265,6 @@ let
     "hyprland/window" = {
       format = "❯ {title}";
       separate-outputs = true;
-    };
-    disk = {
-      format = "{percentage_free}% ";
-    };
-    cpu = {
-      interval = 5;
-      format = "{usage:2}% ";
-      tooltip = true;
-    };
-    memory = {
-      interval = 5;
-      format = "{}% ";
-      tooltip = true;
     };
   };
 
