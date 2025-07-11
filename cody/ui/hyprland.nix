@@ -96,7 +96,7 @@
           on-resume = "hyprctl dispatch dpms on";
         }
         {
-          timeout = 86400; # 24h.
+          timeout = 3600; # 1hr.
           on-timeout = "systemctl suspend";
           on-resume = "echo 'service resumed'";
         }
