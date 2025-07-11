@@ -108,16 +108,18 @@
 
     # Override Display Manager and Windowing system.
     services = {
-      displayManager = {
-        autoLogin.user = "codyt";
-        sddm = {
-          enable = true;
-          wayland.enable = true;
-          autoNumlock = true;
+      greetd = {
+        enable = true;
+        settings = {
+          default_session = {
+            command = "Hyprland";
+            user = "codyt";
+          };
         };
+        vt = 2;
       };
       xserver = {
-        enable = true;
+        enable = false;
         displayManager.gdm.enable = lib.mkForce false;
         desktopManager.gnome.enable = lib.mkForce false;
         xkb = {
