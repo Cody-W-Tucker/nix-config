@@ -21,6 +21,8 @@ let
       "hyprland/workspaces"
       "tray"
       "hyprland/window"
+      "pulseaudio"
+      "privacy"
     ];
     modules-right = [
       "custom/agenda"
@@ -45,6 +47,42 @@ let
         "class<Zen Browser> title<.*Calendar.*>" = "";
       };
       window-rewrite-default = "󰏗";
+    };
+    privacy = {
+      icon-spacing = 4;
+      icon-size = 18;
+      transition-duration = 250;
+      modules = [
+        {
+          type = "screenshare";
+          tooltip = true;
+          tooltip-icon-size = 24;
+        }
+        {
+          type = "audio-in";
+          tooltip = true;
+          tooltip-icon-size = 24;
+        }
+      ];
+    };
+    pulseaudio = {
+      format = "{volume}% {icon} {format_source}";
+      format-bluetooth = "{volume}% {icon} {format_source}";
+      format-bluetooth-muted = " {icon} {format_source}";
+      format-muted = " {format_source}";
+      format-source = "{volume}% ";
+      format-source-muted = "";
+      ss = {
+        headphone = "";
+        hands-free = "";
+        headset = "";
+        phone = "";
+        portable = "";
+        car = "";
+        default = [ "" "" "" ];
+      };
+      on-click = "uwsm-app -- bluetoothSwitch";
+      on-click-right = "uwsm-app -- pavucontrol";
     };
     temperature = {
       hwmon-path-abs = "/sys/devices/platform/coretemp.0/hwmon";
@@ -184,9 +222,6 @@ let
     layer = "top";
     spacing = 4;
     modules-center = [
-      "custom/media"
-      "pulseaudio"
-      "privacy"
     ];
     modules-left = [
       "hyprland/workspaces"
@@ -217,10 +252,6 @@ let
       };
       window-rewrite-default = "󰏗";
     };
-    tray = {
-      icon-size = 21;
-      spacing = 10;
-    };
     "hyprland/window" = {
       format = "❯ {title}";
       separate-outputs = true;
@@ -237,42 +268,6 @@ let
       interval = 5;
       format = "{}% ";
       tooltip = true;
-    };
-    privacy = {
-      icon-spacing = 4;
-      icon-size = 18;
-      transition-duration = 250;
-      modules = [
-        {
-          type = "screenshare";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
-        {
-          type = "audio-in";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
-      ];
-    };
-    pulseaudio = {
-      format = "{volume}% {icon} {format_source}";
-      format-bluetooth = "{volume}% {icon} {format_source}";
-      format-bluetooth-muted = " {icon} {format_source}";
-      format-muted = " {format_source}";
-      format-source = "{volume}% ";
-      format-source-muted = "";
-      ss = {
-        headphone = "";
-        hands-free = "";
-        headset = "";
-        phone = "";
-        portable = "";
-        car = "";
-        default = [ "" "" "" ];
-      };
-      on-click = "uwsm-app -- bluetoothSwitch";
-      on-click-right = "uwsm-app -- pavucontrol";
     };
   };
 
