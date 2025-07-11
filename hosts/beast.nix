@@ -114,7 +114,7 @@
           wayland.enable = true;
           autoNumlock = true;
         };
-        autoLogin.user = "codyt";
+        # autoLogin.user = "codyt";
       };
       xserver = {
         enable = true;
