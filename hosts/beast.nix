@@ -109,17 +109,10 @@
     # Override Display Manager and Windowing system.
     services = {
       displayManager = {
-        sddm = {
-          enable = true;
-          wayland.enable = true;
-          autoNumlock = true;
-        };
         # autoLogin.user = "codyt";
       };
       xserver = {
         enable = true;
-        displayManager.gdm.enable = lib.mkForce false;
-        desktopManager.gnome.enable = lib.mkForce false;
         xkb = {
           layout = "us";
           model = "pc105";
