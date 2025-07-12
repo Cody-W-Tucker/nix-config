@@ -120,7 +120,7 @@
       greetd = {
         enable = true;
         settings = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --sessions --time --asterisks";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --sessions /run/current-system/sw/share/xsessions:/run/current-system/sw/share/wayland-sessions --time --asterisks";
           user = "greeter";
         };
         vt = 2;
