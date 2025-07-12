@@ -120,10 +120,8 @@
       greetd = {
         enable = true;
         settings = {
-          default_session = {
-            command = "uwsm start hyprland-uwsm.desktop";
-            user = "codyt";
-          };
+          command = "${pkgs.tuigreet}/bin/tuigreet --sessions --time --asterisks";
+          user = "greeter";
         };
         vt = 2;
       };
