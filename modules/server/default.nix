@@ -141,7 +141,7 @@
   networking.firewall = {
     enable = true;
     allowPing = true;
-    allowedTCPPorts = [ 80 443 6333 6334 ];
+    allowedTCPPorts = [ 80 443 ];
   };
 
   # Using Docker
