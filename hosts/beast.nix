@@ -9,6 +9,7 @@
       ../modules/desktop/nvidia.nix
       ../modules/scripts
       ../modules/desktop/mcp-servers.nix
+      ../modules/server/ai.nix
     ];
 
   config = {
@@ -244,13 +245,6 @@
     services.mullvad-vpn = {
       enable = true;
       package = pkgs.mullvad-vpn;
-    };
-
-    services.ollama = {
-      enable = true;
-      acceleration = "cuda";
-      openFirewall = true;
-      host = "0.0.0.0";
     };
 
     # This value determines the NixOS release from which the default
