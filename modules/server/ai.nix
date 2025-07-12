@@ -1,6 +1,3 @@
-{ config, ... }:
-let userDir = "${config.users.users.codyt.home}";
-in
 {
   # Enable CUDA in containers
   hardware.nvidia-container-toolkit.enable = true;
@@ -24,6 +21,7 @@ in
         DO_NOT_TRACK = "True";
         SCARF_NO_ANALYTICS = "True";
         WEBUI_SECRET_KEY = "local-only";
+        USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3";
 
         # Local AI
         OLLAMA_BASE_URL = "http://localhost:11434";
@@ -54,7 +52,7 @@ in
       autoStart = true;
       image = "ghcr.io/open-webui/pipelines:main";
       ports = [ "9099:9099" ];
-      volumes = [ "${userDir}/pipelines:/app/pipelines" ];
+      volumes = [ "/var/lib/pipelines/pipelines:/app/pipelines" ];
       extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--network=host" "--pull=always" ];
     };
   };
@@ -112,9 +110,10 @@ in
       };
     };
   };
-  # Make the open-webui dir
+  # Make the open-webui and pipelines dirs
   systemd.tmpfiles.rules = [
     "d /var/lib/open-webui 0755 root root - -"
+    "d /var/lib/pipelines 0755 root root - -"
   ];
   # Open the ports so the web server can proxy them
   networking.firewall.allowedTCPPorts = [ 6333 6334 8080 ];
