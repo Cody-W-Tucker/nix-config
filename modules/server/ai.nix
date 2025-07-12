@@ -29,7 +29,7 @@
 
         # Vector DB
         VECTOR_DB = "qdrant";
-        QDRANT_URI = "http://qdrant.homehub.tv";
+        QDRANT_URI = "http://localhost:6333";
         ENABLE_QDRANT_MULTITENANCY_MODE = "True";
         QDRANT_ON_DISK = "True";
 
