@@ -16,7 +16,7 @@ in
         "--pull=always"
         "--add-host=host.docker.internal:host-gateway"
         "--network=host"
-        " --device=nvidia.com/gpu=all"
+        "--device=nvidia.com/gpu=all"
       ];
       environment = {
         # WEBUI_URL = "https://ai.homehub.tv";
