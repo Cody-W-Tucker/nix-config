@@ -3,7 +3,6 @@
 {
   imports = [
     ./actualBudget.nix
-    ./ai.nix
     ./arm.nix
     ./adguard.nix
     ./automation.nix
@@ -65,7 +64,7 @@
         forceSSL = true;
         # HTTP API (REST API on port 6333)
         locations."/" = {
-          proxyPass = "http://localhost:6333"; # Forward REST traffic
+          proxyPass = "http://192.168.1.20:6333"; # Forward REST traffic
           proxyWebsockets = true; # Extra flexibility for WebSockets (not required for REST API)
           # Optional: Add headers to preserve proxy context
           extraConfig = ''
@@ -76,12 +75,12 @@
         };
         # gRPC API (on port 6334)
         locations."/grpc" = {
-          proxyPass = "http://localhost:6334"; # Forward gRPC traffic
+          proxyPass = "http://192.168.1.20:6334"; # Forward gRPC traffic
           extraConfig = ''
             grpc_set_header Host $host;
             grpc_set_header X-Real-IP $remote_addr;
             grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            grpc_pass grpc://localhost:6334;    # Ensure grpc_pass for gRPC-specific handling
+            grpc_pass grpc://192.168.1.20:6334;    # Ensure grpc_pass for gRPC-specific handling
           '';
         };
       };
@@ -90,7 +89,7 @@
         forceSSL = true;
         kTLS = true;
         locations."/" = {
-          proxyPass = "http://localhost:8080";
+          proxyPass = "http://192.168.1.20:8080";
           proxyWebsockets = true;
           extraConfig = ''
             proxy_buffering off;
