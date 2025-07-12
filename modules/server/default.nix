@@ -61,7 +61,7 @@
     virtualHosts = {
       "qdrant.homehub.tv" = {
         useACMEHost = "homehub.tv";
-        forceSSL = true;
+        forceSSL = false;
         # HTTP API (REST API on port 6333)
         locations."/" = {
           proxyPass = "http://192.168.1.20:6333"; # Forward REST traffic
