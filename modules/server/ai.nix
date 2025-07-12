@@ -93,7 +93,6 @@ in
       listenAddress = "0.0.0.0";
     };
     # Vector Search http port 6333, gRPC port 6334
-    networking.firewall.allowedTCPPorts = [ 6333 6334 8080 ];
     qdrant = {
       enable = true;
       settings = {
@@ -117,4 +116,6 @@ in
   systemd.tmpfiles.rules = [
     "d /var/lib/open-webui 0755 root root - -"
   ];
+  # Open the ports so the web server can proxy them
+  networking.firewall.allowedTCPPorts = [ 6333 6334 8080 ];
 }
