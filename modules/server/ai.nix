@@ -89,8 +89,11 @@ in
     tika = {
       enable = true;
       port = 9998;
+      openFirewall = true;
+      listenAddress = "0.0.0.0";
     };
     # Vector Search http port 6333, gRPC port 6334
+    networking.firewall.allowedTCPPorts = [ 6333 6334 8080 ];
     qdrant = {
       enable = true;
       settings = {
