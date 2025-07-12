@@ -73,35 +73,37 @@ in
     };
   };
   # Local AI models
-  ollama = {
-    enable = true;
-    port = 11434;
-    openFirewall = true;
-    acceleration = "cuda";
-    host = "0.0.0.0";
-  };
-  # Content extraction
-  tika = {
-    enable = true;
-    port = 9998;
-  };
-  # Vector Search http port 6333, gRPC port 6334
-  qdrant = {
-    enable = true;
-    settings = {
-      storage = {
-        storage_path = "/var/lib/qdrant/storage";
-        snapshots_path = "/var/lib/qdrant/snapshots";
+  services = {
+    ollama = {
+      enable = true;
+      port = 11434;
+      openFirewall = true;
+      acceleration = "cuda";
+      host = "0.0.0.0";
+    };
+    # Content extraction
+    tika = {
+      enable = true;
+      port = 9998;
+    };
+    # Vector Search http port 6333, gRPC port 6334
+    qdrant = {
+      enable = true;
+      settings = {
+        storage = {
+          storage_path = "/var/lib/qdrant/storage";
+          snapshots_path = "/var/lib/qdrant/snapshots";
+        };
+        hsnw_index = {
+          on_disk = true;
+        };
+        service = {
+          host = "0.0.0.0";
+          http_port = 6333;
+          grpc_port = 6334;
+        };
+        telemetry_disabled = true;
       };
-      hsnw_index = {
-        on_disk = true;
-      };
-      service = {
-        host = "0.0.0.0";
-        http_port = 6333;
-        grpc_port = 6334;
-      };
-      telemetry_disabled = true;
     };
   };
 }
