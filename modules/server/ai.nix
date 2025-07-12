@@ -8,7 +8,7 @@ in
       autoStart = true;
       image = "ghcr.io/open-webui/open-webui:cuda";
       ports = [ "3030:8080" ];
-      volumes = [ "${userDir}/open-webui:/app/backend/data" ];
+      volumes = [ "/var/lib/open-webui:/app/backend/data" ];
       extraOptions = [
         "--pull=always"
         "--add-host=host.docker.internal:host-gateway"
@@ -106,4 +106,8 @@ in
       };
     };
   };
+  # Make the open-webui dir
+  systemd.tmpfiles.rules = [
+    "d /var/lib/open-webui 0755 root root - -"
+  ];
 }
