@@ -10,7 +10,7 @@ in
     "open-webui" = {
       autoStart = true;
       image = "ghcr.io/open-webui/open-webui:cuda";
-      ports = [ "3030:8080" ];
+      ports = [ "8080:8080" ];
       volumes = [ "/var/lib/open-webui:/app/backend/data" ];
       extraOptions = [
         "--pull=always"
@@ -19,7 +19,7 @@ in
         "--device=nvidia.com/gpu=all"
       ];
       environment = {
-        # WEBUI_URL = "https://ai.homehub.tv";
+        WEBUI_URL = "https://ai.homehub.tv";
         ANONYMIZED_TELEMETRY = "False";
         DO_NOT_TRACK = "True";
         SCARF_NO_ANALYTICS = "True";
@@ -41,7 +41,7 @@ in
 
         # RAG
         RAG_EMBEDDING_ENGINE = "ollama";
-        RAG_EMBEDDING_MODEL = "";
+        RAG_EMBEDDING_MODEL = "nomic-embed-text";
         ENABLE_RAG_HYBRID_SEARCH = "True";
 
         # Speech to Text
@@ -73,6 +73,7 @@ in
       OnCalendar = "Mon *-*-* 02:00:00";
       RandomizedDelaySec = "2h";
       Persistent = true;
+      WakeSystem = true;
     };
   };
   # Local AI models
