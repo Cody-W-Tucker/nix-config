@@ -120,8 +120,10 @@
       greetd = {
         enable = true;
         settings = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --sessions /run/current-system/sw/share/xsessions:/run/current-system/sw/share/wayland-sessions --time --asterisks";
-          user = "greeter";
+          default_session = {
+            command = "uwsm start hyprland-uwsm.desktop";
+            user = "codyt";
+          };
         };
         vt = 2;
       };
