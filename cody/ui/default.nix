@@ -61,6 +61,7 @@
       taskwarrior-tui
       feishin
       picard
+      google-chrome
     ])
     ++
     (with pkgs-unstable; [
