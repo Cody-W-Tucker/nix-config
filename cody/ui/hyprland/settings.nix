@@ -93,6 +93,17 @@ in
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
+
+      # Place Google meet video near my camera
+      # Float the Google Meet PiP window
+      "float,title:^(Picture in picture)$"
+
+      # Pin the window so it stays above others
+      "pin,title:^(Picture in picture)$"
+
+      # Move the window to the top center (adjust X for your screen width)
+      "move exact 1220 50,title:^(Picture in picture)$"
+
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace;
