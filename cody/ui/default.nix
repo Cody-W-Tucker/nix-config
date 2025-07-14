@@ -66,7 +66,7 @@
     ++
     (with pkgs-unstable; [
       # list of unstable packages go here
-      code-cursor
+      code-cursor-fhs
       vscode
       legcord
       codex
