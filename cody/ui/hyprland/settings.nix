@@ -96,9 +96,9 @@ in
 
       # Place Google meet video near my camera
       # Float the Google Meet PiP window
-      "float,title:^(Meet - .*)$,class:^(google-chrome)$"
-      "pin,title:^(Meet - .*)$,class:^(google-chrome)$"
-      "move exact 848 50,title:^(Meet - .*)$,class:^(google-chrome)$"
+      "float,title:^(Meet - cze-voho-upu)$,class:^(google-chrome)$"
+      "pin,title:^(Meet - cze-voho-upu)$,class:^(google-chrome)$"
+      "move exact 829 50,title:^(Meet - cze-voho-upu)$,class:^(google-chrome)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace;
