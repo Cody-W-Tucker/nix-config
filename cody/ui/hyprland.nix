@@ -26,7 +26,7 @@
     settings = {
       general = {
         hide_cursor = true;
-        grace = 900; # 15mins.
+        grace = 300; # 5mins.
         ignore_empty_input = true;
       };
       background = lib.mkForce [
@@ -80,7 +80,7 @@
       general = {
         lock_cmd = "hyprlock";
         unlock_cmd = "echo 'unlock!'";
-        before_sleep_cmd = "loginctl lock-session";
+        before_sleep_cmd = "pidof hyprlock || hyprlock";
         after_sleep_cmd = "hyprctl dispatch dpms on";
         ignore_dbus_inhibit = false;
       };
