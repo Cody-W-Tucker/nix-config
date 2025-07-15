@@ -17,7 +17,6 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    xwayland.enable = true;
     systemd.enable = false;
   };
   # Lockscreen: blurs after 15mins with another 15mins grace, then turns monitor off and locks
