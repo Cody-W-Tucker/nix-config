@@ -18,10 +18,10 @@ let
     ];
     modules-center = [
       "custom/notification"
+      "privacy"
+      "pulseaudio"
       "clock"
       "custom/media"
-      "pulseaudio"
-      "privacy"
     ];
     modules-right = [
       "custom/agenda"
