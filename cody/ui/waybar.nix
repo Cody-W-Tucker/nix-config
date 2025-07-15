@@ -18,9 +18,9 @@ let
     ];
     modules-center = [
       "custom/notification"
+      "clock"
       "privacy"
       "pulseaudio"
-      "clock"
       "custom/media"
     ];
     modules-right = [
