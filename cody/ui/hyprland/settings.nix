@@ -18,7 +18,6 @@ let
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
     "${mainMod}, KP_Enter, exec, uwsm app -- taskwarrior-rofi quick_add"
     "${mainMod}, Return, exec, uwsm app -- taskwarrior-rofi quick_add"
-    "${mainMod} SHIFT, KP_Enter, exec, uwsm app -- taskwarrior-rofi"
     "${mainMod} SHIFT, Return, exec, uwsm app -- taskwarrior-rofi"
     "${mainMod}, GRAVE, exec, uwsm app -- todoist-rofi quick_add"
 
