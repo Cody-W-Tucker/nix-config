@@ -16,17 +16,11 @@ let
     "${mainMod}, P, exec, uwsm app -- kitty --title quick-kitty find-and-open-file"
     "${mainMod}, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
-    "${mainMod}, KP_Enter, exec, uwsm app -- taskwarrior-rofi quick_add"
-    "${mainMod}, Return, exec, uwsm app -- taskwarrior-rofi quick_add"
-    "${mainMod} SHIFT, Return, exec, uwsm app -- taskwarrior-rofi"
-    "${mainMod}, GRAVE, exec, uwsm app -- todoist-rofi quick_add"
+    "${mainMod}, RETURN, exec, uwsm app -- todoist-rofi quick_add"
 
     # Quick launch apps
-    "${mainMod}SHIFT, KP_Insert, exec, uwsm-app -- web-search"
-    "${mainMod}, KP_Insert, exec, uwsm-app -- zen"
-    "${mainMod}, KP_Add, exec, uwsm-app -- rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n '{result}' | wl-copy'"
-    "${mainMod}, KP_Home, exec, uwsm-app -- code --enable-features=WaylandLinuxDrmSyncobj --enable-features=UseOzonePlatform --ozone-platform=wayland"
-    "${mainMod} SHIFT, KP_Home, exec, uwsm-app -- cursor --enable-features=WaylandLinuxDrmSyncobj --enable-features=UseOzonePlatform --ozone-platform=wayland"
+    "${mainMod} SHIFT, Tab, exec, uwsm-app -- web-search"
+    "${mainMod}, BackSpace, exec, uwsm-app -- rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n '{result}' | wl-copy'"
 
     # Screenshots
     ''${mainMod}, S, exec, uwsm app -- screenshot-ocr''
