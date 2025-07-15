@@ -78,7 +78,7 @@
     enable = true;
     settings = {
       general = {
-        lock_cmd = "hyprlock";
+        lock_cmd = "pidof hyprlock || hyprlock";
         unlock_cmd = "echo 'unlock!'";
         before_sleep_cmd = "pidof hyprlock || hyprlock";
         after_sleep_cmd = "hyprctl dispatch dpms on";
@@ -88,7 +88,7 @@
       listener = [
         {
           timeout = 900; # 15min.
-          on-timeout = "loginctl lock-session";
+          on-timeout = "pidof hyprlock || hyprlock";
           on-resume = "echo 'service resumed'";
         }
         {
