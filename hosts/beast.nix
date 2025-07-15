@@ -185,7 +185,7 @@
       # Automatically scale Qt apps based on screen DPI
       QT_AUTO_SCREEN_SCALE_FACTOR = "1";
       # Use Wayland as the Qt platform
-      QT_QPA_PLATFORM = "wayland";
+      QT_QPA_PLATFORM = "wayland;xcb";
       # Disable window decorations in Qt on Wayland
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
 
@@ -210,9 +210,7 @@
       # Preferred GDK (GTK) backends (Wayland, fallback to X11)
       GDK_BACKEND = "wayland,x11";
       # SDL (Simple DirectMedia Layer) to use Wayland
-      SDL_VIDEODRIVER = "wayland";
-      # Clutter (GNOME graphics library) to use Wayland
-      CLUTTER_BACKEND = "wayland";
+      SDL_VIDEODRIVER = "wayland,x11";
       # Use libinput for input devices in wlroots compositors
       WLR_USE_LIBINPUT = "1";
     };
