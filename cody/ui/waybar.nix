@@ -17,14 +17,14 @@ let
       "hyprland/window"
     ];
     modules-center = [
-      "custom/notification"
-      "clock"
-      "custom/agenda"
-    ];
-    modules-right = [
       "privacy"
       "pulseaudio"
+      "clock"
       "custom/media"
+    ];
+    modules-right = [
+      "custom/notification"
+      "custom/agenda"
       "custom/weather"
       "group/group-power"
     ];
