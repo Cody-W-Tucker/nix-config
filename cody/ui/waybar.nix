@@ -11,25 +11,20 @@ let
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [
-      "custom/notification"
-      "clock"
-      "custom/media"
-    ];
     modules-left = [
       "hyprland/workspaces"
       "tray"
       "hyprland/window"
+    ];
+    modules-center = [
+      "custom/notification"
+      "clock"
       "custom/agenda"
-      "custom/goal"
     ];
     modules-right = [
       "privacy"
       "pulseaudio"
-      "temperature"
-      "disk"
-      "cpu"
-      "memory"
+      "custom/media"
       "custom/weather"
       "group/group-power"
     ];
