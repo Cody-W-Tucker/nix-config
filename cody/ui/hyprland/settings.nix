@@ -118,6 +118,9 @@ in
       force_no_accel = 0;
       kb_layout = "us";
     };
+    render = {
+      cm_fs_passthrough = "1";
+    };
     device = {
       name = "apple-wireless-trackpad";
       sensitivity = "0.2";
