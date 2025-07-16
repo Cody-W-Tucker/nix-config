@@ -119,7 +119,8 @@ in
       kb_layout = "us";
     };
     render = {
-      cm_fs_passthrough = "1";
+      cm_fs_passthrough = "2";
+      direct_scanout = "2";
     };
     device = {
       name = "apple-wireless-trackpad";
