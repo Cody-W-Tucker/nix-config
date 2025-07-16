@@ -232,15 +232,15 @@ let
   secondaryBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [ ];
+    modules-center = [
+      "clock"
+    ];
     modules-left = [
       "hyprland/workspaces"
       # "tray" Shouldn't have two trays, but I like it
       "hyprland/window"
     ];
-    modules-right = [
-      "clock"
-    ];
+    modules-right = [ ];
     clock = {
       format = "{:%a (%d) - %I:%M %p}";
       tooltip = true;
