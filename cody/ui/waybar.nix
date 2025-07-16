@@ -238,7 +238,28 @@ let
       # "tray" Shouldn't have two trays, but I like it
       "hyprland/window"
     ];
-    modules-right = [ ];
+    modules-right = [
+      "clock"
+    ];
+    clock = {
+      format = "{:%a (%d) - %I:%M %p}";
+      tooltip = true;
+      on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
+      tooltip-format = "<tt><small>{calendar}</small></tt>";
+      calendar = {
+        mode = "year";
+        mode-mon-col = 3;
+        weeks-pos = "left";
+        on-scroll = 1;
+        format = {
+          months = "<span color='#ffead3'><b>{}</b></span>";
+          days = "<span color='#ecc6d9'><b>{}</b></span>";
+          weeks = "<span color='#99ffdd'><b>W{}</b></span>";
+          weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+          today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+        };
+      };
+    };
     "hyprland/workspaces" = {
       on-click = "activate";
       show-special = true;
