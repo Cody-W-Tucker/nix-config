@@ -118,6 +118,9 @@ in
       force_no_accel = 0;
       kb_layout = "us";
     };
+    experimental = {
+      xx_color_management_v4 = true;
+    };
     render = {
       cm_fs_passthrough = "2";
       direct_scanout = "2";
