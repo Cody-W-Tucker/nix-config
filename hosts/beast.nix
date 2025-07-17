@@ -203,8 +203,6 @@
       # Use Nvidia's GLX implementation
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       __GL_GSYNC_ALLOWED = "1";
-      # HDR
-      HYPRLAND_HDR = "1";
 
       # ---------------------------
       # Wayland & Compositor Settings
@@ -232,6 +230,7 @@
         egl-wayland
         inputs.web-downloader.packages.${pkgs.system}.default
         cifs-utils
+        gamescope-wsi
       ]);
 
     programs.command-not-found.enable = true;
