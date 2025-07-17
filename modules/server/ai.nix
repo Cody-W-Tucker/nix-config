@@ -138,24 +138,28 @@
           type = "obsidian";
           collection = "projects";
           directories = [ "/home/codyt/Documents/Personal/Projects" ];
+          skipExisting = true;
         }
         {
           name = "inbox";
           type = "obsidian";
           collection = "inbox";
           directories = [ "/home/codyt/Documents/Personal/Inbox" ];
+          skipExisting = true;
         }
         {
           name = "entities";
           type = "obsidian";
           collection = "entities";
           directories = [ "/home/codyt/Documents/Personal/Entities" ];
+          skipExisting = true;
         }
         {
           name = "research";
           type = "obsidian";
           collection = "research";
           directories = [ "/home/codyt/Documents/Personal/Research" ];
+          skipExisting = true;
         }
       ];
     };

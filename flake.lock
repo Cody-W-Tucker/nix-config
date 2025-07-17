@@ -422,6 +422,26 @@
         "type": "github"
       }
     },
+    "qdrant-upload": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1752782221,
+        "narHash": "sha256-+OBN8PVSUentNfIiWMyMwOZ+T+93qFBlC3u7+Z/KrDg=",
+        "owner": "Cody-W-Tucker",
+        "repo": "Qdrant-Upload",
+        "rev": "788b08519a2be5bcebf116c6af7cae0e2549d694",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Cody-W-Tucker",
+        "repo": "Qdrant-Upload",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-programs-sqlite": "flake-programs-sqlite",
@@ -431,6 +451,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
+        "qdrant-upload": "qdrant-upload",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "vpn-confinement": "vpn-confinement",
