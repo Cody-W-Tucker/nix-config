@@ -121,6 +121,9 @@ in
     experimental = {
       xx_color_management_v4 = true;
     };
+    debug = {
+      full_cm_proto = true;
+    };
     render = {
       cm_fs_passthrough = "2";
       direct_scanout = "2";
