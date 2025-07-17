@@ -21,9 +21,9 @@ let
       "clock"
       "privacy"
       "pulseaudio"
-      "custom/media"
     ];
     modules-right = [
+      "custom/media"
       "custom/agenda"
       "custom/weather"
       "group/group-power"
