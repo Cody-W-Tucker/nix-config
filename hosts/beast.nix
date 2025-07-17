@@ -203,6 +203,8 @@
       # Use Nvidia's GLX implementation
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       __GL_GSYNC_ALLOWED = "1";
+      # HDR
+      HYPRLAND_HDR = "1";
 
       # ---------------------------
       # Wayland & Compositor Settings
