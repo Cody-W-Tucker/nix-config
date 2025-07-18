@@ -132,6 +132,7 @@ in
     render = {
       cm_fs_passthrough = "2";
       direct_scanout = "2";
+      cm_auto_hdr = "2";
     };
     device = {
       name = "apple-wireless-trackpad";
