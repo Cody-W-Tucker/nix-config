@@ -130,9 +130,8 @@ in
       full_cm_proto = true;
     };
     render = {
-      cm_fs_passthrough = "2";
+      cm_fs_passthrough = "1";
       direct_scanout = "2";
-      cm_auto_hdr = "2";
     };
     device = {
       name = "apple-wireless-trackpad";
