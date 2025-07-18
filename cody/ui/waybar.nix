@@ -185,7 +185,7 @@ let
       format = "󰜉";
       tooltip-format = "Reboot";
       tooltip = true;
-      on-click = "reboot";
+      on-click = "systemctl reboot";
     };
     "custom/power" = {
       format = "";
