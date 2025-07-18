@@ -17,6 +17,7 @@ let
     "${mainMod}, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
     "${mainMod}, RETURN, exec, uwsm app -- todoist-rofi quick_add"
+    "${mainMod}, Escape, exec, uwsm app -- taskwarrior-rofi quick_add"
     "${mainMod}, 0, exec, uwsm app -- zen"
     "${mainMod}, 7, exec, uwsm app -- code"
     "${mainMod}SHIFT,7, exec, uwsm app -- cursor"
