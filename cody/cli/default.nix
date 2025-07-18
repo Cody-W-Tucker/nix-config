@@ -69,6 +69,13 @@
           '';
           gcCleanup = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
         };
+        plugins = [
+          {
+            name = "vi-mode";
+            src = pkgs.zsh-vi-mode;
+            file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+          }
+        ];
         # Securely export ai API key to interactive Shell for Codex and Gemini
         initContent = ''
           export OPENAI_API_KEY="$(cat ${config.sops.secrets.OPENAI_API_KEY.path})"
