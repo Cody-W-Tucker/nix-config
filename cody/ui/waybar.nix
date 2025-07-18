@@ -288,6 +288,10 @@ in
 {
   programs.waybar = {
     enable = true;
+    systemd = {
+      enable = true;
+      target = "wayland-session@hyprland-uwsm.desktop.target";
+    };
     settings = {
       # Duplicate the bars for each monitor
       monitor1 = createBar productivityBarConfig "DP-1" "top";
