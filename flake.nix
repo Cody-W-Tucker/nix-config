@@ -73,8 +73,8 @@
           monitor = [
             "DP-1,2560x1440@240,0x0,1,bitdepth,10,vrr,2"
             # Vertical monitors
-            "DP-3,2560x1080@60,-1080x-380,1,transform,3"
-            "HDMI-A-3,2560x1080@60,-2160x-380,1,transform,1"
+            "DP-3,2560x1080@60,-1080x-390,1,transform,3"
+            "HDMI-A-3,2560x1080@60,-2160x-390,1,transform,1"
           ];
         };
         workstation = {
