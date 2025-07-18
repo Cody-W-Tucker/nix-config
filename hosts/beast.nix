@@ -231,6 +231,8 @@
         inputs.web-downloader.packages.${pkgs.system}.default
         cifs-utils
         gamescope-wsi
+        # HDR support packages
+        vkd3d
       ]);
 
     programs.command-not-found.enable = true;
