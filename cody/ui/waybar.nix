@@ -290,7 +290,7 @@ in
     enable = true;
     systemd = {
       enable = true;
-      target = "wayland-session@hyprland-uwsm.desktop.target";
+      target = "graphical-session.target";
     };
     settings = {
       # Duplicate the bars for each monitor
