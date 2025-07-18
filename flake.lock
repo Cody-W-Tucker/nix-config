@@ -133,11 +133,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1752739544,
-        "narHash": "sha256-QZNXmrRxFe+eQMWlCzY/n+he+kTxw8SSwgvdtYwodwY=",
+        "lastModified": 1752830985,
+        "narHash": "sha256-DDOoKKX9XRyHaTGPOd+Fe9b6fp2QVwuXnqfKs9VpgZs=",
         "owner": "wamserma",
         "repo": "flake-programs-sqlite",
-        "rev": "f324f01845e2bb01f5dcba01da095d77981ebb94",
+        "rev": "aa86c1bd59ec767d29da4705ee4168e239b079a2",
         "type": "github"
       },
       "original": {
@@ -321,11 +321,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1752480373,
-        "narHash": "sha256-JHQbm+OcGp32wAsXTE/FLYGNpb+4GLi5oTvCxwSoBOA=",
+        "lastModified": 1752687322,
+        "narHash": "sha256-RKwfXA4OZROjBTQAl9WOZQFm7L8Bo93FQwSJpAiSRvo=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "62e0f05ede1da0d54515d4ea8ce9c733f12d9f08",
+        "rev": "6e987485eb2c77e5dcc5af4e3c70843711ef9251",
         "type": "github"
       },
       "original": {
@@ -429,11 +429,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1752783796,
-        "narHash": "sha256-QdJDf7elcTmZoBL2UBdT5kJRqbkbBo6RHUMNpfRxLWQ=",
+        "lastModified": 1752847593,
+        "narHash": "sha256-df4/fe+hvUwSnqknWeWJMnxEXNs4UsC9oFfdT/9Pm/g=",
         "owner": "Cody-W-Tucker",
         "repo": "Qdrant-Upload",
-        "rev": "ec0f49aec30020bc6a49f1d3b551b59023859348",
+        "rev": "d6882d9f1971ffc16856989c321398cc55c1e709",
         "type": "github"
       },
       "original": {
