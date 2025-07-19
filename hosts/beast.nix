@@ -148,18 +148,6 @@
       };
     };
 
-    # KDE Connect configuration
-    programs.kdeconnect = {
-      enable = true;
-      package = pkgs.kdeconnect-kde;
-    };
-
-    # KDE Plasma browser integration
-    programs.chromium = {
-      enablePlasmaBrowserIntegration = true;
-      plasmaBrowserIntegrationPackage = pkgs.plasma-browser-integration;
-    };
-
     # Getting keyring to work
     security = {
       polkit = {
@@ -212,19 +200,6 @@
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
 
       # ---------------------------
-      # KDE Plasma Configuration
-      # ---------------------------
-
-      # Set KDE as the desktop environment
-      XDG_CURRENT_DESKTOP = "KDE";
-      # Enable KDE's compositor for better gaming performance
-      KDEWM = "kwin_wayland";
-      # KDE Connect environment
-      KDE_CONNECT_SMS = "1";
-      # KDE Plasma theme and style
-      KDE_COLOR_DEBUG = "1";
-
-      # ---------------------------
       # Nvidia & Graphics Drivers
       # ---------------------------
 
@@ -253,12 +228,6 @@
     services = {
       fwupd.enable = true;
       thermald.enable = true;
-      # KDE services for better gaming experience
-      kded.enable = true;
-      # Enable KDE's power management
-      power-profiles-daemon.enable = true;
-      # Enable KDE's network management
-      networkmanager.enable = true;
     };
 
     # Machine specific packages
@@ -273,16 +242,6 @@
         gamescope-wsi
         # HDR support packages
         vkd3d
-        # KDE gaming packages
-        kdeconnect-kde
-        plasma-browser-integration
-        # KDE utilities for gaming
-        kate
-        dolphin
-        konsole
-        # Gaming-related KDE packages
-        supergfxctl-plasmoid
-        redshift-plasma-applet
       ]);
 
     programs.command-not-found.enable = true;
