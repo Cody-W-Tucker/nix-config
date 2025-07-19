@@ -122,7 +122,8 @@
         enable = true;
         settings = {
           default_session = {
-            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd 'uwsm start'";
+            command = "uwsm start hyprland-uwsm.desktop";
+            user = "codyt";
           };
         };
         vt = 2;
@@ -139,8 +140,6 @@
           model = "pc105";
         };
       };
-      # Enable KDE Plasma 6 for gaming
-      desktopManager.plasma6.enable = true;
     };
 
     # Getting keyring to work
