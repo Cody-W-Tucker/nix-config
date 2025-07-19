@@ -71,7 +71,7 @@
             "3, layoutopt:orientation:top"
           ];
           monitor = [
-            "DP-1,2560x1440@240,0x0,1,bitdepth,10,vrr,2,cm,hdr"
+            "DP-1,2560x1440@240,0x0,1,bitdepth,10,vrr,2,cm,hdr,sdrbrightness, 1.2, sdrsaturation, 0.98"
             # Vertical monitors
             "DP-3,2560x1080@60,-1080x-405,1,transform,3"
             "HDMI-A-3,2560x1080@60,-2160x-405,1,transform,1"
