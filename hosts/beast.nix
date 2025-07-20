@@ -35,6 +35,9 @@
 
     # Networking
     networking.networkmanager.enable = true;
+    # Disable wireless networking to prevent dual IP addresses
+    networking.wireless.enable = false;
+    networking.wireless.iwd.enable = false;
 
     # Use the latest kernel
     boot.kernelPackages = pkgs.linuxPackages_zen;
@@ -236,6 +239,8 @@
         gamescope-wsi
         # HDR support packages
         vkd3d
+        # Network management
+        rofi-network-manager
       ]);
 
     programs.command-not-found.enable = true;
