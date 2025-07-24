@@ -269,7 +269,7 @@ in
       }
 
       .module {
-        padding: 4px 10px;
+        padding: 3px 10px;
         margin: 0 6px;
         border-radius: 999px;
         /* Main glass gradient with Stylix highlight overlay */
