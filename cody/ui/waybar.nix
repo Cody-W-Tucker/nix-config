@@ -35,6 +35,7 @@ let
     ];
     modules-center = [
       "clock"
+      "custom/weather"
     ];
     modules-right = [
       "tray"
@@ -136,6 +137,13 @@ let
           today = "<span color='#ff6699'><b><u>{}</u></b></span>";
         };
       };
+    };
+    "custom/weather" = {
+      exec = "uwsm-app -- get-weather Kearney+Nebraska";
+      return-type = "json";
+      format = "{}";
+      tooltip = true;
+      interval = 3600;
     };
     "custom/notification" = {
       tooltip = false;
