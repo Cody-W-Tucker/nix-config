@@ -318,18 +318,18 @@ in
 
       #workspaces button.visible {
         color: #${config.lib.stylix.colors.base05};
-        background-color: #${config.lib.stylix.colors.base0D};
+        background: transparent;
         border: 1px solid #${config.lib.stylix.colors.base0D};
       }
 
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base05};
         background: transparent;
-        border: 1px solid #${config.lib.stylix.colors.base05};
+        border: 1px solid #${config.lib.stylix.colors.base02};
       }
 
       #workspaces button:hover {
-        background-color: #${config.lib.stylix.colors.base02};
+        background-color: #${config.lib.stylix.colors.base01};
         border-color: #${config.lib.stylix.colors.base0E};
       }
 
