@@ -14,17 +14,16 @@ let
     modules-left = [
       "hyprland/workspaces"
       "tray"
+      "custom/agenda"
+      "custom/notification"
     ];
     modules-center = [
-      "custom/notification"
       "clock"
-      "privacy"
-      "pulseaudio"
     ];
     modules-right = [
+      "privacy"
+      "pulseaudio"
       "custom/media"
-      "custom/agenda"
-      "custom/weather"
       "group/hardware"
     ];
     "hyprland/workspaces" = {
