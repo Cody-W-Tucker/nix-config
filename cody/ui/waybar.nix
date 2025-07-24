@@ -319,13 +319,13 @@ in
       #workspaces button.visible {
         color: #${config.lib.stylix.colors.base05};
         background: transparent;
-        border: 1px solid #${config.lib.stylix.colors.base0D};
+        border: 1px solid #${config.lib.stylix.colors.base02};
       }
 
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base05};
         background: transparent;
-        border: 1px solid #${config.lib.stylix.colors.base02};
+        border: 1px solid #${config.lib.stylix.colors.base0D};
       }
 
       #workspaces button:hover {
