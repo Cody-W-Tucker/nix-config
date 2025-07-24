@@ -149,11 +149,15 @@ let
     };
     "group/hardware" = {
       orientation = "horizontal";
+      drawer = {
+        transition-duration = 500;
+        transition-left-to-right = true;
+      };
       modules = [
         "cpu"
+        "temperature"
         "memory"
         "disk"
-        "temperature"
       ];
     };
     cpu = {
