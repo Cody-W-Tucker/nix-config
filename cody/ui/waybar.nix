@@ -272,19 +272,30 @@ in
         padding: 6px 18px;
         margin: 0 6px;
         border-radius: 999px;
-        background-color: #${config.lib.stylix.colors.base01}; /* alternate background */
-        color: #${config.lib.stylix.colors.base05}; /* default text */
-        box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+        background-image: linear-gradient(135deg, #${config.lib.stylix.colors.base01} 60%, #${config.lib.stylix.colors.base02} 100%);
+        color: #${config.lib.stylix.colors.base05};
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+        border: 1.5px solid #${config.lib.stylix.colors.base02};
         transition: background 0.2s, color 0.2s, box-shadow 0.2s;
       }
 
-      /* Alternate module colors for differentiation */
       .modules-left > .module:nth-child(odd),
       .modules-center > .module:nth-child(odd),
       .modules-right > .module:nth-child(odd) {
-        background-color: #${config.lib.stylix.colors.base00}; /* default background */
-        color: #${config.lib.stylix.colors.base05};
+        background-image: linear-gradient(135deg, #${config.lib.stylix.colors.base02} 60%, #${config.lib.stylix.colors.base01} 100%);
       }
+
+      /* Accent backgrounds for key modules */
+      #pulseaudio {
+        background: #${config.lib.stylix.colors.base0B};
+        color: #${config.lib.stylix.colors.base00};
+      }
+      #custom-notification {
+        background: #${config.lib.stylix.colors.base0A};
+        color: #${config.lib.stylix.colors.base00};
+      }
+
+      /* Alternate module colors for differentiation */
       .modules-left > .module:nth-child(even),
       .modules-center > .module:nth-child(even),
       .modules-right > .module:nth-child(even) {
