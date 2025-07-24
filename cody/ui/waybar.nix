@@ -193,7 +193,7 @@ let
     ];
     modules-left = [
       "hyprland/workspaces"
-      # "tray" Shouldn't have two trays, but I like it
+      "tray" # Shouldn't have two trays, but I like it
       "hyprland/window"
     ];
     modules-right = [ ];
