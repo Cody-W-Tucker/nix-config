@@ -3,10 +3,27 @@
 # Create a reusable function to create each bar
 # Bottom monitor bar focus on work
 # Top monitor bar gives more information
-let nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.system}.default;
+let
+  nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.system}.default;
+  favorite_apps = {
+    "Zen Browser" = "🞋";
+    "spotify" = "";
+    "code" = "󰨞";
+    "cursor" = "󰨞";
+    "kitty" = "";
+    "obsidian" = "";
+    "class<Zen Browser> title<.*Github.*>" = "";
+    "class<Zen Browser> title<.*Reddit.*>" = "";
+    "class<Zen Browser> title<.*Facebook.*>" = "";
+    "class<Zen Browser> title<.*Gmail.*>" = "";
+    "class<Zen Browser> title<.*Calendar.*>" = "";
+  };
 in
 let
-  createBar = waybarConfig: output: position: waybarConfig // { output = output; position = position; };
+  createBar = waybarConfig: output: position: waybarConfig // {
+    output = output;
+    position = position;
+  };
   # Productivity Bar Config: This is the main bar for the main monitor.
   productivityBarConfig = {
     layer = "top";
@@ -22,49 +39,31 @@ let
     ];
     modules-right = [
       "privacy"
-      "pulseaudio"
-      "custom/media"
+      "group/media"
       "group/hardware"
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
       show-special = true;
       format = "{icon} {windows}";
-      window-rewrite = {
-        "Zen Browser" = "🞋";
-        "spotify" = "";
-        "code" = "󰨞";
-        "kitty" = "";
-        "obsidian" = "";
-        "class<Zen Browser> title<.*Github.*>" = "";
-        "class<Zen Browser> title<.*Reddit.*>" = "";
-        "class<Zen Browser> title<.*Facebook.*>" = "";
-        "class<Zen Browser> title<.*Gmail.*>" = "";
-        "class<Zen Browser> title<.*Calendar.*>" = "";
-      };
+      window-rewrite = favorite_apps;
       window-rewrite-default = "󰏗";
     };
-    privacy = {
-      icon-spacing = 4;
-      icon-size = 18;
-      transition-duration = 250;
+    "group/media" = {
+      orientation = "horizontal";
+      drawer = {
+        transition-duration = 500;
+        transition-left-to-right = false;
+      };
       modules = [
-        {
-          type = "screenshare";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
-        {
-          type = "audio-in";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
+        "pulseaudio"
+        "custom/media"
       ];
     };
     pulseaudio = {
       format = "{volume}% {icon}";
       format-bluetooth = "{volume}% {icon}";
-      ss = {
+      format-icons = {
         headphone = "";
         hands-free = "";
         headset = "";
@@ -89,6 +88,23 @@ let
       on-scroll-down = "playerctl previous";
       exec = "media-player";
     };
+    privacy = {
+      icon-spacing = 4;
+      icon-size = 18;
+      transition-duration = 250;
+      modules = [
+        {
+          type = "screenshare";
+          tooltip = true;
+          tooltip-icon-size = 24;
+        }
+        {
+          type = "audio-in";
+          tooltip = true;
+          tooltip-icon-size = 24;
+        }
+      ];
+    };
     tray = {
       icon-size = 21;
       spacing = 10;
@@ -103,7 +119,7 @@ let
       tooltip = true;
     };
     clock = {
-      format = "{:%d - %I:%M}";
+      format = "{:%a (%d) - %I:%M %p}";
       tooltip = true;
       on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
       tooltip-format = "<tt><small>{calendar}</small></tt>";
@@ -146,7 +162,7 @@ let
       orientation = "horizontal";
       drawer = {
         transition-duration = 500;
-        transition-left-to-right = true;
+        transition-left-to-right = false;
       };
       modules = [
         "temperature"
@@ -218,23 +234,8 @@ let
       on-click = "activate";
       show-special = true;
       format = "{icon} {windows}";
-      window-rewrite = {
-        "Zen Browser" = "🞋";
-        "spotify" = "";
-        "code" = "󰨞";
-        "kitty" = "";
-        "obsidian" = "";
-        "class<Zen Browser> title<.*Github.*>" = "";
-        "class<Zen Browser> title<.*Reddit.*>" = "";
-        "class<Zen Browser> title<.*Facebook.*>" = "";
-        "class<Zen Browser> title<.*Gmail.*>" = "";
-        "class<Zen Browser> title<.*Calendar.*>" = "";
-      };
+      window-rewrite = favorite_apps;
       window-rewrite-default = "󰏗";
-    };
-    "hyprland/window" = {
-      format = "❯ {title}";
-      separate-outputs = true;
     };
   };
 
@@ -270,8 +271,8 @@ in
         padding: 2px 12px;
         margin: 0 4px;
         border-radius: 16px;
-        background-color: #${config.lib.stylix.colors.base01};
-        color: #${config.lib.stylix.colors.base04};
+        background-color: #${config.lib.stylix.colors.base00};
+        color: #${config.lib.stylix.colors.base05};
         box-shadow: 0 2px 8px 0 #${config.lib.stylix.colors.base00};
         border: 1px solid #${config.lib.stylix.colors.base04};
         text-shadow: 0 1px 2px #${config.lib.stylix.colors.base00};
@@ -310,19 +311,18 @@ in
         padding: 0 14px;
         margin: 0 4px;
         border-radius: 12px;
-        background-color: #${config.lib.stylix.colors.base01};
-        border: 1px solid #${config.lib.stylix.colors.base01};
-        color: #${config.lib.stylix.colors.base01};
+        border: transparent;
+        background: transparent;
+        color: #${config.lib.stylix.colors.base03};
         transition: all 0.3s ease-in-out;
       }
       #workspaces button.visible {
-        color: #${config.lib.stylix.colors.base02};
-        background: transparent;
-        border: 1px solid #${config.lib.stylix.colors.base02};
+        color: #${config.lib.stylix.colors.base04};
+        background-color: #${config.lib.stylix.colors.base01};
+        border: 1px solid #${config.lib.stylix.colors.base03};
       }
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base0D};
-        background: transparent;
         border: 1px solid #${config.lib.stylix.colors.base0D};
       }
       #workspaces button:hover {
@@ -351,7 +351,7 @@ in
 
       #privacy-item {
         padding: 0 8px;
-        border-radius: 12px;
+        border-radius: 0px;
         color: #${config.lib.stylix.colors.base00};
         margin: 0 2px;
         border: 1px solid #${config.lib.stylix.colors.base00};
