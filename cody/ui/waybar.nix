@@ -322,8 +322,8 @@ in
         border: 1px solid #${config.lib.stylix.colors.base03};
       }
       #workspaces button.active {
-        color: #${config.lib.stylix.colors.base0D};
-        border: 1px solid #${config.lib.stylix.colors.base0D};
+        color: #${config.lib.stylix.colors.base05};
+        border: 1px solid #${config.lib.stylix.colors.base05};
       }
       #workspaces button:hover {
         background-color: #${config.lib.stylix.colors.base01};
