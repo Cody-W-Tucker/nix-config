@@ -294,7 +294,7 @@ in
       }
 
       .module:hover {
-        background-color: #${config.lib.stylix.colors.base0A}cc;
+        background-color: #${config.lib.stylix.colors.base0A};
         color: #fff;
         box-shadow: 0 4px 16px rgba(0,0,0,0.18);
       }
@@ -311,21 +311,21 @@ in
 
       #workspaces button.visible {
         color: #${config.lib.stylix.colors.base05};
-        background: #${config.lib.stylix.colors.base0B}cc;
+        background: #${config.lib.stylix.colors.base0B};
       }
 
       #workspaces button.active {
         color: #fff;
-        background: #${config.lib.stylix.colors.base0D}cc;
+        background: #${config.lib.stylix.colors.base0D};
       }
 
       #workspaces button:hover {
-        background: #${config.lib.stylix.colors.base0A}cc;
+        background: #${config.lib.stylix.colors.base0A};
         color: #fff;
       }
 
       #workspaces button.urgent {
-        background-color: #${config.lib.stylix.colors.base09}cc;
+        background-color: #${config.lib.stylix.colors.base09};
         color: #fff;
       }
 
@@ -362,15 +362,15 @@ in
       }
 
       #privacy-item.screenshare {
-        background-color: #cf5700cc;
+        background-color: #cf5700;
       }
 
       #privacy-item.audio-in {
-        background-color: #1ca000cc;
+        background-color: #1ca000;
       }
 
       #privacy-item.audio-out {
-        background-color: #0069d4cc;
+        background-color: #0069d4;
       }
     '';
   };
