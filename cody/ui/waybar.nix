@@ -73,7 +73,7 @@ let
         car = "";
         default = [ "" "" "" ];
       };
-      on-click = "uwsm-app -- bluetoothSwitch";
+      on-click = "exec bluetoothSwitch";
       on-click-right = "uwsm-app -- pavucontrol";
     };
     "custom/media" = {
@@ -139,7 +139,7 @@ let
       };
     };
     "custom/weather" = {
-      exec = "uwsm-app -- get-weather Kearney+Nebraska";
+      exec = "exec get-weather Kearney+Nebraska";
       return-type = "json";
       format = "{}";
       tooltip = true;
