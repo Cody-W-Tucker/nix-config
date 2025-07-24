@@ -193,10 +193,11 @@ let
     ];
     modules-left = [
       "hyprland/workspaces"
-      "tray" # Shouldn't have two trays, but I like it
       "hyprland/window"
     ];
-    modules-right = [ ];
+    modules-right = [
+      "tray" # Shouldn't have two trays, but I like it
+    ];
     clock = {
       format = "{:%a (%d) - %I:%M %p}";
       tooltip = true;
