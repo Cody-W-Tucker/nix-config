@@ -275,7 +275,7 @@ in
         background-color: #${config.lib.stylix.colors.base01};
         color: #${config.lib.stylix.colors.base05};
         box-shadow: 0 2px 8px 0 #${config.lib.stylix.colors.base00};
-        border: 1px solid #${config.lib.stylix.colors.base0D};
+        border: 1px solid #${config.lib.stylix.colors.base04};
         text-shadow: 0 1px 2px #${config.lib.stylix.colors.base00};
         transition: box-shadow 0.2s, border 0.2s, background 0.2s, color 0.2s;
       }
@@ -283,21 +283,21 @@ in
       .module:hover, .module:active {
         background-color: #${config.lib.stylix.colors.base02};
         box-shadow: 0 4px 16px 0 #${config.lib.stylix.colors.base00};
-        border: 1px solid #${config.lib.stylix.colors.base0D};
+        border: 1px solid #${config.lib.stylix.colors.base04};
         color: #${config.lib.stylix.colors.base05};
       }
 
-      /* Even modules: alternate border color */
+      /* Even modules: alternate border color (more subtle) */
       .modules-left > .module:nth-child(even),
       .modules-center > .module:nth-child(even),
       .modules-right > .module:nth-child(even) {
-        border-color: #${config.lib.stylix.colors.base0A};
+        border-color: #${config.lib.stylix.colors.base03};
       }
-      /* Every third module: another accent border color */
+      /* Every third module: another accent border color (even more muted) */
       .modules-left > .module:nth-child(3n),
       .modules-center > .module:nth-child(3n),
       .modules-right > .module:nth-child(3n) {
-        border-color: #${config.lib.stylix.colors.base0C};
+        border-color: #${config.lib.stylix.colors.base02};
       }
 
       #workspaces {
