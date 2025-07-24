@@ -273,7 +273,7 @@ in
         margin: 0 6px;
         border-radius: 999px;
         background-image:
-          linear-gradient(120deg, #${config.lib.stylix.colors.base0D} 0%, #${config.lib.stylix.colors.base01} 100%),
+          linear-gradient(120deg, #${config.lib.stylix.colors.base01} 0%, #${config.lib.stylix.colors.base01} 80%, #${config.lib.stylix.colors.base0D} 100%),
           linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%);
         color: #${config.lib.stylix.colors.base05};
         box-shadow: 0 2px 8px 0 #${config.lib.stylix.colors.base00};
@@ -281,12 +281,12 @@ in
         transition: background 0.2s, color 0.2s, box-shadow 0.2s;
       }
 
-      /* Even modules: use a different accent color */
+      /* Even modules: use a different accent color, but only at the end of the gradient */
       .modules-left > .module:nth-child(even),
       .modules-center > .module:nth-child(even),
       .modules-right > .module:nth-child(even) {
         background-image:
-          linear-gradient(120deg, #${config.lib.stylix.colors.base0A} 0%, #${config.lib.stylix.colors.base01} 100%),
+          linear-gradient(120deg, #${config.lib.stylix.colors.base01} 0%, #${config.lib.stylix.colors.base01} 80%, #${config.lib.stylix.colors.base0A} 100%),
           linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%);
       }
 
