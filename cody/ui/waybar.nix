@@ -149,8 +149,8 @@ let
         transition-left-to-right = true;
       };
       modules = [
-        "cpu"
         "temperature"
+        "cpu"
         "memory"
         "disk"
       ];
