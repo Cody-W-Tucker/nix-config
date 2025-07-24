@@ -148,6 +148,7 @@ let
       escape = true;
     };
     "group/hardware" = {
+      orientation = "horizontal";
       modules = [
         "cpu"
         "memory"
