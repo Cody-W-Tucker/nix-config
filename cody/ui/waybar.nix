@@ -302,6 +302,14 @@ in
         color: #${config.lib.stylix.colors.base02};
       }
 
+      .module,
+      .module label,
+      .module span,
+      .module button,
+      .module * {
+        color: inherit;
+      }
+
       #workspaces {
         background-color: transparent;
         border: none;
