@@ -257,7 +257,7 @@ in
     style = lib.mkForce ''
       * {
         font-family: JetBrainsMono, Roboto, Helvetica, Arial, sans-serif;
-        font-size: 15px;
+        font-size: 14px;
       }
 
       window#waybar {
@@ -269,7 +269,7 @@ in
       }
 
       .module {
-        padding: 3px 10px;
+        padding: 4px 10px;
         margin: 0 6px;
         border-radius: 999px;
         /* Main glass gradient with Stylix highlight overlay */
