@@ -256,7 +256,7 @@ in
     };
     style = lib.mkForce ''
       * {
-        font-family: JetBrainsMono, Roboto, Helvetica, Arial, sans-serif;
+        font-family: 'JetBrainsMono Nerd Font', Inter, Roboto, Helvetica, Arial, sans-serif;
         font-size: 14px;
       }
 
@@ -269,13 +269,13 @@ in
       }
 
       .module {
-        padding: 3px 10px;
+        padding: 5px 14px;
         margin: 0 6px;
         border-radius: 999px;
-        /* Main glass gradient with Stylix highlight overlay */
+        /* Enhanced glass gradients: top-left to bottom-right and top-right to bottom-left */
         background-image:
-          linear-gradient(135deg, #${config.lib.stylix.colors.base01} 60%, #${config.lib.stylix.colors.base02} 100%),
-          linear-gradient(0deg, #${config.lib.stylix.colors.base03} 0%, #${config.lib.stylix.colors.base01} 100%);
+          linear-gradient(135deg, #${config.lib.stylix.colors.base01} 40%, #${config.lib.stylix.colors.base02} 100%),
+          linear-gradient(225deg, #${config.lib.stylix.colors.base03} 0%, #${config.lib.stylix.colors.base01} 80%);
         color: #${config.lib.stylix.colors.base05};
         box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18), 0 1.5px 0 0 #${config.lib.stylix.colors.base02};
         border: 1.5px solid #${config.lib.stylix.colors.base02};
@@ -286,8 +286,8 @@ in
       .modules-center > .module:nth-child(odd),
       .modules-right > .module:nth-child(odd) {
         background-image:
-          linear-gradient(135deg, #${config.lib.stylix.colors.base02} 60%, #${config.lib.stylix.colors.base01} 100%),
-          linear-gradient(0deg, #${config.lib.stylix.colors.base03} 0%, #${config.lib.stylix.colors.base01} 100%);
+          linear-gradient(135deg, #${config.lib.stylix.colors.base02} 40%, #${config.lib.stylix.colors.base01} 100%),
+          linear-gradient(225deg, #${config.lib.stylix.colors.base03} 0%, #${config.lib.stylix.colors.base01} 80%);
       }
 
 
