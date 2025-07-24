@@ -14,7 +14,6 @@ let
     modules-left = [
       "hyprland/workspaces"
       "tray"
-      "hyprland/window"
     ];
     modules-center = [
       "custom/notification"
@@ -116,24 +115,8 @@ let
       interval = 59;
       tooltip = true;
     };
-    "custom/weather" = {
-      exec = "uwsm-app -- get-weather Kearney+Nebraska";
-      return-type = "json";
-      format = "{}";
-      tooltip = true;
-      interval = 3600;
-    };
-    "custom/goal" = {
-      format = "🞋 {}";
-      exec = "waybar-goal";
-      return-type = "json";
-      interval = 10;
-      on-click = "waybar-goal click";
-      on-scroll-up = "waybar-goal scroll-up";
-      on-scroll-down = "waybar-goal scroll-down";
-    };
     clock = {
-      format = "{:%a (%d) - %I:%M %p}";
+      format = "{%d - %I:%M}";
       tooltip = true;
       on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
       tooltip-format = "<tt><small>{calendar}</small></tt>";
