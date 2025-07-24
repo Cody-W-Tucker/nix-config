@@ -273,7 +273,7 @@ in
         margin: 0 4px;
         border-radius: 16px;
         background-color: #${config.lib.stylix.colors.base01};
-        color: #${config.lib.stylix.colors.base05};
+        color: #${config.lib.stylix.colors.base04};
         box-shadow: 0 2px 8px 0 #${config.lib.stylix.colors.base00};
         border: 1px solid #${config.lib.stylix.colors.base04};
         text-shadow: 0 1px 2px #${config.lib.stylix.colors.base00};
@@ -284,20 +284,22 @@ in
         background-color: #${config.lib.stylix.colors.base02};
         box-shadow: 0 4px 16px 0 #${config.lib.stylix.colors.base00};
         border: 1px solid #${config.lib.stylix.colors.base04};
-        color: #${config.lib.stylix.colors.base05};
+        color: #${config.lib.stylix.colors.base04};
       }
 
-      /* Even modules: alternate border color (more subtle) */
+      /* Even modules: alternate border and text color (more subtle) */
       .modules-left > .module:nth-child(even),
       .modules-center > .module:nth-child(even),
       .modules-right > .module:nth-child(even) {
         border-color: #${config.lib.stylix.colors.base03};
+        color: #${config.lib.stylix.colors.base03};
       }
-      /* Every third module: another accent border color (even more muted) */
+      /* Every third module: another accent border and text color (even more muted) */
       .modules-left > .module:nth-child(3n),
       .modules-center > .module:nth-child(3n),
       .modules-right > .module:nth-child(3n) {
         border-color: #${config.lib.stylix.colors.base02};
+        color: #${config.lib.stylix.colors.base02};
       }
 
       #workspaces {
@@ -312,31 +314,28 @@ in
         border-radius: 12px;
         background-color: #${config.lib.stylix.colors.base01};
         border: 1px solid #${config.lib.stylix.colors.base01};
-        color: #${config.lib.stylix.colors.base04};
+        color: #${config.lib.stylix.colors.base01};
         transition: all 0.3s ease-in-out;
       }
-
       #workspaces button.visible {
-        color: #${config.lib.stylix.colors.base05};
+        color: #${config.lib.stylix.colors.base02};
         background: transparent;
         border: 1px solid #${config.lib.stylix.colors.base02};
       }
-
       #workspaces button.active {
-        color: #${config.lib.stylix.colors.base05};
+        color: #${config.lib.stylix.colors.base0D};
         background: transparent;
         border: 1px solid #${config.lib.stylix.colors.base0D};
       }
-
       #workspaces button:hover {
         background-color: #${config.lib.stylix.colors.base01};
         border-color: #${config.lib.stylix.colors.base0E};
+        color: #${config.lib.stylix.colors.base0E};
       }
-
       #workspaces button.urgent {
         background-color: #${config.lib.stylix.colors.base08};
         border-color: #${config.lib.stylix.colors.base08};
-        color: #${config.lib.stylix.colors.base00};
+        color: #${config.lib.stylix.colors.base08};
       }
 
       #clock { border-color: #${config.lib.stylix.colors.base0E}; }
