@@ -273,28 +273,32 @@ in
         margin: 0 6px;
         border-radius: 999px;
         background-image:
-          linear-gradient(120deg, #${config.lib.stylix.colors.base03} 0%, #${config.lib.stylix.colors.base01} 100%), /* subtle highlight */
-          linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%); /* main glass */
+          linear-gradient(120deg, #${config.lib.stylix.colors.base01} 0%, #${config.lib.stylix.colors.base02} 100%),
+          linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%);
         color: #${config.lib.stylix.colors.base05};
         box-shadow: 0 6px 32px 0 #${config.lib.stylix.colors.base00}, 0 1.5px 0 0 #${config.lib.stylix.colors.base02};
         border: 1.5px solid #${config.lib.stylix.colors.base01};
         transition: background 0.2s, color 0.2s, box-shadow 0.2s;
       }
+
+      /* Subtle color tint for odd modules */
       .modules-left > .module:nth-child(odd),
       .modules-center > .module:nth-child(odd),
       .modules-right > .module:nth-child(odd) {
         background-image:
-          linear-gradient(120deg, #${config.lib.stylix.colors.base02} 0%, #${config.lib.stylix.colors.base01} 100%),
-          linear-gradient(135deg, #${config.lib.stylix.colors.base01} 40%, #${config.lib.stylix.colors.base00} 100%);
+          linear-gradient(120deg, #${config.lib.stylix.colors.base0D} 0%, #${config.lib.stylix.colors.base01} 100%),
+          linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%);
+        border: 1.5px solid #${config.lib.stylix.colors.base0D};
       }
 
-
-      /* Alternate module colors for differentiation */
+      /* Subtle color tint for even modules */
       .modules-left > .module:nth-child(even),
       .modules-center > .module:nth-child(even),
       .modules-right > .module:nth-child(even) {
-        background-color: #${config.lib.stylix.colors.base01}; /* alternate background */
-        color: #${config.lib.stylix.colors.base05};
+        background-image:
+          linear-gradient(120deg, #${config.lib.stylix.colors.base0C} 0%, #${config.lib.stylix.colors.base01} 100%),
+          linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%);
+        border: 1.5px solid #${config.lib.stylix.colors.base0C};
       }
 
       .module:hover {
