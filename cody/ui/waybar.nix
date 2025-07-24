@@ -269,15 +269,14 @@ in
       }
 
       .module {
-        padding: 6px 18px;
+        padding: 3px 10px;
         margin: 0 6px;
         border-radius: 999px;
-        /* Main glass gradient */
+        /* Main glass gradient with Stylix highlight overlay */
         background-image:
           linear-gradient(135deg, #${config.lib.stylix.colors.base01} 60%, #${config.lib.stylix.colors.base02} 100%),
-          linear-gradient(0deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 100%); /* highlight overlay */
-        color: #${config.lib.stylix.colors.base06 or "fff"};
-        text-shadow: 0 1px 6px rgba(0,0,0,0.18), 0 1px 0 #${config.lib.stylix.colors.base00};
+          linear-gradient(0deg, #${config.lib.stylix.colors.base03} 0%, #${config.lib.stylix.colors.base01} 100%);
+        color: #${config.lib.stylix.colors.base05};
         box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18), 0 1.5px 0 0 #${config.lib.stylix.colors.base02};
         border: 1.5px solid #${config.lib.stylix.colors.base02};
         transition: background 0.2s, color 0.2s, box-shadow 0.2s;
@@ -288,7 +287,7 @@ in
       .modules-right > .module:nth-child(odd) {
         background-image:
           linear-gradient(135deg, #${config.lib.stylix.colors.base02} 60%, #${config.lib.stylix.colors.base01} 100%),
-          linear-gradient(0deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 100%);
+          linear-gradient(0deg, #${config.lib.stylix.colors.base03} 0%, #${config.lib.stylix.colors.base01} 100%);
       }
 
 
