@@ -311,7 +311,7 @@ in
         margin: 0 4px;
         border-radius: 12px;
         background-color: #${config.lib.stylix.colors.base01};
-        border: 1px solid #${config.lib.stylix.colors.base0D};
+        border: 1px solid #${config.lib.stylix.colors.base01};
         color: #${config.lib.stylix.colors.base04};
         transition: all 0.3s ease-in-out;
       }
