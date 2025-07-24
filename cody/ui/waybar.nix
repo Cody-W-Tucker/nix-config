@@ -272,7 +272,7 @@ in
         padding: 6px 18px;
         margin: 0 6px;
         border-radius: 999px;
-        background-image: linear-gradient(135deg, rgba(${config.lib.stylix.colors.base01}, 0.85) 60%, rgba(${config.lib.stylix.colors.base02}, 0.85) 100%);
+        background-image: linear-gradient(135deg, #${config.lib.stylix.colors.base01} 60%, #${config.lib.stylix.colors.base02} 100%);
         color: #${config.lib.stylix.colors.base05};
         box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18), 0 1.5px 0 0 #${config.lib.stylix.colors.base02};
         border: 1.5px solid #${config.lib.stylix.colors.base02};
@@ -282,7 +282,7 @@ in
       .modules-left > .module:nth-child(odd),
       .modules-center > .module:nth-child(odd),
       .modules-right > .module:nth-child(odd) {
-        background-image: linear-gradient(135deg, rgba(${config.lib.stylix.colors.base02}, 0.85) 60%, rgba(${config.lib.stylix.colors.base01}, 0.85) 100%);
+        background-image: linear-gradient(135deg, #${config.lib.stylix.colors.base02} 60%, #${config.lib.stylix.colors.base01} 100%);
       }
 
 
