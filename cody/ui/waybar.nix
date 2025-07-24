@@ -311,8 +311,6 @@ in
       }
       #workspaces button.visible {
         color: #${config.lib.stylix.colors.base04};
-        background-color: #${config.lib.stylix.colors.base01};
-        border: 1px solid #${config.lib.stylix.colors.base03};
       }
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base05};
