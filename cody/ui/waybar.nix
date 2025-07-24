@@ -339,13 +339,6 @@ in
       #privacy-item.audio-out {
         background-color: #0069d4;
       }
-
-      #custom-power,
-      #custom-quit,
-      #custom-lock,
-      #custom-reboot {
-        font-size: large;
-      }
     '';
   };
 }
