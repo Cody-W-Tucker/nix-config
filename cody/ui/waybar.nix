@@ -322,6 +322,7 @@ in
 
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base05};
+        background: transparent;
       }
 
       #workspaces button:hover {
