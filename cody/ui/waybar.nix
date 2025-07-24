@@ -272,17 +272,21 @@ in
         padding: 2px 12px;
         margin: 0 4px;
         border-radius: 16px;
-        background-color: ${config.lib.stylix.rgba "0.6" config.lib.stylix.colors.base01};
-        border: 1px solid ${config.lib.stylix.rgba "0.3" config.lib.stylix.colors.base04};
-        box-shadow: inset 0 1px 1px 0 ${config.lib.stylix.rgba "0.1" config.lib.stylix.colors.base05}, 0 2px 8px 0 ${config.lib.stylix.rgba "0.5" config.lib.stylix.colors.base00};
+        background-image:
+          linear-gradient(120deg, #${config.lib.stylix.colors.base01} 0%, #${config.lib.stylix.colors.base01} 80%, #${config.lib.stylix.colors.base0D} 100%),
+          linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%);
         color: #${config.lib.stylix.colors.base05};
-        text-shadow: 0 1px 2px ${config.lib.stylix.rgba "0.7" config.lib.stylix.colors.base00};
+        box-shadow: 0 2px 8px 0 #${config.lib.stylix.colors.base00};
+        border: 1px solid #${config.lib.stylix.colors.base04};
+        text-shadow: 0 1px 2px #${config.lib.stylix.colors.base00};
         transition: all 0.3s ease-in-out;
       }
 
       .module:hover {
-        background-color: ${config.lib.stylix.rgba "0.7" config.lib.stylix.colors.base02};
-        box-shadow: inset 0 1px 1px 0 ${config.lib.stylix.rgba "0.15" config.lib.stylix.colors.base05}, 0 4px 12px 0 ${config.lib.stylix.rgba "0.6" config.lib.stylix.colors.base00};
+        background-image:
+          linear-gradient(120deg, #${config.lib.stylix.colors.base02} 0%, #${config.lib.stylix.colors.base02} 80%, #${config.lib.stylix.colors.base0D} 100%),
+          linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base02} 100%);
+        box-shadow: 0 4px 12px 0 #${config.lib.stylix.colors.base00};
         transform: translateY(-1px);
       }
 
@@ -296,40 +300,40 @@ in
         padding: 0 14px;
         margin: 0 4px;
         border-radius: 12px;
-        background-color: ${config.lib.stylix.rgba "0.6" config.lib.stylix.colors.base01};
-        border: 1px solid ${config.lib.stylix.rgba "0.5" config.lib.stylix.colors.base0D};
+        background-color: #${config.lib.stylix.colors.base01};
+        border: 1px solid #${config.lib.stylix.colors.base0D};
         color: #${config.lib.stylix.colors.base04};
         transition: all 0.3s ease-in-out;
       }
 
       #workspaces button.visible {
         color: #${config.lib.stylix.colors.base05};
-        background-color: ${config.lib.stylix.rgba "0.6" config.lib.stylix.colors.base0D};
-        border: 1px solid ${config.lib.stylix.rgba "0.7" config.lib.stylix.colors.base0D};
+        background-color: #${config.lib.stylix.colors.base0D};
+        border: 1px solid #${config.lib.stylix.colors.base0D};
       }
 
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base05};
         background: transparent;
-        border: 1px solid ${config.lib.stylix.rgba "0.7" config.lib.stylix.colors.base05};
+        border: 1px solid #${config.lib.stylix.colors.base05};
       }
 
       #workspaces button:hover {
-        background-color: ${config.lib.stylix.rgba "0.7" config.lib.stylix.colors.base02};
-        border-color: ${config.lib.stylix.rgba "0.6" config.lib.stylix.colors.base0E};
+        background-color: #${config.lib.stylix.colors.base02};
+        border-color: #${config.lib.stylix.colors.base0E};
       }
 
       #workspaces button.urgent {
-        background-color: ${config.lib.stylix.rgba "0.8" config.lib.stylix.colors.base08};
+        background-color: #${config.lib.stylix.colors.base08};
         border-color: #${config.lib.stylix.colors.base08};
         color: #${config.lib.stylix.colors.base00};
       }
 
-      #clock { border-color: ${config.lib.stylix.rgba "0.5" config.lib.stylix.colors.base0E}; }
-      #pulseaudio { border-color: ${config.lib.stylix.rgba "0.5" config.lib.stylix.colors.base0B}; }
-      #custom-media { border-color: ${config.lib.stylix.rgba "0.5" config.lib.stylix.colors.base0A}; }
-      #custom-agenda { border-color: ${config.lib.stylix.rgba "0.5" config.lib.stylix.colors.base0C}; }
-      #group-hardware { border-color: ${config.lib.stylix.rgba "0.5" config.lib.stylix.colors.base09}; }
+      #clock { border-color: #${config.lib.stylix.colors.base0E}; }
+      #pulseaudio { border-color: #${config.lib.stylix.colors.base0B}; }
+      #custom-media { border-color: #${config.lib.stylix.colors.base0A}; }
+      #custom-agenda { border-color: #${config.lib.stylix.colors.base0C}; }
+      #group-hardware { border-color: #${config.lib.stylix.colors.base09}; }
 
       #privacy {
         padding: 0;
@@ -343,13 +347,13 @@ in
         border-radius: 12px;
         color: #${config.lib.stylix.colors.base00};
         margin: 0 2px;
-        border: 1px solid ${config.lib.stylix.rgba "0.3" config.lib.stylix.colors.base00};
+        border: 1px solid #${config.lib.stylix.colors.base00};
         text-shadow: none;
       }
 
-      #privacy-item.screenshare { background-color: ${config.lib.stylix.rgba "0.7" config.lib.stylix.colors.base0A}; }
-      #privacy-item.audio-in { background-color: ${config.lib.stylix.rgba "0.7" config.lib.stylix.colors.base0B}; }
-      #privacy-item.audio-out { background-color: ${config.lib.stylix.rgba "0.7" config.lib.stylix.colors.base0D}; }
+      #privacy-item.screenshare { background-color: #${config.lib.stylix.colors.base0A}; }
+      #privacy-item.audio-in { background-color: #${config.lib.stylix.colors.base0B}; }
+      #privacy-item.audio-out { background-color: #${config.lib.stylix.colors.base0D}; }
 
       .modules-left > widget:first-child > #workspaces, #custom-power { margin-left: 0; }
       .modules-right > widget:last-child > #workspaces, #custom-power { margin-right: 0; }
