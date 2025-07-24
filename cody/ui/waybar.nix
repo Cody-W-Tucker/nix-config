@@ -322,7 +322,7 @@ in
 
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base00}; /* dark text for contrast */
-        background: #${config.lib.stylix.colors.base0D}; /* blue for focus */
+        background: #${config.lib.stylix.colors.base02};
       }
 
       #workspaces button:hover {
