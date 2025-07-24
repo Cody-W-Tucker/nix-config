@@ -116,7 +116,7 @@ let
       tooltip = true;
     };
     clock = {
-      format = "{%d - %I:%M}";
+      format = "{:%d - %I:%M}";
       tooltip = true;
       on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
       tooltip-format = "<tt><small>{calendar}</small></tt>";
