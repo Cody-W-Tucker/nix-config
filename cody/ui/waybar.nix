@@ -269,72 +269,90 @@ in
       }
 
       .module {
-        padding: 2px 8px;
-        margin: 0 6px;
-        border-radius: 999px;
-        background-image:
-          linear-gradient(120deg, #${config.lib.stylix.colors.base01} 0%, #${config.lib.stylix.colors.base01} 80%, #${config.lib.stylix.colors.base0D} 100%),
-          linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%);
+        padding: 2px 12px;
+        margin: 0 4px;
+        border-radius: 16px;
+        background-color: #${config.lib.stylix.colors.base01}99;
+        border: 1px solid #${config.lib.stylix.colors.base04}4D;
+        box-shadow: inset 0 1px 1px 0 #${config.lib.stylix.colors.base05}1A, 0 2px 8px 0 #${config.lib.stylix.colors.base00}80;
         color: #${config.lib.stylix.colors.base05};
-        box-shadow: 0 2px 8px 0 #${config.lib.stylix.colors.base00};
-        border: 1.5px solid #${config.lib.stylix.colors.base01};
-        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      }
-
-      /* Even modules: use a different accent color, but only at the end of the gradient */
-      .modules-left > .module:nth-child(even),
-      .modules-center > .module:nth-child(even),
-      .modules-right > .module:nth-child(even) {
-        background-image:
-          linear-gradient(120deg, #${config.lib.stylix.colors.base01} 0%, #${config.lib.stylix.colors.base01} 80%, #${config.lib.stylix.colors.base0A} 100%),
-          linear-gradient(135deg, #${config.lib.stylix.colors.base00} 40%, #${config.lib.stylix.colors.base01} 100%);
+        text-shadow: 0 1px 2px #${config.lib.stylix.colors.base00}B3;
+        transition: all 0.3s ease-in-out;
       }
 
       .module:hover {
-        background-color: #${config.lib.stylix.colors.base02}; /* selection background */
-        color: #${config.lib.stylix.colors.base05};
-        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        background-color: #${config.lib.stylix.colors.base02}B3;
+        box-shadow: inset 0 1px 1px 0 #${config.lib.stylix.colors.base05}26, 0 4px 12px 0 #${config.lib.stylix.colors.base00}99;
+        transform: translateY(-1px);
+      }
+
+      #workspaces {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
       }
 
       #workspaces button {
         padding: 0 14px;
         margin: 0 4px;
-        border-radius: 999px;
-        background: #${config.lib.stylix.colors.base01};
-        color: #${config.lib.stylix.colors.base04}; /* alternate text */
-        border: none;
-        transition: background 0.2s, color 0.2s;
+        border-radius: 12px;
+        background-color: #${config.lib.stylix.colors.base01}99;
+        border: 1px solid #${config.lib.stylix.colors.base0D}80;
+        color: #${config.lib.stylix.colors.base04};
+        transition: all 0.3s ease-in-out;
       }
 
       #workspaces button.visible {
         color: #${config.lib.stylix.colors.base05};
-        background: #${config.lib.stylix.colors.base02}; /* selection background */
+        background-color: #${config.lib.stylix.colors.base0D}99;
+        border: 1px solid #${config.lib.stylix.colors.base0D}B3;
       }
 
       #workspaces button.active {
         color: #${config.lib.stylix.colors.base05};
         background: transparent;
+        border: 1px solid #${config.lib.stylix.colors.base05}B3;
       }
 
       #workspaces button:hover {
-        background: #${config.lib.stylix.colors.base00};
-        color: #${config.lib.stylix.colors.base0D};
+        background-color: #${config.lib.stylix.colors.base02}B3;
+        border-color: #${config.lib.stylix.colors.base0E}99;
       }
 
       #workspaces button.urgent {
-        background-color: #${config.lib.stylix.colors.base09}; /* urgent */
-        color: #${config.lib.stylix.colors.base00}; /* dark text for contrast */
+        background-color: #${config.lib.stylix.colors.base08}CC;
+        border-color: #${config.lib.stylix.colors.base08};
+        color: #${config.lib.stylix.colors.base00};
       }
 
-      /* If leftmost module, omit left margin */
-      .modules-left > widget:first-child > #workspaces, #custom-power {
-        margin-left: 0;
+      #clock { border-color: #${config.lib.stylix.colors.base0E}80; }
+      #pulseaudio { border-color: #${config.lib.stylix.colors.base0B}80; }
+      #custom-media { border-color: #${config.lib.stylix.colors.base0A}80; }
+      #custom-agenda { border-color: #${config.lib.stylix.colors.base0C}80; }
+      #group-hardware { border-color: #${config.lib.stylix.colors.base09}80; }
+
+      #privacy {
+        padding: 0;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
       }
 
-      /* If rightmost module, omit right margin */
-      .modules-right > widget:last-child > #workspaces, #custom-power {
-        margin-right: 0;
+      #privacy-item {
+        padding: 0 8px;
+        border-radius: 12px;
+        color: #${config.lib.stylix.colors.base00};
+        margin: 0 2px;
+        border: 1px solid #${config.lib.stylix.colors.base00}4D;
+        text-shadow: none;
       }
+
+      #privacy-item.screenshare { background-color: #${config.lib.stylix.colors.base0A}B3; }
+      #privacy-item.audio-in { background-color: #${config.lib.stylix.colors.base0B}B3; }
+      #privacy-item.audio-out { background-color: #${config.lib.stylix.colors.base0D}B3; }
+
+      .modules-left > widget:first-child > #workspaces, #custom-power { margin-left: 0; }
+      .modules-right > widget:last-child > #workspaces, #custom-power { margin-right: 0; }
 
       @keyframes blink {
         to {
@@ -345,29 +363,6 @@ in
 
       label:focus {
         background-color: #${config.lib.stylix.colors.base02};
-      }
-
-      #privacy {
-        padding: 0;
-      }
-
-      #privacy-item {
-        padding: 0 8px;
-        border-radius: 999px;
-        color: #${config.lib.stylix.colors.base00}; /* dark text for contrast */
-        margin: 0 2px;
-      }
-
-      #privacy-item.screenshare {
-        background-color: #${config.lib.stylix.colors.base0A}; /* warning */
-      }
-
-      #privacy-item.audio-in {
-        background-color: #${config.lib.stylix.colors.base0B}; /* green */
-      }
-
-      #privacy-item.audio-out {
-        background-color: #${config.lib.stylix.colors.base0D}; /* blue */
       }
     '';
   };
