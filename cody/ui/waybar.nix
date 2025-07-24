@@ -267,7 +267,7 @@ in
         margin: 8px 16px;
         border: 2px solid #${config.lib.stylix.colors.base02};
         /* Optional: blur effect for extra modern look (if supported) */
-        backdrop-filter: blur(12px);
+        /* backdrop-filter: blur(12px); */
       }
 
       .module {
