@@ -25,7 +25,7 @@ let
       "custom/media"
       "custom/agenda"
       "custom/weather"
-      "group/group-power"
+      "group/hardware"
     ];
     "hyprland/workspaces" = {
       on-click = "activate";
@@ -81,14 +81,6 @@ let
       on-click = "uwsm-app -- bluetoothSwitch";
       on-click-right = "uwsm-app -- pavucontrol";
     };
-    temperature = {
-      hwmon-path-abs = "/sys/devices/platform/coretemp.0/hwmon";
-      input-filename = "temp2_input";
-      format = "{temperatureC}°C ";
-      format-critical = "{temperatureC}°C ";
-      tooltip-format = "{temperatureF}°F";
-      critical-threshold = 85;
-    };
     "custom/media" = {
       format = "{}";
       escape = true;
@@ -109,7 +101,7 @@ let
     "custom/agenda" = {
       exec = nextmeeting + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
       on-click = nextmeeting + "--open-meet-url";
-      on-click-right = "xdg-open https://app.reclaim.ai/planner";
+      on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
       format = "󰃶 {}";
       return-type = "json";
       interval = 59;
@@ -134,48 +126,6 @@ let
         };
       };
     };
-    "hyprland/window" = {
-      format = "❯ {title}";
-      separate-outputs = true;
-    };
-    "group/group-power" = {
-      orientation = "inherit";
-      drawer = {
-        transition-duration = 500;
-        children-class = "not-power";
-        transition-left-to-right = false;
-      };
-      modules = [
-        "custom/power"
-        "custom/quit"
-        "custom/lock"
-        "custom/reboot"
-      ];
-    };
-    "custom/quit" = {
-      format = "󰗼";
-      tooltip = true;
-      tooltip-format = "Quit";
-      on-click = "hyprctl dispatch exec, uwsm stop";
-    };
-    "custom/lock" = {
-      format = "󰍁";
-      tooltip-format = "Lock";
-      tooltip = true;
-      on-click = "hyprlock";
-    };
-    "custom/reboot" = {
-      format = "󰜉";
-      tooltip-format = "Reboot";
-      tooltip = true;
-      on-click = "systemctl reboot";
-    };
-    "custom/power" = {
-      format = "";
-      tooltip-format = "Shutdown";
-      tooltip = false;
-      on-click = "shutdown now";
-    };
     "custom/notification" = {
       tooltip = false;
       format = "{icon} {}";
@@ -197,18 +147,39 @@ let
       on-click-middle = "sleep 0.1 && swaync-client -d -sw";
       escape = true;
     };
+    "group/hardware" = {
+      modules = [
+        "cpu"
+        "memory"
+        "disk"
+        "temperature"
+      ];
+    };
+    cpu = {
+      format = "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}";
+      format-icons = [
+        "▁"
+        "▂"
+        "▃"
+        "▄"
+        "▅"
+        "▆"
+        "▇"
+        "█"
+      ];
+    };
+    memory = {
+      interval = 30;
+      format = "{used:0.1f}G/{total:0.1f}G ";
+    };
     disk = {
       format = "{percentage_free}% ";
     };
-    cpu = {
-      interval = 5;
-      format = "{usage:2}% ";
-      tooltip = true;
-    };
-    memory = {
-      interval = 5;
-      format = "{}% ";
-      tooltip = true;
+    temperature = {
+      format = "{temperatureC}°C ";
+      format-critical = "{temperatureC}°C ";
+      tooltip-format = "{temperatureF}°F";
+      critical-threshold = 85;
     };
   };
   # Secondary Config: 
