@@ -321,13 +321,13 @@ in
       }
 
       #workspaces button.active {
-        color: #${config.lib.stylix.colors.base00}; /* dark text for contrast */
+        color: #${config.lib.stylix.colors.base05};
         background: #${config.lib.stylix.colors.base02};
       }
 
       #workspaces button:hover {
-        background: #${config.lib.stylix.colors.base02};
-        color: #${config.lib.stylix.colors.base05};
+        background: #${config.lib.stylix.colors.base00};
+        color: #${config.lib.stylix.colors.base0D};
       }
 
       #workspaces button.urgent {
