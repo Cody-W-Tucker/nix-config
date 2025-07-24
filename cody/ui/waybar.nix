@@ -321,12 +321,6 @@ in
         color: #${config.lib.stylix.colors.base08};
       }
 
-      #clock { border-color: #${config.lib.stylix.colors.base0E}; }
-      #pulseaudio { border-color: #${config.lib.stylix.colors.base0B}; }
-      #custom-media { border-color: #${config.lib.stylix.colors.base0A}; }
-      #custom-agenda { border-color: #${config.lib.stylix.colors.base0C}; }
-      #group-hardware { border-color: #${config.lib.stylix.colors.base09}; }
-
       #privacy {
         padding: 0;
         background-color: transparent;
