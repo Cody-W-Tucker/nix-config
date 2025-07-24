@@ -304,7 +304,7 @@ in
         padding: 0 14px;
         margin: 0 4px;
         border-radius: 12px;
-        border: transparent;
+        border: 1px solid transparent;
         background: transparent;
         color: #${config.lib.stylix.colors.base03};
         transition: all 0.3s ease-in-out;
