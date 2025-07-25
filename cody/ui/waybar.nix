@@ -31,7 +31,6 @@ let
     modules-left = [
       "hyprland/workspaces"
       "tray"
-
     ];
     modules-center = [
       "custom/notification"
