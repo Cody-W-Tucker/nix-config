@@ -31,8 +31,7 @@ let
     modules-left = [
       "hyprland/workspaces"
       "tray"
-      "custom/agenda"
-      "custom/taskwarrior"
+
     ];
     modules-center = [
       "custom/notification"
@@ -40,6 +39,7 @@ let
       "custom/weather"
     ];
     modules-right = [
+      "group/productivity"
       "privacy"
       "group/media"
       "group/hardware"
@@ -50,6 +50,17 @@ let
       format = "{icon} {windows}";
       window-rewrite = favorite_apps;
       window-rewrite-default = "󰏗";
+    };
+    "group/productivity" = {
+      orientation = "horizontal";
+      drawer = {
+        transition-duration = 500;
+        transition-left-to-right = false;
+      };
+      modules = [
+        "custom/agenda"
+        "custom/taskwarrior"
+      ];
     };
     "group/media" = {
       orientation = "horizontal";
