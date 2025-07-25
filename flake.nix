@@ -38,7 +38,7 @@
       url = "github:Cody-W-Tucker/Qdrant-Upload";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    inputs.waybar-taskwarrior = {
+    waybar-taskwarrior = {
       url = "github:DestinyofYeet/waybar-taskwarrior.rs";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
