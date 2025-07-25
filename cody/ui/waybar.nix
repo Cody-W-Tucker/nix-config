@@ -32,9 +32,10 @@ let
       "hyprland/workspaces"
       "tray"
       "custom/agenda"
-      "custom/notification"
+      "custom/taskwarrior"
     ];
     modules-center = [
+      "custom/notification"
       "clock"
       "custom/weather"
     ];
@@ -73,7 +74,7 @@ let
         car = "";
         default = [ "" "" "" ];
       };
-      on-click = "exec bluetoothSwitch";
+      on-click = "bluetoothSwitch";
       on-click-right = "uwsm-app -- pavucontrol";
     };
     "custom/media" = {
@@ -118,6 +119,12 @@ let
       return-type = "json";
       interval = 59;
       tooltip = true;
+    };
+    "custom/taskwarrior" = {
+      exec =
+        "${inputs.waybar-taskwarrior.packages.x86_64-linux.default}/bin/waybar-taskwarrior";
+      interval = 10;
+      return-type = "json";
     };
     clock = {
       format = "{:%a (%d) - %I:%M %p}";
