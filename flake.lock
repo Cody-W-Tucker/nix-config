@@ -455,6 +455,7 @@
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "vpn-confinement": "vpn-confinement",
+        "waybar-taskwarrior": "waybar-taskwarrior",
         "web-downloader": "web-downloader",
         "zen-browser": "zen-browser"
       }
@@ -704,6 +705,26 @@
       "original": {
         "owner": "Maroka-chan",
         "repo": "VPN-Confinement",
+        "type": "github"
+      }
+    },
+    "waybar-taskwarrior": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1741281997,
+        "narHash": "sha256-Ej4+gg9wS4SS4oainsQOlz4FGq9S3sLB4AkiHwfbZFI=",
+        "owner": "DestinyofYeet",
+        "repo": "waybar-taskwarrior.rs",
+        "rev": "7325436792ce45c74ae1b224fae5de8fd23952cc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DestinyofYeet",
+        "repo": "waybar-taskwarrior.rs",
         "type": "github"
       }
     },
