@@ -9,7 +9,6 @@ let
     ./web-scraper.nix
     ./waybar-timer.nix
     ./obsidian-writer.nix
-    ./get-weather.nix
     ./keybind-logger.nix
     ./todoist-rofi.nix
     ./update.nix
