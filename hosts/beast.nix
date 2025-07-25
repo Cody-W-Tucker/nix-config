@@ -167,7 +167,10 @@
     # Gaming Configuration
     programs.steam.enable = true;
     programs.steam.gamescopeSession.enable = true;
-    programs.gamemode.enable = true;
+    programs.gamemode = {
+      enable = true;
+      capSysNice = true;
+    };
 
     environment.sessionVariables = {
       # ---------------------------
