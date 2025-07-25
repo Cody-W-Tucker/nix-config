@@ -62,6 +62,7 @@
       feishin
       picard
       google-chrome
+      wttrbar
     ])
     ++
     (with pkgs-unstable; [

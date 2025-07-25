@@ -139,11 +139,11 @@ let
       };
     };
     "custom/weather" = {
-      exec = "exec get-weather Kearney+Nebraska";
-      return-type = "json";
       format = "{}";
       tooltip = true;
       interval = 3600;
+      exec = "wttrbar --location Kearney+Nebraska --nerd --hide-conditions --fahrenheit";
+      return-type = "json";
     };
     "custom/notification" = {
       tooltip = false;
