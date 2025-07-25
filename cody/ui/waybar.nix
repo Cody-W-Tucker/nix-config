@@ -30,6 +30,7 @@ let
     spacing = 4;
     modules-left = [
       "hyprland/workspaces"
+      "tray"
       "custom/agenda"
       "custom/notification"
     ];
@@ -38,7 +39,6 @@ let
       "custom/weather"
     ];
     modules-right = [
-      "tray"
       "privacy"
       "group/media"
       "group/hardware"
@@ -288,7 +288,6 @@ in
       }
 
       .module:hover, .module:active {
-        background-color: #${config.lib.stylix.colors.base02};
         box-shadow: 0 4px 16px 0 #${config.lib.stylix.colors.base00};
         border: 1px solid #${config.lib.stylix.colors.base04};
         color: #${config.lib.stylix.colors.base04};
