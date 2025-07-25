@@ -11,34 +11,34 @@ let
 
   keybinds = [
     # Application launchers
-    "${mainMod}, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod}, Q, exec, uwsm app -- kitty"
     "${mainMod}, P, exec, uwsm app -- kitty --title quick-kitty find-and-open-file"
-    "${mainMod}, Tab, exec, uwsm-app -- rofi-launcher"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
-    "${mainMod}, RETURN, exec, uwsm app -- todoist-rofi quick_add"
-    "${mainMod}, Escape, exec, uwsm app -- taskwarrior-rofi quick_add"
-    "${mainMod}SHIFT, Escape, exec, uwsm app -- taskwarrior-rofi"
     "${mainMod}, 0, exec, uwsm app -- zen"
     "${mainMod}, 7, exec, uwsm app -- code"
     "${mainMod}SHIFT,7, exec, uwsm app -- cursor"
 
-    # Quick launch apps
-    "${mainMod} SHIFT, Tab, exec, uwsm-app -- web-search"
-    "${mainMod}, BackSpace, exec, uwsm-app -- rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n '{result}' | wl-copy'"
+    # Quick launch
+    "${mainMod}, Tab, exec, rofi-launcher"
+    "${mainMod}, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+    "${mainMod} SHIFT, Tab, exec, web-search"
+    "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n '{result}' | wl-copy'"
+    "${mainMod}SHIFT, Escape, exec, taskwarrior-rofi"
+    "${mainMod}, Escape, exec, taskwarrior-rofi quick_add"
+    "${mainMod}, RETURN, exec, todoist-rofi quick_add"
 
     # Screenshots
-    ''${mainMod}, S, exec, uwsm app -- screenshot-ocr''
-    ''${mainMod} SHIFT, S, exec, uwsm app -- grim -g "$(slurp)" - | wl-copy''
+    ''${mainMod}, S, exec, screenshot-ocr''
+    ''${mainMod} SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
 
     # Color picker
-    "${mainMod}, mouse:274, exec, uwsm-app -- hyprpicker -a"
+    "${mainMod}, mouse:274, exec, hyprpicker -a"
 
     # Workspace navigation
-    "${mainMod}, mouse_down, exec, uwsm-app -- hyprnome --previous"
-    "${mainMod}, mouse_up, exec, uwsm-app -- hyprnome"
-    "${mainMod} SHIFT, mouse_down, exec, uwsm-app -- hyprnome --previous --move"
-    "${mainMod} SHIFT, mouse_up, exec, uwsm-app -- hyprnome --move"
+    "${mainMod}, mouse_down, exec, hyprnome --previous"
+    "${mainMod}, mouse_up, exec, hyprnome"
+    "${mainMod} SHIFT, mouse_down, exec, hyprnome --previous --move"
+    "${mainMod} SHIFT, mouse_up, exec, hyprnome --move"
 
     # Window management
     "${mainMod}, SPACE, togglefloating"
