@@ -161,7 +161,7 @@ let
       return-type = "json";
       exec-if = "which swaync-client";
       exec = "swaync-client -swb";
-      on-click = "uwsm-app -- sleep 0.1 && swaync-client -t -sw";
+      on-click = "sleep 0.1 && swaync-client -t -sw";
       on-click-right = "swaync-client -C";
       on-click-middle = "sleep 0.1 && swaync-client -d -sw";
       escape = true;
