@@ -33,6 +33,9 @@
     ];
     time.hardwareClockInLocalTime = true;
 
+    # Performance Tweaks
+    powerManagement.cpuFreqGovernor = "schedutil";
+
     # Networking
     networking.networkmanager.enable = true;
 
