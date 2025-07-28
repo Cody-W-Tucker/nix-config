@@ -154,11 +154,11 @@
           "--padding=1"
 
           # Properly quote the preview argument as one string
-          "--preview=bat --style=numbers --color=always --line-range :500 '{}'"
+          "--preview=bat --style=numbers --color=always --line-range :500 \"{}\""
           "--preview-window=right:60%"
 
           "--ansi"
-          "--bind=ctrl-o:execute(xdg-open '{}')+abort"
+          "--bind=ctrl-o:execute(xdg-open \"{}\")+abort"
           "--bind=ctrl-s:toggle-sort"
           "--multi"
         ];
