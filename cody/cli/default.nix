@@ -144,25 +144,25 @@
       fzf = {
         enable = true;
         defaultCommand = "fd --type f --exclude '.*' --exclude Sync";
-        # Default options for fzf UI and behavior
         defaultOptions = [
-          "--layout=reverse" # Show prompt at bottom
-          "--height=40%" # Use 40% of terminal height
-          "--info=inline" # Show info inline in prompt line
-          "--border=rounded" # Rounded border
-          "--margin=1" # One row margin around
-          "--padding=1" # Padding inside border
+          "--layout=reverse"
+          "--height=40%"
+          "--info=inline"
+          "--border=rounded"
+          "--margin=1"
+          "--padding=1"
 
-          # Enable advanced preview with bat (install bat for this to work)
-          "--preview='bat --style=numbers --color=always --line-range :500 {}'"
-          "--preview-window=right:60%" # Preview wide window on right side
+          # Corrected preview without extra quotes inside the string
+          "--preview=bat --style=numbers --color=always --line-range :500 {}"
+          "--preview-window=right:60%"
 
-          "--ansi" # Allow ANSI colors in output and preview
-          "--bind=ctrl-o:execute(xdg-open {})+abort" # Ctrl+O opens selected file externally
-          "--bind=ctrl-s:toggle-sort" # Ctrl+S toggles sorting on/off
-          "--multi" # Enable multi-select mode
+          "--ansi"
+          "--bind=ctrl-o:execute(xdg-open {})+abort"
+          "--bind=ctrl-s:toggle-sort"
+          "--multi"
         ];
       };
+
       kitty = {
         enable = true;
         settings = {
