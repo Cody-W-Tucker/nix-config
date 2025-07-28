@@ -143,7 +143,6 @@
       };
       fzf = {
         enable = true;
-        enableZshIntegration = true;
         defaultCommand = "fd --type f --exclude '.*' --exclude Sync";
         defaultOptions = [
           "--layout=reverse"
@@ -153,16 +152,17 @@
           "--margin=1"
           "--padding=1"
 
-          # Corrected preview without extra quotes inside the string
-          "--preview=bat --style=numbers --color=always --line-range :500 {}"
+          "--preview=bat --style=numbers --color=always --line-range :500 \"{}\""
           "--preview-window=right:60%"
 
           "--ansi"
-          "--bind=ctrl-o:execute(xdg-open {})+abort"
+          "--bind=ctrl-o:execute(xdg-open \"{}\")+abort"
           "--bind=ctrl-s:toggle-sort"
+
           "--multi"
         ];
       };
+
       kitty = {
         enable = true;
         settings = {
