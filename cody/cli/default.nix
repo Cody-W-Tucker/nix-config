@@ -143,6 +143,7 @@
       };
       fzf = {
         enable = true;
+        enableZshIntegration = true;
         defaultCommand = "fd --type f --exclude '.*' --exclude Sync";
         defaultOptions = [
           "--layout=reverse"
@@ -162,7 +163,6 @@
           "--multi"
         ];
       };
-
       kitty = {
         enable = true;
         settings = {
