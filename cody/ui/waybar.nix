@@ -159,7 +159,7 @@ let
       format = "{}";
       tooltip = true;
       interval = 3600;
-      exec = "wttrbar --location Kearney+Nebraska --nerd --hide-conditions --fahrenheit";
+      exec = "wttrbar --date-format \"%m/%d\" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions";
       return-type = "json";
     };
     "custom/notification" = {
