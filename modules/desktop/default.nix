@@ -46,6 +46,7 @@
         kitty
         obsidian
         rustdesk-flutter
+        mpv
       ]);
 
     # Open ports for rustdesk
