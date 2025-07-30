@@ -20,6 +20,14 @@
       group = "media";
     };
 
+    navidrome = {
+      enable = true;
+      group = "media";
+      settings = {
+        MusicFolder = "/mnt/media/Media/Music";
+      };
+    };
+
     jellyseerr = {
       enable = true;
     };
@@ -137,6 +145,15 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           proxyPass = "http://localhost:8096";
+          proxyWebsockets = true;
+        };
+        kTLS = true;
+      };
+      "music.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          proxyPass = "http://localhost:4533";
           proxyWebsockets = true;
         };
         kTLS = true;
