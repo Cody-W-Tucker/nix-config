@@ -1,4 +1,4 @@
-{ inputs, config, lib, pkgs, modulesPath, ... }:
+{ inputs, config, lib, pkgs, pkgs-unstable, modulesPath, ... }:
 
 {
   imports =
@@ -200,9 +200,6 @@
         "bluetooth.autoswitch-to-headset-profile" = false;
       };
     };
-
-    # Enable OpenRazer for Razer hardware support
-    hardware.openrazer.enable = true;
 
     # Use mullvad VPN for external traffic
     services.mullvad-vpn = {
