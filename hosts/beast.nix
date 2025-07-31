@@ -201,6 +201,9 @@
       };
     };
 
+    # Enable OpenRazer for Razer hardware support
+    hardware.openrazer.enable = true;
+
     # Use mullvad VPN for external traffic
     services.mullvad-vpn = {
       enable = true;
