@@ -190,13 +190,12 @@
         vkd3d
         # Network management
         rofi-network-manager
-      ]) ++
-      (with pkgs-unstable; [
-        # list of unstable packages go here
-        openrazer-daemon
       ]);
 
-    hardware.openrazer.enable = true;
+    hardware.openrazer = {
+      enable = true;
+      package = pkgs-unstable.openrazer-daemon;
+    };
     programs.command-not-found.enable = true;
 
     # Ensure headset doesn't switch profiles
