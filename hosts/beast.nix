@@ -37,9 +37,6 @@
     # Networking
     networking.networkmanager.enable = true;
 
-    # Use the latest kernel
-    boot.kernelPackages = pkgs.linuxPackages_zen;
-
     fileSystems."/" =
       {
         device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
