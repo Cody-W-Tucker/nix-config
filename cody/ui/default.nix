@@ -49,7 +49,6 @@
       libnotify
       todoist #cli client
       todoist-electron
-      slack
       nautilus
       # nix language server
       nixd
