@@ -190,10 +190,6 @@
         vkd3d
         # Network management
         rofi-network-manager
-      ]) ++
-      (with pkgs-unstable; [
-        # list of unstable packages go here
-        openrazer-daemon
       ]);
 
     programs.command-not-found.enable = true;
