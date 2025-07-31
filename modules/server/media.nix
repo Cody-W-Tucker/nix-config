@@ -78,6 +78,8 @@
         # Limit Seeding
         ratio-limit = 1.0;
         ratio-limit-enabled = true;
+        idle-seeding-limit-enabled = true;
+        idle-seeding-limit = 30;
 
         # Speed Limits
         speed-limit-up = 1280;
@@ -85,7 +87,7 @@
         speed-limit-down = 10240;
         speed-limit-down-enabled = true;
         download-queue-enabled = true;
-        download-queue-size = 20;
+        download-queue-size = 10;
 
         # Speed tweaks
         peer-limit-global = 200;
@@ -98,7 +100,7 @@
         alt-speed-up = 512; # KB/s upload during restricted hours
         alt-speed-time-enabled = true; # Enable scheduled speed limit
         alt-speed-time-begin = 480; # Start at 8:00 (8am), in minutes after midnight
-        alt-speed-time-end = 1380; # End at 22:00 (11pm), in minutes after midnight
+        alt-speed-time-end = 1380; # End at 23:00 (11pm), in minutes after midnight
         alt-speed-time-day = 126; # Monday–Saturday only
 
         # VPN
