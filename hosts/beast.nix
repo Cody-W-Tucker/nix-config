@@ -38,7 +38,9 @@
     networking.networkmanager.enable = true;
 
     # Use the latest kernel
-    boot.kernelPackages = pkgs.linuxPackages_zen;
+    boot.kernelPackages = pkgs-unstable.linuxPackages_zen;
+    # Enable the NVIDIA driver
+    hardware.nvidia.package = lib.mkForce pkgs-unstable.linuxKernel.packages.linux_zen.nvidia_x11_beta;
 
     fileSystems."/" =
       {
