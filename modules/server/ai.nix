@@ -1,3 +1,4 @@
+{ pkgs-unstable, ... }:
 {
   # Enable CUDA in containers
   hardware.nvidia-container-toolkit.enable = true;
@@ -79,6 +80,7 @@
     ollama = {
       enable = true;
       port = 11434;
+      package = pkgs-unstable.ollama;
       openFirewall = true;
       acceleration = "cuda";
       host = "0.0.0.0";
