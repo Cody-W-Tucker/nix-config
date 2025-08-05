@@ -53,7 +53,7 @@
       autoStart = true;
       image = "ghcr.io/open-webui/pipelines:main";
       ports = [ "9099:9099" ];
-      volumes = [ "/home/codyt/Documents/Projects/Turing/pipelines:/app/pipelines" ];
+      volumes = [ "/var/lib/pipelines/pipelines:/app/pipelines" ];
       extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--network=host" "--pull=always" ];
     };
   };
