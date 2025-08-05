@@ -121,10 +121,7 @@
             file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
           }
         ];
-        # Securely export ai API key to interactive Shell for Codex and Gemini
         initContent = ''
-          export OPENAI_API_KEY="$(cat ${config.sops.secrets.OPENAI_API_KEY.path})"
-          
           # Fix fzf key bindings compatibility with zsh-vi-mode
           function zvm_after_init() {
             # Re-initialize fzf key bindings after zsh-vi-mode loads
