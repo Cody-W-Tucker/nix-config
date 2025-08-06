@@ -19,6 +19,7 @@
       (with pkgs-unstable; [
         # list of unstable packages go here
         gemini-cli
+        opencode
       ]);
 
     home.sessionVariables = {
@@ -88,9 +89,6 @@
     };
 
     programs = {
-      opencode = {
-        enable = true;
-      };
       zsh = {
         enable = true;
         syntaxHighlighting.enable = true;
