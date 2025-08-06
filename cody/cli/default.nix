@@ -87,9 +87,10 @@
       };
     };
 
-    sops.secrets.OPENAI_API_KEY = { };
-
     programs = {
+      opencode = {
+        enable = true;
+      };
       zsh = {
         enable = true;
         syntaxHighlighting.enable = true;
