@@ -86,15 +86,10 @@ in
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
 
-      # File switcher
-      "float, class:^(kitty)$, title:^(quick-kitty)$"
-      "size 1280 720, class:^(kitty)$, title:^(quick-kitty)$"
-      "center, class:^(kitty)$, title:^(quick-kitty)$"
-
       # AI Chat
-      "float, class:^(chrome-ai.homehub.tv__-Default)$, title:^(Open WebUI)$"
-      "size 1280 720, class:^(chrome-ai.homehub.tv__-Default)$ title:^(Open WebUI)$"
-      "center, class:^(chrome-ai.homehub.tv__-Default)$, title:^(Open WebUI)$"
+      "float, class:^(chrome-ai.homehub.tv__-Default)$"
+      "size 1280 720 force, class:^(chrome-ai.homehub.tv__-Default)$"
+      "center, class:^(chrome-ai.homehub.tv__-Default)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
