@@ -94,7 +94,7 @@ in
 
       # AI Chat
       "float, class:^(chrome-ai.homehub.tv__-Default)$"
-      "size 1280 720 force, class:^(chrome-ai.homehub.tv__-Default)$"
+      "size 1140 1400 force, class:^(chrome-ai.homehub.tv__-Default)$"
       "center, class:^(chrome-ai.homehub.tv__-Default)$"
 
       # throw sharing indicators away
