@@ -89,6 +89,9 @@ in
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
 
+      # Assign all AI apps to the AI workspace
+      "workspace special:ai, class:^(chrome-ai.homehub.tv__-Default)$"
+
       # AI Chat
       "float, class:^(chrome-ai.homehub.tv__-Default)$"
       "size 1280 720 force, class:^(chrome-ai.homehub.tv__-Default)$"
