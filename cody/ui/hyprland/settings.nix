@@ -116,7 +116,7 @@ in
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
     ];
     # Workspace and monitor set in flake.nix
-    workspace = hardwareConfig.workspace + specialWorkspaces;
+    workspace = hardwareConfig.workspace ++ specialWorkspaces;
     monitor = hardwareConfig.monitor;
     animations = {
       enabled = true;
