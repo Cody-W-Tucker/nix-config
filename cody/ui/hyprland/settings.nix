@@ -18,7 +18,7 @@ let
     "${mainMod}, 0, exec, uwsm app -- zen"
     "${mainMod}, 7, exec, uwsm app -- code"
     "${mainMod} SHIFT,7, exec, uwsm app -- cursor"
-    "${mainMod},O, exec, ${webApp} https://ai.homehub.tv/"
+    "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
