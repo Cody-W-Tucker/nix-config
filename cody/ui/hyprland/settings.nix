@@ -5,6 +5,7 @@ let
   browser = "uwsm app -- zen --new-tab";
   webApp = "uwsm app -- chromium --new-window --app";
   terminal = "uwsm app -- kitty";
+  aiWorkspace = "hyprctl dispatch exec '[workspace special:ai]'";
 
   mousebinds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
@@ -24,8 +25,8 @@ let
     "${mainMod}, 0, exec, ${browser}"
 
     # Web applications
-    "${mainMod}, Return, exec, ${webApp}=https://www.perplexity.ai/"
-    "${mainMod} SHIFT, Return, exec, ${webApp}=https://grok.com/"
+    "${mainMod}, Return, exec, ${aiWorkspace} ${webApp}=https://www.perplexity.ai/"
+    "${mainMod} SHIFT, Return, exec, ${aiWorkspace} ${webApp}=https://grok.com/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -93,9 +94,6 @@ in
     windowrulev2 = [
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
-
-      # Move all AI windows to the AI workspace
-      "move, title:^(Grok|Perplexity|Perplexity AI|Perplexity)$, special:ai"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
