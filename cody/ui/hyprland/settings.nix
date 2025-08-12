@@ -20,12 +20,12 @@ let
   keybinds = [
     # Application launchers
     "${mainMod}, Q, exec, ${terminal}"
-    "${mainMod}, T, exec, ${terminal} -e yazi"
+    "${mainMod}, E, exec, ${terminal} -e yazi"
     "${mainMod}, 0, exec, ${browser}"
 
     # Web applications
-    "${mainMod}, Return, exec, [workspace special:ai] ${webApp}=https://www.perplexity.ai/'"
-    "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/'"
+    "${mainMod}, Return, exec, [workspace special:ai] ${webApp}=https://www.perplexity.ai/"
+    "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
