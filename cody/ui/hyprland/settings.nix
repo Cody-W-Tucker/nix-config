@@ -103,7 +103,7 @@ in
       "center, class:^(chrome-ai.homehub.tv__-Default)$"
 
       # Dev mode
-      "workspace special:dev, title:^(dev)$"
+      "workspace special:dev silent, title:^(dev)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
