@@ -2,7 +2,7 @@
 
 let
   mainMod = "SUPER";
-  browser = "uwsm app -- zen --new-window";
+  browser = "uwsm app -- zen";
   webApp = "uwsm app -- chromium --new-window --app";
   terminal = "uwsm app -- kitty";
 
