@@ -2,8 +2,9 @@
 
 let
   mainMod = "SUPER";
-  browser = "uwsm app -- chromium --new-window";
-  webApp = browser + " --app";
+  browser = "uwsm app -- zen --new-window";
+  webApp = "uwsm app -- chromium --new-window --app";
+  terminal = "uwsm app -- kitty";
 
   mousebinds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
@@ -13,14 +14,14 @@ let
 
   keybinds = [
     # Application launchers
-    "${mainMod}, Q, exec, uwsm app -- kitty"
-    "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
-    "${mainMod}, 0, exec, uwsm app -- zen"
-    "${mainMod}, 7, exec, uwsm app -- code"
-    "${mainMod} SHIFT,7, exec, uwsm app -- cursor"
+    "${mainMod}, Q, exec, ${terminal}"
+    "${mainMod}, T, exec, ${terminal} -e yazi"
+    "${mainMod}, 0, exec, ${browser}"
 
     # Web applications
     "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
+    "${mainMod}, X, exec, ${webApp}=https://x.com/"
+    "${mainMod} SHIFT, X, exec, ${webApp}=https://x.com/compose/post"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
