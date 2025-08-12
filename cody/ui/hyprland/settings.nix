@@ -12,18 +12,23 @@ let
     "${mainMod}, mouse:273, resizewindow"
   ];
 
+  specialWorkspaces = [
+    "special:ai, on-created-empty:[float] ${webApp}=https://ai.homehub.tv/"
+    "special:dev, on-created-empty:[float] ${terminal} --title dev"
+  ];
+
   keybinds = [
     # Application launchers
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, T, exec, ${terminal} -e yazi"
     "${mainMod}, 0, exec, ${browser}"
 
-    # Web applications
-    "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
+    # # Web applications
+    # "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
 
-    # Dev mode
-    "${mainMod} SHIFT, D, exec, ${terminal} --title dev"
-    "${mainMod} SHIFT, D, exec, ${webApp}=http://localhost:3000/"
+    # # Dev mode
+    # "${mainMod} SHIFT, D, exec, ${terminal} --title dev"
+    # "${mainMod} SHIFT, D, exec, ${webApp}=http://localhost:3000/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -111,7 +116,7 @@ in
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
     ];
     # Workspace and monitor set in flake.nix
-    workspace = hardwareConfig.workspace;
+    workspace = hardwareConfig.workspace + specialWorkspaces;
     monitor = hardwareConfig.monitor;
     animations = {
       enabled = true;
