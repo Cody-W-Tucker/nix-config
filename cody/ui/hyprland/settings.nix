@@ -101,8 +101,8 @@ in
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
 
       # Move AI to its own workspace
-      "workspace ai, title:^(grok.com_/)$"
-      "workspace ai, title:^(www.perplexity.ai_/)$"
+      "workspace name:ai, title:^(grok.com_/)$"
+      "workspace name:ai, title:^(www.perplexity.ai_/)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
