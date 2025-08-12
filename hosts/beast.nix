@@ -192,6 +192,7 @@
         vkd3d
         # Network management
         rofi-network-manager
+        heroic
       ]);
 
     programs.command-not-found.enable = true;
