@@ -23,7 +23,7 @@ let
 
     # Dev mode
     "${mainMod}, D, exec, ${webApp}=http://localhost:3000/"
-    "${mainMod}, D, exec, ${terminal}"
+    "${mainMod}, D, exec, ${terminal} --title dev"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -71,6 +71,7 @@ let
     # Scratchpad
     "${mainMod}, A, togglespecialworkspace, ai"
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:ai"
+    "${mainMod}SHIFT, D, togglespecialworkspace, dev"
 
     # Toggle waybar
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
@@ -100,9 +101,6 @@ in
       "float, class:^(chrome-ai.homehub.tv__-Default)$"
       "size 1050 1360 force, class:^(chrome-ai.homehub.tv__-Default)$"
       "center, class:^(chrome-ai.homehub.tv__-Default)$"
-
-      # Dev mode
-      "workspace special:dev, title:^(pnpm run dev)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
