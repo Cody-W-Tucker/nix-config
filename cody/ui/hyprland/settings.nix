@@ -20,7 +20,7 @@ let
     "${mainMod} SHIFT,7, exec, uwsm app -- cursor"
 
     # Web applications
-    "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/ --title AIChat"
+    "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
@@ -86,9 +86,15 @@ in
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
 
+      # File switcher
+      "float, class:^(kitty)$, title:^(quick-kitty)$"
+      "size 1280 720, class:^(kitty)$, title:^(quick-kitty)$"
+      "center, class:^(kitty)$, title:^(quick-kitty)$"
+
       # AI Chat
-      "size 1280 720, title:^(AIChat)$"
-      "center, title:^(AIChat)$"
+      "float, class:^(chrome-ai.homehub.tv__-Default)$, title:^(Open WebUI)$"
+      "size 1280 720, class:^(chrome-ai.homehub.tv__-Default)$ title:^(Open WebUI)$"
+      "center, class:^(chrome-ai.homehub.tv__-Default)$, title:^(Open WebUI)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
