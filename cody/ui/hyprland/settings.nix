@@ -65,8 +65,8 @@ let
     "${mainMod} SHIFT, j, movewindow, d"
 
     # Scratchpad
-    "${mainMod}, A, togglespecialworkspace, magic"
-    "${mainMod} SHIFT, A, movetoworkspacesilent, special:magic"
+    "${mainMod}, A, togglespecialworkspace, ai"
+    "${mainMod} SHIFT, A, movetoworkspacesilent, special:ai"
 
     # Toggle waybar
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
