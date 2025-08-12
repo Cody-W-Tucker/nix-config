@@ -5,7 +5,7 @@ let
   browser = "uwsm app -- zen --new-tab";
   webApp = "uwsm app -- chromium --new-window --app";
   terminal = "uwsm app -- kitty";
-  aiWorkspace = "hyprctl dispatch exec ''[workspace special:ai]''";
+  aiWorkspace = "";
 
   mousebinds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
@@ -25,8 +25,8 @@ let
     "${mainMod}, 0, exec, ${browser}"
 
     # Web applications
-    "${mainMod}, Return, exec, ${aiWorkspace} ${webApp}=https://www.perplexity.ai/"
-    "${mainMod} SHIFT, Return, exec, ${aiWorkspace} ${webApp}=https://grok.com/"
+    "${mainMod}, Return, exec, hyprctl dispatch exec '[workspace special:ai] ${webApp}=https://www.perplexity.ai/'"
+    "${mainMod} SHIFT, Return, exec, hyprctl dispatch exec '[workspace special:ai] ${webApp}=https://grok.com/'"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
