@@ -24,8 +24,8 @@ let
     "${mainMod}, 0, exec, ${browser}"
 
     # Web applications
-    "${mainMod}, Return, exec, ${webApp}=https://www.perplexity.ai/'"
-    "${mainMod} SHIFT, Return, exec, ${webApp}=https://grok.com/'"
+    "${mainMod}, Return, exec, [workspace special:ai] ${webApp}=https://www.perplexity.ai/'"
+    "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/'"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -98,10 +98,6 @@ in
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
-
-      # Move AI to its own workspace
-      "workspace special:ai, title:^(grok.com_/)$"
-      "workspace special:ai, title:^(www.perplexity.ai_/)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
