@@ -18,7 +18,9 @@ let
     "${mainMod}, 0, exec, uwsm app -- zen"
     "${mainMod}, 7, exec, uwsm app -- code"
     "${mainMod} SHIFT,7, exec, uwsm app -- cursor"
-    "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
+
+    # Web applications
+    "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/ --class=AIChat"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
@@ -88,6 +90,10 @@ in
       "float, class:^(kitty)$, title:^(quick-kitty)$"
       "size 1280 720, class:^(kitty)$, title:^(quick-kitty)$"
       "center, class:^(kitty)$, title:^(quick-kitty)$"
+
+      # AI Chat
+      "size 1280 720, class:^(AIChat)$"
+      "center, class:^(AIChat)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
