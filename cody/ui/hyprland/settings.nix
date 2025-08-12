@@ -5,7 +5,7 @@ let
   browser = "uwsm app -- zen --new-tab";
   webApp = "uwsm app -- chromium --new-window --app";
   terminal = "uwsm app -- kitty";
-  aiWorkspace = "hyprctl dispatch exec '[workspace special:ai]'";
+  aiWorkspace = "hyprctl dispatch exec ''[workspace special:ai]''";
 
   mousebinds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
