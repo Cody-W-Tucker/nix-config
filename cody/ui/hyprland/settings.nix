@@ -21,6 +21,10 @@ let
     # Web applications
     "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
 
+    # Dev mode
+    "${mainMod}, D, exec, ${webApp}=http://localhost:3000/"
+    "${mainMod}, D, exec, ${terminal}"
+
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
     "${mainMod} SHIFT, X, exec, ${browser}=https://x.com/compose/post"
@@ -96,6 +100,9 @@ in
       "float, class:^(chrome-ai.homehub.tv__-Default)$"
       "size 1050 1360 force, class:^(chrome-ai.homehub.tv__-Default)$"
       "center, class:^(chrome-ai.homehub.tv__-Default)$"
+
+      # Dev mode
+      "workspace special:dev, title:^(pnpm run dev)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
