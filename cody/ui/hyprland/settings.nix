@@ -99,7 +99,7 @@ in
 
       # Float the bitwarden window
       "float, class:^(Bitwarden)$"
-      "size 800 600 force, class:^(Bitwarden)$"
+      "size 800 600 force, title:^(Bitwarden)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
