@@ -20,8 +20,10 @@ let
 
     # Web applications
     "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
-    "${mainMod}, X, exec, ${webApp}=https://x.com/"
-    "${mainMod} SHIFT, X, exec, ${webApp}=https://x.com/compose/post"
+
+    # Browser navigation
+    "${mainMod}, X, exec, ${browser}=https://x.com/"
+    "${mainMod} SHIFT, X, exec, ${browser}=https://x.com/compose/post"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
