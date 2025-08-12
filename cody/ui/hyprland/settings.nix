@@ -97,10 +97,6 @@ in
       "size 1050 1360 force, class:^(chrome-ai.homehub.tv__-Default)$"
       "center, class:^(chrome-ai.homehub.tv__-Default)$"
 
-      # Float the bitwarden window
-      "float,class:^(zen)$,title:^Extension: \(Bitwarden Password Manager\).*"
-      "size 800 600 force, class:^(zen)$,title:^Extension: \(Bitwarden Password Manager\).*"
-
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
