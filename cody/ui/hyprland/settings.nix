@@ -13,8 +13,8 @@ let
   ];
 
   specialWorkspaces = [
-    "special:ai, on-created-empty:[float] ${webApp}=https://ai.homehub.tv/"
-    "special:dev, on-created-empty: ${terminal} --title dev"
+    "special:ai, on-created-empty: ${webApp}=https://ai.homehub.tv/"
+    "special:dev, on-created-empty: ${terminal}"
   ];
 
   keybinds = [
@@ -22,6 +22,10 @@ let
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, T, exec, ${terminal} -e yazi"
     "${mainMod}, 0, exec, ${browser}"
+
+    # Web applications
+    "${mainMod}, Return, exec, ${webApp}=https://www.perplexity.ai/"
+    "${mainMod} SHIFT, Return, exec, ${webApp}=https://grok.com/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -32,9 +36,6 @@ let
     "${mainMod}, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod} SHIFT, Tab, exec, web-search"
     "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n '{result}' | wl-copy'"
-    "${mainMod}SHIFT, Escape, exec, taskwarrior-rofi"
-    "${mainMod}, Escape, exec, taskwarrior-rofi quick_add"
-    "${mainMod}, RETURN, exec, todoist-rofi quick_add"
 
     # Screenshots
     ''${mainMod}, S, exec, screenshot-ocr''
@@ -93,9 +94,8 @@ in
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
 
-      # AI Chat
-      "size 1050 1360 force, class:^(chrome-ai.homehub.tv__-Default)$"
-      "center, class:^(chrome-ai.homehub.tv__-Default)$"
+      # Move all AI windows to the AI workspace
+      "move, title:^(Grok|Perplexity|Perplexity AI|Perplexity)$, special:ai"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
