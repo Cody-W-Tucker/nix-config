@@ -102,6 +102,9 @@ in
       "size 1050 1360 force, class:^(chrome-ai.homehub.tv__-Default)$"
       "center, class:^(chrome-ai.homehub.tv__-Default)$"
 
+      # Dev mode
+      "workspace special:dev, title:^(dev)$"
+
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
