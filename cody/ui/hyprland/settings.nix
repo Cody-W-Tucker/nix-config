@@ -22,8 +22,8 @@ let
     "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
 
     # Dev mode
-    "${mainMod}, D, exec, ${webApp}=http://localhost:3000/"
-    "${mainMod}, D, exec, ${terminal} --title dev"
+    "${mainMod} SHIFT, D, exec, ${terminal} --title dev"
+    "${mainMod} SHIFT, D, exec, ${webApp}=http://localhost:3000/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -68,10 +68,10 @@ let
     "${mainMod} SHIFT, k, movewindow, u"
     "${mainMod} SHIFT, j, movewindow, d"
 
-    # Scratchpad
+    # Special workspaces
     "${mainMod}, A, togglespecialworkspace, ai"
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:ai"
-    "${mainMod}SHIFT, D, togglespecialworkspace, dev"
+    "${mainMod}, D, togglespecialworkspace, dev"
 
     # Toggle waybar
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
