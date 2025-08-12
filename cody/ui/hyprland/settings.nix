@@ -98,7 +98,7 @@ in
       "center, class:^(chrome-ai.homehub.tv__-Default)$"
 
       # Float the bitwarden window
-      "float, class:^(Bitwarden)$"
+      "float, title:^(Bitwarden)$"
       "size 800 600 force, title:^(Bitwarden)$"
 
       # throw sharing indicators away
