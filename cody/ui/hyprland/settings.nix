@@ -5,7 +5,6 @@ let
   browser = "uwsm app -- zen --new-tab";
   webApp = "uwsm app -- chromium --new-window --app";
   terminal = "uwsm app -- kitty";
-  aiWorkspace = "";
 
   mousebinds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
@@ -101,8 +100,8 @@ in
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
 
       # Move AI to its own workspace
-      "workspace name:ai, title:^(grok.com_/)$"
-      "workspace name:ai, title:^(www.perplexity.ai_/)$"
+      "workspace special:ai, title:^(grok.com_/)$"
+      "workspace special:ai, title:^(www.perplexity.ai_/)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
