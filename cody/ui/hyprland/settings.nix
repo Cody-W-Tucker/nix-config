@@ -14,7 +14,7 @@ let
 
   specialWorkspaces = [
     "special:ai, on-created-empty:[float] ${webApp}=https://ai.homehub.tv/"
-    "special:dev, on-created-empty:[float] ${terminal} --title dev"
+    "special:dev, on-created-empty: ${terminal} --title dev"
   ];
 
   keybinds = [
@@ -22,13 +22,6 @@ let
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, T, exec, ${terminal} -e yazi"
     "${mainMod}, 0, exec, ${browser}"
-
-    # # Web applications
-    # "${mainMod},O, exec, ${webApp}=https://ai.homehub.tv/"
-
-    # # Dev mode
-    # "${mainMod} SHIFT, D, exec, ${terminal} --title dev"
-    # "${mainMod} SHIFT, D, exec, ${webApp}=http://localhost:3000/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -99,16 +92,9 @@ in
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
 
-      # Assign all AI apps to the AI workspace
-      "workspace special:ai, class:^(chrome-ai.homehub.tv__-Default)$"
-
       # AI Chat
-      "float, class:^(chrome-ai.homehub.tv__-Default)$"
       "size 1050 1360 force, class:^(chrome-ai.homehub.tv__-Default)$"
       "center, class:^(chrome-ai.homehub.tv__-Default)$"
-
-      # Dev mode
-      "workspace special:dev silent, title:^(dev)$"
 
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
