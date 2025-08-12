@@ -6,18 +6,10 @@ let
     ./rofi-web-launcher.nix
     ./media-player.nix
     ./bluetooth-switch.nix
-    ./web-scraper.nix
-    ./waybar-timer.nix
-    ./obsidian-writer.nix
-    ./keybind-logger.nix
     ./todoist-rofi.nix
     ./update.nix
     ./waybar-tasks.nix
     ./rofi-taskwarrior.nix
-    ./waybar-goal-tracker.nix
-    ./find-and-open-file.nix
-    ./streamer-mode.nix
-    ./scrape-youtube-transcripts.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;

@@ -2,6 +2,8 @@
 
 let
   mainMod = "SUPER";
+  browser = "uwsm app -- chromium --new-window";
+  webApp = browser + " --app";
 
   mousebinds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
@@ -12,11 +14,11 @@ let
   keybinds = [
     # Application launchers
     "${mainMod}, Q, exec, uwsm app -- kitty"
-    "${mainMod}, P, exec, uwsm app -- kitty --title quick-kitty find-and-open-file"
     "${mainMod} SHIFT, E, exec, uwsm-app -- nautilus"
     "${mainMod}, 0, exec, uwsm app -- zen"
     "${mainMod}, 7, exec, uwsm app -- code"
-    "${mainMod}SHIFT,7, exec, uwsm app -- cursor"
+    "${mainMod} SHIFT,7, exec, uwsm app -- cursor"
+    "${mainMod},O, exec, ${webApp} https://ai.homehub.tv/"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
@@ -91,12 +93,6 @@ in
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
-
-      # Place Google meet video near my camera
-      # Float the Google Meet PiP window
-      "float,title:^(Meet - cze-voho-upu)$,class:^(google-chrome)$"
-      "pin,title:^(Meet - cze-voho-upu)$,class:^(google-chrome)$"
-      "move exact 829 50,title:^(Meet - cze-voho-upu)$,class:^(google-chrome)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace;
