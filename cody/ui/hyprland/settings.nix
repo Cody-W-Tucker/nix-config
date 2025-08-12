@@ -70,6 +70,7 @@ let
     "${mainMod}, A, togglespecialworkspace, ai"
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:ai"
     "${mainMod}, D, togglespecialworkspace, dev"
+    "${mainMod}SHIFT, D, exec, ${webApp}=http://localhost:3000/"
 
     # Toggle waybar
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
