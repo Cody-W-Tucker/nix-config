@@ -59,8 +59,7 @@
       gcalcli # Google Calendar CLI tool
       taskwarrior-tui
       feishin
-      picard
-      google-chrome
+      chromium
       wttrbar
     ])
     ++
@@ -69,7 +68,6 @@
       code-cursor
       vscode
       legcord
-      codex
     ]);
 
 
@@ -123,9 +121,6 @@
       color.pri.L       = color2
     '';
   };
-
-  # Doc conversion
-  programs.pandoc.enable = true;
 
   # Playerctl Daemon to control media players from Waybar
   services.playerctld.enable = true;

@@ -154,9 +154,6 @@
       pam.services = {
         sddm.enableGnomeKeyring = true;
         login.enableGnomeKeyring = true;
-        # KDE wallet support
-        kdeconnect.enableKwallet = true;
-        plasma.enableKwallet = true;
       };
     };
 
