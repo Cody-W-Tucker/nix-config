@@ -96,6 +96,12 @@ in
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
       "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
+
+      # Create a sleek post widget for the x post binding
+      "float,title:(x.com_/compose/post)"
+      "size 1280 720,title:(x.com_/compose/post)"
+      "center,title:(x.com_/compose/post)"
+
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
