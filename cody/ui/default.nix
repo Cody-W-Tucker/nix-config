@@ -61,6 +61,7 @@
       feishin
       chromium
       wttrbar
+      krita
     ])
     ++
     (with pkgs-unstable; [
