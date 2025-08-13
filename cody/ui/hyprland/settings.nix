@@ -99,7 +99,7 @@ in
 
       # Create a sleek post widget for the x post binding
       "float,title:(x.com_/compose/post)"
-      "size 1280 720,title:(x.com_/compose/post)"
+      "size 700 330,title:(x.com_/compose/post)"
       "center,title:(x.com_/compose/post)"
 
     ];
