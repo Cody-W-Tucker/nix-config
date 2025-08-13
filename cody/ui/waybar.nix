@@ -134,6 +134,7 @@ let
       exec =
         "${inputs.waybar-taskwarrior.packages.x86_64-linux.default}/bin/waybar-taskwarrior";
       interval = 10;
+      on-click = "uwsm app -- kitty -e taskwarrior-tui";
       return-type = "json";
     };
     clock = {

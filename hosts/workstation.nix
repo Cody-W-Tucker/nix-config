@@ -138,7 +138,6 @@
         enable = true;
       };
       pam.services = {
-        sddm.enableGnomeKeyring = true;
         login.enableGnomeKeyring = true;
       };
     };
@@ -148,7 +147,6 @@
       extraPackages = with pkgs; [
         intel-media-driver # LIBVA_DRIVER_NAME=iHD
         intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-        libvdpau-va-gl
         intel-media-sdk # Enable QSV
       ];
     };
@@ -301,8 +299,6 @@
     environment.systemPackages =
       (with pkgs; [
         # list of stable packages go here
-        where-is-my-sddm-theme
-        nvidia-vaapi-driver
         egl-wayland
         inputs.web-downloader.packages.${pkgs.system}.default
         cifs-utils

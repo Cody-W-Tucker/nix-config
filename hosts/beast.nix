@@ -152,17 +152,8 @@
         enable = true;
       };
       pam.services = {
-        sddm.enableGnomeKeyring = true;
         login.enableGnomeKeyring = true;
       };
-    };
-
-    hardware.graphics = {
-      enable = true;
-      enable32Bit = true;
-      extraPackages = with pkgs; [
-        libvdpau-va-gl
-      ];
     };
 
     # Gaming Configuration
@@ -179,17 +170,11 @@
     environment.systemPackages =
       (with pkgs; [
         # list of stable packages go here
-        where-is-my-sddm-theme
-        nvidia-vaapi-driver
         egl-wayland
         inputs.web-downloader.packages.${pkgs.system}.default
         cifs-utils
         gamescope-wsi
-        # HDR support packages
-        vkd3d
-        # Network management
         rofi-network-manager
-        heroic
       ]);
 
     programs.command-not-found.enable = true;
