@@ -33,6 +33,7 @@ let
     "${mainMod}, F, exec, ${browser}=https://www.facebook.com/"
     "${mainMod}, M, exec, ${browser}=https://mail.google.com/mail/u/0/#inbox"
     "${mainMod}SHIFT, M, exec, ${browser}=https://messages.google.com/web/u/0/conversations"
+    "${mainMod}, P, exec, ${browser}=https://homehub.tv/"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
@@ -57,6 +58,11 @@ let
     "${mainMod} SHIFT, H, exec, hyprnome --previous --move"
     "${mainMod}, L, exec, hyprnome"
     "${mainMod} SHIFT, L, exec, hyprnome --move"
+
+    "${mainMod}, mouse_down, exec, hyprnome --previous"
+    "${mainMod}, mouse_up, exec, hyprnome"
+    "${mainMod} SHIFT, mouse_down, exec, hyprnome --previous --move"
+    "${mainMod} SHIFT, mouse_up, exec, hyprnome --move"
 
     # Special workspaces
     "${mainMod}, A, togglespecialworkspace, ai"
