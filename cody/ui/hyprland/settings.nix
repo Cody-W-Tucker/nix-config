@@ -48,28 +48,16 @@ let
     # Color picker
     "${mainMod}, mouse:274, exec, hyprpicker -a"
 
-    # Workspace navigation
-    "${mainMod}, mouse_down, exec, hyprnome --previous"
-    "${mainMod}, mouse_up, exec, hyprnome"
-    "${mainMod} SHIFT, mouse_down, exec, hyprnome --previous --move"
-    "${mainMod} SHIFT, mouse_up, exec, hyprnome --move"
-
     # Window management
     "${mainMod}, SPACE, togglefloating"
     "${mainMod}, C, killactive"
     "${mainMod}, Escape, fullscreen"
 
-    # Focus movement
-    "${mainMod}, h, movefocus, l"
-    "${mainMod}, l, movefocus, r"
-    "${mainMod}, k, movefocus, u"
-    "${mainMod}, j, movefocus, d"
-
-    # Window movement
-    "${mainMod} SHIFT, h, movewindow, l"
-    "${mainMod} SHIFT, l, movewindow, r"
-    "${mainMod} SHIFT, k, movewindow, u"
-    "${mainMod} SHIFT, j, movewindow, d"
+    # Workspace navigation
+    "${mainMod}, H, exec, hyprnome --previous"
+    "${mainMod} SHIFT, H, exec, hyprnome --previous --move"
+    "${mainMod}, L, exec, hyprnome"
+    "${mainMod} SHIFT, L, exec, hyprnome --move"
 
     # Special workspaces
     "${mainMod}, A, togglespecialworkspace, ai"
