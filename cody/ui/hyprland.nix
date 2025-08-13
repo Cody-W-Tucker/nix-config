@@ -114,7 +114,7 @@
           fade_on_empty = false;
           fade_timeout = 1000;
           placeholder_text = "<i>Input Password...</i>";
-          hide_input = false;
+          hide_input = true;
           rounding = -1;
           check_color = "rgb(204, 136, 34)";
           fail_color = "rgb(204, 34, 34)";
