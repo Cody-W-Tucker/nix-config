@@ -30,6 +30,7 @@ let
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
     "${mainMod} SHIFT, X, exec, ${browser}=https://x.com/compose/post"
+    "${mainMod}, F, exec, ${browser}=https://www.facebook.com/"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
