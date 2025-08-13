@@ -54,7 +54,7 @@ let
     # Window management
     "${mainMod}, SPACE, togglefloating"
     "${mainMod}, C, killactive"
-    "${mainMod}, F, fullscreen"
+    "${mainMod}, Escape, fullscreen"
 
     # Focus movement
     "${mainMod}, h, movefocus, l"
