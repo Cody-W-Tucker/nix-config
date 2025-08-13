@@ -31,6 +31,9 @@ let
     "${mainMod}, X, exec, ${browser}=https://x.com/"
     "${mainMod} SHIFT, X, exec, ${browser}=https://x.com/compose/post"
     "${mainMod}, F, exec, ${browser}=https://www.facebook.com/"
+    "${mainMod}, M, exec, ${browser}=https://mail.google.com/mail/u/0/#inbox"
+    "${mainMod}SHIFT, M, exec, ${browser}=https://messages.google.com/web/u/0/conversations"
+    "${mainMod}, H, exec, ${browser}=https://homehub.tv/"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
