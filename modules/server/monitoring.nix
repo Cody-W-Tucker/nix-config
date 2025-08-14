@@ -63,6 +63,12 @@
                 host = "workstation";
               };
             }
+            {
+              targets = [ "beast:9002" ];
+              labels = {
+                host = "beast";
+              };
+            }
           ];
         }
       ];
