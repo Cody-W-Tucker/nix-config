@@ -40,7 +40,7 @@ let
     "${mainMod}, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod} SHIFT, Tab, exec, web-search"
     "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n '{result}' | wl-copy'"
-    "${mainMod}, T, exec, ${terminal} -e taskwarrior-tui"
+    "${mainMod}, T, exec, ${terminal} --class taskwarrior-tui -e taskwarrior-tui"
 
     # Screenshots
     ''${mainMod}, S, exec, screenshot-ocr''
@@ -103,9 +103,9 @@ in
       "center,title:(x.com_/compose/post)"
 
       # Sleek taskwarrior-tui
-      "float, title:taskwarrior-tui$"
-      "size 1000 500, title:taskwarrior-tui$"
-      "center, title:taskwarrior-tui$"
+      "float, class:(taskwarrior-tui)"
+      "size 1000 500, class:(taskwarrior-tui)"
+      "center, class:(taskwarrior-tui)"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
