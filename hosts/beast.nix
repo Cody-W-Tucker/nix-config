@@ -1,4 +1,4 @@
-{ inputs, config, lib, pkgs, pkgs-unstable, modulesPath, ... }:
+{ config, lib, pkgs, pkgs-unstable, modulesPath, ... }:
 
 {
   imports =
@@ -7,6 +7,8 @@
       ../configuration.nix
       ../modules/desktop
       ../modules/desktop/nvidia.nix
+      ../modules/desktop/gaming.nix
+      ../modules/desktop/hyprland.nix
       ../modules/scripts
       ../modules/desktop/mcp-servers.nix
       ../modules/server/ai.nix
@@ -17,26 +19,29 @@
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
-    networking.hostName = "beast"; # Define your hostname.
+    nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
     boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
-    boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ "kvm-intel" ];
-    boot.extraModulePackages = [ ];
-    boot.kernelParams = [ ];
     time.hardwareClockInLocalTime = true;
+
+    # Networking
+    networking.hostName = "beast"; # Define your hostname.
+    networking.networkmanager.enable = true;
+    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+    networking.useDHCP = lib.mkDefault true;
+
+    # Use the latest kernel and matching NVIDIA driver
+    boot.kernelPackages = pkgs-unstable.linuxPackages_zen;
+    hardware.nvidia.package = lib.mkForce pkgs-unstable.linuxKernel.packages.linux_zen.nvidia_x11_beta;
 
     # Performance Tweaks
     powerManagement.cpuFreqGovernor = "performance";
 
-    # Networking
-    networking.networkmanager.enable = true;
+    # Ensure 14th Gen Intel CPU works correctly
+    hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-    # Use the latest kernel
-    boot.kernelPackages = pkgs-unstable.linuxPackages_zen;
-    # Enable the NVIDIA driver
-    hardware.nvidia.package = lib.mkForce pkgs-unstable.linuxKernel.packages.linux_zen.nvidia_x11_beta;
-
+    # System Filesystems
     fileSystems."/" =
       {
         device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
@@ -51,7 +56,7 @@
         options = [ "fmask=0077" "dmask=0077" ];
       };
 
-    # Backup configuration
+    # Sync configuration for user directories
     services.syncthing = {
       user = "codyt";
       group = "users";
@@ -68,7 +73,7 @@
       };
     };
 
-
+    # User home directories
     fileSystems."/home/codyt/Records" = {
       device = "/mnt/backup/Share/Records";
       fsType = "none";
@@ -107,40 +112,6 @@
 
     swapDevices = [ ];
 
-    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-    networking.useDHCP = lib.mkDefault true;
-    nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-    hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-    # To see trash and network shares in nautilus
-    services.gvfs.enable = true;
-
-    # Override Display Manager and Windowing system.
-    services = {
-      greetd = {
-        enable = true;
-        settings = {
-          default_session = {
-            command = "uwsm start hyprland-uwsm.desktop";
-            user = "codyt";
-          };
-        };
-        vt = 2;
-      };
-      displayManager = {
-        autoLogin.enable = lib.mkForce false;
-      };
-      xserver = {
-        enable = lib.mkForce false;
-        displayManager.gdm.enable = lib.mkForce false;
-        desktopManager.gnome.enable = lib.mkForce false;
-        xkb = {
-          layout = "us";
-          model = "pc105";
-        };
-      };
-    };
-
     # Getting keyring to work
     security = {
       polkit = {
@@ -151,40 +122,17 @@
       };
     };
 
-    # Gaming Configuration
-    programs.steam.enable = true;
-    programs.steam.gamescopeSession.enable = true;
-    programs.gamemode.enable = true;
-
-    services = {
-      fwupd.enable = true;
-      thermald.enable = true;
-    };
-
     # Machine specific packages
     environment.systemPackages =
       (with pkgs; [
-        # list of stable packages go here
-        egl-wayland
-        inputs.web-downloader.packages.${pkgs.system}.default
-        cifs-utils
-        gamescope-wsi
         rofi-network-manager
       ]);
-
-    programs.command-not-found.enable = true;
 
     # Ensure headset doesn't switch profiles
     services.pipewire.wireplumber.extraConfig."11-bluetooth-policy" = {
       "wireplumber.settings" = {
         "bluetooth.autoswitch-to-headset-profile" = false;
       };
-    };
-
-    # Use mullvad VPN for external traffic
-    services.mullvad-vpn = {
-      enable = true;
-      package = pkgs.mullvad-vpn;
     };
 
     # This value determines the NixOS release from which the default

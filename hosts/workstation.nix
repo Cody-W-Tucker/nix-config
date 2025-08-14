@@ -1,4 +1,4 @@
-{ inputs, config, lib, pkgs, modulesPath, ... }:
+{ config, lib, pkgs, modulesPath, ... }:
 
 {
   imports =
@@ -239,72 +239,6 @@
       ];
     };
 
-    environment.sessionVariables = {
-      # ---------------------------
-      # Electron and Browser Support
-      # ---------------------------
-
-      # Force Electron apps to use X11 backend
-      ELECTRON_OZONE_PLATFORM_HINT = "x11";
-
-      # Enable Wayland backend for Firefox (and other Mozilla apps)
-      MOZ_ENABLE_WAYLAND = "1";
-      # Disable RDD sandbox in Mozilla (may help with Nvidia or video decoding issues)
-      MOZ_DISABLE_RDD_SANDBOX = "1";
-
-      # ---------------------------
-      # Qt Toolkit Configuration
-      # ---------------------------
-
-      # Automatically scale Qt apps based on screen DPI
-      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-      # Use Wayland as the Qt platform
-      QT_QPA_PLATFORM = "wayland";
-      # Disable window decorations in Qt on Wayland
-      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-
-      # ---------------------------
-      # Nvidia & Graphics Drivers
-      # ---------------------------
-
-      # Use Nvidia driver for VA-API (hardware video decoding)
-      LIBVA_DRIVER_NAME = "nvidia";
-      # Set Nvidia backend for NVDEC/NVENC
-      NVD_BACKEND = "direct";
-      # Use Nvidia GBM backend for DRM (Direct Rendering Manager)
-      GBM_BACKEND = "nvidia-drm";
-      # Use Nvidia's GLX implementation
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-
-      # ---------------------------
-      # Wayland & Compositor Settings
-      # ---------------------------
-
-      # Preferred GDK (GTK) backends (Wayland, fallback to X11)
-      GDK_BACKEND = "wayland,x11";
-      # SDL (Simple DirectMedia Layer) to use Wayland
-      SDL_VIDEODRIVER = "wayland";
-      # Clutter (GNOME graphics library) to use Wayland
-      CLUTTER_BACKEND = "wayland";
-      # Use libinput for input devices in wlroots compositors
-      WLR_USE_LIBINPUT = "1";
-    };
-
-    services = {
-      fwupd.enable = true;
-      thermald.enable = true;
-    };
-
-    # Machine specific packages
-    environment.systemPackages =
-      (with pkgs; [
-        # list of stable packages go here
-        egl-wayland
-        inputs.web-downloader.packages.${pkgs.system}.default
-        cifs-utils
-      ]);
-
-    programs.command-not-found.enable = true;
 
     # Ensure headset doesn't switch profiles
     services.pipewire.wireplumber.extraConfig."11-bluetooth-policy" = {

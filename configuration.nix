@@ -29,7 +29,6 @@
     environment.systemPackages = with pkgs; [
       git
       nixpkgs-fmt
-      ranger
       starship
       (btop.override { cudaSupport = true; })
       wget
@@ -97,6 +96,9 @@
         options = "--delete-older-than 7d";
       };
     };
+
+    # Enables prompts to install missing packages when running commands
+    programs.command-not-found.enable = true;
 
     # Logrotate
     services.logrotate.enable = true;
