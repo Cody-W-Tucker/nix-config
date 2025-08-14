@@ -23,12 +23,7 @@
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ "kvm-intel" ];
     boot.extraModulePackages = [ ];
-    boot.kernelParams = [
-      # Sets resolution for monitors during load
-      "video=DP-1:2560x1440@239.97"
-      "video=DP-3:2560x1080@60"
-      "video=HDMI-A-3:2560x1080@60"
-    ];
+    boot.kernelParams = [ ];
     time.hardwareClockInLocalTime = true;
 
     # Performance Tweaks
