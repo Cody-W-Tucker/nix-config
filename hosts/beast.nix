@@ -122,6 +122,9 @@
       };
     };
 
+    # Renaming the logging client to machine hostname
+    promtail.configuration.scrape_configs.journal.labels.host = "beast";
+
     # Machine specific packages
     environment.systemPackages =
       (with pkgs; [
