@@ -102,6 +102,10 @@ in
       "size 600 300,title:(x.com_/compose/post)"
       "center,title:(x.com_/compose/post)"
 
+      # Sleek taskwarrior-tui
+      "float, title:taskwarrior-tui$"
+      "size 1000 500, title:taskwarrior-tui$"
+      "center, title:taskwarrior-tui$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
