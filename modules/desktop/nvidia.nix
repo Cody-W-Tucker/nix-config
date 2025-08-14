@@ -13,6 +13,12 @@
       ];
     };
 
+    # Use EGL for Wayland
+    environment.systemPackages =
+      (with pkgs; [
+        egl-wayland
+      ]);
+
     # Load nvidia driver for Xorg and Wayland
     services.xserver.videoDrivers = [ "nvidia" ];
 
