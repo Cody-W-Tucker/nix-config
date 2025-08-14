@@ -141,7 +141,7 @@
       listener = [
         {
           timeout = 900; # 15min.
-          on-timeout = "pidof hyprlock || hyprlock";
+          on-timeout = "loginctl lock-session";
         }
         {
           timeout = 1800; # 30min.
