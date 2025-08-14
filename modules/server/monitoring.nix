@@ -64,9 +64,9 @@
               };
             }
             {
-              targets = [ "192.168.1.20:9002" ];
+              targets = [ "beast" ];
               labels = {
-                host = "beast";
+                host = "192.168.1.20:9002";
               };
             }
           ];
