@@ -25,7 +25,7 @@
           filename = "/tmp/positions.yaml";
         };
         clients = [{
-          url = "http://192.168.1.31:3090/loki/api/v1/push";
+          url = "http://server:3090/loki/api/v1/push";
         }];
         scrape_configs = [{
           job_name = "journal";
@@ -33,7 +33,8 @@
             max_age = "12h";
             labels = {
               job = "systemd-journal";
-              host = "workstation";
+              # host = "workstation"; Set the hostname in the machine config
+              # Like: promtail.configuration.scrape_configs.journal.labels.host = "workstation";
             };
           };
           relabel_configs = [{
