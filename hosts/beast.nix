@@ -14,137 +14,134 @@
       ../modules/server/ai.nix
     ];
 
-  config = {
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-    # Bootloader.
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
-    nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
+  boot.kernelModules = [ "kvm-intel" ];
+  time.hardwareClockInLocalTime = true;
 
-    boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
-    boot.kernelModules = [ "kvm-intel" ];
-    time.hardwareClockInLocalTime = true;
+  # Networking
+  networking.hostName = "beast"; # Define your hostname.
+  networking.networkmanager.enable = true;
+  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+  networking.useDHCP = lib.mkDefault true;
 
-    # Networking
-    networking.hostName = "beast"; # Define your hostname.
-    networking.networkmanager.enable = true;
-    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-    networking.useDHCP = lib.mkDefault true;
+  # Use the latest kernel and matching NVIDIA driver
+  boot.kernelPackages = pkgs-unstable.linuxPackages_zen;
+  hardware.nvidia.package = lib.mkForce pkgs-unstable.linuxKernel.packages.linux_zen.nvidia_x11_beta;
 
-    # Use the latest kernel and matching NVIDIA driver
-    boot.kernelPackages = pkgs-unstable.linuxPackages_zen;
-    hardware.nvidia.package = lib.mkForce pkgs-unstable.linuxKernel.packages.linux_zen.nvidia_x11_beta;
+  # Performance Tweaks
+  powerManagement.cpuFreqGovernor = "performance";
 
-    # Performance Tweaks
-    powerManagement.cpuFreqGovernor = "performance";
+  # Ensure 14th Gen Intel CPU works correctly
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-    # Ensure 14th Gen Intel CPU works correctly
-    hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  # System Filesystems
+  fileSystems."/" =
+    {
+      device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
 
-    # System Filesystems
-    fileSystems."/" =
-      {
-        device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
-        fsType = "ext4";
-        options = [ "noatime" ];
+  fileSystems."/boot" =
+    {
+      device = "/dev/disk/by-uuid/36FA-44EF";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+
+  # Sync configuration for user directories
+  services.syncthing = {
+    user = "codyt";
+    group = "users";
+    configDir = "/home/codyt/.config/syncthing";
+    settings.folders = {
+      "share" = {
+        path = "/mnt/backup/Share";
+        devices = [ "server" "workstation" ];
       };
-
-    fileSystems."/boot" =
-      {
-        device = "/dev/disk/by-uuid/36FA-44EF";
-        fsType = "vfat";
-        options = [ "fmask=0077" "dmask=0077" ];
-      };
-
-    # Sync configuration for user directories
-    services.syncthing = {
-      user = "codyt";
-      group = "users";
-      configDir = "/home/codyt/.config/syncthing";
-      settings.folders = {
-        "share" = {
-          path = "/mnt/backup/Share";
-          devices = [ "server" "workstation" ];
-        };
-        "Cody's Obsidian" = {
-          path = "/home/codyt/Sync/Cody-Obsidian";
-          devices = [ "Cody's Pixel" ];
-        };
+      "Cody's Obsidian" = {
+        path = "/home/codyt/Sync/Cody-Obsidian";
+        devices = [ "Cody's Pixel" ];
       };
     };
-
-    # User home directories
-    fileSystems."/home/codyt/Records" = {
-      device = "/mnt/backup/Share/Records";
-      fsType = "none";
-      options = [ "bind" "nofail" ];
-    };
-
-    fileSystems."/home/codyt/Documents" = {
-      device = "/mnt/backup/Share/Documents";
-      fsType = "none";
-      options = [ "bind" "nofail" ];
-    };
-
-    fileSystems."/home/codyt/Music" = {
-      device = "/mnt/backup/Share/Music";
-      fsType = "none";
-      options = [ "bind" "nofail" ];
-    };
-
-    fileSystems."/home/codyt/Pictures" = {
-      device = "/mnt/backup/Share/Pictures";
-      fsType = "none";
-      options = [ "bind" "nofail" ];
-    };
-
-    fileSystems."/home/codyt/Videos" = {
-      device = "/mnt/backup/Share/Videos";
-      fsType = "none";
-      options = [ "bind" "nofail" ];
-    };
-
-    fileSystems."/home/codyt/Sync/Cody-Obsidian" = {
-      device = "/mnt/backup/Share/Documents/Personal";
-      fsType = "none";
-      options = [ "bind" "nofail" ];
-    };
-
-    swapDevices = [ ];
-
-    # Getting keyring to work
-    security = {
-      polkit = {
-        enable = true;
-      };
-      pam.services = {
-        login.enableGnomeKeyring = true;
-      };
-    };
-
-    # Renaming the logging client to machine hostname
-    services.promtail.configuration.scrape_configs = [{
-      job_name = "journal";
-      journal = {
-        max_age = "12h";
-        labels = {
-          job = "systemd-journal";
-          host = "beast";
-        };
-      };
-      relabel_configs = [{
-        source_labels = [ "__journal__systemd_unit" ];
-        target_label = "unit";
-      }];
-    }];
-
-    # Machine specific packages
-    environment.systemPackages =
-      (with pkgs; [
-        rofi-network-manager
-      ]);
-
-    # Should be the same as the version of NixOS you installed on this machine.
-    system.stateVersion = "25.05"; # Did you read the comment?
   };
+
+  # User home directories
+  fileSystems."/home/codyt/Records" = {
+    device = "/mnt/backup/Share/Records";
+    fsType = "none";
+    options = [ "bind" "nofail" ];
+  };
+
+  fileSystems."/home/codyt/Documents" = {
+    device = "/mnt/backup/Share/Documents";
+    fsType = "none";
+    options = [ "bind" "nofail" ];
+  };
+
+  fileSystems."/home/codyt/Music" = {
+    device = "/mnt/backup/Share/Music";
+    fsType = "none";
+    options = [ "bind" "nofail" ];
+  };
+
+  fileSystems."/home/codyt/Pictures" = {
+    device = "/mnt/backup/Share/Pictures";
+    fsType = "none";
+    options = [ "bind" "nofail" ];
+  };
+
+  fileSystems."/home/codyt/Videos" = {
+    device = "/mnt/backup/Share/Videos";
+    fsType = "none";
+    options = [ "bind" "nofail" ];
+  };
+
+  fileSystems."/home/codyt/Sync/Cody-Obsidian" = {
+    device = "/mnt/backup/Share/Documents/Personal";
+    fsType = "none";
+    options = [ "bind" "nofail" ];
+  };
+
+  swapDevices = [ ];
+
+  # Getting keyring to work
+  security = {
+    polkit = {
+      enable = true;
+    };
+    pam.services = {
+      login.enableGnomeKeyring = true;
+    };
+  };
+
+  # Renaming the logging client to machine hostname
+  services.promtail.configuration.scrape_configs = [{
+    job_name = "journal";
+    journal = {
+      max_age = "12h";
+      labels = {
+        job = "systemd-journal";
+        host = "beast";
+      };
+    };
+    relabel_configs = [{
+      source_labels = [ "__journal__systemd_unit" ];
+      target_label = "unit";
+    }];
+  }];
+
+  # Machine specific packages
+  environment.systemPackages =
+    (with pkgs; [
+      rofi-network-manager
+    ]);
+
+  # Should be the same as the version of NixOS you installed on this machine.
+  system.stateVersion = "25.05"; # Did you read the comment?
 }
