@@ -6,11 +6,11 @@
       (modulesPath + "/installer/scan/not-detected.nix")
       ../configuration.nix
       ../modules/desktop
-      ../modules/desktop/nvidia.nix
       ../modules/desktop/gaming.nix
       ../modules/desktop/hyprland.nix
-      ../modules/scripts
+      ../modules/desktop/nvidia.nix
       ../modules/desktop/mcp-servers.nix
+      ../modules/scripts
       ../modules/server/ai.nix
     ];
 
@@ -128,19 +128,7 @@
         rofi-network-manager
       ]);
 
-    # Ensure headset doesn't switch profiles
-    services.pipewire.wireplumber.extraConfig."11-bluetooth-policy" = {
-      "wireplumber.settings" = {
-        "bluetooth.autoswitch-to-headset-profile" = false;
-      };
-    };
-
-    # This value determines the NixOS release from which the default
-    # settings for stateful data, like file locations and database versions
-    # on your system were taken. It‘s perfectly fine and recommended to leave
-    # this value at the release version of the first install of this system.
-    # Before changing this value read the documentation for this option
-    # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+    # Should be the same as the version of NixOS you installed on this machine.
     system.stateVersion = "25.05"; # Did you read the comment?
   };
 }

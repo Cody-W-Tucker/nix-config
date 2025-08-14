@@ -2,7 +2,9 @@
 
 {
   imports = [
+    ./audio.nix
     ./clientSyncthing.nix
+    ./logging.nix
   ];
   config = {
 
@@ -47,35 +49,5 @@
 
     # Provides a way to manage system firmware updates
     services.fwupd.enable = true;
-
-    # Bluetooth support
-    hardware = {
-      bluetooth = {
-        enable = true;
-        package = pkgs-unstable.bluez5-experimental;
-        powerOnBoot = true;
-        settings = {
-          General = {
-            Enable = "Source,Sink,Media,Socket";
-            Experimental = true; # Enable experimental features
-            FastConnectable = true; # Improve connection speed
-            JustWorksRepairing = "always";
-            controllerMode = "bredr"; # Allow low energy mode?
-            MultiProfile = "multiple"; # Allow multiple profiles
-            AutoEnable = true;
-          };
-        };
-      };
-    };
-
-    # Enable sound with pipewire
-    security.rtkit.enable = true;
-    services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      wireplumber.enable = true; # Required for priority rules in host specific configs
-    };
   };
 }

@@ -6,9 +6,10 @@
       (modulesPath + "/installer/scan/not-detected.nix")
       ../configuration.nix
       ../modules/desktop
-      ../modules/scripts
+      ../modules/desktop/hyprland.nix
       ../modules/desktop/nvidia.nix
       ../modules/desktop/mcp-servers.nix
+      ../modules/scripts
       ../modules/server/paperless-scanning.nix
     ];
   config = {
@@ -100,7 +101,6 @@
       ];
     };
 
-
     swapDevices = [ ];
 
     # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
@@ -110,27 +110,6 @@
 
     # To see trash and network shares in nautilus
     services.gvfs.enable = true;
-
-    # Override Display Manager and Windowing system.
-    services = {
-      displayManager = {
-        sddm = {
-          enable = true;
-          wayland.enable = true;
-          autoNumlock = true;
-        };
-        autoLogin.user = "codyt";
-      };
-      xserver = {
-        enable = true;
-        displayManager.gdm.enable = lib.mkForce false;
-        desktopManager.gnome.enable = lib.mkForce false;
-        xkb = {
-          layout = "us";
-          model = "pc105";
-        };
-      };
-    };
 
     # Getting keyring to work
     security = {
@@ -170,54 +149,6 @@
       };
     };
 
-    # Open port for Loki
-    networking.firewall.allowedTCPPorts = [ 9002 ];
-
-    # Monitoring configuration
-    services = {
-      prometheus = {
-        enable = true;
-        port = 9001;
-        exporters = {
-          node = {
-            enable = true;
-            enabledCollectors = [ "systemd" ];
-            port = 9002;
-          };
-        };
-      };
-
-      promtail = {
-        enable = true;
-        configuration = {
-          server = {
-            http_listen_port = 9080;
-            grpc_listen_port = 0;
-          };
-          positions = {
-            filename = "/tmp/positions.yaml";
-          };
-          clients = [{
-            url = "http://server:3090/loki/api/v1/push";
-          }];
-          scrape_configs = [{
-            job_name = "journal";
-            journal = {
-              max_age = "12h";
-              labels = {
-                job = "systemd-journal";
-                host = "workstation";
-              };
-            };
-            relabel_configs = [{
-              source_labels = [ "__journal__systemd_unit" ];
-              target_label = "unit";
-            }];
-          }];
-        };
-      };
-    };
-
     # Hardware config
     boot = {
       kernelParams = [
@@ -239,21 +170,7 @@
       ];
     };
 
-
-    # Ensure headset doesn't switch profiles
-    services.pipewire.wireplumber.extraConfig."11-bluetooth-policy" = {
-      "wireplumber.settings" = {
-        "bluetooth.autoswitch-to-headset-profile" = false;
-      };
-    };
-
-    # Use mullvad VPN for external traffic
-    services.mullvad-vpn = {
-      enable = true;
-      package = pkgs.mullvad-vpn;
-    };
-
-    # Don't change this
+    # Should be the same as the version of NixOS you installed on this machine.
     system.stateVersion = "24.05"; # Did you read the comment?
   };
 }
