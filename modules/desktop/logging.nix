@@ -13,9 +13,6 @@
       };
     };
 
-    # Open port for Loki
-    networking.firewall.allowedTCPPorts = [ 9002 ];
-
     # Promtail collects logs and sends them to Loki
     promtail = {
       enable = true;
@@ -47,4 +44,6 @@
       };
     };
   };
+  # Open port for Loki
+  networking.firewall.allowedTCPPorts = [ 9002 ];
 }
