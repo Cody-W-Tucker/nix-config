@@ -23,6 +23,7 @@
       rustdesk-flutter # Remote desktop software
       mpv # Media player
       cifs-utils # For mounting CIFS shares
+      seahorse # GNOME keyring manager
     ]);
 
   # Open ports for rustdesk
@@ -41,7 +42,7 @@
     package = pkgs-unstable.firefox;
   };
 
-  # Allows nautilus to access gvfs mounts (trash and samba shares)
+  # Allows nautilus (gnome files) to access gvfs mounts (trash and samba shares)
   services.gvfs.enable = true;
 
   # Enable support for removable devices.
@@ -49,4 +50,7 @@
 
   # Provides a way to manage system firmware updates
   services.fwupd.enable = true;
+
+  # Enable a keyring service for storing secrets
+  security.pam.services.login.enableGnomeKeyring = true;
 }
