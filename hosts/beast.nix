@@ -123,7 +123,20 @@
     };
 
     # Renaming the logging client to machine hostname
-    services.promtail.configuration.scrape_configs.journal.labels.host = "beast";
+    services.promtail.configuration.scrape_configs = [{
+      job_name = "journal";
+      journal = {
+        max_age = "12h";
+        labels = {
+          job = "systemd-journal";
+          host = "beast";
+        };
+      };
+      relabel_configs = [{
+        source_labels = [ "__journal__systemd_unit" ];
+        target_label = "unit";
+      }];
+    }];
 
     # Machine specific packages
     environment.systemPackages =

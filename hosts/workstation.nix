@@ -121,8 +121,21 @@
       };
     };
 
-    # Renaming the logging client to machine hostname
-    services.promtail.configuration.scrape_configs.journal.labels.host = "workstation";
+    # Set the logging configuration for the machine
+    services.promtail.configuration.scrape_configs = [{
+      job_name = "journal";
+      journal = {
+        max_age = "12h";
+        labels = {
+          job = "systemd-journal";
+          host = "workstation";
+        };
+      };
+      relabel_configs = [{
+        source_labels = [ "__journal__systemd_unit" ];
+        target_label = "unit";
+      }];
+    }];
 
     hardware.graphics = {
       enable = true;
