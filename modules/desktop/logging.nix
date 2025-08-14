@@ -27,21 +27,22 @@
         clients = [{
           url = "http://server:3090/loki/api/v1/push";
         }];
-        scrape_configs = [{
-          job_name = "journal";
-          journal = {
-            max_age = "12h";
-            labels = {
-              job = "systemd-journal";
-              # host = "workstation"; Set the hostname in the machine config
-              # Like: services.promtail.configuration.scrape_configs.journal.labels.host = "workstation";
-            };
-          };
-          relabel_configs = [{
-            source_labels = [ "__journal__systemd_unit" ];
-            target_label = "unit";
-          }];
-        }];
+        # Include scrape configs in the machine config
+        #
+        # scrape_configs = [{
+        #   job_name = "journal";
+        #   journal = {
+        #     max_age = "12h";
+        #     labels = {
+        #       job = "systemd-journal";
+        #       host = "workstation";
+        #     };
+        #   };
+        #   relabel_configs = [{
+        #     source_labels = [ "__journal__systemd_unit" ];
+        #     target_label = "unit";
+        #   }];
+        # }];
       };
     };
   };
