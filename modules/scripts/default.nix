@@ -16,12 +16,10 @@ let
 in
 
 {
-  config = {
-    environment.systemPackages = with pkgs; [
-      jq # needed with web-search
-      inotify-tools # needed with waybar tasks
-      yt-dlp
-      # Adding the scripts to the system packages
-    ] ++ scriptPackages;
-  };
+  environment.systemPackages = with pkgs; [
+    jq # needed with web-search
+    inotify-tools # needed with waybar tasks
+    yt-dlp
+    # Adding the scripts to the system packages
+  ] ++ scriptPackages;
 }
