@@ -110,16 +110,6 @@
 
   swapDevices = [ ];
 
-  # Getting keyring to work
-  security = {
-    polkit = {
-      enable = true;
-    };
-    pam.services = {
-      login.enableGnomeKeyring = true;
-    };
-  };
-
   # Renaming the logging client to machine hostname
   services.promtail.configuration.scrape_configs = [{
     job_name = "journal";

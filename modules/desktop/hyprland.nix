@@ -2,7 +2,6 @@
   # Enable the Hyprland Desktop Environment.
   programs.hyprland = {
     enable = true;
-    xwayland.enable = true;
     withUWSM = true;
   };
 
