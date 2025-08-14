@@ -34,7 +34,7 @@
             labels = {
               job = "systemd-journal";
               # host = "workstation"; Set the hostname in the machine config
-              # Like: promtail.configuration.scrape_configs.journal.labels.host = "workstation";
+              # Like: services.promtail.configuration.scrape_configs.journal.labels.host = "workstation";
             };
           };
           relabel_configs = [{
