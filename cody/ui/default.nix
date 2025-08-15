@@ -75,6 +75,7 @@
   # Obs for screenrecording
   programs.obs-studio = {
     enable = true;
+    package = (pkgs-unstable.obs-studio.override.cudaSupport true);
   };
 
   # Clipboard history
