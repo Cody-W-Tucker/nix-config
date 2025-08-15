@@ -50,7 +50,4 @@
 
   # Provides a way to manage system firmware updates
   services.fwupd.enable = true;
-
-  # Enable a keyring service for storing secrets
-  security.pam.services.login.enableGnomeKeyring = true;
 }

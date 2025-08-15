@@ -110,16 +110,6 @@
   # To see trash and network shares in nautilus
   services.gvfs.enable = true;
 
-  # Getting keyring to work
-  security = {
-    polkit = {
-      enable = true;
-    };
-    pam.services = {
-      login.enableGnomeKeyring = true;
-    };
-  };
-
   # Set the logging configuration for the machine
   services.promtail.configuration.scrape_configs = [{
     job_name = "journal";

@@ -5,6 +5,13 @@
     withUWSM = true;
   };
 
+  security.pam.services = {
+    # Enable PAM support for Hyprlock so it unlock the screen correctly
+    hyprlock = { };
+    # Enable a keyring service for storing secrets
+    login.enableGnomeKeyring = true;
+  };
+
   # Use Greetd to launch Hyprland from TTY2
   services = {
     greetd = {
