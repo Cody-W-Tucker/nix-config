@@ -28,7 +28,7 @@ let
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
 
     # Media
-    "${mainMod} SHIFT, Return, exec, [workspace special:media] ${webApp}=https://www.youtube.com/"
+    "${mainMod}, Y, exec, [workspace special:media] ${webApp}=https://www.youtube.com/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
