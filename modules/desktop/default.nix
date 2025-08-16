@@ -33,7 +33,7 @@
   networking.firewall.allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
   networking.firewall.allowedUDPPorts = [ 21115 21116 21117 21118 21119 ];
 
-  # Enable mullvad VPN
+  # Enable mullvad VPN app
   services.mullvad-vpn = {
     enable = true;
     package = pkgs.mullvad-vpn;
