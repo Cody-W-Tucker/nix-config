@@ -15,7 +15,7 @@
     ./hyprland/autostart.nix
   ];
 
-  # Bring in session variables from ../ui.nix
+  # Bring in env session variables from ../ui.nix
   xdg.configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
 
   # Use the Hyprland Polkit
@@ -64,10 +64,10 @@
           outer_color = "rgb(151515)";
           inner_color = "rgb(200, 200, 200)";
           font_color = "rgb(10, 10, 10)";
-          fade_on_empty = false;
+          fade_on_empty = true;
           fade_timeout = 1000;
           placeholder_text = "<i>Input Password...</i>";
-          hide_input = true;
+          hide_input = false;
           rounding = -1;
           check_color = "rgb(204, 136, 34)";
           fail_color = "rgb(204, 34, 34)";

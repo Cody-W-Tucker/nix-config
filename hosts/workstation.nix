@@ -107,9 +107,6 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  # To see trash and network shares in nautilus
-  services.gvfs.enable = true;
-
   # Set the logging configuration for the machine
   services.promtail.configuration.scrape_configs = [{
     job_name = "journal";

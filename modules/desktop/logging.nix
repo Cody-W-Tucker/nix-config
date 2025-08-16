@@ -1,3 +1,5 @@
+{ ... }:
+
 {
   # Monitoring configuration
   services = {
