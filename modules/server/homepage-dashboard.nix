@@ -91,13 +91,6 @@ in
               };
             }
             {
-              Supabase = {
-                href = "https://studio.${domain}";
-                icon = "supabase";
-                description = "BaaS";
-              };
-            }
-            {
               Open-WebUI = {
                 href = "https://ai.${domain}";
                 icon = "open-webui";

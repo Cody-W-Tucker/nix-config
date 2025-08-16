@@ -34,10 +34,10 @@
   home.packages =
     (with pkgs; [
       # list of stable packages go here
-      grim
-      slurp
-      wl-clipboard
-      tesseract4
+      grim # Screenshot utility
+      slurp # Selection tool for screenshots
+      wl-clipboard # Clipboard utility for Wayland
+      tesseract4 # OCR utility
       (pkgs.writeScriptBin "screenshot-ocr" ''
         #!/bin/sh
         imgname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S).png"
@@ -47,24 +47,23 @@
         tesseract $imgname $txtname;
         wl-copy -n < $txtfname
       '')
-      hyprpicker
-      playerctl
-      libnotify
+      hyprpicker # Color picker for Hyprland
+      playerctl # Media player control utility
+      libnotify # Notification library
       todoist #cli client
-      todoist-electron
-      nautilus
-      # nix language server
-      nixd
-      timewarrior
-      inputs.zen-browser.packages.${pkgs.system}.default
-      kdePackages.kdenlive
+      todoist-electron # Electron client for Todoist
+      nautilus # File manager
+      nixd # Nix daemon for development
+      timewarrior # Time tracking utility
+      inputs.zen-browser.packages.${pkgs.system}.default # Zen browser
+      kdePackages.kdenlive # Video editor
       baobab # Gnome disk usage app
       gcalcli # Google Calendar CLI tool
-      taskwarrior-tui
-      feishin
-      chromium
-      wttrbar
-      krita
+      taskwarrior-tui # TUI for Taskwarrior
+      feishin # Desktop app music player
+      chromium # Web browser
+      wttrbar # Weather bar for Waybar
+      krita # Photo editing software
     ])
     ++
     (with pkgs-unstable; [
