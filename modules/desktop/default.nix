@@ -14,8 +14,6 @@
   environment.systemPackages =
     (with pkgs; [
       # list of stable packages go here
-      feh # Image viewer
-      zathura # PDF viewer
       pavucontrol # PulseAudio volume control
       xdg-utils # xdg-open
       usbutils # For listing USB devices
@@ -24,7 +22,6 @@
       kitty # Terminal emulator
       obsidian # Note-taking app
       rustdesk-flutter # Remote desktop software
-      mpv # Media player
       cifs-utils # For mounting CIFS shares
       seahorse # GNOME keyring manager
     ]);
