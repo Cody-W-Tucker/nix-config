@@ -7,6 +7,9 @@
     ./logging.nix
   ];
 
+  # Enable OpenGL
+  hardware.graphics.enable = true;
+
   # Install basic desktop environment packages that I want on all my systems.
   environment.systemPackages =
     (with pkgs; [

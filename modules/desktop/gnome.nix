@@ -1,4 +1,9 @@
+{ ... }:
+
 {
+  # !!! This entire file may not work !!!
+  # I just put all of the gnome settings here, but have not tested it yet.
+
   services.displayManager.autoLogin.enable = true;
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229

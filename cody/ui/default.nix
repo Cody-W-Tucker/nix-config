@@ -3,10 +3,8 @@
 {
   imports = [
     ./hyprland.nix
-    ./notifications.nix
     ./appLauncher.nix
     ./waybar.nix
-    ./mime.nix
     ./pipewire.nix
     ./xdg.nix
   ];
@@ -18,6 +16,11 @@
         color-scheme = "prefer-dark";
       };
     };
+  };
+
+  # Notifications client
+  services.swaync = {
+    enable = true;
   };
 
   gtk = {
