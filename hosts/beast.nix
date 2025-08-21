@@ -26,6 +26,8 @@
 
   # Networking
   networking.hostName = "beast"; # Define your hostname.
+  # Remove wifi since it's blocking sleep and I don't use it.
+  boot.blacklistedKernelModules = [ "mt7925e" ];
   networking.networkmanager.enable = true;
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   networking.useDHCP = lib.mkDefault true;
