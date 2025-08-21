@@ -10,6 +10,9 @@
   # Enable OpenGL
   hardware.graphics.enable = true;
 
+  # Enable OpenRazer for keyboard and mouse support
+  hardware.openrazer.enable = true;
+
   # Install basic desktop environment packages that I want on all my systems.
   environment.systemPackages =
     (with pkgs; [
@@ -24,6 +27,7 @@
       rustdesk-flutter # Remote desktop software
       cifs-utils # For mounting CIFS shares
       seahorse # GNOME keyring manager
+      openrazer-daemon # Razer device support
     ]);
 
   # Open ports for rustdesk
