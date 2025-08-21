@@ -16,6 +16,7 @@
     nvidia-vaapi-driver
     vaapiVdpau
     libvdpau-va-gl
+    cudaPackages.cudatoolkit
   ];
 
   # Use EGL for Wayland
