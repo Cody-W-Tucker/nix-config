@@ -22,6 +22,7 @@
       usbutils # For listing USB devices
       udiskie # For mounting USB devices
       udisks # For managing disks
+      udev # Device manager
       kitty # Terminal emulator
       obsidian # Note-taking app
       rustdesk-flutter # Remote desktop software
