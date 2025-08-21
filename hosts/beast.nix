@@ -12,7 +12,6 @@
       ../modules/desktop/mcp-servers.nix
       ../modules/scripts
       ../modules/server/ai.nix
-      ../modules/overlays/kdenlive.nix
     ];
 
   # Bootloader.
@@ -128,6 +127,7 @@
   environment.systemPackages =
     (with pkgs; [
       rofi-network-manager
+      kdePackages.kdenlive
     ]);
 
   # Should be the same as the version of NixOS you installed on this machine.
