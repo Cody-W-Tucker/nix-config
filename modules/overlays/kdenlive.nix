@@ -4,7 +4,7 @@
   # Overlay to enable speech recognition in Kdenlive with CUDA support
   nixpkgs.overlays = [
     (final: prev: rec {
-      myPython = prev.python3.override {
+      myPython = prev.python311.override {
         packageOverrides = pyself: pysuper: {
           srt_equalizer = pysuper.buildPythonPackage rec {
             pname = "srt_equalizer";
@@ -28,6 +28,8 @@
         srt
         srt_equalizer
         torch
+        numba # Explicitly include numba as it's required
+        numpy # Explicitly include numpy as it's required
       ]);
       kdePackages = prev.kdePackages.overrideScope (kfinal: kprev: {
         kdenlive = kprev.kdenlive.overrideAttrs (oldAttrs: {
