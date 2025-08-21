@@ -19,6 +19,7 @@
             propagatedBuildInputs = [ pysuper.srt ];
           };
           torch = pysuper.torch-bin; # Use prebuilt binary with CUDA support to avoid building from source
+          triton = pysuper.triton-bin; # Use binary version to match torch-bin and avoid duplicates
         };
       };
       customPython = myPython.withPackages (ps: with ps; [
