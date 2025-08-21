@@ -123,6 +123,7 @@
     }];
   }];
 
+  # Overlay to enable speech recognition in Kdenlive
   nixpkgs.overlays = [
     (final: prev: {
       kdePackages = prev.kdePackages.overrideScope (kfinal: kprev: {
@@ -131,7 +132,8 @@
 
           postFixup = (oldAttrs.postFixup or "") + ''
             wrapProgram $out/bin/kdenlive \
-              --prefix PATH : ${final.lib.makeBinPath [ final.python3 ]}
+              --prefix PATH : ${final.lib.makeBinPath [ final.python3 final.cudaPackages.cudatoolkit ]} \
+              --prefix LD_LIBRARY_PATH : ${final.lib.makeLibraryPath [ final.cudaPackages.cudatoolkit ]}
           '';
         });
       });
