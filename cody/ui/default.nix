@@ -56,7 +56,6 @@
       nixd # Nix daemon for development
       timewarrior # Time tracking utility
       inputs.zen-browser.packages.${pkgs.system}.default # Zen browser
-      kdePackages.kdenlive # Video editor
       baobab # Gnome disk usage app
       gcalcli # Google Calendar CLI tool
       taskwarrior-tui # TUI for Taskwarrior
