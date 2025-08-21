@@ -32,8 +32,8 @@
   # Use the latest kernel and matching NVIDIA driver
   # boot.kernelPackages = pkgs-unstable.linuxPackages_zen;
   # hardware.nvidia.package = lib.mkForce pkgs-unstable.linuxKernel.packages.linux_zen.nvidia_x11_beta;
-  boot.kernelPackages = pkgs-unstable.linuxPackages_latest;
-  hardware.nvidia.package = lib.mkForce pkgs-unstable.linuxKernel.packages.linuxPackages_latest.nvidia_x11_beta;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  hardware.nvidia.package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.beta;
 
   # Ensure 14th Gen Intel CPU works correctly
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
