@@ -1,9 +1,8 @@
-{ config, lib, modulesPath, ... }:
+{ config, lib, ... }:
 
 {
   imports =
     [
-      (modulesPath + "/installer/scan/not-detected.nix")
       ../configuration.nix
       ../modules/server
     ];
