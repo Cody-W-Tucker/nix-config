@@ -1,9 +1,8 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports =
     [
-      (modulesPath + "/installer/scan/not-detected.nix")
       ../configuration.nix
       ../modules/desktop
       ../modules/desktop/gaming.nix
