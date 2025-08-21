@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-unstable, modulesPath, ... }:
+{ config, lib, pkgs, modulesPath, ... }:
 
 {
   imports =
@@ -19,8 +19,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "ahci" "nvme" "usbhid" ];
+  boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
+  boot.extraModulePackages = [ ];
   time.hardwareClockInLocalTime = true;
 
   # Networking
