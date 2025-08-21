@@ -12,6 +12,7 @@
       ../modules/desktop/mcp-servers.nix
       ../modules/scripts
       ../modules/server/ai.nix
+      ../modules/overlays/kdenlive.nix
     ];
 
   # Bootloader.
@@ -123,28 +124,10 @@
     }];
   }];
 
-  # Overlay to enable speech recognition in Kdenlive
-  nixpkgs.overlays = [
-    (final: prev: {
-      kdePackages = prev.kdePackages.overrideScope (kfinal: kprev: {
-        kdenlive = kprev.kdenlive.overrideAttrs (oldAttrs: {
-          nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ final.makeWrapper ];
-
-          postFixup = (oldAttrs.postFixup or "") + ''
-            wrapProgram $out/bin/kdenlive \
-              --prefix PATH : ${final.lib.makeBinPath [ final.python3 final.cudaPackages.cudatoolkit ]} \
-              --prefix LD_LIBRARY_PATH : ${final.lib.makeLibraryPath [ final.cudaPackages.cudatoolkit ]}
-          '';
-        });
-      });
-    })
-  ];
-
   # Machine specific packages
   environment.systemPackages =
     (with pkgs; [
       rofi-network-manager
-      kdePackages.kdenlive
     ]);
 
   # Should be the same as the version of NixOS you installed on this machine.
