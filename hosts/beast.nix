@@ -18,8 +18,13 @@
   boot.loader.efi.canTouchEfiVariables = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "ahci" "nvme" "usbhid" ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
+  # Use btusb for bluetooth dongle
+  boot.initrd.kernelModules = [ "btusb" ];
+  # Prevents suspend issues with mt7925e wifi card
+  boot.blacklistedKernelModules = [
+    "mt7925e"
+  ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
   time.hardwareClockInLocalTime = true;

@@ -13,6 +13,11 @@
   # Enable OpenRazer for keyboard and mouse support
   hardware.openrazer.enable = true;
 
+  # Install Bluetooth firmware for realtek dongles
+  hardware.firmware = [
+    pkgs.rtl8761b-firmware
+  ];
+
   # Install basic desktop environment packages that I want on all my systems.
   environment.systemPackages =
     (with pkgs; [
