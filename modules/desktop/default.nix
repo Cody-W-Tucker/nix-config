@@ -13,10 +13,16 @@
   # Enable OpenRazer for keyboard and mouse support
   hardware.openrazer.enable = true;
 
+  # Allow redistributable firmware
+  hardware.enableRedistributableFirmware = true;
+
   # Install Bluetooth firmware for realtek dongles
   hardware.firmware = [
     pkgs.rtl8761b-firmware
   ];
+
+  # Provides a way to manage system firmware updates
+  services.fwupd.enable = true;
 
   # Install basic desktop environment packages that I want on all my systems.
   environment.systemPackages =
@@ -57,7 +63,4 @@
 
   # Enable support for removable devices.
   services.udisks2.enable = true;
-
-  # Provides a way to manage system firmware updates
-  services.fwupd.enable = true;
 }
