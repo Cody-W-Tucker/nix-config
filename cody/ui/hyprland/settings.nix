@@ -152,8 +152,8 @@ in
     };
     general = {
       border_size = "2";
-      gaps_in = "5";
-      gaps_out = "5";
+      gaps_in = "2";
+      gaps_out = "2";
       layout = "master";
       "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0C}aa) rgba(${config.lib.stylix.colors.base0D}aa) rgba(${config.lib.stylix.colors.base0B}aa) rgba(${config.lib.stylix.colors.base0E}aa) 45deg";
       "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}99) rgba(${config.lib.stylix.colors.base01}99) 45deg";
