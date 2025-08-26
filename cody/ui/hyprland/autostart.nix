@@ -5,7 +5,7 @@
       "uwsm finalize" # Initializes WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE
 
       # Workspace-specific apps
-      "[workspace 3 silent] uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
+      "[workspace 2 silent] uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
       "uwsm app -- feishin"
     ];
   };
