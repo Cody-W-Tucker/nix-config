@@ -111,9 +111,9 @@ in
       "center, class:(taskwarrior-tui)"
 
       # Customizing Obsidian
-      "opacity 0.99, ^(obsidian)$"
-      "noblur, ^(obsidian)$"
-      "noshadow, ^(obsidian)$"
+      "opacity 0.99, class:^(obsidian)$"
+      "noblur, class:^(obsidian)$"
+      "noshadow, class:^(obsidian)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
