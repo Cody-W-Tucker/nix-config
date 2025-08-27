@@ -109,6 +109,11 @@ in
       "float, class:(taskwarrior-tui)"
       "size 1000 500, class:(taskwarrior-tui)"
       "center, class:(taskwarrior-tui)"
+
+      # Customizing Obsidian
+      "opacity 0.99, ^(obsidian)$"
+      "noblur, ^(obsidian)$"
+      "noshadow, ^(obsidian)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
