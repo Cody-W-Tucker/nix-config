@@ -112,6 +112,7 @@ in
 
       # Customizing Obsidian
       "opacity 0.99, class:^(obsidian)$"
+      "noblur, class:^(obsidian)$"
       "noshadow, class:^(obsidian)$"
     ];
     # Workspace and monitor set in flake.nix
