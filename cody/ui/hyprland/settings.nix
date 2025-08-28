@@ -22,7 +22,7 @@ let
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, E, exec, ${terminal} -e yazi"
     "${mainMod}, 0, exec, ${browser}"
-    "${mainMod}, O, exec, uwsm app -- obsidian"
+    "${mainMod}, O, exec, uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
 
     # Web applications
     "${mainMod}, Return, exec, [workspace special:ai] ${webApp}=https://www.perplexity.ai/"
