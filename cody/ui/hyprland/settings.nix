@@ -15,6 +15,7 @@ let
   specialWorkspaces = [
     "special:ai, on-created-empty: ${webApp}=https://ai.homehub.tv/"
     "special:dev, on-created-empty: ${terminal}"
+    "special:media, on-created-empty: uwsm app -- zen --new-window=https://www.youtube.com/"
   ];
 
   keybinds = [
@@ -29,14 +30,14 @@ let
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
 
     # Media
-    "${mainMod}, Y, exec, [workspace special:media] uwsm app -- zen --new-window=https://www.youtube.com/"
+    "${mainMod} SHIFT, Y, exec, [workspace special:media] uwsm app -- zen --new-window=https://www.youtube.com/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
     "${mainMod} SHIFT, X, exec, [float] ${webApp}=https://x.com/compose/post"
     "${mainMod}, F, exec, ${browser}=https://www.facebook.com/"
     "${mainMod}, M, exec, ${browser}=https://mail.google.com/mail/u/0/#inbox"
-    "${mainMod}SHIFT, M, exec, ${browser}=https://messages.google.com/web/u/0/conversations"
+    "${mainMod} SHIFT, M, exec, ${browser}=https://messages.google.com/web/u/0/conversations"
     "${mainMod}, P, exec, ${browser}=https://homehub.tv/"
 
     # Quick launch
@@ -73,6 +74,7 @@ let
     "${mainMod}, A, togglespecialworkspace, ai"
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:ai"
     "${mainMod}, D, togglespecialworkspace, dev"
+    "${mainMod}, Y, togglespecialworkspace, media"
     "${mainMod}SHIFT, D, exec, ${webApp}=http://localhost:3000/"
 
     # Toggle waybar
