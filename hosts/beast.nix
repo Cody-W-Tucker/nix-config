@@ -35,9 +35,6 @@
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   networking.useDHCP = lib.mkDefault true;
 
-  # Use the latest kernel and matching NVIDIA driver
-  boot.kernelPackages = pkgs.linuxPackages_zen;
-
   # Ensure 14th Gen Intel CPU works correctly
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
