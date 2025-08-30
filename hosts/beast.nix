@@ -36,8 +36,8 @@
   networking.useDHCP = lib.mkDefault true;
 
   # Use the latest kernel and matching NVIDIA driver
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  hardware.nvidia.package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  hardware.nvidia.package = lib.mkForce config.boot.kernelPackages.nvidia_x11_beta; # Use driver matching the kernel
 
   # Ensure 14th Gen Intel CPU works correctly
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
