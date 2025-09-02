@@ -75,6 +75,7 @@ let
     "${mainMod} SHIFT, A, movetoworkspacesilent, special:ai"
     "${mainMod}, D, togglespecialworkspace, dev"
     "${mainMod}, Y, togglespecialworkspace, media"
+    "${mainMod} SHIFT, Y, movetoworkspacesilent, special:media"
     "${mainMod}SHIFT, D, exec, ${webApp}=http://localhost:3000/"
 
     # Toggle waybar
