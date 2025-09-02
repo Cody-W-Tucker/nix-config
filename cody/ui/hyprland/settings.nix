@@ -150,7 +150,7 @@ in
         "border, 1, 10, default"
         "borderangle, 1, 8, default"
         "fade, 1, 2, default"
-        "workspaces, 0, .5, default"
+        "workspaces, 0, .9, default"
       ];
     };
     input = {
