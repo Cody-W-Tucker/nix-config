@@ -29,9 +29,6 @@ let
     "${mainMod}, Return, exec, [workspace special:ai] ${webApp}=https://www.perplexity.ai/"
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
 
-    # Media
-    "${mainMod} SHIFT, Y, exec, [workspace special:media] uwsm app -- zen --new-window=https://www.youtube.com/"
-
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
     "${mainMod} SHIFT, X, exec, [float] ${webApp}=https://x.com/compose/post"
