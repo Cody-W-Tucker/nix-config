@@ -136,9 +136,9 @@ in
       "noshadow, class:^(obsidian)$"
 
       # Sleek vim help webapp
-      "float, class:(chrome-vim.rtorr.com__-Default"
-      "size 800 600, class:(chrome-vim.rtorr.com__-Default"
-      "center, class:(chrome-vim.rtorr.com__-Default"
+      "float, class:(chrome-vim.rtorr.com__-Default)"
+      "size 800 600, class:(chrome-vim.rtorr.com__-Default)"
+      "center, class:(chrome-vim.rtorr.com__-Default)"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
