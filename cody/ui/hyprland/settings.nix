@@ -28,6 +28,8 @@ let
     # Web applications
     "${mainMod}, Return, exec, [workspace special:ai] ${webApp}=https://www.perplexity.ai/"
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
+    # Show vim keybindings in floating window
+    "${mainMod}, I, exec, [float] ${webApp}=https://vim.rtorr.com/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -132,6 +134,11 @@ in
       "opacity 0.99, class:^(obsidian)$"
       "noblur, class:^(obsidian)$"
       "noshadow, class:^(obsidian)$"
+
+      # Sleek vim help webapp
+      "float, title:(vim.rtorr.com)"
+      "size 800 600, title:(vim.rtorr.com)"
+      "center, title:(vim.rtorr.com)"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
