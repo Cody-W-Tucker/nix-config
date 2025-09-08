@@ -28,6 +28,7 @@
   boot.initrd.kernelModules = [ "btusb" ];
   boot.kernelModules = [ "kvm-intel" "v4l2loopback" ];
   # v4l2loopback for virtual camera in obs
+  programs.obs-studio.enableVirtualCamera = true;
   boot.extraModulePackages = with config.boot.kernelPackages; [
     v4l2loopback
   ];
