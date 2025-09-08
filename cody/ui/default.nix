@@ -76,7 +76,6 @@
   # Obs for screenrecording
   programs.obs-studio = {
     enable = true;
-    enableVirtualCamera = true;
     package = (pkgs-unstable.obs-studio.override { cudaSupport = true; });
   };
 
