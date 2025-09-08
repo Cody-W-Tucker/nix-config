@@ -124,6 +124,7 @@ in
       "center,title:(x.com_/compose/post)"
 
       # Create a sleek AI widget
+      "float, class:(ai.homehub.tv__-Default)"
       "size 800 600, class:(ai.homehub.tv__-Default)"
       "center, class:(ai.homehub.tv__-Default)"
 
