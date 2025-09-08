@@ -29,7 +29,7 @@ let
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
     # Show vim keybindings in floating window
     "${mainMod}, I, exec, [float] ${webApp}=https://vim.rtorr.com/"
-    "${mainMod}, A, exec, [float] ${webApp}=https://ai.homehub.tv/"
+    "${mainMod}, A, exec, ${webApp}=https://ai.homehub.tv/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -124,9 +124,9 @@ in
       "center,title:(x.com_/compose/post)"
 
       # Create a sleek AI widget
-      "float, class:(chrome-ai.homehub.tv__-Default)"
-      "size 750 1400, class:(chrome-ai.homehub.tv__-Default)"
-      "center, class:(chrome-ai.homehub.tv__-Default)"
+      # "float, class:(chrome-ai.homehub.tv__-Default)"
+      # "size 750 1400, class:(chrome-ai.homehub.tv__-Default)"
+      # "center, class:(chrome-ai.homehub.tv__-Default)"
 
       # Sleek taskwarrior-tui
       "float, class:(taskwarrior-tui)"
