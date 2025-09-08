@@ -26,7 +26,6 @@ let
     "${mainMod}, O, exec, uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
 
     # Web applications
-    "${mainMod}, Return, exec, [workspace special:ai] ${webApp}=https://www.perplexity.ai/"
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
     # Show vim keybindings in floating window
     "${mainMod}, I, exec, [float] ${webApp}=https://vim.rtorr.com/"
@@ -70,8 +69,7 @@ let
     "${mainMod} SHIFT, mouse_up, exec, hyprnome --move"
 
     # Special workspaces
-    "${mainMod}, A, togglespecialworkspace, ai"
-    "${mainMod} SHIFT, A, movetoworkspacesilent, special:ai"
+    "${mainMod}, RETURN, togglespecialworkspace, ai"
     "${mainMod}, D, togglespecialworkspace, dev"
     "${mainMod}, Y, togglespecialworkspace, media"
     "${mainMod} SHIFT, Y, movetoworkspacesilent, special:media"
