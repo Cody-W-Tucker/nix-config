@@ -124,9 +124,7 @@ in
       "center,title:(x.com_/compose/post)"
 
       # Create a sleek AI widget
-      # "float, class:(chrome-ai.homehub.tv__-Default)"
-      # "size 750 1400, class:(chrome-ai.homehub.tv__-Default)"
-      # "center, class:(chrome-ai.homehub.tv__-Default)"
+      "size 750, class:(chrome-ai.homehub.tv__-Default)"
 
       # Sleek taskwarrior-tui
       "float, class:(taskwarrior-tui)"
