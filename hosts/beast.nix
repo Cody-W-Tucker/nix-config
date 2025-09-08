@@ -26,8 +26,14 @@
   ];
   # Use btusb for bluetooth dongle
   boot.initrd.kernelModules = [ "btusb" ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+  boot.kernelModules = [ "kvm-intel" "v4l2loopback" ];
+  # v4l2loopback for virtual camera in obs
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+    v4l2loopback
+  ];
+  boot.extraModprobeConfig = ''
+    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+  '';
   time.hardwareClockInLocalTime = true;
 
   # Networking
