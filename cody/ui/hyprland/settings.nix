@@ -125,7 +125,7 @@ in
 
       # Create a sleek AI widget
       "float, class:(chrome-ai.homehub.tv__-Default)"
-      "size 800 600, class:(chrome-ai.homehub.tv__-Default)"
+      "size 750 1400, class:(chrome-ai.homehub.tv__-Default)"
       "center, class:(chrome-ai.homehub.tv__-Default)"
 
       # Sleek taskwarrior-tui
