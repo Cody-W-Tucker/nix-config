@@ -1,4 +1,4 @@
-{ inputs, pkgs, pkgs-unstable, ... }:
+{ config, inputs, pkgs, pkgs-unstable, ... }:
 
 {
   imports = [
@@ -76,8 +76,16 @@
   # Obs for screenrecording
   programs.obs-studio = {
     enable = true;
+    enableVirtualCamera = true;
     package = (pkgs-unstable.obs-studio.override { cudaSupport = true; });
   };
+
+  # v4l2loopback for virtual camera
+  boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+  boot.kernelModules = [ "v4l2loopback" ];
+  boot.extraModprobeConfig = ''
+    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+  '';
 
   # Clipboard history
   services.cliphist = {
