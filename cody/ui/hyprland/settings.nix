@@ -13,7 +13,7 @@ let
   ];
 
   specialWorkspaces = [
-    "special:ai, on-created-empty: ${webApp}=https://ai.homehub.tv/"
+    "special:ai, on-created-empty: ${webApp}=https://www.perplexity.ai/"
     "special:dev, on-created-empty: ${terminal}"
     "special:media, on-created-empty: uwsm app -- zen --new-window=https://www.youtube.com/"
   ];
@@ -30,6 +30,7 @@ let
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
     # Show vim keybindings in floating window
     "${mainMod}, I, exec, [float] ${webApp}=https://vim.rtorr.com/"
+    "${mainMod}, A, exec, [float] ${webApp}=https://ai.homehub.tv/"
 
     # Browser navigation
     "${mainMod}, X, exec, ${browser}=https://x.com/"
@@ -37,7 +38,6 @@ let
     "${mainMod}, F, exec, ${browser}=https://www.facebook.com/"
     "${mainMod}, M, exec, ${browser}=https://mail.google.com/mail/u/0/#inbox"
     "${mainMod} SHIFT, M, exec, ${browser}=https://messages.google.com/web/u/0/conversations"
-    "${mainMod}, P, exec, ${browser}=https://homehub.tv/"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
@@ -124,6 +124,10 @@ in
       "float,title:(x.com_/compose/post)"
       "size 600 300,title:(x.com_/compose/post)"
       "center,title:(x.com_/compose/post)"
+
+      # Create a sleek AI widget
+      "size 800 600, class:(ai.homehub.tv__-Default)"
+      "center, class:(ai.homehub.tv__-Default)"
 
       # Sleek taskwarrior-tui
       "float, class:(taskwarrior-tui)"
