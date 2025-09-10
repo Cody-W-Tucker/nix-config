@@ -87,7 +87,20 @@ in
     };
     "$mainMod" = mainMod;
     bindm = mousebinds;
-    bind = keybinds;
+    bind = keybinds
+      ++ (
+      # workspaces
+      # binds $mainMod + [shift +] {1..9} to [move to] workspace {1..9}
+      builtins.concatLists (builtins.genList
+        (i:
+          let ws = i + 1;
+          in [
+            "${mainMod}, code:1${toString i}, workspace, ${toString ws}"
+            "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
+          ]
+        )
+        9)
+    );
     bindel = [
       # Multimedia keys for volume and LCD brightness
       ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
