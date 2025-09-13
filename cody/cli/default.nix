@@ -17,6 +17,7 @@
     (with pkgs-unstable; [
       # list of unstable packages go here
       gemini-cli
+      opencode
     ]);
 
   home.sessionVariables = {
@@ -26,10 +27,6 @@
 
   # Enable Stylix for theming
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-
-  programs.opencode = {
-    enable = true;
-  };
 
   # Use esa instead of ls
   programs.eza = {
