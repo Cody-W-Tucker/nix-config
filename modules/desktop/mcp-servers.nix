@@ -36,18 +36,6 @@ in
           OBSIDIAN_HOST = "https://localhost:27124";
         };
       };
-      nixos = {
-        command = "uvx";
-        args = [ "mcp-nixos" ];
-      };
-      fileSystem = {
-        command = "npx";
-        args = [
-          "-y"
-          "@modelcontextprotocol/server-filesystem"
-          "/data/public"
-        ];
-      };
       memory = {
         command = "npx";
         args = [
