@@ -40,7 +40,7 @@
     enable = true;
     enableZshIntegration = true;
     plugins = {
-      "git.yazi" = pkgs.yaziPlugins.git;
+      "git" = pkgs.yaziPlugins.git;
     };
     settings = {
       git = {
