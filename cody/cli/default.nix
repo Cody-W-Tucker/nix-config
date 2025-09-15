@@ -46,12 +46,12 @@
     };
     theme = {
       git = {
-        status_modified = "yellow";
-        status_added = "green";
-        status_deleted = "red";
-        status_renamed = "blue";
-        status_copied = "blue";
-        status_untracked = "cyan";
+        status_modified = "#${config.lib.stylix.colors.base0A}";
+        status_added = "#${config.lib.stylix.colors.base0B}";
+        status_deleted = "#${config.lib.stylix.colors.base08}";
+        status_renamed = "#${config.lib.stylix.colors.base0D}";
+        status_copied = "#${config.lib.stylix.colors.base0D}";
+        status_untracked = "#${config.lib.stylix.colors.base0C}";
       };
     };
   };
