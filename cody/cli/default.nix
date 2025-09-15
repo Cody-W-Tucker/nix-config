@@ -44,6 +44,16 @@
         status = true;
       };
     };
+    theme = {
+      git = {
+        status_modified = "yellow";
+        status_added = "green";
+        status_deleted = "red";
+        status_renamed = "blue";
+        status_copied = "blue";
+        status_untracked = "cyan";
+      };
+    };
   };
 
   # Git configuration
