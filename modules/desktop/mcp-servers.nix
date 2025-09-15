@@ -9,6 +9,9 @@ in
     "OBSIDIAN_API_KEY" = { };
     # Todoist
     "TODOIST_API_TOKEN" = { };
+    # Google Workspace
+    "GOOGLE_OAUTH_CLIENT_ID" = { };
+    "GOOGLE_OAUTH_CLIENT_SECRET" = { };
   };
 
   # Docker
@@ -28,6 +31,14 @@ in
   # TODO: Need to manually restart "systemctl restart docker-mcpo" because the docker service doesn't notice we changed the config file.
   sops.templates."mcpo-config.json".content = builtins.toJSON {
     mcpServers = {
+      google_workspace = {
+        command = "uvx";
+        args = [ "workspace-mcp" ];
+        env = {
+          GOOGLE_OAUTH_CLIENT_ID = "${config.sops.placeholder.GOOGLE_OAUTH_CLIENT_ID}";
+          GOOGLE_OAUTH_CLIENT_SECRET = "${config.sops.placeholder.GOOGLE_OAUTH_CLIENT_SECRET}";
+        };
+      };
       mcp-obsidian = {
         command = "uvx";
         args = [ "mcp-obsidian" ];
