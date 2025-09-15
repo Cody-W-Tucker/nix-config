@@ -39,13 +39,11 @@
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
-    plugins = {
-      "git" = pkgs.yaziPlugins.git;
-    };
+    plugins = with pkgs.yaziPlugins; [
+      git
+    ];
     settings = {
-      git = {
-        status = true;
-      };
+      linemode = "git";
     };
     theme = {
       git = {
