@@ -39,6 +39,9 @@
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
+    plugins = {
+      "git.yazi" = pkgs.yaziPlugins.git;
+    };
     settings = {
       git = {
         status = true;
