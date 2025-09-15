@@ -41,9 +41,8 @@
     enableZshIntegration = true;
     plugins = {
       "git" = pkgs.yaziPlugins.git;
-    };
-    settings = {
-      linemode = "git";
+      "diff" = pkgs.yaziPlugins.diff;
+      "vcs-files" = pkgs.yaziPlugins.vcs-files;
     };
     theme = {
       git = {
