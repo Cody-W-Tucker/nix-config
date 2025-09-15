@@ -39,6 +39,11 @@
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
+    settings = {
+      git = {
+        status = true;
+      };
+    };
   };
 
   # Git configuration
