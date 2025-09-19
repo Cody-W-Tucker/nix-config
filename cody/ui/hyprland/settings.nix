@@ -23,7 +23,6 @@ let
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, E, exec, ${terminal} -e yazi"
     "${mainMod}, 0, exec, ${browser}"
-    "${mainMod}, O, exec, uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
 
     # Web applications
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
@@ -32,11 +31,7 @@ let
     "${mainMod}, A, exec, ${webApp}=https://ai.homehub.tv/"
 
     # Browser navigation
-    "${mainMod}, X, exec, ${browser}=https://x.com/"
     "${mainMod} SHIFT, X, exec, [float] ${webApp}=https://x.com/compose/post"
-    "${mainMod}, F, exec, ${browser}=https://www.facebook.com/"
-    "${mainMod}, M, exec, ${browser}=https://mail.google.com/mail/u/0/#inbox"
-    "${mainMod} SHIFT, M, exec, ${browser}=https://messages.google.com/web/u/0/conversations"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
@@ -73,7 +68,6 @@ let
     "${mainMod}, D, togglespecialworkspace, dev"
     "${mainMod}, Y, togglespecialworkspace, media"
     "${mainMod} SHIFT, Y, movetoworkspacesilent, special:media"
-    "${mainMod}SHIFT, D, exec, ${webApp}=http://localhost:3000/"
 
     # Toggle waybar
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
