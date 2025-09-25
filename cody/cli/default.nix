@@ -12,11 +12,12 @@
       fastfetch
       unzip
       zip
+      opencode
     ])
     ++
     (with pkgs-unstable; [
       # list of unstable packages go here
-      opencode
+      gemini-cli
     ]);
 
   home.sessionVariables = {
