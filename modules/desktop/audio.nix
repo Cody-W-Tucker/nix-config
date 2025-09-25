@@ -1,4 +1,4 @@
-{ pkgs-unstable, ... }:
+{ ... }:
 
 {
   # Enable sound with pipewire
@@ -23,7 +23,6 @@
   hardware = {
     bluetooth = {
       enable = true;
-      package = pkgs-unstable.bluez5-experimental;
       powerOnBoot = true;
       settings = {
         General = {
