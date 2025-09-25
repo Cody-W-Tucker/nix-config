@@ -39,6 +39,8 @@ in
           GOOGLE_OAUTH_CLIENT_SECRET = "${config.sops.placeholder.GOOGLE_OAUTH_CLIENT_SECRET}";
           WORKSPACE_MCP_PORT = "8001";
           USER_GOOGLE_EMAIL = "cody@tmvsocial.com";
+          TOOLS = "gmail drive calendar docs sheets";
+          TOOL_TIER = "core";
         };
       };
       mcp-obsidian = {
