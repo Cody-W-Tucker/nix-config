@@ -33,7 +33,7 @@ in
     mcpServers = {
       google_workspace = {
         command = "uvx";
-        args = [ "workspace-mcp --tools gmail drive calendar docs sheets --tool-tier core" ];
+        args = [ "workspace-mcp" "--tools gmail drive calendar docs sheets" "--tool-tier core" ];
         env = {
           GOOGLE_OAUTH_CLIENT_ID = "${config.sops.placeholder.GOOGLE_OAUTH_CLIENT_ID}";
           GOOGLE_OAUTH_CLIENT_SECRET = "${config.sops.placeholder.GOOGLE_OAUTH_CLIENT_SECRET}";
