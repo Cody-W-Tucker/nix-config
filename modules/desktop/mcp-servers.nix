@@ -69,6 +69,13 @@ in
           TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
         };
       };
+      browsermcp = {
+        command = "npx";
+        args = [
+          "-y"
+          "@browsermcp/mcp@latest"
+        ];
+      };
     };
   };
 
