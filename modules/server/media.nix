@@ -86,7 +86,7 @@
         speed-limit-up-enabled = true;
         speed-limit-down = 10240;
         speed-limit-down-enabled = true;
-        download-queue-enabled = true;
+        download-queue-enabled = false;
         download-queue-size = 10;
 
         # Speed tweaks

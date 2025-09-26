@@ -181,11 +181,6 @@ in
       cm_fs_passthrough = "2";
       direct_scanout = "2";
     };
-    device = {
-      name = "apple-wireless-trackpad";
-      sensitivity = "0.2";
-      natural_scroll = "true";
-    };
     general = {
       border_size = "2";
       gaps_in = "2";
