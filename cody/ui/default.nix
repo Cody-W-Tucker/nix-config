@@ -61,6 +61,7 @@
       taskwarrior-tui # TUI for Taskwarrior
       feishin # Desktop app music player
       chromium # Web browser
+      google-chrome
       wttrbar # Weather bar for Waybar
       krita # Photo editing software
     ])
