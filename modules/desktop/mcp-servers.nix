@@ -1,8 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ config, ... }:
 
 let
   userDir = "${config.users.users.codyt.home}";
-  chrome-exe = lib.getExe pkgs.google-chrome;
 in
 {
   sops.secrets = {
@@ -69,14 +68,6 @@ in
         env = {
           TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
         };
-      };
-      chrome-devtools = {
-        command = "npx";
-        args = [
-          "chrome-devtools-mcp@latest"
-          "--executablePath"
-          chrome-exe
-        ];
       };
     };
   };
