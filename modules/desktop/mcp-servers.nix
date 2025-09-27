@@ -2,7 +2,7 @@
 
 let
   userDir = "${config.users.users.codyt.home}";
-  chrome-exe = lib.getExe pkgs.google-chrome.default;
+  chrome-exe = lib.getExe pkgs.google-chrome;
 in
 {
   sops.secrets = {
