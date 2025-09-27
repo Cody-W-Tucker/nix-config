@@ -2,6 +2,7 @@
 
 let
   userDir = "${config.users.users.codyt.home}";
+  chrome-exe = lib.getExe pkgs.google-chrome.default;
 in
 {
   sops.secrets = {
@@ -74,7 +75,7 @@ in
         args = [
           "chrome-devtools-mcp@latest"
           "--executablePath"
-          "${lib.getExe pkgs.google-chrome "google-chrome-stable"}"
+          chrome-exe
         ];
       };
     };
