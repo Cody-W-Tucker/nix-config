@@ -40,7 +40,6 @@
       cifs-utils # For mounting CIFS shares
       seahorse # GNOME keyring manager
       openrazer-daemon # Razer device support
-      chromium
       google-chrome
     ]);
 
