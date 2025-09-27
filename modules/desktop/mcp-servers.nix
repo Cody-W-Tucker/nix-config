@@ -69,11 +69,10 @@ in
           TODOIST_API_TOKEN = "${config.sops.placeholder.TODOIST_API_TOKEN}";
         };
       };
-      browsermcp = {
+      chrome-devtools = {
         command = "npx";
         args = [
-          "-y"
-          "@browsermcp/mcp@latest"
+          "chrome-devtools-mcp@latest"
         ];
       };
     };
