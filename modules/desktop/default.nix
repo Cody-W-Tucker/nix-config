@@ -41,6 +41,7 @@
       seahorse # GNOME keyring manager
       openrazer-daemon # Razer device support
       chromium
+      google-chrome
     ]);
 
   # Open ports for rustdesk
