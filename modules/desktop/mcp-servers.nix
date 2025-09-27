@@ -73,8 +73,8 @@ in
         command = "npx";
         args = [
           "chrome-devtools-mcp@latest"
-          "--"
-          "--executablePath ${pkgs.google-chrome}/bin/google-chrome"
+          "--executablePath"
+          "${pkgs.google-chrome}/bin/google-chrome-stable"
         ];
       };
     };
