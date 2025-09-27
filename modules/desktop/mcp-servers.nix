@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let
   userDir = "${config.users.users.codyt.home}";
@@ -73,6 +73,8 @@ in
         command = "npx";
         args = [
           "chrome-devtools-mcp@latest"
+          "--"
+          "--executablePath ${pkgs.google-chrome}/bin/google-chrome"
         ];
       };
     };
