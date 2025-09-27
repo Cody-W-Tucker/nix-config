@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   userDir = "${config.users.users.codyt.home}";
@@ -74,7 +74,7 @@ in
         args = [
           "chrome-devtools-mcp@latest"
           "--executablePath"
-          "${pkgs.google-chrome}/bin/google-chrome-stable"
+          "${lib.getExe pkgs.google-chrome "google-chrome-stable"}"
         ];
       };
     };
