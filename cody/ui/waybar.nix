@@ -40,8 +40,8 @@ let
     modules-right = [
       "group/productivity"
       "privacy"
-      "pulseaudio"
       "mpris"
+      "pulseaudio"
       "group/hardware"
     ];
     "hyprland/workspaces" = {
@@ -74,7 +74,7 @@ let
         car = "";
         default = [ "" "" "" ];
       };
-      on-click = "bluetoothSwitch";
+      on-click = "bluetoothSwitchDBus";
       on-click-right = "uwsm-app -- pavucontrol";
     };
     mpris = {
