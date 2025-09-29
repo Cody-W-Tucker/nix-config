@@ -33,12 +33,11 @@ let
       "tray"
     ];
     modules-center = [
-      "custom/notification"
-      "clock"
-      "custom/weather"
+      "group/clock"
     ];
     modules-right = [
-      "group/productivity"
+      "group/notification"
+      "custom/weather"
       "privacy"
       "mpris"
       "pulseaudio"
@@ -51,14 +50,26 @@ let
       window-rewrite = favorite_apps;
       window-rewrite-default = "󰏗";
     };
-    "group/productivity" = {
+    "group/clock" = {
+      orientation = "horizontal";
+      drawer = {
+        transition-duration = 500;
+        transition-left-to-right = true;
+      };
+      modules = [
+        "clock"
+        "custom/agenda"
+        "custom/taskwarrior"
+      ];
+    };
+    "group/notification" = {
       orientation = "horizontal";
       drawer = {
         transition-duration = 500;
         transition-left-to-right = false;
       };
       modules = [
-        "custom/agenda"
+        "custom/notification"
         "custom/taskwarrior"
       ];
     };
