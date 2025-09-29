@@ -40,7 +40,8 @@ let
     modules-right = [
       "group/productivity"
       "privacy"
-      "group/media"
+      "pulseaudio"
+      "mpris"
       "group/hardware"
     ];
     "hyprland/workspaces" = {
@@ -59,17 +60,6 @@ let
       modules = [
         "custom/agenda"
         "custom/taskwarrior"
-      ];
-    };
-    "group/media" = {
-      orientation = "horizontal";
-      drawer = {
-        transition-duration = 500;
-        transition-left-to-right = false;
-      };
-      modules = [
-        "pulseaudio"
-        "mpris"
       ];
     };
     pulseaudio = {
