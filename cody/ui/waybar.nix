@@ -89,8 +89,8 @@ let
       on-click-right = "uwsm-app -- pavucontrol";
     };
     mpris = {
-      format = "DEFAULT: {player_icon} {dynamic}";
-      format-paused = "DEFAULT: {status_icon} <i>{dynamic}</i>";
+      format = "{player_icon} {title}";
+      format-paused = "{status_icon} {title}";
       player-icons = {
         default = "";
       };
