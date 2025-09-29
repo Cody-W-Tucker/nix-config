@@ -59,7 +59,6 @@ let
       modules = [
         "clock"
         "custom/agenda"
-        "custom/taskwarrior"
       ];
     };
     "group/notification" = {
