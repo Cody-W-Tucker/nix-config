@@ -4,7 +4,6 @@
   hardware.nvidia-container-toolkit.enable = true;
 
   virtualisation.oci-containers.containers = {
-    # docker run --name open-webui --add-host=host.docker.internal:host-gateway -e PORT=11435 -e OLLAMA_BASE_URL=http://server:11434 -v ~/open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
     "open-webui" = {
       autoStart = true;
       image = "ghcr.io/open-webui/open-webui:cuda";

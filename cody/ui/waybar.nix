@@ -70,6 +70,7 @@ let
       modules = [
         "pulseaudio"
         "custom/media"
+        "mpris"
       ];
     };
     pulseaudio = {
@@ -86,6 +87,16 @@ let
       };
       on-click = "bluetoothSwitch";
       on-click-right = "uwsm-app -- pavucontrol";
+    };
+    mpris = {
+      format = "DEFAULT: {player_icon} {dynamic}";
+      format-paused = "DEFAULT: {status_icon} <i>{dynamic}</i>";
+      player-icons = {
+        default = "";
+      };
+      status-icons = {
+        paused = "";
+      };
     };
     "custom/media" = {
       format = "{}";
