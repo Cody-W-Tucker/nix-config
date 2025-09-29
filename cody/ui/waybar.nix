@@ -33,11 +33,12 @@ let
       "tray"
     ];
     modules-center = [
+      "custom/notification"
       "group/clock"
+      "custom/weather"
     ];
     modules-right = [
       "group/notification"
-      "custom/weather"
       "privacy"
       "mpris"
       "pulseaudio"
@@ -59,17 +60,6 @@ let
       modules = [
         "clock"
         "custom/agenda"
-      ];
-    };
-    "group/notification" = {
-      orientation = "horizontal";
-      drawer = {
-        transition-duration = 500;
-        transition-left-to-right = false;
-      };
-      modules = [
-        "custom/notification"
-        "custom/taskwarrior"
       ];
     };
     pulseaudio = {
@@ -130,13 +120,6 @@ let
       return-type = "json";
       interval = 59;
       tooltip = true;
-    };
-    "custom/taskwarrior" = {
-      exec =
-        "${inputs.waybar-taskwarrior.packages.x86_64-linux.default}/bin/waybar-taskwarrior";
-      interval = 10;
-      on-click = "uwsm app -- kitty -e taskwarrior-tui";
-      return-type = "json";
     };
     clock = {
       format = "{:%a (%d) - %I:%M %p}";
