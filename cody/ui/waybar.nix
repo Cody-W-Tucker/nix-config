@@ -69,7 +69,6 @@ let
       };
       modules = [
         "pulseaudio"
-        "custom/media"
         "mpris"
       ];
     };
@@ -97,19 +96,10 @@ let
       status-icons = {
         paused = "";
       };
-    };
-    "custom/media" = {
-      format = "{}";
-      escape = true;
-      interval = 5;
-      return-type = "json";
-      max-length = 40;
-      on-click = "playerctl play-pause";
       on-click-right = "playerctl stop";
       smooth-scrolling-threshold = 1;
       on-scroll-up = "playerctl next";
       on-scroll-down = "playerctl previous";
-      exec = "media-player";
     };
     privacy = {
       icon-spacing = 4;
