@@ -1,37 +1,73 @@
 { pkgs }:
 
-pkgs.writeShellScriptBin "bluetoothSwitch" ''
-  device="74:74:46:1C:20:61"
-  max_attempts=3
+pkgs.writeShellScriptBin "bluetoothSwitchDBus" ''
+  device_mac="74:74:46:1C:20:61"
+  device_path="/org/bluez/hci0/dev_$(echo $device_mac | sed 's/:/_/g')"
+  adapter_path="/org/bluez/hci0"
+  max_attempts=5
+  sleep_time=5
+  
+  # Unblock Bluetooth
+  rfkill unblock bluetooth
+  sleep 2
+  
+  get_prop() {
+    dbus-send --system --dest=org.bluez --print-reply=literal $1 org.freedesktop.DBus.Properties.Get string:org.bluez.$2 string:$3 | awk '{print $3}'
+  }
+  
+  set_prop() {
+    dbus-send --system --dest=org.bluez --print-reply $1 org.freedesktop.DBus.Properties.Set string:org.bluez.$2 string:$3 variant:boolean:$4 > /dev/null
+  }
   
   check_controller() {
-    if ! bluetoothctl show | grep 'Powered: yes' -q; then
+    powered=$(get_prop $adapter_path Adapter1 Powered)
+    if [ "$powered" != "true" ]; then
       echo "Controller is powered off. Powering on..."
-      bluetoothctl power on
+      set_prop $adapter_path Adapter1 Powered true
+      sleep $sleep_time
+    fi
+  }
+  
+  trust_device() {
+    trusted=$(get_prop $device_path Device1 Trusted)
+    if [ "$trusted" != "true" ]; then
+      echo "Trusting device..."
+      set_prop $device_path Device1 Trusted true
       sleep 2
     fi
   }
   
   connect_device() {
-    bluetoothctl connect "$device"
-    sleep 2
-    bluetoothctl info "$device" | grep 'Connected: yes' -q
+    dbus-send --system --dest=org.bluez --print-reply $device_path org.bluez.Device1.Connect > /dev/null 2>&1
+    for i in {1..5}; do
+      sleep 1
+      connected=$(get_prop $device_path Device1 Connected)
+      if [ "$connected" = "true" ]; then
+        return 0
+      fi
+    done
+    return 1
+  }
+  
+  disconnect_device() {
+    dbus-send --system --dest=org.bluez --print-reply $device_path org.bluez.Device1.Disconnect > /dev/null
   }
   
   cycle_bluetooth() {
-    bluetoothctl power off
-    sleep 2
-    bluetoothctl power on
-    sleep 2
+    set_prop $adapter_path Adapter1 Powered false
+    sleep $sleep_time
+    set_prop $adapter_path Adapter1 Powered true
+    sleep $sleep_time
   }
   
-  # Ensure controller is powered on first
   check_controller
   
-  # Check current connection state
-  if bluetoothctl info "$device" | grep 'Connected: yes' -q; then
+  trust_device
+  
+  connected=$(get_prop $device_path Device1 Connected)
+  if [ "$connected" = "true" ]; then
     echo "Device is connected. Disconnecting..."
-    bluetoothctl disconnect "$device"
+    disconnect_device
   else
     echo "Device not connected. Attempting to connect..."
     

@@ -4,7 +4,6 @@ let
   scriptNames = [
     ./rofi-launcher.nix
     ./rofi-web-launcher.nix
-    ./media-player.nix
     ./bluetooth-switch.nix
     ./update.nix
   ];
