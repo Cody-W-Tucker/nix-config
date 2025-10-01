@@ -74,11 +74,12 @@ let
         car = "";
         default = [ "" "" "" ];
       };
-      on-click = "bluetoothSwitchDBus";
+      on-click = "bluetoothSwitch";
       on-click-right = "uwsm-app -- pavucontrol";
     };
     mpris = {
       format = "{player_icon} {title}";
+      format-len = 100;
       format-paused = "{status_icon} {title}";
       player-icons = {
         default = "";
