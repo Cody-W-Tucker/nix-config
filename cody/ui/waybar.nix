@@ -79,7 +79,7 @@ let
     };
     mpris = {
       format = "{player_icon} {title}";
-      format-len = 100;
+      format-len = 50;
       format-paused = "{status_icon} {title}";
       player-icons = {
         default = "";
