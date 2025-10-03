@@ -7,6 +7,7 @@
     ./adguard.nix
     ./automation.nix
     ./content.nix
+    ./crm.nix
     ./data.nix
     ./excalidraw.nix
     ./hoarder.nix
