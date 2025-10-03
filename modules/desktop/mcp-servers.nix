@@ -12,6 +12,8 @@ in
     # Google Workspace
     "GOOGLE_OAUTH_CLIENT_ID" = { };
     "GOOGLE_OAUTH_CLIENT_SECRET" = { };
+    # Twenty CRM MCP
+    "TWENTY_MCP_API_KEY" = { };
   };
 
   # Docker
@@ -31,6 +33,13 @@ in
   # TODO: Need to manually restart "systemctl restart docker-mcpo" because the docker service doesn't notice we changed the config file.
   sops.templates."mcpo-config.json".content = builtins.toJSON {
     mcpServers = {
+      twenty = {
+        type = "streamable-http";
+        url = "https://crm.homehub.tv/mcp";
+        headers = {
+          Authorization = "Bearer ${config.sops.placeholder.TWENTY_MCP_API_KEY}";
+        };
+      };
       google_workspace = {
         command = "uvx";
         args = [ "workspace-mcp" ];
