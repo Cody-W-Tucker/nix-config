@@ -118,7 +118,7 @@
       "DISABLE_DB_MIGRATIONS" = "";
       "NODE_PORT" = "3000";
       "REDIS_URL" = "redis://redis:6379";
-      "SERVER_URL" = "http://localhost:3000";
+      "SERVER_URL" = "https://crm.homehub.tv";
       # "STORAGE_S3_ENDPOINT" = "";
       # "STORAGE_S3_NAME" = "";
       # "STORAGE_S3_REGION" = "";
@@ -174,7 +174,7 @@
       "DISABLE_CRON_JOBS_REGISTRATION" = "true";
       "DISABLE_DB_MIGRATIONS" = "true";
       "REDIS_URL" = "redis://redis:6379";
-      "SERVER_URL" = "http://localhost:3000";
+      "SERVER_URL" = "https://crm.homehub.tv";
       # "STORAGE_S3_ENDPOINT" = "";
       # "STORAGE_S3_NAME" = "";
       # "STORAGE_S3_REGION" = "";
