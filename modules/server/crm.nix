@@ -1,7 +1,16 @@
 # Auto-generated using compose2nix v0.3.1.
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 {
+  services.nginx.virtualHosts = {
+    "crm.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/".proxyPass = "http://localhost:3002";
+      kTLS = true;
+    };
+  };
+
   # Runtime
   virtualisation.docker = {
     enable = true;
@@ -9,11 +18,30 @@
   };
   virtualisation.oci-containers.backend = "docker";
 
+  # Secrets
+  sops.secrets = {
+    TWENTY_APP_SECRET = { };
+    TWENTY_DB_PASSWORD = { };
+  };
+
+  # Create env files with secrets
+  sops.templates = {
+    "TWENTY_DB".content = ''
+      POSTGRES_PASSWORD=${config.sops.placeholder."TWENTY_DB_PASSWORD"}
+    '';
+    "CLIENT_SECRETS".content = ''
+      APP_SECRET=${config.sops.placeholder."TWENTY_APP_SECRET"}
+      PG_DATABASE_URL=postgres://postgres:${config.sops.placeholder."TWENTY_DB_PASSWORD"}@db:5432/default
+    '';
+  };
+
   # Containers
   virtualisation.oci-containers.containers."twenty-db" = {
     image = "postgres:16";
+    environmentFiles = [
+      config.sops.templates."TWENTY_DB".path
+    ];
     environment = {
-      "POSTGRES_PASSWORD" = "secret";
       "POSTGRES_USER" = "postgres";
     };
     volumes = [
@@ -82,24 +110,25 @@
   };
   virtualisation.oci-containers.containers."twenty-server" = {
     image = "twentycrm/twenty:latest";
+    environmentFiles = [
+      config.sops.templates."CLIENT_SECRETS".path
+    ];
     environment = {
-      "APP_SECRET" = "";
       "DISABLE_CRON_JOBS_REGISTRATION" = "";
       "DISABLE_DB_MIGRATIONS" = "";
       "NODE_PORT" = "3000";
-      "PG_DATABASE_URL" = "postgres://postgres:secret@db:5432/default";
       "REDIS_URL" = "redis://redis:6379";
       "SERVER_URL" = "http://localhost:3000";
-      "STORAGE_S3_ENDPOINT" = "";
-      "STORAGE_S3_NAME" = "";
-      "STORAGE_S3_REGION" = "";
+      # "STORAGE_S3_ENDPOINT" = "";
+      # "STORAGE_S3_NAME" = "";
+      # "STORAGE_S3_REGION" = "";
       "STORAGE_TYPE" = "local";
     };
     volumes = [
       "twenty_server-local-data:/app/packages/twenty-server/.local-storage:rw"
     ];
     ports = [
-      "3000:3000/tcp"
+      "3002:3000/tcp"
     ];
     dependsOn = [
       "twenty-db"
@@ -138,16 +167,17 @@
   };
   virtualisation.oci-containers.containers."twenty-worker" = {
     image = "twentycrm/twenty:latest";
+    environmentFiles = [
+      config.sops.templates."CLIENT_SECRETS".path
+    ];
     environment = {
-      "APP_SECRET" = "Y7mST0L4WB2E0fINLPk0e3rC7/GNdKx6O2mj24BpSTo=";
       "DISABLE_CRON_JOBS_REGISTRATION" = "true";
       "DISABLE_DB_MIGRATIONS" = "true";
-      "PG_DATABASE_URL" = "postgres://postgres:secret@db:5432/default";
       "REDIS_URL" = "redis://redis:6379";
       "SERVER_URL" = "http://localhost:3000";
-      "STORAGE_S3_ENDPOINT" = "";
-      "STORAGE_S3_NAME" = "";
-      "STORAGE_S3_REGION" = "";
+      # "STORAGE_S3_ENDPOINT" = "";
+      # "STORAGE_S3_NAME" = "";
+      # "STORAGE_S3_REGION" = "";
       "STORAGE_TYPE" = "local";
     };
     volumes = [
