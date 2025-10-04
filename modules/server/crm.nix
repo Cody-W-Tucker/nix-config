@@ -6,7 +6,14 @@
     "crm.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";
-      locations."/".proxyPass = "http://localhost:3002";
+      locations."/" = {
+        proxyPass = "http://localhost:3002";
+        proxyWebsockets = true;
+        extraConfig = ''
+          proxy_read_timeout 3600s;
+          proxy_buffering off;
+        '';
+      };
       kTLS = true;
     };
   };
