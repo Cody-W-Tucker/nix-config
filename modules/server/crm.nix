@@ -116,7 +116,7 @@
     ];
   };
   virtualisation.oci-containers.containers."twenty-server" = {
-    image = "twentycrm/twenty:latest";
+    image = "twentycrm/twenty:v1.7.6";
     environmentFiles = [
       config.sops.templates."CLIENT_SECRETS".path
     ];
@@ -173,7 +173,7 @@
     ];
   };
   virtualisation.oci-containers.containers."twenty-worker" = {
-    image = "twentycrm/twenty:latest";
+    image = "twentycrm/twenty:v1.7.6";
     environmentFiles = [
       config.sops.templates."CLIENT_SECRETS".path
     ];
