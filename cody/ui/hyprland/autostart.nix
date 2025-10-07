@@ -5,8 +5,8 @@
       "uwsm finalize" # Initializes WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE
 
       "uwsm app -- obsidian --enable-features=WaylandLinuxDrmSyncobj"
-      # Media app
-      "uwsm app -- feishin"
+      "uwsm app -- feishin" # Music player
+      "systemctl --user start blueman-applet" # Bluetooth tray icon
     ];
   };
 }
