@@ -63,6 +63,7 @@
       chromium
       wttrbar # Weather bar for Waybar
       krita # Photo editing software
+      blueman
     ])
     ++
     (with pkgs-unstable; [
