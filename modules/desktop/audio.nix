@@ -37,4 +37,5 @@
       };
     };
   };
+  services.blueman.enable = true; # Bluetooth manager
 }
