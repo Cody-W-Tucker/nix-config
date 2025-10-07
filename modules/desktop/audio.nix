@@ -37,5 +37,5 @@
       };
     };
   };
-  services.blueman.enable = true; # Bluetooth manager
+  services.blueman-applet.enable = true; # Bluetooth manager
 }
