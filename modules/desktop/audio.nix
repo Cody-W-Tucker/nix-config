@@ -37,4 +37,6 @@
       };
     };
   };
+  # Bluetooth audio support
+  services.blueman.enable = true;
 }
