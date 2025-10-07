@@ -23,6 +23,9 @@
     enable = true;
   };
 
+  # Bluetooth applet for Waybar
+  services.blueman-applet.enable = true; # Bluetooth manager
+
   gtk = {
     enable = true;
     iconTheme = {
