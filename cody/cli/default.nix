@@ -7,7 +7,6 @@
 
   home.packages =
     (with pkgs; [
-      gh
       fd
       fastfetch
       unzip
@@ -99,6 +98,11 @@
       color.diff = "auto";
       color.status = "auto";
     };
+  };
+
+  # Enable GitHub CLI
+  programs.gh = {
+    enable = true;
   };
 
   programs = {
