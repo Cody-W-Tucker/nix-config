@@ -38,6 +38,10 @@
         enable = true;
       };
     };
+    # Set the leader key to <Space>
+    globals = {
+      mapleader = " ";
+    };
     keymaps = [
       {
         mode = "n"; # Normal mode
