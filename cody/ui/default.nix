@@ -64,7 +64,7 @@
       taskwarrior-tui # TUI for Taskwarrior
       feishin # Desktop app music player
       wttrbar # Weather bar for Waybar
-      krita # Photo editing software
+      google-chrome
     ])
     ++
     (with pkgs-unstable; [
@@ -72,7 +72,6 @@
       code-cursor
       vscode
       legcord
-      chromium
     ]);
 
 
