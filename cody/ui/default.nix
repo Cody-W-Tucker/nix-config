@@ -64,7 +64,7 @@
       taskwarrior-tui # TUI for Taskwarrior
       feishin # Desktop app music player
       wttrbar # Weather bar for Waybar
-      google-chrome
+      chromium
     ])
     ++
     (with pkgs-unstable; [
