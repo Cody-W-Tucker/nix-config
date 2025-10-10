@@ -3,7 +3,7 @@
 let
   mainMod = "SUPER";
   browser = "uwsm app -- zen --new-tab";
-  webApp = "uwsm app -- chromium --new-window --app";
+  webApp = "uwsm app -- google-chrome-stable --new-window --app";
   terminal = "uwsm app -- kitty";
 
   mousebinds = [
