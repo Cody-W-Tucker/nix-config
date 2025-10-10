@@ -117,6 +117,9 @@ in
       "noblur,class:kitty"
     ];
     windowrulev2 = [
+      # Ensure all web apps don't float
+      "tile, initialClass:Chromium-browser"
+
       "float, title:^(Picture-in-Picture)$"
       "pin, title:^(Picture-in-Picture)$"
 
@@ -141,9 +144,9 @@ in
       "noshadow, class:^(obsidian)$"
 
       # Sleek vim help webapp
-      "float, class:(chrome-vim.rtorr.com__-Default)"
-      "size 800 600, class:(chrome-vim.rtorr.com__-Default)"
-      "center, class:(chrome-vim.rtorr.com__-Default)"
+      "float, initialTitle:(vim.rtorr.com_/)"
+      "size 800 600, initialTitle:(vim.rtorr.com_/)"
+      "center, initialTitle:(vim.rtorr.com_/)"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
