@@ -48,6 +48,11 @@
       group = "media";
     };
 
+    readarr = {
+      enable = true;
+      group = "media";
+    };
+
     bazarr = {
       enable = true;
       group = "media";
@@ -205,6 +210,15 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://localhost:7878";
+        };
+        kTLS = true;
+      };
+      "readarr.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          recommendedProxySettings = true;
+          proxyPass = "http://localhost:8787";
         };
         kTLS = true;
       };
