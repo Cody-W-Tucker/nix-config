@@ -28,6 +28,12 @@
       };
     };
 
+    audiobookshelf = {
+      enable = true;
+      group = "media";
+      port = 9123;
+    };
+
     jellyseerr = {
       enable = true;
     };
@@ -156,6 +162,15 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           proxyPass = "http://localhost:4533";
+          proxyWebsockets = true;
+        };
+        kTLS = true;
+      };
+      "audiobooks.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          proxyPass = "http://localhost:9123";
           proxyWebsockets = true;
         };
         kTLS = true;
