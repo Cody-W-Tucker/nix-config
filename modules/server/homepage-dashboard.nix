@@ -111,6 +111,13 @@ in
                 description = "Open Source Figma Alternative";
               };
             }
+            {
+              ExcaliDraw = {
+                href = "https://draw.${domain}";
+                icon = "excalidraw";
+                description = "Whiteboard";
+              };
+            }
           ];
         }
         {
@@ -127,13 +134,6 @@ in
                 href = "https://monitoring.${domain}";
                 icon = "grafana";
                 description = "Logging & Dashboard";
-              };
-            }
-            {
-              ExcaliDraw = {
-                href = "https://draw.${domain}";
-                icon = "excalidraw";
-                description = "Whiteboard";
               };
             }
             {
@@ -187,6 +187,13 @@ in
         {
           Collect = [
             {
+              Jellyseerr = {
+                icon = "jellyseerr";
+                href = "https://request.${domain}";
+                description = "Request Media Service";
+              };
+            }
+            {
               Photos = {
                 href = "https://photos.${domain}";
                 icon = "immich";
@@ -198,13 +205,6 @@ in
                 href = "https://hoarder.${domain}";
                 icon = "hoarder";
                 description = "Link Collector";
-              };
-            }
-            {
-              Jellyseerr = {
-                icon = "jellyseerr";
-                href = "https://request.${domain}";
-                description = "Request Media Service";
               };
             }
           ];
@@ -222,6 +222,13 @@ in
               Radarr = {
                 href = "https://radarr.${domain}";
                 icon = "radarr";
+                description = "Media Management";
+              };
+            }
+            {
+              Readarr = {
+                href = "https://readarr.${domain}";
+                icon = "readarr";
                 description = "Media Management";
               };
             }
