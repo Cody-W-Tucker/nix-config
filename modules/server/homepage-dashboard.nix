@@ -24,7 +24,7 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 3;
+            columns = 5;
           };
           Tools = {
             style = "row";
@@ -97,6 +97,20 @@ in
                 description = "AI Chat Interface";
               };
             }
+            {
+              Paperless = {
+                href = "https://paperless.${domain}";
+                icon = "paperless";
+                description = "Document Management";
+              };
+            }
+            {
+              Penpot = {
+                href = "https://design.${domain}";
+                icon = "penpot";
+                description = "Open Source Figma Alternative";
+              };
+            }
           ];
         }
         {
@@ -136,17 +150,10 @@ in
                 description = "PDF Editing";
               };
             }
-            {
-              Penpot = {
-                href = "https://design.${domain}";
-                icon = "penpot";
-                description = "Open Source Figma Alternative";
-              };
-            }
           ];
         }
         {
-          View = [
+          Consume = [
             {
               Jellyfin = {
                 icon = "jellyfin";
@@ -155,28 +162,35 @@ in
               };
             }
             {
-              Jellyseerr = {
-                icon = "jellyseerr";
-                href = "https://request.${domain}";
-                description = "Request Media Service";
+              Navidrome = {
+                href = "https://music.${domain}";
+                icon = "navidrome";
+                description = "Music Server";
               };
             }
             {
-              Photos = {
-                href = "https://photos.${domain}";
-                icon = "immich";
-                description = "Photo Management";
+              AudiobookShelf = {
+                href = "https://audiobooks.${domain}";
+                icon = "audiobookshelf";
+                description = "AudioBook/Podcast Server";
               };
             }
-          ];
-        }
-        {
-          Read = [
             {
               Miniflux = {
                 href = "https://rss.${domain}";
                 icon = "miniflux";
                 description = "RSS Reader";
+              };
+            }
+          ];
+        }
+        {
+          Collect = [
+            {
+              Photos = {
+                href = "https://photos.${domain}";
+                icon = "immich";
+                description = "Photo Management";
               };
             }
             {
@@ -187,10 +201,10 @@ in
               };
             }
             {
-              Paperless = {
-                href = "https://paperless.${domain}";
-                icon = "paperless";
-                description = "Document Management";
+              Jellyseerr = {
+                icon = "jellyseerr";
+                href = "https://request.${domain}";
+                description = "Request Media Service";
               };
             }
           ];
@@ -248,13 +262,6 @@ in
                 href = "https://adguard.${domain}";
                 icon = "adguard-home";
                 description = "Network Wide Adblocking";
-              };
-            }
-            {
-              "Home Assistant" = {
-                href = "http://homeassistant:8123/";
-                icon = "home-assistant";
-                description = "Open Source Home Automation";
               };
             }
             {
