@@ -172,6 +172,12 @@
         locations."/" = {
           proxyPass = "http://localhost:9123";
           proxyWebsockets = true;
+          extraConfig = ''
+            # Prevent 413 Request Entity Too Large error
+            # by increasing the maximum allowed size of the client request body
+            # For example, set it to 10 GiB
+            client_max_body_size                10240M;
+          '';
         };
         kTLS = true;
       };
