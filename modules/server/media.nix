@@ -40,6 +40,10 @@
       group = "media";
       libraries = [ "/mnt/media/Media/Books" ];
       port = 7007;
+      host = "localhost";
+      settings = [
+        "--trusted-ips=localhost"
+      ];
     };
 
     jellyseerr = {
