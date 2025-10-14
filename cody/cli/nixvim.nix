@@ -23,12 +23,24 @@
         pattern = [ "*.md" ];
         command = "setlocal spell spelllang=en_us";
       }
+      # Format on save
+      {
+        event = [ "BufWritePre" ];
+        pattern = [ "*" ];
+        command = "lua vim.lsp.buf.format { async = false }";
+      }
     ];
     plugins = {
       web-devicons.enable = true;
       telescope.enable = true;
       treesitter.enable = true;
       lsp.enable = true;
+      none-ls = {
+        enable = true;
+        sources.formatting = {
+          nixfmt = true;
+        };
+      };
       direnv.enable = true;
       twilight = {
         enable = true;
