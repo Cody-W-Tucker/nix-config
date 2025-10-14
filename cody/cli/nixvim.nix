@@ -38,7 +38,7 @@
       none-ls = {
         enable = true;
         sources.formatting = {
-          nixfmt = true;
+          nixfmt.enable = true;
         };
       };
       direnv.enable = true;
