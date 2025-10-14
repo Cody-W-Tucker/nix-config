@@ -34,6 +34,14 @@
       port = 9123;
     };
 
+    # Using for Book metadata for readarr
+    calibre-server = {
+      enable = true;
+      group = "media";
+      libraries = [ "/mnt/media/Media/AudioBookShelf/Books" ];
+      port = 7007;
+    };
+
     jellyseerr = {
       enable = true;
     };
