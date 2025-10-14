@@ -29,8 +29,7 @@ let
     layer = "top";
     spacing = 4;
     modules-left = [
-      "hyprland/workspaces"
-      "tray"
+      "group/workspaces"
     ];
     modules-center = [
       "custom/notification"
@@ -62,6 +61,18 @@ let
         "custom/agenda"
       ];
     };
+    "group/workspace" = {
+      orientation = "horizontal";
+      drawer = {
+        transition-duration = 500;
+        transition-left-to-right = true;
+      };
+      modules = [
+        "hyprland/workspaces"
+        "tray"
+      ];
+    };
+
     pulseaudio = {
       format = "{volume}% {icon}";
       format-bluetooth = "{volume}% {icon}";
