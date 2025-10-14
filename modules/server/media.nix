@@ -38,7 +38,7 @@
     calibre-server = {
       enable = true;
       group = "media";
-      libraries = [ "/mnt/media/Media/AudioBookShelf/Books" ];
+      # libraries = [ "/mnt/media/Media/AudioBookShelf/Books" ];
       port = 7007;
     };
 
