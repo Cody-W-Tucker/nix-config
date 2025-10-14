@@ -61,7 +61,7 @@ let
         "custom/agenda"
       ];
     };
-    "group/workspace" = {
+    "group/workspaces" = {
       orientation = "horizontal";
       drawer = {
         transition-duration = 500;
