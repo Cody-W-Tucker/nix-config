@@ -247,13 +247,6 @@ in
               };
             }
             {
-              Prowlarr = {
-                href = "https://prowlarr.${domain}";
-                icon = "prowlarr";
-                description = "Media Management";
-              };
-            }
-            {
               ARM = {
                 href = "https://arm.${domain}";
                 icon = "https://arm.${domain}/static/img/favicon.png";
