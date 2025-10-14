@@ -71,7 +71,6 @@
       OnCalendar = "Mon *-*-* 02:00:00";
       RandomizedDelaySec = "2h";
       Persistent = true;
-      WakeSystem = true;
     };
   };
   # Local AI models
