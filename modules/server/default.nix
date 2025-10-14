@@ -10,7 +10,7 @@
     ./crm.nix
     ./data.nix
     ./excalidraw.nix
-    ./hoarder.nix
+    ./karakeep.nix
     ./homepage-dashboard.nix
     ./media.nix
     ./monitoring.nix

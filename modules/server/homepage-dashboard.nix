@@ -201,9 +201,9 @@ in
               };
             }
             {
-              Hoarder = {
-                href = "https://hoarder.${domain}";
-                icon = "hoarder";
+              Karakeep = {
+                href = "https://karakeep.${domain}";
+                icon = "karakeep";
                 description = "Link Collector";
               };
             }
