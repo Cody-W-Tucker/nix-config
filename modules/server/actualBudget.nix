@@ -35,7 +35,6 @@
     };
   };
 
-
   # TODO: Once actual is added to nixos-stable we can implement this.
   # services.actual = {
   #   enable = true;

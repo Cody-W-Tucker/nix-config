@@ -37,23 +37,17 @@
       lsp.enable = true;
       none-ls = {
         enable = true;
-        sources.formatting = {
-          nixfmt.enable = true;
-        };
+        sources.formatting = { nixfmt.enable = true; };
       };
       direnv.enable = true;
       twilight = {
         enable = true;
         settings.context = 1;
       };
-      goyo = {
-        enable = true;
-      };
+      goyo = { enable = true; };
     };
     # Set the leader key to <Space>
-    globals = {
-      mapleader = " ";
-    };
+    globals = { mapleader = " "; };
     keymaps = [
       {
         mode = "n"; # Normal mode
@@ -80,8 +74,6 @@
         options = { silent = true; };
       }
     ];
-    extraPlugins = with pkgs.vimPlugins; [
-      vim-pencil
-    ];
+    extraPlugins = with pkgs.vimPlugins; [ vim-pencil ];
   };
 }
