@@ -87,7 +87,7 @@
               desc = "Rename";
             };
           };
-          diagnoistic = {
+          diagnostic = {
             "<leader>do" = "vim.diagnostic.open_float()";
             "<leader>j" = "vim.diagnostic.goto_prev()";
             "<leader>k" = "vim.diagnostic.goto_next()";
