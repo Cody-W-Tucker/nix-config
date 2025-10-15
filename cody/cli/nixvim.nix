@@ -86,23 +86,12 @@
               action = "rename";
               desc = "Rename";
             };
-            # Add diagnostic keymaps:
-            "<leader>do" = {
-              action = "vim.diagnostic.open_float()";
-              desc = "Show Diagnostics";
-            };
-            "<leader>d[" = {
-              action = "vim.diagnostic.goto_prev()";
-              desc = "Previous Diagnostic";
-            };
-            "<leader>d]" = {
-              action = "vim.diagnostic.goto_next()";
-              desc = "Next Diagnostic";
-            };
-            "<leader>dd" = {
-              action = "Telescope diagnostics";
-              desc = "List All Diagnostics";
-            };
+          };
+          diagnoistic = {
+            "<leader>do" = "vim.diagnostic.open_float()";
+            "<leader>j" = "vim.diagnostic.goto_prev()";
+            "<leader>k" = "vim.diagnostic.goto_next()";
+            "<leader>dd" = "Telescope diagnostics";
           };
         };
       };
