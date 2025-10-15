@@ -23,12 +23,6 @@
         pattern = [ "*.md" ];
         command = "setlocal spell spelllang=en_us";
       }
-      # Format on save
-      {
-        event = [ "BufWritePre" ];
-        pattern = [ "*" ];
-        command = "lua vim.lsp.buf.format { async = false }";
-      }
     ];
     plugins = {
       web-devicons.enable = true;
