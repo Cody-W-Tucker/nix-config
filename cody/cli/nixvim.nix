@@ -90,7 +90,14 @@
         };
       };
       # Enable completion
-      cmp.enable = true;
+      cmp = {
+        enable = true;
+        settings.sources = [
+          { name = "nvim_lsp"; }
+          { name = "path"; }
+          { name = "buffer"; }
+        ];
+      };
       none-ls = {
         enable = true;
         sources.formatting = {
