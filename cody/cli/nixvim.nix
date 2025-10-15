@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   programs.nixvim = {
@@ -93,6 +93,8 @@
         enable = true;
         sources.formatting = {
           nixfmt.enable = true;
+          prettier.enable = true;
+          black.enable = true;
         };
       };
       direnv.enable = true;
