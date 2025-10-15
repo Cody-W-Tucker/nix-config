@@ -86,6 +86,23 @@
               action = "rename";
               desc = "Rename";
             };
+            # Add diagnostic keymaps:
+            "<leader>do" = {
+              action = "lua vim.diagnostic.open_float()";
+              desc = "Show Diagnostics";
+            };
+            "<leader>d[" = {
+              action = "lua vim.diagnostic.goto_prev()";
+              desc = "Previous Diagnostic";
+            };
+            "<leader>d]" = {
+              action = "lua vim.diagnostic.goto_next()";
+              desc = "Next Diagnostic";
+            };
+            "<leader>dd" = {
+              action = "Telescope diagnostics";
+              desc = "List All Diagnostics";
+            };
           };
         };
       };
