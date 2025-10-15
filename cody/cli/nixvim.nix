@@ -88,9 +88,9 @@
             };
           };
           diagnostic = {
-            "<leader>do" = "vim.diagnostic.open_float()";
-            "<leader>j" = "vim.diagnostic.goto_prev()";
-            "<leader>k" = "vim.diagnostic.goto_next()";
+            "<leader>do" = "open_float";
+            "<leader>j" = "goto_prev";
+            "<leader>k" = "goto_next";
             "<leader>dd" = "Telescope diagnostics";
           };
         };
