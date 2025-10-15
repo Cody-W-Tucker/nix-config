@@ -93,7 +93,6 @@
         enable = true;
         sources.formatting = {
           nixfmt.enable = true;
-          prettier.enable = true;
           black.enable = true;
         };
       };
