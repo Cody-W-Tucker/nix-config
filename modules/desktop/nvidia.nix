@@ -19,8 +19,10 @@
   ];
 
   # Use EGL for Wayland
-  environment.systemPackages =
-    (with pkgs; [
+  environment.systemPackages = (
+    with pkgs;
+    [
       egl-wayland
-    ]);
+    ]
+  );
 }

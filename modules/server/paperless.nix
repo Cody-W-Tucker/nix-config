@@ -51,7 +51,7 @@ in
         # The default value 1M might be a little too small.
         extraConfig = ''
           client_max_body_size 100M;
-        
+
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection "upgrade";
 
@@ -66,4 +66,3 @@ in
     };
   };
 }
-

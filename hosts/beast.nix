@@ -1,24 +1,36 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [
-      ../configuration.nix
-      ../modules/desktop
-      ../modules/desktop/gaming.nix
-      ../modules/desktop/hyprland.nix
-      ../modules/desktop/nvidia.nix
-      ../modules/desktop/mcp-servers.nix
-      ../modules/scripts
-      ../modules/server/ai.nix
-    ];
+  imports = [
+    ../configuration.nix
+    ../modules/desktop
+    ../modules/desktop/gaming.nix
+    ../modules/desktop/hyprland.nix
+    ../modules/desktop/nvidia.nix
+    ../modules/desktop/mcp-servers.nix
+    ../modules/scripts
+    ../modules/server/ai.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [
+    "vmd"
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
   # Prevents suspend issues with mt7925e wifi chip
   boot.blacklistedKernelModules = [
     "mt7925e"
@@ -26,7 +38,10 @@
   ];
   # Use btusb for bluetooth dongle
   boot.initrd.kernelModules = [ "btusb" ];
-  boot.kernelModules = [ "kvm-intel" "v4l2loopback" ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "v4l2loopback"
+  ];
   # v4l2loopback for virtual camera in obs
   programs.obs-studio.enableVirtualCamera = true;
   boot.extraModulePackages = with config.boot.kernelPackages; [
@@ -47,19 +62,20 @@
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # System Filesystems
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
-      fsType = "ext4";
-      options = [ "noatime" ];
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
+    fsType = "ext4";
+    options = [ "noatime" ];
+  };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/36FA-44EF";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/36FA-44EF";
+    fsType = "vfat";
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
+  };
 
   # Sync configuration for user directories
   services.syncthing = {
@@ -69,7 +85,10 @@
     settings.folders = {
       "share" = {
         path = "/mnt/backup/Share";
-        devices = [ "server" "workstation" ];
+        devices = [
+          "server"
+          "workstation"
+        ];
       };
       "Cody's Obsidian" = {
         path = "/home/codyt/Sync/Cody-Obsidian";
@@ -82,63 +101,87 @@
   fileSystems."/home/codyt/Records" = {
     device = "/mnt/backup/Share/Records";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Documents" = {
     device = "/mnt/backup/Share/Documents";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Music" = {
     device = "/mnt/backup/Share/Music";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Pictures" = {
     device = "/mnt/backup/Share/Pictures";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Videos" = {
     device = "/mnt/backup/Share/Videos";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Sync/Cody-Obsidian" = {
     device = "/mnt/backup/Share/Documents/Personal";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   swapDevices = [ ];
 
   # Renaming the logging client to machine hostname
-  services.promtail.configuration.scrape_configs = [{
-    job_name = "journal";
-    journal = {
-      max_age = "12h";
-      labels = {
-        job = "systemd-journal";
-        host = "beast";
+  services.promtail.configuration.scrape_configs = [
+    {
+      job_name = "journal";
+      journal = {
+        max_age = "12h";
+        labels = {
+          job = "systemd-journal";
+          host = "beast";
+        };
       };
-    };
-    relabel_configs = [{
-      source_labels = [ "__journal__systemd_unit" ];
-      target_label = "unit";
-    }];
-  }];
+      relabel_configs = [
+        {
+          source_labels = [ "__journal__systemd_unit" ];
+          target_label = "unit";
+        }
+      ];
+    }
+  ];
 
   # Machine specific packages
-  environment.systemPackages =
-    (with pkgs; [
+  environment.systemPackages = (
+    with pkgs;
+    [
       rofi-network-manager
       kdePackages.kdenlive
-    ]);
+    ]
+  );
 
   # Should be the same as the version of NixOS you installed on this machine.
   system.stateVersion = "25.05"; # Did you read the comment?

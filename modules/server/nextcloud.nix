@@ -29,7 +29,13 @@
       extraApps = with config.services.nextcloud.package.packages.apps; {
         # List of apps we want to install and are already packaged in
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/servers/nextcloud/packages/nextcloud-apps.json
-        inherit calendar contacts mail notes richdocuments;
+        inherit
+          calendar
+          contacts
+          mail
+          notes
+          richdocuments
+          ;
       };
 
       config = {
@@ -40,11 +46,14 @@
       settings = {
         overwriteprotocol = "https";
         trusted_proxies = [ "localhost" ];
-        trusted_domains = [ "cloud.homehub.tv" "docs.homehub.tv" ];
+        trusted_domains = [
+          "cloud.homehub.tv"
+          "docs.homehub.tv"
+        ];
       };
     };
   };
-    # Online document editing
+  # Online document editing
   virtualisation.oci-containers.containers."collabora" = {
     autoStart = true;
     image = "docker.io/collabora/code:latest";
@@ -54,7 +63,10 @@
       dictionaries = "en_US";
       extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
     };
-    extraOptions = [ "--cap-add" "MKNOD" ];
+    extraOptions = [
+      "--cap-add"
+      "MKNOD"
+    ];
   };
 
   # Online document editing

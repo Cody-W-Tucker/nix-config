@@ -1,19 +1,32 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [
-      ../configuration.nix
-      ../modules/desktop
-      ../modules/scripts
-    ];
+  imports = [
+    ../configuration.nix
+    ../modules/desktop
+    ../modules/scripts
+  ];
 
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "family"; # Define your hostname.
 
-  boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "firewire_ohci" "usb_storage" "usbhid" "sd_mod" "sr_mod" ];
+  boot.initrd.availableKernelModules = [
+    "uhci_hcd"
+    "ehci_pci"
+    "ahci"
+    "firewire_ohci"
+    "usb_storage"
+    "usbhid"
+    "sd_mod"
+    "sr_mod"
+  ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
@@ -21,23 +34,26 @@
   # Networking
   networking.networkmanager.enable = true;
 
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/d6c24696-cc34-4a07-a065-9f143a63db02";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/d6c24696-cc34-4a07-a065-9f143a63db02";
+    fsType = "ext4";
+  };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/A12C-B557";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/A12C-B557";
+    fsType = "vfat";
+    options = [
+      "fmask=0022"
+      "dmask=0022"
+    ];
+  };
 
-  swapDevices = [{
-    device = "/var/lib/swapfile";
-    size = 24 * 1024;
-  }];
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 24 * 1024;
+    }
+  ];
 
   # Enable automatic login for the user.
   services.displayManager.autoLogin.user = "jordant";
@@ -45,7 +61,10 @@
   users.users.jordant = {
     isNormalUser = true;
     description = "Jordan Tucker";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     shell = pkgs.zsh;
     # hashedPasswordFile = config.sops.secrets.jordant.path;
     hashedPassword = "$y$j9T$T1YkmagP6ULuI6DvQz8IK0$38YlfZN9eR1jH286/9kZn13flzy.wFtPX74ukXKJhM7";

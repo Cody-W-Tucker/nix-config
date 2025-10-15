@@ -1,5 +1,10 @@
 # Auto-generated using compose2nix v0.3.1.
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   services.nginx.virtualHosts = {
@@ -88,7 +93,10 @@
   };
   virtualisation.oci-containers.containers."twenty-redis" = {
     image = "redis";
-    cmd = [ "--maxmemory-policy" "noeviction" ];
+    cmd = [
+      "--maxmemory-policy"
+      "noeviction"
+    ];
     log-driver = "journald";
     extraOptions = [
       "--network-alias=redis"
@@ -190,7 +198,10 @@
     volumes = [
       "twenty_server-local-data:/app/packages/twenty-server/.local-storage:rw"
     ];
-    cmd = [ "yarn" "worker:prod" ];
+    cmd = [
+      "yarn"
+      "worker:prod"
+    ];
     dependsOn = [
       "twenty-db"
       "twenty-server"

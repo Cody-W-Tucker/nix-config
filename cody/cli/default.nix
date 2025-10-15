@@ -1,4 +1,10 @@
-{ config, pkgs, pkgs-unstable, lib, ... }:
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -12,8 +18,7 @@
       unzip
       zip
     ])
-    ++
-    (with pkgs-unstable; [
+    ++ (with pkgs-unstable; [
       # list of unstable packages go here
       gemini-cli
       opencode

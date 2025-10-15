@@ -1,5 +1,10 @@
 # Auto-generated using compose2nix v0.3.2-pre.
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   # Proxy
@@ -32,7 +37,8 @@
       "PENPOT_DATABASE_PASSWORD" = "penpot";
       "PENPOT_DATABASE_URI" = "postgresql://penpot-penpot-postgres/penpot";
       "PENPOT_DATABASE_USERNAME" = "penpot";
-      "PENPOT_FLAGS" = "disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies";
+      "PENPOT_FLAGS" =
+        "disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies";
       "PENPOT_HTTP_SERVER_MAX_BODY_SIZE" = "31457280";
       "PENPOT_HTTP_SERVER_MAX_MULTIPART_BODY_SIZE" = "367001600";
       "PENPOT_PUBLIC_URI" = "https://design.homehub.tv";
@@ -114,7 +120,8 @@
   virtualisation.oci-containers.containers."penpot-penpot-frontend" = {
     image = "penpotapp/frontend:latest";
     environment = {
-      "PENPOT_FLAGS" = "disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies";
+      "PENPOT_FLAGS" =
+        "disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies";
       "PENPOT_HTTP_SERVER_MAX_BODY_SIZE" = "31457280";
       "PENPOT_HTTP_SERVER_MAX_MULTIPART_BODY_SIZE" = "367001600";
     };

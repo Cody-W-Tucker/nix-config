@@ -10,7 +10,13 @@
     isNormalUser = true;
     description = "arm";
     group = "arm";
-    extraGroups = [ "arm" "cdrom" "video" "render" "docker" ];
+    extraGroups = [
+      "arm"
+      "cdrom"
+      "video"
+      "render"
+      "docker"
+    ];
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
   };
 

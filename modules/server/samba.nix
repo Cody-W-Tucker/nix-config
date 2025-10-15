@@ -57,6 +57,10 @@
   # Syncthing backup
   services.syncthing.settings.folders."share" = {
     path = "/mnt/media/Share";
-    devices = [ "server" "workstation" "beast" ];
+    devices = [
+      "server"
+      "workstation"
+      "beast"
+    ];
   };
 }

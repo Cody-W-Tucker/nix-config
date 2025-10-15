@@ -53,7 +53,11 @@
       image = "ghcr.io/open-webui/pipelines:main";
       ports = [ "9099:9099" ];
       volumes = [ "/var/lib/pipelines/pipelines:/app/pipelines" ];
-      extraOptions = [ "--add-host=host.docker.internal:host-gateway" "--network=host" "--pull=always" ];
+      extraOptions = [
+        "--add-host=host.docker.internal:host-gateway"
+        "--network=host"
+        "--pull=always"
+      ];
     };
   };
   # Service to keep open-webui updated
@@ -170,5 +174,9 @@
     "d /var/lib/pipelines 0755 root root - -"
   ];
   # Open the ports so the web server can proxy them
-  networking.firewall.allowedTCPPorts = [ 6333 6334 8080 ];
+  networking.firewall.allowedTCPPorts = [
+    6333
+    6334
+    8080
+  ];
 }
