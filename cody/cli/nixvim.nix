@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   programs.nixvim = {
@@ -44,7 +44,51 @@
           xml
         ];
       };
-      lsp.enable = true;
+      lsp = {
+        enable = true;
+        inlayHints = true;
+        servers = {
+          nixd.enable = true; # Nix
+          ts_ls.enable = true; # TS/JS
+          cssls.enable = true; # CSS
+          tailwindcss.enable = true; # TailwindCSS
+          html.enable = true; # HTML
+          astro.enable = true; # AstroJS
+          pyright.enable = true; # Python
+          dockerls.enable = true; # Docker
+          bashls.enable = true; # Bash
+          markdown_oxide.enable = true; # Markdown
+        };
+        keymaps = {
+          silent = true;
+          lspBuf = {
+            gd = {
+              action = "definition";
+              desc = "Goto Definition";
+            };
+            gr = {
+              action = "references";
+              desc = "Goto References";
+            };
+            gD = {
+              action = "declaration";
+              desc = "Goto Declaration";
+            };
+            gI = {
+              action = "implementation";
+              desc = "Goto Implementation";
+            };
+            gT = {
+              action = "type_definition";
+              desc = "Type Definition";
+            };
+            "<leader>cr" = {
+              action = "rename";
+              desc = "Rename";
+            };
+          };
+        };
+      };
       none-ls = {
         enable = true;
         sources.formatting = {
