@@ -89,6 +89,8 @@
           };
         };
       };
+      # Enable completion
+      cmp.enable = true;
       none-ls = {
         enable = true;
         sources.formatting = {
