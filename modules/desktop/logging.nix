@@ -26,9 +26,11 @@
         positions = {
           filename = "/tmp/positions.yaml";
         };
-        clients = [{
-          url = "http://server:3090/loki/api/v1/push";
-        }];
+        clients = [
+          {
+            url = "http://server:3090/loki/api/v1/push";
+          }
+        ];
         # Include scrape configs in the machine config
         #
         # scrape_configs = [{

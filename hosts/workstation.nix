@@ -1,24 +1,40 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [
-      ../configuration.nix
-      ../modules/desktop
-      ../modules/desktop/hyprland.nix
-      ../modules/desktop/nvidia.nix
-      ../modules/desktop/mcp-servers.nix
-      ../modules/scripts
-      ../modules/server/paperless-scanning.nix
-    ];
+  imports = [
+    ../configuration.nix
+    ../modules/desktop
+    ../modules/desktop/hyprland.nix
+    ../modules/desktop/nvidia.nix
+    ../modules/desktop/mcp-servers.nix
+    ../modules/scripts
+    ../modules/server/paperless-scanning.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "workstation"; # Define your hostname.
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "sd_mod" "ehci_pci" "usb_storage" ];
-  boot.kernelModules = [ "kvm-intel" "btusb" "btintel" "sg" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "usbhid"
+    "sd_mod"
+    "ehci_pci"
+    "usb_storage"
+  ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "btusb"
+    "btintel"
+    "sg"
+  ];
   boot.extraModulePackages = [ ];
   time.hardwareClockInLocalTime = true;
 
@@ -28,54 +44,69 @@
   # Use the latest kernel
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/9e34e9a8-f360-45a6-b6e2-ceab59a207d9";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/9e34e9a8-f360-45a6-b6e2-ceab59a207d9";
+    fsType = "ext4";
+  };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/DAAA-35C7";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/DAAA-35C7";
+    fsType = "vfat";
+    options = [
+      "fmask=0022"
+      "dmask=0022"
+    ];
+  };
 
-  fileSystems."/mnt/backup" =
-    {
-      device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40";
-      fsType = "ext4";
-      options = [ "nofail" ];
-    };
+  fileSystems."/mnt/backup" = {
+    device = "/dev/disk/by-uuid/9dc55264-1ade-4f7b-a157-60d022feec40";
+    fsType = "ext4";
+    options = [ "nofail" ];
+  };
 
   fileSystems."/home/codyt/Records" = {
     device = "/mnt/backup/Share/Records";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Documents" = {
     device = "/mnt/backup/Share/Documents";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Music" = {
     device = "/mnt/backup/Share/Music";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Pictures" = {
     device = "/mnt/backup/Share/Pictures";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   fileSystems."/home/codyt/Videos" = {
     device = "/mnt/backup/Share/Videos";
     fsType = "none";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   # Enable scan button daemon and paperless-scanning.nix
@@ -107,20 +138,24 @@
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Set the logging configuration for the machine
-  services.promtail.configuration.scrape_configs = [{
-    job_name = "journal";
-    journal = {
-      max_age = "12h";
-      labels = {
-        job = "systemd-journal";
-        host = "workstation";
+  services.promtail.configuration.scrape_configs = [
+    {
+      job_name = "journal";
+      journal = {
+        max_age = "12h";
+        labels = {
+          job = "systemd-journal";
+          host = "workstation";
+        };
       };
-    };
-    relabel_configs = [{
-      source_labels = [ "__journal__systemd_unit" ];
-      target_label = "unit";
-    }];
-  }];
+      relabel_configs = [
+        {
+          source_labels = [ "__journal__systemd_unit" ];
+          target_label = "unit";
+        }
+      ];
+    }
+  ];
 
   hardware.graphics = {
     enable = true;
@@ -141,11 +176,17 @@
     settings.folders = {
       "share" = {
         path = "/mnt/backup/Share";
-        devices = [ "server" "workstation" ];
+        devices = [
+          "server"
+          "workstation"
+        ];
       };
       "Cody's Obsidian" = {
         path = "/home/codyt/Sync/Cody-Obsidian";
-        devices = [ "workstation" "Cody's Pixel" ];
+        devices = [
+          "workstation"
+          "Cody's Pixel"
+        ];
       };
     };
   };

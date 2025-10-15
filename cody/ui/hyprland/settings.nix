@@ -1,4 +1,9 @@
-{ config, lib, hardwareConfig, ... }:
+{
+  config,
+  lib,
+  hardwareConfig,
+  ...
+}:
 
 let
   mainMod = "SUPER";
@@ -81,20 +86,24 @@ in
     };
     "$mainMod" = mainMod;
     bindm = mousebinds;
-    bind = keybinds
+    bind =
+      keybinds
       ++ (
-      # workspaces
-      # binds $mainMod + [shift +] {1..9} to [move to] workspace {1..9}
-      builtins.concatLists (builtins.genList
-        (i:
-          let ws = i + 1;
-          in [
-            "${mainMod}, code:1${toString i}, workspace, ${toString ws}"
-            "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-          ]
+        # workspaces
+        # binds $mainMod + [shift +] {1..9} to [move to] workspace {1..9}
+        builtins.concatLists (
+          builtins.genList (
+            i:
+            let
+              ws = i + 1;
+            in
+            [
+              "${mainMod}, code:1${toString i}, workspace, ${toString ws}"
+              "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
+            ]
+          ) 9
         )
-        9)
-    );
+      );
     bindel = [
       # Multimedia keys for volume and LCD brightness
       ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
@@ -189,8 +198,10 @@ in
       gaps_in = "2";
       gaps_out = "2";
       layout = "master";
-      "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0C}aa) rgba(${config.lib.stylix.colors.base0D}aa) rgba(${config.lib.stylix.colors.base0B}aa) rgba(${config.lib.stylix.colors.base0E}aa) 45deg";
-      "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}99) rgba(${config.lib.stylix.colors.base01}99) 45deg";
+      "col.active_border" =
+        lib.mkForce "rgba(${config.lib.stylix.colors.base0C}aa) rgba(${config.lib.stylix.colors.base0D}aa) rgba(${config.lib.stylix.colors.base0B}aa) rgba(${config.lib.stylix.colors.base0E}aa) 45deg";
+      "col.inactive_border" =
+        lib.mkForce "rgba(${config.lib.stylix.colors.base00}99) rgba(${config.lib.stylix.colors.base01}99) 45deg";
     };
     cursor.hide_on_key_press = true;
     decoration = {

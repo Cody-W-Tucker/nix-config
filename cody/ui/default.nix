@@ -1,4 +1,9 @@
-{ inputs, pkgs, pkgs-unstable, ... }:
+{
+  inputs,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
 
 {
   imports = [
@@ -53,7 +58,7 @@
       hyprpicker # Color picker for Hyprland
       playerctl # Media player control utility
       libnotify # Notification library
-      todoist #cli client
+      todoist # cli client
       todoist-electron # Electron client for Todoist
       nautilus # File manager
       nixd # Nix daemon for development
@@ -66,14 +71,12 @@
       wttrbar # Weather bar for Waybar
       chromium
     ])
-    ++
-    (with pkgs-unstable; [
+    ++ (with pkgs-unstable; [
       # list of unstable packages go here
       code-cursor
       vscode
       legcord
     ]);
-
 
   # Obs for screenrecording
   programs.obs-studio = {

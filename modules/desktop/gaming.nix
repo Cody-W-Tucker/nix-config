@@ -10,11 +10,13 @@
   programs.gamemode.enable = true;
 
   # Gaming specific packages
-  environment.systemPackages =
-    (with pkgs; [
+  environment.systemPackages = (
+    with pkgs;
+    [
       # list of stable packages go here
       gamescope-wsi
-    ]);
+    ]
+  );
 
   # Performance Tweaks
   powerManagement.cpuFreqGovernor = "performance";

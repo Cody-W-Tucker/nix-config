@@ -124,16 +124,18 @@
           delete_request_store = "filesystem";
         };
 
-        schema_config.configs = [{
-          from = "2024-01-01";
-          store = "tsdb";
-          object_store = "filesystem";
-          schema = "v13";
-          index = {
-            prefix = "index_";
-            period = "24h";
-          };
-        }];
+        schema_config.configs = [
+          {
+            from = "2024-01-01";
+            store = "tsdb";
+            object_store = "filesystem";
+            schema = "v13";
+            index = {
+              prefix = "index_";
+              period = "24h";
+            };
+          }
+        ];
 
         query_range.cache_results = true;
       };
@@ -149,9 +151,11 @@
         positions = {
           filename = "/tmp/positions.yaml";
         };
-        clients = [{
-          url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
-        }];
+        clients = [
+          {
+            url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
+          }
+        ];
         scrape_configs = [
           {
             job_name = "journal";
@@ -162,10 +166,12 @@
                 host = "server";
               };
             };
-            relabel_configs = [{
-              source_labels = [ "__journal__systemd_unit" ];
-              target_label = "unit";
-            }];
+            relabel_configs = [
+              {
+                source_labels = [ "__journal__systemd_unit" ];
+                target_label = "unit";
+              }
+            ];
           }
         ];
       };
@@ -184,5 +190,8 @@
     };
   };
   # Open port 3090 for Loki
-  networking.firewall.allowedTCPPorts = [ 3090 9001 ];
+  networking.firewall.allowedTCPPorts = [
+    3090
+    9001
+  ];
 }

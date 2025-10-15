@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   home.packages = with pkgs; [
@@ -7,7 +12,10 @@
 
   services.gnome-keyring = {
     enable = true;
-    components = [ "secrets" "ssh" ];
+    components = [
+      "secrets"
+      "ssh"
+    ];
   };
 
   imports = [
@@ -16,7 +24,8 @@
   ];
 
   # Bring in env session variables from ../ui.nix
-  xdg.configFile."uwsm/env".source = "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
+  xdg.configFile."uwsm/env".source =
+    "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
 
   # Use the Hyprland Polkit
   services.hyprpolkitagent.enable = true;

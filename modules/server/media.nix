@@ -148,12 +148,17 @@
       "192.168.0.0/24"
     ];
     portMappings = [
-      { from = 9091; to = 9091; }
+      {
+        from = 9091;
+        to = 9091;
+      }
     ];
-    openVPNPorts = [{
-      port = 60729;
-      protocol = "both";
-    }];
+    openVPNPorts = [
+      {
+        port = 60729;
+        protocol = "both";
+      }
+    ];
   };
 
   # Add systemd service to VPN network namespace

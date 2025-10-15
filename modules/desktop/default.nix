@@ -25,8 +25,9 @@
   services.fwupd.enable = true;
 
   # Install basic desktop environment packages that I want on all my systems.
-  environment.systemPackages =
-    (with pkgs; [
+  environment.systemPackages = (
+    with pkgs;
+    [
       # list of stable packages go here
       pavucontrol # PulseAudio volume control
       xdg-utils # xdg-open
@@ -40,11 +41,24 @@
       cifs-utils # For mounting CIFS shares
       seahorse # GNOME keyring manager
       openrazer-daemon # Razer device support
-    ]);
+    ]
+  );
 
   # Open ports for rustdesk
-  networking.firewall.allowedTCPPorts = [ 21115 21116 21117 21118 21119 ];
-  networking.firewall.allowedUDPPorts = [ 21115 21116 21117 21118 21119 ];
+  networking.firewall.allowedTCPPorts = [
+    21115
+    21116
+    21117
+    21118
+    21119
+  ];
+  networking.firewall.allowedUDPPorts = [
+    21115
+    21116
+    21117
+    21118
+    21119
+  ];
 
   # Enable mullvad VPN app
   services.mullvad-vpn = {

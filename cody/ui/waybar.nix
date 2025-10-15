@@ -1,4 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 # Create a reusable function to create each bar
 # Bottom monitor bar focus on work
@@ -18,9 +24,12 @@ let
     "class<Zen Browser> title<.*Gmail.*>" = "";
     "class<Zen Browser> title<.*Calendar.*>" = "";
   };
-in let
-  createBar = waybarConfig: output: position:
-    waybarConfig // {
+in
+let
+  createBar =
+    waybarConfig: output: position:
+    waybarConfig
+    // {
       output = output;
       position = position;
     };
@@ -29,9 +38,18 @@ in let
     layer = "top";
     spacing = 4;
     modules-left = [ "group/workspaces" ];
-    modules-center = [ "custom/notification" "group/clock" "custom/weather" ];
-    modules-right =
-      [ "group/notification" "privacy" "mpris" "pulseaudio" "group/hardware" ];
+    modules-center = [
+      "custom/notification"
+      "group/clock"
+      "custom/weather"
+    ];
+    modules-right = [
+      "group/notification"
+      "privacy"
+      "mpris"
+      "pulseaudio"
+      "group/hardware"
+    ];
     "hyprland/workspaces" = {
       on-click = "activate";
       show-special = true;
@@ -45,7 +63,10 @@ in let
         transition-duration = 500;
         transition-left-to-right = true;
       };
-      modules = [ "clock" "custom/agenda" ];
+      modules = [
+        "clock"
+        "custom/agenda"
+      ];
     };
     "group/workspaces" = {
       orientation = "horizontal";
@@ -53,7 +74,10 @@ in let
         transition-duration = 500;
         transition-left-to-right = true;
       };
-      modules = [ "hyprland/workspaces" "tray" ];
+      modules = [
+        "hyprland/workspaces"
+        "tray"
+      ];
     };
 
     pulseaudio = {
@@ -66,7 +90,11 @@ in let
         phone = "";
         portable = "";
         car = "";
-        default = [ "" "" "" ];
+        default = [
+          ""
+          ""
+          ""
+        ];
       };
       on-click = "bluetoothSwitch";
       on-click-right = "uwsm-app -- pavucontrol";
@@ -75,8 +103,12 @@ in let
       format = "{player_icon} {title}";
       title-len = 50;
       format-paused = "{status_icon} {title}";
-      player-icons = { default = ""; };
-      status-icons = { paused = ""; };
+      player-icons = {
+        default = "";
+      };
+      status-icons = {
+        paused = "";
+      };
       on-click-right = "playerctl stop";
       smooth-scrolling-threshold = 1;
       on-scroll-up = "playerctl next";
@@ -104,7 +136,8 @@ in let
       spacing = 10;
     };
     "custom/agenda" = {
-      exec = nextmeeting
+      exec =
+        nextmeeting
         + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
       on-click = nextmeeting + "--open-meet-url";
       on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
@@ -136,25 +169,20 @@ in let
       format = "{}";
       tooltip = true;
       interval = 3600;
-      exec = ''
-        wttrbar --date-format "%m/%d" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions'';
+      exec = ''wttrbar --date-format "%m/%d" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions'';
       return-type = "json";
     };
     "custom/notification" = {
       tooltip = false;
       format = "{icon} {}";
       format-icons = {
-        notification =
-          "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         none = "";
-        dnd-notification =
-          "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        dnd-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         dnd-none = "";
-        inhibited-notification =
-          "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         inhibited-none = "";
-        dnd-inhibited-notification =
-          "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        dnd-inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         dnd-inhibited-none = "";
       };
       return-type = "json";
@@ -171,18 +199,33 @@ in let
         transition-duration = 500;
         transition-left-to-right = false;
       };
-      modules = [ "temperature" "cpu" "memory" "disk" ];
+      modules = [
+        "temperature"
+        "cpu"
+        "memory"
+        "disk"
+      ];
     };
     cpu = {
-      format =
-        "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}";
-      format-icons = [ "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█" ];
+      format = "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}";
+      format-icons = [
+        "▁"
+        "▂"
+        "▃"
+        "▄"
+        "▅"
+        "▆"
+        "▇"
+        "█"
+      ];
     };
     memory = {
       interval = 30;
       format = "{used:0.1f}G/{total:0.1f}G ";
     };
-    disk = { format = "{percentage_free}% "; };
+    disk = {
+      format = "{percentage_free}% ";
+    };
     temperature = {
       format = "{temperatureC}°C ";
       format-critical = "{temperatureC}°C ";
@@ -192,7 +235,7 @@ in let
       input-filename = "temp1_input";
     };
   };
-  # Secondary Config: 
+  # Secondary Config:
   secondaryBarConfig = {
     layer = "top";
     spacing = 4;
@@ -227,7 +270,8 @@ in let
     };
   };
 
-in {
+in
+{
   programs.waybar = {
     enable = true;
     systemd = {
