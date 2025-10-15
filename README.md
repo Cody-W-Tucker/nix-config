@@ -24,3 +24,7 @@ Configure the machine to get secrets
 1. Create a public key for the new machine via SOPS-NIX instructions
 2. Add the Public key to the .sops.yaml file
 3. sops updatekeys secrets.yaml
+
+# Thoughts
+
+I could use hardware-configuration instead of putting everything into the machine host file. Then when hardware changes it's easier regenerate the configuration.
