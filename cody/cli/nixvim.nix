@@ -116,9 +116,6 @@
           black.enable = true;
         };
       };
-      opencode = {
-        enable = true;
-      };
       direnv.enable = true;
       twilight = {
         enable = true;
