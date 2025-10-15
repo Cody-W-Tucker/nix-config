@@ -81,6 +81,8 @@
       };
     in
     {
+      # Use formatter on all systems
+      formatter.x86_64-linux = nixpkgs.legacyPackages.${system}.nixfmt-tree;
       nixosConfigurations = {
         beast = nixpkgs.lib.nixosSystem {
           inherit system;

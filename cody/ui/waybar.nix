@@ -18,31 +18,20 @@ let
     "class<Zen Browser> title<.*Gmail.*>" = "";
     "class<Zen Browser> title<.*Calendar.*>" = "";
   };
-in
-let
-  createBar = waybarConfig: output: position: waybarConfig // {
-    output = output;
-    position = position;
-  };
+in let
+  createBar = waybarConfig: output: position:
+    waybarConfig // {
+      output = output;
+      position = position;
+    };
   # Productivity Bar Config: This is the main bar for the main monitor.
   productivityBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-left = [
-      "group/workspaces"
-    ];
-    modules-center = [
-      "custom/notification"
-      "group/clock"
-      "custom/weather"
-    ];
-    modules-right = [
-      "group/notification"
-      "privacy"
-      "mpris"
-      "pulseaudio"
-      "group/hardware"
-    ];
+    modules-left = [ "group/workspaces" ];
+    modules-center = [ "custom/notification" "group/clock" "custom/weather" ];
+    modules-right =
+      [ "group/notification" "privacy" "mpris" "pulseaudio" "group/hardware" ];
     "hyprland/workspaces" = {
       on-click = "activate";
       show-special = true;
@@ -56,10 +45,7 @@ let
         transition-duration = 500;
         transition-left-to-right = true;
       };
-      modules = [
-        "clock"
-        "custom/agenda"
-      ];
+      modules = [ "clock" "custom/agenda" ];
     };
     "group/workspaces" = {
       orientation = "horizontal";
@@ -67,10 +53,7 @@ let
         transition-duration = 500;
         transition-left-to-right = true;
       };
-      modules = [
-        "hyprland/workspaces"
-        "tray"
-      ];
+      modules = [ "hyprland/workspaces" "tray" ];
     };
 
     pulseaudio = {
@@ -92,12 +75,8 @@ let
       format = "{player_icon} {title}";
       title-len = 50;
       format-paused = "{status_icon} {title}";
-      player-icons = {
-        default = "";
-      };
-      status-icons = {
-        paused = "";
-      };
+      player-icons = { default = ""; };
+      status-icons = { paused = ""; };
       on-click-right = "playerctl stop";
       smooth-scrolling-threshold = 1;
       on-scroll-up = "playerctl next";
@@ -125,7 +104,8 @@ let
       spacing = 10;
     };
     "custom/agenda" = {
-      exec = nextmeeting + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
+      exec = nextmeeting
+        + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
       on-click = nextmeeting + "--open-meet-url";
       on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
       format = "󰃶 {}";
@@ -156,20 +136,25 @@ let
       format = "{}";
       tooltip = true;
       interval = 3600;
-      exec = "wttrbar --date-format \"%m/%d\" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions";
+      exec = ''
+        wttrbar --date-format "%m/%d" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions'';
       return-type = "json";
     };
     "custom/notification" = {
       tooltip = false;
       format = "{icon} {}";
       format-icons = {
-        notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        notification =
+          "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         none = "";
-        dnd-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        dnd-notification =
+          "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         dnd-none = "";
-        inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        inhibited-notification =
+          "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         inhibited-none = "";
-        dnd-inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+        dnd-inhibited-notification =
+          "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
         dnd-inhibited-none = "";
       };
       return-type = "json";
@@ -186,33 +171,18 @@ let
         transition-duration = 500;
         transition-left-to-right = false;
       };
-      modules = [
-        "temperature"
-        "cpu"
-        "memory"
-        "disk"
-      ];
+      modules = [ "temperature" "cpu" "memory" "disk" ];
     };
     cpu = {
-      format = "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}";
-      format-icons = [
-        "▁"
-        "▂"
-        "▃"
-        "▄"
-        "▅"
-        "▆"
-        "▇"
-        "█"
-      ];
+      format =
+        "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}";
+      format-icons = [ "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█" ];
     };
     memory = {
       interval = 30;
       format = "{used:0.1f}G/{total:0.1f}G ";
     };
-    disk = {
-      format = "{percentage_free}% ";
-    };
+    disk = { format = "{percentage_free}% "; };
     temperature = {
       format = "{temperatureC}°C ";
       format-critical = "{temperatureC}°C ";
@@ -226,12 +196,8 @@ let
   secondaryBarConfig = {
     layer = "top";
     spacing = 4;
-    modules-center = [
-      "clock"
-    ];
-    modules-left = [
-      "hyprland/workspaces"
-    ];
+    modules-center = [ "clock" ];
+    modules-left = [ "hyprland/workspaces" ];
     modules-right = [ ];
     clock = {
       format = "{:%a (%d) - %I:%M %p}";
@@ -261,8 +227,7 @@ let
     };
   };
 
-in
-{
+in {
   programs.waybar = {
     enable = true;
     systemd = {
