@@ -27,7 +27,23 @@
     plugins = {
       web-devicons.enable = true;
       telescope.enable = true;
-      treesitter.enable = true;
+      treesitter = {
+        enable = true;
+        grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+          bash
+          json
+          nix
+          python
+          toml
+          yaml
+          javascript
+          typescript
+          html
+          css
+          lua
+          xml
+        ];
+      };
       lsp.enable = true;
       none-ls = {
         enable = true;
