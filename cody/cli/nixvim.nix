@@ -88,10 +88,8 @@
             };
           };
           diagnostic = {
-            "<leader>do" = "open_float";
-            "<leader>j" = "goto_prev";
-            "<leader>k" = "goto_next";
-            "<leader>dd" = "Telescope diagnostics";
+            "<leader>j" = "goto_next";
+            "<leader>k" = "goto_prev";
           };
         };
       };
