@@ -2,6 +2,7 @@
 
 pkgs.writeShellScriptBin "update" ''
   cd /etc/nixos &&
+  nix fmt &&
   git add . &&
   if [ -z "$1" ]; then
     echo "Enter commit message:" &&
