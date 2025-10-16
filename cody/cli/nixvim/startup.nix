@@ -43,7 +43,7 @@
           ]
         ];
         defaultColor = "";
-        foldSection = true;
+        foldSection = false;
         highlight = "String";
         margin = 5;
         oldfilesAmount = 0;
