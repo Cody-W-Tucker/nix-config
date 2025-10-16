@@ -25,6 +25,7 @@
       }
     ];
     plugins = {
+      snacks.enable = true;
       web-devicons.enable = true;
       telescope.enable = true;
       yazi.enable = true;
