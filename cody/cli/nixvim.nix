@@ -150,6 +150,22 @@
           silent = true;
         };
       }
+      {
+        mode = "n";
+        key = "<Leader>-";
+        action = "<cmd>Yazi<CR>";
+        options = {
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<Leader>==";
+        action = "<cmd>Yazi cwd<CR>";
+        options = {
+          silent = true;
+        };
+      }
     ];
     extraPlugins = with pkgs.vimPlugins; [ vim-pencil ];
   };
