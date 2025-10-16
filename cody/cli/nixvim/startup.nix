@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  programs.nixvim.startup = {
+  programs.nixvim.plugins.startup = {
     enable = true;
     parts = [
       "body"
