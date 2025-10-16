@@ -59,7 +59,7 @@
         foldSection = false;
         highlight = "Statement";
         margin = 5;
-        oldfilesAmount = 0;
+        oldfilesAmount = 5;
         title = "Header";
         type = "text";
       };
