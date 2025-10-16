@@ -26,6 +26,7 @@
     ];
     plugins = {
       snacks.enable = true;
+      startup.enable = true;
       lualine = {
         enable = true;
         settings = {
