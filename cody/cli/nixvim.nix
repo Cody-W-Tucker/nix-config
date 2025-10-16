@@ -28,6 +28,10 @@
       snacks.enable = true;
       startup = {
         enable = true;
+        parts = [
+          "header"
+          "body"
+        ];
         sections = {
           body = {
             align = "center";
