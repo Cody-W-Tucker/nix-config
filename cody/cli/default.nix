@@ -8,7 +8,7 @@
 
 {
   imports = [
-    ./nixvim.nix
+    ./nixvim
   ];
 
   home.packages =
