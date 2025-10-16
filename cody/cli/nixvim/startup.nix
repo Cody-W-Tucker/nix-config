@@ -3,66 +3,75 @@
 {
   programs.nixvim.plugins.startup = {
     enable = true;
-    parts = [
-      "body"
-      "header"
-    ];
     sections = {
-      body = {
+      header = {
+        type = "text";
+        oldfilesDirectory = false;
         align = "center";
+        foldSection = false;
+        title = "Header";
+        margin = 5;
+        content = [
+          "░█████╗░░█████╗░██████╗░██╗░░░██╗  ░██╗░░░░░░░██╗░█████╗░░██████╗  ██╗░░██╗███████╗██████╗░███████╗"
+          "██╔══██╗██╔══██╗██╔══██╗╚██╗░██╔╝  ░██║░░██╗░░██║██╔══██╗██╔════╝  ██║░░██║██╔════╝██╔══██╗██╔════╝"
+          "██║░░╚═╝██║░░██║██║░░██║░╚████╔╝░  ░╚██╗████╗██╔╝███████║╚█████╗░  ███████║█████╗░░██████╔╝█████╗░░"
+          "██║░░██╗██║░░██║██║░░██║░░╚██╔╝░░  ░░████╔═████║░██╔══██║░╚═══██╗  ██╔══██║██╔══╝░░██╔══██╗██╔══╝░░"
+          "╚█████╔╝╚█████╔╝██████╔╝░░░██║░░░  ░░╚██╔╝░╚██╔╝░██║░░██║██████╔╝  ██║░░██║███████╗██║░░██║███████╗"
+          "░╚════╝░░╚════╝░╚═════╝░░░░╚═╝░░░  ░░░╚═╝░░░╚═╝░░╚═╝░░╚═╝╚═════╝░  ╚═╝░░╚═╝╚══════╝╚═╝░░╚═╝╚══════╝"
+        ];
+        highlight = "Statement";
+        defaultColor = "";
+        oldfilesAmount = 0;
+      };
+
+      body = {
+        type = "mapping";
+        oldfilesDirectory = false;
+        align = "center";
+        foldSection = false;
+        title = "Menu";
+        margin = 5;
         content = [
           [
             " Find File"
             "Telescope find_files"
-            "<leader>ff"
+            "ff"
           ]
           [
             "󰍉 Find Word"
             "Telescope live_grep"
-            "<leader>lg"
+            "fg"
           ]
           [
             " Recent Files"
             "Telescope oldfiles"
-            "<leader>of"
+            "fo"
           ]
           [
             " File Browser"
             "Telescope file_browser"
-            "<leader>fb"
-          ]
-          [
-            " Colorschemes"
-            "Telescope colorscheme"
-            "<leader>cs"
-          ]
-          [
-            " New File"
-            "lua require'startup'.new_file()"
-            "<leader>nf"
+            "-"
           ]
         ];
+        highlight = "string";
         defaultColor = "";
-        foldSection = false;
-        highlight = "String";
-        margin = 5;
         oldfilesAmount = 0;
-        title = "Basic Commands";
-        type = "mapping";
-      };
-      header = {
-        align = "center";
-        content = {
-          __raw = "require('startup.headers').hydra_header";
-        };
-        defaultColor = "";
-        foldSection = false;
-        highlight = "Statement";
-        margin = 5;
-        oldfilesAmount = 5;
-        title = "Header";
-        type = "text";
       };
     };
+
+    options = {
+      paddings = [
+        1
+        3
+      ];
+    };
+
+    parts = [
+      "header"
+      "body"
+    ];
+    oldfilesAmount = 5;
+    title = "Header";
+    type = "text";
   };
 }
