@@ -57,21 +57,6 @@
         enable = true;
         extensions.zoxide = {
           enable = true;
-          settings = {
-            mappings = {
-              "<C-d>" = {
-                action = {
-                  __raw = ''
-                    function(selection)
-                      file_browser.file_browser({ cwd = selection.path })
-                    end
-                  '';
-                };
-                keepinsert = true;
-              };
-            };
-            prompt_title = "Zoxide Folder List";
-          };
         };
       };
       yazi.enable = true;
