@@ -27,6 +27,7 @@
     plugins = {
       web-devicons.enable = true;
       telescope.enable = true;
+      yazi.enable = true;
       treesitter = {
         enable = true;
         grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
