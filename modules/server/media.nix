@@ -40,6 +40,7 @@
       group = "media";
       libraries = [ "/mnt/media/Media/Books" ];
       port = 7007;
+      openFirewall = true;
       extraFlags = [
         "--trusted-ips=localhost"
       ];
