@@ -27,6 +27,7 @@ let
     # Application launchers
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, E, exec, ${terminal} -e yazi"
+    "${mainMod}, P, exec, ${terminal} -e nvim"
     "${mainMod}, 0, exec, ${browser}"
 
     # Web applications
@@ -46,7 +47,7 @@ let
     "${mainMod}, T, exec, ${terminal} --class taskwarrior-tui -e taskwarrior-tui"
 
     # Screenshots
-    ''${mainMod}, S, exec, screenshot-ocr''
+    "${mainMod}, S, exec, screenshot-ocr"
     ''${mainMod} SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
 
     # Color picker
@@ -135,7 +136,7 @@ in
       # throw sharing indicators away
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
-      "workspace special silent, title:^(.*is sharing (your screen|a window)\.)$"
+      "workspace special silent, title:^(.*is sharing (your screen|a window).)$"
 
       # Create a sleek post widget for the x post binding
       "float,title:(x.com_/compose/post)"
