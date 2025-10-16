@@ -70,8 +70,5 @@
       "header"
       "body"
     ];
-    oldfilesAmount = 5;
-    title = "Header";
-    type = "text";
   };
 }
