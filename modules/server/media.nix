@@ -42,7 +42,7 @@
       port = 7007;
       openFirewall = true;
       extraFlags = [
-        "--trusted-ips=localhost"
+        "--trusted-ips=127.0.0.1,::1"
       ];
     };
 
