@@ -29,8 +29,8 @@
       startup = {
         enable = true;
         parts = [
-          "header"
           "body"
+          "header"
         ];
         sections = {
           body = {
