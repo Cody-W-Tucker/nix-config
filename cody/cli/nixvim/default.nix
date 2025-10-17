@@ -30,6 +30,7 @@
       }
     ];
     plugins = {
+      rainbow-delimiters.enable = true;
       snacks.enable = true;
       autoclose.enable = true;
       jupytext.enable = true;
