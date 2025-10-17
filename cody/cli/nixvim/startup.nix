@@ -50,7 +50,7 @@
           ]
           [
             " File Browser"
-            "Telescope file_browser"
+            "Yazi"
             "-"
           ]
         ];
