@@ -31,6 +31,8 @@
     ];
     plugins = {
       snacks.enable = true;
+      autoclose.enable = true;
+      jupytext.enable = true;
       lualine = {
         enable = true;
         settings = {
