@@ -6,6 +6,7 @@ let
     ./rofi-web-launcher.nix
     ./bluetooth-switch.nix
     ./update.nix
+    ./ai-doc-upload.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
