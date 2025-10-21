@@ -30,6 +30,9 @@
       }
     ];
     plugins = {
+      gitsigns.enable = true;
+      comment.enable = true;
+      which-key.enable = true;
       rainbow-delimiters.enable = true;
       snacks.enable = true;
       autoclose.enable = true;
