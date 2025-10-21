@@ -7,25 +7,7 @@ let
     import sys
     import json
 
-    def create_knowledge_base(token, name):
-        url = 'http://localhost:8080/api/v1/knowledge'
-        headers = {
-            'Authorization': f'Bearer {token}',
-            'Content-Type': 'application/json'
-        }
-        data = {'name': name}
-        response = requests.post(url, headers=headers, json=data)
-        if response.status_code == 200:
-            return response.json()['id']
-        else:
-            print(f"Failed to create knowledge base: {response.text}")
-            return None
 
-    def check_knowledge_base_exists(token, knowledge_id):
-        url = f'http://localhost:8080/api/v1/knowledge/{knowledge_id}'
-        headers = {'Authorization': f'Bearer {token}'}
-        response = requests.get(url, headers=headers)
-        return response.status_code == 200
 
     def upload_file(token, file_path):
         url = 'http://localhost:8080/api/v1/files/upload'
@@ -50,17 +32,8 @@ let
         if response.status_code != 200:
             print(f"Failed to add file to knowledge: {response.text}")
 
-    def main(token, knowledge_id, knowledge_name=None):
-        if knowledge_name is None:
-            knowledge_name = knowledge_id
-
-        if not check_knowledge_base_exists(token, knowledge_id):
-            print(f"Knowledge base {knowledge_id} does not exist. Creating...")
-            created_id = create_knowledge_base(token, knowledge_name)
-            if created_id:
-                knowledge_id = created_id
-            else:
-                sys.exit(1)
+    def main(token, knowledge_id):
+        print(f"Uploading files to knowledge collection '{knowledge_id}' (ensure it exists in Open-WebUI UI).")
 
         for file_name in os.listdir('.'):
             if os.path.isfile(file_name):
@@ -68,16 +41,16 @@ let
                 file_id = upload_file(token, file_name)
                 if file_id:
                     add_file_to_knowledge(token, knowledge_id, file_id)
-                    print(f"Added {file_name} to knowledge base.")
+                    print(f"Added {file_name} to knowledge collection.")
 
     if __name__ == "__main__":
         if len(sys.argv) < 3:
-            print("Usage: python script.py <token> <knowledge_id> [knowledge_name]")
+            print("Usage: python script.py <token> <knowledge_id>")
+            print("Note: Ensure the knowledge collection exists in Open-WebUI UI before running.")
             sys.exit(1)
         token = sys.argv[1]
         knowledge_id = sys.argv[2]
-        knowledge_name = sys.argv[3] if len(sys.argv) > 3 else None
-        main(token, knowledge_id, knowledge_name)
+        main(token, knowledge_id)
   '';
 in
 pkgs.writeShellScriptBin "ai-doc-upload" ''
