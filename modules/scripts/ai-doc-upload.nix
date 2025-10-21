@@ -10,7 +10,7 @@ let
 
 
     def upload_file(token, file_path):
-        url = 'http://localhost:8080/api/v1/files/upload'
+        url = 'http://localhost:8080/api/v1/files/'
         headers = {'Authorization': f'Bearer {token}'}
         try:
             with open(file_path, 'rb') as f:
