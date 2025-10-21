@@ -98,18 +98,30 @@ let
             return
 
         uploaded_count = 0
-        for file_name in os.listdir('.'):
-            if os.path.isfile(file_name):
-                print(f"Uploading {file_name}...")
-                file_id = upload_file(token, file_name)
+        # Walk through all directories recursively
+        for root, dirs, files in os.walk('.'):
+            # Skip hidden directories (starting with .)
+            dirs[:] = [d for d in dirs if not d.startswith('.')]
+
+            for file_name in files:
+                # Skip hidden files
+                if file_name.startswith('.'):
+                    continue
+
+                file_path = os.path.join(root, file_name)
+                # Get relative path for display
+                rel_path = os.path.relpath(file_path, '.')
+
+                print(f"Uploading {rel_path}...")
+                file_id = upload_file(token, file_path)
                 if file_id:
                     if add_file_to_knowledge(token, knowledge_id, file_id):
-                        print(f"Added {file_name} to knowledge collection.")
+                        print(f"Added {rel_path} to knowledge collection.")
                         uploaded_count += 1
                     else:
-                        print(f"Failed to add {file_name} to knowledge collection.")
+                        print(f"Failed to add {rel_path} to knowledge collection.")
                 else:
-                    print(f"Failed to upload {file_name}.")
+                    print(f"Failed to upload {rel_path}.")
 
         print(f"Upload complete. Successfully processed {uploaded_count} files.")
 
