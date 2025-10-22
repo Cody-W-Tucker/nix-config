@@ -31,7 +31,12 @@
     ];
     plugins = {
       gitsigns.enable = true;
-      comment.enable = true;
+      comment = {
+        enable = true;
+        settings.mappings = {
+          basic = true;
+        };
+      };
       which-key.enable = true;
       rainbow-delimiters.enable = true;
       snacks.enable = true;
