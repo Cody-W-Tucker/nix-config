@@ -68,8 +68,8 @@
     };
 
     parts = [
-      "header"
       "body"
+      "header"
     ];
   };
 }
