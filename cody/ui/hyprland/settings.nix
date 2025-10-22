@@ -19,7 +19,7 @@ let
 
   specialWorkspaces = [
     "special:ai, on-created-empty: ${webApp}=https://www.perplexity.ai/"
-    "special:dev, on-created-empty: ${terminal}"
+    "special:dev, on-created-empty: ${terminal} -e nvim"
     "special:media, on-created-empty: uwsm app -- zen --new-window=https://www.youtube.com/"
   ];
 
@@ -27,13 +27,11 @@ let
     # Application launchers
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, E, exec, ${terminal} -e yazi"
-    "${mainMod}, P, exec, ${terminal} -e nvim"
     "${mainMod}, 0, exec, ${browser}"
 
     # Web applications
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
     # Show vim keybindings in floating window
-    "${mainMod}, I, exec, [float] ${webApp}=https://vim.rtorr.com/"
     "${mainMod}, A, exec, ${webApp}=https://ai.homehub.tv/"
 
     # Browser navigation
