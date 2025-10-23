@@ -70,6 +70,7 @@
       feishin # Desktop app music player
       wttrbar # Weather bar for Waybar
       chromium
+      yaak
     ])
     ++ (with pkgs-unstable; [
       # list of unstable packages go here
