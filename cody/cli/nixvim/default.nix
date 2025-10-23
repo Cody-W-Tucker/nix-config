@@ -30,6 +30,7 @@
       }
     ];
     plugins = {
+      git-conflict.enable = true;
       gitsigns.enable = true;
       comment = {
         enable = true;
