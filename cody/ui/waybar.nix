@@ -15,7 +15,6 @@ let
     "Zen Browser" = "🞋";
     "spotify" = "";
     "code" = "󰨞";
-    "cursor" = "󰨞";
     "kitty" = "";
     "obsidian" = "";
     "class<Zen Browser> title<.*Github.*>" = "";

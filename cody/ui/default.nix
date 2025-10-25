@@ -74,7 +74,6 @@
     ])
     ++ (with pkgs-unstable; [
       # list of unstable packages go here
-      code-cursor
       vscode
       legcord
     ]);
@@ -94,7 +93,7 @@
       "-max-dedupe-search"
       "10"
       "-max-items"
-      "500"
+      "50"
     ];
   };
 
