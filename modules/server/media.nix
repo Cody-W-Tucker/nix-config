@@ -41,9 +41,7 @@
       libraries = [ "/mnt/media/Media/Books" ];
       port = 7007;
       openFirewall = true;
-      extraFlags = [
-        "--trusted-ips=127.0.0.1,::1"
-      ];
+      extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
 
     jellyseerr = {
@@ -104,27 +102,27 @@
         idle-seeding-limit-enabled = true;
         idle-seeding-limit = 30;
 
-        # Speed Limits
-        speed-limit-up = 1280;
+        # Speed Limits (overnight)
+        speed-limit-up = 0;
         speed-limit-up-enabled = true;
-        speed-limit-down = 10240;
+        speed-limit-down = 0;
         speed-limit-down-enabled = true;
         download-queue-enabled = false;
         download-queue-size = 10;
+
+        # Download Schedule (during the day)
+        alt-speed-enabled = true; # Enable alternative speed limits
+        alt-speed-down = 10240; # KB/s download during restricted hours
+        alt-speed-up = 1280; # KB/s upload during restricted hours
+        alt-speed-time-enabled = true; # Enable scheduled speed limit
+        alt-speed-time-begin = 480; # Start at 8:00 (8am), in minutes after midnight
+        alt-speed-time-end = 1380; # End at 23:00 (11pm), in minutes after midnight
+        alt-speed-time-day = 126; # Monday–Saturday only
 
         # Speed tweaks
         peer-limit-global = 200;
         peer-limit-per-torrent = 60;
         upload-slots-per-torrent = 8;
-
-        # Download Schedule
-        alt-speed-enabled = true; # Enable alternative speed limits
-        alt-speed-down = 100; # KB/s download during restricted hours
-        alt-speed-up = 100; # KB/s upload during restricted hours
-        alt-speed-time-enabled = true; # Enable scheduled speed limit
-        alt-speed-time-begin = 480; # Start at 8:00 (8am), in minutes after midnight
-        alt-speed-time-end = 1380; # End at 23:00 (11pm), in minutes after midnight
-        alt-speed-time-day = 126; # Monday–Saturday only
 
         # VPN
         rpc-whitelist-enabled = true;
@@ -144,9 +142,7 @@
   vpnNamespaces.wg = {
     enable = true;
     wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
-    accessibleFrom = [
-      "192.168.0.0/24"
-    ];
+    accessibleFrom = [ "192.168.0.0/24" ];
     portMappings = [
       {
         from = 9091;
