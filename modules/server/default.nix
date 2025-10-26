@@ -7,7 +7,6 @@
     ./adguard.nix
     ./automation.nix
     ./content.nix
-    ./crm.nix
     ./data.nix
     ./excalidraw.nix
     ./karakeep.nix
@@ -58,6 +57,7 @@
       proxy_headers_hash_max_size 1024;
       proxy_headers_hash_bucket_size 128;
     '';
+    # These services are on the beast machine
     virtualHosts = {
       "qdrant.homehub.tv" = {
         useACMEHost = "homehub.tv";
