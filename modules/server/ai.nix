@@ -60,23 +60,6 @@
       ];
     };
   };
-  # Service to keep open-webui updated
-  systemd.services.restart-open-webui = {
-    description = "Restart open-webui service";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "systemctl restart docker-open-webui.service";
-    };
-  };
-  systemd.timers.restart-open-webui = {
-    wantedBy = [ "timers.target" ];
-    partOf = [ "restart-open-webui.service" ];
-    timerConfig = {
-      OnCalendar = "Mon *-*-* 02:00:00";
-      RandomizedDelaySec = "2h";
-      Persistent = true;
-    };
-  };
   # Local AI models
   services = {
     ollama = {
