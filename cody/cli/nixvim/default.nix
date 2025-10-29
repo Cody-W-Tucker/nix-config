@@ -24,8 +24,13 @@
     };
     autoCmd = [
       {
-        event = [ "BufEnter" ];
-        pattern = [ "*.md" ];
+        event = [
+          "BufReadPost"
+          "BufWritePost"
+          "FileType"
+        ];
+        # pattern = [ "*.md" ];
+        # Uncomment to use with only markdown
         command = "setlocal spell spelllang=en_us";
       }
     ];
