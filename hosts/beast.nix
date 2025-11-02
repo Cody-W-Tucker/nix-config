@@ -42,6 +42,10 @@
     "kvm-intel"
     "v4l2loopback"
   ];
+
+  # Use the latest kernel and matching NVIDIA driver
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+
   # v4l2loopback for virtual camera in obs
   programs.obs-studio.enableVirtualCamera = true;
   boot.extraModulePackages = with config.boot.kernelPackages; [
