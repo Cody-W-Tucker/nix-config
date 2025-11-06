@@ -29,7 +29,7 @@
           "BufWritePost"
           "FileType"
         ];
-        # pattern = [ "*.md" ];
+        pattern = [ "*.md" ];
         # Uncomment to use with only markdown
         command = "setlocal spell spelllang=en_us";
       }
