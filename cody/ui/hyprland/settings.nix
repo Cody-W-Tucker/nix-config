@@ -8,7 +8,7 @@
 let
   mainMod = "SUPER";
   browser = "uwsm app -- zen --new-tab";
-  webApp = "uwsm app -- chromium --ozone-platform=x11 --new-window --app";
+  webApp = "uwsm app -- chromium --new-window --app";
   terminal = "uwsm app -- kitty";
 
   mousebinds = [
@@ -19,14 +19,13 @@ let
 
   specialWorkspaces = [
     "special:ai, on-created-empty: ${webApp}=https://www.perplexity.ai/"
-    "special:dev, on-created-empty: ${terminal} -e nvim"
+    "special:dev, on-created-empty: ${terminal}"
     "special:media, on-created-empty: uwsm app -- zen --new-window=https://www.youtube.com/"
   ];
 
   keybinds = [
     # Application launchers
     "${mainMod}, Q, exec, ${terminal}"
-    "${mainMod}, E, exec, ${terminal} -e yazi"
     "${mainMod}, 0, exec, ${browser}"
 
     # Web applications
