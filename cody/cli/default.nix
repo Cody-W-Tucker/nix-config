@@ -40,12 +40,6 @@
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
-    plugins = {
-      "git" = pkgs.yaziPlugins.git;
-      "lazygit" = pkgs.yaziPlugins.lazygit;
-      "diff" = pkgs.yaziPlugins.diff;
-      "vcs-files" = pkgs.yaziPlugins.vcs-files;
-    };
     theme = {
       git = {
         status_modified = "#${config.lib.stylix.colors.base0A}";
@@ -56,17 +50,11 @@
         status_untracked = "#${config.lib.stylix.colors.base0C}";
       };
     };
-    keymap = {
-      mgr.prepend_keymap = [
-        {
-          run = "plugin lazygit";
-          on = [
-            "g"
-            "i"
-          ];
-        }
-      ];
-    };
+  };
+
+  # Lazygit
+  programs.lazygit = {
+    enable = true;
   };
 
   # Git configuration
