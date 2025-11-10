@@ -7,9 +7,7 @@
 }:
 
 {
-  imports = [
-    ./nixvim
-  ];
+  imports = [ ./nixvim ];
 
   home.packages =
     (with pkgs; [
@@ -58,6 +56,14 @@
         status_copied = "#${config.lib.stylix.colors.base0D}";
         status_untracked = "#${config.lib.stylix.colors.base0C}";
       };
+    };
+    keymap = {
+      mgr.prepend_keymap = [
+        {
+          run = "plugin lazygit";
+          on = [ "<l-g>" ];
+        }
+      ];
     };
   };
 
