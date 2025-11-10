@@ -18,7 +18,6 @@
     ])
     ++ (with pkgs-unstable; [
       # list of unstable packages go here
-      gemini-cli
       opencode
     ]);
 
@@ -61,7 +60,7 @@
       mgr.prepend_keymap = [
         {
           run = "plugin lazygit";
-          on = [ "<l-g>" ];
+          on = [ "<g-i>" ];
         }
       ];
     };
