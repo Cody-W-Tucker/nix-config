@@ -45,6 +45,7 @@
     enableZshIntegration = true;
     plugins = {
       "git" = pkgs.yaziPlugins.git;
+      "lazygit" = pkgs.yaziPlugins.lazygit;
       "diff" = pkgs.yaziPlugins.diff;
       "vcs-files" = pkgs.yaziPlugins.vcs-files;
     };
