@@ -36,6 +36,15 @@
     }
     {
       mode = "n";
+      key = "<Leader>lh";
+      action = "<cmd>LazyGit<CR>";
+      options = {
+        silent = true;
+        desc = "Open Lazygit";
+      };
+    }
+    {
+      mode = "n";
       key = "<Leader>-";
       action = "<cmd>Yazi<CR>";
       options = {
