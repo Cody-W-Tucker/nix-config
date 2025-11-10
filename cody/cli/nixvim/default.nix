@@ -35,6 +35,7 @@
       }
     ];
     plugins = {
+      lazygit.enable = true;
       git-conflict.enable = true;
       gitsigns.enable = true;
       comment = {
