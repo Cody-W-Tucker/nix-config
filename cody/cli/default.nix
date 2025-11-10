@@ -60,7 +60,10 @@
       mgr.prepend_keymap = [
         {
           run = "plugin lazygit";
-          on = [ "<g-i>" ];
+          on = [
+            "g"
+            "i"
+          ];
         }
       ];
     };
