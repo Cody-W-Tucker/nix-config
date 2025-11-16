@@ -35,6 +35,7 @@
       }
     ];
     plugins = {
+      csvview.enable = true;
       lazygit.enable = true;
       git-conflict.enable = true;
       gitsigns.enable = true;
