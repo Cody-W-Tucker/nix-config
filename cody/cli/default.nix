@@ -36,6 +36,11 @@
     icons = "auto";
   };
 
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+  };
+
   # Yazi file viewer
   programs.yazi = {
     enable = true;
