@@ -36,10 +36,7 @@
       url = "github:Cody-W-Tucker/Qdrant-Upload";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    opencode = {
-      url = "github:sst/opencode";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    opencode.url = "github:sst/opencode";
   };
 
   outputs =
