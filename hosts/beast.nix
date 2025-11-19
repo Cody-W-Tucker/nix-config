@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -184,6 +185,8 @@
     [
       rofi-network-manager
       kdePackages.kdenlive
+      inputs.opencode.packages.${pkgs.system}.default
+
     ]
   );
 
