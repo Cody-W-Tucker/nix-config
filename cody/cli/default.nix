@@ -1,25 +1,24 @@
 {
   config,
   pkgs,
-  pkgs-unstable,
   lib,
+  inputs,
   ...
 }:
 
 {
   imports = [ ./nixvim ];
 
-  home.packages =
-    (with pkgs; [
+  home.packages = (
+    with pkgs;
+    [
       fd
       fastfetch
       unzip
       zip
-    ])
-    ++ (with pkgs-unstable; [
-      # list of unstable packages go here
-      opencode
-    ]);
+      inputs.opencode.packages.${pkgs.system}.default
+    ]
+  );
 
   home.sessionVariables = {
     VISUAL = "nvim";
