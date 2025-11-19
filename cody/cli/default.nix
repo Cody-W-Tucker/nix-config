@@ -2,7 +2,7 @@
   config,
   pkgs,
   lib,
-  opencode,
+  inputs,
   ...
 }:
 
@@ -16,7 +16,7 @@
       fastfetch
       unzip
       zip
-      opencode.packages.${pkgs.system}.default
+      inputs.opencode.packages.${system}.default
     ]
   );
 

@@ -125,7 +125,6 @@
                 ./cody/ui.nix
                 ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
-                inputs.opencode
               ];
             }
           ];
