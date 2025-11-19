@@ -36,6 +36,10 @@
       url = "github:Cody-W-Tucker/Qdrant-Upload";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    opencode = {
+      url = "github:sst/opencode/production";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
@@ -64,12 +68,8 @@
       hardwareConfig = {
         beast = {
           # Controls the monitor layout for hyprland
-          workspace = [
-            "1, monitor:DP-1, default:true"
-          ];
-          monitor = [
-            "DP-1,2560x1440@240,0x0,1,bitdepth,10,vrr,2"
-          ];
+          workspace = [ "1, monitor:DP-1, default:true" ];
+          monitor = [ "DP-1,2560x1440@240,0x0,1,bitdepth,10,vrr,2" ];
         };
         workstation = {
           # Controls the monitor layout for hyprland
@@ -125,6 +125,7 @@
                 ./cody/ui.nix
                 ./secrets/home-secrets.nix
                 inputs.nixvim.homeManagerModules.nixvim
+                inputs.opencode
               ];
             }
           ];

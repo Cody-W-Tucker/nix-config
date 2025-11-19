@@ -437,6 +437,27 @@
         "type": "github"
       }
     },
+    "opencode": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1763527591,
+        "narHash": "sha256-Yp1qgyo6Y+1u+yP7g3IKYWreDWcINhUfvcSB9ZJ3JW4=",
+        "owner": "sst",
+        "repo": "opencode",
+        "rev": "15c787401dc61092a4ed1ae353c4d0d64bacdaf7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sst",
+        "ref": "production",
+        "repo": "opencode",
+        "type": "github"
+      }
+    },
     "qdrant-upload": {
       "inputs": {
         "nixpkgs": [
@@ -466,6 +487,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
+        "opencode": "opencode",
         "qdrant-upload": "qdrant-upload",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
