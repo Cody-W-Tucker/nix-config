@@ -123,6 +123,7 @@
         ls = "eza";
         fo = "find-and-open-file";
         rr = "yazi";
+        gg = "lazygit";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
         upgrade = ''
