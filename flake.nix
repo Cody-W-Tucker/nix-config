@@ -37,7 +37,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     opencode = {
-      url = "github:sst/opencode/production";
+      url = "github:sst/opencode";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
