@@ -467,7 +467,6 @@
       },
       "original": {
         "owner": "sst",
-        "ref": "dev",
         "repo": "opencode",
         "type": "github"
       }
