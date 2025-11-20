@@ -17,6 +17,18 @@
     ../modules/server/ai.nix
   ];
 
+  # Override torch to use prebuilt CUDA-enabled version on this machine
+  nixpkgs.config = {
+    cudaSupport = true;
+    packageOverrides = super: {
+      python3Packages = super.python3Packages.override {
+        overrides = python-self: python-super: {
+          torch = python-super.pytorch.override { cudaSupport = true; };
+        };
+      };
+    };
+  };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
