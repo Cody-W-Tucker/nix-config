@@ -23,5 +23,6 @@ in
       openai-whisper
       sox
       xdotool
+      cudatoolkit
     ]);
 }
