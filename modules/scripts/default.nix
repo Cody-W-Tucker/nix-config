@@ -10,18 +10,10 @@ let
     ./transcription.nix
   ];
 
-  scriptPackages = map (
-    script: pkgs.callPackage (toString script) { inherit config pkgs; }
-  ) scriptNames;
+  scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
 in
 
 {
   # Adding the scripts to the system packages
-  environment.systemPackages =
-    scriptPackages
-    ++ (with pkgs; [
-      openai-whisper
-      sox
-      xdotool
-    ]);
+  environment.systemPackages = scriptPackages;
 }
