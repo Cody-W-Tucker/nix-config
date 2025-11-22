@@ -4,10 +4,6 @@ let
   whisper-transcribe = pkgs.writeShellScriptBin "whisper-transcribe" ''
     set -e
 
-    # Set CUDA environment for PyTorch
-    export CUDA_HOME=${pkgs.cudatoolkit}
-    export LD_LIBRARY_PATH=${pkgs.cudatoolkit}/lib:$LD_LIBRARY_PATH
-
     print_usage() {
       echo "Usage: whisper-transcribe [-d <device>] [-m <model>]
 
