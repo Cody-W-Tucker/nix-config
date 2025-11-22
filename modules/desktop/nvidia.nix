@@ -8,7 +8,6 @@
     modesetting.enable = true;
     powerManagement.enable = true;
     open = true;
-    cuda = true;
     package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
