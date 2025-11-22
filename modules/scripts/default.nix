@@ -7,6 +7,7 @@ let
     ./bluetooth-switch.nix
     ./update.nix
     ./ai-doc-upload.nix
+    ./transcription.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
