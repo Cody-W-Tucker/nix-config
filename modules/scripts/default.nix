@@ -7,18 +7,18 @@ let
     ./bluetooth-switch.nix
     ./update.nix
     ./ai-doc-upload.nix
-    ./transcription.nix
   ];
 
-  scriptPackages = map (
-    script: pkgs.callPackage (toString script) { inherit config pkgs; }
-  ) scriptNames;
+  scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
+
+  transcriptionPackage = pkgs.callPackage ./transcription.nix { inherit config pkgs; };
 in
 
 {
   # Adding the scripts to the system packages
   environment.systemPackages =
     scriptPackages
+    ++ [ transcriptionPackage ]
     ++ (with pkgs; [
       openai-whisper
       sox
