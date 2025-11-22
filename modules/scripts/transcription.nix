@@ -58,14 +58,4 @@ let
     rm -r "$OUTPUT_DIR"
   '';
 in
-{
-  environment.systemPackages = with pkgs; [
-    openai-whisper
-    sox
-    xdotool
-    whisper-transcribe
-  ];
-
-  # Optional: Enable CUDA support if you have NVIDIA GPU
-  # hardware.nvidia.cudaSupport = true;
-}
+whisper-transcribe
