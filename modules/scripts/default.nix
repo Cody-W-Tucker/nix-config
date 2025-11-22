@@ -15,5 +15,11 @@ in
 
 {
   # Adding the scripts to the system packages
-  environment.systemPackages = scriptPackages;
+  environment.systemPackages =
+    scriptPackages
+    ++ (with pkgs; [
+      openai-whisper
+      sox
+      xdotool
+    ]);
 }
