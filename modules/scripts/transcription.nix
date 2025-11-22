@@ -4,6 +4,16 @@ let
   whisper-transcribe = pkgs.writeShellScriptBin "whisper-transcribe" ''
     set -e
 
+    ${
+      if config.hardware.nvidia.cudaSupport or false then
+        ""
+      else
+        ''
+          echo "Warning, this was compiled without cuda support, you will not be able to use the gpu.
+          Enable by setting 'hardware.nvidia.cudaSupport = true' in your nix config." >&2
+        ''
+    }
+
     print_usage() {
       echo "Usage: whisper-transcribe [-d <device>] [-m <model>]
 
