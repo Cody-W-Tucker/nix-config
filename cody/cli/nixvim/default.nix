@@ -168,20 +168,39 @@
         };
         formatters = {
           prettier = {
-            prepend_args = [ "--plugin-search-dir=." ]; # finds prettier-plugin-astro automatically
+            prepend_args = [
+              "--plugin-search-dir=."
+            ]; # finds prettier-plugin-astro automatically
           };
         };
       };
-      # ADD auto-closing/renaming of tags inside .astro files
       ts-autotag = {
         enable = true;
-        filetypes = [
-          "astro"
-          "astro-markdown"
-          "javascriptreact"
-          "typescriptreact"
-          "html"
-        ];
+        # (enables close/rename for astro + common JSX/TSX; disables on html to avoid over-closing)
+        extraOptions = {
+          opts = {
+            enable_close = true;
+            enable_rename = true;
+            enable_close_on_slash = false;
+          };
+          per_filetype = {
+            astro = {
+              enable_close = true;
+              enable_rename = true;
+            };
+            javascriptreact = {
+              enable_close = true;
+              enable_rename = true;
+            };
+            typescriptreact = {
+              enable_close = true;
+              enable_rename = true;
+            };
+            html = {
+              enable_close = false; # Avoids issues in plain HTML files
+            };
+          };
+        };
       };
       none-ls = {
         enable = true;
