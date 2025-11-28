@@ -103,7 +103,6 @@
           xml
           astro
           tsx
-          typescriptreact
         ];
       };
       lsp = {
