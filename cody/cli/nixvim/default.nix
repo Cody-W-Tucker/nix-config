@@ -87,7 +87,7 @@
       yazi.enable = true;
       treesitter = {
         enable = true;
-        indent = true;
+        settings.indent.enable = true;
         grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           bash
           json
@@ -158,25 +158,27 @@
       };
       conform-nvim = {
         enable = true;
-        formattersByFt = {
-          astro = [ "prettier" ];
-          javascript = [ "prettier" ];
-          typescript = [ "prettier" ];
-          javascriptreact = [ "prettier" ];
-          typescriptreact = [ "prettier" ];
-        };
-        formatters = {
-          prettier = {
-            prepend_args = [
-              "--plugin-search-dir=."
-            ]; # finds prettier-plugin-astro automatically
+        settings = {
+          formatters_by_ft = {
+            astro = [ "prettier" ];
+            javascript = [ "prettier" ];
+            typescript = [ "prettier" ];
+            javascriptreact = [ "prettier" ];
+            typescriptreact = [ "prettier" ];
+          };
+          formatters = {
+            prettier = {
+              prepend_args = [
+                "--plugin-search-dir=."
+              ]; # finds prettier-plugin-astro automatically
+            };
           };
         };
       };
       ts-autotag = {
         enable = true;
         # (enables close/rename for astro + common JSX/TSX; disables on html to avoid over-closing)
-        extraOptions = {
+        settings = {
           opts = {
             enable_close = true;
             enable_rename = true;
