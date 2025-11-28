@@ -131,7 +131,7 @@
               ];
             };
           };
-          astro-ls = {
+          astro = {
             enable = true;
             # Critical: use project-local TypeScript (Astro requires this)
             settings = {
