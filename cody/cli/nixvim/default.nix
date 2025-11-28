@@ -87,6 +87,7 @@
       yazi.enable = true;
       treesitter = {
         enable = true;
+        indent = true;
         grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           bash
           json
@@ -100,6 +101,9 @@
           css
           lua
           xml
+          astro
+          tsx
+          typescriptreact
         ];
       };
       lsp = {
@@ -107,15 +111,35 @@
         inlayHints = true;
         servers = {
           nixd.enable = true; # Nix
-          ts_ls.enable = true; # TS/JS
           cssls.enable = true; # CSS
           tailwindcss.enable = true; # TailwindCSS
           html.enable = true; # HTML
-          astro.enable = true; # AstroJS
           pyright.enable = true; # Python
           dockerls.enable = true; # Docker
           bashls.enable = true; # Bash
-          markdown_oxide.enable = true; # Markdown
+          markdown_oxide.enable = true; # markdown
+          # Keep ts_ls disabled or limited for .astro files – it conflicts
+          ts_ls = {
+            enable = true;
+            extraOptions = {
+              # Prevent ts_ls from handling .astro files
+              filetypes = [
+                "javascript"
+                "javascriptreact"
+                "typescript"
+                "typescriptreact"
+              ];
+            };
+          };
+          astro-ls = {
+            enable = true;
+            # Critical: use project-local TypeScript (Astro requires this)
+            settings = {
+              typescript = {
+                tsdk = "./node_modules/typescript/lib";
+              };
+            };
+          };
         };
         keymaps = {
           silent = true;
@@ -133,10 +157,35 @@
           };
         };
       };
-      lsp-format.enable = true;
+      conform-nvim = {
+        enable = true;
+        formattersByFt = {
+          astro = [ "prettier" ];
+          javascript = [ "prettier" ];
+          typescript = [ "prettier" ];
+          javascriptreact = [ "prettier" ];
+          typescriptreact = [ "prettier" ];
+        };
+        formatters = {
+          prettier = {
+            prepend_args = [ "--plugin-search-dir=." ]; # finds prettier-plugin-astro automatically
+          };
+        };
+      };
+      # ADD auto-closing/renaming of tags inside .astro files
+      ts-autotag = {
+        enable = true;
+        filetypes = [
+          "astro"
+          "astro-markdown"
+          "javascriptreact"
+          "typescriptreact"
+          "html"
+        ];
+      };
       none-ls = {
         enable = true;
-        enableLspFormat = true;
+        enableLspFormat = false;
         sources.formatting = {
           nixfmt.enable = true;
           black.enable = true;
