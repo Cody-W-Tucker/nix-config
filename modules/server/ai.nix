@@ -74,8 +74,8 @@
     neo4j = {
       enable = true;
       bolt.tlsLevel = "DISABLED";
-      https = false;
-      http = true;
+      https.enable = false;
+      http.enable = true;
     };
     # Content extraction
     tika = {
