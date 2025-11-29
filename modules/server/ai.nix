@@ -73,6 +73,9 @@
     # Graph database
     neo4j = {
       enable = true;
+      bolt.tlsLevel = "DISABLED";
+      https = false;
+      http = true;
     };
     # Content extraction
     tika = {
