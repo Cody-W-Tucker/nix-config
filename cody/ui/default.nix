@@ -76,7 +76,6 @@
       # list of unstable packages go here
       vscode
       legcord
-      neo4j-desktop
     ]);
 
   # Obs for screenrecording

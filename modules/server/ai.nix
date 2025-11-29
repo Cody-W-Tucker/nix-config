@@ -70,6 +70,10 @@
       acceleration = "cuda";
       host = "0.0.0.0";
     };
+    # Graph database
+    neo4j = {
+      enable = true;
+    };
     # Content extraction
     tika = {
       enable = true;
