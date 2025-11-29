@@ -71,12 +71,12 @@
       wttrbar # Weather bar for Waybar
       chromium
       yaak
-      neo4j-desktop
     ])
     ++ (with pkgs-unstable; [
       # list of unstable packages go here
       vscode
       legcord
+      neo4j-desktop
     ]);
 
   # Obs for screenrecording
