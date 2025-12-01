@@ -14,7 +14,7 @@
   # Enable VA-API (Video Acceleration API) support for hardware video decoding/encoding on NVIDIA cards and compatibility bridges between VDPAU and VA-API
   hardware.graphics.extraPackages = with pkgs; [
     nvidia-vaapi-driver
-    vaapiVdpau
+    libva-vdpau-driver
     libvdpau-va-gl
   ];
 
