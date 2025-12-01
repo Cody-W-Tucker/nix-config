@@ -28,11 +28,6 @@
       size = 24;
     };
     fonts = {
-      sizes = {
-        applications = lib.mkDefault 13;
-        desktop = lib.mkDefault 13;
-        terminal = lib.mkDefault 16;
-      };
       serif = {
         package = pkgs.dejavu_fonts;
         name = "DejaVu Serif";
