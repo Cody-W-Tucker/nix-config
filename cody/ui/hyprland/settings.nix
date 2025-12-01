@@ -122,6 +122,7 @@ in
     windowrule = [
       # Kitty
       "noblur,class:kitty"
+      "opacity .80, class:kitty"
     ];
     windowrulev2 = [
       # Ensure all web apps don't float
