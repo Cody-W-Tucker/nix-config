@@ -29,9 +29,9 @@
     };
     fonts = {
       sizes = {
-        applications = lib.mkDefault 10;
-        desktop = lib.mkDefault 10;
-        terminal = lib.mkDefault 13;
+        applications = lib.mkDefault 13;
+        desktop = lib.mkDefault 13;
+        terminal = lib.mkDefault 16;
       };
       serif = {
         package = pkgs.dejavu_fonts;
