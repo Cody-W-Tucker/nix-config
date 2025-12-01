@@ -60,25 +60,6 @@
   programs.git = {
     enable = true;
 
-    # Basic user configuration
-    userName = "Cody Tucker";
-    userEmail = "cody@tmvsocial.com";
-
-    # Useful aliases
-    aliases = {
-      st = "status";
-      co = "checkout";
-      br = "branch";
-      ci = "commit";
-      ca = "commit -a";
-      cm = "commit -m";
-      unstage = "reset HEAD --";
-      last = "log -1 HEAD";
-      visual = "!gitk";
-      lg = "log --oneline --graph --decorate";
-      lga = "log --oneline --graph --decorate --all";
-    };
-
     # Global gitignore
     ignores = [
       ".DS_Store"
@@ -86,10 +67,15 @@
       "*.swo"
       "*~"
       ".nix-shell"
+      ".direnv/"
     ];
 
     # Additional configuration
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Cody Tucker";
+        email = "cody@tmvsocial.com";
+      };
       init.defaultBranch = "main";
       pull.rebase = true;
       push.autoSetupRemote = true;
