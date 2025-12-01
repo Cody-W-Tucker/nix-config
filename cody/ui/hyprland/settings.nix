@@ -122,7 +122,6 @@ in
     windowrule = [
       # Kitty
       "noblur,class:kitty"
-      "opacity .80, class:kitty"
     ];
     windowrulev2 = [
       # Ensure all web apps don't float
@@ -151,10 +150,8 @@ in
       "noblur, class:^(obsidian)$"
       "noshadow, class:^(obsidian)$"
 
-      # Sleek vim help webapp
-      "float, initialTitle:(vim.rtorr.com_/)"
-      "size 800 600, initialTitle:(vim.rtorr.com_/)"
-      "center, initialTitle:(vim.rtorr.com_/)"
+      # Ensure kitty opacity is respected
+      "windowrulev2 = opacity 1.0 override 1.0 override 1.0 override, class:^(kitty)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
