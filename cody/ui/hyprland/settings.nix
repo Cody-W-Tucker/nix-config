@@ -122,10 +122,11 @@ in
     windowrule = [
       # Kitty
       "noblur,class:kitty"
-      # Ensure kitty opacity is respected
-      "opacity 1.0 override 1.0 override 1.0 override, match:class kitty"
     ];
     windowrulev2 = [
+      # Ensure kitty opacity is respected
+      "opacity 1.0 override 1.0 override 1.0 override, class:^(kitty)$"
+
       # Ensure all web apps don't float
       "tile, initialClass:Chromium-browser"
 
