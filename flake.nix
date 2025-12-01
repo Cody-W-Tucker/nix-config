@@ -22,19 +22,13 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nextmeeting = {
-      url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nextmeeting.url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
     flake-programs-sqlite = {
       url = "github:wamserma/flake-programs-sqlite";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
-    qdrant-upload = {
-      url = "github:Cody-W-Tucker/Qdrant-Upload";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # qdrant-upload.url = "github:Cody-W-Tucker/Qdrant-Upload";
     opencode.url = "github:sst/opencode";
   };
 
