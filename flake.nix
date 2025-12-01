@@ -92,7 +92,7 @@
             inputs.nixos-hardware.nixosModules.common-pc-ssd
             inputs.nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
-            inputs.qdrant-upload.nixosModules.default
+            # inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
