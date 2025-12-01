@@ -122,6 +122,8 @@ in
     windowrule = [
       # Kitty
       "noblur,class:kitty"
+      # Ensure kitty opacity is respected
+      "opacity 1.0 override 1.0 override 1.0 override, match:class kitty"
     ];
     windowrulev2 = [
       # Ensure all web apps don't float
@@ -149,9 +151,6 @@ in
       "opacity 0.99, class:^(obsidian)$"
       "noblur, class:^(obsidian)$"
       "noshadow, class:^(obsidian)$"
-
-      # Ensure kitty opacity is respected
-      "windowrulev2 = opacity 1.0 override 1.0 override 1.0 override, class:^(kitty)$"
     ];
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
