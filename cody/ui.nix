@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -28,6 +28,11 @@
       size = 24;
     };
     fonts = {
+      sizes = {
+        applications = lib.mkDefault 10;
+        desktop = lib.mkDefault 10;
+        terminal = lib.mkDefault 13;
+      };
       serif = {
         package = pkgs.dejavu_fonts;
         name = "DejaVu Serif";
