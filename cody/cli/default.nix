@@ -178,7 +178,7 @@
         cursor_trail_decay = "0.1 0.4";
         tab_bar_style = "powerline";
       };
-      extraConfig = lib.mkForce ''
+      extraConfig = ''
         foreground #${config.lib.stylix.colors.base05}
         background #${config.lib.stylix.colors.base00}
         color0  #${config.lib.stylix.colors.base03}
