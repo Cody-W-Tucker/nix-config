@@ -51,7 +51,6 @@
 
   # Installing system wide fonts
   fonts = {
-    enable = true;
     fontDir.enable = true;
     enableDefaultPackages = true;
     packages = with pkgs; [
