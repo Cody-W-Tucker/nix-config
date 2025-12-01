@@ -59,6 +59,7 @@
       font-awesome
       source-han-sans
       nerd-fonts.meslo-lg
+      nerd-fonts.jetbrains-mono
     ];
   };
 
