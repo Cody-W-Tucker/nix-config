@@ -60,7 +60,7 @@
           # Controls the monitor layout for hyprland
           workspace = [ "1, monitor:DP-1, default:true" ];
           monitor = [
-            "DP-1,2560x1440@240,0x0,1,bitdepth,10,cm,hdr,sdrbrightness,1.4,sdrsaturation,0.85,vrr,2"
+            "DP-1,2560x1440@240,0x0,1,bitdepth,10,cm,wide,vrr,2"
           ];
         };
         workstation = {
