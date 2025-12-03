@@ -52,6 +52,12 @@
   # Since all of my machines use NVIDIA, we can set some common environment variables for graphics and Wayland support.
   home.sessionVariables = {
     # ---------------------------
+    # HDR Passthrough Support
+    # ---------------------------
+    DXVK_HDR = "1";
+    ENABLE_HDR_WSI = "1";
+    WLR_NO_HARDWARE_CURSORS = "1"; # Fixes NVIDIA cursor issues in HDR
+    # ---------------------------
     # Electron and Browser Support
     # ---------------------------
 
