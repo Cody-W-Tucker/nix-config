@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -16,12 +16,7 @@
   stylix = {
     enable = true;
     polarity = "dark";
-    targets.nixvim = {
-      enable = false;
-      transparentBackground.main = true;
-      transparentBackground.numberLine = true;
-      transparentBackground.signColumn = true;
-    };
+    targets.vim.enable = lib.mkForce false;
     opacity = {
       applications = 0.9;
       terminal = 0.8;
