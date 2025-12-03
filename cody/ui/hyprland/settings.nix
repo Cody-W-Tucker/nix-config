@@ -56,9 +56,9 @@ let
     "${mainMod}, Escape, fullscreen"
 
     # Workspace navigation
-    "${mainMod}, H, exec, hyprnome --previous"
+    "${mainMod}, H, movefocus, l"
     "${mainMod} SHIFT, H, exec, hyprnome --previous --move"
-    "${mainMod}, L, exec, hyprnome"
+    "${mainMod}, L, movefocus, r"
     "${mainMod} SHIFT, L, exec, hyprnome --move"
 
     "${mainMod}, mouse_down, exec, hyprnome --previous"
