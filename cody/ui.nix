@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -16,6 +16,7 @@
   stylix = {
     enable = true;
     polarity = "dark";
+    targets.nixvim.enable = false;
     opacity = {
       applications = 0.9;
       terminal = 0.8;
