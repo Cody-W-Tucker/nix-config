@@ -246,10 +246,6 @@
             inherit src;
             file = "Catppuccin-mocha.tmTheme";
           };
-          Catppuccin-latte = {
-            inherit src;
-            file = "Catppuccin-latte.tmTheme";
-          };
         };
     };
     zoxide.enable = true;
