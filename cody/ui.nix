@@ -16,7 +16,7 @@
   stylix = {
     enable = true;
     polarity = "dark";
-    targets.vim.enable = lib.mkForce false;
+    targets.nixvim.enable = false;
     opacity = {
       applications = 0.9;
       terminal = 0.8;

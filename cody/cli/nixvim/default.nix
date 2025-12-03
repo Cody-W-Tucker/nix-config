@@ -18,7 +18,6 @@
     clipboard = {
       # Use system clipboard
       register = "unnamedplus";
-
       providers.wl-copy.enable = true;
     };
     opts = {
@@ -39,6 +38,7 @@
       }
     ];
     plugins = {
+      transparent.enable = true;
       csvview.enable = true;
       lazygit.enable = true;
       git-conflict.enable = true;
