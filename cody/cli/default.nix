@@ -145,23 +145,26 @@
     fzf = {
       enable = true;
       enableZshIntegration = true;
-      defaultCommand = "fd --type f --exclude '.*' --exclude Sync";
+      colors = lib.mkForce {
+        "fg+" = "#" + config.lib.stylix.colors.base0D;
+        "bg+" = "-1";
+        "fg" = "#" + config.lib.stylix.colors.base05;
+        "bg" = "-1";
+        "prompt" = "#" + config.lib.stylix.colors.base03;
+        "pointer" = "#" + config.lib.stylix.colors.base0D;
+      };
       defaultOptions = [
-        "--layout reverse"
-        "--height 40%"
-        "--info inline"
-        "--border rounded"
-        "--margin 1"
-        "--padding 1"
-
-        # Properly quote the preview argument as one string
-        "--preview 'bat --style=numbers --color=always --line-range :500 {}'"
-        "--preview-window right:60%"
-
-        "--ansi"
-        "--bind 'ctrl-o:execute(xdg-open {})+abort'"
-        "--bind ctrl-s:toggle-sort"
-        "--multi"
+        "--margin=1"
+        "--layout=reverse"
+        "--border=none"
+        "--info='hidden'"
+        "--header=''"
+        "--prompt='/ '"
+        "-i"
+        "--no-bold"
+        "--bind='enter:execute(nvim {})'"
+        "--preview='bat --style=numbers --color=always --line-range :500 {}'"
+        "--preview-window=right:60%:wrap"
       ];
     };
     kitty = {
