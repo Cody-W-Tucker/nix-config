@@ -13,7 +13,10 @@
     vimAlias = true;
     colorschemes.catppuccin = {
       enable = true;
-      settings.flavour = "mocha";
+      settings = {
+        flavour = "mocha";
+        transparent_background = true;
+      };
     };
     clipboard = {
       # Use system clipboard
@@ -38,7 +41,6 @@
       }
     ];
     plugins = {
-      transparent.enable = true;
       csvview.enable = true;
       lazygit.enable = true;
       git-conflict.enable = true;
