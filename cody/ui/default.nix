@@ -11,6 +11,7 @@
     ./appLauncher.nix
     ./waybar.nix
     ./pipewire.nix
+    ./notifications.nix
     ./xdg.nix
   ];
 
@@ -21,11 +22,6 @@
         color-scheme = "prefer-dark";
       };
     };
-  };
-
-  # Notifications client
-  services.swaync = {
-    enable = true;
   };
 
   # Bluetooth applet for Waybar
