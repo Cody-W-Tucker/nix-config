@@ -11,6 +11,10 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
+    colorschemes.catppuccin = {
+      enable = true;
+      settings.flavour = "mocha";
+    };
     clipboard = {
       # Use system clipboard
       register = "unnamedplus";
