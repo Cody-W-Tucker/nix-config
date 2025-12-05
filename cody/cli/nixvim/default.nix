@@ -172,6 +172,10 @@
       };
       conform-nvim = {
         enable = true;
+        formatOnSave = {
+          timeoutMs = 500;
+          lspFallback = true;
+        };
         settings = {
           formatters_by_ft = {
             astro = [ "prettier" ];
@@ -179,6 +183,8 @@
             typescript = [ "prettier" ];
             javascriptreact = [ "prettier" ];
             typescriptreact = [ "prettier" ];
+            nix = [ "nixfmt_tree" ];
+            python = [ "black" ];
           };
           formatters = {
             prettier = {
@@ -215,14 +221,6 @@
               enable_close = false; # Avoids issues in plain HTML files
             };
           };
-        };
-      };
-      none-ls = {
-        enable = true;
-        enableLspFormat = false;
-        sources.formatting = {
-          nixfmt.enable = true;
-          black.enable = true;
         };
       };
       # Enable completion
