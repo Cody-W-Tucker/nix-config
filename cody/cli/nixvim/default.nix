@@ -188,7 +188,7 @@
           };
           formatters = {
             nixfmt_tree = {
-              command = "${pkgs.nixfmt-tree}/bin/nixfmt";
+              command = "${config.formatter.x86_64-linux}/bin/nixfmt";
             };
             prettier = {
               prepend_args = [
