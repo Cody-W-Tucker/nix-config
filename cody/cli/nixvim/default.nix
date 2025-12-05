@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -170,6 +170,51 @@
           };
         };
       };
+      none-ls = {
+        enable = true;
+        enableLspFormat = true;
+        settings = {
+          updateInInsert = false;
+        };
+        sources = {
+          code_actions = {
+            gitsigns.enable = true;
+            statix.enable = true;
+          };
+          diagnostics = {
+            statix.enable = true;
+            yamllint.enable = true;
+          };
+          formatting = {
+            nixfmt = {
+              enable = true;
+              package = pkgs.nixfmt-rfc-style;
+            };
+            black = {
+              enable = true;
+              settings = ''
+                {
+                  extra_args = { "--fast" },
+                }
+              '';
+            };
+            prettier = {
+              enable = true;
+              disableTsServerFormatter = true;
+              settings = ''
+                {
+                  extra_args = { "--no-semi" },
+                }
+              '';
+            };
+            stylua.enable = true;
+            yamlfmt = {
+              enable = true;
+            };
+            hclfmt.enable = true;
+          };
+        };
+      };
       conform-nvim = {
         enable = true;
         settings = {
@@ -179,20 +224,54 @@
           };
           formatters_by_ft = {
             astro = [ "prettier" ];
-            javascript = [ "prettier" ];
-            typescript = [ "prettier" ];
-            javascriptreact = [ "prettier" ];
-            typescriptreact = [ "prettier" ];
-            nix = [ "nixfmt_tree" ];
+            html = [
+              [
+                "prettierd"
+                "prettier"
+              ]
+            ];
+            css = [
+              [
+                "prettierd"
+                "prettier"
+              ]
+            ];
+            javascript = [
+              [
+                "prettierd"
+                "prettier"
+              ]
+            ];
+            javascriptreact = [
+              [
+                "prettierd"
+                "prettier"
+              ]
+            ];
+            typescript = [
+              [
+                "prettierd"
+                "prettier"
+              ]
+            ];
+            typescriptreact = [
+              [
+                "prettierd"
+                "prettier"
+              ]
+            ];
             python = [ "black" ];
-          };
-          formatters = {
-            nixfmt_tree.command = "${pkgs-unstable.nixfmt-tree}/bin/nixfmt";
-            prettier = {
-              prepend_args = [
-                "--plugin-search-dir=."
-              ]; # finds prettier-plugin-astro automatically
-            };
+            nix = [ "nixfmt" ];
+            markdown = [
+              [
+                "prettierd"
+                "prettier"
+              ]
+            ];
+            yaml = [
+              "yamllint"
+              "yamlfmt"
+            ];
           };
         };
       };
