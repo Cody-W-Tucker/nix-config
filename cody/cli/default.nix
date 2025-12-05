@@ -59,7 +59,6 @@
   # Git configuration
   programs.git = {
     enable = true;
-
     # Global gitignore
     ignores = [
       ".DS_Store"
@@ -75,6 +74,9 @@
       user = {
         name = "Cody Tucker";
         email = "cody@tmvsocial.com";
+      };
+      alias = {
+        st = "status";
       };
       init.defaultBranch = "main";
       pull.rebase = true;
