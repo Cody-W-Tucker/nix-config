@@ -54,7 +54,15 @@
       which-key.enable = true;
       rainbow-delimiters.enable = true;
       snacks.enable = true;
-      autoclose.enable = true;
+      autoclose = {
+        enable = true;
+        settings.options = {
+          auto_indent = true;
+          disabled_filetypes = [
+            "text"
+          ];
+        };
+      };
       jupytext.enable = true;
       lualine = {
         enable = true;
