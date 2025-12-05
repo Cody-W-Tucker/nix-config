@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, pkgs-unstable, ... }:
 
 {
   imports = [
@@ -187,9 +187,7 @@
             python = [ "black" ];
           };
           formatters = {
-            nixfmt_tree = {
-              command = "${config.formatter.x86_64-linux}/bin/nixfmt";
-            };
+            nixfmt_tree.command = "${pkgs-unstable.nixfmt-tree}/bin/nixfmt";
             prettier = {
               prepend_args = [
                 "--plugin-search-dir=."
