@@ -172,7 +172,7 @@
       };
       conform-nvim = {
         enable = true;
-        formatOnSave = {
+        format_on_save = {
           timeoutMs = 500;
           lspFallback = true;
         };
