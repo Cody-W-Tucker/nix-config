@@ -77,8 +77,10 @@
       };
     in
     {
-      # Use formatter on all systems
+      # Allow formatter to be used on the flake and built systems
       formatter.x86_64-linux = nixpkgs.legacyPackages.${system}.nixfmt-tree;
+
+      # Builds the different systems
       nixosConfigurations = {
         beast = nixpkgs.lib.nixosSystem {
           inherit system;
