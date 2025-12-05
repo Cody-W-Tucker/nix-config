@@ -172,11 +172,11 @@
       };
       conform-nvim = {
         enable = true;
-        format_on_save = {
-          timeoutMs = 500;
-          lspFallback = true;
-        };
         settings = {
+          format_on_save = {
+            timeoutMs = 500;
+            lspFallback = true;
+          };
           formatters_by_ft = {
             astro = [ "prettier" ];
             javascript = [ "prettier" ];
