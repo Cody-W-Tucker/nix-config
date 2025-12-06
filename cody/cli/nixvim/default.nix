@@ -53,12 +53,7 @@
       };
       which-key.enable = true;
       rainbow-delimiters.enable = true;
-      opencode.enable = true;
-      snacks = {
-        enable = true;
-        # Better prompt input for opencode
-        settings.input.enabled = true;
-      };
+      snacks.enable = true;
       autoclose = {
         enable = true;
         settings.options = {
