@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ./startup.nix
     ./keymaps.nix
     ./plugins/lsp.nix
     ./plugins/none-ls.nix
@@ -11,6 +10,7 @@
     ./plugins/lualine.nix
     ./plugins/telescope.nix
     ./plugins/treesitter.nix
+    ./plugins/startup.nix
   ];
 
   programs.nixvim = {
