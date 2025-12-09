@@ -1,6 +1,5 @@
 {
-  plugins = {
-    lsp-format.enable = true;
+  nixvim.plugins = {
     lsp = {
       enable = true;
       inlayHints = true;
