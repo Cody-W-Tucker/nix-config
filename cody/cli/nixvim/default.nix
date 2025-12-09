@@ -7,6 +7,7 @@
     ./plugins/lsp.nix
     ./plugins/none-ls.nix
     ./plugins/conform.nix
+    ./plugins/cmp.nix
   ];
 
   programs.nixvim = {
@@ -48,15 +49,19 @@
       lazygit.enable = true;
       git-conflict.enable = true;
       gitsigns.enable = true;
-      comment = {
-        enable = true;
-        settings.mappings = {
-          basic = true;
-        };
-      };
+      markdown-preview.enable = true;
+      commentary.enable = true;
       which-key.enable = true;
       rainbow-delimiters.enable = true;
       snacks.enable = true;
+      yazi.enable = true;
+      web-devicons.enable = true;
+      direnv.enable = true;
+      goyo.enable = true;
+      twilight = {
+        enable = true;
+        settings.context = 1;
+      };
       lualine = {
         enable = true;
         settings = {
@@ -78,7 +83,6 @@
           };
         };
       };
-      web-devicons.enable = true;
       telescope = {
         enable = true;
         keymaps = {
@@ -91,7 +95,6 @@
           enable = true;
         };
       };
-      yazi.enable = true;
       treesitter = {
         enable = true;
         settings.indent.enable = true;
@@ -140,39 +143,9 @@
           };
         };
       };
-      # Enable completion
-      cmp = {
-        enable = true;
-        settings = {
-          mapping = {
-            "<C-Space>" = "cmp.mapping.complete()";
-            "<C-d>" = "cmp.mapping.scroll_docs(-4)";
-            "<C-e>" = "cmp.mapping.close()";
-            "<C-f>" = "cmp.mapping.scroll_docs(4)";
-            "<CR>" = "cmp.mapping.confirm({ select = true })";
-            "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
-            "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
-          };
-          sources = [
-            { name = "nvim_lsp"; }
-            { name = "path"; }
-            { name = "buffer"; }
-          ];
-        };
-      };
-      direnv.enable = true;
-      twilight = {
-        enable = true;
-        settings.context = 1;
-      };
-      goyo = {
-        enable = true;
-      };
     };
     # Set the leader key to <Space>
-    globals = {
-      mapleader = " ";
-    };
+    globals.mapleader = " ";
     extraPlugins = with pkgs.vimPlugins; [ vim-pencil ];
   };
 }
