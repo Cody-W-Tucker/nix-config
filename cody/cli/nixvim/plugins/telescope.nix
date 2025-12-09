@@ -1,5 +1,5 @@
 {
-  programs.nixvim.telescope = {
+  programs.nixvim.plugins.telescope = {
     enable = true;
     keymaps = {
       "<leader>cd" = {
@@ -11,5 +11,4 @@
       enable = true;
     };
   };
-
 }
