@@ -10,53 +10,47 @@
         formatters_by_ft = {
           astro = [ "prettier" ];
           html = [
-            [
-              "prettierd"
-              "prettier"
-            ]
+            "prettierd"
+            "prettier"
           ];
           css = [
-            [
-              "prettierd"
-              "prettier"
-            ]
+            "prettierd"
+            "prettier"
           ];
           javascript = [
-            [
-              "prettierd"
-              "prettier"
-            ]
+            "prettierd"
+            "prettier"
           ];
           javascriptreact = [
-            [
-              "prettierd"
-              "prettier"
-            ]
+            "prettierd"
+            "prettier"
           ];
           typescript = [
-            [
-              "prettierd"
-              "prettier"
-            ]
+            "prettierd"
+            "prettier"
           ];
           typescriptreact = [
-            [
-              "prettierd"
-              "prettier"
-            ]
+            "prettierd"
+            "prettier"
           ];
           python = [ "black" ];
           nix = [ "nixfmt" ];
           markdown = [
-            [
-              "prettierd"
-              "prettier"
-            ]
+            "prettierd"
+            "prettier"
           ];
           yaml = [
             "yamllint"
             "yamlfmt"
           ];
+        };
+        formatters = {
+          prettierd = {
+            stop_after_first = true;
+          };
+          prettier = {
+            stop_after_first = true;
+          };
         };
       };
     };
