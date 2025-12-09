@@ -159,7 +159,6 @@
           silent = true;
           lspBuf = {
             gd = "definition";
-            gl = "open_float";
             gD = "references";
             gt = "type_definition";
             gi = "implementation";
