@@ -9,6 +9,7 @@
     ./plugins/conform.nix
     ./plugins/cmp.nix
     ./plugins/lualine.nix
+    ./plugins/telescope.nix
   ];
 
   programs.nixvim = {
@@ -60,18 +61,6 @@
       direnv.enable = true;
       goyo.enable = true;
       twilight.enable = true;
-      telescope = {
-        enable = true;
-        keymaps = {
-          "<leader>cd" = {
-            action = "zoxide list";
-            options.desc = "Change directory with Zoxide"; # Optional: for which-key integration
-          };
-        };
-        extensions.zoxide = {
-          enable = true;
-        };
-      };
       treesitter = {
         enable = true;
         settings.indent.enable = true;
