@@ -10,6 +10,7 @@
     ./plugins/cmp.nix
     ./plugins/lualine.nix
     ./plugins/telescope.nix
+    ./plugins/treesitter.nix
   ];
 
   programs.nixvim = {
@@ -61,26 +62,6 @@
       direnv.enable = true;
       goyo.enable = true;
       twilight.enable = true;
-      treesitter = {
-        enable = true;
-        settings.indent.enable = true;
-        grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
-          bash
-          json
-          nix
-          python
-          toml
-          yaml
-          javascript
-          typescript
-          html
-          css
-          lua
-          xml
-          astro
-          tsx
-        ];
-      };
       ts-autotag = {
         enable = true;
         # (enables close/rename for astro + common JSX/TSX; disables on html to avoid over-closing)
