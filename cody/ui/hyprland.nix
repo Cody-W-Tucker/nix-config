@@ -6,38 +6,67 @@
 }:
 
 {
-  home.packages = with pkgs; [
-    hyprnome
-  ];
-
-  services.gnome-keyring = {
-    enable = true;
-    components = [
-      "secrets"
-      "ssh"
-    ];
-  };
-
   imports = [
     ./hyprland/settings.nix
     ./hyprland/autostart.nix
+  ];
+
+  home.packages = with pkgs; [
+    hyprnome
   ];
 
   # Bring in env session variables from ../ui.nix
   xdg.configFile."uwsm/env".source =
     "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
 
-  # Use the Hyprland Polkit
-  services.hyprpolkitagent.enable = true;
+  services = {
+    wayland.windowManager.hyprland = {
+      enable = true;
+      package = null; # null to use NixOS module
+      portalPackage = null; # null to use NixOS module
+      systemd.enable = false; # Since using UWSM, disable systemd
+      xwayland.enable = true;
+    };
 
-  wayland.windowManager.hyprland = {
-    enable = true;
-    # set the Hyprland and XDPH packages to null to use the ones from the NixOS module
-    package = null;
-    portalPackage = null;
-    systemd.enable = false;
-    xwayland.enable = true;
+    # Use the Hyprland Polkit
+    hyprpolkitagent.enable = true;
+    gnome-keyring = {
+      enable = true;
+      components = [
+        "secrets"
+        "ssh"
+      ];
+    };
+
+    # Idle management
+    hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd = "pidof hyprlock || hyprlock";
+          before_sleep_cmd = "hyprlock";
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+        };
+
+        listener = [
+          {
+            timeout = 900; # 15min.
+            on-timeout = "hyprlock";
+          }
+          {
+            timeout = 1800; # 30min.
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+          {
+            timeout = 3600; # 1hr.
+            on-timeout = "systemctl suspend";
+          }
+        ];
+      };
+    };
   };
+
   # Lock screen
   programs.hyprlock = {
     enable = true;
@@ -86,33 +115,6 @@
           bothlock_color = -1;
           invert_numlock = false;
           swap_font_color = false;
-        }
-      ];
-    };
-  };
-  # Idle management
-  services.hypridle = {
-    enable = true;
-    settings = {
-      general = {
-        lock_cmd = "pidof hyprlock || hyprlock";
-        before_sleep_cmd = "hyprlock";
-        after_sleep_cmd = "hyprctl dispatch dpms on";
-      };
-
-      listener = [
-        {
-          timeout = 900; # 15min.
-          on-timeout = "hyprlock";
-        }
-        {
-          timeout = 1800; # 30min.
-          on-timeout = "hyprctl dispatch dpms off";
-          on-resume = "hyprctl dispatch dpms on";
-        }
-        {
-          timeout = 3600; # 1hr.
-          on-timeout = "systemctl suspend";
         }
       ];
     };
