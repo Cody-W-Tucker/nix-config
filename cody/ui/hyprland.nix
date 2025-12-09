@@ -19,15 +19,15 @@
   xdg.configFile."uwsm/env".source =
     "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
 
-  services = {
-    wayland.windowManager.hyprland = {
-      enable = true;
-      package = null; # null to use NixOS module
-      portalPackage = null; # null to use NixOS module
-      systemd.enable = false; # Since using UWSM, disable systemd
-      xwayland.enable = true;
-    };
+  wayland.windowManager.hyprland = {
+    enable = true;
+    package = null; # null to use NixOS module
+    portalPackage = null; # null to use NixOS module
+    systemd.enable = false; # Since using UWSM, disable systemd
+    xwayland.enable = true;
+  };
 
+  services = {
     # Use the Hyprland Polkit
     hyprpolkitagent.enable = true;
     gnome-keyring = {
