@@ -8,6 +8,7 @@
     ./plugins/none-ls.nix
     ./plugins/conform.nix
     ./plugins/cmp.nix
+    ./plugins/lualine.nix
   ];
 
   programs.nixvim = {
@@ -58,31 +59,7 @@
       web-devicons.enable = true;
       direnv.enable = true;
       goyo.enable = true;
-      twilight = {
-        enable = true;
-        settings.context = 1;
-      };
-      lualine = {
-        enable = true;
-        settings = {
-          sections = {
-            "lualine_a" = [ "mode" ];
-            "lualine_b" = [
-              "branch"
-              "diff"
-              "diagnostics"
-            ];
-            "lualine_c" = [ "filename" ];
-            "lualine_x" = [
-              "encoding"
-              "fileformat"
-              "filetype"
-            ];
-            "lualine_y" = [ "progress" ];
-            "lualine_z" = [ "location" ];
-          };
-        };
-      };
+      twilight.enable = true;
       telescope = {
         enable = true;
         keymaps = {
