@@ -112,7 +112,6 @@
       };
       none-ls = {
         enable = true;
-        enableLspFormat = true;
         settings = {
           updateInInsert = false;
         };
