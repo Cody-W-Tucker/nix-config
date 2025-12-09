@@ -49,7 +49,7 @@
       }
     ];
     plugins = {
-      nvim-autopairs.enable = true;
+      autoclose.enable = true;
       csvview.enable = true;
       lazygit.enable = true;
       git-conflict.enable = true;
