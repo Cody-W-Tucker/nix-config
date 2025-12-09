@@ -1,7 +1,7 @@
 {
   # Enable completion
   programs.nixvim.plugins.cmp = {
-    autoEnableSources = true;
+    enable = true;
     settings = {
       mapping = {
         "<C-Space>" = "cmp.mapping.complete()";
