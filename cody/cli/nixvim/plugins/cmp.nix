@@ -1,6 +1,6 @@
 {
   # Enable completion
-  programs.nixvim.cmp = {
+  programs.nixvim.plugins.cmp = {
     autoEnableSources = true;
     settings = {
       mapping = {
