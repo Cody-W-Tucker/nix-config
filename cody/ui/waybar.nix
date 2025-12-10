@@ -82,7 +82,7 @@ let
       format = "{icon}";
       format-icons = {
         activated = "";
-        deactivated = "";
+        deactivated = "";
       };
     };
     pulseaudio = {
@@ -386,10 +386,6 @@ in
 
       label:focus {
         background-color: #${config.lib.stylix.colors.base02};
-      }
-
-      #idle_inhibitor label {
-        text-align: center;
       }
     '';
   };
