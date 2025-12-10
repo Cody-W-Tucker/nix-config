@@ -43,8 +43,8 @@ let
       "custom/weather"
     ];
     modules-right = [
-      "group/notification"
       "privacy"
+      "idle_inhibitor"
       "mpris"
       "pulseaudio"
       "group/hardware"
@@ -78,7 +78,13 @@ let
         "tray"
       ];
     };
-
+    idle_inhibitor = {
+      format = "{icon}";
+      format-icons = {
+        activated = "";
+        deactivated = "";
+      };
+    };
     pulseaudio = {
       format = "{volume}% {icon}";
       format-bluetooth = "{volume}% {icon}";
