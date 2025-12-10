@@ -387,6 +387,10 @@ in
       label:focus {
         background-color: #${config.lib.stylix.colors.base02};
       }
+
+      #idle_inhibitor {
+        text-align: center;
+      }
     '';
   };
 }
