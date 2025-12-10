@@ -388,7 +388,7 @@ in
         background-color: #${config.lib.stylix.colors.base02};
       }
 
-      #idle_inhibitor {
+      #idle_inhibitor label {
         text-align: center;
       }
     '';
