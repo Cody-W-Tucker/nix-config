@@ -44,7 +44,6 @@ let
     ];
     modules-right = [
       "privacy"
-      "idle_inhibitor"
       "mpris"
       "pulseaudio"
       "group/hardware"
@@ -77,13 +76,6 @@ let
         "hyprland/workspaces"
         "tray"
       ];
-    };
-    idle_inhibitor = {
-      format = "{icon}";
-      format-icons = {
-        activated = "";
-        deactivated = "";
-      };
     };
     pulseaudio = {
       format = "{volume}% {icon}";
