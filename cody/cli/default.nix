@@ -28,7 +28,7 @@
   # Enable Stylix for theming
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
-  # Use esa instead of ls
+  # Use eza instead of ls
   programs.eza = {
     enable = true;
     git = true;
