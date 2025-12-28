@@ -5,11 +5,11 @@
   services.n8n = {
     enable = true;
     openFirewall = false;
-    webhookUrl = "https://automation.homehub.tv";
     environment = {
       generic = {
         timezone = config.time.timeZone;
       };
+      WEBHOOK_URL = "https://automation.homehub.tv";
       endpoints = {
         metrics = {
           enable = true;
