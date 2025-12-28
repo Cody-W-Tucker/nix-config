@@ -80,6 +80,7 @@
 
     transmission = {
       enable = true;
+      package = pkgs.transmission_4;
       group = "media";
       openRPCPort = true; # Allows Sonarr/Radarr to connect
       openPeerPorts = false; # Allows torrent peers to connect
