@@ -300,7 +300,6 @@
       intel-vaapi-driver # previously vaapiIntel
       libva-vdpau-driver
       libvdpau-va-gl
-      intel-media-sdk # QSV up to 11th gen
     ];
   };
 }
