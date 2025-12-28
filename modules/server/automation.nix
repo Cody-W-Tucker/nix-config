@@ -6,7 +6,7 @@
     enable = true;
     openFirewall = false;
     webhookUrl = "https://automation.homehub.tv";
-    settings = {
+    environment = {
       generic = {
         timezone = config.time.timeZone;
       };
