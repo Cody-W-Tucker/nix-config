@@ -23,7 +23,7 @@
     useACMEHost = "homehub.tv";
     kTLS = true;
     locations."~ ^/(webhook|webhook-test)" = {
-      proxyPass = "http://localhost:${toString config.services.n8n.settings.port}";
+      proxyPass = "http://localhost:${toString config.services.n8n.environment.port}";
 
       extraConfig = ''
         chunked_transfer_encoding off;
@@ -33,7 +33,7 @@
     };
 
     locations."~ ^/rest/oauth2-credential/callback" = {
-      proxyPass = "http://localhost:${toString config.services.n8n.settings.port}";
+      proxyPass = "http://localhost:${toString config.services.n8n.environment.port}";
 
       extraConfig = ''
         chunked_transfer_encoding off;
@@ -43,7 +43,7 @@
     };
 
     locations."/" = {
-      proxyPass = "http://localhost:${toString config.services.n8n.settings.port}";
+      proxyPass = "http://localhost:${toString config.services.n8n.environment.port}";
       proxyWebsockets = true;
 
       extraConfig = ''
