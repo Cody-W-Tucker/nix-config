@@ -6,15 +6,7 @@
     enable = true;
     openFirewall = false;
     environment = {
-      generic = {
-        timezone = config.time.timeZone;
-      };
       WEBHOOK_URL = "https://automation.homehub.tv";
-      endpoints = {
-        metrics = {
-          enable = true;
-        };
-      };
     };
   };
 
