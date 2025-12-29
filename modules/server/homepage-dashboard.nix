@@ -76,13 +76,6 @@ in
       services = [
         {
           Business = [
-            # {
-            #   Nextcloud = {
-            #     href = "https://cloud.${domain}";
-            #     icon = "nextcloud";
-            #     description = "Could storage and collaboration";
-            #   };
-            # }
             {
               N8N = {
                 href = "https://automation.${domain}";
@@ -102,13 +95,6 @@ in
                 href = "https://paperless.${domain}";
                 icon = "paperless";
                 description = "Document Management";
-              };
-            }
-            {
-              Penpot = {
-                href = "https://design.${domain}";
-                icon = "penpot";
-                description = "Open Source Figma Alternative";
               };
             }
             {
@@ -141,13 +127,6 @@ in
                 href = "https://budget.${domain}";
                 icon = "https://budget.${domain}/favicon.ico";
                 description = "Personal Budget";
-              };
-            }
-            {
-              Stirling-PDF = {
-                href = "https://pdf.${domain}";
-                icon = "stirling-pdf";
-                description = "PDF Editing";
               };
             }
           ];
