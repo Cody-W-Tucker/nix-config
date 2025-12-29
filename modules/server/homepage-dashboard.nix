@@ -24,9 +24,11 @@ in
         layout = {
           Business = {
             style = "row";
+            columns = 5;
           };
           Tools = {
             style = "row";
+            columns = 4;
           };
         };
         headerStyle = "boxedWidgets";
