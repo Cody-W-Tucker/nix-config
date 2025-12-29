@@ -42,17 +42,17 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
-        system = system;
+        inherit system;
         config = {
           allowUnfree = true;
-          allowUnfreePredicate = (_: true);
+          allowUnfreePredicate = _: true;
         };
       };
       pkgs-unstable = import nixpkgs-unstable {
-        system = system;
+        inherit system;
         config = {
           allowUnfree = true;
-          allowUnfreePredicate = (_: true);
+          allowUnfreePredicate = _: true;
         };
       };
       hardwareConfig = {
@@ -100,27 +100,34 @@
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-                inherit pkgs;
-                inherit pkgs-unstable;
-                inherit system;
-                hardwareConfig = hardwareConfig.beast;
-              };
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.sharedModules = [
-                inputs.sops-nix.homeManagerModules.sops
-                inputs.stylix.homeModules.stylix
-              ];
-              home-manager.users.codyt.imports = [
-                ./cody/ui.nix
-                ./secrets/home-secrets.nix
-                inputs.nixvim.homeManagerModules.nixvim
-              ];
-            }
+            (
+              { config, ... }:
+              {
+                home-manager = {
+                  extraSpecialArgs = {
+                    inherit
+                      inputs
+                      pkgs
+                      pkgs-unstable
+                      system
+                      ;
+                    hardwareConfig = hardwareConfig.beast;
+                  };
+                  useGlobalPkgs = false;
+                  useUserPackages = true;
+                  backupFileExtension = "backup";
+                  sharedModules = [
+                    inputs.sops-nix.homeManagerModules.sops
+                    inputs.stylix.homeModules.stylix
+                  ];
+                  users.codyt.imports = [
+                    ./cody/ui.nix
+                    ./secrets/home-secrets.nix
+                    inputs.nixvim.homeManagerModules.nixvim
+                  ];
+                };
+              }
+            )
           ];
         };
         workstation = nixpkgs.lib.nixosSystem {
@@ -140,27 +147,34 @@
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-                inherit pkgs;
-                inherit pkgs-unstable;
-                inherit system;
-                hardwareConfig = hardwareConfig.workstation;
-              };
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.sharedModules = [
-                inputs.sops-nix.homeManagerModules.sops
-                inputs.stylix.homeModules.stylix
-              ];
-              home-manager.users.codyt.imports = [
-                ./cody/ui.nix
-                ./secrets/home-secrets.nix
-                inputs.nixvim.homeManagerModules.nixvim
-              ];
-            }
+            (
+              { config, ... }:
+              {
+                home-manager = {
+                  extraSpecialArgs = {
+                    inherit
+                      inputs
+                      pkgs
+                      pkgs-unstable
+                      system
+                      ;
+                    hardwareConfig = hardwareConfig.workstation;
+                  };
+                  useGlobalPkgs = false;
+                  useUserPackages = true;
+                  backupFileExtension = "backup";
+                  sharedModules = [
+                    inputs.sops-nix.homeManagerModules.sops
+                    inputs.stylix.homeModules.stylix
+                  ];
+                  users.codyt.imports = [
+                    ./cody/ui.nix
+                    ./secrets/home-secrets.nix
+                    inputs.nixvim.homeManagerModules.nixvim
+                  ];
+                };
+              }
+            )
           ];
         };
         server = nixpkgs.lib.nixosSystem {
@@ -178,53 +192,33 @@
             inputs.vpn-confinement.nixosModules.default
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-                inherit pkgs;
-                inherit pkgs-unstable;
-                inherit system;
-              };
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.sharedModules = [
-                inputs.sops-nix.homeManagerModules.sops
-                inputs.stylix.homeModules.stylix
-              ];
-              home-manager.users.codyt.imports = [
-                ./cody/cli.nix
-                ./secrets/home-secrets.nix
-                inputs.nixvim.homeManagerModules.nixvim
-              ];
-            }
-          ];
-        };
-        family = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs;
-            inherit pkgs-unstable;
-          };
-          modules = [
-            ./hosts/family-desktop.nix
-            inputs.stylix.nixosModules.stylix
-            # Using community hardware configurations
-            inputs.nixos-hardware.nixosModules.common-gpu-intel-sandy-bridge
-            inputs.sops-nix.nixosModules.sops
-            ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-                inherit pkgs;
-                inherit pkgs-unstable;
-              };
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.codyt = import ./cody/cli.nix;
-            }
+            (
+              { config, ... }:
+              {
+                home-manager = {
+                  extraSpecialArgs = {
+                    inherit
+                      inputs
+                      pkgs
+                      pkgs-unstable
+                      system
+                      ;
+                  };
+                  useGlobalPkgs = false;
+                  useUserPackages = true;
+                  backupFileExtension = "backup";
+                  sharedModules = [
+                    inputs.sops-nix.homeManagerModules.sops
+                    inputs.stylix.homeModules.stylix
+                  ];
+                  users.codyt.imports = [
+                    ./cody/cli.nix
+                    ./secrets/home-secrets.nix
+                    inputs.nixvim.homeManagerModules.nixvim
+                  ];
+                };
+              }
+            )
           ];
         };
       };
