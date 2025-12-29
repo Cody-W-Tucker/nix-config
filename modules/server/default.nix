@@ -7,20 +7,16 @@
     ./adguard.nix
     ./automation.nix
     ./content.nix
-    ./data.nix
     ./excalidraw.nix
     ./karakeep.nix
     ./homepage-dashboard.nix
     ./media.nix
     ./monitoring.nix
-    # ./nextcloud.nix
     ./paperless.nix
-    ./stirling-pdf.nix
     ./photos.nix
     ./samba.nix
     ./syncthing.nix
     ./security.nix
-    ./penpot.nix
   ];
 
   # Create the acme secret in sops
