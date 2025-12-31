@@ -9,6 +9,10 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelParams = [
+    "amdgpu.vramlimit=0"
+    "amdgpu.gttlimit=0"
+  ];
   networking.hostName = "ai_server";
 
   boot.initrd.availableKernelModules = [
