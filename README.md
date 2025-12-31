@@ -10,14 +10,14 @@ Install via the NixOS installer, configure drives etc. to build a default config
 
 Rebuild the config with the new hostname and then connect via ssh.
 
-1. scp ssh keys from parent machine to child (to connect with this repo)
-2. scp the parent config to child computer's homedrive
+1. ssh-copy-id to the new machine
+2. scp the parent config to the child computer's homedir
 3. mv the child's config to `/etc/nixos-aside`
 4. mv the parent config to `/etc/nixos`
-5. cp the configuration.nix and hardware-configuration.nix files to /etc/nixos/hosts
+5. cp `nixos-aside` to `/etc/nixos/hosts`
 6. git add, commit, and push (to work on parent environment)
-7. concat the hardware and config files into one host file. (follow the parent pattern, ensure the drives are correct)
-8. commit the change and pull/rebuild on the child machine
+7. Concat the hardware and config files into one host file. (follow the parent pattern, ensure the drives are correct)
+8. Commit the change and pull/rebuild on the child machine
 
 Configure the machine to get secrets
 
