@@ -26,6 +26,8 @@
 
   # Networking
   networking.networkmanager.enable = true;
+  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+  networking.useDHCP = lib.mkDefault true;
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/73998e5d-b64f-4148-bacb-af7b7883746a";
