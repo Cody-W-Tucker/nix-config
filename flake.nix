@@ -221,6 +221,47 @@
             )
           ];
         };
+        aiserver = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            inherit pkgs-unstable;
+          };
+          modules = [
+            ./hosts/aiserver.nix
+            # Using community hardware configurations
+            inputs.sops-nix.nixosModules.sops
+            ./secrets/secrets.nix
+            inputs.home-manager.nixosModules.home-manager
+            (
+              { config, ... }:
+              {
+                home-manager = {
+                  extraSpecialArgs = {
+                    inherit
+                      inputs
+                      pkgs
+                      pkgs-unstable
+                      system
+                      ;
+                  };
+                  useGlobalPkgs = false;
+                  useUserPackages = true;
+                  backupFileExtension = "backup";
+                  sharedModules = [
+                    inputs.sops-nix.homeManagerModules.sops
+                    inputs.stylix.homeModules.stylix
+                  ];
+                  users.codyt.imports = [
+                    ./cody/cli.nix
+                    ./secrets/home-secrets.nix
+                    inputs.nixvim.homeManagerModules.nixvim
+                  ];
+                };
+              }
+            )
+          ];
+        };
       };
     };
 }
