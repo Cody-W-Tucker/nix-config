@@ -184,6 +184,7 @@
     [
       rofi-network-manager
       kdePackages.kdenlive
+      minecraft
     ]
   );
 
