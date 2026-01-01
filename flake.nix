@@ -229,7 +229,10 @@
           };
           modules = [
             ./hosts/aiserver.nix
-            # Using community hardware configurations
+            # Using community hardware nixosConfigurations
+            inputs.nixos-hardware.nixosModules.common-pc-ssd
+            inputs.nixos-hardware.nixosModules.common-gpu-amd
+            inputs.nixos-hardware.nixosModules.common-cpu-amd
             inputs.sops-nix.nixosModules.sops
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
