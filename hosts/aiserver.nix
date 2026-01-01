@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -10,10 +15,9 @@
   boot = {
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
-    kernelParams = [
-      "amdgpu.vramlimit=0"
-      "amdgpu.gttlimit=0"
-    ];
+
+    # Use newest kernel
+    kernelPackages = pkgs.linuxPackages_latest;
 
     initrd.availableKernelModules = [
       "nvme"
