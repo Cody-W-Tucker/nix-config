@@ -60,7 +60,10 @@
 
   hardware.graphics.enable = true;
 
-  services.ollama.enable = true;
+  services.ollama = {
+    enable = true;
+    acceleration = "rocm";
+  };
 
   system.stateVersion = "25.11"; # Did you read the comment?
 
