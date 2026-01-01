@@ -118,6 +118,9 @@
   # Logrotate
   services.logrotate.enable = true;
 
+  # Firmware updates
+  services.fwupd.enable = true;
+
   # Syncthing shared configuration
   services.syncthing.settings.devices = {
     "server" = {
