@@ -27,6 +27,7 @@
       "usb_storage"
       "sd_mod"
       "sdhci_pci"
+      "amdgpu"
     ];
     initrd.kernelModules = [ ];
     kernelModules = [ "kvm-amd" ];
@@ -59,6 +60,11 @@
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   hardware.graphics.enable = true;
+
+  hardware.amdgpu = {
+    opencl.enable = true; # Enables ROCm-based OpenCL
+    initrd.enable = true; # Loads amdgpu in initrd for early detection
+  };
 
   services.ollama = {
     enable = true;
