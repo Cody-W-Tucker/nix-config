@@ -103,62 +103,60 @@
         telemetry_disabled = true;
       };
     };
-    /*
-      qdrant-upload = {
-        # Enable auto uploads daily at 2 AM
-        enable = true;
+    qdrant-upload = {
+      # Enable auto uploads daily at 2 AM
+      enable = true;
 
-        # Service URLs
-        qdrantUrl = "http://localhost:6333";
-        ollamaUrl = "http://localhost:11434";
+      # Service URLs
+      qdrantUrl = "http://localhost:6333";
+      ollamaUrl = "http://localhost:11434";
 
-        # Performance (RTX 3070 optimized)
-        batchSize = 2000;
-        maxConcurrent = 4;
-        asyncChat = true;
+      # Performance (RTX 3070 optimized)
+      batchSize = 2000;
+      maxConcurrent = 4;
+      asyncChat = true;
 
-        sources = [
-          {
-            name = "personal";
-            type = "obsidian";
-            collection = "personal";
-            directories = [
-              "/home/codyt/Documents/Personal/Journal"
-              "/home/codyt/Documents/Personal/Knowledge"
-            ];
-            skipExisting = true;
-          }
-          {
-            name = "projects";
-            type = "obsidian";
-            collection = "projects";
-            directories = [ "/home/codyt/Documents/Personal/Projects" ];
-            skipExisting = true;
-          }
-          {
-            name = "inbox";
-            type = "obsidian";
-            collection = "inbox";
-            directories = [ "/home/codyt/Documents/Personal/Inbox" ];
-            skipExisting = true;
-          }
-          {
-            name = "entities";
-            type = "obsidian";
-            collection = "entities";
-            directories = [ "/home/codyt/Documents/Personal/Entities" ];
-            skipExisting = true;
-          }
-          {
-            name = "research";
-            type = "obsidian";
-            collection = "research";
-            directories = [ "/home/codyt/Documents/Personal/Research" ];
-            skipExisting = true;
-          }
-        ];
-      };
-    */
+      sources = [
+        {
+          name = "personal";
+          type = "obsidian";
+          collection = "personal";
+          directories = [
+            "/home/codyt/Documents/Personal/Journal"
+            "/home/codyt/Documents/Personal/Knowledge"
+          ];
+          skipExisting = true;
+        }
+        {
+          name = "projects";
+          type = "obsidian";
+          collection = "projects";
+          directories = [ "/home/codyt/Documents/Personal/Projects" ];
+          skipExisting = true;
+        }
+        {
+          name = "inbox";
+          type = "obsidian";
+          collection = "inbox";
+          directories = [ "/home/codyt/Documents/Personal/Inbox" ];
+          skipExisting = true;
+        }
+        {
+          name = "entities";
+          type = "obsidian";
+          collection = "entities";
+          directories = [ "/home/codyt/Documents/Personal/Entities" ];
+          skipExisting = true;
+        }
+        {
+          name = "research";
+          type = "obsidian";
+          collection = "research";
+          directories = [ "/home/codyt/Documents/Personal/Research" ];
+          skipExisting = true;
+        }
+      ];
+    };
   };
   # Make the open-webui and pipelines dirs
   systemd.tmpfiles.rules = [
