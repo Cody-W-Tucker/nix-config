@@ -28,7 +28,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
-    # qdrant-upload.url = "github:Cody-W-Tucker/Qdrant-Upload";
+    qdrant-upload.url = "github:Cody-W-Tucker/Qdrant-Upload";
     opencode.url = "github:sst/opencode";
   };
 
@@ -96,7 +96,7 @@
             inputs.nixos-hardware.nixosModules.common-pc-ssd
             inputs.nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
-            # inputs.qdrant-upload.nixosModules.default
+            inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
