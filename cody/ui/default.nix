@@ -72,7 +72,6 @@
       # list of unstable packages go here
       vscode
       legcord
-      webcord
     ]);
 
   # Obs for screenrecording
