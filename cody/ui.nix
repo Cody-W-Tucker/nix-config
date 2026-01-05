@@ -64,6 +64,9 @@
 
     # Force Electron apps to use X11 backend
     NIXOS_OZONE_WL = 1;
+    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+    ELECTRON_USE_WAYLAND = "1"; # Extra insurance
+    ANGLE_GL_DRIVER = "gl_egl"; # Force EGL over other backends
 
     # Enable Wayland backend for Firefox (and other Mozilla apps)
     MOZ_ENABLE_WAYLAND = "1";
