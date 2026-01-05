@@ -41,7 +41,7 @@ in
           LOG_LEVEL = "error";
           DISABLE_CONSOLE_OUTPUT = "true";
           N8N_API_URL = "https://automation.homehub.tv";
-          N8N_API_KEY = "your-api-key";
+          N8N_API_KEY = "${config.sops.placeholder.N8N_API_KEY}";
         };
       };
       google_workspace = {
