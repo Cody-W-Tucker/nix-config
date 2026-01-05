@@ -12,6 +12,8 @@ in
     # Google Workspace
     "GOOGLE_OAUTH_CLIENT_ID" = { };
     "GOOGLE_OAUTH_CLIENT_SECRET" = { };
+    # N8N Stuff
+    "N8N_API_KEY" = { };
   };
 
   # Docker
@@ -31,6 +33,17 @@ in
   # TODO: Need to manually restart "systemctl restart docker-mcpo" because the docker service doesn't notice we changed the config file.
   sops.templates."mcpo-config.json".content = builtins.toJSON {
     mcpServers = {
+      n8n-mcp = {
+        command = "npx";
+        args = [ "n8n-mcp" ];
+        env = {
+          MCP_MODE = "stdio";
+          LOG_LEVEL = "error";
+          DISABLE_CONSOLE_OUTPUT = "true";
+          N8N_API_URL = "https://your-n8n-instance.com";
+          N8N_API_KEY = "your-api-key";
+        };
+      };
       google_workspace = {
         command = "uvx";
         args = [ "workspace-mcp" ];
