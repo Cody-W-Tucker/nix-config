@@ -67,12 +67,11 @@
       wttrbar # Weather bar for Waybar
       chromium
       vesktop
-
+      legcord
     ])
     ++ (with pkgs-unstable; [
       # list of unstable packages go here
       vscode
-      legcord
     ]);
 
   # Obs for screenrecording
