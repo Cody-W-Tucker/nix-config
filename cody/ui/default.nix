@@ -66,13 +66,13 @@
       feishin # Desktop app music player
       wttrbar # Weather bar for Waybar
       chromium
-      yaak
+      vesktop
+
     ])
     ++ (with pkgs-unstable; [
       # list of unstable packages go here
       vscode
       legcord
-      vesktop
     ]);
 
   # Obs for screenrecording
