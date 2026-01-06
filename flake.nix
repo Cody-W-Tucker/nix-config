@@ -4,20 +4,24 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:nix-community/home-manager/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix = {
-      url = "github:danth/stylix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:danth/stylix/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     # Should use their nixpkgs
-    nixvim.url = "github:nix-community/nixvim";
+    nixvim.url = "github:nix-community/nixvim/nixos-25.05";
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -236,10 +240,10 @@
             # Using community hardware nixosConfigurations
             inputs.nixos-hardware.nixosModules.common-pc-ssd
             inputs.nixos-hardware.nixosModules.common-gpu-amd
-            inputs.nixos-hardware.nixosModules.common-cpu-amd
-            inputs.sops-nix.nixosModules.sops
-            ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
+             inputs.nixos-hardware.nixosModules.common-cpu-amd
+             inputs.sops-nix.nixosModules.sops
+             ./secrets/secrets.nix
+             inputs.home-manager-unstable.nixosModules.home-manager
             (
               { config, ... }:
               {
