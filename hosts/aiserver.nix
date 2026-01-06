@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgs-unstable,
   ...
 }:
 
@@ -17,7 +18,7 @@
     loader.efi.canTouchEfiVariables = true;
 
     # Use newest kernel
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs-unstable.linuxPackages_latest;
 
     initrd.availableKernelModules = [
       "nvme"
