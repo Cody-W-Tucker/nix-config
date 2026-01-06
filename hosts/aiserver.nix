@@ -30,8 +30,12 @@
       "amdgpu"
     ];
     initrd.kernelModules = [ ];
-    kernelModules = [ "kvm-amd" "amdgpu" ];
+    kernelModules = [
+      "kvm-amd"
+      "amdgpu"
+    ];
     extraModulePackages = [ ];
+    kernelParams = [ "amdgpu.dc=1" ];
   };
 
   networking = {
