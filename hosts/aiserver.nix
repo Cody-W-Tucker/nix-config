@@ -29,7 +29,7 @@
       "sdhci_pci"
       "amdgpu"
     ];
-    initrd.kernelModules = [ ];
+    initrd.kernelModules = [ "amdgpu" ];
     kernelModules = [
       "kvm-amd"
       "amdgpu"
@@ -65,6 +65,17 @@
 
   hardware.graphics.enable = true;
 
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+    extraPackages = with pkgs; [
+      rocmPackages.clr.icd
+      rocmPackages.rocminfo
+      rocmPackages.rocm-smi
+    ];
+  };
+
   hardware.amdgpu = {
     opencl.enable = true; # Enables ROCm-based OpenCL
     initrd.enable = true; # Loads amdgpu in initrd for early detection
@@ -72,12 +83,19 @@
 
   environment.systemPackages = with pkgs; [
     rocmPackages.clr
+    rocmPackages.rocminfo
+    rocmPackages.rocm-smi
   ];
 
   services.ollama = {
     enable = true;
     package = pkgs.ollama-rocm;
   };
+
+  systemd.services.ollama.serviceConfig.Environment = [
+    "HSA_OVERRIDE_GFX_VERSION=11.0.0"
+    "HIP_VISIBLE_DEVICES=0"
+  ];
 
   system.stateVersion = "25.11"; # Did you read the comment?
 
