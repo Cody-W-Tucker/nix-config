@@ -243,20 +243,20 @@
             inputs.nixos-hardware.nixosModules.common-cpu-amd
             inputs.sops-nix.nixosModules.sops
             ./secrets/secrets.nix
-             inputs.home-manager-unstable.nixosModules.home-manager
-             (
-               { config, ... }:
-               {
-                 home-manager = {
-                   extraSpecialArgs = {
-                     inherit
-                       inputs
-                       nixpkgs
-                       pkgs-unstable
-                       system
-                       ;
-                   };
-                   useGlobalPkgs = false;
+            inputs.home-manager-unstable.nixosModules.home-manager
+            (
+              { config, ... }:
+              {
+                home-manager = {
+                  extraSpecialArgs = {
+                    inherit
+                      inputs
+                      nixpkgs
+                      pkgs-unstable
+                      system
+                      ;
+                  };
+                  useGlobalPkgs = false;
                   useUserPackages = true;
                   backupFileExtension = "backup";
                   sharedModules = [
