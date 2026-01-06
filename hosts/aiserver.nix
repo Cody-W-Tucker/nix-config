@@ -76,7 +76,7 @@
 
   services.ollama = {
     enable = true;
-    acceleration = "rocm";
+    package = pkgs.ollama-rocm;
   };
 
   system.stateVersion = "25.11"; # Did you read the comment?
