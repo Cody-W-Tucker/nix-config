@@ -66,6 +66,10 @@
     initrd.enable = true; # Loads amdgpu in initrd for early detection
   };
 
+  environment.systemPackages = with pkgs; [
+    rocmPackages.clr
+  ];
+
   services.ollama = {
     enable = true;
     acceleration = "rocm";
