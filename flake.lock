@@ -239,6 +239,26 @@
         "type": "github"
       }
     },
+    "home-manager-unstable": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1767733722,
+        "narHash": "sha256-R0CZ0BiOaUqFLMDZKv7+I0sdeyzjlc40QmRR7zSwvkM=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "6e94d8157c941d4dd6fc39866592699043b73668",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "ixx": {
       "inputs": {
         "flake-utils": [
@@ -496,6 +516,7 @@
       "inputs": {
         "flake-programs-sqlite": "flake-programs-sqlite",
         "home-manager": "home-manager",
+        "home-manager-unstable": "home-manager-unstable",
         "nextmeeting": "nextmeeting",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
