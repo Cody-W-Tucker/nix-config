@@ -224,13 +224,13 @@
             )
           ];
         };
-         aiserver = nixpkgs-unstable.lib.nixosSystem {
-           inherit system;
-           specialArgs = {
-             inherit inputs;
-             nixpkgs = nixpkgs-unstable;
-             inherit pkgs-unstable;
-           };
+        aiserver = nixpkgs-unstable.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            nixpkgs = nixpkgs-unstable;
+            inherit pkgs-unstable;
+          };
           modules = [
             ./hosts/aiserver.nix
             # Using community hardware nixosConfigurations
