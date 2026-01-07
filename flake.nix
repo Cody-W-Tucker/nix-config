@@ -98,10 +98,6 @@
           };
           modules = [
             ./hosts/beast.nix
-            # Using community hardware configurations
-            inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
-            inputs.nixos-hardware.nixosModules.common-pc-ssd
-            inputs.nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
             inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
@@ -146,10 +142,6 @@
           };
           modules = [
             ./hosts/workstation.nix
-            # Using community hardware configurations
-            inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
-            inputs.nixos-hardware.nixosModules.common-pc-ssd
-            inputs.nixos-hardware.nixosModules.common-pc
             inputs.sops-nix.nixosModules.sops
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
@@ -192,9 +184,6 @@
           };
           modules = [
             ./hosts/server.nix
-            # Using community hardware configurations
-            inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
-            inputs.nixos-hardware.nixosModules.common-pc-ssd
             inputs.sops-nix.nixosModules.sops
             inputs.vpn-confinement.nixosModules.default
             ./secrets/secrets.nix
@@ -237,10 +226,6 @@
           };
           modules = [
             ./hosts/aiserver.nix
-            # Using community hardware nixosConfigurations
-            inputs.nixos-hardware.nixosModules.common-pc-ssd
-            inputs.nixos-hardware.nixosModules.common-gpu-amd
-            inputs.nixos-hardware.nixosModules.common-cpu-amd
             inputs.sops-nix.nixosModules.sops
             ./secrets/secrets.nix
             inputs.home-manager-unstable.nixosModules.home-manager

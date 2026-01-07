@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -15,6 +16,11 @@
     ../modules/desktop/mcp-servers.nix
     ../modules/scripts
     ../modules/server/ai.nix
+
+    # Using community hardware configurations
+    inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
+    inputs.nixos-hardware.nixosModules.common-pc-ssd
+    inputs.nixos-hardware.nixosModules.common-pc
   ];
 
   # Bootloader.

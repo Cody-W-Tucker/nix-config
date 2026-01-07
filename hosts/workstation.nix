@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -14,6 +15,10 @@
     ../modules/desktop/mcp-servers.nix
     ../modules/scripts
     ../modules/server/paperless-scanning.nix
+    # Using community hardware configurations
+    inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
+    inputs.nixos-hardware.nixosModules.common-pc-ssd
+    inputs.nixos-hardware.nixosModules.common-pc
   ];
 
   # Bootloader.

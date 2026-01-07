@@ -1,9 +1,17 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   imports = [
     ../configuration.nix
     ../modules/server
+    # Using community hardware configurations
+    inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
+    inputs.nixos-hardware.nixosModules.common-pc-ssd
   ];
 
   # Bootloader
