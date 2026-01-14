@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   # Enable sound with pipewire
@@ -39,4 +39,9 @@
   };
   # Bluetooth audio support
   services.blueman.enable = true;
+
+  # Install Bluetooth firmware for realtek dongles
+  hardware.firmware = [
+    pkgs.rtl8761b-firmware
+  ];
 }

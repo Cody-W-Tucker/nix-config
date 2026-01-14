@@ -7,22 +7,20 @@
     ./logging.nix
   ];
 
-  # Enable OpenGL
   hardware.graphics.enable = true;
 
-  # Enable OpenRazer for keyboard and mouse support
-  hardware.openrazer.enable = true;
-
-  # Allow redistributable firmware
-  hardware.enableRedistributableFirmware = true;
-
-  # Install Bluetooth firmware for realtek dongles
-  hardware.firmware = [
-    pkgs.rtl8761b-firmware
-  ];
-
-  # Provides a way to manage system firmware updates
-  services.fwupd.enable = true;
+  services = {
+    # Provides a way to manage system firmware updates
+    fwupd.enable = true;
+    mullvad-vpn = {
+      enable = true;
+      package = pkgs.mullvad-vpn;
+    };
+    # Allows nautilus (gnome files) to access gvfs mounts (trash and samba shares)
+    gvfs.enable = true;
+    # Enable support for removable devices.
+    udisks2.enable = true;
+  };
 
   # Install basic desktop environment packages that I want on all my systems.
   environment.systemPackages = (
@@ -60,21 +58,9 @@
     21119
   ];
 
-  # Enable mullvad VPN app
-  services.mullvad-vpn = {
-    enable = true;
-    package = pkgs.mullvad-vpn;
-  };
-
   # Default browser on the system
   programs.firefox = {
     enable = true;
     package = pkgs-unstable.firefox;
   };
-
-  # Allows nautilus (gnome files) to access gvfs mounts (trash and samba shares)
-  services.gvfs.enable = true;
-
-  # Enable support for removable devices.
-  services.udisks2.enable = true;
 }

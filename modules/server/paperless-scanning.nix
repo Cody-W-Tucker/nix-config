@@ -5,6 +5,32 @@
   ...
 }:
 
+# Enable downstream with:
+
+# Import this file and...
+
+# Enable scan button daemon and paperless-scanning.nix
+# services.scanbd = {
+#   enable = true;
+# };
+
+# You might want something like this to map the consume dir to the right place:
+# Create the mount for the paperless consume service. Workstation Consume -> Server Consume
+# fileSystems."/var/lib/paperless/consume" = {
+#   device = "//server/PaperlessConsume";
+#   fsType = "cifs";
+#   options = [
+#     "guest"
+#     "uid=59" # scanner user
+#     "gid=59" # Scanner group
+#     "x-systemd.automount"
+#     "noauto"
+#     "x-systemd.idle-timeout=60"
+#     "x-systemd.device-timeout=5s"
+#     "x-systemd.mount-timeout=5s"
+#   ];
+# };
+
 with lib;
 
 let
