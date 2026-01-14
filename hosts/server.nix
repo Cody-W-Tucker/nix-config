@@ -9,6 +9,7 @@
   imports = [
     ../configuration.nix
     ../modules/server
+    ../modules/server/tailscale.nix
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
     inputs.nixos-hardware.nixosModules.common-pc-ssd
