@@ -39,13 +39,6 @@
     "usb_storage"
     "sd_mod"
   ];
-  # Prevents suspend issues with mt7925e wifi chip
-  boot.blacklistedKernelModules = [
-    "mt7925e"
-    "mt7921e" # For other devices with this wifi chip (bluetooth)
-  ];
-  # Use btusb for bluetooth dongle
-  boot.initrd.kernelModules = [ "btusb" ];
   boot.kernelModules = [
     "kvm-intel"
     "v4l2loopback"
