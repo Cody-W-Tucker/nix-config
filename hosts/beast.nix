@@ -42,6 +42,7 @@
   boot.kernelModules = [
     "kvm-intel"
     "v4l2loopback"
+    "btusb"
   ];
 
   # Use the latest kernel and matching NVIDIA driver

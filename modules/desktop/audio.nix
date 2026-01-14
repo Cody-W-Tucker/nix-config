@@ -26,13 +26,11 @@
       powerOnBoot = true;
       settings = {
         General = {
-          Enable = "Source,Sink,Media,Socket";
           Experimental = true; # Enable experimental features
           FastConnectable = true; # Improve connection speed
           JustWorksRepairing = "always";
-          controllerMode = "bredr"; # Allow low energy mode?
+          ControllerMode = "bredr"; # Allow low energy mode?
           MultiProfile = "multiple"; # Allow multiple profiles
-          AutoEnable = true;
         };
       };
     };
@@ -40,8 +38,4 @@
   # Bluetooth audio support
   services.blueman.enable = true;
 
-  # Install Bluetooth firmware for realtek dongles
-  hardware.firmware = [
-    pkgs.rtl8761b-firmware
-  ];
 }
