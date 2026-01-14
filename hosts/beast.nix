@@ -67,6 +67,9 @@
   # Ensure 14th Gen Intel CPU works correctly
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
+  # Include all firmware for devices like Bluetooth
+  hardware.enableRedistributableFirmware = true;
+
   # System Filesystems
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
