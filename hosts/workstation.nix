@@ -13,8 +13,8 @@
     ../modules/desktop/hyprland.nix
     ../modules/desktop/nvidia.nix
     ../modules/desktop/mcp-servers.nix
+    ../modules/desktop/razer.nix
     ../modules/scripts
-    ../modules/server/paperless-scanning.nix
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
     inputs.nixos-hardware.nixosModules.common-pc-ssd
@@ -114,27 +114,6 @@
     ];
   };
 
-  # Enable scan button daemon and paperless-scanning.nix
-  services.scanbd = {
-    enable = true;
-  };
-
-  # Create the mount for the paperless consume service. Workstation Consume -> Server Consume
-  fileSystems."/var/lib/paperless/consume" = {
-    device = "//server/PaperlessConsume";
-    fsType = "cifs";
-    options = [
-      "guest"
-      "uid=59" # scanner user
-      "gid=59" # Scanner group
-      "x-systemd.automount"
-      "noauto"
-      "x-systemd.idle-timeout=60"
-      "x-systemd.device-timeout=5s"
-      "x-systemd.mount-timeout=5s"
-    ];
-  };
-
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
@@ -161,17 +140,6 @@
       ];
     }
   ];
-
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-    ];
-  };
-  nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
-  };
 
   # Backup configuration
   services.syncthing = {
