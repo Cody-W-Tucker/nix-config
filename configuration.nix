@@ -121,6 +121,9 @@
   # Firmware updates
   services.fwupd.enable = true;
 
+  # Include all firmware for devices like Bluetooth
+  hardware.enableRedistributableFirmware = true;
+
   # Syncthing shared configuration
   services.syncthing.settings.devices = {
     "server" = {
