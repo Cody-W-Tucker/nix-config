@@ -73,11 +73,11 @@
         workstation = {
           # Controls the monitor layout for hyprland
           workspace = [
-            "1, monitor:HDMI-A-4, default:true"
+            "1, monitor:HDMI-A-5, default:true"
             "2, monitor:DP-4, default:true"
           ];
           monitor = [
-            "HDMI-A-4,2560x1080@60,0x1080,1"
+            "HDMI-A-5,2560x1080@60,0x1080,1"
             "DP-4,2560x1080@60,0x0,1"
           ];
         };
