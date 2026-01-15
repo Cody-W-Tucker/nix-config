@@ -67,6 +67,81 @@
     ];
   };
 
+  # Sync configuration for user directories
+  services.syncthing = {
+    user = "codyt";
+    group = "users";
+    configDir = "/home/codyt/.config/syncthing";
+    settings.folders = {
+      "share" = {
+        path = "/mnt/backup/Share";
+        devices = [
+          "server"
+          "workstation"
+        ];
+      };
+      "Cody's Obsidian" = {
+        path = "/home/codyt/Sync/Cody-Obsidian";
+        devices = [ "Cody's Pixel" ];
+      };
+    };
+  };
+
+  # User home directories
+  fileSystems."/home/codyt/Records" = {
+    device = "/mnt/backup/Share/Records";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/home/codyt/Documents" = {
+    device = "/mnt/backup/Share/Documents";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/home/codyt/Music" = {
+    device = "/mnt/backup/Share/Music";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/home/codyt/Pictures" = {
+    device = "/mnt/backup/Share/Pictures";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/home/codyt/Videos" = {
+    device = "/mnt/backup/Share/Videos";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/home/codyt/Sync/Cody-Obsidian" = {
+    device = "/mnt/backup/Share/Documents/Personal";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
