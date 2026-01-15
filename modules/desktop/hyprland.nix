@@ -14,11 +14,6 @@
     login.enableGnomeKeyring = true;
   };
 
-  environment.sessionVariables = {
-    # Set the session name for Hyprland to fix strange session issues
-    DESKTOP_SESSION = "hyprland";
-  };
-
   # Use Greetd to launch Hyprland from TTY2
   services = {
     greetd = {
