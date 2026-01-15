@@ -13,7 +13,6 @@
     ../modules/desktop/tailscale.nix
     ../modules/desktop/hyprland.nix
     ../modules/desktop/nvidia.nix
-    ../modules/desktop/mcp-servers.nix
     ../modules/desktop/razer.nix
     ../modules/scripts
     # Using community hardware configurations
