@@ -71,7 +71,7 @@
           ];
         };
         workstation = {
-          # Controls the monitor layout for hyprland
+          # Top monitor should be HDMI
           workspace = [
             "1, monitor:DP-4, default:true"
             "2, monitor:HDMI-A-5, default:true"
@@ -82,14 +82,14 @@
           ];
         };
         aiserver = {
-          # Controls the monitor layout for hyprland
+          # Top monitor should be HDMI
           workspace = [
-            "1, monitor:DP-4, default:true"
-            "2, monitor:HDMI-A-5, default:true"
+            "1, monitor:DP-1, default:true"
+            "2, monitor:HDMI-A-1, default:true"
           ];
           monitor = [
-            "DP-4,2560x1080@60,0x1080,1"
-            "HDMI-A-5,2560x1080@60,0x0,1"
+            "DP-1,2560x1080@60,0x1080,1"
+            "HDMI-A-1,2560x1080@60,0x0,1"
           ];
         };
       };
@@ -228,20 +228,19 @@
             )
           ];
         };
-        aiserver = nixpkgs-unstable.lib.nixosSystem {
+        aiserver = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
             inherit inputs;
-            nixpkgs = nixpkgs-unstable;
+            inherit hardwareConfig;
             inherit pkgs-unstable;
           };
           modules = [
             ./hosts/aiserver.nix
             inputs.sops-nix.nixosModules.sops
-            inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
-            inputs.home-manager-unstable.nixosModules.home-manager
+            inputs.home-manager.nixosModules.home-manager
             (
               { config, ... }:
               {
@@ -249,7 +248,7 @@
                   extraSpecialArgs = {
                     inherit
                       inputs
-                      nixpkgs # unstable packages
+                      pkgs
                       pkgs-unstable
                       system
                       ;
