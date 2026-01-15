@@ -26,7 +26,6 @@
       powerOnBoot = true;
       settings = {
         General = {
-          Experimental = true; # Enable experimental features
           FastConnectable = true; # Improve connection speed
           JustWorksRepairing = "always";
           ControllerMode = "bredr"; # Allow low energy mode?
