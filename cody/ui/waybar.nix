@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  hardwareConfig,
   ...
 }:
 
@@ -275,12 +276,20 @@ in
       enable = true;
       target = "graphical-session.target";
     };
-    settings = {
-      # Duplicate the bars for each monitor
-      monitor1 = createBar productivityBarConfig "DP-1" "top";
-      monitor2 = createBar secondaryBarConfig "HDMI-A-4" "top";
-      monitor3 = createBar productivityBarConfig "DP-4" "top";
-    };
+    settings = builtins.listToAttrs (
+      lib.imap0 (
+        i: monitor:
+        let
+          monitorName = builtins.head (lib.splitString "," monitor);
+          isPrimary = i == 0;
+          barConfig = if isPrimary then productivityBarConfig else secondaryBarConfig;
+        in
+        {
+          name = "monitor${toString (i + 1)}";
+          value = createBar barConfig monitorName "top";
+        }
+      ) hardwareConfig.monitor
+    );
     style = lib.mkForce ''
       * {
         font-family: 'JetBrainsMono Nerd Font', Inter, Roboto, Helvetica, Arial, sans-serif;
