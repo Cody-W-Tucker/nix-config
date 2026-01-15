@@ -29,8 +29,8 @@ let
     waybarConfig: output: position:
     waybarConfig
     // {
-      output = output;
-      position = position;
+      inherit output;
+      inherit position;
     };
   # Productivity Bar Config: This is the main bar for the main monitor.
   productivityBarConfig = {
