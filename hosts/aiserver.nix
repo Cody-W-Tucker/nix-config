@@ -13,6 +13,11 @@
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
     inputs.nixos-hardware.nixosModules.common-cpu-amd
+    ../modules/desktop
+    ../modules/desktop/tailscale.nix
+    ../modules/desktop/hyprland.nix
+    ../modules/desktop/razer.nix
+    ../modules/scripts
   ];
 
   # Bootloader
@@ -67,36 +72,22 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
+  hardware = {
+    graphics.extraPackages = with pkgs; [
       rocmPackages.clr.icd
       rocmPackages.rocminfo
       rocmPackages.rocm-smi
     ];
-  };
+    amdgpu = {
+      opencl.enable = true; # Enables ROCm-based OpenCL
+      initrd.enable = true; # Loads amdgpu in initrd for early detection
+    };
 
-  hardware.amdgpu = {
-    opencl.enable = true; # Enables ROCm-based OpenCL
-    initrd.enable = true; # Loads amdgpu in initrd for early detection
   };
-
-  environment.systemPackages = with pkgs; [
-    rocmPackages.clr
-    rocmPackages.rocminfo
-    rocmPackages.rocm-smi
-  ];
 
   services.ollama = {
-    enable = true;
     package = pkgs.ollama-rocm;
   };
 
-  systemd.services.ollama.serviceConfig.Environment = [
-    "HSA_OVERRIDE_GFX_VERSION=11.0.0"
-    "HIP_VISIBLE_DEVICES=0"
-  ];
-
-  system.stateVersion = "25.11"; # Did you read the comment?
-
+  system.stateVersion = "25.11"; # Don't change
 }

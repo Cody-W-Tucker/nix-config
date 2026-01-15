@@ -81,6 +81,17 @@
             "HDMI-A-5,2560x1080@60,0x0,1"
           ];
         };
+        aiserver = {
+          # Controls the monitor layout for hyprland
+          workspace = [
+            "1, monitor:DP-4, default:true"
+            "2, monitor:HDMI-A-5, default:true"
+          ];
+          monitor = [
+            "DP-4,2560x1080@60,0x1080,1"
+            "HDMI-A-5,2560x1080@60,0x0,1"
+          ];
+        };
       };
     in
     {
@@ -227,6 +238,8 @@
           modules = [
             ./hosts/aiserver.nix
             inputs.sops-nix.nixosModules.sops
+            inputs.qdrant-upload.nixosModules.default
+            inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager-unstable.nixosModules.home-manager
             (
@@ -236,10 +249,11 @@
                   extraSpecialArgs = {
                     inherit
                       inputs
-                      nixpkgs
+                      nixpkgs # unstable packages
                       pkgs-unstable
                       system
                       ;
+                    hardwareConfig = hardwareConfig.aiserver;
                   };
                   useGlobalPkgs = false;
                   useUserPackages = true;
@@ -247,9 +261,15 @@
                   sharedModules = [
                     inputs.sops-nix.homeManagerModules.sops
                     inputs.stylix.homeModules.stylix
+                    (
+                      { ... }:
+                      {
+                        nixpkgs.config.allowUnfree = true;
+                      }
+                    )
                   ];
                   users.codyt.imports = [
-                    ./cody/cli.nix
+                    ./cody/ui.nix
                     ./secrets/home-secrets.nix
                     inputs.nixvim.homeManagerModules.nixvim
                   ];
