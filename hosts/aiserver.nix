@@ -157,7 +157,20 @@
       opencl.enable = true; # Enables ROCm-based OpenCL
       initrd.enable = true; # Loads amdgpu in initrd for early detection
     };
+  };
 
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      cups-filters
+      cups-browsed
+    ];
   };
 
   # Provisionary ai chat interface TODO: Should remove later
