@@ -299,15 +299,6 @@
       intel-ocl # Generic OpenCL support
       # For Broadwell and newer (ca. 2014+), use with LIBVA_DRIVER_NAME=iHD:
       intel-media-driver
-      # For older processors, use with LIBVA_DRIVER_NAME=i965:
-      intel-vaapi-driver
-      libva-vdpau-driver
-      # For 13th gen and newer:
-      intel-compute-runtime
-      # For older processors:
-      intel-compute-runtime-legacy1
-      # For 11th gen and newer:
-      vpl-gpu-rt
     ];
   };
 }
