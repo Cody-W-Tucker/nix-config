@@ -160,8 +160,14 @@
 
   };
 
+  # Provisionary ai chat interface TODO: Should remove later
+  services.open-webui = {
+    enable = true;
+  };
+
   services.ollama = {
-    package = pkgs.ollama-rocm;
+    enable = true;
+    package = pkgs.ollama-vulkan;
   };
 
   system.stateVersion = "25.11"; # Don't change
