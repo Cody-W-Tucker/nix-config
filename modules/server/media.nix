@@ -267,40 +267,47 @@
   };
 
   # Backup media to workstation hard drive
-  services.borgbackup.jobs.media = {
-    user = "codyt";
-    paths = "/mnt/media/Media";
-    encryption.mode = "none";
-    environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
-    repo = "codyt@192.168.1.238:/mnt/backup/Media";
-    compression = "lz4";
-    startAt = "daily";
-    exclude = [
-      "/mnt/media/Media/Downloads"
-      "*.nfo"
-      "*.jpg"
-      "*.png"
-      "*.svg"
-    ];
-  };
-
-  environment.systemPackages = [
-    pkgs.jellyfin
-    pkgs.jellyfin-web
-    pkgs.jellyfin-ffmpeg
-  ];
+  # services.borgbackup.jobs.media = {
+  #   user = "codyt";
+  #   paths = "/mnt/media/Media";
+  #   encryption.mode = "none";
+  #   environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
+  #   repo = "codyt@192.168.1.238:/mnt/backup/Media";
+  #   compression = "lz4";
+  #   startAt = "daily";
+  #   exclude = [
+  #     "/mnt/media/Media/Downloads"
+  #     "*.nfo"
+  #     "*.jpg"
+  #     "*.png"
+  #     "*.svg"
+  #   ];
+  # };
 
   # 1. enable vaapi on OS-level
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";
+  };
+
   hardware.graphics = {
     enable = true;
+
     extraPackages = with pkgs; [
+      intel-ocl # Generic OpenCL support
+      # For Broadwell and newer (ca. 2014+), use with LIBVA_DRIVER_NAME=iHD:
       intel-media-driver
-      intel-vaapi-driver # previously vaapiIntel
+      # For older processors, use with LIBVA_DRIVER_NAME=i965:
+      intel-vaapi-driver
       libva-vdpau-driver
-      libvdpau-va-gl
+      # For 13th gen and newer:
+      intel-compute-runtime
+      # For older processors:
+      intel-compute-runtime-legacy1
+      # For 11th gen and newer:
+      vpl-gpu-rt
     ];
   };
 }
