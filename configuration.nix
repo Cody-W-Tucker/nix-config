@@ -138,6 +138,9 @@
     "beast" = {
       id = "WS3XKRH-JILABRE-NLK2NU6-BGPXTOY-TOO2K75-UYEY7HB-KO7NKAC-I37UGQ3";
     };
+    "aiserver" = {
+      id = "XZHQW3I-WDGDIXT-2NRBVX4-KYHS324-UNSWTZP-LUQKWYE-VPILMKA-2H6MFAA";
+    };
   };
 
   # Enable the OpenSSH daemon.
