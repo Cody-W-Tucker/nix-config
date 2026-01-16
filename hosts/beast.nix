@@ -93,7 +93,7 @@
         path = "/mnt/backup/Share";
         devices = [
           "server"
-          "aiserver"
+          # "ai-server"
         ];
       };
       "Cody's Obsidian" = {
