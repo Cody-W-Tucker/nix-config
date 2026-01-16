@@ -77,7 +77,7 @@
         path = "/mnt/backup/Share";
         devices = [
           "server"
-          "workstation"
+          "beast"
         ];
       };
       "Cody's Obsidian" = {
