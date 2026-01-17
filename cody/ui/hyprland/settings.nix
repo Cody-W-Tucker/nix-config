@@ -74,6 +74,9 @@ let
 
     # Toggle waybar
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
+
+    # Layout changes
+    "${mainMod}, D, layoutmsg, togglesplit"
   ];
 in
 {
