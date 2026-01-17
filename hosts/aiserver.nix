@@ -159,6 +159,13 @@
     };
   };
 
+  # AMD-specific environment variables
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "radeonsi";
+    GBM_BACKEND = "radeonsi";
+    VDPAU_DRIVER = "radeonsi";
+  };
+
   services.avahi = {
     enable = true;
     nssmdns4 = true;
