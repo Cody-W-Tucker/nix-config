@@ -176,6 +176,7 @@
   # Provisionary ai chat interface TODO: Should remove later
   services.open-webui = {
     enable = true;
+    openFirewall = true;
   };
 
   services.ollama = {
