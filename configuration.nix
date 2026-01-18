@@ -29,7 +29,7 @@
     git
     nixpkgs-fmt
     starship
-    (btop.override { cudaSupport = true; })
+    btop
     wget
     borgbackup
   ];

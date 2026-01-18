@@ -62,14 +62,7 @@
   };
   # Local AI models
   services = {
-    ollama = {
-      enable = true;
-      port = 11434;
-      package = pkgs-unstable.ollama;
-      openFirewall = true;
-      acceleration = "cuda";
-      host = "0.0.0.0";
-    };
+    ollama.enable = true;
     # Graph database
     neo4j = {
       enable = true;
@@ -81,8 +74,6 @@
     tika = {
       enable = true;
       port = 9998;
-      openFirewall = true;
-      listenAddress = "0.0.0.0";
     };
     # Vector Search http port 6333, gRPC port 6334
     qdrant = {
