@@ -12,12 +12,9 @@ pkgs.writeShellScriptBin "web-search" ''
 
     URLS=(
       ["🔍 Google"]="https://www.google.com/search?q="
-      ["🧠 Perplexity"]="https://www.perplexity.ai/search/?q="
-      ["🗃️ Hoarder"]="https://hoarder.homehub.tv/dashboard/search?q="
       ["❄️ Nix Options"]="https://mynixos.com/search?q="
       ["💻 GitHub"]="https://github.com/search?q="
-      ["🎥 YouTube"]="https://www.youtube.com/results?search_query="
-      ["📚 Wikipedia"]="https://en.wikipedia.org/wiki/Special:Search?search="
+      ["📚 Grokipedia"]="https://grokipedia.com/search?q="
     )
 
     gen_list() {
