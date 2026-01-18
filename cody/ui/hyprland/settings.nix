@@ -76,7 +76,7 @@ let
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
 
     # Layout changes
-    "${mainMod} SHIFT, T, layoutmsg, togglesplit"
+    "${mainMod}, D, layoutmsg, togglesplit"
   ];
 in
 {
