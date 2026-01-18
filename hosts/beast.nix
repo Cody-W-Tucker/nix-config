@@ -158,7 +158,12 @@
     ];
   };
 
-  swapDevices = [ ];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 16384; # 16GB swap file to handle memory-intensive builds
+    }
+  ];
 
   # Renaming the logging client to machine hostname
   services.promtail.configuration.scrape_configs = [
