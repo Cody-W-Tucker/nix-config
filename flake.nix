@@ -100,6 +100,7 @@
 
       # Builds the different systems
       nixosConfigurations = {
+        # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070
         beast = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
@@ -113,6 +114,9 @@
             inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
+            {
+              nixpkgs.config.cudaSupport = true;
+            }
             inputs.home-manager.nixosModules.home-manager
             (
               { config, ... }:
@@ -144,6 +148,7 @@
             )
           ];
         };
+        # Outdated workstation, tobe used as work server. CPU: i5-8500, GPU: nvidia 1650
         workstation = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
@@ -156,6 +161,9 @@
             inputs.sops-nix.nixosModules.sops
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
+            {
+              nixpkgs.config.cudaSupport = true;
+            }
             inputs.home-manager.nixosModules.home-manager
             (
               { config, ... }:
@@ -187,6 +195,7 @@
             )
           ];
         };
+        # Home server / media / homelab CPU: i7-7000
         server = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
@@ -228,6 +237,7 @@
             )
           ];
         };
+        # Main work workstation. GMKtec-evo2 APU: Strix Halo AI 395+ Max
         aiserver = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
@@ -240,6 +250,9 @@
             inputs.sops-nix.nixosModules.sops
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
+            {
+              nixpkgs.config.rocmSupport = true;
+            }
             inputs.home-manager.nixosModules.home-manager
             (
               { config, ... }:
