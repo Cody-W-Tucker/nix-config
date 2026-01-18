@@ -45,7 +45,7 @@
     "btusb"
   ];
 
-  # Use the latest kernel and matching NVIDIA driver
+  # Use the latest kernel
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
   # v4l2loopback for virtual camera in obs
@@ -161,7 +161,7 @@
   swapDevices = [
     {
       device = "/swapfile";
-      size = 16384; # 16GB swap file to handle memory-intensive builds
+      size = 65536; # 64GB swap file to handle memory-intensive builds
     }
   ];
 
@@ -194,20 +194,6 @@
       prismlauncher
     ]
   );
-
-  # NVIDIA-specific environment variables
-  environment.sessionVariables = {
-    # ---------------------------
-    # Nvidia & Graphics Drivers
-    # ---------------------------
-    LIBVA_DRIVER_NAME = "nvidia";
-    NVD_BACKEND = "direct";
-    GBM_BACKEND = "nvidia-drm";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    __GL_GSYNC_ALLOWED = "1";
-    CUDA_CACHE_PATH = "\${HOME}/.cache/nv";
-    WLR_NO_HARDWARE_CURSORS = "1"; # Fixes NVIDIA cursor issues in HDR
-  };
 
   # Should be the same as the version of NixOS you installed on this machine.
   system.stateVersion = "25.05"; # Did you read the comment?
