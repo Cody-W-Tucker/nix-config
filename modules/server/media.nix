@@ -39,6 +39,7 @@
       enable = true;
       group = "media";
       listen.port = 8083;
+      options.calibreLibrary = "/mnt/media/Media/Books";
     };
 
     # Using for server for readarr
