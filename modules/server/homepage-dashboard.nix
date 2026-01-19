@@ -155,6 +155,13 @@ in
               };
             }
             {
+              CalibreWeb = {
+                href = "https://books.${domain}";
+                icon = "calibre";
+                description = "Ebook Reader Software";
+              };
+            }
+            {
               Miniflux = {
                 href = "https://rss.${domain}";
                 icon = "miniflux";
