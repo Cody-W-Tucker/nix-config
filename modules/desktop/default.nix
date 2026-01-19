@@ -57,9 +57,4 @@
     21118
     21119
   ];
-
-  # Default browser on the system
-  programs.firefox = {
-    enable = true;
-  };
 }
