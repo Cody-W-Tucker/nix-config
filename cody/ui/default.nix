@@ -31,6 +31,9 @@
     };
   };
 
+  # Bluetooth applet for Waybar
+  services.blueman-applet.enable = true; # Bluetooth manager
+
   home.packages = with pkgs; [
     # list of stable packages go here
     grim # Screenshot utility
