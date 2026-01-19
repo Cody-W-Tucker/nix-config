@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -61,6 +61,5 @@
   # Default browser on the system
   programs.firefox = {
     enable = true;
-    package = pkgs-unstable.firefox;
   };
 }
