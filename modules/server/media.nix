@@ -38,10 +38,10 @@
     calibre-web = {
       enable = true;
       group = "media";
-      port = 8083;
+      listen.port = 8083;
     };
 
-    # Using for Book metadata for readarr
+    # Using for server for readarr
     calibre-server = {
       enable = true;
       group = "media";
