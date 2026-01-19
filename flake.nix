@@ -134,50 +134,6 @@
             )
           ];
         };
-        # Outdated workstation, tobe used as work server. CPU: i5-8500, GPU: nvidia 1650
-        workstation = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs;
-            inherit hardwareConfig;
-            inherit pkgs-unstable;
-          };
-          modules = [
-            ./hosts/workstation.nix
-            inputs.sops-nix.nixosModules.sops
-            inputs.flake-programs-sqlite.nixosModules.programs-sqlite
-            ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
-            (
-              { config, ... }:
-              {
-                home-manager = {
-                  extraSpecialArgs = {
-                    inherit
-                      inputs
-                      pkgs
-                      pkgs-unstable
-                      system
-                      ;
-                    hardwareConfig = hardwareConfig.workstation;
-                  };
-                  useGlobalPkgs = false;
-                  useUserPackages = true;
-                  backupFileExtension = "backup";
-                  sharedModules = [
-                    inputs.sops-nix.homeManagerModules.sops
-                    inputs.stylix.homeModules.stylix
-                  ];
-                  users.codyt.imports = [
-                    ./cody/ui.nix
-                    ./secrets/home-secrets.nix
-                    inputs.nixvim.homeManagerModules.nixvim
-                  ];
-                };
-              }
-            )
-          ];
-        };
         # Home server / media / homelab CPU: i7-7000
         server = nixpkgs.lib.nixosSystem {
           inherit system;
