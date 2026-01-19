@@ -36,7 +36,4 @@
   };
   # Bluetooth audio support
   services.blueman.enable = true;
-
-  # Bluetooth applet for Waybar
-  services.blueman-applet.enable = true; # Bluetooth manager
 }
