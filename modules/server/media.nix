@@ -34,6 +34,13 @@
       port = 9123;
     };
 
+    # Calibre web for reading Books
+    calibre-web = {
+      enable = true;
+      group = "media";
+      port = 8083;
+    };
+
     # Using for Book metadata for readarr
     calibre-server = {
       enable = true;
@@ -181,6 +188,15 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           proxyPass = "http://localhost:4533";
+          proxyWebsockets = true;
+        };
+        kTLS = true;
+      };
+      "books.homehub.tv" = {
+        forceSSL = true;
+        useACMEHost = "homehub.tv";
+        locations."/" = {
+          proxyPass = "http://localhost:8083";
           proxyWebsockets = true;
         };
         kTLS = true;
