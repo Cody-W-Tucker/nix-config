@@ -1,7 +1,6 @@
 {
   inputs,
   pkgs,
-  pkgs-unstable,
   ...
 }:
 
@@ -24,9 +23,6 @@
     };
   };
 
-  # Bluetooth applet for Waybar
-  services.blueman-applet.enable = true; # Bluetooth manager
-
   gtk = {
     enable = true;
     iconTheme = {
@@ -35,43 +31,38 @@
     };
   };
 
-  home.packages =
-    (with pkgs; [
-      # list of stable packages go here
-      grim # Screenshot utility
-      slurp # Selection tool for screenshots
-      wl-clipboard # Clipboard utility for Wayland
-      tesseract4 # OCR utility
-      (pkgs.writeScriptBin "screenshot-ocr" ''
-        #!/bin/sh
-        imgname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S).png"
-        txtname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S)"
-        txtfname=$txtname.txt
-        grim -g "$(slurp)" $imgname;
-        tesseract $imgname $txtname;
-        wl-copy -n < $txtfname
-      '')
-      hyprpicker # Color picker for Hyprland
-      playerctl # Media player control utility
-      libnotify # Notification library
-      todoist # cli client
-      todoist-electron # Electron client for Todoist
-      nautilus # File manager
-      nixd # Nix daemon for development
-      timewarrior # Time tracking utility
-      inputs.zen-browser.packages.${pkgs.system}.default # Zen browser
-      baobab # Gnome disk usage app
-      gcalcli # Google Calendar CLI tool
-      taskwarrior-tui # TUI for Taskwarrior
-      feishin # Desktop app music player
-      wttrbar # Weather bar for Waybar
-      chromium
-      vesktop
-    ])
-    ++ (with pkgs-unstable; [
-      # list of unstable packages go here
-      vscode
-    ]);
+  home.packages = with pkgs; [
+    # list of stable packages go here
+    grim # Screenshot utility
+    slurp # Selection tool for screenshots
+    wl-clipboard # Clipboard utility for Wayland
+    tesseract4 # OCR utility
+    (pkgs.writeScriptBin "screenshot-ocr" ''
+      #!/bin/sh
+      imgname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S).png"
+      txtname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S)"
+      txtfname=$txtname.txt
+      grim -g "$(slurp)" $imgname;
+      tesseract $imgname $txtname;
+      wl-copy -n < $txtfname
+    '')
+    hyprpicker # Color picker for Hyprland
+    playerctl # Media player control utility
+    libnotify # Notification library
+    todoist # cli client
+    todoist-electron # Electron client for Todoist
+    nautilus # File manager
+    nixd # Nix daemon for development
+    timewarrior # Time tracking utility
+    inputs.zen-browser.packages.${pkgs.system}.default # Zen browser
+    baobab # Gnome disk usage app
+    gcalcli # Google Calendar CLI tool
+    taskwarrior-tui # TUI for Taskwarrior
+    feishin # Desktop app music player
+    wttrbar # Weather bar for Waybar
+    chromium
+    vesktop
+  ];
 
   # Obs for screenrecording
   programs.obs-studio = {

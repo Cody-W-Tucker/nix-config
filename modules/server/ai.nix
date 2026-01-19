@@ -1,4 +1,3 @@
-{ pkgs-unstable, ... }:
 {
   # Enable CUDA in containers
   hardware.nvidia-container-toolkit.enable = true;
