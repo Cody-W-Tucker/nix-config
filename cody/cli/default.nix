@@ -16,9 +16,14 @@
       fastfetch
       unzip
       zip
-      inputs.opencode.packages.${pkgs.system}.default
     ]
   );
+
+  programs.opencode = {
+    enable = true;
+    # Use most reccent package from flake
+    package = inputs.opencode.packages.${pkgs.system}.default;
+  };
 
   home.sessionVariables = {
     VISUAL = "nvim";
