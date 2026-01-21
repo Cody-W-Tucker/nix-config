@@ -23,6 +23,7 @@
     enable = true;
     # Use most reccent package from flake
     package = inputs.opencode.packages.${pkgs.system}.default;
+    settings.theme = "system";
   };
 
   home.sessionVariables = {
