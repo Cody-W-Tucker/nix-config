@@ -30,13 +30,13 @@
       };
       kTLS = true;
     };
-    "aiserver-syncthing.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://aiserver:8384/";
-      };
-      kTLS = true;
-    };
+    # "aiserver-syncthing.homehub.tv" = {
+    #   forceSSL = true;
+    #   useACMEHost = "homehub.tv";
+    #   locations."/" = {
+    #     proxyPass = "http://aiserver:8384/";
+    #   };
+    #   kTLS = true;
+    # };
   };
 }
