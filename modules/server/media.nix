@@ -232,6 +232,7 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://localhost:9696";
+          proxyWebsockets = true;
         };
         kTLS = true;
       };
@@ -241,6 +242,7 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://localhost:7878";
+          proxyWebsockets = true;
         };
         kTLS = true;
       };
@@ -250,6 +252,7 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://localhost:8787";
+          proxyWebsockets = true;
         };
         kTLS = true;
       };
@@ -259,6 +262,7 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://localhost:6767";
+          proxyWebsockets = true;
         };
         kTLS = true;
       };
@@ -268,6 +272,7 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://localhost:8989";
+          proxyWebsockets = true;
         };
         kTLS = true;
       };
@@ -277,6 +282,7 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://localhost:8686";
+          proxyWebsockets = true;
         };
         kTLS = true;
       };
