@@ -49,7 +49,7 @@
   };
 
   networking = {
-    hostName = "ai_server";
+    hostName = "aiserver";
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
   };
