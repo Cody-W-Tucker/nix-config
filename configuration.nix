@@ -124,25 +124,6 @@
   # Include all firmware for devices like Bluetooth
   hardware.enableRedistributableFirmware = true;
 
-  # Syncthing shared configuration
-  services.syncthing.settings.devices = {
-    "server" = {
-      id = "RWUUJ5C-MDAHVZZ-M7FK6NB-W5WAWIX-QFFDD4G-7QAQWHG-73ZM7Y5-6X5YCQR";
-    };
-    "workstation" = {
-      id = "7YDHDRD-FYM5KFG-BKQLPGL-RFP6JFE-DXD27F4-HVJWV3A-TAKVJSX-LGNHNQM";
-    };
-    "Cody's Pixel" = {
-      id = "T3CJ4YF-RDXUROW-E7NZOKN-BZXE67E-NQWOHVO-UD5BCCS-2A6KONP-LTA5BQF";
-    };
-    "beast" = {
-      id = "WS3XKRH-JILABRE-NLK2NU6-BGPXTOY-TOO2K75-UYEY7HB-KO7NKAC-I37UGQ3";
-    };
-    "aiserver" = {
-      id = "XZHQW3I-WDGDIXT-2NRBVX4-KYHS324-UNSWTZP-LUQKWYE-VPILMKA-2H6MFAA";
-    };
-  };
-
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   # Enable fail2ban for ssh protection

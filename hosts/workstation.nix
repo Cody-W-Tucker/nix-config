@@ -141,28 +141,6 @@
     }
   ];
 
-  # Backup configuration
-  services.syncthing = {
-    user = "codyt";
-    group = "users";
-    settings.folders = {
-      "share" = {
-        path = "/mnt/backup/Share";
-        devices = [
-          "server"
-          "workstation"
-        ];
-      };
-      "Cody's Obsidian" = {
-        path = "/home/codyt/Sync/Cody-Obsidian";
-        devices = [
-          "workstation"
-          "Cody's Pixel"
-        ];
-      };
-    };
-  };
-
   # Hardware config
   boot = {
     kernelParams = [

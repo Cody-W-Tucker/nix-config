@@ -15,7 +15,8 @@
     ./paperless.nix
     ./photos.nix
     ./samba.nix
-    ./syncthing.nix
+    ../syncthing.nix
+    ./nginx-syncthing.nix
     ./security.nix
   ];
 
