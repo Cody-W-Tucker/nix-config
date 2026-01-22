@@ -76,8 +76,8 @@
       };
     })
 
-    # Aiserver folders
-    (lib.mkIf (config.networking.hostName == "aiserver") {
+      # Aiserver folders
+      (lib.mkIf (config.networking.hostName == "aiserver") {
       "share" = {
         path = "/mnt/backup/Share";
         devices = [
