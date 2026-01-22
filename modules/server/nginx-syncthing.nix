@@ -5,27 +5,23 @@
     upstreams = {
       server_syncthing = {
         servers = {
-          "server:8384" = { };
+          "127.0.0.1:8384" = { };
         };
-        extraConfig = "resolver 100.100.100.100;";
       };
-      workstation_syncthing = {
-        servers = {
-          "workstation:8384" = { };
-        };
-        extraConfig = "resolver 100.100.100.100;";
-      };
+      # workstation_syncthing = {
+      #   servers = {
+      #     "workstation:8384" = { };
+      #   };
+      # };
       beast_syncthing = {
         servers = {
-          "beast:8384" = { };
+          "100.108.143.19:8384" = { };
         };
-        extraConfig = "resolver 100.100.100.100;";
       };
       aiserver_syncthing = {
         servers = {
-          "aiserver:8384" = { };
+          "100.68.141.25:8384" = { };
         };
-        extraConfig = "resolver 100.100.100.100;";
       };
     };
   };
@@ -39,14 +35,14 @@
       };
       kTLS = true;
     };
-    "workstation-syncthing.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://workstation_syncthing/";
-      };
-      kTLS = true;
-    };
+    # "workstation-syncthing.homehub.tv" = {
+    #   forceSSL = true;
+    #   useACMEHost = "homehub.tv";
+    #   locations."/" = {
+    #     proxyPass = "http://workstation_syncthing/";
+    #   };
+    #   kTLS = true;
+    # };
     "beast-syncthing.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";
