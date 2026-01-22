@@ -1,6 +1,10 @@
 { ... }:
 
 {
+  services.nginx = {
+    resolver.addresses = [ "100.100.100.100" ]; # Tailscale DNS resolver
+  };
+
   services.nginx.virtualHosts = {
     "server-syncthing.homehub.tv" = {
       forceSSL = true;
