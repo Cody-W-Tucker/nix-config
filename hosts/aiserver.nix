@@ -68,26 +68,6 @@
     ];
   };
 
-  # Sync configuration for user directories
-  services.syncthing = {
-    user = "codyt";
-    group = "users";
-    configDir = "/home/codyt/.config/syncthing";
-    settings.folders = {
-      "share" = {
-        path = "/mnt/backup/Share";
-        devices = [
-          "server"
-          "beast"
-        ];
-      };
-      "Cody's Obsidian" = {
-        path = "/home/codyt/Sync/Cody-Obsidian";
-        devices = [ "Cody's Pixel" ];
-      };
-    };
-  };
-
   # User home directories
   fileSystems."/home/codyt/Records" = {
     device = "/mnt/backup/Share/Records";

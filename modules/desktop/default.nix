@@ -3,7 +3,7 @@
 {
   imports = [
     ./audio.nix
-    ./clientSyncthing.nix
+    ../syncthing.nix
     ./logging.nix
   ];
 
