@@ -64,7 +64,7 @@
     feishin # Desktop app music player
     wttrbar # Weather bar for Waybar
     chromium
-    vesktop
+    dissent
   ];
 
   # Obs for screenrecording
