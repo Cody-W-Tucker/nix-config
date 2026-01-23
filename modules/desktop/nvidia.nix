@@ -7,7 +7,6 @@
   hardware.nvidia = {
     open = true;
     powerManagement.enable = true;
-    powerManagement.finegrained = true;
     package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
