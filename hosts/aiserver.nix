@@ -156,7 +156,6 @@
 
   services.ollama = {
     enable = true;
-    rocmOverrideGfx = "11.0.0";
   };
 
   system.stateVersion = "25.11"; # Don't change
