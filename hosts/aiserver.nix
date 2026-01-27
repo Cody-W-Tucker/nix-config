@@ -156,6 +156,7 @@
 
   services.ollama = {
     enable = true;
+    acceleration = "rocm";
   };
 
   system.stateVersion = "25.11"; # Don't change
