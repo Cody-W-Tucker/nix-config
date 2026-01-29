@@ -11,6 +11,7 @@
     drivers = with pkgs; [
       cups-filters
       cups-browsed
+      canon-cups-ufr2
     ];
   };
 }
