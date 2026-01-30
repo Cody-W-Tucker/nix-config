@@ -49,6 +49,8 @@
     21117
     21118
     21119
+    8384 # Syncthing GUI
+    22000 # Syncthing sync protocol
   ];
   networking.firewall.allowedUDPPorts = [
     21115
@@ -56,5 +58,7 @@
     21117
     21118
     21119
+    22000 # Syncthing sync protocol
+    21027 # Syncthing local discovery
   ];
 }
