@@ -4,6 +4,15 @@ let
   inherit (config) xdg;
 in
 {
+  # Enable XDG user directories with custom Projects folder
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+    extraConfig = {
+      XDG_PROJECTS_DIR = "$HOME/Projects";
+    };
+  };
+
   # Override the default XDG directories for items that don't follow the XDG spec
   home.sessionVariables = {
     PYLINTHOME = "${xdg.cacheHome}/pylint";

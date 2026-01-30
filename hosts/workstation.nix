@@ -114,6 +114,15 @@
     ];
   };
 
+  fileSystems."/home/codyt/Knowledge/Personal" = {
+    device = "/mnt/backup/Obsidian";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

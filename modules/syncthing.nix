@@ -53,7 +53,7 @@
         ];
       };
       "Cody's Obsidian" = {
-        path = "/home/codyt/Sync/Cody-Obsidian";
+        path = "/mnt/backup/Obsidian";
         devices = [
           "workstation"
           "Cody's Pixel"
@@ -71,7 +71,7 @@
         ];
       };
       "Cody's Obsidian" = {
-        path = "/home/codyt/Sync/Cody-Obsidian";
+        path = "/mnt/backup/Obsidian";
         devices = [ "Cody's Pixel" ];
       };
     })
@@ -86,7 +86,7 @@
         ];
       };
       "Cody's Obsidian" = {
-        path = "/home/codyt/Sync/Cody-Obsidian";
+        path = "/mnt/backup/Obsidian";
         devices = [ "Cody's Pixel" ];
       };
     })
