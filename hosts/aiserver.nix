@@ -114,8 +114,8 @@
     ];
   };
 
-  fileSystems."/home/codyt/Sync/Cody-Obsidian" = {
-    device = "/mnt/backup/Share/Documents/Personal";
+  fileSystems."/home/codyt/Knowledge/Personal" = {
+    device = "/mnt/backup/Obsidian";
     fsType = "none";
     options = [
       "bind"
