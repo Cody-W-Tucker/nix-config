@@ -69,15 +69,6 @@
   };
 
   # User home directories
-  fileSystems."/home/codyt/Records" = {
-    device = "/mnt/backup/Share/Records";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
-
   fileSystems."/home/codyt/Documents" = {
     device = "/mnt/backup/Share/Documents";
     fsType = "none";
