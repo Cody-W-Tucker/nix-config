@@ -42,7 +42,7 @@
     # Server folders
     (lib.mkIf (config.networking.hostName == "server") {
       "share" = {
-        path = "/mnt/backup/Share";
+        path = "/mnt/media/Share";
         devices = [
           "server"
           "beast"
