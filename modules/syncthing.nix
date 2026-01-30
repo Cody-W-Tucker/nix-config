@@ -5,6 +5,7 @@
   # Basic Syncthing service configuration
   services.syncthing = {
     enable = true;
+    user = "codyt";
     openDefaultPorts = true;
     overrideDevices = true;
     overrideFolders = true;
