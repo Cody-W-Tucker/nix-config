@@ -29,12 +29,18 @@
     guiAddress = "0.0.0.0:8384";
   };
 
+  # Ensure syncthing directories exist with proper permissions
+  systemd.tmpfiles.rules = [
+    "d /mnt/backup/Share 0755 codyt users -"
+    "d /mnt/backup/Obsidian 0755 codyt users -"
+  ];
+
   # Hostname-specific folder configurations
   services.syncthing.settings.folders = lib.mkMerge [
     # Server folders
     (lib.mkIf (config.networking.hostName == "server") {
       "share" = {
-        path = "/mnt/media/Share";
+        path = "/mnt/backup/Share";
         devices = [
           "server"
           "workstation"
