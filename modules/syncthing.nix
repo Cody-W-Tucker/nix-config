@@ -6,6 +6,7 @@
   services.syncthing = {
     enable = true;
     user = "codyt";
+    dataDir = "/var/lib/syncthing";
     openDefaultPorts = true;
     overrideDevices = true;
     overrideFolders = true;
