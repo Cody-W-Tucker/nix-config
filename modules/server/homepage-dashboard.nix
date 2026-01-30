@@ -251,14 +251,29 @@ in
               };
             }
             {
-              Syncthing = {
-                href = "https://backup.${domain}";
+              ServerSyncthing = {
+                href = "https://server-syncthing.${domain}";
                 icon = "syncthing";
-                description = "File Synchronization";
+                description = "File Synchronization - Server";
+              };
+            }
+            {
+              BeastSyncthing = {
+                href = "https://beast-syncthing.${domain}";
+                icon = "syncthing";
+                description = "File Synchronization - Beast";
+              };
+            }
+            {
+              AIServerSyncthing = {
+                href = "https://aiserver-syncthing.${domain}";
+                icon = "syncthing";
+                description = "File Synchronization - AI Server";
               };
             }
           ];
         }
+
       ];
     };
   };
