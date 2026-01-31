@@ -179,7 +179,7 @@
         forceSSL = true;
         useACMEHost = "homehub.tv";
         locations."/" = {
-          proxyPass = "http://localhost:8096";
+          proxyPass = "http://127.0.0.1:8096";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -188,7 +188,7 @@
         forceSSL = true;
         useACMEHost = "homehub.tv";
         locations."/" = {
-          proxyPass = "http://localhost:4533";
+          proxyPass = "http://127.0.0.1:4533";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -197,7 +197,7 @@
         forceSSL = true;
         useACMEHost = "homehub.tv";
         locations."/" = {
-          proxyPass = "http://localhost:8083";
+          proxyPass = "http://127.0.0.1:8083";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -206,7 +206,7 @@
         forceSSL = true;
         useACMEHost = "homehub.tv";
         locations."/" = {
-          proxyPass = "http://localhost:9123";
+          proxyPass = "http://127.0.0.1:9123";
           proxyWebsockets = true;
           extraConfig = ''
             # Prevent 413 Request Entity Too Large error
@@ -221,7 +221,7 @@
         forceSSL = true;
         useACMEHost = "homehub.tv";
         locations."/" = {
-          proxyPass = "http://localhost:5055";
+          proxyPass = "http://127.0.0.1:5055";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -231,7 +231,7 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           recommendedProxySettings = true;
-          proxyPass = "http://localhost:9696";
+          proxyPass = "http://127.0.0.1:9696";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -241,7 +241,7 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           recommendedProxySettings = true;
-          proxyPass = "http://localhost:7878";
+          proxyPass = "http://127.0.0.1:7878";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -251,7 +251,7 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           recommendedProxySettings = true;
-          proxyPass = "http://localhost:8787";
+          proxyPass = "http://127.0.0.1:8787";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -261,7 +261,7 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           recommendedProxySettings = true;
-          proxyPass = "http://localhost:6767";
+          proxyPass = "http://127.0.0.1:6767";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -271,7 +271,7 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           recommendedProxySettings = true;
-          proxyPass = "http://localhost:8989";
+          proxyPass = "http://127.0.0.1:8989";
           proxyWebsockets = true;
         };
         kTLS = true;
@@ -281,7 +281,7 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           recommendedProxySettings = true;
-          proxyPass = "http://localhost:8686";
+          proxyPass = "http://127.0.0.1:8686";
           proxyWebsockets = true;
         };
         kTLS = true;
