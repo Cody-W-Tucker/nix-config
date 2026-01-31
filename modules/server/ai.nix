@@ -112,8 +112,8 @@
           type = "obsidian";
           collection = "personal";
           directories = [
-            "/home/codyt/Documents/Personal/Journal"
-            "/home/codyt/Documents/Personal/Knowledge"
+            "/home/codyt/Knowledge/Personal/Journal"
+            "/home/codyt/Knowledge/Personal/Knowledge"
           ];
           skipExisting = true;
         }
@@ -121,28 +121,28 @@
           name = "projects";
           type = "obsidian";
           collection = "projects";
-          directories = [ "/home/codyt/Documents/Personal/Projects" ];
+          directories = [ "/home/codyt/Knowledge/Personal/Projects" ];
           skipExisting = true;
         }
         {
           name = "inbox";
           type = "obsidian";
           collection = "inbox";
-          directories = [ "/home/codyt/Documents/Personal/Inbox" ];
+          directories = [ "/home/codyt/Knowledge/Personal/Inbox" ];
           skipExisting = true;
         }
         {
           name = "entities";
           type = "obsidian";
           collection = "entities";
-          directories = [ "/home/codyt/Documents/Personal/Entities" ];
+          directories = [ "/home/codyt/Knowledge/Personal/Entities" ];
           skipExisting = true;
         }
         {
           name = "research";
           type = "obsidian";
           collection = "research";
-          directories = [ "/home/codyt/Documents/Personal/Research" ];
+          directories = [ "/home/codyt/Knowledge/Personal/Research" ];
           skipExisting = true;
         }
       ];
