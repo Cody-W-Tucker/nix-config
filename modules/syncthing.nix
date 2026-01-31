@@ -43,6 +43,7 @@
         devices = [
           "server"
           "beast"
+          "aiserver"
         ];
       };
     })
@@ -54,6 +55,7 @@
         devices = [
           "aiserver"
           "beast"
+          "server"
         ];
       };
       "Cody's Obsidian" = {
