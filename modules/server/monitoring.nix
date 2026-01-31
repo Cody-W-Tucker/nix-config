@@ -69,6 +69,12 @@
                 host = "beast";
               };
             }
+            {
+              targets = [ "aiserver:9002" ];
+              labels = {
+                host = "aiserver";
+              };
+            }
           ];
         }
       ];
