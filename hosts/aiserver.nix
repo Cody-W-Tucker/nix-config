@@ -150,5 +150,25 @@
     acceleration = "rocm";
   };
 
+  # Renaming the logging client to machine hostname
+  services.promtail.configuration.scrape_configs = [
+    {
+      job_name = "journal";
+      journal = {
+        max_age = "12h";
+        labels = {
+          job = "systemd-journal";
+          host = "aiserver";
+        };
+      };
+      relabel_configs = [
+        {
+          source_labels = [ "__journal__systemd_unit" ];
+          target_label = "unit";
+        }
+      ];
+    }
+  ];
+
   system.stateVersion = "25.11"; # Don't change
 }
