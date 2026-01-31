@@ -16,9 +16,6 @@
       "server" = {
         id = "RWUUJ5C-MDAHVZZ-M7FK6NB-W5WAWIX-QFFDD4G-7QAQWHG-73ZM7Y5-6X5YCQR";
       };
-      # "workstation" = {
-      #   id = "7YDHDRD-FYM5KFG-BKQLPGL-RFP6JFE-DXD27F4-HVJWV3A-TAKVJSX-LGNHNQM";
-      # };
       "Cody's Pixel" = {
         id = "T3CJ4YF-RDXUROW-E7NZOKN-BZXE67E-NQWOHVO-UD5BCCS-2A6KONP-LTA5BQF";
       };
@@ -50,36 +47,21 @@
       };
     })
 
-    # Workstation folders
-    # (lib.mkIf (config.networking.hostName == "workstation") {
-    #   "share" = {
-    #     path = "/mnt/backup/Share";
-    #     devices = [
-    #       "server"
-    #       "workstation"
-    #     ];
-    #   };
-    #   "Cody's Obsidian" = {
-    #     path = "/mnt/backup/Obsidian";
-    #     devices = [
-    #       "workstation"
-    #       "Cody's Pixel"
-    #     ];
-    #   };
-    # })
-
     # Beast folders
     (lib.mkIf (config.networking.hostName == "beast") {
       "share" = {
         path = "/mnt/backup/Share";
         devices = [
-          "server"
           "aiserver"
+          "beast"
         ];
       };
       "Cody's Obsidian" = {
         path = "/mnt/backup/Obsidian";
-        devices = [ "Cody's Pixel" ];
+        devices = [
+          "Cody's Pixel"
+          "beast"
+        ];
       };
     })
 
@@ -88,13 +70,16 @@
       "share" = {
         path = "/mnt/backup/Share";
         devices = [
-          "server"
           "beast"
+          "aiserver"
         ];
       };
       "Cody's Obsidian" = {
         path = "/mnt/backup/Obsidian";
-        devices = [ "Cody's Pixel" ];
+        devices = [
+          "Cody's Pixel"
+          "aiserver"
+        ];
       };
     })
   ];
