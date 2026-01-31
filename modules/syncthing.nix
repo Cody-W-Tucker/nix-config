@@ -14,7 +14,7 @@
     # Shared Syncthing device definitions
     settings.devices = {
       "server" = {
-        id = "RWUUJ5C-MDAHVZZ-M7FK6NB-W5WAWIX-QFFDD4G-7QAQWHG-73ZM7Y5-6X5YCQR";
+        id = "KBLKS5F-5MMRUM6-M2LZHPW-CQMDXM4-RPHV7WT-V7Y6PQZ-QK3WUC2-MFRB7AC";
       };
       "Cody's Pixel" = {
         id = "T3CJ4YF-RDXUROW-E7NZOKN-BZXE67E-NQWOHVO-UD5BCCS-2A6KONP-LTA5BQF";
@@ -23,7 +23,7 @@
         id = "WS3XKRH-JILABRE-NLK2NU6-BGPXTOY-TOO2K75-UYEY7HB-KO7NKAC-I37UGQ3";
       };
       "aiserver" = {
-        id = "XZHQW3I-WDGDIXT-2NRBVX4-KYHS324-UNSWTZP-LUQKWYE-VPILMKA-2H6MFAA";
+        id = "2HCQD2S-RHNRARF-CR7XUXC-J76FL3E-DIA7TGH-OC7VVGF-BADHGJY-ZFWNCQY";
       };
     };
   };
@@ -70,6 +70,7 @@
       "share" = {
         path = "/mnt/backup/Share";
         devices = [
+          "server"
           "beast"
           "aiserver"
         ];
