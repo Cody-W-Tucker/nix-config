@@ -63,6 +63,7 @@
         devices = [
           "Cody's Pixel"
           "beast"
+          "aiserver"
         ];
       };
     })
@@ -81,6 +82,7 @@
         path = "/mnt/backup/Obsidian";
         devices = [
           "Cody's Pixel"
+          "beast"
           "aiserver"
         ];
       };
