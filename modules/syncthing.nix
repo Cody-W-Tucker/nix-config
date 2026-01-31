@@ -30,8 +30,10 @@
 
   # Ensure syncthing directories exist with proper permissions
   systemd.tmpfiles.rules = [
-    "d /mnt/backup/Share 0755 codyt users -"
-    "d /mnt/backup/Obsidian 0755 codyt users -"
+    "d /mnt 0755 root root - -"
+    "d /mnt/backup 0755 codyt users - -"
+    "d /mnt/backup/Share 0755 codyt users - -"
+    "d /mnt/backup/Obsidian 0755 codyt users - -"
   ];
 
   # Hostname-specific folder configurations

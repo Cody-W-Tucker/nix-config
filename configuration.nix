@@ -96,6 +96,16 @@
   users.groups.media = { };
   users.groups.documents = { };
 
+  # Pre-create borgbackup directories to avoid duplicate tmpfiles warnings
+  # The borgbackup module automatically creates these, but when multiple jobs
+  # use the same user, it causes "duplicate line" warnings
+  systemd.tmpfiles.rules = [
+    "d /home/codyt/.cache 0755 codyt users - -"
+    "d /home/codyt/.cache/borg 0755 codyt users - -"
+    "d /home/codyt/.config 0755 codyt users - -"
+    "d /home/codyt/.config/borg 0755 codyt users - -"
+  ];
+
   # Optimization settings and garbage collection automation
   nix = {
     settings = {
