@@ -17,6 +17,7 @@
     enable = true;
     polarity = "dark";
     targets.nixvim.enable = false;
+    targets.firefox.profileNames = [ "default" ];
     opacity = {
       applications = 0.9;
       terminal = 0.8;
