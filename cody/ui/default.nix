@@ -138,6 +138,11 @@
         "gfx.webrender.enabled" = true;
         # Enable DMA-BUF for Wayland
         "widget.dmabuf.force-enabled" = true;
+        # Additional NVIDIA fixes
+        "media.ffmpeg.dmabuf-textures.enabled" = true;
+        "media.rdd-ffmpeg.enabled" = true;
+        # Disable software fallback for video decoding
+        "media.decoder-doctor.notifications-allowed" = false;
       };
     };
   };
