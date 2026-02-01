@@ -62,5 +62,7 @@
     __GL_GSYNC_ALLOWED = "1";
     CUDA_CACHE_PATH = "\${HOME}/.cache/nv";
     WLR_NO_HARDWARE_CURSORS = "1"; # Fixes NVIDIA cursor issues in HDR
+    # Required for Firefox/Zen hardware acceleration with NVIDIA
+    MOZ_DISABLE_RDD_SANDBOX = "1";
   };
 }
