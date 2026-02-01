@@ -124,6 +124,8 @@
       rocmPackages.clr.icd
       rocmPackages.rocminfo
       rocmPackages.rocm-smi
+      mesa
+      libva
     ];
     amdgpu = {
       opencl.enable = true; # Enables ROCm-based OpenCL
