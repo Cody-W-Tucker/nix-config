@@ -45,6 +45,11 @@
     libvdpau-va-gl
   ];
 
+  # 32-bit VA-API drivers for Firefox/Zen hardware acceleration
+  hardware.graphics.extraPackages32 = with pkgs; [
+    nvidia-vaapi-driver
+  ];
+
   # Use EGL for Wayland
   environment.systemPackages = with pkgs; [
     egl-wayland
