@@ -57,7 +57,6 @@
     nautilus # File manager
     nixd # Nix daemon for development
     timewarrior # Time tracking utility
-    inputs.zen-browser.packages.${pkgs.system}.default # Zen browser
     baobab # Gnome disk usage app
     gcalcli # Google Calendar CLI tool
     taskwarrior-tui # TUI for Taskwarrior
@@ -121,4 +120,23 @@
   # Playerctl Daemon to control media players from Waybar
   services.playerctld.enable = true;
   services.mpris-proxy.enable = true;
+
+  # Zen browser via Firefox module for hardware acceleration settings
+  programs.firefox = {
+    enable = true;
+    package = inputs.zen-browser.packages.${pkgs.system}.default;
+    preferences = {
+      # Enable VA-API video decoding
+      "media.ffmpeg.vaapi.enabled" = true;
+      # Force enable VA-API (even if blacklisted)
+      "media.ffmpeg.vaapi-force-enabled" = true;
+      # Enable hardware decoding
+      "media.hardware-video-decoding.enabled" = true;
+      # Enable WebRender for better GPU acceleration
+      "gfx.webrender.all" = true;
+      "gfx.webrender.enabled" = true;
+      # Enable DMA-BUF for Wayland
+      "widget.dmabuf.force-enabled" = true;
+    };
+  };
 }
