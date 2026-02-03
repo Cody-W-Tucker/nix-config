@@ -57,9 +57,11 @@
           background-color = mkLiteral "transparent";
         };
         "imagebox" = {
-          width = mkLiteral "20px";
+          padding = mkLiteral "20px 10px";
+          width = mkLiteral "80px";
+          expand = false;
           background-color = mkLiteral "transparent";
-          background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", width)'';
+          background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", height)'';
           orientation = mkLiteral "vertical";
           children = map mkLiteral [
             "dummy"
@@ -109,13 +111,13 @@
         };
         "mode-switcher" = {
           enabled = true;
-          spacing = mkLiteral "20px";
+          spacing = mkLiteral "10px";
           background-color = mkLiteral "transparent";
           text-color = mkLiteral "@foreground";
         };
         "button" = {
-          padding = mkLiteral "15px";
-          border-radius = mkLiteral "10px";
+          padding = mkLiteral "10px 5px";
+          border-radius = mkLiteral "8px";
           background-color = mkLiteral "@bg-alt";
           cursor = mkLiteral "pointer";
         };
