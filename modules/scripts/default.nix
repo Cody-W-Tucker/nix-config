@@ -4,6 +4,7 @@ let
   scriptNames = [
     ./rofi-launcher.nix
     ./rofi-web-launcher.nix
+    ./rofi-opencode.nix
     ./bluetooth-switch.nix
     ./update.nix
     ./ai-doc-upload.nix
