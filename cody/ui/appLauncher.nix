@@ -57,8 +57,7 @@
           background-color = mkLiteral "transparent";
         };
         "imagebox" = {
-          padding = mkLiteral "10px";
-          width = mkLiteral "180px";
+          width = mkLiteral "20px";
           background-color = mkLiteral "transparent";
           background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", width)'';
           orientation = mkLiteral "vertical";
