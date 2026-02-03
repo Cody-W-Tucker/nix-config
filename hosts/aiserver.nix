@@ -37,15 +37,10 @@
       "usb_storage"
       "sd_mod"
       "sdhci_pci"
-      "amdgpu"
     ];
-    initrd.kernelModules = [ "amdgpu" ];
     kernelModules = [
       "kvm-amd"
-      "amdgpu"
     ];
-    extraModulePackages = [ ];
-    kernelParams = [ "amdgpu.dc=1" ];
   };
 
   networking = {
