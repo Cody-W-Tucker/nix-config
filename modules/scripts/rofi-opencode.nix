@@ -29,5 +29,5 @@ pkgs.writeShellScriptBin "rofi-opencode" ''
 
   # Step 3: Launch kitty with opencode
   uwsm-app -- kitty --directory "$PROJECT_DIR/$selected_dir" \
-    -e opencode run "$command"
+    -e opencode --model "xai/grok-code-fast-1" run "$command"
 ''
