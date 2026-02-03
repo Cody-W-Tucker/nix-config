@@ -14,7 +14,9 @@
       location = 0;
       font = "JetBrains Nerd Font 16";
       drun-display-format = "{icon} {name}";
+      # display-web-search = "";
       display-drun = "";
+      # display-filebrowser = "";
     };
     theme =
       let
@@ -54,11 +56,21 @@
           ];
           background-color = mkLiteral "transparent";
         };
+        "imagebox" = {
+          padding = mkLiteral "20px";
+          background-color = mkLiteral "transparent";
+          background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", width)'';
+          orientation = mkLiteral "vertical";
+          children = map mkLiteral [
+            "dummy"
+            "mode-switcher"
+          ];
+        };
         "listbox" = {
           spacing = mkLiteral "20px";
           padding = mkLiteral "20px";
           background-color = mkLiteral "transparent";
-          orientation = mkLiteral "horizontal";
+          orientation = mkLiteral "vertical";
           children = map mkLiteral [
             "inputbar"
             "message"
@@ -90,6 +102,8 @@
           enabled = true;
           background-color = mkLiteral "inherit";
           cursor = mkLiteral "text";
+          placeholder = "Search";
+          placeholder-color = mkLiteral "inherit";
         };
         "mode-switcher" = {
           enabled = true;
