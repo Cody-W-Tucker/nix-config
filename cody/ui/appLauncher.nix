@@ -65,7 +65,6 @@
           orientation = mkLiteral "vertical";
           children = map mkLiteral [
             "dummy"
-            "mode-switcher"
           ];
         };
         "listbox" = {
@@ -108,18 +107,6 @@
           cursor = mkLiteral "text";
           font = mkLiteral "18px";
           expand = true;
-        };
-        "mode-switcher" = {
-          enabled = true;
-          spacing = mkLiteral "10px";
-          background-color = mkLiteral "transparent";
-          text-color = mkLiteral "@foreground";
-        };
-        "button" = {
-          padding = mkLiteral "10px 5px";
-          border-radius = mkLiteral "8px";
-          background-color = mkLiteral "@bg-alt";
-          cursor = mkLiteral "pointer";
         };
         "listview" = {
           enabled = true;
