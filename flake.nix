@@ -189,9 +189,6 @@
             inputs.sops-nix.nixosModules.sops
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
-            {
-              nixpkgs.config.rocmSupport = true;
-            }
             inputs.home-manager.nixosModules.home-manager
             (
               { config, ... }:
