@@ -34,8 +34,8 @@
         };
         "window" = {
           transparency = "real";
-          width = mkLiteral "800px";
-          height = mkLiteral "600px";
+          width = mkLiteral "900px";
+          height = mkLiteral "650px";
           location = mkLiteral "center";
           anchor = mkLiteral "center";
           fullscreen = false;
@@ -57,7 +57,8 @@
           background-color = mkLiteral "transparent";
         };
         "imagebox" = {
-          padding = mkLiteral "20px";
+          padding = mkLiteral "10px";
+          width = mkLiteral "180px";
           background-color = mkLiteral "transparent";
           background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", width)'';
           orientation = mkLiteral "vertical";
@@ -68,9 +69,10 @@
         };
         "listbox" = {
           spacing = mkLiteral "20px";
-          padding = mkLiteral "20px";
+          padding = mkLiteral "25px";
           background-color = mkLiteral "transparent";
           orientation = mkLiteral "vertical";
+          expand = true;
           children = map mkLiteral [
             "inputbar"
             "message"
@@ -82,8 +84,8 @@
         };
         "inputbar" = {
           enabled = true;
-          spacing = mkLiteral "10px";
-          padding = mkLiteral "10px";
+          spacing = mkLiteral "15px";
+          padding = mkLiteral "15px";
           border-radius = mkLiteral "10px";
           background-color = mkLiteral "@bg-alt";
           children = map mkLiteral [
@@ -95,6 +97,7 @@
           enabled = true;
           expand = false;
           str = "";
+          font = mkLiteral "20px";
           background-color = mkLiteral "inherit";
           text-color = mkLiteral "inherit";
         };
@@ -102,8 +105,8 @@
           enabled = true;
           background-color = mkLiteral "inherit";
           cursor = mkLiteral "text";
-          placeholder = "Search";
-          placeholder-color = mkLiteral "inherit";
+          font = mkLiteral "18px";
+          expand = true;
         };
         "mode-switcher" = {
           enabled = true;
@@ -120,7 +123,7 @@
         "listview" = {
           enabled = true;
           columns = 1;
-          lines = 8;
+          lines = 10;
           cycle = true;
           dynamic = false;
           scrollbar = false;
@@ -132,6 +135,7 @@
           background-color = mkLiteral "transparent";
           text-color = mkLiteral "@foreground";
           cursor = "default";
+          expand = true;
         };
         "element" = {
           enabled = true;
@@ -160,9 +164,11 @@
           background-color = mkLiteral "transparent";
         };
         "textbox" = {
-          padding = mkLiteral "15px";
+          padding = mkLiteral "20px";
           border-radius = mkLiteral "10px";
           background-color = mkLiteral "@bg-alt";
+          text-color = mkLiteral "@text-color";
+          font = mkLiteral "16px";
           vertical-align = mkLiteral "0.5";
           horizontal-align = mkLiteral "0.0";
         };
