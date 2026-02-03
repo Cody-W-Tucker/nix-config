@@ -27,7 +27,7 @@ pkgs.writeShellScriptBin "rofi-opencode" ''
   # Exit if no command
   [[ -z "$command" ]] && exit 0
 
-  # Step 3: Launch kitty with opencode
-  uwsm-app -- kitty --directory "$PROJECT_DIR/$selected_dir" \
-    -e opencode --model "xai/grok-code-fast-1" --prompt "$command"
+  # Step 3: Launch kitty with interactive shell for direnv support
+  uwsm app -- kitty --directory "$PROJECT_DIR/$selected_dir" \
+    zsh -i -c "opencode --model 'xai/grok-code-fast-1' run '$command'"
 ''
