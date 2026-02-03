@@ -114,27 +114,6 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  hardware = {
-    graphics.extraPackages = with pkgs; [
-      rocmPackages.clr.icd
-      rocmPackages.rocminfo
-      rocmPackages.rocm-smi
-      mesa
-      libva
-    ];
-    amdgpu = {
-      opencl.enable = true; # Enables ROCm-based OpenCL
-      initrd.enable = true; # Loads amdgpu in initrd for early detection
-    };
-  };
-
-  # AMD-specific environment variables
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "radeonsi";
-    GBM_BACKEND = "radeonsi";
-    VDPAU_DRIVER = "radeonsi";
-  };
-
   # Provisionary ai chat interface TODO: Should remove later
   services.open-webui = {
     enable = true;
