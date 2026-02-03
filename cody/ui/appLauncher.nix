@@ -167,8 +167,6 @@
           padding = mkLiteral "20px";
           border-radius = mkLiteral "10px";
           background-color = mkLiteral "@bg-alt";
-          text-color = mkLiteral "@text-color";
-          font = mkLiteral "16px";
           vertical-align = mkLiteral "0.5";
           horizontal-align = mkLiteral "0.0";
         };
