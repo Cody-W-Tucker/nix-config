@@ -26,6 +26,8 @@
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
 
+    kernelParams = [ "amd_pstate=active" ];
+
     # Use newest kernel
     kernelPackages = pkgs.linuxPackages_latest;
 
@@ -112,7 +114,6 @@
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Provisionary ai chat interface TODO: Should remove later
   services.open-webui = {
