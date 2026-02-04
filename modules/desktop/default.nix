@@ -11,7 +11,6 @@
 
   services = {
     # Provides a way to manage system firmware updates
-    fwupd.enable = true;
     mullvad-vpn = {
       enable = true;
       package = pkgs.mullvad-vpn;
