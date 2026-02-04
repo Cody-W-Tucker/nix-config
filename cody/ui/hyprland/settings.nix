@@ -20,7 +20,7 @@ let
   specialWorkspaces = [
     "special:ai, on-created-empty: ${webApp}=https://www.perplexity.ai/"
     "special:dev, on-created-empty: ${terminal}"
-    "special:media, on-created-empty: uwsm app -- zen --new-window=https://www.youtube.com/"
+    "special:media, on-created-empty: ${webApp}=https://www.youtube.com/"
   ];
 
   keybinds = [
