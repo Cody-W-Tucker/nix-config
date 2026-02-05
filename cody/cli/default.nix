@@ -6,27 +6,18 @@
   ...
 }:
 
-let
-  opencodeTaskLauncher = pkgs.callPackage ../../modules/scripts/opencode-task.nix { };
-  taskwarriorHooks = pkgs.callPackage ../../modules/scripts/taskwarrior-hooks.nix { };
-in
-
 {
   imports = [ ./nixvim ];
 
-  home.packages =
-    (with pkgs; [
-      fd
-      fastfetch
-      unzip
-      zip
-      jq
-      taskwarrior-tui
-      timewarrior
-    ])
-    ++ [
-      opencodeTaskLauncher
-    ];
+  home.packages = with pkgs; [
+    fd
+    fastfetch
+    unzip
+    zip
+    jq
+    taskwarrior-tui
+    timewarrior
+  ];
 
   programs.opencode = {
     enable = true;
@@ -71,17 +62,6 @@ in
       color.pri.M       = color3
       color.pri.L       = color2
     '';
-  };
-
-  home.file = {
-    ".task/hooks/on-modify.timewarrior" = {
-      source = taskwarriorHooks.timewarriorHook;
-      executable = true;
-    };
-    ".task/hooks/on-modify.opencode" = {
-      source = taskwarriorHooks.opencodeHook;
-      executable = true;
-    };
   };
 
   # Enable Stylix for theming
