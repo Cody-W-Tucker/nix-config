@@ -20,8 +20,8 @@ pkgs.writeShellApplication {
     PROJECT_DIR="$HOME/Projects"
 
     # Get list of directories, excluding files
-    selected_dir=$(find "$PROJECT_DIR" -maxdepth 1 -type d -printf "%f\n" |
-      sort |
+    dirs=$(find "$PROJECT_DIR" -maxdepth 1 -type d -printf "%f\n" | sort)
+    selected_dir=$(echo -e "$dirs\nnixos" | sort -u |
       ${pkgs.rofi}/bin/rofi -dmenu -i -p "Select Project" \
       -theme-str 'listview { columns: 1; }')
 
@@ -35,8 +35,18 @@ pkgs.writeShellApplication {
     [[ -z "$command" ]] && exit 0
 
     # Step 3: Launch kitty with interactive shell for direnv support
+    if [[ "$selected_dir" == "nixos" ]]; then
+      target_dir="/etc/nixos"
+    else
+      target_dir="$PROJECT_DIR/$selected_dir"
+      if [[ ! -d "$target_dir" ]]; then
+        echo "Project directory $target_dir does not exist." >&2
+        exit 1
+      fi
+    fi
+
     env | grep -E '(PATH|DIRENV|HOME)' || echo "❌ Missing user env vars!"
-    uwsm app -- kitty --directory "$PROJECT_DIR/$selected_dir" \
-      zsh -i -c "opencode --model 'xai/grok-code-fast-1' run '$command'"
+    uwsm app -- kitty --directory "$target_dir" \
+      zsh -i -c "opencode run '$command'"
   '';
 }
