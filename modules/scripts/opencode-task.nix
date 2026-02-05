@@ -13,7 +13,7 @@ pkgs.writeShellApplication {
 
     PROJECT_DIR="$HOME/Projects"
 
-    task_json=$(task rc.verbose=nothing rc.json.array=off next limit:1 export 2>/dev/null || true)
+    task_json=$(task rc.verbose=nothing rc.json.array=off +READY limit:1 export 2>/dev/null || true)
     if [[ -z "$task_json" ]] || [[ "$task_json" != \{* ]]; then
       echo "No ready Taskwarrior tasks." >&2
       exit 1
