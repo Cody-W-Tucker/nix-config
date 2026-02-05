@@ -36,6 +36,8 @@
     package = pkgs.taskwarrior3;
     extraConfig = ''
       color=on
+      confirmation=off
+      json.array=on
 
       # Main task states
       color.active      = color2
