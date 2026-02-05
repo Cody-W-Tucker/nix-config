@@ -7,6 +7,10 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     stylix = {
       url = "github:danth/stylix/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -54,10 +58,7 @@
       };
       pkgs-unstable = import nixpkgs-unstable {
         inherit system;
-        config = {
-          allowUnfree = true;
-          allowUnfreePredicate = _: true;
-        };
+        config.allowUnfree = true;
       };
       hardwareConfig = {
         beast = {
@@ -87,7 +88,7 @@
       # Builds the different systems
       nixosConfigurations = {
         # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070
-        beast = nixpkgs.lib.nixosSystem {
+        beast = inputs.nixpkgs-unstable.lib.nixosSystem {
           inherit system;
           specialArgs = {
             inherit inputs;
@@ -95,12 +96,18 @@
             inherit pkgs-unstable;
           };
           modules = [
+            (
+              { lib, ... }:
+              {
+                nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
+              }
+            )
             ./hosts/beast.nix
             inputs.sops-nix.nixosModules.sops
             inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
+            inputs.home-manager-unstable.nixosModules.home-manager
             (
               { config, ... }:
               {
@@ -108,13 +115,11 @@
                   extraSpecialArgs = {
                     inherit
                       inputs
-                      pkgs
-                      pkgs-unstable
                       system
                       ;
                     hardwareConfig = hardwareConfig.beast;
                   };
-                  useGlobalPkgs = false;
+                  useGlobalPkgs = true;
                   useUserPackages = true;
                   backupFileExtension = "backup";
                   sharedModules = [
