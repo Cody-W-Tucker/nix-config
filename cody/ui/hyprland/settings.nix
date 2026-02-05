@@ -120,7 +120,7 @@ in
     ];
     windowrule = [
       # Kitty
-      "match:class ^(kitty)$, noblur on"
+      "match:class ^(kitty)$, no_blur on"
       "match:class ^(kitty)$, opacity 1.0 1.0 1.0 override"
 
       # Ensure all web apps don't float
