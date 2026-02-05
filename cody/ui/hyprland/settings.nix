@@ -120,57 +120,24 @@ in
     ];
     windowrule = [
       # Kitty
-      {
-        match = "class:^(kitty)$";
-        noblur = true;
-      }
-      {
-        match = "class:^(kitty)$";
-        opacity = "1.0 1.0 1.0 override";
-      }
+      "match:class ^(kitty)$, noblur on"
+      "match:class ^(kitty)$, opacity 1.0 1.0 1.0 override"
 
       # Ensure all web apps don't float
-      {
-        match = "initialClass:^(Chromium-browser)$";
-        tile = true;
-      }
+      "match:initialClass ^(Chromium-browser)$, tile on"
 
-      {
-        match = "title:^(Picture-in-Picture)$";
-        float = true;
-      }
-      {
-        match = "title:^(Picture-in-Picture)$";
-        pin = true;
-      }
+      "match:title ^(Picture-in-Picture)$, float on"
+      "match:title ^(Picture-in-Picture)$, pin on"
 
       # Throw sharing indicators away
-      {
-        match = "title:^(Firefox — Sharing Indicator)$";
-        workspace = "special silent";
-      }
-      {
-        match = "title:^(Zen — Sharing Indicator)$";
-        workspace = "special silent";
-      }
-      {
-        match = "title:^(.*is sharing (your screen|a window).)$";
-        workspace = "special silent";
-      }
+      "match:title ^(Firefox — Sharing Indicator)$, workspace special silent"
+      "match:title ^(Zen — Sharing Indicator)$, workspace special silent"
+      "match:title ^(.*is sharing (your screen|a window).)$, workspace special silent"
 
       # Customizing Obsidian
-      {
-        match = "class:^(obsidian)$";
-        opacity = "0.99 0.99 0.99";
-      }
-      {
-        match = "class:^(obsidian)$";
-        noblur = true;
-      }
-      {
-        match = "class:^(obsidian)$";
-        noshadow = true;
-      }
+      "match:class ^(obsidian)$, opacity 0.99 0.99 0.99"
+      "match:class ^(obsidian)$, noblur on"
+      "match:class ^(obsidian$), noshadow on"
     ];
 
     # Workspace and monitor set in flake.nix
