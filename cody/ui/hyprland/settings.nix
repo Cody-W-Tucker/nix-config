@@ -137,16 +137,6 @@ in
       "workspace special silent, title:^(Zen — Sharing Indicator)$"
       "workspace special silent, title:^(.*is sharing (your screen|a window).)$"
 
-      # Create a sleek post widget for the x post binding
-      "float,title:(x.com_/compose/post)"
-      "size 600 300,title:(x.com_/compose/post)"
-      "center,title:(x.com_/compose/post)"
-
-      # Sleek taskwarrior-tui
-      "float, class:(taskwarrior-tui)"
-      "size 1000 500, class:(taskwarrior-tui)"
-      "center, class:(taskwarrior-tui)"
-
       # Customizing Obsidian
       "opacity 0.99, class:^(obsidian)$"
       "noblur, class:^(obsidian)$"

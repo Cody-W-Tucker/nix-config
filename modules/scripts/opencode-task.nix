@@ -17,7 +17,7 @@ pkgs.writeShellApplication {
 
     task_json=$(task rc.verbose=nothing rc.json.array=off +READY limit:1 export 2>/dev/null || true)
     if [[ -z "$task_json" ]] || [[ "$task_json" != \{* ]]; then
-      echo "No ready Taskwarrior tasks." >&2
+      notify-send "No ready Taskwarrior tasks."
       exit 1
     fi
 
