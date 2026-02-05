@@ -146,10 +146,11 @@
             inputs.sops-nix.nixosModules.sops
             inputs.vpn-confinement.nixosModules.default
             ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
+            inputs.home-manager-unstable.nixosModules.home-manager
             (
-              { config, ... }:
+              { config, lib, ... }:
               {
+                nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
                 home-manager = {
                   extraSpecialArgs = {
                     inherit
@@ -166,18 +167,21 @@
                     inputs.sops-nix.homeManagerModules.sops
                     inputs.stylix.homeModules.stylix
                   ];
-                  users.codyt.imports = [
-                    ./cody/cli.nix
-                    ./secrets/home-secrets.nix
-                    inputs.nixvim.homeManagerModules.nixvim
-                  ];
+                  users.codyt = {
+                    imports = [
+                      ./cody/cli.nix
+                      ./secrets/home-secrets.nix
+                      inputs.nixvim.homeManagerModules.nixvim
+                    ];
+                    home.enableNixpkgsReleaseCheck = false;
+                  };
                 };
               }
             )
           ];
         };
         # Main work workstation. GMKtec-evo2 APU: Strix Halo AI 395+ Max
-        aiserver = nixpkgs.lib.nixosSystem {
+        aiserver = inputs.nixpkgs-unstable.lib.nixosSystem {
           inherit system;
           specialArgs = {
             inherit inputs;
@@ -189,18 +193,14 @@
             inputs.sops-nix.nixosModules.sops
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
+            inputs.home-manager-unstable.nixosModules.home-manager
             (
-              { config, ... }:
+              { config, lib, ... }:
               {
+                nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
                 home-manager = {
                   extraSpecialArgs = {
-                    inherit
-                      inputs
-                      pkgs
-                      pkgs-unstable
-                      system
-                      ;
+                    inherit inputs system;
                     hardwareConfig = hardwareConfig.aiserver;
                   };
                   useGlobalPkgs = false;
@@ -209,12 +209,6 @@
                   sharedModules = [
                     inputs.sops-nix.homeManagerModules.sops
                     inputs.stylix.homeModules.stylix
-                    (
-                      { ... }:
-                      {
-                        nixpkgs.config.allowUnfree = true;
-                      }
-                    )
                   ];
                   users.codyt.imports = [
                     ./cody/ui.nix
