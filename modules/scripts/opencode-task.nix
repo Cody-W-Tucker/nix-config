@@ -5,6 +5,8 @@ pkgs.writeShellApplication {
     pkgs.jq
     pkgs.zsh
     pkgs.direnv
+    pkgs.libnotify
+    pkgs.taskwarrior3
   ];
   text = ''
     #!/usr/bin/env zsh
@@ -20,6 +22,7 @@ pkgs.writeShellApplication {
     fi
 
     description=$(jq -r '.description // empty' <<<"$task_json")
+    id=$(jq -r '.id' <<<"$task_json")
     project=$(jq -r '.project // empty' <<<"$task_json")
 
     if [[ -n "$project" ]]; then
@@ -47,8 +50,12 @@ pkgs.writeShellApplication {
 
     task_command="Task: $description"
 
-    env | grep -E '(PATH|DIRENV|HOME)' || echo "❌ Missing user env vars!"
+    if ! env | grep -q -E '^(PATH|DIRENV|HOME)='; then
+      echo "❌ Missing user env vars!"
+    fi
     uwsm app -- kitty --directory "$target_dir" \
-      zsh -i -c "opencode --prompt '$task_command'"
+      zsh -i -c "opencode run '$task_command'"
+    notify-send "Opencode task completed: $description"
+    task "$id" done
   '';
 }
