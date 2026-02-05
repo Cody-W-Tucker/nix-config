@@ -8,7 +8,7 @@ pkgs.writeShellApplication {
   ];
   text = ''
     #!/usr/bin/env zsh
-    source "$HOME/.zshenv"
+
     set -euo pipefail
 
     PROJECT_DIR="$HOME/Projects"
