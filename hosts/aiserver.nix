@@ -124,7 +124,6 @@
 
   services.ollama = {
     enable = true;
-    package = pkgs.ollama-rocm;
   };
 
   # Renaming the logging client to machine hostname
