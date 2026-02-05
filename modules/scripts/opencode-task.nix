@@ -3,7 +3,6 @@
 pkgs.writeShellApplication {
   name = "opencode-task";
   runtimeInputs = [
-    pkgs.taskwarrior
     pkgs.jq
   ];
   text = ''
