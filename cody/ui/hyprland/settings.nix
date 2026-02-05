@@ -121,8 +121,6 @@ in
     windowrule = [
       # Kitty
       "noblur,class:kitty"
-    ];
-    windowrulev2 = [
       # Ensure kitty opacity is respected
       "opacity 1.0 override 1.0 override 1.0 override, class:^(kitty)$"
 
@@ -167,9 +165,6 @@ in
       sensitivity = "-.7";
       force_no_accel = 0;
       kb_layout = "us";
-    };
-    experimental = {
-      xx_color_management_v4 = true;
     };
     debug = {
       full_cm_proto = true;
