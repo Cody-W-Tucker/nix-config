@@ -12,8 +12,8 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     stylix = {
-      url = "github:danth/stylix/release-25.11";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -58,7 +58,10 @@
       };
       pkgs-unstable = import nixpkgs-unstable {
         inherit system;
-        config.allowUnfree = true;
+        config = {
+          allowUnfree = true;
+          allowUnfreePredicate = _: true;
+        };
       };
       hardwareConfig = {
         beast = {
@@ -96,12 +99,6 @@
             inherit pkgs-unstable;
           };
           modules = [
-            (
-              { lib, ... }:
-              {
-                nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
-              }
-            )
             ./hosts/beast.nix
             inputs.sops-nix.nixosModules.sops
             inputs.qdrant-upload.nixosModules.default
@@ -109,8 +106,9 @@
             ./secrets/secrets.nix
             inputs.home-manager-unstable.nixosModules.home-manager
             (
-              { config, ... }:
+              { config, lib, ... }:
               {
+                nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
                 home-manager = {
                   extraSpecialArgs = {
                     inherit
@@ -119,7 +117,7 @@
                       ;
                     hardwareConfig = hardwareConfig.beast;
                   };
-                  useGlobalPkgs = true;
+                  useGlobalPkgs = false;
                   useUserPackages = true;
                   backupFileExtension = "backup";
                   sharedModules = [

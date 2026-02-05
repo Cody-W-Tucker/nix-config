@@ -53,7 +53,6 @@
     playerctl # Media player control utility
     libnotify # Notification library
     todoist # cli client
-    todoist-electron # Electron client for Todoist
     nautilus # File manager
     nixd # Nix daemon for development
     baobab # Gnome disk usage app
