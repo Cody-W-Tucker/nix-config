@@ -124,7 +124,7 @@ in
       "match:class ^(kitty)$, opacity 1.0 1.0 1.0 override"
 
       # Ensure all web apps don't float
-      "match:initialClass ^(Chromium-browser)$, tile on"
+      "match:initial_class ^(Chromium-browser)$, tile on"
 
       "match:title ^(Picture-in-Picture)$, float on"
       "match:title ^(Picture-in-Picture)$, pin on"
@@ -136,8 +136,8 @@ in
 
       # Customizing Obsidian
       "match:class ^(obsidian)$, opacity 0.99 0.99 0.99"
-      "match:class ^(obsidian)$, noblur on"
-      "match:class ^(obsidian$), noshadow on"
+      "match:class ^(obsidian)$, no_blur on"
+      "match:class ^(obsidian$), no_shadow on"
     ];
 
     # Workspace and monitor set in flake.nix
