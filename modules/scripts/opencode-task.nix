@@ -5,7 +5,6 @@ pkgs.writeShellApplication {
     pkgs.jq
     pkgs.zsh
     pkgs.direnv
-    pkgs.taskwarrior
   ];
   text = ''
     #!/usr/bin/env zsh
