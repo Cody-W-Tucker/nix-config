@@ -16,10 +16,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    home-manager-unstable = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+
     # Should use their nixpkgs
     nixvim.url = "github:nix-community/nixvim/nixos-25.05";
     zen-browser = {
