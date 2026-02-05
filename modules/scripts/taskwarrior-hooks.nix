@@ -68,7 +68,7 @@ let
         prompt+=$'\n'"UUID: $uuid"
       fi
 
-      setsid -f opencode --prompt "$prompt" +tab=build >/dev/null 2>&1 || true
+      setsid -f opencode --prompt "$prompt" >/dev/null 2>&1 || true
     fi
 
     printf '%s\n' "$NEW"

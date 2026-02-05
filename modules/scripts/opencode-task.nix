@@ -41,5 +41,5 @@ pkgs.writeShellScriptBin "opencode-task" ''
     prompt+=$'\n'"UUID: $uuid"
   fi
 
-  exec opencode --prompt "$prompt" +tab=build "$@"
+  exec opencode --prompt "$prompt" "$@"
 ''
