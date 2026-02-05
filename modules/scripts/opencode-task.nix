@@ -5,6 +5,7 @@ pkgs.writeShellApplication {
     pkgs.jq
     pkgs.zsh
     pkgs.direnv
+    pkgs.taskwarrior
   ];
   text = ''
     #!/usr/bin/env zsh
@@ -23,10 +24,18 @@ pkgs.writeShellApplication {
     project=$(jq -r '.project // empty' <<<"$task_json")
 
     if [[ -n "$project" ]]; then
-      target_dir="$PROJECT_DIR/$project"
-      if [[ ! -d "$target_dir" ]]; then
-        echo "Project directory $target_dir does not exist." >&2
-        exit 1
+      if [[ "$project" == "nixos" ]]; then
+        target_dir="/etc/nixos"
+      else
+        target_dir="$PROJECT_DIR/$project"
+        if [[ ! -d "$target_dir" ]]; then
+          if [[ "$(basename "$PWD")" == "$project" ]]; then
+            target_dir="$PWD"
+          else
+            echo "Project directory $target_dir does not exist and doesn't match current dir." >&2
+            exit 1
+          fi
+        fi
       fi
     else
       target_dir="$PWD"
