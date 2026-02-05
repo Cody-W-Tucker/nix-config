@@ -8,7 +8,7 @@ pkgs.writeShellApplication {
   ];
   text = ''
     #!/usr/bin/env zsh
-    source "$HOME/.zshenv"  # Load user PATH, direnv hook, etc.
+
 
     # Kill rofi if already running
     if pgrep -x "rofi" > /dev/null; then
