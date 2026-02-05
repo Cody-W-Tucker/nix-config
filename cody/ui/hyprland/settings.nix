@@ -120,26 +120,59 @@ in
     ];
     windowrule = [
       # Kitty
-      "noblur,class:kitty"
-      # Ensure kitty opacity is respected
-      "opacity 1.0 override 1.0 override 1.0 override, class:^(kitty)$"
+      {
+        match = "class:^(kitty)$";
+        noblur = true;
+      }
+      {
+        match = "class:^(kitty)$";
+        opacity = "1.0 1.0 1.0 override";
+      }
 
       # Ensure all web apps don't float
-      "tile, initialClass:Chromium-browser"
+      {
+        match = "initialClass:^(Chromium-browser)$";
+        tile = true;
+      }
 
-      "float, title:^(Picture-in-Picture)$"
-      "pin, title:^(Picture-in-Picture)$"
+      {
+        match = "title:^(Picture-in-Picture)$";
+        float = true;
+      }
+      {
+        match = "title:^(Picture-in-Picture)$";
+        pin = true;
+      }
 
-      # throw sharing indicators away
-      "workspace special silent, title:^(Firefox — Sharing Indicator)$"
-      "workspace special silent, title:^(Zen — Sharing Indicator)$"
-      "workspace special silent, title:^(.*is sharing (your screen|a window).)$"
+      # Throw sharing indicators away
+      {
+        match = "title:^(Firefox — Sharing Indicator)$";
+        workspace = "special silent";
+      }
+      {
+        match = "title:^(Zen — Sharing Indicator)$";
+        workspace = "special silent";
+      }
+      {
+        match = "title:^(.*is sharing (your screen|a window).)$";
+        workspace = "special silent";
+      }
 
       # Customizing Obsidian
-      "opacity 0.99, class:^(obsidian)$"
-      "noblur, class:^(obsidian)$"
-      "noshadow, class:^(obsidian)$"
+      {
+        match = "class:^(obsidian)$";
+        opacity = "0.99 0.99 0.99";
+      }
+      {
+        match = "class:^(obsidian)$";
+        noblur = true;
+      }
+      {
+        match = "class:^(obsidian)$";
+        noshadow = true;
+      }
     ];
+
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
     monitor = hardwareConfig.monitor;
