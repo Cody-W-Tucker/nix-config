@@ -41,6 +41,7 @@ let
 
     # Task Management
     "${mainMod}, T, exec, ${terminal} --class taskwarrior-tui -e taskwarrior-tui"
+    "${mainMod} SHIFT, T, exec, opencode-task"
 
     # Screenshots
     "${mainMod}, S, exec, screenshot-ocr"
