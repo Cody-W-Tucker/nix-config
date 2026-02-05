@@ -124,6 +124,7 @@
 
   services.ollama = {
     enable = true;
+    package = pkgs.ollama-vulkan;
   };
 
   # Renaming the logging client to machine hostname
