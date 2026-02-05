@@ -2,12 +2,14 @@
   config,
   pkgs,
   lib,
-  inputs,
   ...
 }:
 
 {
-  imports = [ ./nixvim ];
+  imports = [
+    ./nixvim
+    ./harness # coding agent setup
+  ];
 
   home.packages = with pkgs; [
     fd
@@ -19,51 +21,9 @@
     timewarrior
   ];
 
-  programs.opencode = {
-    enable = true;
-    # Use most reccent package from flake
-    package = inputs.opencode.packages.${pkgs.system}.default;
-    settings.theme = lib.mkForce "system";
-  };
-
   home.sessionVariables = {
     VISUAL = "nvim";
     TERMINAL = "kitty";
-  };
-
-  programs.taskwarrior = {
-    enable = true;
-    package = pkgs.taskwarrior3;
-    extraConfig = ''
-      color=on
-      confirmation=off
-      json.array=on
-
-      # Main task states
-      color.active      = color2
-      color.completed   = color8
-      color.deleted     = color5
-      color.overdue     = color1
-      color.scheduled   = color11
-      color.due         = color3
-      color.due.today   = color9
-      color.recurring   = color13
-
-      # Relationships and tags
-      color.blocked     = color9
-      color.blocking    = color12
-      color.tagged      = color10
-
-      # Headers and footers (optional, but can help)
-      color.header      = color4
-      color.footnote    = color8
-      color.label       = color6
-
-      # Priorities (if you use them)
-      color.pri.H       = color1
-      color.pri.M       = color3
-      color.pri.L       = color2
-    '';
   };
 
   # Enable Stylix for theming
