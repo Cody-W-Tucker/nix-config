@@ -157,14 +157,10 @@
   ];
 
   # Machine specific packages
-  environment.systemPackages = (
-    with pkgs;
-    [
-      rofi-network-manager
-      kdePackages.kdenlive
-      prismlauncher
-    ]
-  );
+  environment.systemPackages = with pkgs; [
+    rofi-network-manager
+    prismlauncher
+  ];
 
   # Should be the same as the version of NixOS you installed on this machine.
   system.stateVersion = "25.05"; # Did you read the comment?
