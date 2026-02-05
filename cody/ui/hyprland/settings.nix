@@ -30,18 +30,16 @@ let
 
     # Web applications
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
-    # Show vim keybindings in floating window
     "${mainMod}, A, exec, ${webApp}=https://ai.homehub.tv/"
-
-    # Browser navigation
-    "${mainMod} SHIFT, X, exec, [float] ${webApp}=https://x.com/compose/post"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
     "${mainMod}, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod} SHIFT, Tab, exec, web-search"
     "${mainMod}, backslash, exec, rofi-opencode"
-    "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n '{result}' | wl-copy'"
+    "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n \"{result}\" | wl-copy'"
+
+    # Task Management
     "${mainMod}, T, exec, ${terminal} --class taskwarrior-tui -e taskwarrior-tui"
 
     # Screenshots
@@ -52,9 +50,8 @@ let
     "${mainMod}, mouse:274, exec, hyprpicker -a"
 
     # Window management
-    "${mainMod}, SPACE, togglefloating"
     "${mainMod}, C, killactive"
-    "${mainMod}, Escape, fullscreen"
+    "${mainMod}, F, fullscreen"
 
     # Workspace navigation
     "${mainMod}, H, movefocus, l"
