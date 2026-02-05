@@ -32,6 +32,6 @@ pkgs.writeShellApplication {
     task_command="Task: $description"
 
     uwsm app -- kitty --directory "$PROJECT_DIR/$project" \
-      zsh -i -c "opencode run '$task_command'"
+      zsh -i -c "opencode --prompt '$task_command'"
   '';
 }
