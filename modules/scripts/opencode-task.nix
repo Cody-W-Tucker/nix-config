@@ -56,6 +56,6 @@ pkgs.writeShellApplication {
     uwsm app -- kitty --directory "$target_dir" \
       zsh -i -c "opencode run '$task_command'"
     notify-send "Opencode task completed: $description"
-    task "$id" done
+    task "$id" "done"
   '';
 }
