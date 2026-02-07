@@ -147,9 +147,9 @@
         }
         {
           name = "ebooks";
-          type = "files";
+          type = "ebook";
           collection = "ebooks";
-          directories = [ "/mnt/server-media/Media/Books" ];
+          directories = [ "/mnt/server-books" ];
           skipExisting = true;
         }
       ];
