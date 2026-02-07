@@ -149,7 +149,7 @@
           name = "ebooks";
           type = "files";
           collection = "ebooks";
-          directories = [ "/mnt/server-media" ];
+          directories = [ "/mnt/server-media/Media/Books" ];
           skipExisting = true;
         }
       ];
