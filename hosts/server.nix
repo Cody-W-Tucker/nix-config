@@ -73,8 +73,18 @@
   # NFS server for sharing media directory
   services.nfs.server.enable = true;
   services.nfs.server.exports = ''
-    /mnt/media *(rw,sync,no_subtree_check)
+    /mnt/media 192.168.1.0/24(rw,sync,no_subtree_check)
   '';
+
+  # Open NFS ports in firewall for local network
+  networking.firewall.allowedTCPPorts = [
+    2049
+    111
+  ];
+  networking.firewall.allowedUDPPorts = [
+    2049
+    111
+  ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   networking.useDHCP = lib.mkDefault true;

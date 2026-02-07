@@ -129,9 +129,9 @@
     ];
   };
 
-  # Mount server books directory via NFS
+  # Mount server books directory via NFS (local network)
   fileSystems."/mnt/server-books" = {
-    device = "server:/mnt/media/Media/Books";
+    device = "192.168.1.31:/mnt/media/Media/Books";
     fsType = "nfs";
     options = [
       "x-systemd.automount"
