@@ -145,6 +145,13 @@
           directories = [ "/home/codyt/Knowledge/Personal/Research" ];
           skipExisting = true;
         }
+        {
+          name = "ebooks";
+          type = "files";
+          collection = "ebooks";
+          directories = [ "/mnt/server-media" ];
+          skipExisting = true;
+        }
       ];
     };
   };

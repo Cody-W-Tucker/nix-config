@@ -70,6 +70,12 @@
   services.udisks2.enable = true;
   security.polkit.enable = true;
 
+  # NFS server for sharing media directory
+  services.nfs.server.enable = true;
+  services.nfs.server.exports = ''
+    /mnt/media *(rw,sync,no_subtree_check)
+  '';
+
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
