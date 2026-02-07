@@ -14,7 +14,6 @@
     ../modules/desktop/gaming.nix
     ../modules/desktop/hyprland.nix
     ../modules/desktop/nvidia.nix
-    ../modules/desktop/mcp-servers.nix
     ../modules/desktop/razer.nix
     ../modules/scripts
     ../modules/server/ai.nix
