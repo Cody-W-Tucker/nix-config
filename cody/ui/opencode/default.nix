@@ -4,7 +4,13 @@
   inputs,
   ...
 }:
+
 {
+  imports = [
+    ./mcp.nix
+    ./taskwarrior.nix
+  ];
+
   programs.opencode = {
     enable = true;
     # Use most reccent package from flake
