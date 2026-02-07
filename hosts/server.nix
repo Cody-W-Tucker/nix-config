@@ -73,7 +73,7 @@
   # NFS server for sharing media directory
   services.nfs.server.enable = true;
   services.nfs.server.exports = ''
-    /mnt/media 192.168.1.0/24(rw,sync,no_subtree_check)
+    /mnt/media 192.168.1.20(rw,sync,no_subtree_check,all_squash,anonuid=1000,anongid=100)
   '';
 
   # Open NFS ports in firewall for local network
