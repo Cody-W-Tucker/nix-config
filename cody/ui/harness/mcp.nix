@@ -1,17 +1,19 @@
 { ... }:
 
 {
-  programs.mcp.servers = {
+  programs.mcp = {
     enable = true;
-    docs-langchain = {
-      url = "https://docs.langchain.com/mcp";
-    };
-    nixos-option-search = {
-      command = [ "nix" ];
-      args = [
-        "run"
-        "github:utensils/mcp-nixos"
-      ];
+    servers = {
+      docs-langchain = {
+        url = "https://docs.langchain.com/mcp";
+      };
+      nixos-option-search = {
+        command = "nix";
+        args = [
+          "run"
+          "github:utensils/mcp-nixos"
+        ];
+      };
     };
   };
 }
