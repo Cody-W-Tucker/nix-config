@@ -8,7 +8,6 @@
 {
   imports = [
     ./nixvim
-    ./harness # coding agent setup
   ];
 
   home.packages = with pkgs; [

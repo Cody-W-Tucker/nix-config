@@ -12,6 +12,7 @@
     ./pipewire.nix
     ./notifications.nix
     ./xdg.nix
+    ./harness # coding agent setup
   ];
 
   dconf = {
