@@ -7,12 +7,12 @@
 {
   imports = [
     ./hyprland.nix
-    ./appLauncher.nix
+    ./rofi.nix
     ./waybar.nix
     ./pipewire.nix
     ./notifications.nix
     ./xdg.nix
-    ./harness # coding agent setup
+    ./opencode
   ];
 
   dconf = {
