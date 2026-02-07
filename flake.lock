@@ -134,11 +134,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1770379063,
-        "narHash": "sha256-FEZ+e1Pt7oAnfKfrSTyUySbECDCQeuLp/QfCa1j7DG8=",
+        "lastModified": 1770451956,
+        "narHash": "sha256-FoKAJgDX39FEzAxXVQi22BgblqECtvvSBAZAgn5EM2Q=",
         "owner": "wamserma",
         "repo": "flake-programs-sqlite",
-        "rev": "1eafa8fa1eb83f16bac1dd55b229f8f3b7d47cdb",
+        "rev": "5fa583259a96de19d3a1ea7d111039b3b73096fd",
         "type": "github"
       },
       "original": {
@@ -246,11 +246,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770318660,
-        "narHash": "sha256-yFVde8QZK7Dc0Xa8eQDsmxLX4NJNfL1NKfctSyiQgMY=",
+        "lastModified": 1770476834,
+        "narHash": "sha256-cyxgVsNfHnJ4Zn6G1EOzfTXbjTy7Ds9zMOsZaX7VZWs=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "471e6a065f9efed51488d7c51a9abbd387df91b8",
+        "rev": "6cee0821577643e0b34e2c5d9a90d0b1b5cdca70",
         "type": "github"
       },
       "original": {
@@ -390,11 +390,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1768393167,
-        "narHash": "sha256-n2063BRjHde6DqAz2zavhOOiLUwA3qXt7jQYHyETjX8=",
+        "lastModified": 1770073757,
+        "narHash": "sha256-Vy+G+F+3E/Tl+GMNgiHl9Pah2DgShmIUBJXmbiQPHbI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "2f594d5af95d4fdac67fba60376ec11e482041cb",
+        "rev": "47472570b1e607482890801aeaf29bfb749884f6",
         "type": "github"
       },
       "original": {
@@ -479,11 +479,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1770393751,
-        "narHash": "sha256-hGzomGqqQ1JiV4NW9NW900Fu3FRA/LzTvd+3zJPH1xo=",
+        "lastModified": 1770481624,
+        "narHash": "sha256-YLavopJ/pN6lKzmEP8p4ZVwFk/OU+LkXAJPUSKmb15U=",
         "owner": "sst",
         "repo": "opencode",
-        "rev": "2c58dd6203df7806f57ef6b29672091cb764e871",
+        "rev": "8ad5262a87e00ba9ee8ca9bde0b04d40024b37d4",
         "type": "github"
       },
       "original": {
@@ -499,11 +499,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767568329,
-        "narHash": "sha256-TcwRoMzaMVO8zq63HKvG8JdIaFwz2Z3DuJP56wyKL80=",
+        "lastModified": 1770482682,
+        "narHash": "sha256-UzbaSOeTAyXk6RFd95B+1A6xGdpdmgVKqNck9XWnnzU=",
         "owner": "Cody-W-Tucker",
         "repo": "Qdrant-Upload",
-        "rev": "c09178eb5a8cce714ecfb3d17919131a0ac31b01",
+        "rev": "d3f975c3bbe80cf294b5aa4f610967f41bfeb1ba",
         "type": "github"
       },
       "original": {
@@ -780,11 +780,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770266156,
-        "narHash": "sha256-vaoCK5o0y8rjBytkzy2E4ccsiWQnzmYXI0FF40co+eM=",
+        "lastModified": 1770438797,
+        "narHash": "sha256-pwnQTmZswF6bu2/Ie7ajOo8w6rXQwVI954S9WX1UG3w=",
         "owner": "youwen5",
         "repo": "zen-browser-flake",
-        "rev": "60d34d6ff2bcf20487035897c36917d7222afc11",
+        "rev": "d396599774bdbafeb86c122dc2c422c7084ea390",
         "type": "github"
       },
       "original": {
