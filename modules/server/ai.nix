@@ -2,6 +2,20 @@
   # Enable CUDA in containers
   hardware.nvidia-container-toolkit.enable = true;
 
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
+    autoPrune = {
+      enable = true;
+      dates = "weekly";
+    };
+  };
+  virtualisation.oci-containers.backend = "docker";
+
   virtualisation.oci-containers.containers = {
     "open-webui" = {
       autoStart = true;
