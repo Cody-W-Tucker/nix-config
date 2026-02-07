@@ -129,6 +129,17 @@
     ];
   };
 
+  # Mount server media directory via NFS
+  fileSystems."/mnt/server-media" = {
+    device = "server:/mnt/media";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "nfsvers=4.2"
+    ];
+  };
+
   swapDevices = [
     {
       device = "/swapfile";
