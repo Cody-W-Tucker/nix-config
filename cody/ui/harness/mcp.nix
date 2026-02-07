@@ -1,0 +1,9 @@
+{ ... }:
+
+{
+  programs.mcp.servers = {
+    docs-langchain = {
+      url = "https://docs.langchain.com/mcp";
+    };
+  };
+}
