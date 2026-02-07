@@ -67,13 +67,6 @@
   # Ensure 14th Gen Intel CPU works correctly
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  # Create media group for NFS permissions (matches server)
-  users.groups.media = {
-    gid = 967;
-  };
-  # Add codyt to media group
-  users.users.codyt.extraGroups = [ "media" ];
-
   # System Filesystems
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
