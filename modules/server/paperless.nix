@@ -27,16 +27,16 @@ in
   };
 
   # Backup documents to workstation hard drive
-  services.borgbackup.jobs.documents = {
-    user = "codyt";
-    group = "documents";
-    paths = "/mnt/media/Documents/documents/originals";
-    encryption.mode = "none";
-    environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
-    repo = "codyt@192.168.1.238:/mnt/backup/Documents";
-    compression = "lz4";
-    startAt = "daily";
-  };
+  # services.borgbackup.jobs.documents = {
+  #   user = "codyt";
+  #   group = "documents";
+  #   paths = "/mnt/media/Documents/documents/originals";
+  #   encryption.mode = "none";
+  #   environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
+  #   repo = "codyt@192.168.1.238:/mnt/backup/Documents";
+  #   compression = "lz4";
+  #   startAt = "daily";
+  # };
 
   services.nginx = {
     virtualHosts."paperless.homehub.tv" = {
