@@ -57,12 +57,12 @@
         {
           job_name = "client";
           static_configs = [
-            {
-              targets = [ "workstation:9002" ];
-              labels = {
-                host = "workstation";
-              };
-            }
+            # {
+            #   targets = [ "workstation:9002" ];
+            #   labels = {
+            #     host = "workstation";
+            #   };
+            # }
             {
               targets = [ "192.168.1.20:9002" ];
               labels = {

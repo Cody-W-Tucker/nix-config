@@ -32,14 +32,14 @@
   };
 
   # Backup photos to workstation hard drive
-  services.borgbackup.jobs.photos = {
-    user = "codyt";
-    group = "media";
-    paths = "/mnt/media/Photos/originals";
-    encryption.mode = "none";
-    environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
-    repo = "codyt@192.168.1.238:/mnt/backup/Photos";
-    compression = "lz4";
-    startAt = "daily";
-  };
+  # services.borgbackup.jobs.photos = {
+  #   user = "codyt";
+  #   group = "media";
+  #   paths = "/mnt/media/Photos/originals";
+  #   encryption.mode = "none";
+  #   environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
+  #   repo = "codyt@192.168.1.238:/mnt/backup/Photos";
+  #   compression = "lz4";
+  #   startAt = "daily";
+  # };
 }
