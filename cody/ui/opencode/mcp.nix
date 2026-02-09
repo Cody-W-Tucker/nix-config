@@ -18,6 +18,7 @@
         command = "nix-shell";
         args = [
           "-p"
+          "nodejs"
           "--run"
           "npx -y @modelcontextprotocol/server-memory"
         ];
