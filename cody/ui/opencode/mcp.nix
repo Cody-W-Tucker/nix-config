@@ -14,6 +14,17 @@
           "github:utensils/mcp-nixos"
         ];
       };
+      memory = {
+        command = "nix-shell";
+        args = [
+          "-p"
+          "--run"
+          "npx -y @modelcontextprotocol/server-memory"
+        ];
+        env = {
+          MEMORY_FILE_PATH = "~/.config/mcp/memory.json";
+        };
+      };
     };
   };
 }
