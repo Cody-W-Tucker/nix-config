@@ -22,7 +22,7 @@
           "python3"
           "gcc"
           "--run"
-          "uvx mcp-server-qdrant --transport stdio"
+          "uv tool run --python python3 mcp-server-qdrant --transport stdio"
         ];
         env = {
           QDRANT_URL = "http://localhost:6333";
