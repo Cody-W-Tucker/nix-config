@@ -20,6 +20,7 @@
           "-p"
           "uv"
           "python3"
+          "gcc"
           "--run"
           "uvx mcp-server-qdrant --transport stdio"
         ];
