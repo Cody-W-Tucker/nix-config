@@ -23,7 +23,7 @@
           "npx -y @modelcontextprotocol/server-memory"
         ];
         env = {
-          MEMORY_FILE_PATH = "~/.config/mcp/memory.json";
+          MEMORY_FILE_PATH = "/home/codyt/.config/mcp/memory.json";
         };
       };
     };
