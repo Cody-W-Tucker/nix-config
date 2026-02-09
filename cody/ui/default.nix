@@ -111,5 +111,4 @@
       };
     };
   };
-  programs.calibre.enable = true;
 }
