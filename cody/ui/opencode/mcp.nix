@@ -21,7 +21,7 @@
           "uv"
           "python3"
           "--run"
-          "uvx mcp-server-qdrant"
+          "uvx mcp-server-qdrant --transport stdio"
         ];
         env = {
           QDRANT_URL = "http://localhost:6333";
