@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   programs.mcp = {
@@ -20,9 +20,15 @@
           "-p"
           "uv"
           "python3"
-          "gcc"
+          "stdenv.cc.cc.lib"
+          "zlib"
           "--run"
-          "uv tool run --python python3 mcp-server-qdrant --transport stdio"
+          "LD_LIBRARY_PATH=${
+            pkgs.lib.makeLibraryPath [
+              pkgs.stdenv.cc.cc.lib
+              pkgs.zlib
+            ]
+          } uv tool run --python python3 mcp-server-qdrant --transport stdio"
         ];
         env = {
           QDRANT_URL = "http://localhost:6333";
