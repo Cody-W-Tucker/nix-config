@@ -14,6 +14,20 @@
           "github:utensils/mcp-nixos"
         ];
       };
+      book-search = {
+        command = "nix-shell";
+        args = [
+          "-p"
+          "uv"
+          "--run"
+          "uvx mcp-server-qdrant"
+        ];
+        env = {
+          QDRANT_URL = "http://localhost:6333";
+          COLLECTION_NAME = "ebooks";
+          EMBEDDING_MODEL = "nomic-embed-text:latest";
+        };
+      };
     };
   };
 }
