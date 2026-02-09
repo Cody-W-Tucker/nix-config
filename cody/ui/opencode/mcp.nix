@@ -19,6 +19,7 @@
         args = [
           "-p"
           "uv"
+          "python3"
           "--run"
           "uvx mcp-server-qdrant"
         ];
