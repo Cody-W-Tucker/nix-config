@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   programs.mcp = {
@@ -13,29 +13,6 @@
           "run"
           "github:utensils/mcp-nixos"
         ];
-      };
-      book-search = {
-        command = "nix-shell";
-        args = [
-          "-p"
-          "uv"
-          "python3"
-          "stdenv.cc.cc.lib"
-          "zlib"
-          "--run"
-          "LD_LIBRARY_PATH=${
-            pkgs.lib.makeLibraryPath [
-              pkgs.stdenv.cc.cc.lib
-              pkgs.zlib
-            ]
-          } uv tool run --python python3 mcp-server-qdrant --transport stdio"
-        ];
-        env = {
-          QDRANT_URL = "http://localhost:6333";
-          COLLECTION_NAME = "ebooks";
-          EMBEDDING_PROVIDER = "ollama";
-          EMBEDDING_MODEL = "nomic-embed-text:latest";
-        };
       };
     };
   };
