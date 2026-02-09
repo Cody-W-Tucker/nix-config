@@ -26,6 +26,7 @@
         env = {
           QDRANT_URL = "http://localhost:6333";
           COLLECTION_NAME = "ebooks";
+          EMBEDDING_PROVIDER = "ollama";
           EMBEDDING_MODEL = "nomic-embed-text:latest";
         };
       };
