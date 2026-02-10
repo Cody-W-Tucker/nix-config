@@ -124,7 +124,8 @@
 
   services.ollama = {
     enable = true;
-    package = pkgs.ollama-vulkan;
+    package = pkgs.ollama-rocm.override { rocmPackages = pkgs.rocmPackages_6; }; # Use latest ROCm for Strix Halo support
+    rocmOverrideGfx = "11.5.1"; # Key override for gfx1151 (gfx11.5.1); alternatives like "11.0.0" or "11.5.0" may work but test for best perf
   };
 
   # Renaming the logging client to machine hostname
