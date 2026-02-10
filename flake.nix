@@ -75,11 +75,9 @@
           # Top monitor should be HDMI
           workspace = [
             "1, monitor:DP-1, default:true"
-            "2, monitor:HDMI-A-1, default:true"
           ];
           monitor = [
-            "DP-1,2560x1080@60,0x1080,1"
-            "HDMI-A-1,2560x1080@60,0x0,1"
+            "DP-1,3840x2160@240,0x0,1"
           ];
         };
       };
