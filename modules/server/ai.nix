@@ -152,13 +152,13 @@
           directories = [ "/home/codyt/Knowledge/Personal/Entities" ];
           skipExisting = true;
         }
-        {
-          name = "research";
-          type = "obsidian";
-          collection = "research";
-          directories = [ "/home/codyt/Knowledge/Personal/Research" ];
-          skipExisting = true;
-        }
+        # {
+        #   name = "research";
+        #   type = "obsidian";
+        #   collection = "research";
+        #   directories = [ "/home/codyt/Knowledge/Personal/Research" ];
+        #   skipExisting = true;
+        # }
         {
           name = "ebooks";
           type = "ebook";
