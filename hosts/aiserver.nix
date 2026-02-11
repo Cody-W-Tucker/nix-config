@@ -21,6 +21,8 @@
     ../modules/scripts
   ];
 
+  nixpkgs.config.rocmSupport = true;
+
   # Bootloader
   boot = {
     loader.systemd-boot.enable = true;
