@@ -65,7 +65,7 @@
 
   programs.chromium = {
     enable = true;
-    commandLineArgs = "--load-media-router-component-extension=1";
+    commandLineArgs = [ "--load-media-router-component-extension=1" ];
   };
 
   # Obs for screenrecording
