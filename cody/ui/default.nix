@@ -60,9 +60,13 @@
     gcalcli # Google Calendar CLI tool
     feishin # Desktop app music player
     wttrbar # Weather bar for Waybar
-    chromium
     vesktop
   ];
+
+  programs.chromium = {
+    enable = true;
+    commandLineArgs = "--load-media-router-component-extension=1";
+  };
 
   # Obs for screenrecording
   programs.obs-studio = {
