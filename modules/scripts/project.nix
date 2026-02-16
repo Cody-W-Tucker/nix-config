@@ -13,10 +13,12 @@ pkgs.writeShellScriptBin "project" ''
     echo "  new <template> <dir>  Create a new project with the specified template"
     echo ""
     echo "Available templates:"
-    echo "  rust, python, node, go, zig, cpp, haskell, elixir, erlang"
-    echo "  kotlin, java, csharp, fsharp, dart, deno, bun, typst"
-    echo "  clojure, scala, ocaml, reason, nim, crystal, vlang"
-    echo "  markdown, latex, nix, shell, blank"
+    echo "  bun, c-cpp, clojure, cue, deno, dhall, elixir, elm, empty"
+    echo "  gleam, go, hashi, haskell, haxe, java, jupyter, kotlin"
+    echo "  latex, lean4, nickel, nim, nix, node, ocaml, odin, opa"
+    echo "  php, platformio, protobuf, pulumi, purescript, python"
+    echo "  r, ruby, rust, scala, shell, swi-prolog, swift, typst"
+    echo "  vlang, zig"
   }
 
   if [ $# -lt 1 ]; then
@@ -37,6 +39,7 @@ pkgs.writeShellScriptBin "project" ''
       echo "Initializing $TEMPLATE template in current directory..."
       nix flake init --template "''${TEMPLATE_BASE}#$TEMPLATE"
       echo "Initialized $TEMPLATE project!"
+      echo "Run: direnv allow"
       ;;
     new)
       if [ $# -lt 3 ]; then
