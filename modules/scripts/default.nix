@@ -2,13 +2,14 @@
 
 let
   scriptNames = [
-    ./rofi-launcher.nix
-    ./rofi-web-launcher.nix
-    ./rofi-opencode.nix
-    ./opencode-task.nix
-    ./bluetooth-switch.nix
-    ./update.nix
     ./ai-doc-upload.nix
+    ./bluetooth-switch.nix
+    ./opencode-task.nix
+    ./project.nix
+    ./rofi-launcher.nix
+    ./rofi-opencode.nix
+    ./rofi-web-launcher.nix
+    ./update.nix
   ];
 
   scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
