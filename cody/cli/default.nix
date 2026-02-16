@@ -39,6 +39,7 @@
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
+    shellWrapperName = "y";
     theme = {
       git = {
         status_modified = "#${config.lib.stylix.colors.base0A}";
