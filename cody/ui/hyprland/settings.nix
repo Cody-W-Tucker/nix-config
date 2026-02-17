@@ -21,6 +21,7 @@ let
     "special:ai, on-created-empty: ${webApp}=https://www.perplexity.ai/"
     "special:dev, on-created-empty: ${terminal}"
     "special:media, on-created-empty: ${webApp}=https://www.youtube.com/"
+    "special:think, on-created-empty: ${webApp}=https://draw.homehub.tv/"
   ];
 
   keybinds = [
@@ -68,6 +69,7 @@ let
     # Special workspaces
     "${mainMod}, RETURN, togglespecialworkspace, ai"
     "${mainMod}, D, togglespecialworkspace, dev"
+    "${mainMod}, E, togglespecialworkspace, think"
     "${mainMod}, Y, togglespecialworkspace, media"
     "${mainMod} SHIFT, Y, movetoworkspacesilent, special:media"
 
