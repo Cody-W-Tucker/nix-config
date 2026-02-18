@@ -124,6 +124,8 @@
     host = "0.0.0.0";
   };
 
+  environment.defaultPackages = [ pkgs.lmstudio ];
+
   services.ollama = {
     enable = true;
     package = pkgs.ollama-rocm;
