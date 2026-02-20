@@ -176,6 +176,7 @@ in
       direct_scanout = "2";
     };
     general = {
+      allow_tearing = true;
       border_size = "2";
       gaps_in = "2";
       gaps_out = "2";
