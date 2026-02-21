@@ -21,14 +21,7 @@
             enable = true;
             package = pkgs.nixfmt;
           };
-          black = {
-            enable = true;
-            settings = ''
-              {
-                extra_args = { "--fast" },
-              }
-            '';
-          };
+          # Black is handled by conform.nvim for Python files to avoid conflicts
           prettier = {
             enable = true;
             disableTsServerFormatter = true;
