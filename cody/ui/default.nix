@@ -12,7 +12,6 @@
     ./pipewire.nix
     ./notifications.nix
     ./xdg.nix
-    ./opencode
   ];
 
   dconf = {

@@ -1,9 +1,10 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
     ./ui
     ./cli
+    ./agent
   ];
 
   # Keyboard

@@ -1,0 +1,6 @@
+{
+  imports = [
+    ./opencode
+    ./mcp.nix
+  ];
+}
