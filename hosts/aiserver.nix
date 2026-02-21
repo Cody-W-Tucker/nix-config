@@ -21,7 +21,7 @@
     ../modules/scripts
   ];
 
-  nixpkgs.config.rocmSupport = true;
+  # nixpkgs.config.rocmSupport = true;
 
   # Bootloader
   boot = {
