@@ -117,13 +117,6 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  # Provisionary ai chat interface TODO: Should remove later
-  services.open-webui = {
-    enable = true;
-    openFirewall = true;
-    host = "0.0.0.0";
-  };
-
   environment.defaultPackages = [ pkgs.lmstudio ];
 
   # Renaming the logging client to machine hostname
