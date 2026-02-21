@@ -122,11 +122,14 @@
                     inputs.sops-nix.homeManagerModules.sops
                     inputs.stylix.homeModules.stylix
                   ];
-                  users.codyt.imports = [
-                    ./cody/ui.nix
-                    ./secrets/home-secrets.nix
-                    inputs.nixvim.homeManagerModules.nixvim
-                  ];
+                  users.codyt = {
+                    home.stateVersion = "25.05";
+                    imports = [
+                      ./cody/ui.nix
+                      ./secrets/home-secrets.nix
+                      inputs.nixvim.homeManagerModules.nixvim
+                    ];
+                  };
                 };
               }
             )
@@ -166,6 +169,7 @@
                     inputs.stylix.homeModules.stylix
                   ];
                   users.codyt = {
+                    home.stateVersion = "23.11";
                     imports = [
                       ./cody/cli.nix
                       ./secrets/home-secrets.nix
@@ -208,11 +212,14 @@
                     inputs.sops-nix.homeManagerModules.sops
                     inputs.stylix.homeModules.stylix
                   ];
-                  users.codyt.imports = [
-                    ./cody/ui.nix
-                    ./secrets/home-secrets.nix
-                    inputs.nixvim.homeManagerModules.nixvim
-                  ];
+                  users.codyt = {
+                    home.stateVersion = "25.11";
+                    imports = [
+                      ./cody/ui.nix
+                      ./secrets/home-secrets.nix
+                      inputs.nixvim.homeManagerModules.nixvim
+                    ];
+                  };
                 };
               }
             )
