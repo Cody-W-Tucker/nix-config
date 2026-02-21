@@ -7,7 +7,6 @@
 
 {
   imports = [
-    ./mcp.nix
     ./taskwarrior.nix
   ];
 
