@@ -2,9 +2,9 @@ name: "Update flake.lock + verify builds"
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 4 * * 0' # Every Sunday at 4am UTC (change if you want)
+    - cron: '0 4 * * 0' # Every Sunday at 4am UTC
 jobs:
-  update-and-verify:
+  update-and-check-flake:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: DeterminateSystems/determinate-nix-action@v3
-      - name: Update rolling inputs only
+      - name: Update rolling inputs
         run: |
           nix flake update \
             nixpkgs-unstable \
@@ -28,46 +28,38 @@ jobs:
             nextmeeting \
             qdrant-upload \
             opencode
-      - name: Flake check + formatter
-        id: flake-check
-        continue-on-error: true
-        run: |
-          nix flake check --print-build-logs
-      - name: Build all hosts (dry-run)
-        id: build-hosts
-        continue-on-error: true
-        run: |
-          for host in beast server aiserver; do
-            echo "::group::Building $host"
-            nix build --dry-run .#nixosConfigurations.$host.config.system.build.toplevel --print-build-logs
-            echo "::endgroup::"
-          done
-      - name: Create Pull Request
+      - name: Flake check
+        run: nix flake check --print-build-logs
+      # Optional: If you want formatting check back, add git-diff trick here later
+      - name: Create Pull Request if changes exist
         id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore(flake): update rolling inputs"
           title: "chore(flake): update rolling inputs"
           body: |
-            Automated `nix flake update` of rolling inputs only.
+            Automated update of rolling inputs.
 
-            **Verification Status:**
-            - Flake check + formatter: ${{ steps.flake-check.conclusion == 'success' && '✅ Passed' || '❌ Failed' }}
-            - Host builds (beast/server/aiserver): ${{ steps.build-hosts.conclusion == 'success' && '✅ Passed' || '❌ Failed' }}
-
-            ${{ (steps.flake-check.conclusion != 'success' || steps.build-hosts.conclusion != 'success') && '⚠️ **Some checks failed** — review workflow logs before merging!' || '✅ Everything builds cleanly!' }}
+            Flake check passed → proceeding to host build verification in parallel jobs.
           branch: update/flake-lock
           delete-branch: true
           labels: |
             dependencies
             automated
             nix
-      # Optional: Auto-merge if everything passed
-      # - name: Auto-merge successful PR
-      #   if: steps.flake-check.conclusion == 'success' && steps.build-hosts.conclusion == 'success' && steps.create-pr.outputs.pull-request-operation == 'created'
-      #   run: gh pr merge --merge --delete-branch ${{ steps.create-pr.outputs.pull-request-number }}
-      #   env:
-      #     GH_TOKEN: ${{ github.token }}
-      - name: Fail workflow if verification failed
-        if: steps.flake-check.conclusion != 'success' || steps.build-hosts.conclusion != 'success'
-        run: exit 1
+  build-hosts:
+    needs: update-and-check-flake # Only runs if flake check + update succeeded
+    if: always() # Still run even if update failed (for visibility)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        hostname: [beast, server, aiserver]
+      fail-fast: false # Let all run even if one fails
+    name: Build ${{ matrix.hostname }} # ← This makes the nice per-host name in UI
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - name: Dry-run build ${{ matrix.hostname }}
+        run: |
+          nix build --dry-run .#nixosConfigurations.${{ matrix.hostname }}.config.system.build.toplevel \
+            --print-build-logs
