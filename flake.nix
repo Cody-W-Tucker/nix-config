@@ -27,7 +27,10 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nextmeeting.url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
+    nextmeeting = {
+      url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-programs-sqlite = {
       url = "github:wamserma/flake-programs-sqlite";
       inputs.nixpkgs.follows = "nixpkgs";
