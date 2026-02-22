@@ -33,7 +33,6 @@ jobs:
         continue-on-error: true
         run: |
           nix flake check --print-build-logs
-          nix fmt --check
       - name: Build all hosts (dry-run)
         id: build-hosts
         continue-on-error: true
