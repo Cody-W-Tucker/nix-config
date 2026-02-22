@@ -92,7 +92,7 @@
   # Zen browser via Firefox module for hardware acceleration settings
   programs.firefox = {
     enable = true;
-    package = inputs.zen-browser.packages.${pkgs.system}.default;
+    package = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
     profiles.default = {
       settings = {
         # Enable VA-API video decoding

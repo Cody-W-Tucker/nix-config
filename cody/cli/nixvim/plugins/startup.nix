@@ -3,7 +3,7 @@
 {
   programs.nixvim.plugins.startup = {
     enable = true;
-    sections = {
+    settings = {
       header = {
         type = "text";
         oldfilesDirectory = false;
@@ -34,7 +34,7 @@
         margin = 5;
         content = [
           [
-            " Find File"
+            " Find File"
             "Telescope find_files"
             "ff"
           ]
@@ -44,12 +44,12 @@
             "fg"
           ]
           [
-            " Recent Files"
+            " Recent Files"
             "Telescope oldfiles"
             "fo"
           ]
           [
-            " File Browser"
+            " File Browser"
             "Yazi"
             "-"
           ]
@@ -58,18 +58,18 @@
         defaultColor = "";
         oldfilesAmount = 0;
       };
-    };
 
-    options = {
-      paddings = [
-        1
-        3
+      options = {
+        paddings = [
+          1
+          3
+        ];
+      };
+
+      parts = [
+        "body"
+        "header"
       ];
     };
-
-    parts = [
-      "body"
-      "header"
-    ];
   };
 }
