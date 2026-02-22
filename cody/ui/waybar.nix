@@ -11,7 +11,7 @@
 # Bottom monitor bar focus on work
 # Top monitor bar gives more information
 let
-  nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.system}.default;
+  nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
   favorite_apps = {
     "Zen Browser" = "🞋";
     "spotify" = "";

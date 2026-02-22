@@ -119,7 +119,7 @@
                   useUserPackages = true;
                   backupFileExtension = "backup";
                   sharedModules = [
-                    inputs.sops-nix.homeManagerModules.sops
+                    inputs.sops-nix.homeModules.sops
                     inputs.stylix.homeModules.stylix
                   ];
                   users.codyt = {
@@ -127,7 +127,7 @@
                     imports = [
                       ./cody/ui.nix
                       ./secrets/home-secrets.nix
-                      inputs.nixvim.homeManagerModules.nixvim
+                      inputs.nixvim.homeModules.nixvim
                     ];
                   };
                 };
@@ -165,7 +165,7 @@
                   useUserPackages = true;
                   backupFileExtension = "backup";
                   sharedModules = [
-                    inputs.sops-nix.homeManagerModules.sops
+                    inputs.sops-nix.homeModules.sops
                     inputs.stylix.homeModules.stylix
                   ];
                   users.codyt = {
@@ -173,7 +173,7 @@
                     imports = [
                       ./cody/cli.nix
                       ./secrets/home-secrets.nix
-                      inputs.nixvim.homeManagerModules.nixvim
+                      inputs.nixvim.homeModules.nixvim
                     ];
                     home.enableNixpkgsReleaseCheck = false;
                   };
@@ -209,7 +209,7 @@
                   useUserPackages = true;
                   backupFileExtension = "backup";
                   sharedModules = [
-                    inputs.sops-nix.homeManagerModules.sops
+                    inputs.sops-nix.homeModules.sops
                     inputs.stylix.homeModules.stylix
                   ];
                   users.codyt = {
@@ -217,7 +217,7 @@
                     imports = [
                       ./cody/ui.nix
                       ./secrets/home-secrets.nix
-                      inputs.nixvim.homeManagerModules.nixvim
+                      inputs.nixvim.homeModules.nixvim
                     ];
                   };
                 };
