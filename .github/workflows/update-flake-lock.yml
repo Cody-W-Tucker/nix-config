@@ -1,0 +1,74 @@
+name: "Update flake.lock + verify builds"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 0' # Every Sunday at 4am UTC (change if you want)
+jobs:
+  update-and-verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - name: Update rolling inputs only
+        run: |
+          nix flake update \
+            nixpkgs-unstable \
+            home-manager-unstable \
+            stylix \
+            sops-nix \
+            nixos-hardware \
+            flake-programs-sqlite \
+            vpn-confinement \
+            zen-browser \
+            nextmeeting \
+            qdrant-upload \
+            opencode
+      - name: Flake check + formatter
+        id: flake-check
+        continue-on-error: true
+        run: |
+          nix flake check --print-build-logs
+          nix fmt --check
+      - name: Build all hosts (dry-run)
+        id: build-hosts
+        continue-on-error: true
+        run: |
+          for host in beast server aiserver; do
+            echo "::group::Building $host"
+            nix build --dry-run .#nixosConfigurations.$host.config.system.build.toplevel --print-build-logs
+            echo "::endgroup::"
+          done
+      - name: Create Pull Request
+        id: create-pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore(flake): update rolling inputs"
+          title: "chore(flake): update rolling inputs"
+          body: |
+            Automated `nix flake update` of rolling inputs only.
+
+            **Verification Status:**
+            - Flake check + formatter: ${{ steps.flake-check.conclusion == 'success' && '✅ Passed' || '❌ Failed' }}
+            - Host builds (beast/server/aiserver): ${{ steps.build-hosts.conclusion == 'success' && '✅ Passed' || '❌ Failed' }}
+
+            ${{ (steps.flake-check.conclusion != 'success' || steps.build-hosts.conclusion != 'success') && '⚠️ **Some checks failed** — review workflow logs before merging!' || '✅ Everything builds cleanly!' }}
+          branch: update/flake-lock
+          delete-branch: true
+          labels: |
+            dependencies
+            automated
+            nix
+      # Optional: Auto-merge if everything passed
+      # - name: Auto-merge successful PR
+      #   if: steps.flake-check.conclusion == 'success' && steps.build-hosts.conclusion == 'success' && steps.create-pr.outputs.pull-request-operation == 'created'
+      #   run: gh pr merge --merge --delete-branch ${{ steps.create-pr.outputs.pull-request-number }}
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      - name: Fail workflow if verification failed
+        if: steps.flake-check.conclusion != 'success' || steps.build-hosts.conclusion != 'success'
+        run: exit 1
