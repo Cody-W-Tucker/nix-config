@@ -5,10 +5,21 @@
   ...
 }:
 
+let
+  scriptNames = [
+    ./opencode-task.nix
+    ./rofi-opencode.nix
+  ];
+
+  scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
+in
+
 {
   imports = [
     ./taskwarrior.nix
   ];
+
+  home.packages = scriptPackages;
 
   programs.opencode = {
     enable = true;

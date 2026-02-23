@@ -7,9 +7,6 @@ pkgs.writeShellApplication {
     pkgs.direnv
   ];
   text = ''
-    #!/usr/bin/env zsh
-
-
     # Kill rofi if already running
     if pgrep -x "rofi" > /dev/null; then
       pkill -x rofi
