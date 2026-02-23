@@ -65,7 +65,6 @@
         devices = [
           "Cody's Pixel"
           "beast"
-          "aiserver"
         ];
       };
     })
@@ -76,14 +75,6 @@
         path = "/mnt/backup/Share";
         devices = [
           "server"
-          "beast"
-          "aiserver"
-        ];
-      };
-      "Cody's Obsidian" = {
-        path = "/mnt/backup/Obsidian";
-        devices = [
-          "Cody's Pixel"
           "beast"
           "aiserver"
         ];
