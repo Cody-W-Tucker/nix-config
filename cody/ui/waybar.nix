@@ -94,7 +94,6 @@ let
           ""
         ];
       };
-      on-click = "bluetoothSwitch";
       on-click-right = "uwsm-app -- pavucontrol";
     };
     mpris = {

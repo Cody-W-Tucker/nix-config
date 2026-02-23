@@ -5,10 +5,8 @@
     ./actualBudget.nix
     ./arm.nix
     ./adguard.nix
-    ./automation.nix
     ./content.nix
     ./excalidraw.nix
-    ./karakeep.nix
     ./homepage-dashboard.nix
     ./media.nix
     ./monitoring.nix

@@ -24,7 +24,7 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 4;
+            columns = 3;
           };
           Tools = {
             style = "row";
@@ -76,13 +76,6 @@ in
       services = [
         {
           Business = [
-            {
-              N8N = {
-                href = "https://automation.${domain}";
-                icon = "n8n";
-                description = "Automation";
-              };
-            }
             {
               Open-WebUI = {
                 href = "https://ai.${domain}";
@@ -184,13 +177,6 @@ in
                 href = "https://photos.${domain}";
                 icon = "immich";
                 description = "Photo Management";
-              };
-            }
-            {
-              Karakeep = {
-                href = "https://karakeep.${domain}";
-                icon = "karakeep";
-                description = "Link Collector";
               };
             }
           ];
