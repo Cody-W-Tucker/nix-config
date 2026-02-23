@@ -58,7 +58,7 @@ pkgs.writeShellApplication {
       if [[ "$task_count" -eq 1 ]]; then
         task_command="Task: $(echo "$descriptions" | head -1)"
       else
-        formatted_descriptions=$(echo "$descriptions" | sed 's/^/  - /')
+        formatted_descriptions="  - ''${descriptions//''$'\n'/$'\n  - '}"
         task_command="Tasks for $project ($task_count):\n$formatted_descriptions"
       fi
 
@@ -73,7 +73,7 @@ pkgs.writeShellApplication {
       notify-send "Opencode completed: $task_count task(s) for $project"
 
       while IFS= read -r uuid; do
-        task "$uuid" done 2>/dev/null || true
+        task "$uuid" mod status:completed 2>/dev/null || true
       done <<<"$uuids"
     done
   '';
