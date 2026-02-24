@@ -37,12 +37,10 @@ let
     "${mainMod}, Tab, exec, rofi-launcher"
     "${mainMod}, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod} SHIFT, Tab, exec, web-search"
-    "${mainMod}, backslash, exec, rofi-opencode"
     "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n \"{result}\" | wl-copy'"
 
     # Task Management
     "${mainMod}, T, exec, ${terminal} --class taskwarrior-tui -e taskwarrior-tui"
-    "${mainMod} SHIFT, T, exec, opencode-task"
 
     # Screenshots
     "${mainMod}, S, exec, screenshot-ocr"
@@ -52,6 +50,7 @@ let
     "${mainMod}, mouse:274, exec, hyprpicker -a"
 
     # Window management
+    "${mainMod}, Escape, killactive"
     "${mainMod}, C, killactive"
     "${mainMod}, F, fullscreen"
 
