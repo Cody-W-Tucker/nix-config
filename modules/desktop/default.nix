@@ -38,10 +38,14 @@
       cifs-utils # For mounting CIFS shares
       seahorse # GNOME keyring manager
       openrazer-daemon # Razer device support
+      go-chromecast # Chromecast CLI tool
+      wf-recorder # Wayland screen recorder
+      jq # JSON parsing for hyprctl
+      netcat # Port checking for chromecast
     ]
   );
 
-  # Open ports for rustdesk
+  # Open ports for rustdesk and chromecast streaming
   networking.firewall.allowedTCPPorts = [
     21115
     21116
@@ -50,6 +54,7 @@
     21119
     8384 # Syncthing GUI
     22000 # Syncthing sync protocol
+    8080 # Chromecast screen streaming
   ];
   networking.firewall.allowedUDPPorts = [
     21115
