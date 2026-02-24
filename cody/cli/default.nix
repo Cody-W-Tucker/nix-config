@@ -73,7 +73,7 @@
     # Additional configuration
     settings = {
       user = {
-        name = "Cody Tucker";
+        name = "Cody W Tucker";
         email = "cody@tmvsocial.com";
       };
       alias = {
@@ -112,6 +112,7 @@
         fo = "find-and-open-file";
         rr = "yazi";
         gg = "lazygit";
+        oo = "opencode";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
         gcCleanup = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
