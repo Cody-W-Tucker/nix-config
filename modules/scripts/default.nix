@@ -2,9 +2,7 @@
 
 let
   scriptNames = [
-    ./chromecast-stop.nix
     ./project.nix
-    ./rofi-chromecast.nix
     ./rofi-launcher.nix
     ./rofi-web-launcher.nix
     ./update.nix
