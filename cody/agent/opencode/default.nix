@@ -7,6 +7,7 @@
 
 {
   imports = [
+    ./scripts
     ./taskwarrior.nix
   ];
 
