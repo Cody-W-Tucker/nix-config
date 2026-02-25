@@ -20,6 +20,7 @@ jobs:
             nixpkgs-unstable \
             home-manager-unstable \
             stylix \
+            nixcord \
             sops-nix \
             nixos-hardware \
             flake-programs-sqlite \
