@@ -4,9 +4,9 @@
   programs.mcp = {
     enable = true;
     servers = {
-      docs-langchain = {
-        url = "https://docs.langchain.com/mcp";
-      };
+      # docs-langchain = {
+      #   url = "https://docs.langchain.com/mcp";
+      # };
       context7 = {
         command = "nix-shell";
         args = [
