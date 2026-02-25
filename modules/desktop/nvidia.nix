@@ -72,4 +72,12 @@
     # Additional VA-API debug info
     LIBVA_MESSAGING_LEVEL = "1";
   };
+
+  # Global Electron flags for NVIDIA Wayland — fixes scroll glitches and rendering artifacts (system-wide)
+  environment.etc."xdg/electron-flags.conf".text = ''
+    --enable-features=UseOzonePlatform,WaylandWindowDecorations,VaapiVideoDecodeLinuxGL
+    --ozone-platform-hint=auto
+    --disable-gpu-shader-disk-cache
+    --enable-zero-copy
+  '';
 }
