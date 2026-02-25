@@ -2,6 +2,7 @@
 
 let
   scriptNames = [
+    ./fastUpdate.nix
     ./project.nix
     ./rofi-launcher.nix
     ./rofi-web-launcher.nix
