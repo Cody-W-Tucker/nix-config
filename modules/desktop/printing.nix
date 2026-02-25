@@ -1,6 +1,10 @@
 { pkgs, ... }:
 {
-  # Avahi configured in casting.nix for Chromecast/printing shared use
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
 
   services.printing = {
     enable = true;
