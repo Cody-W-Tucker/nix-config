@@ -6,6 +6,7 @@
 
 {
   imports = [
+    ./discord.nix
     ./hyprland.nix
     ./rofi.nix
     ./waybar.nix
@@ -59,7 +60,6 @@
     gcalcli # Google Calendar CLI tool
     feishin # Desktop app music player
     wttrbar # Weather bar for Waybar
-    vesktop
   ];
 
   programs.chromium = {
