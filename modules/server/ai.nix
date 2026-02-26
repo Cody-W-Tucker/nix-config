@@ -78,7 +78,10 @@
   services = {
     ollama = {
       enable = true;
-      package = pkgs.ollama-cuda;
+      package = pkgs.ollama-cuda.override {
+        # nvidia-smi --query-gpu=compute_cap --format=csv
+        cudaArches = [ "86" ];
+      };
     };
     # Graph database
     neo4j = {
