@@ -112,7 +112,7 @@
         fo = "find-and-open-file";
         rr = "yazi";
         gg = "lazygit";
-        oo = "opencode";
+        op = "opencode";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
         gcCleanup = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
