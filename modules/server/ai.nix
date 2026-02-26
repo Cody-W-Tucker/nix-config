@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   # Enable CUDA in containers
   hardware.nvidia-container-toolkit.enable = true;
@@ -34,7 +36,6 @@
         DO_NOT_TRACK = "True";
         SCARF_NO_ANALYTICS = "True";
         WEBUI_SECRET_KEY = "local-only";
-        USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3";
 
         # Local AI
         OLLAMA_BASE_URL = "http://localhost:11434";
@@ -75,7 +76,10 @@
   };
   # Local AI models
   services = {
-    ollama.enable = true;
+    ollama = {
+      enable = true;
+      package = pkgs.ollama-cuda;
+    };
     # Graph database
     neo4j = {
       enable = true;
@@ -121,37 +125,37 @@
       asyncChat = true;
 
       sources = [
-        {
-          name = "personal";
-          type = "obsidian";
-          collection = "personal";
-          directories = [
-            "/home/codyt/Knowledge/Personal/Journal"
-            "/home/codyt/Knowledge/Personal/Knowledge"
-          ];
-          skipExisting = true;
-        }
-        {
-          name = "projects";
-          type = "obsidian";
-          collection = "projects";
-          directories = [ "/home/codyt/Knowledge/Personal/Projects" ];
-          skipExisting = true;
-        }
-        {
-          name = "inbox";
-          type = "obsidian";
-          collection = "inbox";
-          directories = [ "/home/codyt/Knowledge/Personal/Inbox" ];
-          skipExisting = true;
-        }
-        {
-          name = "entities";
-          type = "obsidian";
-          collection = "entities";
-          directories = [ "/home/codyt/Knowledge/Personal/Entities" ];
-          skipExisting = true;
-        }
+        # {
+        #   name = "personal";
+        #   type = "obsidian";
+        #   collection = "personal";
+        #   directories = [
+        #     "/home/codyt/Knowledge/Personal/Journal"
+        #     "/home/codyt/Knowledge/Personal/Knowledge"
+        #   ];
+        #   skipExisting = true;
+        # }
+        # {
+        #   name = "projects";
+        #   type = "obsidian";
+        #   collection = "projects";
+        #   directories = [ "/home/codyt/Knowledge/Personal/Projects" ];
+        #   skipExisting = true;
+        # }
+        # {
+        #   name = "inbox";
+        #   type = "obsidian";
+        #   collection = "inbox";
+        #   directories = [ "/home/codyt/Knowledge/Personal/Inbox" ];
+        #   skipExisting = true;
+        # }
+        # {
+        #   name = "entities";
+        #   type = "obsidian";
+        #   collection = "entities";
+        #   directories = [ "/home/codyt/Knowledge/Personal/Entities" ];
+        #   skipExisting = true;
+        # }
         # {
         #   name = "research";
         #   type = "obsidian";
