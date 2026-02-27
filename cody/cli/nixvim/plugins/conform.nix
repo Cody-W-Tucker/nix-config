@@ -35,7 +35,6 @@
           ];
           python = [ "black" ];
           nix = [ "nixfmt" ];
-          zig = [ "zigfmt" ];
           markdown = [
             "prettierd"
             "prettier"
