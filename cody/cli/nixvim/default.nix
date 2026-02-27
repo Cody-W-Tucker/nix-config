@@ -64,9 +64,11 @@
       direnv.enable = true;
       goyo.enable = true;
       twilight.enable = true;
+      zig.enable = true;
     };
     # Set the leader key to <Space>
     globals.mapleader = " ";
     extraPlugins = with pkgs.vimPlugins; [ vim-pencil ];
+    extraPackages = with pkgs; [ zig ];
   };
 }
