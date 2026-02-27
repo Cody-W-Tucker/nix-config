@@ -3,7 +3,7 @@
 pkgs.writeShellScriptBin "project" ''
   set -e
 
-  TEMPLATE_BASE="https://flakehub.com/f/the-nix-way/dev-templates/*"
+  TEMPLATE_BASE="https://flakehub.com/f/Cody-W-Tucker/dev-templates/*"
 
   show_help() {
     echo "Usage: project <command> <template> [directory]"
@@ -13,12 +13,9 @@ pkgs.writeShellScriptBin "project" ''
     echo "  new <template> <dir>  Create a new project with the specified template"
     echo ""
     echo "Available templates:"
-    echo "  bun, c-cpp, clojure, cue, deno, dhall, elixir, elm, empty"
-    echo "  gleam, go, hashi, haskell, haxe, java, jupyter, kotlin"
-    echo "  latex, lean4, nickel, nim, nix, node, ocaml, odin, opa"
-    echo "  php, platformio, protobuf, pulumi, purescript, python"
-    echo "  r, ruby, rust, scala, shell, swi-prolog, swift, typst"
-    echo "  vlang, zig"
+    echo "  bun, empty, go, jupyter, node, nix, protobuf"
+    echo "  python, ruby, ruby-on-rails, rust, shell"
+    echo "  swi-prolog, zig"
   }
 
   if [ $# -lt 1 ]; then
