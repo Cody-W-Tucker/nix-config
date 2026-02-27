@@ -25,6 +25,7 @@
       xml
       astro
       tsx
+      zig
     ];
   };
 }
