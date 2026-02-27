@@ -53,6 +53,7 @@ in
       "text/*" = "nvim.desktop";
       "application/json" = "nvim.desktop"; # JSON is technically not text/*
       "application/javascript" = "nvim.desktop"; # For explicit JS files
+      "application/x-subrip" = "nvim.desktop"; # For .srt subtitle files
 
       # Web URLs
       "x-scheme-handler/http" = "zen.desktop";
