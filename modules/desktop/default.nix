@@ -3,8 +3,9 @@
 {
   imports = [
     ./audio
-    ../syncthing.nix
     ./logging.nix
+    ./printing.nix
+    ../syncthing.nix
     ./vpn
   ];
 
