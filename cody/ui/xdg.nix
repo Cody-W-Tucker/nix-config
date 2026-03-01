@@ -34,9 +34,6 @@ in
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      # Directories: set yazi as file manager
-      "inode/directory" = "yazi.desktop";
-
       # Images: PNG, JPEG, GIF, SVG, WebP
       "image/*" = "feh.desktop";
 
