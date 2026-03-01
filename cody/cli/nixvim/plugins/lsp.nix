@@ -47,7 +47,6 @@
           K = "hover";
           re = "rename";
           ca = "code_action";
-          cf = "quickfix";
         };
         diagnostic = {
           "<leader>k" = "goto_prev";
