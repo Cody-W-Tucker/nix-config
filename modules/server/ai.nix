@@ -83,13 +83,6 @@
         cudaArches = [ "86" ];
       };
     };
-    # Graph database
-    neo4j = {
-      enable = true;
-      bolt.tlsLevel = "DISABLED";
-      https.enable = false;
-      http.enable = true;
-    };
     # Content extraction
     tika = {
       enable = true;
@@ -114,77 +107,14 @@
         telemetry_disabled = true;
       };
     };
-    # qdrant-upload = {
-    #   # Enable auto uploads daily at 2 AM
-    #   enable = true;
-
-    #   # Service URLs
-    #   qdrantUrl = "http://localhost:6333";
-    #   ollamaUrl = "http://localhost:11434";
-
-    #   # Performance (RTX 3070 optimized)
-    #   batchSize = 2000;
-    #   maxConcurrent = 4;
-    #   asyncChat = true;
-
-    #   sources = [
-    # {
-    #   name = "personal";
-    #   type = "obsidian";
-    #   collection = "personal";
-    #   directories = [
-    #     "/home/codyt/Knowledge/Personal/Journal"
-    #     "/home/codyt/Knowledge/Personal/Knowledge"
-    #   ];
-    #   skipExisting = true;
-    # }
-    # {
-    #   name = "projects";
-    #   type = "obsidian";
-    #   collection = "projects";
-    #   directories = [ "/home/codyt/Knowledge/Personal/Projects" ];
-    #   skipExisting = true;
-    # }
-    # {
-    #   name = "inbox";
-    #   type = "obsidian";
-    #   collection = "inbox";
-    #   directories = [ "/home/codyt/Knowledge/Personal/Inbox" ];
-    #   skipExisting = true;
-    # }
-    # {
-    #   name = "entities";
-    #   type = "obsidian";
-    #   collection = "entities";
-    #   directories = [ "/home/codyt/Knowledge/Personal/Entities" ];
-    #   skipExisting = true;
-    # }
-    # {
-    #   name = "research";
-    #   type = "obsidian";
-    #   collection = "research";
-    #   directories = [ "/home/codyt/Knowledge/Personal/Research" ];
-    #   skipExisting = true;
-    # }
-    # {
-    #   name = "ebooks";
-    #   type = "ebook";
-    #   collection = "ebooks";
-    #   directories = [ "/mnt/server-books" ];
-    #   skipExisting = true;
-    # }
-    # ];
-    # };
   };
   # Make the open-webui and pipelines dirs
   systemd.tmpfiles.rules = [
     "d /var/lib/open-webui 0755 root root - -"
     "d /var/lib/pipelines 0755 root root - -"
   ];
-  # Open the ports so the web server can proxy them
+  # Since we run open-webui on beast and the nginx server is on the server, we must open the port so the web server can proxy them
   networking.firewall.allowedTCPPorts = [
-    6333
-    6334
     8080
   ];
 }
