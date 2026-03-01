@@ -40,11 +40,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
-    qdrant-upload = {
-      url = "github:Cody-W-Tucker/Qdrant-Upload";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    opencode.url = "github:sst/opencode";
+    # qdrant-upload = {
+    #   url = "github:Cody-W-Tucker/Qdrant-Upload";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    # opencode.url = "github:sst/opencode";
   };
 
   outputs =
@@ -106,7 +106,7 @@
           modules = [
             ./hosts/beast.nix
             inputs.sops-nix.nixosModules.sops
-            inputs.qdrant-upload.nixosModules.default
+            # inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager-unstable.nixosModules.home-manager

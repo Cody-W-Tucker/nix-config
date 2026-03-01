@@ -397,22 +397,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_3": {
-      "locked": {
-        "lastModified": 1770812194,
-        "narHash": "sha256-OH+lkaIKAvPXR3nITO7iYZwew2nW9Y7Xxq0yfM/UcUU=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "8482c7ded03bae7550f3d69884f1e611e3bd19e8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -458,44 +442,6 @@
         "type": "github"
       }
     },
-    "opencode": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_3"
-      },
-      "locked": {
-        "lastModified": 1772340277,
-        "narHash": "sha256-PCzCV1dzNyWFKLUkkoHmsPLS4lPuZcQ/gbUKgqtL8n4=",
-        "owner": "sst",
-        "repo": "opencode",
-        "rev": "38704acacddad821d157d9a2c093e3751e016f53",
-        "type": "github"
-      },
-      "original": {
-        "owner": "sst",
-        "repo": "opencode",
-        "type": "github"
-      }
-    },
-    "qdrant-upload": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1770482682,
-        "narHash": "sha256-UzbaSOeTAyXk6RFd95B+1A6xGdpdmgVKqNck9XWnnzU=",
-        "owner": "Cody-W-Tucker",
-        "repo": "Qdrant-Upload",
-        "rev": "d3f975c3bbe80cf294b5aa4f610967f41bfeb1ba",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Cody-W-Tucker",
-        "repo": "Qdrant-Upload",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "flake-programs-sqlite": "flake-programs-sqlite",
@@ -507,8 +453,6 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
-        "opencode": "opencode",
-        "qdrant-upload": "qdrant-upload",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "vpn-confinement": "vpn-confinement",
