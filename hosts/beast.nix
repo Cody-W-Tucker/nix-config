@@ -11,7 +11,7 @@
     ../configuration.nix
     ../modules/desktop
     ../modules/desktop/tailscale.nix
-    ../modules/desktop/gaming.nix
+    ../modules/desktop/gaming
     ../modules/desktop/hyprland.nix
     ../modules/desktop/nvidia.nix
     ../modules/desktop/razer.nix
