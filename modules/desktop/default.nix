@@ -22,41 +22,26 @@
   };
 
   # Install basic desktop environment packages that I want on all my systems.
-  environment.systemPackages = (
-    with pkgs;
-    [
-      # list of stable packages go here
-      pavucontrol # PulseAudio volume control
-      xdg-utils # xdg-open
-      usbutils # For listing USB devices
-      udiskie # For mounting USB devices
-      udisks # For managing disks
-      udev # Device manager
-      kitty # Terminal emulator
-      obsidian # Note-taking app
-      rustdesk-flutter # Remote desktop software
-      cifs-utils # For mounting CIFS shares
-      seahorse # GNOME keyring manager
-      openrazer-daemon # Razer device support
-    ]
-  );
+  environment.systemPackages = with pkgs; [
+    # list of stable packages go here
+    pavucontrol # PulseAudio volume control
+    xdg-utils # xdg-open
+    usbutils # For listing USB devices
+    udiskie # For mounting USB devices
+    udisks # For managing disks
+    udev # Device manager
+    kitty # Terminal emulator
+    obsidian # Note-taking app
+    cifs-utils # For mounting CIFS shares
+    seahorse # GNOME keyring manager
+    openrazer-daemon # Razer device support
+  ];
 
-  # Open ports for rustdesk
   networking.firewall.allowedTCPPorts = [
-    21115
-    21116
-    21117
-    21118
-    21119
     8384 # Syncthing GUI
     22000 # Syncthing sync protocol
   ];
   networking.firewall.allowedUDPPorts = [
-    21115
-    21116
-    21117
-    21118
-    21119
     22000 # Syncthing sync protocol
     21027 # Syncthing local discovery
   ];
