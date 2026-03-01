@@ -13,7 +13,6 @@
     grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
       bash
       json
-      nix
       python
       toml
       yaml
