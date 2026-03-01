@@ -10,11 +10,10 @@
   imports = [
     ../configuration.nix
     ../modules/desktop
-    ../modules/desktop/tailscale.nix
     ../modules/desktop/gaming
     ../modules/desktop/hyprland.nix
-    ../modules/desktop/nvidia.nix
-    ../modules/desktop/razer.nix
+    ../modules/desktop/hardware/nvidia.nix
+    ../modules/desktop/hardware/razer.nix
     ../modules/scripts
     ../modules/server/ai.nix
 

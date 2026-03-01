@@ -2,19 +2,15 @@
 
 {
   imports = [
-    ./audio.nix
+    ./audio
     ../syncthing.nix
     ./logging.nix
+    ./vpn
   ];
 
   hardware.graphics.enable = true;
 
   services = {
-    # Provides a way to manage system firmware updates
-    mullvad-vpn = {
-      enable = true;
-      package = pkgs.mullvad-vpn;
-    };
     # Allows nautilus (gnome files) to access gvfs mounts (trash and samba shares)
     gvfs.enable = true;
     # Enable support for removable devices.
