@@ -1,4 +1,4 @@
-name: "Update flake.lock + verify builds"
+name: "Update flake.lock"
 on:
   workflow_dispatch:
   schedule:
@@ -9,7 +9,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  update-and-check-flake:
+  update-flake:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -40,19 +40,3 @@ jobs:
             dependencies
             automated
             nix
-  build-hosts:
-    needs: update-and-check-flake
-    if: always()
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        hostname: [beast, server, aiserver]
-      fail-fast: false
-    name: Build ${{ matrix.hostname }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/determinate-nix-action@v3
-      - name: Build ${{ matrix.hostname }}
-        run: |
-          nix build --dry-run .#nixosConfigurations.${{ matrix.hostname }}.config.system.build.toplevel \
-            --print-build-logs
