@@ -117,6 +117,9 @@
 
   environment.defaultPackages = [ pkgs.lmstudio ];
 
+  # Open port for LMstudio
+  networking.firewall.allowedTCPPorts = [ 1234 ];
+
   # Renaming the logging client to machine hostname
   services.promtail.configuration.scrape_configs = [
     {

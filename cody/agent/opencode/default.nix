@@ -13,9 +13,21 @@
 
   programs.opencode = {
     enable = true;
-    # Use most reccent package from flake
-    # package = inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    settings.theme = lib.mkForce "system";
     enableMcpIntegration = true;
+    settings = {
+      theme = lib.mkForce "system";
+      provider = {
+        lmstudio = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "LM Studio (local)";
+          options.baseURL = "http://aiserver:1234/v1";
+          models = {
+            "qwen/qwen3.5-35b-a3b" = {
+              name = "Qwen3.5";
+            };
+          };
+        };
+      };
+    };
   };
 }
