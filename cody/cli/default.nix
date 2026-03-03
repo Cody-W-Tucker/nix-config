@@ -115,6 +115,11 @@
         op = "opencode";
         copy = "kitten clipboard";
         pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
+        upgrade = ''
+          cd /etc/nixos &&
+          sudo nix flake update
+          sudo nixos-rebuild switch
+        '';
         gcCleanup = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       };
       plugins = [
