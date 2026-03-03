@@ -49,7 +49,6 @@
       }
     ];
     plugins = {
-      autoclose.enable = true;
       csvview.enable = true;
       lazygit.enable = true;
       git-conflict.enable = true;
@@ -62,8 +61,6 @@
       yazi.enable = true;
       web-devicons.enable = true;
       direnv.enable = true;
-      goyo.enable = true;
-      twilight.enable = true;
       zig.enable = true;
     };
     # Set the leader key to <Space>
