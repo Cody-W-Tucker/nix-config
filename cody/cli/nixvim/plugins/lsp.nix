@@ -5,7 +5,10 @@
       enable = true;
       inlayHints = true;
       servers = {
-        nixd.enable = true; # Nix
+        nixd = {
+          enable = true;
+          settings.formatting.command = [ "nixfmt-tree" ];
+        }; # Nix
         cssls.enable = true; # CSS
         tailwindcss.enable = true; # TailwindCSS
         html.enable = true; # HTML
