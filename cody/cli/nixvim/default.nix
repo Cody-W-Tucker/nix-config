@@ -50,6 +50,7 @@
     ];
     plugins = {
       csvview.enable = true;
+      nix.enable = true;
       lazygit.enable = true;
       git-conflict.enable = true;
       gitsigns.enable = true;
