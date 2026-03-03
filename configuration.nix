@@ -88,6 +88,7 @@
     openssh = {
       authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJkUAtqd1GcKYejbmpxjLzXdMoDojpVuNXEEBhYQjVgY cody@tmvsocial.com"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ0Ct+Iccmg3sne63r8bM/W47fEktUsUm8zkseKXwqzz" # aiserver
       ];
     };
   };
