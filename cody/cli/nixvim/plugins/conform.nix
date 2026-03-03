@@ -34,7 +34,7 @@
             "prettier"
           ];
           python = [ "black" ];
-          nix = [ "nixfmt-tree" ];
+          nix = [ "nixfmt" ];
           markdown = [
             "prettierd"
             "prettier"
