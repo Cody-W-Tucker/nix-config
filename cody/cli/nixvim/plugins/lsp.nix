@@ -5,13 +5,7 @@
       enable = true;
       inlayHints = true;
       servers = {
-        nixd = {
-          enable = true;
-          settings = {
-            options.expr = "(builtins.getFlake (toString ..).options)";
-          };
-          settings.formatting.command = [ "nixfmt" ];
-        }; # Nix
+        nixd.enable = true; # Nix
         cssls.enable = true; # CSS
         tailwindcss.enable = true; # TailwindCSS
         html.enable = true; # HTML
@@ -33,9 +27,7 @@
             ];
           };
         };
-        astro = {
-          enable = true;
-        };
+        astro.enable = true;
       };
       keymaps = {
         silent = true;
