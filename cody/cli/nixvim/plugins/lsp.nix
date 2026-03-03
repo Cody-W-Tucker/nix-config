@@ -7,7 +7,10 @@
       servers = {
         nixd = {
           enable = true;
-          settings.formatting.command = [ "nixfmt-tree" ];
+          settings = {
+            options.expr = "(builtins.getFlake (toString ..).options)";
+          };
+          settings.formatting.command = [ "nixfmt" ];
         }; # Nix
         cssls.enable = true; # CSS
         tailwindcss.enable = true; # TailwindCSS
