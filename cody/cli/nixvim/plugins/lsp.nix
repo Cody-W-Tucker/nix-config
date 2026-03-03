@@ -29,12 +29,6 @@
         };
         astro = {
           enable = true;
-          # Critical: use project-local TypeScript (Astro requires this)
-          settings = {
-            typescript = {
-              tsdk = "./node_modules/typescript/lib";
-            };
-          };
         };
       };
       keymaps = {
