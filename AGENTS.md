@@ -1,51 +1,45 @@
-# CodyOS Development Guide
+# CodyOS
 
-## Build Commands
-- **Build & switch config**: `update "descriptive commit message"`
-- **Format code**: `nix fmt` (included in update script)
-- **Check flake**: `nix flake check`
+NixOS config for home lab with 3 machines.
 
-## Code Style Guidelines
+## Hosts
+- **beast** - Desktop (i9-14900KF, RTX 3070)
+- **aiserver** - AI workstation (Strix Halo AI 395+)
+- **server** - Media/server (i7-7000)
 
-### File Structure
-- Use `.nix` extension for all Nix files
-- Organize modules in `modules/` directory with subdirectories for logical grouping
-- Host-specific configs in `hosts/` directory
-- User configs in `cody/` directory
+## Build
+```bash
+# Build and switch
+sudo nixos-rebuild switch --flake .
 
-### Imports & Dependencies
-- List imports alphabetically at file top
-- Use relative paths for local modules (`./module.nix`)
-- Group imports by type (external, local)
+# Build specific host
+sudo nixos-rebuild build --flake .#beast
+```
 
-### Formatting
-- 2-space indentation
-- No semicolons at expression end
-- Use descriptive comments with section headers (`# ------------------------`)
-- Break long lists with newlines for readability
+## Structure
+```
+hosts/        - machine configs
+modules/      - reusable (desktop/, server/, scripts/)
+cody/         - user configs (cli/, ui/)
+secrets/      - SOPS-encrypted
+```
 
-### Naming Conventions
-- Lowercase with hyphens for module names (`client-syncthing.nix`)
-- PascalCase for service configurations
-- snake_case for environment variables
-- Descriptive variable names (avoid abbreviations)
+## Patterns
+```nix
+# Nginx reverse proxy (common in this repo)
+services.nginx.virtualHosts."service.homehub.tv" = {
+  forceSSL = true;
+  useACMEHost = "homehub.tv";
+  locations."/".proxyPass = "http://localhost:8080";
+};
 
-### Error Handling
-- Use `pkgs.callPackage` for script packaging
-- Validate hardware configurations before committing
-- Test configurations on non-production hosts first
+# Docker container
+virtualisation.oci-containers.containers.name = {
+  image = "image:tag";
+  ports = [ "8080:8080" ];
+};
+```
 
-### Security
-- Store secrets in `secrets/` with SOPS encryption
-- Never commit sensitive data or keys
-- Use `allowUnfree` predicate carefully
-
-### Testing
-- No automated tests currently - manual testing required
-- Test configurations with `nixos-rebuild build-vm` for isolated testing
-- Validate hardware-specific changes on target machines
-
-### Git Workflow
-- Use `update "descriptive message"` for formatted commits, rebuilds, and pushes
-- Commit hardware configs separately from software changes
-- Pull before rebuild on target machines
+## Secrets
+- Use SOPS: `sops.secrets."key" = { };`
+- Never commit raw secrets
