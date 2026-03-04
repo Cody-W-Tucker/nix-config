@@ -1,7 +1,5 @@
 {
   lib,
-  pkgs,
-  inputs,
   ...
 }:
 
@@ -9,6 +7,7 @@
   imports = [
     ./scripts
     ./taskwarrior.nix
+    ./tools/code-search
   ];
 
   programs.opencode = {
