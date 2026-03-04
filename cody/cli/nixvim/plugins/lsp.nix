@@ -1,3 +1,13 @@
+{ pkgs, ... }:
+
+let
+  # Create a nixpkgs instance with allowUnfree to build copilot
+  pkgsAllowUnfree = import pkgs.path {
+    system = pkgs.system;
+    config.allowUnfreePredicate = _: true;
+  };
+in
+
 {
   programs.nixvim.plugins = {
     lsp-format.enable = true;
@@ -7,6 +17,10 @@
       servers = {
         nixd.enable = true; # Nix
         cssls.enable = true; # CSS
+        copilot = {
+          enable = true;
+          package = pkgsAllowUnfree.copilot-language-server;
+        };
         tailwindcss.enable = true; # TailwindCSS
         html.enable = true; # HTML
         pyright.enable = true; # Python
