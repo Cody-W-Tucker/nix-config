@@ -40,11 +40,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
-    # qdrant-upload = {
-    #   url = "github:Cody-W-Tucker/Qdrant-Upload";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # opencode.url = "github:sst/opencode";
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs =
