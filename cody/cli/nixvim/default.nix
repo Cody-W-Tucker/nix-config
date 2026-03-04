@@ -19,6 +19,7 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
+    nixpkgs.config.allowUnfreePredicate = _: true;
     colorschemes.catppuccin = {
       enable = true;
       settings = {
@@ -47,33 +48,6 @@
         # Uncomment to use with only markdown
         command = "setlocal spell spelllang=en_us";
       }
-      # Enable inline completion for copilot
-      {
-        event = "LspAttach";
-        callback = {
-          __raw = ''
-            function(args)
-              local bufnr = args.buf
-              local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-              if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
-                vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
-                vim.keymap.set(
-                  "i",
-                  "<C-F>",
-                  vim.lsp.inline_completion.get,
-                  { desc = "LSP: accept inline completion", buffer = bufnr }
-                )
-                vim.keymap.set(
-                  "i",
-                  "<C-G>",
-                  vim.lsp.inline_completion.select,
-                  { desc = "LSP: switch inline completion", buffer = bufnr }
-                )
-              end
-            end
-          '';
-        };
-      }
     ];
     plugins = {
       csvview.enable = true;
@@ -90,6 +64,7 @@
       web-devicons.enable = true;
       direnv.enable = true;
       zig.enable = true;
+      copilot-vim.enable = true;
     };
     # Set the leader key to <Space>
     globals.mapleader = " ";
