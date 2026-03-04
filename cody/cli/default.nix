@@ -68,6 +68,7 @@
       "*~"
       ".nix-shell"
       ".direnv/"
+      ".ck"
     ];
 
     # Additional configuration
