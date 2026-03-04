@@ -1,36 +1,57 @@
 {
   # These rules get added to the global AGENTS.md file for opencode
   programs.opencode.rules = ''
-    ## Hybrid Code Search with ck
+        ## Hybrid Code Search with ck
 
-    Use `ck` for finding code by meaning, not just keywords.
+        Use `ck` as a drop-in grep replacement with semantic search capabilities. It understands meaning, not just keywords.
 
-    ### Search Modes
+        ### When to Use ck vs grep
 
-    - `ck --sem "concept"` - Semantic search (by meaning)
-    - `ck --lex "keyword"` - Lexical search (full-text)
-    - `ck --hybrid "query"` - Combined regex + semantic
-    - `ck --regex "pattern"` - Traditional regex search
+        | Use ck When | Use grep When |
+        |-------------|---------------|
+    | Searching by concept | Exact keyword matches |
+    | Exploring unfamiliar codebases | Known function/variable names |
+    | Finding code with unknown naming | Syntax/pattern matching |
 
-    ### Best Practices
+        ### Search Modes
 
-    ::: tip Recommended Usage Patterns
-    1. **Index once per session**: Run `ck --index .` at project start
-    2. **Use semantic for concepts**: "error handling", "database queries"
-    3. **Use lexical for names**: "getUserById", "AuthController"
-    4. **Tune threshold**: `--threshold 0.7` for high-confidence results
-    5. **Limit results**: `--limit 20` for focused output
-    :::
+        - `--sem` - Semantic search (by meaning, finds conceptually similar code)
+        - `--lex` - BM25 lexical search (full-text with ranking)
+        - `--hybrid` - Combines regex + semantic
+        - `--regex` - Classic grep behavior (default)
 
-    ### Example Workflows
+        ### Quick Reference
 
-    # Find authentication logic
-    ck --sem "user authentication" src/
+        ```
+        # Index once per session (optional, auto-indexes on first --sem search)
+        ck --index .
 
-    # Find all TODO comments
-    ck --lex "TODO" .
+        # Semantic - find by concept
+        ck --sem "authentication logic" src/
 
-    # Find error handling patterns with high confidence
+        # Lexical - full-text search
+        ck --lex "user authentication" .
+
+        # High-confidence results
         ck --sem --threshold 0.8 "error handling" src/
+
+        # Interactive TUI mode
+        ck --tui
+
+        # Agent-friendly JSON output
+        ck --jsonl --sem "bug fix" src/
+        ```
+
+        ### Common Options
+
+        - `--sem, --lex, --hybrid, --regex` - Search modes
+        - `--topk, --limit N` - Limit results (default: 10)
+        - `--threshold SCORE` - Min score 0.0-1.0 (default: 0.6)
+        - `--scores` - Show similarity scores
+        - `-C NUM` - Context lines
+        - `--jsonl` - JSONL for agents
+        - `--model` - Embedding model (bge-small, nomic-v1.5, jina-code)
+        - `--rerank` - Better relevance
+        - `--tui` - Interactive mode
   '';
 }
