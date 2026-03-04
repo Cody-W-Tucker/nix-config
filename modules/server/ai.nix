@@ -116,5 +116,6 @@
   # Since we run open-webui on beast and the nginx server is on the server, we must open the port so the web server can proxy them
   networking.firewall.allowedTCPPorts = [
     8080
+    6333
   ];
 }
