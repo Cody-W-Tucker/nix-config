@@ -93,7 +93,12 @@ let
       TEXT=$(cat "$TRANSCRIPTION_FILE" | sed 's/^ *//;s/ *$//')
       
       if [ -n "$TEXT" ]; then
-        ${pkgs.ydotool}/bin/ydotool type --key-delay 20 --key-hold 20 "$TEXT"
+        # Type word by word for faster perceived speed
+        echo "$TEXT" | tr ' ' '\n' | while read -r word; do
+          if [ -n "$word" ]; then
+            ${pkgs.ydotool}/bin/ydotool type --key-delay 1 --key-hold 1 "$word "
+          fi
+        done
       fi
       
       # Cleanup
