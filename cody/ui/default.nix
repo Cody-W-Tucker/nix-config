@@ -60,6 +60,7 @@
     gcalcli # Google Calendar CLI tool
     feishin # Desktop app music player
     wttrbar # Weather bar for Waybar
+    vesktop # Discord client
   ];
 
   programs.chromium = {
