@@ -10,6 +10,7 @@
     ./commands/deslopify
     ./tools/code-search
     ./tools/rtk
+    ./skills/obsidian
   ];
 
   programs.opencode = {
