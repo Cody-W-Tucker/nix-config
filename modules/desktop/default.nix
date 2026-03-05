@@ -3,6 +3,7 @@
 {
   imports = [
     ./audio
+    ./audio/speech-to-text.nix
     ./logging.nix
     ./printing.nix
     ../syncthing.nix

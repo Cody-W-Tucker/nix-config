@@ -29,6 +29,9 @@ let
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, 0, exec, ${browser}"
 
+    # Whisper dictation - hold to record
+    "${mainMod}, Escape, exec, whisper-dictate-start"
+
     # Web applications
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
     "${mainMod}, A, exec, ${webApp}=https://ai.homehub.tv/"
@@ -50,7 +53,6 @@ let
     "${mainMod}, mouse:274, exec, hyprpicker -a"
 
     # Window management
-    "${mainMod}, Escape, killactive"
     "${mainMod}, C, killactive"
     "${mainMod}, F, fullscreen"
 
@@ -118,6 +120,11 @@ in
       ", XF86AudioPause, exec, playerctl play-pause"
       ", XF86AudioPlay, exec, playerctl play-pause"
       ", XF86AudioPrev, exec, playerctl previous"
+    ];
+
+    bindr = [
+      # Whisper dictation - release SUPER+CONTROL to transcribe
+      "${mainMod}, Escape, exec, whisper-dictate-stop"
     ];
     windowrule = [
       # Kitty
