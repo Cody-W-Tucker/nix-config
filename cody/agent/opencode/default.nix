@@ -7,6 +7,7 @@
   imports = [
     ./scripts
     ./commands/taskwarrior
+    ./commands/deslopify
     ./tools/code-search
     ./tools/rtk
   ];
