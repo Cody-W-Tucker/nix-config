@@ -6,7 +6,6 @@
 
 {
   imports = [
-    ./discord.nix
     ./hyprland.nix
     ./rofi.nix
     ./waybar.nix
