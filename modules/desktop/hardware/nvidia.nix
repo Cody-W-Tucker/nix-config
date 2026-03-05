@@ -53,6 +53,7 @@
   # Use EGL for Wayland
   environment.systemPackages = with pkgs; [
     egl-wayland
+    cudaPackages.cudatoolkit
   ];
 
   # NVIDIA-specific environment variables
