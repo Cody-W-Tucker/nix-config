@@ -37,6 +37,7 @@
     };
     vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    roborev.url = "github:roborev-dev/roborev";
   };
 
   outputs =
