@@ -8,6 +8,7 @@
     ./scripts
     ./taskwarrior.nix
     ./tools/code-search
+    ./tools/rtk
   ];
 
   programs.opencode = {
