@@ -6,7 +6,7 @@
 {
   imports = [
     ./scripts
-    ./taskwarrior.nix
+    ./commands/taskwarrior
     ./tools/code-search
     ./tools/rtk
   ];
