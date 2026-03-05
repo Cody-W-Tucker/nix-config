@@ -86,22 +86,14 @@ let
       --output-file "$TEMP_DIR/transcription" \
       --no-timestamps \
       --language en \
-      --threads 4 2>/dev/null
+      --threads 8 2>/dev/null
 
     # Check if transcription was successful
     if [ -f "$TRANSCRIPTION_FILE" ]; then
       TEXT=$(cat "$TRANSCRIPTION_FILE" | sed 's/^ *//;s/ *$//')
       
       if [ -n "$TEXT" ]; then
-        # Try to type with ydotool first
-        sleep 0.3
-        if ${pkgs.ydotool}/bin/ydotool type --key-delay 20 --key-hold 20 "$TEXT" 2>/dev/null; then
-          # Typing succeeded, no need to copy to clipboard
-          :
-        else
-          # Typing failed, copy to clipboard as fallback
-          echo "$TEXT" | ${pkgs.wl-clipboard}/bin/wl-copy
-        fi
+        ${pkgs.ydotool}/bin/ydotool type --key-delay 20 --key-hold 20 "$TEXT"
       fi
       
       # Cleanup
@@ -118,7 +110,6 @@ in
     whisper-cpp
     ydotool
     ffmpeg
-    wl-clipboard
   ];
 
   # Enable ydotool daemon for typing text
