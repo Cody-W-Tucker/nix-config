@@ -69,6 +69,8 @@
           monitor = [
             "DP-1,2560x1440@239.97,0x0,1,bitdepth,10,vrr,2"
           ];
+          # Suspend after 2 hours of idle
+          hypridle.suspendTimeout = 7200;
         };
         aiserver = {
           # Top monitor should be HDMI
@@ -78,6 +80,8 @@
           monitor = [
             "DP-1,3840x2160@240,0x0,1.5"
           ];
+          # Never suspend
+          hypridle.suspendTimeout = null;
         };
       };
     in

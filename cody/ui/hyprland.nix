@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  hardwareConfig,
   ...
 }:
 
@@ -58,11 +59,11 @@
             on-timeout = "hyprctl dispatch dpms off";
             on-resume = "hyprctl dispatch dpms on";
           }
-          {
-            timeout = 86400; # 24hr.
-            on-timeout = "systemctl suspend";
-          }
-        ];
+        ]
+        ++ lib.optional (hardwareConfig.hypridle.suspendTimeout != null) {
+          timeout = hardwareConfig.hypridle.suspendTimeout;
+          on-timeout = "systemctl suspend";
+        };
       };
     };
   };
