@@ -11,6 +11,9 @@
 
   hardware.graphics.enable = true;
 
+  # Enable nix-ld for running non-Nix binaries (AppImages, downloaded binaries, etc.)
+  programs.nix-ld.enable = true;
+
   services = {
     # Allows nautilus (gnome files) to access gvfs mounts (trash and samba shares)
     gvfs.enable = true;
