@@ -15,10 +15,6 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    nixcord = {
-      url = "github:FlameFlag/nixcord";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -124,7 +120,6 @@
                   sharedModules = [
                     inputs.sops-nix.homeModules.sops
                     inputs.stylix.homeModules.stylix
-                    inputs.nixcord.homeModules.nixcord
                   ];
                   users.codyt = {
                     home.stateVersion = "25.05";
@@ -216,7 +211,6 @@
                   sharedModules = [
                     inputs.sops-nix.homeModules.sops
                     inputs.stylix.homeModules.stylix
-                    inputs.nixcord.homeModules.nixcord
                   ];
                   users.codyt = {
                     home.stateVersion = "25.11";
