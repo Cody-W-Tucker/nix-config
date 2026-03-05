@@ -77,19 +77,35 @@ let
 
     # Clean up old transcription
     rm -f "$TRANSCRIPTION_FILE"
+    TRANSCRIPTION_ERROR=""
 
-    # Transcribe
-    ${pkgs.whisper-cpp}/bin/whisper-cli \
-      -m "$MODEL_PATH" \
-      -f "$RECORDING_FILE" \
-      --output-txt \
-      --output-file "$TEMP_DIR/transcription" \
-      --no-timestamps \
-      --language en \
-      --threads 8 2>/dev/null
+    # Check if model file exists
+    if [ ! -f "$MODEL_PATH" ]; then
+      TRANSCRIPTION_ERROR="Model file not found: $MODEL_PATH"
+    else
+      # Transcribe with error capture
+      WHISPER_OUTPUT=$(${pkgs.whisper-cpp}/bin/whisper-cli \
+        -m "$MODEL_PATH" \
+        -f "$RECORDING_FILE" \
+        --output-txt \
+        --output-file "$TEMP_DIR/transcription" \
+        --no-timestamps \
+        --language en \
+        --threads 8 2>&1)
+      WHISPER_EXIT=$?
+
+      # Check if transcription command succeeded
+      if [ $WHISPER_EXIT -ne 0 ]; then
+        TRANSCRIPTION_ERROR="Transcription failed (exit code $WHISPER_EXIT): $(echo "$WHISPER_OUTPUT" | tail -5)"
+      elif [ ! -f "$TRANSCRIPTION_FILE" ]; then
+        TRANSCRIPTION_ERROR="No transcription output file created"
+      elif [ ! -s "$TRANSCRIPTION_FILE" ]; then
+        TRANSCRIPTION_ERROR="Transcription file is empty - audio may be silent or unintelligible"
+      fi
+    fi
 
     # Check if transcription was successful
-    if [ -f "$TRANSCRIPTION_FILE" ]; then
+    if [ -z "$TRANSCRIPTION_ERROR" ] && [ -f "$TRANSCRIPTION_FILE" ]; then
       TEXT=$(cat "$TRANSCRIPTION_FILE" | sed 's/^ *//;s/ *$//')
       
       if [ -n "$TEXT" ]; then
@@ -99,11 +115,23 @@ let
             ${pkgs.ydotool}/bin/ydotool type --key-delay 1 --key-hold 1 "$word "
           fi
         done
+      else
+        TRANSCRIPTION_ERROR="Transcription produced no text"
       fi
-      
-      # Cleanup
-      rm -f "$TRANSCRIPTION_FILE" "$RECORDING_FILE"
     fi
+
+    # Handle errors
+    if [ -n "$TRANSCRIPTION_ERROR" ]; then
+      # Send desktop notification
+      if command -v notify-send >/dev/null 2>&1; then
+        notify-send -u critical "Dictation Error" "$TRANSCRIPTION_ERROR"
+      fi
+      # Log error for debugging
+      echo "[$(date)] $TRANSCRIPTION_ERROR" >> /tmp/whisper-dictate-errors.log
+    fi
+
+    # Cleanup
+    rm -f "$TRANSCRIPTION_FILE" "$RECORDING_FILE"
   '';
 
 in
