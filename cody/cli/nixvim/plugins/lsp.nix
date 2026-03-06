@@ -31,7 +31,7 @@
         pyright.enable = true; # Python
         dockerls.enable = true; # Docker
         bashls.enable = true; # Bash
-        markdown_oxide.enable = true; # markdown
+        marksman.enable = true; # Markdown
         zls.enable = true; # Zig
         # Keep ts_ls disabled or limited for .astro files – it conflicts
         ts_ls = {
