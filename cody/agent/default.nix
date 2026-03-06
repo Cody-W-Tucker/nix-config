@@ -1,4 +1,15 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
+
+let
+  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  # Only enable CUDA if ROCm (AMD) is not enabled
+  useCuda = !(pkgs.config.rocmSupport or false);
+in
 
 {
   imports = [
@@ -6,12 +17,12 @@
     ./mcp.nix
   ];
 
-  home.packages = with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
-    (qmd.override { cudaSupport = true; }) # Semantic search
-    coderabbit-cli
-    rtk # Token reducer for command-line tools
-    openspec # Spec driven development tool
-    ck # Semantic search for code
+  home.packages = [
+    (if useCuda then llmPkgs.qmd.override { cudaSupport = true; } else llmPkgs.qmd)
+    llmPkgs.coderabbit-cli
+    llmPkgs.rtk
+    llmPkgs.openspec
+    llmPkgs.ck
     inputs.roborev.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }
