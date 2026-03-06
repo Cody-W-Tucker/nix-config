@@ -1,5 +1,6 @@
 {
   inputs,
+  lib,
   osConfig ? { },
   pkgs,
   ...
@@ -10,7 +11,7 @@ let
   systemNixpkgsConfig = osConfig.nixpkgs.config or { };
   useRocm = systemNixpkgsConfig.rocmSupport or pkgs.config.rocmSupport or false;
   useCuda = !useRocm && (systemNixpkgsConfig.cudaSupport or pkgs.config.cudaSupport or false);
-  qmdPackage = if useCuda then llmPkgs.qmd.override { cudaSupport = true; } else llmPkgs.qmd;
+  qmdPackage = llmPkgs.qmd.override { cudaSupport = useCuda; };
 in
 
 {
@@ -27,4 +28,8 @@ in
     llmPkgs.ck
     inputs.roborev.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
+
+  home.sessionVariables = lib.optionalAttrs useRocm {
+    NODE_LLAMA_CPP_GPU = "vulkan";
+  };
 }

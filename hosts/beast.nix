@@ -14,7 +14,7 @@
     ../modules/desktop/hardware/nvidia.nix
     ../modules/desktop/hardware/razer.nix
     ../modules/scripts
-    ../modules/server/ai.nix
+    ../modules/server/ai
 
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
