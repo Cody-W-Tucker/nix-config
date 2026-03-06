@@ -7,9 +7,6 @@
   ...
 }:
 
-# Create a reusable function to create each bar
-# Bottom monitor bar focus on work
-# Top monitor bar gives more information
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
   favorite_apps = {
@@ -25,249 +22,6 @@ let
     "class<Zen Browser> title<.*Calendar.*>" = "";
   };
 in
-let
-  createBar =
-    waybarConfig: output: position:
-    waybarConfig
-    // {
-      inherit output;
-      inherit position;
-    };
-  # Productivity Bar Config: This is the main bar for the main monitor.
-  productivityBarConfig = {
-    layer = "top";
-    spacing = 4;
-    modules-left = [ "group/workspaces" ];
-    modules-center = [
-      "custom/notification"
-      "group/clock"
-      "custom/weather"
-    ];
-    modules-right = [
-      "privacy"
-      "mpris"
-      "pulseaudio"
-      "group/hardware"
-    ];
-    "hyprland/workspaces" = {
-      on-click = "activate";
-      show-special = true;
-      format = "{icon} {windows}";
-      window-rewrite = favorite_apps;
-      window-rewrite-default = "󰏗";
-    };
-    "group/clock" = {
-      orientation = "horizontal";
-      drawer = {
-        transition-duration = 500;
-        transition-left-to-right = true;
-      };
-      modules = [
-        "clock"
-        "custom/agenda"
-      ];
-    };
-    "group/workspaces" = {
-      orientation = "horizontal";
-      drawer = {
-        transition-duration = 500;
-        transition-left-to-right = true;
-      };
-      modules = [
-        "hyprland/workspaces"
-        "tray"
-      ];
-    };
-    pulseaudio = {
-      format = "{volume}% {icon}";
-      format-bluetooth = "{volume}% {icon}";
-      format-icons = {
-        headphone = "";
-        hands-free = "";
-        headset = "";
-        phone = "";
-        portable = "";
-        car = "";
-        default = [
-          ""
-          ""
-          ""
-        ];
-      };
-      on-click-right = "uwsm-app -- pavucontrol";
-    };
-    mpris = {
-      format = "{player_icon} {title}";
-      title-len = 50;
-      format-paused = "{status_icon} {title}";
-      player-icons = {
-        default = "";
-      };
-      status-icons = {
-        paused = "";
-      };
-      on-click-right = "playerctl stop";
-      smooth-scrolling-threshold = 1;
-      on-scroll-up = "playerctl next";
-      on-scroll-down = "playerctl previous";
-    };
-    privacy = {
-      icon-spacing = 4;
-      icon-size = 18;
-      transition-duration = 250;
-      modules = [
-        {
-          type = "screenshare";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
-        {
-          type = "audio-in";
-          tooltip = true;
-          tooltip-icon-size = 24;
-        }
-      ];
-    };
-    tray = {
-      icon-size = 21;
-      spacing = 10;
-    };
-    "custom/agenda" = {
-      exec =
-        nextmeeting
-        + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
-      on-click = nextmeeting + "--open-meet-url";
-      on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
-      format = "󰃶 {}";
-      return-type = "json";
-      interval = 59;
-      tooltip = true;
-    };
-    clock = {
-      format = "{:%a (%d) - %I:%M %p}";
-      tooltip = true;
-      on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
-      tooltip-format = "<tt><small>{calendar}</small></tt>";
-      calendar = {
-        mode = "year";
-        mode-mon-col = 3;
-        weeks-pos = "left";
-        on-scroll = 1;
-        format = {
-          months = "<span color='#ffead3'><b>{}</b></span>";
-          days = "<span color='#ecc6d9'><b>{}</b></span>";
-          weeks = "<span color='#99ffdd'><b>W{}</b></span>";
-          weekdays = "<span color='#ffcc66'><b>{}</b></span>";
-          today = "<span color='#ff6699'><b><u>{}</u></b></span>";
-        };
-      };
-    };
-    "custom/weather" = {
-      format = "{}";
-      tooltip = true;
-      interval = 3600;
-      exec = ''wttrbar --date-format "%m/%d" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions'';
-      return-type = "json";
-    };
-    "custom/notification" = {
-      tooltip = false;
-      format = "{icon} {text}";
-      format-icons = {
-        notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
-        none = "";
-        dnd-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
-        dnd-none = "";
-        inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
-        inhibited-none = "";
-        dnd-inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
-        dnd-inhibited-none = "";
-      };
-      return-type = "json";
-      exec-if = "which swaync-client";
-      exec = "swaync-client -swb";
-      on-click = "sleep 0.1 && swaync-client -t -sw";
-      on-click-right = "swaync-client -C";
-      on-click-middle = "sleep 0.1 && swaync-client -d -sw";
-      escape = true;
-    };
-    "group/hardware" = {
-      orientation = "horizontal";
-      drawer = {
-        transition-duration = 500;
-        transition-left-to-right = false;
-      };
-      modules = [
-        "temperature"
-        "cpu"
-        "memory"
-        "disk"
-      ];
-    };
-    cpu = {
-      format = "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}";
-      format-icons = [
-        "▁"
-        "▂"
-        "▃"
-        "▄"
-        "▅"
-        "▆"
-        "▇"
-        "█"
-      ];
-    };
-    memory = {
-      interval = 30;
-      format = "{used:0.1f}G/{total:0.1f}G ";
-    };
-    disk = {
-      format = "{percentage_free}% ";
-    };
-    temperature = {
-      format = "{temperatureC}°C ";
-      format-critical = "{temperatureC}°C ";
-      tooltip-format = "{temperatureF}°F";
-      critical-threshold = 85;
-      hwmon-path-abs = "/sys/devices/platform/coretemp.0/hwmon";
-      input-filename = "temp1_input";
-    };
-  };
-  # Secondary Config:
-  secondaryBarConfig = {
-    layer = "top";
-    spacing = 4;
-    modules-center = [ "clock" ];
-    modules-left = [ "hyprland/workspaces" ];
-    modules-right = [ ];
-    clock = {
-      format = "{:%a (%d) - %I:%M %p}";
-      tooltip = true;
-      on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
-      tooltip-format = "<tt><small>{calendar}</small></tt>";
-      calendar = {
-        mode = "year";
-        mode-mon-col = 3;
-        weeks-pos = "left";
-        on-scroll = 1;
-        format = {
-          months = "<span color='#ffead3'><b>{}</b></span>";
-          days = "<span color='#ecc6d9'><b>{}</b></span>";
-          weeks = "<span color='#99ffdd'><b>W{}</b></span>";
-          weekdays = "<span color='#ffcc66'><b>{}</b></span>";
-          today = "<span color='#ff6699'><b><u>{}</u></b></span>";
-        };
-      };
-    };
-    "hyprland/workspaces" = {
-      on-click = "activate";
-      show-special = true;
-      format = "{icon} {windows}";
-      window-rewrite = favorite_apps;
-      window-rewrite-default = "󰏗";
-    };
-  };
-
-in
 {
   programs.waybar = {
     enable = true;
@@ -275,20 +29,208 @@ in
       enable = true;
       target = "graphical-session.target";
     };
-    settings = builtins.listToAttrs (
-      lib.imap0 (
-        i: monitor:
-        let
-          monitorName = builtins.head (lib.splitString "," monitor);
-          isPrimary = i == 0;
-          barConfig = if isPrimary then productivityBarConfig else secondaryBarConfig;
-        in
-        {
-          name = "monitor${toString (i + 1)}";
-          value = createBar barConfig monitorName "top";
-        }
-      ) hardwareConfig.monitor
-    );
+    settings = [
+      {
+        position = "top";
+        layer = "top";
+        spacing = 4;
+        modules-left = [ "group/workspaces" ];
+        modules-center = [
+          "custom/notification"
+          "group/clock"
+          "custom/weather"
+        ];
+        modules-right = [
+          "privacy"
+          "mpris"
+          "pulseaudio"
+          "group/hardware"
+        ];
+        "hyprland/workspaces" = {
+          on-click = "activate";
+          show-special = true;
+          format = "{icon} {windows}";
+          window-rewrite = favorite_apps;
+          window-rewrite-default = "󰏗";
+        };
+        "group/clock" = {
+          orientation = "horizontal";
+          drawer = {
+            transition-duration = 500;
+            transition-left-to-right = true;
+          };
+          modules = [
+            "clock"
+            "custom/agenda"
+          ];
+        };
+        "group/workspaces" = {
+          orientation = "horizontal";
+          drawer = {
+            transition-duration = 500;
+            transition-left-to-right = true;
+          };
+          modules = [
+            "hyprland/workspaces"
+            "tray"
+          ];
+        };
+        pulseaudio = {
+          format = "{volume}% {icon}";
+          format-bluetooth = "{volume}% {icon}";
+          format-icons = {
+            headphone = "";
+            hands-free = "";
+            headset = "";
+            phone = "";
+            portable = "";
+            car = "";
+            default = [
+              ""
+              ""
+              ""
+            ];
+          };
+          on-click-right = "uwsm-app -- pavucontrol";
+        };
+        mpris = {
+          format = "{player_icon} {title}";
+          title-len = 50;
+          format-paused = "{status_icon} {title}";
+          player-icons = {
+            default = "";
+          };
+          status-icons = {
+            paused = "";
+          };
+          on-click-right = "playerctl stop";
+          smooth-scrolling-threshold = 1;
+          on-scroll-up = "playerctl next";
+          on-scroll-down = "playerctl previous";
+        };
+        privacy = {
+          icon-spacing = 4;
+          icon-size = 18;
+          transition-duration = 250;
+          modules = [
+            {
+              type = "screenshare";
+              tooltip = true;
+              tooltip-icon-size = 24;
+            }
+            {
+              type = "audio-in";
+              tooltip = true;
+              tooltip-icon-size = 24;
+            }
+          ];
+        };
+        tray = {
+          icon-size = 21;
+          spacing = 10;
+        };
+        "custom/agenda" = {
+          exec =
+            nextmeeting
+            + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
+          on-click = nextmeeting + "--open-meet-url";
+          on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
+          format = "󰃶 {}";
+          return-type = "json";
+          interval = 59;
+          tooltip = true;
+        };
+        clock = {
+          format = "{:%a (%d) - %I:%M %p}";
+          tooltip = true;
+          on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
+          tooltip-format = "<tt><small>{calendar}</small></tt>";
+          calendar = {
+            mode = "year";
+            mode-mon-col = 3;
+            weeks-pos = "left";
+            on-scroll = 1;
+            format = {
+              months = "<span color='#ffead3'><b>{}</b></span>";
+              days = "<span color='#ecc6d9'><b>{}</b></span>";
+              weeks = "<span color='#99ffdd'><b>W{}</b></span>";
+              weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+              today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+            };
+          };
+        };
+        "custom/weather" = {
+          format = "{}";
+          tooltip = true;
+          interval = 3600;
+          exec = ''wttrbar --date-format "%m/%d" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions'';
+          return-type = "json";
+        };
+        "custom/notification" = {
+          tooltip = false;
+          format = "{icon} {text}";
+          format-icons = {
+            notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+            none = "";
+            dnd-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+            dnd-none = "";
+            inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+            inhibited-none = "";
+            dnd-inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+            dnd-inhibited-none = "";
+          };
+          return-type = "json";
+          exec-if = "which swaync-client";
+          exec = "swaync-client -swb";
+          on-click = "sleep 0.1 && swaync-client -t -sw";
+          on-click-right = "swaync-client -C";
+          on-click-middle = "sleep 0.1 && swaync-client -d -sw";
+          escape = true;
+        };
+        "group/hardware" = {
+          orientation = "horizontal";
+          drawer = {
+            transition-duration = 500;
+            transition-left-to-right = false;
+          };
+          modules = [
+            "temperature"
+            "cpu"
+            "memory"
+            "disk"
+          ];
+        };
+        cpu = {
+          format = "{icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}";
+          format-icons = [
+            "▁"
+            "▂"
+            "▃"
+            "▄"
+            "▅"
+            "▆"
+            "▇"
+            "█"
+          ];
+        };
+        memory = {
+          interval = 30;
+          format = "{used:0.1f}G/{total:0.1f}G ";
+        };
+        disk = {
+          format = "{percentage_free}% ";
+        };
+        temperature = {
+          on-click = "uwsm app -- kitty -e btop";
+          format = "{temperatureC}°C ";
+          format-critical = "{temperatureC}°C ";
+          tooltip-format = "{temperatureF}°F";
+          critical-threshold = 85;
+          hwmon-path-abs = "/sys/devices/platform/coretemp.0/hwmon";
+          input-filename = "temp1_input";
+        };
+      }
+    ];
     style = lib.mkForce ''
       * {
         font-family: 'JetBrainsMono Nerd Font', Inter, Roboto, Helvetica, Arial, sans-serif;
