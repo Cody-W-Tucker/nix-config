@@ -145,4 +145,5 @@ in
 
   # Enable ydotool daemon for typing text
   programs.ydotool.enable = true;
+  programs.ydotool.group = "input";
 }
