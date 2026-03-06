@@ -14,7 +14,6 @@
     inputs.nixos-hardware.nixosModules.common-gpu-amd
     inputs.nixos-hardware.nixosModules.common-cpu-amd
     ../modules/desktop
-    ../modules/desktop/hyprland.nix
     ../modules/desktop/hardware/razer.nix
     ../modules/scripts
   ];

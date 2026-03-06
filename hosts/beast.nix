@@ -11,7 +11,6 @@
     ../configuration.nix
     ../modules/desktop
     ../modules/desktop/gaming
-    ../modules/desktop/hyprland.nix
     ../modules/desktop/hardware/nvidia.nix
     ../modules/desktop/hardware/razer.nix
     ../modules/scripts

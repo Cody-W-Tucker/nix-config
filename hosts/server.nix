@@ -9,7 +9,6 @@
   imports = [
     ../configuration.nix
     ../modules/server
-    ../modules/server/tailscale.nix
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
     inputs.nixos-hardware.nixosModules.common-pc-ssd
@@ -93,4 +92,7 @@
 
   # Don't change this
   system.stateVersion = "23.11"; # Did you read the comment?
+
+  # Tailscale - run: "sudo tailscale up --auth-key=KEY" with the key generated at https://login.tailscale.com/admin/machines/new-linux
+  services.tailscale.enable = true;
 }
