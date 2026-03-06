@@ -3,7 +3,7 @@
 {
   imports = [
     ./audio
-    ./audio/speech-to-text.nix
+    ./hyprland.nix
     ./logging.nix
     ./printing.nix
     ../syncthing.nix
