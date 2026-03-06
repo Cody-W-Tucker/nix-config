@@ -7,7 +7,24 @@
       enable = true;
       inlayHints = true;
       servers = {
-        nixd.enable = true; # Nix
+        nixd = {
+          enable = true;
+          settings = {
+            nixd = {
+              nixpkgs = {
+                expr = "import (builtins.getFlake (toString ./.)).inputs.nixpkgs-unstable { }";
+              };
+              formatting = {
+                command = [ "nixfmt" ];
+              };
+              options = {
+                nixos = {
+                  expr = "let flake = builtins.getFlake (toString ./.); in flake.nixosConfigurations.beast.options";
+                };
+              };
+            };
+          };
+        };
         cssls.enable = true; # CSS
         tailwindcss.enable = true; # TailwindCSS
         html.enable = true; # HTML
