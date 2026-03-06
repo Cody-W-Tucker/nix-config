@@ -1,13 +1,16 @@
 {
   inputs,
+  osConfig ? { },
   pkgs,
   ...
 }:
 
 let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-  # Only enable CUDA if ROCm (AMD) is not enabled
-  useCuda = !(pkgs.config.rocmSupport or false);
+  systemNixpkgsConfig = osConfig.nixpkgs.config or { };
+  useRocm = systemNixpkgsConfig.rocmSupport or pkgs.config.rocmSupport or false;
+  useCuda = !useRocm && (systemNixpkgsConfig.cudaSupport or pkgs.config.cudaSupport or false);
+  qmdPackage = if useCuda then llmPkgs.qmd.override { cudaSupport = true; } else llmPkgs.qmd;
 in
 
 {
@@ -17,7 +20,7 @@ in
   ];
 
   home.packages = [
-    (if useCuda then llmPkgs.qmd.override { cudaSupport = true; } else llmPkgs.qmd)
+    qmdPackage
     llmPkgs.coderabbit-cli
     llmPkgs.rtk
     llmPkgs.openspec
