@@ -8,6 +8,10 @@
 
       # Obsidian CLI
 
+      Requirements: You must use the obsidian CLI when making changes to files. Traditional file I/O will not trigger Obsidian's internal events, so changes won't appear in the app until you manually reload or interact with the file. The obsidian CLI ensures all changes are immediately reflected in the app and trigger any relevant plugins or views.
+
+      Memory: The user's primary vault is named "Personal".
+
       Use the `obsidian` CLI to interact with a running Obsidian instance. Requires Obsidian to be open.
 
       ## Command reference
@@ -61,50 +65,6 @@
       ```
 
       Use `--copy` on any command to copy output to clipboard. Use `silent` to prevent files from opening. Use `total` on list commands to get a count.
-
-      ## Plugin development
-
-      ### Develop/test cycle
-
-      After making code changes to a plugin or theme, follow this workflow:
-
-      1. **Reload** the plugin to pick up changes:
-         ```bash
-         obsidian plugin:reload id=my-plugin
-         ```
-      2. **Check for errors** — if errors appear, fix and repeat from step 1:
-         ```bash
-         obsidian dev:errors
-         ```
-      3. **Verify visually** with a screenshot or DOM inspection:
-         ```bash
-         obsidian dev:screenshot path=screenshot.png
-         obsidian dev:dom selector=".workspace-leaf" text
-         ```
-      4. **Check console output** for warnings or unexpected logs:
-         ```bash
-         obsidian dev:console level=error
-         ```
-
-      ### Additional developer commands
-
-      Run JavaScript in the app context:
-
-      ```bash
-      obsidian eval code="app.vault.getFiles().length"
-      ```
-
-      Inspect CSS values:
-
-      ```bash
-      obsidian dev:css selector=".workspace-leaf" prop=background-color
-      ```
-
-      Toggle mobile emulation:
-
-      ```bash
-      obsidian dev:mobile on
-      ```
 
       Run `obsidian help` to see additional developer commands including CDP and debugger controls.
     '';
@@ -307,6 +267,8 @@
       ---
 
       # Obsidian Bases Skill
+
+      Requirements: You must use the obsidian CLI when making changes to files. Traditional file I/O will not trigger Obsidian's internal events, so changes won't appear in the app until you manually reload or interact with the file. The obsidian CLI ensures all changes are immediately reflected in the app and trigger any relevant plugins or views.
 
       ## Workflow
 
