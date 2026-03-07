@@ -6,6 +6,18 @@
   ...
 }:
 
+let
+  rocmEnv = pkgs.symlinkJoin {
+    name = "rocm-combined";
+    paths = with pkgs.rocmPackages; [
+      clr
+      hipblas
+      rocblas
+      rocminfo
+    ];
+  };
+in
+
 {
   imports = [
     ../configuration.nix
@@ -19,6 +31,13 @@
   ];
 
   nixpkgs.config.rocmSupport = true;
+
+  hardware.amdgpu = {
+    # Load amdgpu as early as possible so the APU comes up cleanly during boot.
+    initrd.enable = true;
+    # NixOS wires this to the ROCm OpenCL runtime (`clr` + ICD loader).
+    opencl.enable = true;
+  };
 
   # Bootloader
   boot = {
@@ -114,7 +133,35 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
+  users.users.codyt.extraGroups = [
+    "render"
+    "video"
+  ];
+
   environment.defaultPackages = [ pkgs.lmstudio ];
+
+  environment.systemPackages = with pkgs; [
+    clinfo
+    rocmPackages.rocminfo
+    vulkan-tools
+  ];
+
+  environment.variables = {
+    # The AI server in `flake.nix` is the GMKtec EVO-X2 with the Ryzen AI Max+ 395
+    # Strix Halo APU. AMD's ROCm docs list that APU as gfx1151 and only add official
+    # Ryzen APU Linux support in ROCm 7.2. This repo currently evaluates ROCm 7.1.1,
+    # so prefer the Mesa RADV Vulkan stack for user-facing inference apps.
+    AMD_VULKAN_ICD = "RADV";
+
+    # Many HIP/ROCm tools assume a conventional `/opt/rocm` layout. Expose that path
+    # explicitly so build scripts and binary packages can find the runtime on NixOS.
+    HIP_PATH = "/opt/rocm";
+    ROCM_PATH = "/opt/rocm";
+  };
+
+  systemd.tmpfiles.rules = [
+    "L+ /opt/rocm - - - - ${rocmEnv}"
+  ];
 
   # Open port for LMstudio
   networking.firewall.allowedTCPPorts = [ 1234 ];
