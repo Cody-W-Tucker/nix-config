@@ -62,13 +62,12 @@
     enable = true;
     # Global gitignore
     ignores = [
-      ".DS_Store"
-      "*.swp"
-      "*.swo"
-      "*~"
+      # Nix
       ".nix-shell"
       ".direnv/"
       ".ck"
+      # Python
+      "__pycache__/"
     ];
 
     # Additional configuration
