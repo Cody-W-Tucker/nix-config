@@ -16,9 +16,11 @@
 
   environment.systemPackages = with pkgs; [
     clinfo
+    libva-utils
     rocmPackages.rocminfo
     rocmPackages.rocm-smi
     radeontop
+    vulkan-tools
   ];
 
   environment.sessionVariables = {
