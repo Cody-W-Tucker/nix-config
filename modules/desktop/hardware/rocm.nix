@@ -1,4 +1,16 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
+
+let
+  rocmSmi = pkgs.symlinkJoin {
+    name = "rocm-smi";
+    paths = [ pkgs.rocmPackages.rocm-smi ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/rocm-smi \
+        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ pkgs.libdrm ]}
+    '';
+  };
+in
 
 {
   # Load AMDGPU for Xorg and Wayland.
@@ -18,7 +30,7 @@
     clinfo
     libva-utils
     rocmPackages.rocminfo
-    rocmPackages.rocm-smi
+    rocmSmi
     radeontop
     vulkan-tools
   ];
