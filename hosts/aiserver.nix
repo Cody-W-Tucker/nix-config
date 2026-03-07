@@ -36,11 +36,6 @@
     # Use newest kernel
     kernelPackages = pkgs.linuxPackages_latest;
 
-    # TODO(aiserver): Change the BIOS UMA frame buffer from 48 GiB to Auto or the
-    # minimum carveout when local access is available. Right now the BIOS reserves
-    # about half the 96 GiB RAM up front, so Linux only sees ~48 GiB and TTM cannot
-    # expose the full shared memory pool yet.
-
     # Keep BIOS UMA small and let TTM/GTT provide the large shared pool.
     # 20,971,520 pages = 80 GiB of dynamically mappable GPU memory.
 
