@@ -49,6 +49,12 @@ in
     # Use newest kernel
     kernelPackages = pkgs.linuxPackages_latest;
 
+    # Keep BIOS UMA small and let TTM/GTT provide the large shared pool.
+    # 20,971,520 pages = 80 GiB of dynamically mappable GPU memory.
+    extraModprobeConfig = ''
+      options ttm pages_limit=20971520
+    '';
+
     initrd.availableKernelModules = [
       "nvme"
       "xhci_pci"
@@ -149,8 +155,8 @@ in
   environment.variables = {
     # The AI server in `flake.nix` is the GMKtec EVO-X2 with the Ryzen AI Max+ 395
     # Strix Halo APU. AMD's ROCm docs list that APU as gfx1151 and only add official
-    # Ryzen APU Linux support in ROCm 7.2. This repo currently evaluates ROCm 7.1.1,
-    # so prefer the Mesa RADV Vulkan stack for user-facing inference apps.
+    # Ryzen APU Linux support in ROCm 7.2, so this host expects a recent shared
+    # `nixpkgs-unstable` revision with ROCm 7.2 or newer.
     AMD_VULKAN_ICD = "RADV";
 
     # Many HIP/ROCm tools assume a conventional `/opt/rocm` layout. Expose that path
@@ -162,6 +168,14 @@ in
   systemd.tmpfiles.rules = [
     "L+ /opt/rocm - - - - ${rocmEnv}"
   ];
+
+  # TODO(aiserver): Revisit `amdxdna` once nixpkgs ships the upstream protocol-7
+  # and `npu_7.sbin` support. The current stock kernel + firmware combo still logs
+  # an incompatible firmware protocol error on the Strix Halo NPU.
+  # TODO(aiserver): Change the BIOS UMA frame buffer from 48 GiB to Auto or the
+  # minimum carveout when local access is available. Right now the BIOS reserves
+  # about half the 96 GiB RAM up front, so Linux only sees ~48 GiB and TTM cannot
+  # expose the full shared memory pool yet.
 
   # Open port for LMstudio
   networking.firewall.allowedTCPPorts = [ 1234 ];
