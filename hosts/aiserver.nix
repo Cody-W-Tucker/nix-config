@@ -44,9 +44,9 @@
     # Keep BIOS UMA small and let TTM/GTT provide the large shared pool.
     # 20,971,520 pages = 80 GiB of dynamically mappable GPU memory.
 
-    # extraModprobeConfig = ''
-    #   options ttm pages_limit=20971520
-    # '';
+    extraModprobeConfig = ''
+      options ttm pages_limit=20971520
+    '';
 
     initrd.availableKernelModules = [
       "nvme"
