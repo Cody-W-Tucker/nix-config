@@ -13,18 +13,10 @@
     inputs.nixos-hardware.nixosModules.common-gpu-amd
     inputs.nixos-hardware.nixosModules.common-cpu-amd
     ../modules/desktop
+    ../modules/desktop/hardware/rocm.nix
     ../modules/desktop/hardware/razer.nix
     ../modules/scripts
   ];
-
-  nixpkgs.config.rocmSupport = true;
-
-  hardware.amdgpu = {
-    # Load amdgpu as early as possible so the APU comes up cleanly during boot.
-    initrd.enable = true;
-    # NixOS wires this to the ROCm OpenCL runtime (`clr` + ICD loader).
-    opencl.enable = true;
-  };
 
   # Bootloader
   boot = {
@@ -128,8 +120,6 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   environment.defaultPackages = [ pkgs.lmstudio ];
-
-  # TODO install or create rocm packges
 
   # The AI server in `flake.nix` is the GMKtec EVO-X2 with the Ryzen AI Max+ 395
   # Strix Halo APU. AMD's ROCm docs list that APU as gfx1151 and only add official
