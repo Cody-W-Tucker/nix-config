@@ -5,6 +5,19 @@
   ...
 }:
 
+let
+  hardwareConfig = {
+    # Top monitor should be DP-1
+    workspace = [
+      "1, monitor:DP-1, default:true"
+    ];
+    monitor = [
+      "DP-1,3840x2160@240,0x0,1.5"
+    ];
+    # Never suspend
+    hypridle.suspendTimeout = null;
+  };
+in
 {
   imports = [
     ../configuration.nix
@@ -17,6 +30,22 @@
     ../modules/desktop/hardware/razer.nix
     ../modules/scripts
   ];
+
+  # Home-manager configuration with hardware-specific settings
+  home-manager = {
+    extraSpecialArgs = {
+      inherit inputs;
+      inherit hardwareConfig;
+    };
+    users.codyt = {
+      home.stateVersion = "25.11";
+      imports = [
+        ../users/cody/ui.nix
+        ../secrets/home-secrets.nix
+        inputs.nixvim.homeModules.nixvim
+      ];
+    };
+  };
 
   # Bootloader
   boot = {

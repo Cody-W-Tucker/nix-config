@@ -6,6 +6,17 @@
   ...
 }:
 
+let
+  hardwareConfig = {
+    # Controls the monitor layout for hyprland
+    workspace = [ "1, monitor:DP-1, default:true" ];
+    monitor = [
+      "DP-1,2560x1440@239.97,0x0,1,bitdepth,10,vrr,2"
+    ];
+    # Suspend after 2 hours of idle
+    hypridle.suspendTimeout = 7200;
+  };
+in
 {
   imports = [
     ../configuration.nix
@@ -21,6 +32,22 @@
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-pc
   ];
+
+  # Home-manager configuration with hardware-specific settings
+  home-manager = {
+    extraSpecialArgs = {
+      inherit inputs;
+      inherit hardwareConfig;
+    };
+    users.codyt = {
+      home.stateVersion = "25.11";
+      imports = [
+        ../users/cody/ui.nix
+        ../secrets/home-secrets.nix
+        inputs.nixvim.homeModules.nixvim
+      ];
+    };
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
