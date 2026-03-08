@@ -4,25 +4,12 @@ description: Deciding what belongs in host files, service modules, Home Manager 
 ---
 
 ## What this skill does
+
 - Defines boundaries between hosts, modules, Home Manager, and packages
 - Shows the preferred structure and ordering inside NixOS modules
 - Provides examples of well-organized host and service configurations
 
-## When to use this skill
-- When you're unsure whether a configuration belongs in `hosts/` or `modules/`
-- When designing a new service module or Home Manager configuration
-- When refactoring a thick host file into reusable modules
-- When reviewing code for proper separation of concerns
-
-## Why these patterns matter
-- Clear module boundaries make the codebase easier to navigate and maintain
-- Single-responsibility modules can be reused across multiple hosts
-- Proper structure reduces merge conflicts when multiple people work on the repo
-- Following conventions helps new contributors understand the codebase quickly
-
 # NixOS Module Design
-
-Use this guide when deciding what should go inside host files, service modules, Home Manager modules, and related configuration files.
 
 ## Mental model
 
@@ -69,7 +56,7 @@ Example:
     fsType = "ext4";
   };
 
-  environment.systemPackages = with pkgs; [ prismlauncher ];
+  environment.systemPackages = with pkgs; [ htop ];
 
   system.stateVersion = "25.05";
 }
