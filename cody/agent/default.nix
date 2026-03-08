@@ -26,7 +26,6 @@ in
     llmPkgs.rtk
     llmPkgs.openspec
     llmPkgs.ck
-    inputs.roborev.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   home.sessionVariables = lib.optionalAttrs useRocm {
