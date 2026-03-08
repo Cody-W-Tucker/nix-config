@@ -64,28 +64,6 @@
     }:
     let
       system = "x86_64-linux";
-      hardwareConfig = {
-        beast = {
-          # Controls the monitor layout for hyprland
-          workspace = [ "1, monitor:DP-1, default:true" ];
-          monitor = [
-            "DP-1,2560x1440@239.97,0x0,1,bitdepth,10,vrr,2"
-          ];
-          # Suspend after 2 hours of idle
-          hypridle.suspendTimeout = 7200;
-        };
-        aiserver = {
-          # Top monitor should be HDMI
-          workspace = [
-            "1, monitor:DP-1, default:true"
-          ];
-          monitor = [
-            "DP-1,3840x2160@240,0x0,1.5"
-          ];
-          # Never suspend
-          hypridle.suspendTimeout = null;
-        };
-      };
     in
     {
       # Allow formatter to be used on the flake and built systems
@@ -98,7 +76,6 @@
           inherit system;
           specialArgs = {
             inherit inputs;
-            inherit hardwareConfig;
           };
           modules = [
             ./hosts/beast.nix
@@ -107,22 +84,6 @@
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             ./users/home.nix
-            {
-              home-manager = {
-                extraSpecialArgs = {
-                  inherit inputs;
-                  hardwareConfig = hardwareConfig.beast;
-                };
-                users.codyt = {
-                  home.stateVersion = "25.11";
-                  imports = [
-                    ./users/cody/ui.nix
-                    ./secrets/home-secrets.nix
-                    inputs.nixvim.homeModules.nixvim
-                  ];
-                };
-              };
-            }
           ];
         };
         # Home server / media / homelab CPU: i7-7000
@@ -161,7 +122,6 @@
           inherit system;
           specialArgs = {
             inherit inputs;
-            inherit hardwareConfig;
           };
           modules = [
             ./hosts/aiserver.nix
@@ -170,22 +130,6 @@
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
             ./users/home.nix
-            {
-              home-manager = {
-                extraSpecialArgs = {
-                  inherit inputs;
-                  hardwareConfig = hardwareConfig.aiserver;
-                };
-                users.codyt = {
-                  home.stateVersion = "25.11";
-                  imports = [
-                    ./users/cody/ui.nix
-                    ./secrets/home-secrets.nix
-                    inputs.nixvim.homeModules.nixvim
-                  ];
-                };
-              };
-            }
           ];
         };
       };
