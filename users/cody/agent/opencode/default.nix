@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   ...
 }:
 
@@ -20,9 +21,15 @@
     settings = {
       theme = lib.mkForce "system";
       lsp = {
-        nixd = {
-          command = [ "nixd" ];
+        nix = {
+          command = [ "${lib.getExe pkgs.nil}" ];
           extensions = [ ".nix" ];
+          # 'initialization' passes options directly to the LSP during startup
+          initialization = {
+            formatting = {
+              command = [ "${lib.getExe pkgs.nixfmt-rfc-style}" ];
+            };
+          };
         };
       };
       provider = {
