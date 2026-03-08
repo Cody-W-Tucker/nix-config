@@ -7,6 +7,9 @@
     ./logging.nix
     ./printing.nix
     ../syncthing.nix
+    ../scripts
+    ./hardware/razer.nix
+    ./hardware/wifi.nix
     ./vpn
   ];
 

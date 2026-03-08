@@ -22,12 +22,9 @@ in
 {
   imports = [
     ../modules/system/base.nix
-    ../configuration.nix
     ../modules/desktop
     ../modules/desktop/gaming
     ../modules/desktop/hardware/nvidia.nix
-    ../modules/desktop/hardware/razer.nix
-    ../modules/scripts
     ../modules/server/ai
 
     # Using community hardware configurations
@@ -192,12 +189,6 @@ in
         }
       ];
     }
-  ];
-
-  # Machine specific packages
-  environment.systemPackages = with pkgs; [
-    rofi-network-manager
-    prismlauncher
   ];
 
   # Should be the same as the version of NixOS you installed on this machine.

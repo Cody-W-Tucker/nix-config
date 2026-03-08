@@ -23,15 +23,12 @@ in
 {
   imports = [
     ../modules/system/base.nix
-    ../configuration.nix
+    ../modules/desktop
+    ../modules/desktop/hardware/rocm.nix
     # Using community hardware nixosConfigurations
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
     inputs.nixos-hardware.nixosModules.common-cpu-amd
-    ../modules/desktop
-    ../modules/desktop/hardware/rocm.nix
-    ../modules/desktop/hardware/razer.nix
-    ../modules/scripts
   ];
 
   # Home-manager configuration with hardware-specific settings

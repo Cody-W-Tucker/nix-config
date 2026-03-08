@@ -7,7 +7,6 @@
 
 {
   home-manager = {
-    # Note: extraSpecialArgs and hardwareConfig should be set per-host
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
