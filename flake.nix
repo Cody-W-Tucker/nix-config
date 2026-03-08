@@ -1,43 +1,60 @@
 {
   description = "CodyOS";
   inputs = {
+    nixos-hardware = {
+      # Provides hardware specific modules.
+      url = "github:NixOS/nixos-hardware/master";
+    };
+
+    # Stable packages (mostly for the server).
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+    sops-nix = {
+      # Managing secrets.
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager-unstable = {
+    flake-programs-sqlite = {
+      # Restores command-not-found (helpful messages when you type a command that isn't installed).
+      url = "github:wamserma/flake-programs-sqlite";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    vpn-confinement = {
+      # Creates a service to force applications to use a specific network interface/VPN.
+      url = "github:Maroka-chan/VPN-Confinement";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Unstable for newer versions of packages (mostly for the desktop).
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager = {
+      # Configures the user environment and applications.
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     stylix = {
+      # Configures theming for the desktop and cli.
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nixvim = {
+      # For stablity, use nixvim's nixpkgs instead of inputs.
+      url = "github:nix-community/nixvim";
     };
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-
-    # Should use their nixpkgs
-    nixvim.url = "github:nix-community/nixvim";
     zen-browser = {
+      # Modern web browser based on firefox.
       url = "github:youwen5/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nextmeeting = {
+      # Used to display calendar events and meetings in waybar.
       url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    flake-programs-sqlite = {
-      url = "github:wamserma/flake-programs-sqlite";
-      inputs.nixpkgs.follows = "nixpkgs";
+    llm-agents = {
+      # Repo that pacages various ai tools.
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
-    llm-agents.url = "github:numtide/llm-agents.nix";
-    roborev.url = "github:roborev-dev/roborev";
   };
 
   outputs =
@@ -106,7 +123,7 @@
             # inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
-            inputs.home-manager-unstable.nixosModules.home-manager
+            inputs.home-manager.nixosModules.home-manager
             (
               { config, lib, ... }:
               {
@@ -152,7 +169,7 @@
             inputs.sops-nix.nixosModules.sops
             inputs.vpn-confinement.nixosModules.default
             ./secrets/secrets.nix
-            inputs.home-manager-unstable.nixosModules.home-manager
+            inputs.home-manager.nixosModules.home-manager
             (
               { config, lib, ... }:
               {
@@ -200,7 +217,7 @@
             inputs.sops-nix.nixosModules.sops
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
-            inputs.home-manager-unstable.nixosModules.home-manager
+            inputs.home-manager.nixosModules.home-manager
             (
               { config, lib, ... }:
               {
