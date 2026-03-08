@@ -10,12 +10,12 @@
 {
   imports = [
     ../modules/system/base.nix
-    inputs.vpn-confinement.nixosModules.default
-    ../configuration.nix
     ../modules/server
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
     inputs.nixos-hardware.nixosModules.common-pc-ssd
+    # VPN for media
+    inputs.vpn-confinement.nixosModules.default
   ];
 
   # Home-manager configuration

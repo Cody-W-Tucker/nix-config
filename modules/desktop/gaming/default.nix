@@ -16,6 +16,7 @@
   # Gaming specific packages
   environment.systemPackages = with pkgs; [
     gamescope-wsi
+    prismlauncher # Minecraft launcher with native Linux support
   ];
 
   # Performance Tweaks
