@@ -1,3 +1,25 @@
+---
+name: nixos-organization
+description: Designing and maintaining the top-level layout of a NixOS flake-based configuration repository
+---
+
+## What this skill does
+- Defines the standard top-level directory structure for NixOS repos
+- Explains what belongs in `hosts/`, `modules/`, `home/`, `pkgs/`, `lib/`, and `secrets/`
+- Shows common directory patterns and when to use them
+
+## When to use this skill
+- When setting up a new NixOS repository structure
+- When deciding where a new file should go
+- When refactoring from a flat host structure to per-host directories
+- When reviewing code organization
+
+## Why these patterns matter
+- Clear organization makes the codebase navigable at a glance
+- Separating hosts (machine-specific) from modules (reusable features) prevents duplication
+- Following community conventions helps when collaborating or seeking help
+- Logical structure scales better as the number of machines grows
+
 # NixOS Organization
 
 Use this guide when designing or refactoring the overall layout of a NixOS or flake-based configuration repository.
