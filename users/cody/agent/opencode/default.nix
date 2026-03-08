@@ -19,6 +19,12 @@
     enableMcpIntegration = true;
     settings = {
       theme = lib.mkForce "system";
+      lsp = {
+        nixd = {
+          command = [ "nixd" ];
+          extensions = [ ".nix" ];
+        };
+      };
       provider = {
         lmstudio = {
           npm = "@ai-sdk/openai-compatible";
