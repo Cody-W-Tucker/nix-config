@@ -3,17 +3,14 @@
 let
   desloppify = pkgs.python3Packages.buildPythonPackage rec {
     pname = "desloppify";
-    version = "0.7.7";
+    version = "0.9.1";
     format = "wheel";
     src = pkgs.fetchPypi {
       inherit pname version format;
       python = "py3";
       platform = "any";
-      sha256 = "18f5pmqp98r06fba5yamc3bwf423b5fmvg6d63970ykm5564922q";
+      sha256 = "2fa4daa7cf198fe2e885c643a7ae177f3c8f491cee816f25330ccfc7830d25c0";
     };
-    propagatedBuildInputs = with pkgs.python3Packages; [
-      # Add dependencies here if needed
-    ];
   };
 in
 {
@@ -22,9 +19,9 @@ in
   programs.opencode.commands = {
     clean-code = ''
       I want you to improve the quality of this codebase. To do this, run desloppify.
-      Run ALL of the following (requires Python 3.11+):
+      Run ALL of the following:
 
-      desloppify update-skill claude    # installs the full workflow guide — pick yours: claude, cursor, codex, copilot, windsurf, gemini
+      desloppify update-skill claude
 
       Before scanning, check for directories that should be excluded (vendor, build output, generated code, worktrees, etc.) and exclude each obvious ones with the command `desloppify exclude <path>`.
       Share any questionable candidates with me before excluding.
