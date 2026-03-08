@@ -148,7 +148,19 @@ in
     ];
   };
 
-  swapDevices = [ ];
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+    priority = 100;
+  };
+
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 65536; # 64GB swap file to handle memory-intensive builds
+    }
+  ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
