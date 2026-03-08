@@ -1,45 +1,68 @@
 # CodyOS
 
-NixOS config for home lab with 3 machines.
+NixOS flake for 3 machines:
 
-## Hosts
-- **beast** - Desktop (i9-14900KF, RTX 3070)
-- **aiserver** - AI workstation (Strix Halo AI 395+)
-- **server** - Media/server (i7-7000)
+- `beast` - desktop workstation
+- `aiserver` - AI workstation
+- `server` - media and homelab server
 
 ## Build
+
 ```bash
-# Build and switch
+# Build current host and switch
 sudo nixos-rebuild switch --flake .
 
-# Build specific host
+# Build a specific host without switching
 sudo nixos-rebuild build --flake .#beast
+
+# General repo checks
+nix flake check
 ```
 
-## Structure
-```
-hosts/        - machine configs
-modules/      - reusable (desktop/, server/, scripts/)
-cody/         - user configs (cli/, ui/)
-secrets/      - SOPS-encrypted
+## Repo map
+
+```text
+hosts/      machine-specific config
+modules/    reusable NixOS modules
+cody/       Home Manager config
+secrets/    SOPS declarations and encrypted material
 ```
 
-## Patterns
+## High-value repo rules
+
+- Keep `hosts/` thin: boot, disks, hostname, hardware, host overrides, `system.stateVersion`
+- Keep `modules/` single-purpose: one service, feature, or hardware concern per file
+- Put user programs and shell config in `cody/`, not in system modules
+- Treat `modules/scripts/` as package-like code even though it currently lives under `modules/`
+- Keep `default.nix` mostly as an import aggregator
+- Use lowercase kebab-case file names
+- Keep `system.stateVersion` host-local and `home.stateVersion` user-local
+- New files must be git-tracked or flakes may not see them
+- Never commit raw secrets
+
+## Common patterns
+
 ```nix
-# Nginx reverse proxy (common in this repo)
+# SOPS secret
+sops.secrets."service-key" = { };
+
+# Nginx reverse proxy
 services.nginx.virtualHosts."service.homehub.tv" = {
-  forceSSL = true;
   useACMEHost = "homehub.tv";
+  forceSSL = true;
   locations."/".proxyPass = "http://localhost:8080";
 };
 
-# Docker container
+# OCI container
 virtualisation.oci-containers.containers.name = {
   image = "image:tag";
   ports = [ "8080:8080" ];
 };
 ```
 
-## Secrets
-- Use SOPS: `sops.secrets."key" = { };`
-- Never commit raw secrets
+## What to optimize for
+
+- Reusable logic in `modules/`
+- Machine identity in `hosts/`
+- User environment in `cody/`
+- Low surprise over clever abstraction
