@@ -21,7 +21,6 @@
     vpn-confinement = {
       # Creates a service to force applications to use a specific network interface/VPN.
       url = "github:Maroka-chan/VPN-Confinement";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Unstable for newer versions of packages (mostly for the desktop).
@@ -123,37 +122,25 @@
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
-            (
-              { config, lib, ... }:
-              {
-                nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
-                home-manager = {
-                  extraSpecialArgs = {
-                    inherit
-                      inputs
-                      system
-                      ;
-                    hardwareConfig = hardwareConfig.beast;
-                  };
-                  useGlobalPkgs = false;
-                  useUserPackages = true;
-                  backupFileExtension = "backup";
-                  sharedModules = [
-                    inputs.sops-nix.homeModules.sops
-                    inputs.stylix.homeModules.stylix
-                  ];
-                  users.codyt = {
-                    home.stateVersion = "25.05";
-                    nixpkgs.config.allowUnfree = true;
-                    imports = [
-                      ./cody/ui.nix
-                      ./secrets/home-secrets.nix
-                      inputs.nixvim.homeModules.nixvim
-                    ];
-                  };
+            ./users/home.nix
+            {
+              home-manager = {
+                extraSpecialArgs = {
+                  inherit inputs;
+                  hardwareConfig = hardwareConfig.beast;
+                  inherit pkgs-unstable;
                 };
-              }
-            )
+                users.codyt = {
+                  home.stateVersion = "25.11";
+                  nixpkgs.config.allowUnfree = true;
+                  imports = [
+                    ./users/cody/ui.nix
+                    ./secrets/home-secrets.nix
+                    inputs.nixvim.homeModules.nixvim
+                  ];
+                };
+              };
+            }
           ];
         };
         # Home server / media / homelab CPU: i7-7000
@@ -169,38 +156,24 @@
             inputs.vpn-confinement.nixosModules.default
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
-            (
-              { config, lib, ... }:
-              {
-                nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
-                home-manager = {
-                  extraSpecialArgs = {
-                    inherit
-                      inputs
-                      pkgs
-                      pkgs-unstable
-                      system
-                      ;
-                  };
-                  useGlobalPkgs = false;
-                  useUserPackages = true;
-                  backupFileExtension = "backup";
-                  sharedModules = [
-                    inputs.sops-nix.homeModules.sops
-                    inputs.stylix.homeModules.stylix
-                  ];
-                  users.codyt = {
-                    home.stateVersion = "23.11";
-                    imports = [
-                      ./cody/cli.nix
-                      ./secrets/home-secrets.nix
-                      inputs.nixvim.homeModules.nixvim
-                    ];
-                    home.enableNixpkgsReleaseCheck = false;
-                  };
+            ./users/home.nix
+            {
+              home-manager = {
+                extraSpecialArgs = {
+                  inherit inputs pkgs-unstable;
                 };
-              }
-            )
+                users.codyt = {
+                  home.stateVersion = "25.11";
+                  nixpkgs.config.allowUnfree = true;
+                  imports = [
+                    ./users/cody/cli.nix
+                    ./secrets/home-secrets.nix
+                    inputs.nixvim.homeModules.nixvim
+                  ];
+                  home.enableNixpkgsReleaseCheck = false;
+                };
+              };
+            }
           ];
         };
         # Main work workstation. GMKtec-evo2 APU: Strix Halo AI 395+ Max
@@ -217,34 +190,25 @@
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
-            (
-              { config, lib, ... }:
-              {
-                nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
-                home-manager = {
-                  extraSpecialArgs = {
-                    inherit inputs system;
-                    hardwareConfig = hardwareConfig.aiserver;
-                  };
-                  useGlobalPkgs = false;
-                  useUserPackages = true;
-                  backupFileExtension = "backup";
-                  sharedModules = [
-                    inputs.sops-nix.homeModules.sops
-                    inputs.stylix.homeModules.stylix
-                  ];
-                  users.codyt = {
-                    home.stateVersion = "25.11";
-                    nixpkgs.config.allowUnfree = true;
-                    imports = [
-                      ./cody/ui.nix
-                      ./secrets/home-secrets.nix
-                      inputs.nixvim.homeModules.nixvim
-                    ];
-                  };
+            ./users/home.nix
+            {
+              home-manager = {
+                extraSpecialArgs = {
+                  inherit inputs;
+                  hardwareConfig = hardwareConfig.aiserver;
+                  inherit pkgs-unstable;
                 };
-              }
-            )
+                users.codyt = {
+                  home.stateVersion = "25.11";
+                  nixpkgs.config.allowUnfree = true;
+                  imports = [
+                    ./users/cody/ui.nix
+                    ./secrets/home-secrets.nix
+                    inputs.nixvim.homeModules.nixvim
+                  ];
+                };
+              };
+            }
           ];
         };
       };

@@ -49,7 +49,7 @@
       };
     };
     # Wallpaper
-    image = ../modules/wallpapers/galaxy-waves.jpg;
+    image = ../../modules/wallpapers/galaxy-waves.jpg;
   };
 
   home.sessionVariables = {
