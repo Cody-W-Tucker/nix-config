@@ -27,7 +27,7 @@
           # 'initialization' passes options directly to the LSP during startup
           initialization = {
             formatting = {
-              command = [ "${lib.getExe pkgs.nixfmt-rfc-style}" ];
+              command = [ "${lib.getExe pkgs.nixfmt}" ];
             };
           };
         };
