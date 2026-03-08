@@ -64,73 +64,25 @@
     }:
     let
       system = "x86_64-linux";
+      specialArgs = { inherit inputs; };
     in
     {
-      # Allow formatter to be used on the flake and built systems
-      formatter.x86_64-linux = inputs.nixpkgs.legacyPackages.${system}.nixfmt-tree;
+      # Official NixOS formatter with directory support
+      formatter.x86_64-linux = inputs.nixpkgs-unstable.legacyPackages.${system}.nixfmt-tree;
 
       # Builds the different systems
       nixosConfigurations = {
-        # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070
         beast = inputs.nixpkgs-unstable.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./hosts/beast.nix
-            inputs.sops-nix.nixosModules.sops
-            inputs.flake-programs-sqlite.nixosModules.programs-sqlite
-            ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
-            ./users/home.nix
-          ];
+          inherit system specialArgs;
+          modules = [ ./hosts/beast.nix ];
         };
-        # Home server / media / homelab CPU: i7-7000
         server = inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./hosts/server.nix
-            inputs.sops-nix.nixosModules.sops
-            inputs.vpn-confinement.nixosModules.default
-            ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
-            ./users/home.nix
-            {
-              home-manager = {
-                extraSpecialArgs = {
-                  inherit inputs;
-                };
-                users.codyt = {
-                  home.stateVersion = "25.11";
-                  imports = [
-                    ./users/cody/cli.nix
-                    ./secrets/home-secrets.nix
-                    inputs.nixvim.homeModules.nixvim
-                  ];
-                  home.enableNixpkgsReleaseCheck = false;
-                };
-              };
-            }
-          ];
+          inherit system specialArgs;
+          modules = [ ./hosts/server.nix ];
         };
-        # Main work workstation. GMKtec-evo2 APU: Strix Halo AI 395+ Max
         aiserver = inputs.nixpkgs-unstable.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./hosts/aiserver.nix
-            inputs.sops-nix.nixosModules.sops
-            inputs.flake-programs-sqlite.nixosModules.programs-sqlite
-            ./secrets/secrets.nix
-            inputs.home-manager.nixosModules.home-manager
-            ./users/home.nix
-          ];
+          inherit system specialArgs;
+          modules = [ ./hosts/aiserver.nix ];
         };
       };
     };

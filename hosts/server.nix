@@ -5,14 +5,34 @@
   ...
 }:
 
+# Home server / media / homelab CPU: i7-7000 RAM: 64GB GPU: Intel HD 630 Storage: 500GB NVMe + 4TB HDD
+
 {
   imports = [
+    ../modules/system/base.nix
+    inputs.vpn-confinement.nixosModules.default
     ../configuration.nix
     ../modules/server
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-gpu-intel-kaby-lake
     inputs.nixos-hardware.nixosModules.common-pc-ssd
   ];
+
+  # Home-manager configuration
+  home-manager = {
+    extraSpecialArgs = {
+      inherit inputs;
+    };
+    users.codyt = {
+      home.stateVersion = "25.11";
+      imports = [
+        ../users/cody/cli.nix
+        ../secrets/home-secrets.nix
+        inputs.nixvim.homeModules.nixvim
+      ];
+      home.enableNixpkgsReleaseCheck = false;
+    };
+  };
 
   # Bootloader
   boot.loader.systemd-boot.enable = true;
