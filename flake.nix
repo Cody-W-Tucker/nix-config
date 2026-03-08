@@ -36,8 +36,9 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nixvim = {
-      # For stablity, use nixvim's nixpkgs instead of inputs.
+      # Configures neovim and related plugins.
       url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     zen-browser = {
       # Modern web browser based on firefox.
@@ -65,20 +66,8 @@
     }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          allowUnfreePredicate = _: true;
-        };
-      };
-      pkgs-unstable = import nixpkgs-unstable {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          allowUnfreePredicate = _: true;
-        };
-      };
+      pkgs = import nixpkgs { inherit system; };
+      pkgs-unstable = import nixpkgs-unstable { inherit system; };
       hardwareConfig = {
         beast = {
           # Controls the monitor layout for hyprland
@@ -132,7 +121,6 @@
                 };
                 users.codyt = {
                   home.stateVersion = "25.11";
-                  nixpkgs.config.allowUnfree = true;
                   imports = [
                     ./users/cody/ui.nix
                     ./secrets/home-secrets.nix
@@ -148,7 +136,7 @@
           inherit system;
           specialArgs = {
             inherit inputs;
-            inherit pkgs-unstable;
+            inherit pkgs;
           };
           modules = [
             ./hosts/server.nix
@@ -164,7 +152,6 @@
                 };
                 users.codyt = {
                   home.stateVersion = "25.11";
-                  nixpkgs.config.allowUnfree = true;
                   imports = [
                     ./users/cody/cli.nix
                     ./secrets/home-secrets.nix
@@ -200,7 +187,6 @@
                 };
                 users.codyt = {
                   home.stateVersion = "25.11";
-                  nixpkgs.config.allowUnfree = true;
                   imports = [
                     ./users/cody/ui.nix
                     ./secrets/home-secrets.nix

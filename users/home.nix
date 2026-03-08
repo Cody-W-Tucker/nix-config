@@ -7,11 +7,9 @@
 }:
 
 {
-  nixpkgs.config.allowUnfreePredicate = lib.mkDefault (_: true);
-
   home-manager = {
     # Note: extraSpecialArgs and hardwareConfig should be set per-host
-    useGlobalPkgs = false;
+    useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
 

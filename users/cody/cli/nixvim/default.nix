@@ -19,7 +19,13 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
-    nixpkgs.config.allowUnfreePredicate = _: true;
+    # TODO: Remove once nixvim/home-manager resolve useGlobalPkgs + nixpkgs.config interaction
+    # Currently triggers: "You have set either `nixpkgs.config` or `nixpkgs.overlays` while using `home-manager.useGlobalPkgs`"
+    # Related issues:
+    # - https://github.com/nix-community/nur/issues/877
+    # - https://github.com/nix-community/home-manager/issues/3267
+    # - https://github.com/nix-community/home-manager/pull/6172
+    nixpkgs.config.allowUnfree = true;
     colorschemes.catppuccin = {
       enable = true;
       settings = {
