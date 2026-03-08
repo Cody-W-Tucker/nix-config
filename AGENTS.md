@@ -24,7 +24,7 @@ nix flake check
 ```text
 hosts/      machine-specific config
 modules/    reusable NixOS modules
-cody/       Home Manager config
+users/       Home Manager config
 secrets/    SOPS declarations and encrypted material
 ```
 
@@ -32,7 +32,7 @@ secrets/    SOPS declarations and encrypted material
 
 - Keep `hosts/` thin: boot, disks, hostname, hardware, host overrides, `system.stateVersion`
 - Keep `modules/` single-purpose: one service, feature, or hardware concern per file
-- Put user programs and shell config in `cody/`, not in system modules
+- Put user programs and shell config in `users/`, not in system modules
 - Treat `modules/scripts/` as package-like code even though it currently lives under `modules/`
 - Keep `default.nix` mostly as an import aggregator
 - Use lowercase kebab-case file names
@@ -40,29 +40,9 @@ secrets/    SOPS declarations and encrypted material
 - New files must be git-tracked or flakes may not see them
 - Never commit raw secrets
 
-## Common patterns
-
-```nix
-# SOPS secret
-sops.secrets."service-key" = { };
-
-# Nginx reverse proxy
-services.nginx.virtualHosts."service.homehub.tv" = {
-  useACMEHost = "homehub.tv";
-  forceSSL = true;
-  locations."/".proxyPass = "http://localhost:8080";
-};
-
-# OCI container
-virtualisation.oci-containers.containers.name = {
-  image = "image:tag";
-  ports = [ "8080:8080" ];
-};
-```
-
 ## What to optimize for
 
 - Reusable logic in `modules/`
 - Machine identity in `hosts/`
-- User environment in `cody/`
+- User environment in `users/`
 - Low surprise over clever abstraction

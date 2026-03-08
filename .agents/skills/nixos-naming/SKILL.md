@@ -3,26 +3,7 @@ name: nixos-naming
 description: Naming conventions for files, folders, modules, custom options, and secrets in a NixOS repository
 ---
 
-## What this skill does
-- Defines the kebab-case naming convention for everything in a NixOS repo
-- Shows examples of good and bad naming for files, directories, modules, options, and secrets
-- Provides a checklist to verify names follow the conventions
-
-## When to use this skill
-- When creating a new file or directory
-- When naming a custom option or secret
-- When reviewing code for naming consistency
-- When deciding between `hosts/beast.nix` vs `hosts/beast/default.nix`
-
-## Why these patterns matter
-- Consistent naming makes the codebase predictable and easy to navigate
-- Kebab-case works well with Nix attribute names and shell completion
-- Clear names serve as self-documentation
-- Following conventions reduces cognitive load for contributors
-
 # NixOS Naming
-
-Use this guide when naming files, folders, modules, custom options, and secrets in a NixOS repository.
 
 ## Core convention
 
@@ -61,7 +42,6 @@ Use lowercase kebab-case almost everywhere.
 
 - Name host files after the actual hostname when possible.
 - Examples: `hosts/beast.nix`, `hosts/server.nix`, `hosts/ai-server.nix`.
-- If a host needs multiple files, use `hosts/<hostname>/default.nix`.
 
 ## Module names
 
