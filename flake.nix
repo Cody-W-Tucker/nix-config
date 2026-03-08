@@ -60,14 +60,10 @@
   outputs =
     inputs@{
       self,
-      nixpkgs,
-      nixpkgs-unstable,
       ...
     }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-      pkgs-unstable = import nixpkgs-unstable { inherit system; };
       hardwareConfig = {
         beast = {
           # Controls the monitor layout for hyprland
@@ -93,7 +89,7 @@
     in
     {
       # Allow formatter to be used on the flake and built systems
-      formatter.x86_64-linux = nixpkgs.legacyPackages.${system}.nixfmt-tree;
+      formatter.x86_64-linux = inputs.nixpkgs.legacyPackages.${system}.nixfmt-tree;
 
       # Builds the different systems
       nixosConfigurations = {
@@ -103,7 +99,6 @@
           specialArgs = {
             inherit inputs;
             inherit hardwareConfig;
-            inherit pkgs-unstable;
           };
           modules = [
             ./hosts/beast.nix
@@ -117,7 +112,6 @@
                 extraSpecialArgs = {
                   inherit inputs;
                   hardwareConfig = hardwareConfig.beast;
-                  inherit pkgs-unstable;
                 };
                 users.codyt = {
                   home.stateVersion = "25.11";
@@ -132,11 +126,10 @@
           ];
         };
         # Home server / media / homelab CPU: i7-7000
-        server = nixpkgs.lib.nixosSystem {
+        server = inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
             inherit inputs;
-            inherit pkgs;
           };
           modules = [
             ./hosts/server.nix
@@ -148,7 +141,7 @@
             {
               home-manager = {
                 extraSpecialArgs = {
-                  inherit inputs pkgs-unstable;
+                  inherit inputs;
                 };
                 users.codyt = {
                   home.stateVersion = "25.11";
@@ -169,7 +162,6 @@
           specialArgs = {
             inherit inputs;
             inherit hardwareConfig;
-            inherit pkgs-unstable;
           };
           modules = [
             ./hosts/aiserver.nix
@@ -183,7 +175,6 @@
                 extraSpecialArgs = {
                   inherit inputs;
                   hardwareConfig = hardwareConfig.aiserver;
-                  inherit pkgs-unstable;
                 };
                 users.codyt = {
                   home.stateVersion = "25.11";
