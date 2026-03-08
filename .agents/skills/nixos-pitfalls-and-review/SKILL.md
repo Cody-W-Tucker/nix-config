@@ -1,3 +1,25 @@
+---
+name: nixos-pitfalls-and-review
+description: Common mistakes in NixOS code and standards for reviewing and refactoring NixOS repositories
+---
+
+## What this skill does
+- Lists the most common mistakes when writing NixOS modules
+- Provides safer patterns for configuration reading, conditional logic, and custom options
+- Gives a checklist for code reviews and validation commands to run
+
+## When to use this skill
+- When reviewing a pull request or code change
+- When troubleshooting a "file not found" or "infinite recursion" error
+- When deciding whether to create a custom option or keep it simple
+- Before committing changes that involve new files or module refactoring
+
+## Why these patterns matter
+- The NixOS module system has specific evaluation rules that differ from imperative programming
+- Understanding these rules prevents runtime errors and confusing behavior
+- Following review standards catches issues before they reach production
+- Simple, clear code is easier to maintain and less prone to bugs
+
 # NixOS Pitfalls And Review
 
 Use this guide when creating standards, reviewing Nix code, or refactoring a NixOS repo. These are the details most people miss.
