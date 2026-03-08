@@ -6,6 +6,8 @@
   ...
 }:
 
+# Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | RAM: 64GB | Storage: 2TB NVMe SSD
+
 let
   hardwareConfig = {
     # Controls the monitor layout for hyprland
@@ -19,6 +21,7 @@ let
 in
 {
   imports = [
+    ../modules/system/base.nix
     ../configuration.nix
     ../modules/desktop
     ../modules/desktop/gaming

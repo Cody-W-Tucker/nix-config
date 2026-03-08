@@ -5,6 +5,8 @@
   ...
 }:
 
+# Main work workstation. GMKtec-evo2 APU: Strix Halo AI 395+ Max | 2TB NVMe
+
 let
   hardwareConfig = {
     # Top monitor should be DP-1
@@ -20,6 +22,7 @@ let
 in
 {
   imports = [
+    ../modules/system/base.nix
     ../configuration.nix
     # Using community hardware nixosConfigurations
     inputs.nixos-hardware.nixosModules.common-pc-ssd
