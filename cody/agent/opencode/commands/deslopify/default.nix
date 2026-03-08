@@ -4,12 +4,11 @@ let
   desloppify = pkgs.python3Packages.buildPythonPackage rec {
     pname = "desloppify";
     version = "0.9.1";
-    format = "wheel";
+    pyproject = true;
+    nativeBuildInputs = [ pkgs.python3Packages.setuptools ];
     src = pkgs.fetchPypi {
-      inherit pname version format;
-      python = "py3";
-      platform = "any";
-      sha256 = "2fa4daa7cf198fe2e885c643a7ae177f3c8f491cee816f25330ccfc7830d25c0";
+      inherit pname version;
+      sha256 = "1h151n1wgkqc6cjnz0gf3i4qyg3z2ypafhy6hplf53qrrykxm91g";
     };
   };
 in
