@@ -120,7 +120,6 @@
           modules = [
             ./hosts/beast.nix
             inputs.sops-nix.nixosModules.sops
-            # inputs.qdrant-upload.nixosModules.default
             inputs.flake-programs-sqlite.nixosModules.programs-sqlite
             ./secrets/secrets.nix
             inputs.home-manager.nixosModules.home-manager
