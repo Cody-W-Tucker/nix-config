@@ -1,8 +1,4 @@
-{ inputs, ... }:
-
 {
-  imports = [ inputs.whisp-away.nixosModules.home-manager ];
-
   services.whisp-away = {
     enable = true;
     defaultModel = "base.en"; # Default model (changes apply immediately)

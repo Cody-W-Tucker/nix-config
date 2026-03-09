@@ -11,6 +11,7 @@
     ./waybar.nix
     ./pipewire.nix
     ./notifications.nix
+    ./speech-to-text.nix
     ./xdg.nix
   ];
 
