@@ -9,7 +9,7 @@
   services.whisp-away = {
     enable = true;
     defaultModel = "base.en";
-    defaultBackend = "whisper.cpp";
+    defaultBackend = "whisper-cpp";
     # Use acceleration from hardware config, fallback to CPU for fast builds
     accelerationType = hardwareConfig.whispAcceleration or "cpu";
     useClipboard = false;
