@@ -115,7 +115,7 @@ This is the most common long-term structure for growing repos.
 
 ## Notes for the current repo shape
 
-- `modules/scripts/` would be more conventional as `pkgs/` if those files define installable packages or wrappers rather than NixOS modules.
+- `packages/scripts/` is used for custom script packages that define installable packages or wrappers.
 
 ## Rule of thumb
 

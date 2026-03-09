@@ -1,10 +1,10 @@
-{
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 let
   scriptNames = [
+    ./project.nix
+    ./rofi-launcher.nix
+    ./rofi-web-launcher.nix
     ./task-runner.nix
   ];
 
