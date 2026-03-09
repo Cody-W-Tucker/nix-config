@@ -39,6 +39,12 @@
           label = "󰃟";
         };
       };
+      notification-visibility = {
+        voice-input = {
+          state = "ignored";
+          summary = "Voice Input";
+        };
+      };
       widgets = [
         "title"
         "mpris"
