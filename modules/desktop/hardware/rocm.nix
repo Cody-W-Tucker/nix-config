@@ -5,7 +5,7 @@
   services.xserver.videoDrivers = [ "amdgpu" ];
 
   # Build apps with ROCm support.
-  nixpkgs.config.rocmSupport = false;
+  nixpkgs.config.rocmSupport = true;
   nixpkgs.config.rocmTargets = [ "gfx1151" ]; # Target your specific RDNA 3.5 cores
 
   hardware.amdgpu = {
