@@ -58,10 +58,6 @@ in
     # Use newest kernel
     kernelPackages = pkgs.linuxPackages_latest;
 
-    # TODO(aiserver): Re-enable `amdxdna` after nixpkgs ships the protocol-7.2
-    # userspace/firmware support for the Strix Halo NPU.
-    blacklistedKernelModules = [ "amdxdna" ];
-
     # Keep BIOS UMA small and let TTM/GTT provide the large shared pool.
     # 20,971,520 pages = 80 GiB of dynamically mappable GPU memory.
 
