@@ -50,7 +50,7 @@
       };
     };
     # Wallpaper
-    image = ../../modules/wallpapers/galaxy-waves.jpg;
+    image = ../../wallpapers/galaxy-waves.jpg;
   };
 
   home.sessionVariables = {
@@ -94,4 +94,5 @@
     WLR_USE_LIBINPUT = "1";
   };
 
+  home.stateVersion = "25.11";
 }
