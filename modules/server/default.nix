@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./actualBudget.nix
+    ./actual-budget.nix
     ./arm.nix
     ./adguard.nix
     ./content.nix
@@ -13,7 +13,7 @@
     ./paperless.nix
     ./photos.nix
     ./samba.nix
-    ../syncthing.nix
+    ../services/syncthing.nix
     ./nginx-syncthing.nix
     ./security.nix
   ];

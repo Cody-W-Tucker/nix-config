@@ -6,7 +6,7 @@
     ./hyprland.nix
     ./logging.nix
     ./printing.nix
-    ../syncthing.nix
+    ../services/syncthing.nix
     ../../packages/scripts
     ./hardware/razer.nix
     ./hardware/wifi.nix

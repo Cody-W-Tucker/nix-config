@@ -61,7 +61,7 @@
           width = mkLiteral "10px";
           expand = false;
           background-color = mkLiteral "transparent";
-          background-image = mkLiteral ''url("/etc/nixos/modules/wallpapers/puffy-stars.jpg", height)'';
+          background-image = mkLiteral ''url("/etc/nixos/wallpapers/puffy-stars.jpg", height)'';
           orientation = mkLiteral "vertical";
           children = map mkLiteral [
             "dummy"
