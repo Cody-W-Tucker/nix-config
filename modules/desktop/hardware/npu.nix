@@ -7,21 +7,22 @@
 
 let
   # Minimal fix for linux-firmware bug on Strix Halo (17f0_11).
-  # The upstream npu.sbin.zst symlink points to an empty placeholder.
+  # The upstream npu.sbin symlink points to an empty placeholder.
   # We provide ONLY the fixed files, which take precedence because
   # hardware.firmware uses buildEnv and "first package takes precedence".
+  # Note: linux-firmware stores files decompressed (no .zst extension)
   amdnpuStrixHaloFix = pkgs.runCommand "amdnpu-strix-halo-fix" { } ''
     mkdir -p $out/lib/firmware/amdnpu/17f0_11
 
     # Reference to the actual firmware blob in linux-firmware
-    firmware="${pkgs.linux-firmware}/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst"
+    firmware="${pkgs.linux-firmware}/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65"
 
     # Link the real firmware blob
-    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst
+    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65
 
     # Create absolute symlinks that the driver actually requests
-    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu.sbin.zst
-    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu_7.sbin.zst
+    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu.sbin
+    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu_7.sbin
   '';
 in
 {
