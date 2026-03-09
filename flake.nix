@@ -55,6 +55,11 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    whisp-away = {
+      # Voice dictation for Linux using OpenAI's Whisper models.
+      url = "github:madjinn/whisp-away";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
