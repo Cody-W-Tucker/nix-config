@@ -13,7 +13,7 @@
     ../modules/desktop/hyprland.nix
     ../modules/desktop/nvidia.nix
     ../modules/desktop/razer.nix
-    ../modules/scripts
+    ../packages/scripts
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
     inputs.nixos-hardware.nixosModules.common-pc-ssd
