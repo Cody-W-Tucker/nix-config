@@ -3,7 +3,6 @@
 {
   imports = [
     ./cli
-    ./packages/scripts
   ];
 
   # Keyboard
