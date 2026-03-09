@@ -18,8 +18,6 @@ let
     ];
     # Never suspend
     hypridle.suspendTimeout = null;
-    # Use CPU whisper for faster builds (avoid 10hr GPU compile)
-    whispAcceleration = "cpu";
   };
 in
 {
