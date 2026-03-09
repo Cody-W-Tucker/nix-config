@@ -163,7 +163,7 @@ in
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  environment.defaultPackages = [ pkgs.lmstudio ];
+  # environment.defaultPackages = [ pkgs.lmstudio ];
 
   # The AI server in `flake.nix` is the GMKtec EVO-X2 with the Ryzen AI Max+ 395
   # Strix Halo APU. AMD's ROCm docs list that APU as gfx1151 and only add official
