@@ -6,32 +6,21 @@
 }:
 
 let
-  # Workaround for linux-firmware bug: The npu.sbin symlink for Strix Halo
-  # (17f0_11) points to an empty placeholder file (npu.sbin.1.0.0.166.zst).
-  # The actual firmware is in npu.sbin.1.1.2.65.zst.
-  fixedAmdnpuFirmware =
-    pkgs.runCommand "linux-firmware-amdnpu-fixed"
-      {
-        nativeBuildInputs = [ pkgs.coreutils ];
-      }
-      ''
-        mkdir -p $out/lib/firmware/amdnpu
+  # Minimal fix for linux-firmware bug on Strix Halo (17f0_11).
+  # The upstream npu.sbin.zst symlink points to an empty placeholder.
+  # We provide ONLY the fixed files, which take precedence because
+  # hardware.firmware uses buildEnv and "first package takes precedence".
+  amdnpuStrixHaloFix = pkgs.runCommand "amdnpu-strix-halo-fix" { } ''
+    mkdir -p $out/lib/firmware/amdnpu/17f0_11
 
-        # Copy entire amdnpu directory, following symlinks (copies content, not symlinks)
-        cp -rL ${pkgs.linux-firmware}/lib/firmware/amdnpu/* $out/lib/firmware/amdnpu/
+    # Link the real firmware blob from linux-firmware
+    ln -s ${pkgs.linux-firmware}/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst \
+      $out/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst
 
-        # Fix the broken files for 17f0_11 (Strix Halo)
-        # Remove the bad symlinks/files and create correct ones
-        if [ -f $out/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst ]; then
-          # Remove the broken placeholder file and symlink
-          rm -f $out/lib/firmware/amdnpu/17f0_11/npu.sbin.zst
-          rm -f $out/lib/firmware/amdnpu/17f0_11/npu_7.sbin.zst
-
-          # Create proper symlinks pointing to the actual firmware
-          ln -s npu.sbin.1.1.2.65.zst $out/lib/firmware/amdnpu/17f0_11/npu.sbin.zst
-          ln -s npu.sbin.1.1.2.65.zst $out/lib/firmware/amdnpu/17f0_11/npu_7.sbin.zst
-        fi
-      '';
+    # Create proper symlinks that the driver actually requests
+    ln -s npu.sbin.1.1.2.65.zst $out/lib/firmware/amdnpu/17f0_11/npu.sbin.zst
+    ln -s npu.sbin.1.1.2.65.zst $out/lib/firmware/amdnpu/17f0_11/npu_7.sbin.zst
+  '';
 in
 {
   # AMD XDNA NPU driver configuration for Ryzen AI processors
@@ -45,9 +34,11 @@ in
   # Ensure firmware is available early in boot
   hardware.enableRedistributableFirmware = lib.mkDefault true;
 
-  # Override firmware package with fixed AMD NPU firmware
-  # This works around the broken npu.sbin symlink in upstream linux-firmware
-  hardware.firmware = lib.mkIf (lib.elem "amdxdna" config.boot.kernelModules) [ fixedAmdnpuFirmware ];
+  # Prepend our minimal fix package FIRST so it takes precedence
+  # over the broken upstream linux-firmware symlinks
+  hardware.firmware = lib.mkIf (lib.elem "amdxdna" config.boot.kernelModules) [
+    amdnpuStrixHaloFix
+  ];
 
   # Add NPU userspace tools when available
   # Currently the main interface is through the kernel driver
