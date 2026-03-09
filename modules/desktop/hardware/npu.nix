@@ -16,19 +16,19 @@ let
         nativeBuildInputs = [ pkgs.coreutils ];
       }
       ''
-        mkdir -p $out/lib/firmware/amdnpu/17f0_11
+        mkdir -p $out/lib/firmware/amdnpu
 
-        # Copy all files from original firmware
-        cp -r ${pkgs.linux-firmware}/lib/firmware/amdnpu/* $out/lib/firmware/amdnpu/
+        # Copy all files from original firmware, following symlinks
+        cp -rL ${pkgs.linux-firmware}/lib/firmware/amdnpu/* $out/lib/firmware/amdnpu/
 
-        # Fix the broken symlink for 17f0_11 - point npu.sbin to the actual firmware
+        # Now fix the symlinks for 17f0_11 - point npu.sbin to the actual firmware
         # instead of the empty placeholder
-        if [ -e ${pkgs.linux-firmware}/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst ]; then
+        if [ -f $out/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst ]; then
           ln -sf npu.sbin.1.1.2.65.zst $out/lib/firmware/amdnpu/17f0_11/npu.sbin.zst
         fi
 
         # Also fix npu_7.sbin if it exists
-        if [ -e ${pkgs.linux-firmware}/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst ]; then
+        if [ -f $out/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst ]; then
           ln -sf npu.sbin.1.1.2.65.zst $out/lib/firmware/amdnpu/17f0_11/npu_7.sbin.zst
         fi
       '';
