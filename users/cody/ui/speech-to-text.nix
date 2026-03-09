@@ -7,7 +7,7 @@
 {
   imports = [ inputs.whisp-away.nixosModules.home-manager ];
   services.whisp-away = {
-    enable = true;
+    enable = hardwareConfig.enableWhisp or true;
     defaultModel = "base.en";
     defaultBackend = "whisper-cpp";
     # Use acceleration from hardware config, fallback to CPU for fast builds

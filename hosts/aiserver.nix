@@ -18,6 +18,8 @@ let
     ];
     # Never suspend
     hypridle.suspendTimeout = null;
+    # Disable speech-to-text on this host (avoid long builds)
+    enableWhisp = false;
   };
 in
 {
