@@ -1,10 +1,6 @@
 { pkgs, ... }:
 
 {
-  imports = [
-    ./speech-to-text.nix
-  ];
-
   # Enable sound with pipewire
   services.pipewire = {
     enable = true;
