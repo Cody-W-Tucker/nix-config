@@ -27,6 +27,7 @@ in
     ../modules/system/base.nix
     ../modules/desktop
     ../modules/desktop/hardware/rocm.nix
+    ../modules/desktop/hardware/npu.nix
     # Using community hardware nixosConfigurations
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
@@ -168,9 +169,9 @@ in
   # Ryzen APU Linux support in ROCm 7.2, so this host expects a recent shared
   # `nixpkgs-unstable` revision with ROCm 7.2 or newer.
 
-  # TODO(aiserver): Revisit `amdxdna` once nixpkgs ships the upstream protocol-7
-  # and `npu_7.sbin` support. The current stock kernel + firmware combo still logs
-  # an incompatible firmware protocol error on the Strix Halo NPU.
+  # NPU (amdxdna driver) is now enabled via ../modules/desktop/hardware/npu.nix
+  # The driver requires npu_7.sbin firmware which is included in linux-firmware.
+  # If firmware loading fails, check `dmesg | grep amdxdna` for errors.
 
   # Open port for LMstudio
   networking.firewall.allowedTCPPorts = [ 1234 ];
