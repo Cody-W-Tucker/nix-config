@@ -162,19 +162,19 @@ in
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  # environment.defaultPackages = [ pkgs.lmstudio ];
+  # AMD XDNA NPU driver configuration
+  # Note: The NPU (amdxdna) is currently disabled because:
+  # 1. Upstream linux-firmware has broken npu.sbin symlinks for Strix Halo (17f0_11)
+  # 2. No official upstream NPU user-space tools yet (rocmlir, xrt plugin, etc.)
+  # 3. Driver logs firmware errors on every boot
+  #
+  # To re-enable in the future:
+  # - Remove the blacklist below
+  # - Add boot.kernelModules = [ "amdxdna" ]
+  # - Fix firmware symlinks or wait for upstream linux-firmware fix
 
-  # The AI server in `flake.nix` is the GMKtec EVO-X2 with the Ryzen AI Max+ 395
-  # Strix Halo APU. AMD's ROCm docs list that APU as gfx1151 and only add official
-  # Ryzen APU Linux support in ROCm 7.2, so this host expects a recent shared
-  # `nixpkgs-unstable` revision with ROCm 7.2 or newer.
-
-  # NPU (amdxdna driver) is now enabled via ../modules/desktop/hardware/npu.nix
-  # The driver requires npu_7.sbin firmware which is included in linux-firmware.
-  # If firmware loading fails, check `dmesg | grep amdxdna` for errors.
-
-  # Open port for LMstudio
-  networking.firewall.allowedTCPPorts = [ 1234 ];
+  # Blacklist the NPU driver to prevent boot errors
+  boot.blacklistedKernelModules = [ "amdxdna" ];
 
   # Renaming the logging client to machine hostname
   services.promtail.configuration.scrape_configs = [
