@@ -29,9 +29,6 @@ let
     "${mainMod}, Q, exec, ${terminal}"
     "${mainMod}, 0, exec, ${browser}"
 
-    # Whisper dictation - hold to record
-    "${mainMod}, Escape, exec, whisper-dictate-start"
-
     # Web applications
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
     "${mainMod}, A, exec, ${webApp}=https://ai.homehub.tv/"
@@ -76,6 +73,9 @@ let
 
     # Toggle waybar
     "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
+
+    # Whisper dictation - hold to record
+    "${mainMod}, Escape, exec, whisp-away start"
   ];
 in
 {
@@ -124,7 +124,7 @@ in
 
     bindr = [
       # Whisper dictation - release SUPER+CONTROL to transcribe
-      "${mainMod}, Escape, exec, whisper-dictate-stop"
+      "${mainMod}, Escape, exec, whisp-away stop"
     ];
     windowrule = [
       # Kitty
