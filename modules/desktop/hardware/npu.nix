@@ -13,13 +13,15 @@ let
   amdnpuStrixHaloFix = pkgs.runCommand "amdnpu-strix-halo-fix" { } ''
     mkdir -p $out/lib/firmware/amdnpu/17f0_11
 
-    # Link the real firmware blob from linux-firmware
-    ln -s ${pkgs.linux-firmware}/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst \
-      $out/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst
+    # Reference to the actual firmware blob in linux-firmware
+    firmware="${pkgs.linux-firmware}/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst"
 
-    # Create proper symlinks that the driver actually requests
-    ln -s npu.sbin.1.1.2.65.zst $out/lib/firmware/amdnpu/17f0_11/npu.sbin.zst
-    ln -s npu.sbin.1.1.2.65.zst $out/lib/firmware/amdnpu/17f0_11/npu_7.sbin.zst
+    # Link the real firmware blob
+    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu.sbin.1.1.2.65.zst
+
+    # Create absolute symlinks that the driver actually requests
+    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu.sbin.zst
+    ln -s "$firmware" $out/lib/firmware/amdnpu/17f0_11/npu_7.sbin.zst
   '';
 in
 {
