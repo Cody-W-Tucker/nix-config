@@ -1,13 +1,18 @@
-{ inputs, ... }:
+{
+  inputs,
+  hardwareConfig ? { },
+  ...
+}:
 
 {
   imports = [ inputs.whisp-away.nixosModules.home-manager ];
   services.whisp-away = {
     enable = true;
-    defaultModel = "base.en"; # Default model (changes apply immediately)
-    defaultBackend = "whisper-cpp"; # Backend selection (changes apply immediately)
-    accelerationType = "vulkan"; # or "cuda", "openvino", "cpu" - requires rebuild
-    useClipboard = false; # Output mode (changes apply immediately)
-    useCrane = false; # Enable if you want faster rebuilds when developing
+    defaultModel = "base.en";
+    defaultBackend = "whisper.cpp";
+    # Use acceleration from hardware config, fallback to CPU for fast builds
+    accelerationType = hardwareConfig.whispAcceleration or "cpu";
+    useClipboard = false;
+    useCrane = false;
   };
 }
