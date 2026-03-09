@@ -5,6 +5,7 @@
     ./ui
     ./cli
     ./agent
+    ./packages/scripts
   ];
 
   # Keyboard
