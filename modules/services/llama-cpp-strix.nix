@@ -6,6 +6,8 @@
 }:
 
 let
+  cfg = config.services.llama-cpp;
+
   # llama-cpp with Strix Halo (gfx1151) optimizations
   # Based on AMD Strix Halo Toolboxes configuration
   llama-cpp-strix =
@@ -38,43 +40,40 @@ let
       });
 in
 {
-  services.llama-cpp = {
-    enable = true;
+  config = lib.mkIf cfg.enable {
+    services.llama-cpp = {
+      # Use ROCm-enabled package with Strix Halo specific optimizations
+      package = llama-cpp-strix;
 
-    # Use ROCm-enabled package with Strix Halo specific optimizations
-    package = llama-cpp-strix;
+      # Strix Halo optimized flags:
+      # --flash-attn on: Flash attention (always use on Strix Halo)
+      # --no-mmap: Required for UMA to avoid crashes
+      # -ngl 999: Offload all layers to GPU
+      extraFlags = lib.mkDefault [
+        "--flash-attn"
+        "on"
+        "--no-mmap"
+        "--n-gpu-layers"
+        "999"
+      ];
 
-    # Default model path (user should override)
-    model = lib.mkDefault "/var/lib/llama-cpp/models/model.gguf";
+      # Bind to all interfaces for remote access
+      host = lib.mkDefault "0.0.0.0";
+      port = lib.mkDefault 8080;
+    };
 
-    # Strix Halo optimized flags:
-    # --flash-attn on: Flash attention (always use on Strix Halo)
-    # --no-mmap: Required for UMA to avoid crashes
-    # -ngl 999: Offload all layers to GPU
-    extraFlags = lib.mkDefault [
-      "--flash-attn"
-      "on"
-      "--no-mmap"
-      "--n-gpu-layers"
-      "999"
+    # Create model directory
+    systemd.tmpfiles.rules = [
+      "d /var/lib/llama-cpp/models 0755 root root -"
     ];
 
-    # Bind to all interfaces for remote access
-    host = lib.mkDefault "0.0.0.0";
-    port = lib.mkDefault 8080;
-  };
-
-  # Create model directory
-  systemd.tmpfiles.rules = [
-    "d /var/lib/llama-cpp/models 0755 root root -"
-  ];
-
-  # Environment variables for ROCm/HIP
-  environment.sessionVariables = {
-    # Required for Strix Halo gfx1151 detection
-    HSA_OVERRIDE_GFX_VERSION = "11.5.1";
-    # Ensure ROCm path is available
-    ROCM_PATH = "${pkgs.rocmPackages.rocm-core}";
-    HIP_PATH = "${pkgs.rocmPackages.rocm-core}";
+    # Environment variables for ROCm/HIP
+    environment.sessionVariables = {
+      # Required for Strix Halo gfx1151 detection
+      HSA_OVERRIDE_GFX_VERSION = "11.5.1";
+      # Ensure ROCm path is available
+      ROCM_PATH = "${pkgs.rocmPackages.rocm-core}";
+      HIP_PATH = "${pkgs.rocmPackages.rocm-core}";
+    };
   };
 }
