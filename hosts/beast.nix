@@ -180,6 +180,13 @@ in
     modelGroup = "users";
     enabledModels = [ "qwen3.5-4b" ];
     preloadModels = [ "qwen3.5-4b" ];
+    modelOverrides = {
+      "qwen3.5-4b" = {
+        contextSize = 8192;
+        batchSize = 1024;
+        ubatchSize = 512;
+      };
+    };
   };
 
   swapDevices = [
