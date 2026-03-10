@@ -194,7 +194,7 @@ in
             ttl = 600;
           };
           "qwen3.5-35b" = {
-            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q4_K_M.gguf --alias qwen3.5-35b --no-webui --flash-attn on --no-mmap -ngl 999";
+            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q4_K_M.gguf --alias qwen3.5-35b --no-webui --flash-attn on --no-mmap -ngl 999 -c 131072";
             ttl = 600;
           };
         };
