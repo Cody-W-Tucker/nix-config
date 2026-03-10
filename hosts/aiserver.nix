@@ -190,7 +190,7 @@ in
 
         models = {
           "qwen3.5-35b" = {
-            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q4_K_M.gguf --alias qwen3.5-35b --no-webui --flash-attn -ngl 999 -c 65536 -b 2048 -ub 1024 -t 16";
+            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q4_K_M.gguf --alias qwen3.5-35b --no-webui --flash-attn on --n-gpu-layers 999 -c 65536 -b 2048 -ub 1024 -t 16";
             ttl = 600;
           };
         };
