@@ -178,13 +178,17 @@ in
     port = 8081;
     modelOwner = "codyt";
     modelGroup = "users";
-    enabledModels = [ "qwen3.5-4b" ];
-    preloadModels = [ "qwen3.5-4b" ];
+    enabledModels = [ "qwen3.5-0.8b" ];
+    preloadModels = [ "qwen3.5-0.8b" ];
     modelOverrides = {
-      "qwen3.5-4b" = {
-        contextSize = 8192;
-        batchSize = 1024;
-        ubatchSize = 512;
+      "qwen3.5-0.8b" = {
+        contextSize = 32768;
+        batchSize = 2048;
+        ubatchSize = 1024;
+        extraArgs = [
+          "--parallel"
+          "4"
+        ];
       };
     };
   };
