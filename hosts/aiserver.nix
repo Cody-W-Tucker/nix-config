@@ -189,12 +189,8 @@ in
         hooks.on_startup.preload = [ "qwen3.5-35b" ];
 
         models = {
-          "gemma-3-4b" = {
-            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/gemma-3-4b-it-Q4_K_M.gguf --alias gemma-3-4b --no-webui --flash-attn on --no-mmap -ngl 999";
-            ttl = 600;
-          };
           "qwen3.5-35b" = {
-            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q4_K_M.gguf --alias qwen3.5-35b --no-webui --flash-attn on --no-mmap -ngl 999 -c 131072";
+            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q4_K_M.gguf --alias qwen3.5-35b --no-webui --flash-attn -ngl 999 -c 65536 -b 2048 -ub 1024 -t 16";
             ttl = 600;
           };
         };
