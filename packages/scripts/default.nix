@@ -1,5 +1,7 @@
 { pkgs, ... }:
 
+# System-wide scripts - for user scripts, see users/*/packages/scripts/
+
 let
   scriptNames = [
     ./check-imports.nix

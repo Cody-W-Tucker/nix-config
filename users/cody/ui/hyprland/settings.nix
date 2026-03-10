@@ -11,6 +11,9 @@ let
   webApp = "uwsm app -- chromium --new-window --app";
   terminal = "uwsm app -- kitty";
 
+  # Helper to focus or run applications
+  focusOrRun = appClass: cmd: "exec, focus-or-run '${appClass}' '${cmd}'";
+
   mousebinds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
     "${mainMod}, mouse:272, movewindow"
@@ -25,9 +28,9 @@ let
   ];
 
   keybinds = [
-    # Application launchers
+    # Application launchers (focus existing window or run new)
     "${mainMod}, Q, exec, ${terminal}"
-    "${mainMod}, 0, exec, ${browser}"
+    "${mainMod}, 0, ${focusOrRun "^(zen)$" browser}"
 
     # Web applications
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
@@ -72,7 +75,7 @@ let
     "${mainMod} SHIFT, Y, movetoworkspacesilent, special:media"
 
     # Toggle waybar
-    "${mainMod}, W, exec, pkill -SIGUSR1 waybar"
+    "${mainMod}, P, exec, pkill -SIGUSR1 waybar"
 
     # Whisper dictation - hold to record
     "${mainMod}, Escape, exec, whisp-away start"
