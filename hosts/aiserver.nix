@@ -166,24 +166,43 @@ in
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  # llama-swap with Strix-optimized llama.cpp for on-demand model loading
-  services.llama-swap-strix = {
-    enable = true;
-    port = 8080;
-    openFirewall = true;
-    defaultModel = "qwen3.5-35b";
+  # llama-swap with ROCm-optimized llama.cpp for Strix Halo
+  services.llama-swap-strix.enable = true;
 
-    models = {
-      "gemma-3-4b" = {
-        file = "gemma-3-4b-it-Q4_K_M.gguf";
-        ttl = 600;
+  # Configure llama-swap using upstream options
+  services.llama-swap = {
+    port = 8080;
+    listenAddress = "0.0.0.0";
+    openFirewall = true;
+
+    settings =
+      let
+        llama-cpp = pkgs.callPackage ../packages/llama-cpp-strix.nix { };
+        llama-server = lib.getExe' llama-cpp "llama-server";
+        modelDir = "/var/lib/llama-swap/models";
+      in
+      {
+        healthCheckTimeout = 60;
+        logLevel = "info";
+        logToStdout = "both";
+
+        hooks.on_startup.preload = [ "qwen3.5-35b" ];
+
+        models = {
+          "gemma-3-4b" = {
+            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/gemma-3-4b-it-Q4_K_M.gguf --alias gemma-3-4b --no-webui --flash-attn on --no-mmap -ngl 999";
+            ttl = 600;
+          };
+          "qwen3.5-35b" = {
+            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q4_K_M.gguf --alias qwen3.5-35b --no-webui --flash-attn on --no-mmap -ngl 999";
+            ttl = 600;
+          };
+        };
       };
-      "qwen3.5-35b" = {
-        file = "Qwen3.5-35B-A3B-Q4_K_M.gguf";
-        ttl = 600;
-      };
-    };
   };
+
+  # Enable state directory for model persistence with DynamicUser
+  systemd.services.llama-swap.serviceConfig.StateDirectory = "llama-swap";
 
   # AMD XDNA NPU driver configuration
   # Note: The NPU (amdxdna) is currently disabled because:
