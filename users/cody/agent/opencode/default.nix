@@ -32,12 +32,12 @@
         };
       };
       provider = {
-        lmstudio = {
+        llama-swap = {
           npm = "@ai-sdk/openai-compatible";
-          name = "LM Studio (local)";
-          options.baseURL = "http://aiserver:1234/v1";
+          name = "llama-swap (aiserver)";
+          options.baseURL = "http://aiserver:8080/v1";
           models = {
-            "qwen/qwen3.5-35b-a3b" = {
+            "qwen3.5-35b" = {
               name = "Qwen3.5";
             };
           };
