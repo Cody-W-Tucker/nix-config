@@ -178,8 +178,8 @@ in
     port = 8081;
     modelOwner = "codyt";
     modelGroup = "users";
-    enabledModels = [ "qwen3.5-35b" ];
-    preloadModels = [ "qwen3.5-35b" ];
+    enabledModels = [ "qwen3.5-4b" ];
+    preloadModels = [ "qwen3.5-4b" ];
   };
 
   swapDevices = [
