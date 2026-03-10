@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   inputs,
@@ -169,6 +170,11 @@ in
   # llama-swap with ROCm-optimized llama.cpp for Strix Halo
   services.llama-swap-strix.enable = true;
 
+  systemd.tmpfiles.rules = [
+    "d /srv/llama-swap 0755 root root - -"
+    "d /srv/llama-swap/models 0755 codyt users - -"
+  ];
+
   # Configure llama-swap using upstream options
   services.llama-swap = {
     port = 8080;
@@ -177,9 +183,9 @@ in
 
     settings =
       let
-        llama-cpp = pkgs.callPackage ../packages/llama-cpp-strix.nix { };
+        llama-cpp = config.services.llama-swap-strix.serverPackage;
         llama-server = lib.getExe' llama-cpp "llama-server";
-        modelDir = "/var/lib/llama-swap/models";
+        modelDir = "/srv/llama-swap/models";
       in
       {
         healthCheckTimeout = 60;
@@ -190,15 +196,12 @@ in
 
         models = {
           "qwen3.5-35b" = {
-            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q4_K_M.gguf --alias qwen3.5-35b --no-webui --flash-attn on --n-gpu-layers 999 -c 65536 -b 2048 -ub 1024 -t 16";
+            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q8_0.gguf --alias qwen3.5-35b --no-webui --flash-attn on --n-gpu-layers 999 -c 65536 -b 2048 -ub 1024 -t 16";
             ttl = 600;
           };
         };
       };
   };
-
-  # Enable state directory for model persistence with DynamicUser
-  systemd.services.llama-swap.serviceConfig.StateDirectory = "llama-swap";
 
   # AMD XDNA NPU driver configuration
   # Note: The NPU (amdxdna) is currently disabled because:

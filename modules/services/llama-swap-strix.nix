@@ -17,16 +17,21 @@ in
 {
   options.services.llama-swap-strix = {
     enable = lib.mkEnableOption "llama-swap with ROCm-optimized llama.cpp for Strix Halo";
+
+    serverPackage = lib.mkOption {
+      type = lib.types.package;
+      default = llama-cpp-strix;
+      defaultText = lib.literalExpression "pkgs.callPackage ../../packages/llama-cpp-strix.nix { }";
+      description = "llama.cpp package that provides the llama-server binary used by llama-swap.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
     # Enable upstream llama-swap module
     services.llama-swap.enable = true;
 
-    # Provide ROCm-optimized llama-server via environment
-    # Users can reference it in their settings as: ${pkgs.llama-cpp-strix}/bin/llama-server
-    # or use the Strix-optimized package directly in their config
-    environment.systemPackages = [ llama-cpp-strix ];
+    # Provide the selected llama-server package for ad-hoc local use.
+    environment.systemPackages = [ cfg.serverPackage ];
 
     # ROCm/HIP environment for GPU acceleration
     systemd.services.llama-swap.environment = {
