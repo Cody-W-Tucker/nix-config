@@ -106,9 +106,9 @@ in
       };
     };
 
-    # Create model directory
+    # Create model directory with proper permissions for llama-swap user
     systemd.tmpfiles.rules = [
-      "d ${cfg.modelDir} 0755 root root -"
+      "d ${cfg.modelDir} 0755 llama-swap llama-swap -"
     ];
 
     # Environment variables for ROCm/HIP
