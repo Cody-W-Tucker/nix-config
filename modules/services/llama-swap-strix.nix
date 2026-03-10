@@ -111,6 +111,13 @@ in
       "d ${cfg.modelDir} 0755 llama-swap llama-swap -"
     ];
 
+    # Allow llama-swap service to access model directory despite sandboxing
+    systemd.services.llama-swap.serviceConfig = {
+      ReadWritePaths = [ cfg.modelDir ];
+      # Required for GPU access with ROCm
+      PrivateDevices = lib.mkForce false;
+    };
+
     # Environment variables for ROCm/HIP
     environment.sessionVariables = {
       HSA_OVERRIDE_GFX_VERSION = "11.5.1";
