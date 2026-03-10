@@ -27,7 +27,7 @@ in
     ../modules/system/base.nix
     ../modules/desktop
     ../modules/desktop/hardware/rocm.nix
-    ../modules/desktop/hardware/npu.nix
+    ../modules/services/llama-cpp-strix.nix
     # Using community hardware nixosConfigurations
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
@@ -54,16 +54,20 @@ in
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
 
-    kernelParams = [ "amd_pstate=active" ];
+    kernelParams = [
+      "amd_pstate=active"
+      "iommu=pt"
+      "amdgpu.gttsize=94208"
+    ];
 
     # Use newest kernel
     kernelPackages = pkgs.linuxPackages_latest;
 
     # Keep BIOS UMA small and let TTM/GTT provide the large shared pool.
-    # 20,971,520 pages = 80 GiB of dynamically mappable GPU memory.
+    # 24,117,248 pages = 92 GiB of dynamically mappable GPU memory.
 
     extraModprobeConfig = ''
-      options ttm pages_limit=20971520
+      options ttm pages_limit=24117248
     '';
 
     initrd.availableKernelModules = [
