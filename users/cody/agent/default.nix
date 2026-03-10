@@ -1,17 +1,12 @@
 {
   inputs,
   lib,
-  osConfig ? { },
   pkgs,
   ...
 }:
 
 let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-  systemNixpkgsConfig = osConfig.nixpkgs.config or { };
-  useRocm = systemNixpkgsConfig.rocmSupport or pkgs.config.rocmSupport or false;
-  useCuda = !useRocm && (systemNixpkgsConfig.cudaSupport or pkgs.config.cudaSupport or false);
-  qmdPackage = llmPkgs.qmd.override { cudaSupport = useCuda; };
 in
 
 {
@@ -21,14 +16,14 @@ in
   ];
 
   home.packages = [
-    qmdPackage
+    # Default is Vulkan, which should work with ROCm natively. CUDA is enabled via override when available.
+    (llmPkgs.qmd.override (
+      lib.optionalAttrs (pkgs.config.cudaSupport or false) { cudaSupport = true; }
+    ))
     llmPkgs.coderabbit-cli
     llmPkgs.rtk
     llmPkgs.openspec
     llmPkgs.ck
+    llmPkgs.pi
   ];
-
-  home.sessionVariables = lib.optionalAttrs useRocm {
-    NODE_LLAMA_CPP_GPU = "vulkan";
-  };
 }
