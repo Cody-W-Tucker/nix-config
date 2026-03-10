@@ -48,11 +48,12 @@ in
     model = lib.mkDefault "/var/lib/llama-cpp/models/model.gguf";
 
     # Strix Halo optimized flags:
-    # -fa 1: Flash attention (always use on Strix Halo)
+    # --flash-attn on: Flash attention (always use on Strix Halo)
     # --no-mmap: Required for UMA to avoid crashes
     # -ngl 999: Offload all layers to GPU
     extraFlags = lib.mkDefault [
       "--flash-attn"
+      "on"
       "--no-mmap"
       "--n-gpu-layers"
       "999"
