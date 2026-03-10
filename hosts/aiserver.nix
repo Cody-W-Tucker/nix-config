@@ -27,7 +27,7 @@ in
     ../modules/system/base.nix
     ../modules/desktop
     ../modules/desktop/hardware/rocm.nix
-    ../modules/services/llama-cpp-strix.nix
+    ../modules/services/llama-swap-strix.nix
     # Using community hardware nixosConfigurations
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
@@ -166,10 +166,23 @@ in
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  # llama-cpp configuration
-  services.llama-cpp = {
+  # llama-swap with Strix-optimized llama.cpp for on-demand model loading
+  services.llama-swap-strix = {
     enable = true;
-    model = lib.mkDefault "/var/lib/llama-cpp/models/gemma-3-4b-it-Q4_K_M.gguf";
+    port = 8080;
+    openFirewall = true;
+    defaultModel = "qwen3.5-35b";
+
+    models = {
+      "gemma-3-4b" = {
+        file = "gemma-3-4b-it-Q4_K_M.gguf";
+        ttl = 600;
+      };
+      "qwen3.5-35b" = {
+        file = "Qwen3.5-35B-A3B-Q4_K_M.gguf";
+        ttl = 600;
+      };
+    };
   };
 
   # AMD XDNA NPU driver configuration
