@@ -166,6 +166,12 @@ in
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
+  # llama-cpp configuration
+  services.llama-cpp = {
+    enable = true;
+    model = lib.mkDefault "/var/lib/llama-cpp/models/gemma-3-4b-it-Q4_K_M.gguf";
+  };
+
   # AMD XDNA NPU driver configuration
   # Note: The NPU (amdxdna) is currently disabled because:
   # 1. Upstream linux-firmware has broken npu.sbin symlinks for Strix Halo (17f0_11)
