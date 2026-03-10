@@ -27,6 +27,7 @@ in
     ../modules/desktop
     ../modules/desktop/gaming
     ../modules/desktop/hardware/nvidia.nix
+    ../modules/services/llama-swap
     ../modules/server/ai
 
     # Using community hardware configurations
@@ -169,6 +170,16 @@ in
     algorithm = "zstd";
     memoryPercent = 50;
     priority = 100;
+  };
+
+  services.llama-swap = {
+    enable = true;
+    acceleration = "cuda";
+    port = 8081;
+    modelOwner = "codyt";
+    modelGroup = "users";
+    enabledModels = [ "qwen3.5-35b" ];
+    preloadModels = [ "qwen3.5-35b" ];
   };
 
   swapDevices = [

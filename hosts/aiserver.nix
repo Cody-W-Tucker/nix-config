@@ -28,7 +28,7 @@ in
     ../modules/system/base.nix
     ../modules/desktop
     ../modules/desktop/hardware/rocm.nix
-    ../modules/services/llama-swap-strix.nix
+    ../modules/services/llama-swap
     # Using community hardware nixosConfigurations
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
@@ -165,42 +165,23 @@ in
     }
   ];
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-
-  # llama-swap with ROCm-optimized llama.cpp for Strix Halo
-  services.llama-swap-strix.enable = true;
-
-  systemd.tmpfiles.rules = [
-    "d /srv/llama-swap 0755 root root - -"
-    "d /srv/llama-swap/models 0755 codyt users - -"
-  ];
-
-  # Configure llama-swap using upstream options
   services.llama-swap = {
+    enable = true;
+    acceleration = "rocm";
     port = 8080;
     listenAddress = "0.0.0.0";
     openFirewall = true;
-
-    settings =
-      let
-        llama-cpp = config.services.llama-swap-strix.serverPackage;
-        llama-server = lib.getExe' llama-cpp "llama-server";
-        modelDir = "/srv/llama-swap/models";
-      in
-      {
-        healthCheckTimeout = 60;
-        logLevel = "info";
-        logToStdout = "both";
-
-        hooks.on_startup.preload = [ "qwen3.5-35b" ];
-
-        models = {
-          "qwen3.5-35b" = {
-            cmd = "${llama-server} --port \${PORT} -m ${modelDir}/Qwen3.5-35B-A3B-Q8_0.gguf --alias qwen3.5-35b --no-webui --flash-attn on --n-gpu-layers 999 -c 65536 -b 2048 -ub 1024 -t 16";
-            ttl = 600;
-          };
-        };
-      };
+    modelOwner = "codyt";
+    modelGroup = "users";
+    enabledModels = [ "qwen3.5-35b" ];
+    preloadModels = [ "qwen3.5-35b" ];
+    modelOverrides."qwen3.5-35b" = {
+      contextSize = 65536;
+      batchSize = 2048;
+      ubatchSize = 1024;
+      threads = 16;
+      gpuLayers = 999;
+    };
   };
 
   # AMD XDNA NPU driver configuration
