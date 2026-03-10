@@ -14,14 +14,16 @@ let
     }).overrideAttrs
       (oldAttrs: {
         # Strix Halo (gfx1151) specific build flags
-        cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
-          "-DAMDGPU_TARGETS=gfx1151"
-          "-DLLAMA_HIP_UMA=ON"
-          "-DGGML_RPC=ON"
-          # ROCm 7+ performance regression workaround
-          # See: https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/45
-          "-DCMAKE_HIP_FLAGS=--rocm-path=${pkgs.rocmPackages.rocm-core} -mllvm --amdgpu-unroll-threshold-local=600"
-        ];
+        preConfigure = ''
+          cmakeFlagsArray+=(
+            "-DAMDGPU_TARGETS=gfx1151"
+            "-DLLAMA_HIP_UMA=ON"
+            "-DGGML_RPC=ON"
+            # ROCm 7+ performance regression workaround
+            # See: https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/45
+            "-DCMAKE_HIP_FLAGS=--rocm-path=${pkgs.rocmPackages.rocm-core} -mllvm --amdgpu-unroll-threshold-local=600"
+          )
+        '';
 
         # Ensure HIP environment is set up correctly
         nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [
