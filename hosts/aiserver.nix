@@ -205,10 +205,7 @@ in
       port = 8787;
       backend = "anyllm";
       anyllmProvider = "openai";
-      extraArgs = [
-        "--openai-api-url"
-        "https://opencode.ai/zen/v1"
-      ];
+      openaiBaseUrl = "https://opencode.ai/zen/v1";
       memory = {
         enable = true;
         dbPath = "/var/lib/headroom/headroom-memory.db";
