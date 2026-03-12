@@ -62,6 +62,20 @@ in
       "amdgpu.gttsize=94208"
     ];
 
+    # AMD XDNA NPU driver configuration
+    # Note: The NPU (amdxdna) is currently disabled because:
+    # 1. Upstream linux-firmware has broken npu.sbin symlinks for Strix Halo (17f0_11)
+    # 2. No official upstream NPU user-space tools yet (rocmlir, xrt plugin, etc.)
+    # 3. Driver logs firmware errors on every Boot
+
+    # To re-enable in the future:
+    # - Remove the blacklist below
+    # - Add boot.kernelModules = [ "amdxdna" ]
+    # - Fix firmware symlinks or wait for upstream linux-firmware fix
+
+    # Blacklist the NPU driver to prevent boot errors
+    blacklistedKernelModules = [ "amdxdna" ];
+
     # Use newest kernel
     kernelPackages = pkgs.linuxPackages_latest;
 
@@ -92,64 +106,59 @@ in
     useDHCP = lib.mkDefault true;
   };
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/73998e5d-b64f-4148-bacb-af7b7883746a";
-    fsType = "ext4";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/BD3E-2CD9";
-    fsType = "vfat";
-    options = [
-      "fmask=0077"
-      "dmask=0077"
-    ];
-  };
-
-  # User home directories
-  fileSystems."/home/codyt/Documents" = {
-    device = "/mnt/backup/Share/Documents";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
-
-  fileSystems."/home/codyt/Music" = {
-    device = "/mnt/backup/Share/Music";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
-
-  fileSystems."/home/codyt/Pictures" = {
-    device = "/mnt/backup/Share/Pictures";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
-
-  fileSystems."/home/codyt/Videos" = {
-    device = "/mnt/backup/Share/Videos";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
-
-  fileSystems."/home/codyt/Knowledge/Personal" = {
-    device = "/mnt/backup/Obsidian";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/73998e5d-b64f-4148-bacb-af7b7883746a";
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/BD3E-2CD9";
+      fsType = "vfat";
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
+    };
+    "/home/codyt/Documents" = {
+      device = "/mnt/backup/Share/Documents";
+      fsType = "none";
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+    "/home/codyt/Knowledge/Personal" = {
+      device = "/mnt/backup/Obsidian";
+      fsType = "none";
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+    "/home/codyt/Music" = {
+      device = "/mnt/backup/Share/Music";
+      fsType = "none";
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+    "/home/codyt/Pictures" = {
+      device = "/mnt/backup/Share/Pictures";
+      fsType = "none";
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+    "/home/codyt/Videos" = {
+      device = "/mnt/backup/Share/Videos";
+      fsType = "none";
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
   };
 
   zramSwap = {
@@ -166,70 +175,58 @@ in
     }
   ];
 
-  services.llama-swap = {
-    enable = true;
-    acceleration = "rocm";
-    port = 8080;
-    listenAddress = "0.0.0.0";
-    openFirewall = true;
-    modelOwner = "codyt";
-    modelGroup = "users";
-    enabledModels = [ "qwen3.5-35b" ];
-    preloadModels = [ "qwen3.5-35b" ];
-    modelOverrides."qwen3.5-35b" = {
-      contextSize = 65536;
-      cacheTypeK = "q8_0";
-      cacheTypeV = "q6_k"; # or q8_0 for zero quality loss, q4_k for max speed
-      batchSize = 2048;
-      ubatchSize = 512;
-      threads = 16;
-      gpuLayers = 999;
-    };
-  };
-
-  services.headroom = {
-    enable = true;
-    listenAddress = "127.0.0.1";
-    port = 8787;
-    memory = {
+  services = {
+    llama-swap = {
+      # Hot loading models from llama-cpp
       enable = true;
-      dbPath = "/var/lib/headroom/headroom-memory.db";
-    };
-  };
-
-  # AMD XDNA NPU driver configuration
-  # Note: The NPU (amdxdna) is currently disabled because:
-  # 1. Upstream linux-firmware has broken npu.sbin symlinks for Strix Halo (17f0_11)
-  # 2. No official upstream NPU user-space tools yet (rocmlir, xrt plugin, etc.)
-  # 3. Driver logs firmware errors on every boot
-  #
-  # To re-enable in the future:
-  # - Remove the blacklist below
-  # - Add boot.kernelModules = [ "amdxdna" ]
-  # - Fix firmware symlinks or wait for upstream linux-firmware fix
-
-  # Blacklist the NPU driver to prevent boot errors
-  boot.blacklistedKernelModules = [ "amdxdna" ];
-
-  # Renaming the logging client to machine hostname
-  services.promtail.configuration.scrape_configs = [
-    {
-      job_name = "journal";
-      journal = {
-        max_age = "12h";
-        labels = {
-          job = "systemd-journal";
-          host = "aiserver";
-        };
+      acceleration = "rocm";
+      port = 8080;
+      listenAddress = "0.0.0.0";
+      openFirewall = true;
+      modelOwner = "codyt";
+      modelGroup = "users";
+      enabledModels = [ "qwen3.5-35b" ];
+      preloadModels = [ "qwen3.5-35b" ];
+      modelOverrides."qwen3.5-35b" = {
+        contextSize = 65536;
+        cacheTypeK = "q8_0";
+        cacheTypeV = "q6_k"; # or q8_0 for zero quality loss, q4_k for max speed
+        batchSize = 2048;
+        ubatchSize = 512;
+        threads = 16;
+        gpuLayers = 999;
       };
-      relabel_configs = [
-        {
-          source_labels = [ "__journal__systemd_unit" ];
-          target_label = "unit";
-        }
-      ];
-    }
-  ];
+    };
+    headroom = {
+      # Smart context compression service
+      enable = true;
+      listenAddress = "0.0.0.0";
+      openFirewall = true;
+      port = 8787;
+      memory = {
+        enable = true;
+        dbPath = "/var/lib/headroom/headroom-memory.db";
+      };
+    };
+    promtail.configuration.scrape_configs = [
+      {
+        job_name = "journal";
+        journal = {
+          max_age = "12h";
+          labels = {
+            job = "systemd-journal";
+            host = "aiserver";
+          };
+        };
+        relabel_configs = [
+          {
+            source_labels = [ "__journal__systemd_unit" ];
+            target_label = "unit";
+          }
+        ];
+      }
+    ];
+  };
 
   system.stateVersion = "25.11"; # Don't change
 }
