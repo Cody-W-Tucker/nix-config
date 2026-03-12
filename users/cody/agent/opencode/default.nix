@@ -45,7 +45,12 @@
         opencode-zen = {
           npm = "@ai-sdk/openai-compatible";
           name = "OpenCode Zen (Headroom)";
-          endpoint = "http://aiserver:8787/v1";
+          options.baseURL = "http://aiserver:8787/v1";
+          models = {
+            "kimi-k2.5" = {
+              name = "Kimi K2.5";
+            };
+          };
         };
       };
     };
