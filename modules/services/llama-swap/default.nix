@@ -139,7 +139,7 @@ let
 
   renderedModels = lib.mapAttrs (_: model: {
     cmd = mkModelCommand model;
-    ttl = model.ttl;
+    inherit (model) ttl;
   }) selectedModels;
 in
 {
