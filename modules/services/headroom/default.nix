@@ -231,6 +231,12 @@ in
       default = [ ];
       description = "Additional arguments appended to `headroom proxy`.";
     };
+
+    openaiBaseUrl = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Custom OpenAI API base URL (sets OPENAI_BASE_URL environment variable).";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -260,7 +266,10 @@ in
       environment = {
         HOME = cfg.dataDir;
       }
-      // cfg.serviceEnvironment;
+      // cfg.serviceEnvironment
+      // lib.optionalAttrs (cfg.openaiBaseUrl != null) {
+        OPENAI_BASE_URL = cfg.openaiBaseUrl;
+      };
 
       serviceConfig = {
         User = "headroom";
