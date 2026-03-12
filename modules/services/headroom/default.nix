@@ -259,7 +259,8 @@ in
 
       environment = {
         HOME = cfg.dataDir;
-      } // cfg.serviceEnvironment;
+      }
+      // cfg.serviceEnvironment;
 
       serviceConfig = {
         User = "headroom";
@@ -273,7 +274,8 @@ in
         ProtectHome = true;
         ProtectSystem = "strict";
         ReadWritePaths = [ cfg.dataDir ];
-      } // lib.optionalAttrs (cfg.environmentFile != null) {
+      }
+      // lib.optionalAttrs (cfg.environmentFile != null) {
         EnvironmentFile = cfg.environmentFile;
       };
     };
