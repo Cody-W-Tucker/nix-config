@@ -3,12 +3,16 @@
 let
   desloppify = pkgs.python3Packages.buildPythonPackage rec {
     pname = "desloppify";
-    version = "0.9.1";
+    version = "0.9.5"; # Update this to desired version
     pyproject = true;
-    nativeBuildInputs = [ pkgs.python3Packages.setuptools ];
+    nativeBuildInputs = [
+      pkgs.python3Packages.setuptools
+      pkgs.python3Packages.defusedxml
+    ];
     src = pkgs.fetchPypi {
       inherit pname version;
-      sha256 = "1h151n1wgkqc6cjnz0gf3i4qyg3z2ypafhy6hplf53qrrykxm91g";
+      # Replace old hash with pkgs.lib.fakeHash; rebuild and replace with "hash---"
+      sha256 = "sha256-GXaPK0eS38787I5hwsHZ10eSdtI9hLQKyIkeM3OS884=";
     };
   };
 in
