@@ -177,8 +177,10 @@ in
     preloadModels = [ "qwen3.5-35b" ];
     modelOverrides."qwen3.5-35b" = {
       contextSize = 65536;
+      cacheTypeK = "q8_0";
+      cacheTypeV = "q6_k"; # or q8_0 for zero quality loss, q4_k for max speed
       batchSize = 2048;
-      ubatchSize = 1024;
+      ubatchSize = 512;
       threads = 16;
       gpuLayers = 999;
     };
