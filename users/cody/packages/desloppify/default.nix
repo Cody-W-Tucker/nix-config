@@ -1,20 +1,7 @@
 { pkgs, ... }:
 
 let
-  desloppify = pkgs.python3Packages.buildPythonPackage rec {
-    pname = "desloppify";
-    version = "0.9.5"; # Update this to desired version
-    pyproject = true;
-    nativeBuildInputs = [
-      pkgs.python3Packages.setuptools
-      pkgs.python3Packages.defusedxml
-    ];
-    src = pkgs.fetchPypi {
-      inherit pname version;
-      # Replace old hash with pkgs.lib.fakeHash; rebuild and replace with "hash---"
-      sha256 = "sha256-GXaPK0eS38787I5hwsHZ10eSdtI9hLQKyIkeM3OS884=";
-    };
-  };
+  desloppify = pkgs.callPackage ./package.nix { inherit pkgs; };
 in
 {
   home.packages = [ desloppify ];

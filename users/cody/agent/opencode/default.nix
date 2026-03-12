@@ -7,7 +7,7 @@
 {
   imports = [
     ./commands/taskwarrior
-    ./commands/deslopify
+    ../../packages/desloppify
     ./tools/code-search
     ./tools/rtk
     ./skills/obsidian
