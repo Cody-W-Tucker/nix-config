@@ -42,6 +42,16 @@
             };
           };
         };
+        llama-headroom = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "Headroom (beast)";
+          options.baseURL = "http://127.0.0.1:8787/v1";
+          models = {
+            "qwen3.5-35b" = {
+              name = "Qwen3.5";
+            };
+          };
+        };
       };
     };
   };
