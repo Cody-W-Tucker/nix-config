@@ -71,7 +71,7 @@ Shell config, editor config, CLI tools, and user applications usually belong in 
 
 ### Keep custom packages separate from modules
 
-The repo uses `packages/scripts/` for custom script packages. Conceptually, files that build derivations or wrappers are package definitions, not NixOS modules.
+The repo uses `packages/system-scripts/` for custom script packages. Conceptually, files that build derivations or wrappers are package definitions, not NixOS modules.
 
 ## Naming standards
 

@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
-# System-wide scripts - for user scripts, see users/*/packages/scripts/
+# System-wide scripts (installed to environment.systemPackages)
+# For user-specific scripts, see users/*/packages/scripts/
 
 let
   scriptNames = [
