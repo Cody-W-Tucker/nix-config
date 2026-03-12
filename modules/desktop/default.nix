@@ -7,7 +7,7 @@
     ./logging.nix
     ./printing.nix
     ../services/syncthing.nix
-    ../../packages/scripts
+    ../../packages/system-scripts
     ./hardware/razer.nix
     ./hardware/wifi.nix
     ./vpn

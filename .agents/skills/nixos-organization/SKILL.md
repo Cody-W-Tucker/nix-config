@@ -115,7 +115,7 @@ This is the most common long-term structure for growing repos.
 
 ## Notes for the current repo shape
 
-- `packages/scripts/` is used for custom script packages that define installable packages or wrappers.
+- `packages/system-scripts/` is used for custom script packages that define installable packages or wrappers.
 
 ## Rule of thumb
 

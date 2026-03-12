@@ -33,7 +33,7 @@ secrets/    SOPS declarations and encrypted material
 - Keep `hosts/` thin: boot, disks, hostname, hardware, host overrides, `system.stateVersion`
 - Keep `modules/` single-purpose: one service, feature, or hardware concern per file
 - Put user programs and shell config in `users/`, not in system modules
-- Treat `packages/scripts/` as package-like code (previously lived under `modules/`)
+- Treat `packages/system-scripts/` as package-like code (previously lived under `modules/`)
 - Keep `default.nix` mostly as an import aggregator
 - Use lowercase kebab-case file names
 - Keep `system.stateVersion` host-local and `home.stateVersion` user-local
