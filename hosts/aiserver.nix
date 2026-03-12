@@ -206,6 +206,11 @@ in
       backend = "anyllm";
       anyllmProvider = "openai";
       openaiBaseUrl = "https://opencode.ai/zen";
+      serviceEnvironment = {
+        # Disable GPU for Kompress compression (ROCm/MIOpen errors)
+        HIP_VISIBLE_DEVICES = "";
+        CUDA_VISIBLE_DEVICES = "";
+      };
       memory = {
         enable = true;
         dbPath = "/var/lib/headroom/headroom-memory.db";
