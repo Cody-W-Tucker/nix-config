@@ -198,14 +198,15 @@ in
       };
     };
     headroom = {
-      # Smart context compression service
+      # Smart context compression service - proxies llama-swap
       enable = true;
       listenAddress = "0.0.0.0";
       openFirewall = true;
       port = 8787;
-      backend = "anyllm";
-      anyllmProvider = "openai";
-      openaiBaseUrl = "https://opencode.ai/zen";
+      upstream = {
+        kind = "openai-compatible";
+        baseUrl = "http://localhost:8080";
+      };
       serviceEnvironment = {
         # Disable GPU for Kompress compression (ROCm/MIOpen errors)
         HIP_VISIBLE_DEVICES = "";

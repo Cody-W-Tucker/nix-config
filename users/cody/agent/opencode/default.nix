@@ -34,21 +34,11 @@
       provider = {
         llama-swap = {
           npm = "@ai-sdk/openai-compatible";
-          name = "llama-swap (aiserver)";
-          options.baseURL = "http://aiserver:8080/v1";
+          name = "llama-swap via headroom (aiserver)";
+          options.baseURL = "http://aiserver:8787/v1";
           models = {
             "qwen3.5-35b" = {
               name = "Qwen3.5";
-            };
-          };
-        };
-        opencode-zen = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "OpenCode Zen (Headroom)";
-          options.baseURL = "http://aiserver:8787/v1";
-          models = {
-            "kimi-k2.5" = {
-              name = "Kimi K2.5";
             };
           };
         };
