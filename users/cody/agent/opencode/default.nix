@@ -45,7 +45,7 @@
         opencode-zen = {
           npm = "@ai-sdk/openai-compatible";
           name = "OpenCode Zen (Headroom)";
-          options.baseURL = "http://aiserver:8787/v1";
+          endpoint = "http://aiserver:8787/v1";
         };
       };
     };
