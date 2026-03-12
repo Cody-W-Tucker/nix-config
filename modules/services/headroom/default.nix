@@ -10,6 +10,29 @@ let
 
   defaultPackage = pkgs.callPackage ../../../packages/headroom-ai/package.nix { inherit pkgs; };
 
+  upstreamKind = cfg.upstream.kind;
+
+  effectiveBackend =
+    if upstreamKind == "openai-compatible" || upstreamKind == "anthropic" then
+      "anthropic"
+    else if upstreamKind == "anyllm" then
+      "anyllm"
+    else if upstreamKind == "litellm" then
+      "litellm-${cfg.upstream.provider}"
+    else
+      cfg.backend;
+
+  effectiveAnyllmProvider =
+    if upstreamKind == "anyllm" && cfg.upstream.provider != null then
+      cfg.upstream.provider
+    else
+      cfg.anyllmProvider;
+
+  effectiveRegion = if cfg.upstream.region != null then cfg.upstream.region else cfg.region;
+
+  effectiveOpenaiBaseUrl =
+    if cfg.upstream.baseUrl != null then cfg.upstream.baseUrl else cfg.openaiBaseUrl;
+
   command = lib.escapeShellArgs (
     [
       (lib.getExe cfg.package)
@@ -18,12 +41,20 @@ let
       cfg.listenAddress
       "--port"
       (toString cfg.port)
+    ]
+    ++ lib.optionals (effectiveOpenaiBaseUrl != null) [
+      "--openai-api-url"
+      effectiveOpenaiBaseUrl
+    ]
+    ++ [
       "--backend"
-      cfg.backend
-      "--anyllm-provider"
-      cfg.anyllmProvider
+      effectiveBackend
       "--region"
-      cfg.region
+      effectiveRegion
+    ]
+    ++ lib.optionals (lib.hasPrefix "anyllm" effectiveBackend) [
+      "--anyllm-provider"
+      effectiveAnyllmProvider
     ]
     ++ lib.optionals (!cfg.optimize) [ "--no-optimize" ]
     ++ lib.optionals (!cfg.cache) [ "--no-cache" ]
@@ -86,6 +117,52 @@ in
       description = "Whether to open the Headroom port in the firewall.";
     };
 
+    upstream = {
+      kind = lib.mkOption {
+        type = lib.types.nullOr (
+          lib.types.enum [
+            "anthropic"
+            "openai-compatible"
+            "anyllm"
+            "litellm"
+          ]
+        );
+        default = null;
+        description = ''
+          Higher-level upstream routing mode.
+
+          - `"openai-compatible"` uses Headroom's direct OpenAI-compatible passthrough and maps to `--backend anthropic` internally.
+          - `"anthropic"` uses Headroom's direct Anthropic path.
+          - `"anyllm"` enables Headroom's any-llm backend.
+          - `"litellm"` enables a LiteLLM provider selected with `services.headroom.upstream.provider`.
+        '';
+      };
+
+      provider = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = ''
+          Provider name for `"anyllm"` or `"litellm"` upstream modes.
+          Examples: `"ollama"`, `"openai"`, `"bedrock"`.
+        '';
+      };
+
+      baseUrl = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = ''
+          Base URL for direct OpenAI-compatible upstream routing.
+          This sets `OPENAI_TARGET_API_URL` for Headroom's passthrough path.
+        '';
+      };
+
+      region = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Optional cloud region override for LiteLLM or Bedrock-style backends.";
+      };
+    };
+
     dataDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/headroom";
@@ -95,19 +172,19 @@ in
     backend = lib.mkOption {
       type = lib.types.str;
       default = "anthropic";
-      description = "Backend passed to `headroom proxy --backend`.";
+      description = "Legacy low-level backend passed to `headroom proxy --backend`. Prefer `services.headroom.upstream.kind`.";
     };
 
     anyllmProvider = lib.mkOption {
       type = lib.types.str;
       default = "openai";
-      description = "Provider used when `services.headroom.backend = \"anyllm\"`.";
+      description = "Legacy any-llm provider. Prefer `services.headroom.upstream.provider`.";
     };
 
     region = lib.mkOption {
       type = lib.types.str;
       default = "us-west-2";
-      description = "Cloud region passed to Headroom for Bedrock or Vertex style backends.";
+      description = "Legacy cloud region option. Prefer `services.headroom.upstream.region`.";
     };
 
     bedrockProfile = lib.mkOption {
@@ -235,7 +312,7 @@ in
     openaiBaseUrl = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      description = "Custom OpenAI API base URL (sets OPENAI_BASE_URL environment variable).";
+      description = "Legacy OpenAI-compatible upstream URL. Prefer `services.headroom.upstream.baseUrl`.";
     };
   };
 
@@ -253,6 +330,30 @@ in
 
     networking.firewall.allowedTCPPorts = lib.optionals cfg.openFirewall [ cfg.port ];
 
+    warnings =
+      lib.optionals
+        (
+          cfg.backend != "anthropic"
+          || cfg.anyllmProvider != "openai"
+          || cfg.region != "us-west-2"
+          || cfg.openaiBaseUrl != null
+        )
+        [
+          "services.headroom.{backend,anyllmProvider,region,openaiBaseUrl} are legacy low-level options; prefer services.headroom.upstream.*."
+        ];
+
+    assertions = [
+      {
+        assertion = upstreamKind != "litellm" || cfg.upstream.provider != null;
+        message = "services.headroom.upstream.provider must be set when services.headroom.upstream.kind = \"litellm\".";
+      }
+      {
+        assertion =
+          upstreamKind != "anyllm" || cfg.upstream.provider != null || cfg.anyllmProvider != "openai";
+        message = "services.headroom.upstream.provider should be set when services.headroom.upstream.kind = \"anyllm\".";
+      }
+    ];
+
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0750 headroom headroom - -"
     ];
@@ -266,15 +367,18 @@ in
       environment = {
         HOME = cfg.dataDir;
       }
-      // cfg.serviceEnvironment
-      // lib.optionalAttrs (cfg.openaiBaseUrl != null) {
-        OPENAI_BASE_URL = cfg.openaiBaseUrl;
-      };
+      // lib.optionalAttrs (effectiveOpenaiBaseUrl != null) {
+        OPENAI_TARGET_API_URL = effectiveOpenaiBaseUrl;
+        OPENAI_API_BASE = effectiveOpenaiBaseUrl;
+        OPENAI_BASE_URL = effectiveOpenaiBaseUrl;
+      }
+      // cfg.serviceEnvironment;
 
       serviceConfig = {
         User = "headroom";
         Group = "headroom";
         WorkingDirectory = cfg.dataDir;
+        StateDirectory = cfg.dataDir;
         ExecStart = command;
         Restart = "on-failure";
         RestartSec = "5s";
