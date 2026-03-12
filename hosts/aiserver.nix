@@ -27,6 +27,7 @@ in
   imports = [
     ../modules/system/base.nix
     ../modules/desktop
+    ../modules/services/headroom
     ../modules/desktop/hardware/rocm.nix
     ../modules/services/llama-swap
     # Using community hardware nixosConfigurations
@@ -183,6 +184,16 @@ in
       ubatchSize = 512;
       threads = 16;
       gpuLayers = 999;
+    };
+  };
+
+  services.headroom = {
+    enable = true;
+    listenAddress = "127.0.0.1";
+    port = 8787;
+    memory = {
+      enable = true;
+      dbPath = "/var/lib/headroom/headroom-memory.db";
     };
   };
 
