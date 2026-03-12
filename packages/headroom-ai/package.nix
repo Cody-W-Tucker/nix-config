@@ -14,6 +14,22 @@ pythonPackages.buildPythonPackage rec {
     hash = "sha256-H3JeOyGhGKarlnLWpmusyaEsWxl6g5P8zordTpdYIfM=";
   };
 
+  # NOTE: semantic-router is listed in pyproject.toml but is not actually imported anywhere
+  # in the headroom source code. The upstream package metadata is stale. This causes the
+  # nixpkgs pythonRuntimeDepsCheckHook to fail because semantic-router is not available
+  # in nixpkgs and cannot be easily packaged due to complex dependency chains.
+  #
+  # When upstream releases a new version:
+  # 1. Check if semantic-router has been removed from pyproject.toml dependencies
+  # 2. If removed, delete this postPatch block entirely
+  # 3. If still present but actually used in the codebase, you'll need to package
+  #    semantic-router and add it to propagatedBuildInputs instead of patching it out
+  # 4. Verify by searching the unpacked source: rg -n "semantic_router|from semantic" .
+  postPatch = ''
+    substituteInPlace pyproject.toml \
+      --replace-fail '    "semantic-router>=0.1.12",' ""
+  '';
+
   nativeBuildInputs = with pythonPackages; [
     hatchling
     editables
