@@ -71,7 +71,6 @@
   programs.obs-studio = {
     # Obs for screenrecording
     enable = true;
-    enableVirtualCamera = true; # May need extra host specific kernel flags, check host/beast.nix
   };
 
   # Clipboard history
