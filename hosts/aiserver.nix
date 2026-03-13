@@ -208,6 +208,20 @@ in
         threads = 16;
         gpuLayers = 999;
       };
+      modelOverrides."qwen3.5-9b-8" = {
+        contextSize = 8192;
+        batchSize = 2048;
+        ubatchSize = 512;
+        threads = 32;
+        gpuLayers = 999;
+        flashAttention = true;
+        extraArgs = [
+          "--cache-type-k"
+          "q8_0"
+          "--cache-type-v"
+          "q6_k"
+        ];
+      };
     };
     headroom = {
       # Smart context compression service - proxies llama-swap
