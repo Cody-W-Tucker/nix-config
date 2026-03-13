@@ -9,7 +9,7 @@
     file = "Qwen3.5-9B-Q4_K_M.gguf";
   };
   "qwen3.5-9b-8" = {
-    file = "Qwen3.5-9B-UD-Q8_K_XL";
+    file = "Qwen3.5-9B-UD-Q8_K_XL.gguf";
   };
   "qwen3.5-35b" = {
     file = "Qwen3.5-35B-A3B-Q8_0.gguf";
