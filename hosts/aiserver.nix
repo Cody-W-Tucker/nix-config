@@ -194,7 +194,10 @@ in
       openFirewall = true;
       modelOwner = "codyt";
       modelGroup = "users";
-      enabledModels = [ "qwen3.5-35b" ];
+      enabledModels = [
+        "qwen3.5-35b"
+        "qwen3.5-9b-8"
+      ];
       preloadModels = [ "qwen3.5-35b" ];
       modelOverrides."qwen3.5-35b" = {
         contextSize = 65536;
