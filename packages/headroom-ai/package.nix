@@ -26,32 +26,8 @@ pythonPackages.buildPythonPackage rec {
   #    semantic-router and add it to propagatedBuildInputs instead of patching it out
   # 4. Verify by searching the unpacked source: rg -n "semantic_router|from semantic" .
   postPatch = ''
-        substituteInPlace pyproject.toml \
-          --replace-fail '    "semantic-router>=0.1.12",' ""
-
-        python <<'PY'
-    from pathlib import Path
-
-    path = Path("headroom/cli/proxy.py")
-    text = path.read_text()
-
-    text = text.replace(
-        '@click.option("--port", "-p", default=8787, type=int, help="Port to bind to (default: 8787)")\n@click.option("--no-optimize", is_flag=True, help="Disable optimization (passthrough mode)")',
-        '@click.option("--port", "-p", default=8787, type=int, help="Port to bind to (default: 8787)")\n@click.option(\n    "--openai-api-url",\n    envvar="OPENAI_TARGET_API_URL",\n    default=None,\n    help="Custom OpenAI-compatible upstream URL",\n)\n@click.option("--no-optimize", is_flag=True, help="Disable optimization (passthrough mode)")',
-    )
-
-    text = text.replace(
-        '    host: str,\n    port: int,\n    no_optimize: bool,',
-        '    host: str,\n    port: int,\n    openai_api_url: str | None,\n    no_optimize: bool,',
-    )
-
-    text = text.replace(
-        '        host=host,\n        port=port,\n        optimize=not no_optimize,',
-        '        host=host,\n        port=port,\n        openai_api_url=openai_api_url,\n        optimize=not no_optimize,',
-    )
-
-    path.write_text(text)
-    PY
+    substituteInPlace pyproject.toml \
+      --replace-fail '    "semantic-router>=0.1.12",' ""
   '';
 
   nativeBuildInputs = with pythonPackages; [
