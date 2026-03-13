@@ -198,29 +198,23 @@ in
         "qwen3.5-35b"
         "qwen3.5-9b-8"
       ];
-      preloadModels = [ "qwen3.5-35b" ];
       modelOverrides."qwen3.5-35b" = {
         contextSize = 65536;
         cacheTypeK = "q8_0";
         cacheTypeV = "q6_k"; # or q8_0 for zero quality loss, q4_k for max speed
         batchSize = 2048;
         ubatchSize = 512;
-        threads = 16;
+        threads = 32;
         gpuLayers = 999;
       };
       modelOverrides."qwen3.5-9b-8" = {
         contextSize = 8192;
         batchSize = 2048;
         ubatchSize = 512;
+        cacheTypeK = "q8_0";
+        cacheTypeV = "q6_k";
         threads = 32;
         gpuLayers = 999;
-        flashAttention = true;
-        extraArgs = [
-          "--cache-type-k"
-          "q8_0"
-          "--cache-type-v"
-          "q6_k"
-        ];
       };
     };
     headroom = {
