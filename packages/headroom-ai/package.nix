@@ -5,13 +5,13 @@ let
 in
 pythonPackages.buildPythonPackage rec {
   pname = "headroom-ai";
-  version = "0.4.0";
+  version = "0.4.1";
   pyproject = true;
 
   src = pkgs.fetchPypi {
     pname = "headroom_ai";
     inherit version;
-    hash = "sha256-H3JeOyGhGKarlnLWpmusyaEsWxl6g5P8zordTpdYIfM=";
+    hash = "sha256-B868sp3Qtdf9dzl7wzKtsrymG5GWMK2Zpz4Gh2g1vIo=";
   };
 
   # NOTE: semantic-router is listed in pyproject.toml but is not actually imported anywhere
