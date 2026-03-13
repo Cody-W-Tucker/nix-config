@@ -6,7 +6,6 @@
 
   # Build apps with ROCm support.
   nixpkgs.config.rocmSupport = true;
-  nixpkgs.config.rocmTargets = [ "gfx1151" ]; # Target your specific RDNA 3.5 cores
 
   hardware.amdgpu = {
     # Load amdgpu as early as possible so the APU comes up cleanly during boot.
@@ -27,7 +26,6 @@
   environment.sessionVariables = {
     # Mesa VA-API driver for modern AMD GPUs.
     LIBVA_DRIVER_NAME = "radeonsi";
-    HSA_OVERRIDE_GFX_VERSION = "11.5.1"; # Ensure runtime compatibility
   };
 
   nix.settings = {

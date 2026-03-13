@@ -100,6 +100,15 @@ in
     ];
   };
 
+  # Strix halo tweaks
+  nixpkgs.config.rocmTargets = [ "gfx1151" ]; # gfx1151 for Strix Halo
+
+  environment.variables = {
+    ROCM_PATH = "${pkgs.rocmPackages.rocm-runtime}/lib"; # Pin exact path
+    HSA_OVERRIDE_GFX_VERSION = "11.5.1"; # gfx1151 for Strix Halo
+    HIP_VISIBLE_DEVICES = "0";
+  };
+
   networking = {
     hostName = "aiserver";
     networkmanager.enable = true;
