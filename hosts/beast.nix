@@ -170,17 +170,11 @@ in
     modelOwner = "codyt";
     modelGroup = "users";
     enabledModels = [ "qwen3.5-0.8b" ];
-    preloadModels = [ "qwen3.5-0.8b" ];
-    modelOverrides = {
-      "qwen3.5-0.8b" = {
-        contextSize = 32768;
-        batchSize = 2048;
-        ubatchSize = 1024;
-        extraArgs = [
-          "--parallel"
-          "4"
-        ];
-      };
+    modelOverrides."qwen3.5-0.8b" = {
+      extraArgs = [
+        "--parallel"
+        "4"
+      ];
     };
   };
 

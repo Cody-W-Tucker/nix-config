@@ -198,9 +198,6 @@ in
         "qwen3.5-35b"
         "qwen3.5-9b-8"
       ];
-      modelOverrides."qwen3.5-35b" = {
-        ubatchSize = 512;
-      };
     };
     headroom = {
       # Smart context compression service - proxies llama-swap
