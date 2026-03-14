@@ -199,24 +199,7 @@ in
         "qwen3.5-9b-8"
       ];
       modelOverrides."qwen3.5-35b" = {
-        # Cache quantization via extraArgs (not direct modelType options)
-        extraArgs = [
-          "--cache-type-k"
-          "q8_0"
-          "--cache-type-v"
-          "q6_k"
-        ];
         ubatchSize = 512;
-      };
-      modelOverrides."qwen3.5-9b-8" = {
-        contextSize = 8192;
-        ubatchSize = 512;
-        extraArgs = [
-          "--cache-type-k"
-          "q8_0"
-          "--cache-type-v"
-          "q6_k"
-        ];
       };
     };
     headroom = {
