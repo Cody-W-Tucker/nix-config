@@ -7,6 +7,7 @@
 
 let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  rlm-cli = import ../../../packages/rlm-cli.nix { inherit pkgs lib; };
 in
 
 {
@@ -25,5 +26,6 @@ in
     llmPkgs.openspec
     llmPkgs.ck
     llmPkgs.pi
+    rlm-cli
   ];
 }
