@@ -199,22 +199,24 @@ in
         "qwen3.5-9b-8"
       ];
       modelOverrides."qwen3.5-35b" = {
-        contextSize = 65536;
-        cacheTypeK = "q8_0";
-        cacheTypeV = "q6_k"; # or q8_0 for zero quality loss, q4_k for max speed
-        batchSize = 2048;
+        # Cache quantization via extraArgs (not direct modelType options)
+        extraArgs = [
+          "--cache-type-k"
+          "q8_0"
+          "--cache-type-v"
+          "q6_k"
+        ];
         ubatchSize = 512;
-        threads = 32;
-        gpuLayers = 999;
       };
       modelOverrides."qwen3.5-9b-8" = {
         contextSize = 8192;
-        batchSize = 2048;
         ubatchSize = 512;
-        cacheTypeK = "q8_0";
-        cacheTypeV = "q6_k";
-        threads = 32;
-        gpuLayers = 999;
+        extraArgs = [
+          "--cache-type-k"
+          "q8_0"
+          "--cache-type-v"
+          "q6_k"
+        ];
       };
     };
     headroom = {
