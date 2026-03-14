@@ -1,6 +1,6 @@
 { pkgs, lib }:
 
-pkgs.buildNpmPackage rec {
+pkgs.stdenv.mkDerivation rec {
   pname = "rlm-cli";
   version = "0.4.9";
 
@@ -9,26 +9,29 @@ pkgs.buildNpmPackage rec {
     hash = "sha512-yGU3sSrDVbCFhAy4Po21Dz+JXuMJLNOfxrCabSCg6x21HZjps7whLo6TAlzgmtk+LGDiRfWjtBoMMoDyu98R9g==";
   };
 
-  buildInputs = [ pkgs.python3 ];
+  buildInputs = [
+    pkgs.nodejs_20
+    pkgs.python3
+  ];
 
-  nativeBuildInputs = [ pkgs.python3 ];
+  nativeBuildInputs = [ pkgs.makeWrapper ];
 
-  # The package is already built in the npm registry
-  dontBuild = true;
+  # No unpack phase needed, we handle it manually
+  dontUnpack = false;
 
-  # Install phase for pre-built npm packages
   installPhase = ''
     mkdir -p $out/lib/node_modules/rlm-cli
+    
+    # Copy all package contents
     cp -r . $out/lib/node_modules/rlm-cli/
-
+    
     # Create the binary wrapper
     mkdir -p $out/bin
-    ln -s $out/lib/node_modules/rlm-cli/dist/main.js $out/bin/rlm
-    chmod +x $out/bin/rlm
-
-    # Patch shebang to use the Node.js from nixpkgs
-    substituteInPlace $out/lib/node_modules/rlm-cli/dist/main.js \
-      --replace-fail "#!/usr/bin/env node" "#!${pkgs.nodejs_20}/bin/node"
+    
+    # Make wrapper that calls node with the script
+    makeWrapper ${pkgs.nodejs_20}/bin/node $out/bin/rlm \
+      --add-flags "$out/lib/node_modules/rlm-cli/dist/main.js" \
+      --prefix PATH : "${pkgs.python3}/bin"
   '';
 
   meta = with lib; {
