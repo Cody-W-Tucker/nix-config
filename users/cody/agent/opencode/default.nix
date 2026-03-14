@@ -34,8 +34,8 @@
       provider = {
         llama-swap = {
           npm = "@ai-sdk/openai-compatible";
-          name = "llama-swap via headroom (aiserver)";
-          options.baseURL = "http://aiserver:8787/v1";
+          name = "llama-swap (aiserver)";
+          options.baseURL = "http://aiserver:8080/v1";
           models = {
             "qwen3.5-35b" = {
               name = "Qwen3.5";

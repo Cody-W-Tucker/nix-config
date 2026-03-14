@@ -1,3 +1,8 @@
+# Batch size guidelines for aiserver (92GB VRAM):
+# - batchSize: Max context size for KV cache. 35B Q8_0 uses ~35GB weights + KV cache.
+# - ubatchSize: Micro-batch parallelism. Keep equal to batchSize for best throughput.
+# - Leave 10-20% VRAM headroom for runtime overhead (GGML, prompt buffering, etc.)
+# - 35B Q8_0: 4096-8192 fits safely, 16384+ may OOM with long contexts
 {
   "qwen3.5-0.8b" = {
     file = "Qwen3.5-0.8B-UD-Q8_K_XL.gguf";
