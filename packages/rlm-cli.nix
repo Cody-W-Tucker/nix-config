@@ -21,13 +21,13 @@ pkgs.stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out/lib/node_modules/rlm-cli
-    
+
     # Copy all package contents
     cp -r . $out/lib/node_modules/rlm-cli/
-    
+
     # Create the binary wrapper
     mkdir -p $out/bin
-    
+
     # Make wrapper that calls node with the script
     makeWrapper ${pkgs.nodejs_20}/bin/node $out/bin/rlm \
       --add-flags "$out/lib/node_modules/rlm-cli/dist/main.js" \
