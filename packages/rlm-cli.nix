@@ -1,45 +1,43 @@
-{ pkgs, lib }:
+{
+  lib,
+  buildNpmPackage,
+  fetchFromGitHub,
+  nodejs_20,
+  python3,
+}:
 
-pkgs.stdenv.mkDerivation rec {
+buildNpmPackage {
   pname = "rlm-cli";
   version = "0.4.9";
 
-  src = pkgs.fetchurl {
-    url = "https://registry.npmjs.org/rlm-cli/-/rlm-cli-${version}.tgz";
-    hash = "sha512-yGU3sSrDVbCFhAy4Po21Dz+JXuMJLNOfxrCabSCg6x21HZjps7whLo6TAlzgmtk+LGDiRfWjtBoMMoDyu98R9g==";
+  nodejs = nodejs_20;
+
+  src = fetchFromGitHub {
+    owner = "viplismism";
+    repo = "rlm-cli";
+    rev = "main";
+    hash = "sha256-m3TG/gPi8z7zFGRZ2Q59zJkRZo0dw36xfmnYJNFi4Ow=";
   };
 
-  buildInputs = [
-    pkgs.nodejs_20
-    pkgs.python3
-  ];
+  npmDepsHash = "sha256-FCET7aZtEzQ7XWtilJd+6zZ15tS0yN40PQ1mvH3h8XQ=";
 
-  nativeBuildInputs = [ pkgs.makeWrapper ];
+  nativeBuildInputs = [ python3 ];
 
-  # No unpack phase needed, we handle it manually
-  dontUnpack = false;
+  npmBuildScript = "build";
 
-  installPhase = ''
-    mkdir -p $out/lib/node_modules/rlm-cli
-
-    # Copy all package contents
-    cp -r . $out/lib/node_modules/rlm-cli/
-
-    # Create the binary wrapper
-    mkdir -p $out/bin
-
-    # Make wrapper that calls node with the script
-    makeWrapper ${pkgs.nodejs_20}/bin/node $out/bin/rlm \
-      --add-flags "$out/lib/node_modules/rlm-cli/dist/main.js" \
-      --prefix PATH : "${pkgs.python3}/bin"
+  postInstall = ''
+    # Ensure rlm binary is available
+    if [ ! -f $out/bin/rlm ]; then
+      ln -s $out/lib/node_modules/rlm-cli/bin/rlm.mjs $out/bin/rlm || \
+      ln -s $out/lib/node_modules/rlm-cli/dist/main.js $out/bin/rlm
+    fi
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Standalone CLI for Recursive Language Models (RLMs)";
     homepage = "https://github.com/viplismism/rlm-cli";
-    license = licenses.mit;
+    license = lib.licenses.mit;
     maintainers = [ ];
-    platforms = platforms.linux;
     mainProgram = "rlm";
   };
 }
