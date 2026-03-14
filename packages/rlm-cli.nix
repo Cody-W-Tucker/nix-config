@@ -4,6 +4,7 @@
   fetchFromGitHub,
   nodejs_20,
   python3,
+  makeWrapper,
 }:
 
 buildNpmPackage {
@@ -21,16 +22,21 @@ buildNpmPackage {
 
   npmDepsHash = "sha256-FCET7aZtEzQ7XWtilJd+6zZ15tS0yN40PQ1mvH3h8XQ=";
 
-  nativeBuildInputs = [ python3 ];
+  nativeBuildInputs = [ 
+    python3 
+    makeWrapper 
+  ];
 
   npmBuildScript = "build";
 
   postInstall = ''
-    # Ensure rlm binary is available
-    if [ ! -f $out/bin/rlm ]; then
-      ln -s $out/lib/node_modules/rlm-cli/bin/rlm.mjs $out/bin/rlm || \
-      ln -s $out/lib/node_modules/rlm-cli/dist/main.js $out/bin/rlm
-    fi
+    # Remove the existing symlink if it exists
+    rm -f $out/bin/rlm
+    
+    # Create wrapper with Python 3 in PATH
+    makeWrapper ${nodejs_20}/bin/node $out/bin/rlm \
+      --add-flags "$out/lib/node_modules/rlm-cli/bin/rlm.mjs" \
+      --prefix PATH : "${python3}/bin"
   '';
 
   meta = {
