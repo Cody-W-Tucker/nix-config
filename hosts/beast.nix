@@ -169,7 +169,12 @@ in
     port = 8081;
     modelOwner = "codyt";
     modelGroup = "users";
-    enabledModels = [ "qwen3.5-0.8b" ];
+    enabledModels = [
+      "qwen3.5-0.8b"
+      "qwen3.5-4b"
+      "qwen3.5-9b"
+    ];
+    preloadModels = [ "qwen3.5-0.8b" ];
     modelOverrides."qwen3.5-0.8b" = {
       extraArgs = [
         "--parallel"
