@@ -40,8 +40,8 @@
     gpuLayers = 999;
     contextSize = 65536;
     threads = 16;
-    batchSize = 1024;
-    ubatchSize = 768;
+    batchSize = 32768;
+    ubatchSize = 32768;
     ttl = 1800;
   };
 }
