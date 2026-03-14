@@ -23,8 +23,8 @@
     contextSize = 32768;
     threads = 16;
     batchSize = 2048;
-    ubatchSize = 1024;
-    ttl = 600;
+    ubatchSize = 512;
+    ttl = 900;
   };
   "qwen3.5-9b-8" = {
     file = "Qwen3.5-9B-UD-Q8_K_XL.gguf";
@@ -32,8 +32,8 @@
     contextSize = 32768;
     threads = 16;
     batchSize = 2048;
-    ubatchSize = 1024;
-    ttl = 600;
+    ubatchSize = 512;
+    ttl = 900;
   };
   "qwen3.5-35b" = {
     file = "Qwen3.5-35B-A3B-Q8_0.gguf";
@@ -41,7 +41,7 @@
     contextSize = 65536;
     threads = 32;
     batchSize = 2048;
-    ubatchSize = 1024;
-    ttl = 600;
+    ubatchSize = 768;
+    ttl = 1800;
   };
 }
