@@ -1,6 +1,6 @@
 ---
 name: nixos-pitfalls-and-review
-description: Common mistakes in NixOS code and standards for reviewing and refactoring NixOS repositories
+description: Common mistakes in NixOS code and standards for reviewing and refactoring NixOS repositories.
 ---
 
 # NixOS Pitfalls And Review
@@ -82,7 +82,7 @@ With flakes, untracked files are often invisible to evaluation.
 
 ### 7. Mixing packages and modules
 
-- package definitions belong in `pkgs/`
+- package definitions belong in `packages/`
 - reusable system behavior belongs in `modules/`
 
 If a file builds a derivation, it is usually a package file, not a NixOS module.
