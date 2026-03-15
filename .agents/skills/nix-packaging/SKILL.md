@@ -1,5 +1,5 @@
 ---
-name: Nix Packaging
+name: nix-packaging
 description: Package new software or update existing packages using Nix
 ---
 
@@ -60,6 +60,7 @@ in
 Pass `self` through `specialArgs` so modules can access `self.packages`:
 
 **In flake.nix:**
+
 ```nix
 let
   specialArgs = { inherit inputs self; };
@@ -71,11 +72,13 @@ nixosConfigurations.myhost = inputs.nixpkgs.lib.nixosSystem {
 ```
 
 **For Home Manager modules, also add to extraSpecialArgs:**
+
 ```nix
 home-manager.extraSpecialArgs = { inherit inputs self; };
 ```
 
 **In service modules:**
+
 ```nix
 { config, lib, pkgs, self, ... }:
 
@@ -92,6 +95,7 @@ in
 Typically, update the `version` and source fetching attributes (e.g., `fetchFromGitHub`). The `hash` field must also be updated using one of these methods:
 
 **Method 1: Calculate the new hash directly**
+
 ```bash
 # Get the hash
 nix-prefetch-url --type sha256 --unpack https://github.com/owner/repo/archive/refs/tags/v<NEW_VERSION>.tar.gz
