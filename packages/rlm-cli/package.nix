@@ -22,9 +22,9 @@ buildNpmPackage {
 
   npmDepsHash = "sha256-FCET7aZtEzQ7XWtilJd+6zZ15tS0yN40PQ1mvH3h8XQ=";
 
-  nativeBuildInputs = [ 
-    python3 
-    makeWrapper 
+  nativeBuildInputs = [
+    python3
+    makeWrapper
   ];
 
   npmBuildScript = "build";
@@ -32,7 +32,7 @@ buildNpmPackage {
   postInstall = ''
     # Remove the existing symlink if it exists
     rm -f $out/bin/rlm
-    
+
     # Create wrapper with Python 3 in PATH
     makeWrapper ${nodejs_20}/bin/node $out/bin/rlm \
       --add-flags "$out/lib/node_modules/rlm-cli/bin/rlm.mjs" \

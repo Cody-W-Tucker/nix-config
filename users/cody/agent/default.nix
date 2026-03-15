@@ -7,7 +7,7 @@
 
 let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-  rlm-cli = pkgs.callPackage ../../../packages/rlm-cli.nix { };
+  rlm-cli = pkgs.callPackage ../../../packages/rlm-cli { };
 in
 
 {
