@@ -30,12 +30,62 @@ packages/
 ### `default.nix` template
 
 ```nix
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs }:
 
 pkgs.callPackage ./package.nix { }
 ```
 
-This structure makes packages self-contained and ready to import from anywhere in the repository using `pkgs.callPackage ./path/to/packages/<package-name> { }`.
+This structure makes packages self-contained and ready to import from anywhere in the repository using `pkgs.callPackage ./path/to/packages/<package-name> { }`. The flake's nixpkgs is passed through automatically via `callPackage`.
+
+## Exposing Packages via Flake Output
+
+Add packages to `flake.nix` so they're buildable with `nix build .#<package-name>` and accessible throughout your configuration:
+
+```nix
+# In flake.nix outputs
+let
+  system = "x86_64-linux";
+  pkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
+in
+{
+  packages.${system} = {
+    headroom-ai = pkgs.callPackage ./packages/headroom-ai { };
+    rlm-cli = pkgs.callPackage ./packages/rlm-cli { };
+  };
+}
+```
+
+## Using Packages in Modules
+
+Pass `self` through `specialArgs` so modules can access `self.packages`:
+
+**In flake.nix:**
+```nix
+let
+  specialArgs = { inherit inputs self; };
+in
+nixosConfigurations.myhost = inputs.nixpkgs.lib.nixosSystem {
+  inherit system specialArgs;
+  # ...
+};
+```
+
+**For Home Manager modules, also add to extraSpecialArgs:**
+```nix
+home-manager.extraSpecialArgs = { inherit inputs self; };
+```
+
+**In service modules:**
+```nix
+{ config, lib, pkgs, self, ... }:
+
+let
+  myPackage = self.packages.${pkgs.system}.my-package;
+in
+{
+  # Use myPackage in your configuration
+}
+```
 
 ## Workflow: Updating an Existing Package
 

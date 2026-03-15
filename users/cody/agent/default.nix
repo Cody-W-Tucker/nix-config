@@ -2,12 +2,13 @@
   inputs,
   lib,
   pkgs,
+  self,
   ...
 }:
 
 let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-  rlm-cli = pkgs.callPackage ../../../packages/rlm-cli { };
+  rlm-cli = self.packages.${pkgs.system}.rlm-cli;
 in
 
 {

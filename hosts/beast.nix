@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  self,
   ...
 }:
 
@@ -39,7 +40,7 @@ in
   # Home-manager configuration with hardware-specific settings
   home-manager = {
     extraSpecialArgs = {
-      inherit inputs;
+      inherit inputs self;
       inherit hardwareConfig;
     };
     users.codyt = {
