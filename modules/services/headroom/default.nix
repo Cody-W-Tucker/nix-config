@@ -9,7 +9,7 @@
 let
   cfg = config.services.headroom;
 
-  defaultPackage = self.packages.${pkgs.system}.headroom-ai;
+  defaultPackage = self.packages.${pkgs.stdenv.hostPlatform.system}.headroom-ai;
 
   upstreamKind = cfg.upstream.kind;
 

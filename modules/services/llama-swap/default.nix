@@ -79,7 +79,7 @@ let
 
   defaultServerPackage =
     if cfg.acceleration == "rocm" then
-      self.packages.${pkgs.system}.llama-cpp-strix
+      self.packages.${pkgs.stdenv.hostPlatform.system}.llama-cpp-strix
     else if cfg.acceleration == "cuda" then
       pkgs.llama-cpp.override { cudaSupport = true; }
     else
