@@ -69,11 +69,19 @@
     }:
     let
       system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
+      specialArgs = { inherit inputs self; };
+      pkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
     in
     {
       # Official NixOS formatter with directory support
       formatter.x86_64-linux = inputs.nixpkgs-unstable.legacyPackages.${system}.nixfmt-tree;
+
+      # Custom packages exposed via the flake
+      packages.${system} = {
+        headroom-ai = pkgs.callPackage ./packages/headroom-ai { };
+        llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
+        rlm-cli = pkgs.callPackage ./packages/rlm-cli { };
+      };
 
       # Builds the different systems
       nixosConfigurations = {

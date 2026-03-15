@@ -2,13 +2,14 @@
   config,
   lib,
   pkgs,
+  self,
   ...
 }:
 
 let
   cfg = config.services.headroom;
 
-  defaultPackage = pkgs.callPackage ../../../packages/headroom-ai { };
+  defaultPackage = self.packages.${pkgs.system}.headroom-ai;
 
   upstreamKind = cfg.upstream.kind;
 

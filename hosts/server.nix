@@ -2,6 +2,7 @@
   config,
   lib,
   inputs,
+  self,
   ...
 }:
 
@@ -21,7 +22,7 @@
   # Home-manager configuration
   home-manager = {
     extraSpecialArgs = {
-      inherit inputs;
+      inherit inputs self;
     };
     users.codyt = {
       imports = [
