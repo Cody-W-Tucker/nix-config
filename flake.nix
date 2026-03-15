@@ -2,7 +2,7 @@
   description = "CodyOS";
   inputs = {
     nixos-hardware = {
-      # Provides hardware specific modules.
+      # Provides hardware-specific modules.
       url = "github:NixOS/nixos-hardware/master";
     };
 
@@ -51,7 +51,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     llm-agents = {
-      # Repo that pacages various ai tools.
+      # Repo that packages various AI tools.
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
