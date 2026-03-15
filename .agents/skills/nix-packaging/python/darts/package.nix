@@ -1,9 +1,30 @@
-{ lib, buildPythonPackage, fetchFromGitHub, pythonRelaxDepsHook, setuptools
-, holidays, joblib, matplotlib, nfoursid, numpy, pandas, pmdarima, pyod
-, requests, scikit-learn, scipy, shap
-# , statsforecast
-, statsmodels, tbats, tqdm, typing-extensions, xarray, xgboost
-, pytorch-lightning }:
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  pythonRelaxDepsHook,
+  setuptools,
+  holidays,
+  joblib,
+  matplotlib,
+  nfoursid,
+  numpy,
+  pandas,
+  pmdarima,
+  pyod,
+  requests,
+  scikit-learn,
+  scipy,
+  shap,
+  # , statsforecast
+  statsmodels,
+  tbats,
+  tqdm,
+  typing-extensions,
+  xarray,
+  xgboost,
+  pytorch-lightning,
+}:
 
 buildPythonPackage rec {
   pname = "darts";

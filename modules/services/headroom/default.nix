@@ -8,7 +8,7 @@
 let
   cfg = config.services.headroom;
 
-  defaultPackage = pkgs.callPackage ../../../packages/headroom-ai/package.nix { inherit pkgs; };
+  defaultPackage = pkgs.callPackage ../../../packages/headroom-ai { };
 
   upstreamKind = cfg.upstream.kind;
 

@@ -1,8 +1,8 @@
 {
-  lib
-  , buildPythonPackage
-  , fetchFromGitHub
-  , rustPlatform
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  rustPlatform,
 }:
 
 buildPythonPackage rec {
@@ -22,7 +22,10 @@ buildPythonPackage rec {
     hash = "sha256-/OADcVm01PbHp3bcw62Zt6+9ZmT96Bic+EBbPUhdoOI=";
   };
 
-  build-system = with rustPlatform; [ cargoSetupHook maturinBuildHook ];
+  build-system = with rustPlatform; [
+    cargoSetupHook
+    maturinBuildHook
+  ];
 
   pythonImportsCheck = [ "tantivy" ];
 

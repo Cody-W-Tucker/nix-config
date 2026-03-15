@@ -16,6 +16,27 @@ Create new Nix packages or update existing ones, with language-specific examples
 5. Optionally, integrate the package into the current project (e.g., add to overlay and expose via `packages` in `flake.nix`).
 6. Test iteratively: run `nix build .#<package-name>`, read errors, fix issues, and rebuild until successful.
 
+## Repository Package Structure
+
+All custom packages live in `packages/<package-name>/` with a consistent structure:
+
+```
+packages/
+  <package-name>/
+    default.nix    # Entry point that calls `callPackage` on package.nix
+    package.nix      # The actual package definition (optional if defined in default.nix)
+```
+
+### `default.nix` template
+
+```nix
+{ pkgs ? import <nixpkgs> { } }:
+
+pkgs.callPackage ./package.nix { }
+```
+
+This structure makes packages self-contained and ready to import from anywhere in the repository using `pkgs.callPackage ./path/to/packages/<package-name> { }`.
+
 ## Workflow: Updating an Existing Package
 
 Typically, update the `version` and source fetching attributes (e.g., `fetchFromGitHub`). The `hash` field must also be updated using one of these methods:
