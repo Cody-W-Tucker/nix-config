@@ -54,7 +54,10 @@
   };
 
   # Networking
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "server";
+    networkmanager.enable = true;
+  };
 
   fileSystems = {
     "/" = {
