@@ -5,6 +5,8 @@
   lib,
   fetchFromGitHub,
   kernel,
+  kernelPackages,
+  pkgs,
 }:
 let
   ec-su-axb35-src = fetchFromGitHub {
@@ -13,32 +15,37 @@ let
     rev = "main";
     sha256 = "sha256-WgOYDmhswxfRF9AbhRKr4B6q/RXrZP6jfKBuCPPZiDw=";
   };
-in
-stdenv.mkDerivation {
-  pname = "ec-su-axb35";
-  version = "0.1.0-${kernel.version}";
 
-  src = ec-su-axb35-src;
+  kernelModule = stdenv.mkDerivation {
+    pname = "ec-su-axb35";
+    version = "0.1.0-${kernel.version}";
 
-  nativeBuildInputs = kernel.moduleBuildDependencies;
+    src = ec-su-axb35-src;
 
-  makeFlags = kernel.makeFlags ++ [
-    "-C"
-    "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
-    "M=$(PWD)"
-  ];
+    nativeBuildInputs = kernel.moduleBuildDependencies;
 
-  buildPhase = ''
-    make $makeFlags modules
-  '';
+    # Override KERNEL_BUILD to point to our kernel
+    makeFlags = kernelPackages.kernelModuleMakeFlags ++ [
+      "KERNEL_BUILD=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
+      "INSTALL_MOD_PATH=$(out)"
+    ];
 
-  installPhase = ''
-    make $makeFlags INSTALL_MOD_PATH=$out modules_install
-  '';
+    # Build targets from upstream Makefile
+    buildFlags = [ "modules" ];
+    installTargets = [ "modules_install" ];
 
-  meta = {
-    description = "Embedded controller driver for SU_AXB35 (GMKtec EVO-X2)";
-    license = lib.licenses.gpl2Only;
-    platforms = lib.platforms.linux;
+    # Don't fixup ELF files
+    dontFixup = true;
+
+    meta = {
+      description = "Embedded controller driver for SU_AXB35 (GMKtec EVO-X2)";
+      license = lib.licenses.gpl2Only;
+      platforms = lib.platforms.linux;
+    };
   };
+
+  monitor = pkgs.callPackage ./monitor.nix { };
+in
+{
+  inherit kernelModule monitor;
 }

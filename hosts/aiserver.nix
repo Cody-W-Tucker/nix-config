@@ -120,6 +120,8 @@ in
   # EC-SU_AXB35 fan control for GMKtec EVO-X2
   hardware.strix-halo.ec-su-axb35 = {
     enable = true;
+    # CLI tool to monitor fans/temps
+    monitor.enable = true;
     # Start with auto mode - adjust based on temps
     powerMode = "balanced";
     fans = {
