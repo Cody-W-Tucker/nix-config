@@ -12,10 +12,10 @@ These build commands are for testing if the build will actually work. If you're 
 
 ```bash
 # Test build current host
-nixos-rebuild build --flake .
+nixos-rebuild dry-run --flake .
 
-# Test build a specific host. (Check the hostname of the current session if unsure.)
-nixos-rebuild build --flake .#beast
+# Test build a different host. (Check the hostname of the current session if unsure.)
+nixos-rebuild dry-run --flake .#beast
 
 # Checks entire system and all flake outputs.
 nix flake check
