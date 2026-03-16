@@ -27,7 +27,6 @@ in
     llmPkgs.openspec
     llmPkgs.ck
     llmPkgs.pi
-    llmPkgs.hermes-agent
     rlm-cli
   ];
 }
