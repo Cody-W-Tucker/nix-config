@@ -1,4 +1,8 @@
 {
+  programs.git.ignores = [
+    ".ck"
+  ];
+
   # These rules get added to the global AGENTS.md file for opencode
   programs.opencode.rules = ''
     ## Hybrid Code Search with ck
