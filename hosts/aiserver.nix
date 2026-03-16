@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   inputs,
@@ -31,6 +30,7 @@ in
     ../modules/services/headroom
     ../modules/desktop/hardware/rocm.nix
     ../modules/services/llama-swap
+    ../modules/system/strix-hardware
     # Using community hardware nixosConfigurations
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
@@ -87,6 +87,9 @@ in
       options ttm pages_limit=24117248
     '';
 
+    # Use tmpfs for /tmp (performance)
+    tmp.useTmpfs = true;
+
     initrd.availableKernelModules = [
       "nvme"
       "xhci_pci"
@@ -103,6 +106,34 @@ in
 
   # Strix halo tweaks
   nixpkgs.config.rocmTargets = [ "gfx1151" ]; # gfx1151 for Strix Halo
+
+  hardware.strix-halo.ryzenadj = {
+    enable = true;
+    # Power limits for sustained AI workloads
+    # Adjust based on your cooling and power supply
+    stapmLimit = 120000; # 120W sustained (conservative for longevity)
+    fastLimit = 160000; # 160W burst
+    slowLimit = 140000; # 140W average
+    tctlTemp = 95; # 95°C thermal limit
+  };
+
+  # EC-SU_AXB35 fan control for GMKtec EVO-X2
+  hardware.strix-halo.ec-su-axb35 = {
+    enable = true;
+    # Start with auto mode - adjust based on temps
+    powerMode = "balanced";
+    fans = {
+      fan1 = {
+        mode = "auto";
+      };
+      fan2 = {
+        mode = "auto";
+      };
+      fan3 = {
+        mode = "auto";
+      };
+    };
+  };
 
   environment.variables = {
     ROCM_PATH = "${pkgs.rocmPackages.rocm-runtime}/lib"; # Pin exact path

@@ -65,16 +65,17 @@
   outputs =
     inputs@{
       self,
+      nixpkgs-unstable,
       ...
     }:
     let
       system = "x86_64-linux";
       specialArgs = { inherit inputs self; };
-      pkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
+      pkgs = nixpkgs-unstable.legacyPackages.${system};
     in
     {
       # Official NixOS formatter with directory support
-      formatter.x86_64-linux = inputs.nixpkgs-unstable.legacyPackages.${system}.nixfmt-tree;
+      formatter.x86_64-linux = nixpkgs-unstable.legacyPackages.${system}.nixfmt-tree;
 
       # Custom packages exposed via the flake
       packages.${system} = {
