@@ -9,6 +9,11 @@
 let
   cfg = config.hardware.strix-halo.ec-su-axb35;
 
+  ecPackage = pkgs.callPackage ../../../packages/ec-su-axb35 {
+    kernel = config.boot.kernelPackages.kernel;
+    kernelPackages = config.boot.kernelPackages;
+  };
+
   fanOptions = {
     options = {
       mode = lib.mkOption {
@@ -77,8 +82,8 @@ let
     done
 
     if [ ! -d "${sysfsBase}" ]; then
-      echo "ec_su_axb35 sysfs not available" >&2
-      exit 1
+      echo "Note: ec_su_axb35 sysfs not available (module may not be loaded yet)" >&2
+      exit 0
     fi
 
     ${lib.optionalString (cfg.powerMode != null) ''
@@ -102,6 +107,10 @@ in
 {
   options.hardware.strix-halo.ec-su-axb35 = {
     enable = lib.mkEnableOption "EC-SU_AXB35 embedded controller (GMKtec EVO-X2 fan/power control)";
+
+    monitor = {
+      enable = lib.mkEnableOption "ec-su-axb35-monitor CLI tool for viewing fan/temp status";
+    };
 
     powerMode = lib.mkOption {
       type = lib.types.nullOr (
@@ -137,18 +146,21 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    boot.extraModulePackages = [
-      (pkgs.callPackage ../../../packages/ec-su-axb35 {
-        kernel = config.boot.kernelPackages.kernel;
-      })
-    ];
+    boot.extraModulePackages = [ ecPackage.kernelModule ];
 
     boot.kernelModules = [ "ec_su_axb35" ];
+
+    environment.systemPackages = lib.mkIf cfg.monitor.enable [ ecPackage.monitor ];
 
     systemd.services.ec-su-axb35-config = lib.mkIf hasAnyConfig {
       description = "Configure EC-SU_AXB35 embedded controller";
       after = [ "systemd-modules-load.service" ];
       wantedBy = [ "multi-user.target" ];
+
+      # Only run if the module is actually loaded
+      unitConfig = {
+        ConditionPathExists = "/sys/class/ec_su_axb35";
+      };
 
       serviceConfig = {
         Type = "oneshot";
