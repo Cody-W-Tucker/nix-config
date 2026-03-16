@@ -8,7 +8,7 @@
 
 let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-  rlm-cli = self.packages.${pkgs.stdenv.hostPlatform.system}.rlm-cli;
+  inherit (self.packages.${pkgs.stdenv.hostPlatform.system}) rlm-cli;
 in
 
 {
@@ -27,6 +27,7 @@ in
     llmPkgs.openspec
     llmPkgs.ck
     llmPkgs.pi
+    llmPkgs.hermes-agent
     rlm-cli
   ];
 }
