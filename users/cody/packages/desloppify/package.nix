@@ -2,7 +2,7 @@
 
 pkgs.python3Packages.buildPythonPackage rec {
   pname = "desloppify";
-  version = "0.9.5";
+  version = "0.9.9";
   pyproject = true;
   nativeBuildInputs = [
     pkgs.python3Packages.setuptools
@@ -10,6 +10,6 @@ pkgs.python3Packages.buildPythonPackage rec {
   ];
   src = pkgs.fetchPypi {
     inherit pname version;
-    sha256 = "sha256-GXaPK0eS38787I5hwsHZ10eSdtI9hLQKyIkeM3OS884=";
+    sha256 = "sha256-KbGEJ1U06mAM5vGfNxc9qa514ZFT7lUvuARMyrbs+J0=";
   };
 }
