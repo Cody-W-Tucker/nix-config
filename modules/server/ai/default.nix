@@ -38,7 +38,6 @@
         WEBUI_SECRET_KEY = "local-only";
 
         # Local AI
-        OLLAMA_BASE_URL = "http://localhost:11434";
         USE_CUDA_DOCKER = "True";
 
         # Vector DB
@@ -52,8 +51,6 @@
         TIKA_SERVER_URL = "https://tika.homehub.tv";
 
         # RAG
-        RAG_EMBEDDING_ENGINE = "ollama";
-        RAG_EMBEDDING_MODEL = "nomic-embed-text";
         ENABLE_RAG_HYBRID_SEARCH = "True";
 
         # Speech to Text
@@ -76,13 +73,6 @@
   };
   # Local AI models
   services = {
-    ollama = {
-      enable = true;
-      package = pkgs.ollama-cuda.override {
-        # nvidia-smi --query-gpu=compute_cap --format=csv
-        cudaArches = [ "86" ];
-      };
-    };
     # Content extraction
     tika = {
       enable = true;
