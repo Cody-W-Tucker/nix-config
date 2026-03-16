@@ -123,7 +123,7 @@ in
     # CLI tool to monitor fans/temps
     monitor.enable = true;
     # Start with auto mode - adjust based on temps
-    powerMode = "balanced";
+    powerMode = "performance";
     fans = {
       fan1 = {
         mode = "auto";
