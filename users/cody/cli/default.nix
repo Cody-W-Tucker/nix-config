@@ -65,7 +65,6 @@
       # Nix
       ".nix-shell"
       ".direnv/"
-      ".ck"
       # Python
       "__pycache__/"
     ];

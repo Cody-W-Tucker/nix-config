@@ -6,6 +6,10 @@ in
 {
   home.packages = [ desloppify ];
 
+  programs.git.ignores = [
+    ".desloppify/"
+  ];
+
   programs.opencode.commands = {
     clean-code = ''
       I want you to improve the quality of this codebase. To do this, run desloppify.
