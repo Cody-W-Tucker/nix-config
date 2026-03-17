@@ -38,7 +38,7 @@ let
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"
-    "${mainMod}, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+    "${mainMod}, P, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
     "${mainMod} SHIFT, Tab, exec, web-search"
     "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n \"{result}\" | wl-copy'"
 
@@ -75,7 +75,7 @@ let
     "${mainMod} SHIFT, Y, movetoworkspacesilent, special:media"
 
     # Toggle waybar
-    "${mainMod}, P, exec, pkill -SIGUSR1 waybar"
+    "${mainMod}, O, exec, pkill -SIGUSR1 waybar"
 
     # Whisper dictation - hold to record
     "${mainMod}, Escape, exec, whisp-away start"
