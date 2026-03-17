@@ -13,7 +13,7 @@ pkgs.writeShellScriptBin "project" ''
     echo "  new <template> <dir>  Create a new project with the specified template"
     echo ""
     echo "Available templates:"
-    echo "  bun, empty, go, jupyter, node, nix, protobuf"
+    echo "  bun, elixir, empty, go, jupyter, node, nix, protobuf"
     echo "  python, ruby, ruby-on-rails, rust, shell"
     echo "  swi-prolog, zig"
   }
