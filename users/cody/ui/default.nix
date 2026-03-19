@@ -61,6 +61,7 @@
     feishin # Desktop app music player
     wttrbar # Weather bar for Waybar
     vesktop # Discord client
+    kdePackages.kpeople # Contact integration for KDE Connect SMS
   ];
 
   programs.chromium = {
@@ -89,6 +90,12 @@
   # Playerctl Daemon to control media players from Waybar
   services.playerctld.enable = true;
   services.mpris-proxy.enable = true;
+
+  # KDE Connect for device integration
+  services.kdeconnect = {
+    enable = true;
+    indicator = true;
+  };
 
   # Zen browser via Firefox module for hardware acceleration settings
   programs.firefox = {
