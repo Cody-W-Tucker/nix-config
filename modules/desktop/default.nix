@@ -41,12 +41,27 @@
     openrazer-daemon # Razer device support
   ];
 
-  networking.firewall.allowedTCPPorts = [
-    8384 # Syncthing GUI
-    22000 # Syncthing sync protocol
-  ];
-  networking.firewall.allowedUDPPorts = [
-    22000 # Syncthing sync protocol
-    21027 # Syncthing local discovery
-  ];
+  networking.firewall = {
+    allowedTCPPorts = [
+      8384 # Syncthing GUI
+      22000 # Syncthing sync protocol
+    ];
+    allowedUDPPorts = [
+      22000 # Syncthing sync protocol
+      21027 # Syncthing local discovery
+    ];
+    # Open firewall ports for KDE Connect discovery
+    allowedTCPPortRanges = [
+      {
+        from = 1714;
+        to = 1764;
+      }
+    ];
+    allowedUDPPortRanges = [
+      {
+        from = 1714;
+        to = 1764;
+      }
+    ];
+  };
 }

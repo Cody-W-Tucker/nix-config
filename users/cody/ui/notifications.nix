@@ -2,10 +2,44 @@
 {
   services.swaync = {
     enable = true;
+    style = ''
+      /* Notification action buttons styling */
+      .notification-action {
+        border-radius: 6px;
+        color: @theme_text_color;
+        background-color: @theme_bg_color;
+        margin: 4px;
+        padding: 8px 12px;
+        font-size: 14px;
+        min-height: 32px;
+      }
+
+      .notification-action:hover {
+        background-color: shade(@theme_bg_color, 1.1);
+      }
+
+      .notification-action:active {
+        background-color: shade(@theme_bg_color, 0.9);
+      }
+
+      /* Inline reply text entry */
+      .inline-reply {
+        margin-top: 8px;
+        margin-bottom: 4px;
+      }
+
+      .inline-reply entry {
+        border-radius: 6px;
+        padding: 8px;
+        background-color: @theme_bg_color;
+      }
+    '';
     settings = {
       positionX = "right";
       positionY = "top";
       layer = "overlay";
+      notification-window-width = 400;
+      notification-inline-replies = true;
       timeout = 10;
       timeout-low = 5;
       timeout-critical = 0;
@@ -15,6 +49,14 @@
       hide-on-clear = false;
       hide-on-action = true;
       script-fail-notify = true;
+      scripts = {
+        kdeconnect-open-sms = {
+          exec = "kdeconnect-sms";
+          app-name = "KDE Connect";
+          summary = "Messages";
+          run-on = "action";
+        };
+      };
       widget-config = {
         title = {
           text = "Notification Center";
@@ -41,8 +83,15 @@
       };
       notification-visibility = {
         voice-input = {
+          # Surpress notification when using speech to text
           state = "ignored";
           summary = "Voice Input";
+        };
+        kdeconnect-sms = {
+          state = "shown";
+          app-name = "KDE Connect";
+          summary = "Messages";
+          timeout = 60;
         };
       };
       widgets = [
