@@ -3,6 +3,7 @@
 let
   scriptNames = [
     ./focus-or-run.nix
+    ./kanban-launcher.nix
     ./project.nix
     ./rofi-launcher.nix
     ./rofi-web-launcher.nix
@@ -13,5 +14,12 @@ let
 in
 
 {
+  imports = [
+    ./kanban-watcher.nix
+  ];
+
   home.packages = scriptPackages;
+
+  # Enable kanban watcher service
+  services.kanban-watcher.enable = true;
 }
