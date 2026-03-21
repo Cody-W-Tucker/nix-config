@@ -11,7 +11,6 @@
     ./tools/code-search
     ./tools/rtk
     ./skills/obsidian
-    ./skills/qmd
   ];
 
   programs.opencode = {
