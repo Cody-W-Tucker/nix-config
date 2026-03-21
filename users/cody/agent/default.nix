@@ -19,8 +19,7 @@ in
 
   home.packages = [
     # Default is Vulkan, which should work with ROCm natively. CUDA is enabled via override when available.
-    llmPkgs.qmd.override
-    { cudaSupport = true; }
+    (llmPkgs.qmd.override { cudaSupport = true; })
     llmPkgs.coderabbit-cli
     llmPkgs.rtk
     llmPkgs.openspec
