@@ -23,7 +23,7 @@ nix flake check
 
 If the system doesn't build, check the logs and solve the issues.
 
-Once the changes have settled, the user will run the `update` script to build the system.
+Once the changes have settled, the user will run the `update` script to build and activate the system.
 
 ## Repo map
 
@@ -71,6 +71,25 @@ Once the changes have settled, the user will run the `update` script to build th
 - New files must be git-tracked or flakes won't see them
 - Never commit raw secrets (use SOPS-NIX.)
   - The user will need to add secrets via the sops edit command.
+
+## Systemd Service Operations
+
+Tips for running persistent agent services and scheduled tasks:
+
+### Timers and Scheduling
+
+- Use `Type = "oneshot"` with paired `.timer` units for scheduled tasks
+- **Always set `Persistent = true`** in timer configs
+  - Without it, missed runs (during downtime) are skipped forever
+  - With it, missed runs execute immediately on next boot
+
+### Common Pitfalls
+
+- **`start-limit-inhibited`**: Rapid restarts trigger systemd rate limiting
+  - Check: `systemctl status <service>` shows "start-limit-hit"
+  - Fix: `systemctl reset-failed <service>` then `systemctl start <service>`
+- **Set `WorkingDirectory`** in all service configs to prevent path issues
+- **Set `PATH` explicitly** if service calls external binaries (systemd doesn't inherit shell PATH)
 
 ## Requirements:
 
