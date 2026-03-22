@@ -8,7 +8,7 @@
       # DISABLE_SIGNUPS = "true";
       DISABLE_NEW_RELEASE_CHECK = "true";
       OPENAI_API_KEY = "ollama";
-      OLLAMA_BASE_URL = "http://aiserver:8080/v1";
+      OPENAI_BASE_URL = "http://aiserver:8080/v1";
       INFERENCE_TEXT_MODEL = "qwen3.5-35b";
       INFERENCE_CONTEXT_LENGTH = "65536";
       INFERENCE_MAX_OUTPUT_TOKENS = "2048";
