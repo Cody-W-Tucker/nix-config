@@ -17,6 +17,7 @@
         CLEANUP_FREQUENCY = 48;
         LISTEN_ADDR = "localhost:7777";
         BASE_URL = "https://rss.homehub.tv";
+        ALLOW_PRIVATE_NETWORKS = "true";
       };
       adminCredentialsFile = config.sops.templates."miniflux-credentials".path;
     };
