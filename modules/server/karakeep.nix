@@ -11,7 +11,7 @@
       OPENAI_BASE_URL = "http://aiserver:8080/v1";
       INFERENCE_TEXT_MODEL = "qwen3.5-35b";
       INFERENCE_CONTEXT_LENGTH = "65536";
-      INFERENCE_MAX_OUTPUT_TOKENS = "2048";
+      INFERENCE_MAX_OUTPUT_TOKENS = "8192";
       INFERENCE_OUTPUT_SCHEMA = "structured";
       INFERENCE_IMAGE_MODEL = "qwen3.5-35b";
       EMBEDDING_TEXT_MODEL = "qwen3-embedding-8b";
