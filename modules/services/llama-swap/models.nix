@@ -44,10 +44,12 @@
   "qwen3.5-35b" = {
     file = "Qwen3.5-35B-A3B-Q8_0.gguf";
     gpuLayers = 999;
-    contextSize = 32768;
+    # 65536 context needed for ~44K+ token prompts
+    # batchSize 8192 balances speed with 92GB VRAM
+    contextSize = 65536;
     threads = 16;
-    batchSize = 32768;
-    ubatchSize = 32768;
+    batchSize = 8192;
+    ubatchSize = 8192;
     ttl = 1800;
   };
   "qwen3-embedding-8b" = {
