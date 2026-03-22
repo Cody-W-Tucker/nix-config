@@ -17,6 +17,7 @@
       EMBEDDING_TEXT_MODEL = "qwen3-embedding-8b";
       INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
       INFERENCE_FETCH_TIMEOUT_SEC = "300"; # Default 5 mins
+      INFERENCE_JOB_TIMEOUT_SEC = "180"; # Default 30s, increased for slow local model
       OCR_USE_LLM = "true"; # uses the configured inference model for OCR instead of Tesseract.
     };
   };
