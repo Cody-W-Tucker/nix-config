@@ -16,6 +16,7 @@
     ../services/syncthing.nix
     ./nginx-syncthing.nix
     ./security.nix
+    ./karakeep.nix
   ];
 
   # Create the acme secret in sops
