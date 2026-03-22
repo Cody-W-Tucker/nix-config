@@ -49,4 +49,13 @@
     ubatchSize = 4096;
     ttl = 1800;
   };
+  "qwen3-embedding-8b" = {
+    file = "Qwen3-Embedding-8B-Q4_K_M.gguf";
+    gpuLayers = 999;
+    contextSize = 40960;
+    threads = 8;
+    batchSize = 2048;
+    ubatchSize = 512;
+    ttl = 300;
+  };
 }
