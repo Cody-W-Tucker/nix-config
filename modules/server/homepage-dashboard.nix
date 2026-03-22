@@ -122,6 +122,13 @@ in
                 description = "Personal Budget";
               };
             }
+            {
+              Karakeep = {
+                href = "https://karakeep.${domain}";
+                icon = "karakeep";
+                description = "Bookmark Manager";
+              };
+            }
           ];
         }
         {
