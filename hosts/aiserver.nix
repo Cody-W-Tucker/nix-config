@@ -231,6 +231,7 @@ in
       enabledModels = [
         "qwen3.5-35b"
         "qwen3.5-9b-8"
+        "qwen3-embedding-8b"
       ];
     };
     headroom = {
