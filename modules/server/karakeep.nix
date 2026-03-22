@@ -5,7 +5,7 @@
       PORT = "3005";
       LOG_LEVEL = "debug"; # Switch to warning after live.
       DB_WAL_MODE = "true"; # Enables WAL mode for the sqlite database. This should improve the performance of the database.
-      DISABLE_SIGNUPS = "true";
+      # DISABLE_SIGNUPS = "true";
       DISABLE_NEW_RELEASE_CHECK = "true";
       OPENAI_API_KEY = "ollama";
       OLLAMA_BASE_URL = "http://aiserver:8080/v1";
