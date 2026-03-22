@@ -3,7 +3,7 @@
     enable = true;
     extraEnvironment = {
       PORT = "3005";
-      LOG_LEVEL = "debug"; # Switch to warning after live.
+      LOG_LEVEL = "warning"; # Switch to warning after live.
       DB_WAL_MODE = "true"; # Enables WAL mode for the sqlite database. This should improve the performance of the database.
       # DISABLE_SIGNUPS = "true";
       DISABLE_NEW_RELEASE_CHECK = "true";
@@ -19,6 +19,7 @@
       INFERENCE_FETCH_TIMEOUT_SEC = "300"; # Default 5 mins
       INFERENCE_JOB_TIMEOUT_SEC = "180"; # Default 30s, increased for slow local model
       OCR_USE_LLM = "true"; # uses the configured inference model for OCR instead of Tesseract.
+      MAX_ASSET_SIZE_MB = "100";
     };
   };
 
