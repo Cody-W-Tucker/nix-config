@@ -2,7 +2,7 @@
   services.karakeep = {
     enable = true;
     extraEnvironment = {
-      PORT = "3003";
+      PORT = "3005";
       LOG_LEVEL = "debug"; # Switch to warning after live.
       DB_WAL_MODE = "true"; # Enables WAL mode for the sqlite database. This should improve the performance of the database.
       DISABLE_SIGNUPS = "true";
@@ -25,7 +25,7 @@
     forceSSL = true;
     useACMEHost = "homehub.tv";
     locations."/" = {
-      proxyPass = "http://localhost:3003";
+      proxyPass = "http://localhost:3005";
       proxyWebsockets = true;
       recommendedProxySettings = true;
     };
