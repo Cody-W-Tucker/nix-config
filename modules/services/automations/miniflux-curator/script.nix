@@ -2,7 +2,7 @@
 
 let
   # Use unstable nixpkgs for the miniflux Python package
-  unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system};
+  unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 
   # Python environment with required packages
   pythonEnv = pkgs.python3.withPackages (ps: [
@@ -249,7 +249,7 @@ pkgs.writeShellApplication {
 
     # Create temporary config file
     CONFIG_FILE=$(mktemp)
-    trap "rm -f $CONFIG_FILE" EXIT
+    trap 'rm -f "$CONFIG_FILE"' EXIT
 
     cat > "$CONFIG_FILE" << EOF
     miniflux_url: "$MINIFLUX_URL"
