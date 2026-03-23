@@ -38,8 +38,8 @@ let
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 
-    def get_ollama_embedding(text, host, model):
-        """Get embedding from Ollama API."""
+    def get_embedding(text, host, model):
+        """Get embedding from llama-cpp OpenAI-compatible API."""
         import urllib.request
         import urllib.error
 
@@ -49,7 +49,7 @@ let
         }).encode()
 
         req = urllib.request.Request(
-            f"{host}/api/embed",
+            f"{host}/v1/embeddings",
             data=data,
             headers={"Content-Type": "application/json"},
             method="POST"
@@ -58,13 +58,13 @@ let
         try:
             with urllib.request.urlopen(req, timeout=30) as response:
                 result = json.loads(response.read().decode())
-                return result["embeddings"][0]
+                return result["data"][0]["embedding"]
         except urllib.error.URLError as e:
-            logging.error(f"Failed to get embedding from Ollama: {e}")
+            logging.error(f"Failed to get embedding: {e}")
             raise
 
 
-    def get_starred_embeddings(client, ollama_host, embed_model, limit=150):
+    def get_starred_embeddings(client, embed_host, embed_model, limit=150):
         """Fetch starred articles and their embeddings."""
         logging.info("Fetching starred articles...")
         starred = client.get_entries(starred=True, limit=limit)["entries"]
@@ -79,7 +79,7 @@ let
         for i, s in enumerate(starred):
             content = s.get("content", "")
             text = f"{s['title']} {content[:500]}"
-            emb = get_ollama_embedding(text, ollama_host, embed_model)
+            emb = get_embedding(text, embed_host, embed_model)
             starred_embeddings.append({
                 "id": s["id"],
                 "title": s["title"],
@@ -91,7 +91,7 @@ let
         return starred_embeddings
 
 
-    def score_entry(entry, starred_embeddings, ollama_host, embed_model):
+    def score_entry(entry, starred_embeddings, embed_host, embed_model):
         """Score a single entry based on max similarity to any starred article."""
         if not starred_embeddings:
             return 5.0, "No starred articles to compare against"
@@ -101,7 +101,7 @@ let
         text = f"{title} {snippet}"
 
         # Get embedding for this entry
-        entry_emb = np.array(get_ollama_embedding(text, ollama_host, embed_model))
+        entry_emb = np.array(get_embedding(text, embed_host, embed_model))
 
         # Find max similarity to any starred article
         max_sim = 0.0
@@ -147,11 +147,11 @@ let
             api_key=config["api_key"]
         )
 
-        ollama_host = config["ollama"]["host"]
-        embed_model = config["ollama"]["embed_model"]
+        embed_host = config["embedding"]["host"]
+        embed_model = config["embedding"]["model"]
 
         # Get starred embeddings
-        starred_embeddings = get_starred_embeddings(client, ollama_host, embed_model)
+        starred_embeddings = get_starred_embeddings(client, embed_host, embed_model)
 
         if not starred_embeddings:
             logging.warning("Cannot proceed without starred articles. Exiting.")
@@ -181,7 +181,7 @@ let
         # Score each entry
         scored = []
         for i, entry in enumerate(unread):
-            score, reason = score_entry(entry, starred_embeddings, ollama_host, embed_model)
+            score, reason = score_entry(entry, starred_embeddings, embed_host, embed_model)
             scored.append({
                 "id": entry["id"],
                 "title": entry["title"],
@@ -246,7 +246,7 @@ pkgs.writeShellApplication {
     AUTO_MARK_READ_BELOW=''${AUTO_MARK_READ_BELOW:-3.5}
     LIMIT_UNREAD=''${LIMIT_UNREAD:-400}
     DRY_RUN=''${DRY_RUN:-true}
-    EMBED_MODEL=''${EMBED_MODEL:-nomic-embed-text}
+    EMBED_MODEL=''${EMBED_MODEL:-qwen3-embedding-8b}
 
     # Create temporary config file
     CONFIG_FILE=$(mktemp)
@@ -255,9 +255,9 @@ pkgs.writeShellApplication {
     cat > "$CONFIG_FILE" << EOF
     miniflux_url: "$MINIFLUX_URL"
     api_key: "$MINIFLUX_API_KEY"
-    ollama:
+    embedding:
       host: "$OLLAMA_HOST"
-      embed_model: "$EMBED_MODEL"
+      model: "$EMBED_MODEL"
     auto_mark_read_below: $AUTO_MARK_READ_BELOW
     limit_unread: $LIMIT_UNREAD
     dry_run: $DRY_RUN
