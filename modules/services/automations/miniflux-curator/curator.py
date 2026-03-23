@@ -5,10 +5,10 @@
 import argparse
 import json
 import logging
+import os
 
 import miniflux
 import numpy as np
-import yaml
 
 
 def cosine_similarity(a, b):
@@ -159,30 +159,34 @@ def score_entries_batch(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Miniflux Auto-Curator")
-    parser.add_argument(
-        "--config", required=True, help="Path to YAML config file"
-    )
-    args = parser.parse_args()
-
-    # Load config
-    with open(args.config) as f:
-        config = yaml.safe_load(f)
-
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.WARNING,
         format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
-    # Initialize Miniflux client
-    client = miniflux.Client(
-        config["miniflux_url"],
-        api_key=config["api_key"]
-    )
+    # Read configuration from environment variables
+    miniflux_url = os.environ.get("MINIFLUX_URL")
+    api_key = os.environ.get("MINIFLUX_API_KEY")
+    embed_host = os.environ.get("OPENAI_HOST")
+    embed_model = os.environ.get("EMBED_MODEL", "qwen3-embedding-8b")
+    batch_size = int(os.environ.get("BATCH_SIZE", "64"))
+    auto_mark_read_below = float(os.environ.get("AUTO_MARK_READ_BELOW", "3.5"))
+    limit_unread = int(os.environ.get("LIMIT_UNREAD", "400"))
+    dry_run = os.environ.get("DRY_RUN", "true").lower() == "true"
 
-    embed_host = config["embedding"]["host"]
-    embed_model = config["embedding"]["model"]
-    batch_size = config.get("batch_size", 64)
+    # Validate required environment variables
+    if not miniflux_url:
+        logging.error("MINIFLUX_URL environment variable not set")
+        return
+    if not api_key:
+        logging.error("MINIFLUX_API_KEY environment variable not set")
+        return
+    if not embed_host:
+        logging.error("OPENAI_HOST environment variable not set")
+        return
+
+    # Initialize Miniflux client
+    client = miniflux.Client(miniflux_url, api_key=api_key)
 
     # Get starred embeddings
     starred_embeddings = get_starred_embeddings(
@@ -198,7 +202,7 @@ def main():
     unread = []
     offset = 0
     limit_per_batch = 100
-    max_total = config.get("limit_unread", 400)
+    max_total = limit_unread
 
     while len(unread) < max_total:
         batch = client.get_entries(
@@ -242,8 +246,8 @@ def main():
     scored.sort(key=lambda x: x["score"], reverse=True)
 
     # Determine actions
-    threshold = config.get("auto_mark_read_below", 3.5)
-    dry_run = config.get("dry_run", True)
+    threshold = auto_mark_read_below
+    dry_run = dry_run
 
     to_mark_read = [item["id"] for item in scored if item["score"] < threshold]
 
