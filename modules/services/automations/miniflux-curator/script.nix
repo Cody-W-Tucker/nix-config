@@ -1,9 +1,9 @@
 { pkgs, inputs }:
 
 let
-  # Use unstable nixpkgs for the miniflux Python package  
+  # Use unstable nixpkgs for the miniflux Python package
   unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  
+
   # Python environment with required packages
   pythonEnv = unstablePkgs.python3.withPackages (ps: [
     ps.miniflux
@@ -281,7 +281,7 @@ pkgs.writeShellApplication {
     # Validate required environment variables
     : "''${MINIFLUX_URL:?MINIFLUX_URL environment variable not set}"
     : "''${MINIFLUX_API_KEY:?MINIFLUX_API_KEY environment variable not set}"
-    : "''${OLLAMA_HOST:?OLLAMA_HOST environment variable not set}"
+    : "''${OPENAI_HOST:?OPENAI_HOST environment variable not set}"
 
     # Optional config with defaults
     AUTO_MARK_READ_BELOW=''${AUTO_MARK_READ_BELOW:-3.5}
@@ -298,7 +298,7 @@ pkgs.writeShellApplication {
     miniflux_url: "$MINIFLUX_URL"
     api_key: "$MINIFLUX_API_KEY"
     embedding:
-      host: "$OLLAMA_HOST"
+      host: "$OPENAI_HOST"
       model: "$EMBED_MODEL"
     auto_mark_read_below: $AUTO_MARK_READ_BELOW
     limit_unread: $LIMIT_UNREAD
