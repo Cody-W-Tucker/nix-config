@@ -40,7 +40,7 @@
       autoMarkReadBelow = 3.5;
       limitUnread = 400;
       dryRun = true; # Start in dry-run mode - set to false after testing
-      schedule = "0 */4 * * *"; # Every 4 hours
+      schedule = "*-*-* 00,04,08,12,16,20:00"; # Every 4 hours
     };
 
     nginx.virtualHosts."rss.homehub.tv" = {
