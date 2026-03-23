@@ -87,6 +87,7 @@ in
         LIMIT_UNREAD = toString cfg.limitUnread;
         DRY_RUN = lib.boolToString cfg.dryRun;
         BATCH_SIZE = toString cfg.batchSize;
+        STATE_FILE = "/var/lib/miniflux-curator/state.json";
       };
       script = ''
         export MINIFLUX_API_KEY=$(cat ${cfg.apiKeyFile})

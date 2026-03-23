@@ -10,6 +10,28 @@ import miniflux
 import numpy as np
 
 
+def load_state(state_file):
+    """Load the last processed entry ID from state file."""
+    if os.path.exists(state_file):
+        try:
+            with open(state_file, 'r') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError) as e:
+            logging.warning(f"Could not load state file: {e}")
+    return {"last_processed_id": 0}
+
+
+def save_state(state_file, state):
+    """Save the last processed entry ID to state file."""
+    try:
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(state_file), exist_ok=True)
+        with open(state_file, 'w') as f:
+            json.dump(state, f)
+    except IOError as e:
+        logging.error(f"Could not save state file: {e}")
+
+
 def cosine_similarity(a, b):
     """Calculate cosine similarity between two vectors."""
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
@@ -172,6 +194,7 @@ def main():
     auto_mark_read_below = float(os.environ.get("AUTO_MARK_READ_BELOW", "3.5"))
     limit_unread = int(os.environ.get("LIMIT_UNREAD", "400"))
     dry_run = os.environ.get("DRY_RUN", "true").lower() == "true"
+    state_file = os.environ.get("STATE_FILE", "/var/lib/miniflux-curator/state.json")
 
     # Validate required environment variables
     if not miniflux_url:
@@ -186,6 +209,11 @@ def main():
 
     # Initialize Miniflux client
     client = miniflux.Client(miniflux_url, api_key=api_key)
+
+    # Load state to track last processed entry
+    state = load_state(state_file)
+    last_processed_id = state.get("last_processed_id", 0)
+    logging.info(f"Last processed entry ID: {last_processed_id}")
 
     # Get starred embeddings
     starred_embeddings = get_starred_embeddings(
@@ -217,6 +245,16 @@ def main():
     if not unread:
         logging.info("No unread entries to process.")
         return
+
+    # Filter to only process new entries (avoid re-scoring)
+    new_entries = [e for e in unread if e["id"] > last_processed_id]
+    logging.info(f"Found {len(new_entries)} new entries to process (filtered {len(unread) - len(new_entries)} already processed)")
+    
+    if not new_entries:
+        logging.info("No new entries to process. Exiting.")
+        return
+    
+    unread = new_entries  # Replace with filtered list
 
     logging.info(
         f"Processing {len(unread)} unread entries (batch_size={batch_size})..."
@@ -269,6 +307,9 @@ def main():
                 logging.info(
                     f"  - [{item['score']:.1f}] {item['title'][:60]}..."
                 )
+        logging.info(
+            f"\nWould update state to last_processed_id={max(e['id'] for e in unread)}"
+        )
     else:
         if to_mark_read:
             logging.info(
@@ -276,6 +317,11 @@ def main():
             )
             client.update_entries(to_mark_read, status="read")
             logging.info(f"Marked {len(to_mark_read)} entries as read")
+        
+        # Save state with the max processed entry ID
+        max_id = max(e["id"] for e in unread)
+        save_state(state_file, {"last_processed_id": max_id})
+        logging.info(f"Updated state: last_processed_id={max_id}")
 
     logging.info("\nCurator run complete. Stars remain human-only.")
 
