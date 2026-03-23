@@ -2,7 +2,6 @@
 # Uses vector similarity between starred and unread entries to auto-mark
 # low-relevance articles as read. Stars remain human-only.
 
-import argparse
 import json
 import logging
 import os
