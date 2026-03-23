@@ -45,11 +45,11 @@ let
 
         data = json.dumps({
             "model": model,
-            "prompt": text
+            "input": text
         }).encode()
 
         req = urllib.request.Request(
-            f"{host}/api/embeddings",
+            f"{host}/api/embed",
             data=data,
             headers={"Content-Type": "application/json"},
             method="POST"
@@ -58,7 +58,7 @@ let
         try:
             with urllib.request.urlopen(req, timeout=30) as response:
                 result = json.loads(response.read().decode())
-                return result["embedding"]
+                return result["embeddings"][0]
         except urllib.error.URLError as e:
             logging.error(f"Failed to get embedding from Ollama: {e}")
             raise
