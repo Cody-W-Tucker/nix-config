@@ -77,7 +77,7 @@ let
         starred_embeddings = []
 
         for i, s in enumerate(starred):
-            text = f"{s['title']} {s.get('content', '''')[:500]}"
+            text = f"{s['title']} {s.get('content', '')[:500]}"
             emb = get_ollama_embedding(text, ollama_host, embed_model)
             starred_embeddings.append({
                 "id": s["id"],
