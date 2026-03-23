@@ -67,7 +67,7 @@ let
     def get_starred_embeddings(client, ollama_host, embed_model, limit=150):
         """Fetch starred articles and their embeddings."""
         logging.info("Fetching starred articles...")
-        starred = client.get_entries(status="starred", limit=limit)["entries"]
+        starred = client.get_entries(starred=True, limit=limit)["entries"]
 
         if not starred:
             logging.warning("No starred articles found")
