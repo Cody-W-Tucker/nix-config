@@ -60,6 +60,7 @@
     batchSize = 8192;
     ubatchSize = 8192;
     ttl = 300;
+    extraArgs = [ "--embeddings" ];
   };
   # Gemma 3 12B - Good balance of quality and speed for reasoning tasks
   # UD-Q4_K_XL quantization: ~7.0GB weights, fits well in 92GB VRAM with room for context
