@@ -8,7 +8,10 @@
   sops = {
     secrets."miniflux/ADMIN_USERNAME" = { };
     secrets."miniflux/ADMIN_PASSWORD" = { };
-    secrets."miniflux/API_KEY" = { };
+    secrets."miniflux/API_KEY" = {
+      owner = config.users.users.miniflux-curator.name;
+      group = config.users.groups.miniflux-curator.name;
+    };
 
     templates."miniflux-credentials".content = ''
       ADMIN_USERNAME=${config.sops.placeholder."miniflux/ADMIN_USERNAME"}
