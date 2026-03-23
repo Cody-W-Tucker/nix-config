@@ -194,7 +194,9 @@ def main():
     auto_mark_read_below = float(os.environ.get("AUTO_MARK_READ_BELOW", "3.5"))
     limit_unread = int(os.environ.get("LIMIT_UNREAD", "400"))
     dry_run = os.environ.get("DRY_RUN", "true").lower() == "true"
-    state_file = os.environ.get("STATE_FILE", "/var/lib/miniflux-curator/state.json")
+    state_file = os.environ.get(
+        "STATE_FILE", "/var/lib/miniflux-curator/state.json"
+    )
 
     # Validate required environment variables
     if not miniflux_url:
@@ -248,12 +250,16 @@ def main():
 
     # Filter to only process new entries (avoid re-scoring)
     new_entries = [e for e in unread if e["id"] > last_processed_id]
-    logging.info(f"Found {len(new_entries)} new entries to process (filtered {len(unread) - len(new_entries)} already processed)")
-    
+    already = len(unread) - len(new_entries)
+    logging.info(
+        f"Found {len(new_entries)} new entries to process "
+        f"(filtered {already} already processed)"
+    )
+
     if not new_entries:
         logging.info("No new entries to process. Exiting.")
         return
-    
+
     unread = new_entries  # Replace with filtered list
 
     logging.info(
@@ -307,8 +313,9 @@ def main():
                 logging.info(
                     f"  - [{item['score']:.1f}] {item['title'][:60]}..."
                 )
+        max_id = max(e["id"] for e in unread)
         logging.info(
-            f"\nWould update state to last_processed_id={max(e['id'] for e in unread)}"
+            f"\nWould update state to last_processed_id={max_id}"
         )
     else:
         if to_mark_read:
@@ -317,7 +324,7 @@ def main():
             )
             client.update_entries(to_mark_read, status="read")
             logging.info(f"Marked {len(to_mark_read)} entries as read")
-        
+
         # Save state with the max processed entry ID
         max_id = max(e["id"] for e in unread)
         save_state(state_file, {"last_processed_id": max_id})
