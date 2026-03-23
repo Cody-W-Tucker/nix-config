@@ -29,7 +29,7 @@ in
     ollamaHost = lib.mkOption {
       type = lib.types.str;
       default = "http://localhost:11434";
-      description = "Ollama API host";
+      description = "Embedding API host (OpenAI-compatible)";
     };
 
     llmModel = lib.mkOption {
@@ -40,8 +40,14 @@ in
 
     embedModel = lib.mkOption {
       type = lib.types.str;
-      default = "nomic-embed-text";
-      description = "Ollama embedding model";
+      default = "qwen3-embedding-8b";
+      description = "Embedding model for similarity scoring";
+    };
+
+    maxWorkers = lib.mkOption {
+      type = lib.types.int;
+      default = 4;
+      description = "Number of parallel workers for embedding requests";
     };
 
     autoMarkReadBelow = lib.mkOption {
@@ -87,6 +93,7 @@ in
         AUTO_MARK_READ_BELOW = toString cfg.autoMarkReadBelow;
         LIMIT_UNREAD = toString cfg.limitUnread;
         DRY_RUN = lib.boolToString cfg.dryRun;
+        MAX_WORKERS = toString cfg.maxWorkers;
       };
       script = ''
         export MINIFLUX_API_KEY=$(cat ${cfg.apiKeyFile})
