@@ -61,4 +61,15 @@
     ubatchSize = 8192;
     ttl = 300;
   };
+  # Gemma 3 12B - Good balance of quality and speed for reasoning tasks
+  # UD-Q4_K_XL quantization: ~7.0GB weights, fits well in 92GB VRAM with room for context
+  "gemma-3-12b" = {
+    file = "gemma-3-12b-it-UD-Q4_K_XL.gguf";
+    gpuLayers = 999;
+    contextSize = 131072;
+    threads = 16;
+    batchSize = 4096;
+    ubatchSize = 4096;
+    ttl = 1200;
+  };
 }

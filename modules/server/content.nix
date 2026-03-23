@@ -1,13 +1,20 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
-  sops.secrets."miniflux/ADMIN_USERNAME" = { };
-  sops.secrets."miniflux/ADMIN_PASSWORD" = { };
+  imports = [
+    ../services/automations/miniflux-curator
+  ];
 
-  sops.templates."miniflux-credentials".content = ''
-    ADMIN_USERNAME=${config.sops.placeholder."miniflux/ADMIN_USERNAME"}
-    ADMIN_PASSWORD=${config.sops.placeholder."miniflux/ADMIN_PASSWORD"}
-  '';
+  sops = {
+    secrets."miniflux/ADMIN_USERNAME" = { };
+    secrets."miniflux/ADMIN_PASSWORD" = { };
+    secrets."miniflux/API_KEY" = { };
+
+    templates."miniflux-credentials".content = ''
+      ADMIN_USERNAME=${config.sops.placeholder."miniflux/ADMIN_USERNAME"}
+      ADMIN_PASSWORD=${config.sops.placeholder."miniflux/ADMIN_PASSWORD"}
+    '';
+  };
 
   services = {
     # Miniflux RSS reader
@@ -21,6 +28,21 @@
       };
       adminCredentialsFile = config.sops.templates."miniflux-credentials".path;
     };
+
+    # Auto-curator for cleaning up low-relevance articles
+    miniflux-curator = {
+      enable = true;
+      minifluxUrl = "http://localhost:7777";
+      apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
+      ollamaHost = "http://aiserver:8080";
+      llmModel = "gemma-3-12b";
+      embedModel = "qwen3-embedding-8b";
+      autoMarkReadBelow = 3.5;
+      limitUnread = 400;
+      dryRun = true; # Start in dry-run mode - set to false after testing
+      schedule = "0 */4 * * *"; # Every 4 hours
+    };
+
     nginx.virtualHosts."rss.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";
@@ -30,4 +52,7 @@
       kTLS = true;
     };
   };
+
+  # Ensure curator can reach Ollama on beast via the proxy
+  networking.hosts."192.168.1.20" = [ "beast" ];
 }
