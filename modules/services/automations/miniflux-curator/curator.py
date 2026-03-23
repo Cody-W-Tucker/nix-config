@@ -193,8 +193,8 @@ def main():
         logging.warning("Cannot proceed without starred articles. Exiting.")
         return
 
-    # Fetch unread entries
-    logging.info("Fetching unread entries...")
+    # Fetch unread entries (newest first)
+    logging.info("Fetching unread entries (newest first)...")
     unread = []
     offset = 0
     limit_per_batch = 100
@@ -202,7 +202,8 @@ def main():
 
     while len(unread) < max_total:
         batch = client.get_entries(
-            status="unread", limit=limit_per_batch, offset=offset
+            status="unread", limit=limit_per_batch, offset=offset,
+            order="published_at", direction="desc"
         )["entries"]
         if not batch:
             break
