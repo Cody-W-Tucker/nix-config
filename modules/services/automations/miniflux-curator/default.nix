@@ -38,10 +38,10 @@ in
       description = "Embedding model for similarity scoring";
     };
 
-    maxWorkers = lib.mkOption {
+    batchSize = lib.mkOption {
       type = lib.types.int;
-      default = 4;
-      description = "Number of parallel workers for embedding requests";
+      default = 64;
+      description = "Number of articles to embed per batch request (default: 64)";
     };
 
     autoMarkReadBelow = lib.mkOption {
@@ -86,7 +86,7 @@ in
         AUTO_MARK_READ_BELOW = toString cfg.autoMarkReadBelow;
         LIMIT_UNREAD = toString cfg.limitUnread;
         DRY_RUN = lib.boolToString cfg.dryRun;
-        MAX_WORKERS = toString cfg.maxWorkers;
+        BATCH_SIZE = toString cfg.batchSize;
       };
       script = ''
         export MINIFLUX_API_KEY=$(cat ${cfg.apiKeyFile})

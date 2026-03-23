@@ -43,7 +43,7 @@
       embedModel = "qwen3-embedding-8b";
       autoMarkReadBelow = 4.5;
       limitUnread = 400;
-      maxWorkers = 6;
+      batchSize = 64;
       dryRun = false; # Start in dry-run mode - set to false after testing
       schedule = "*-*-* 00,04,08,12,16,20:00"; # Every 4 hours
     };
