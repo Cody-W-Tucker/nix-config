@@ -236,7 +236,7 @@ def main():
     while len(unread) < max_total:
         batch = client.get_entries(
             status="unread", limit=limit_per_batch, offset=offset,
-            order="published_at", direction="asc"
+            order="id", direction="asc"
         )["entries"]
         if not batch:
             break
