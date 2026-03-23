@@ -26,16 +26,10 @@ in
       description = "Path to file containing Miniflux API key";
     };
 
-    ollamaHost = lib.mkOption {
+    openaiHost = lib.mkOption {
       type = lib.types.str;
-      default = "http://localhost:11434";
+      default = "http://localhost:8080"; # Llama-cpp default
       description = "Embedding API host (OpenAI-compatible)";
-    };
-
-    llmModel = lib.mkOption {
-      type = lib.types.str;
-      default = "llama3.2";
-      description = "Ollama LLM model for reasoning";
     };
 
     embedModel = lib.mkOption {
@@ -87,8 +81,7 @@ in
       path = [ curatorScript ];
       environment = {
         MINIFLUX_URL = cfg.minifluxUrl;
-        OLLAMA_HOST = cfg.ollamaHost;
-        LLM_MODEL = cfg.llmModel;
+        OPENAI_HOST = cfg.openaiHost;
         EMBED_MODEL = cfg.embedModel;
         AUTO_MARK_READ_BELOW = toString cfg.autoMarkReadBelow;
         LIMIT_UNREAD = toString cfg.limitUnread;

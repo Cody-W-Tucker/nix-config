@@ -6,11 +6,13 @@
   ];
 
   sops = {
-    secrets."miniflux/ADMIN_USERNAME" = { };
-    secrets."miniflux/ADMIN_PASSWORD" = { };
-    secrets."miniflux/API_KEY" = {
-      owner = config.users.users.miniflux-curator.name;
-      group = config.users.groups.miniflux-curator.name;
+    secrets = {
+      "miniflux/ADMIN_PASSWORD" = { };
+      "miniflux/ADMIN_USERNAME" = { };
+      "miniflux/API_KEY" = {
+        group = config.users.groups.miniflux-curator.name;
+        owner = config.users.users.miniflux-curator.name;
+      };
     };
 
     templates."miniflux-credentials".content = ''
@@ -37,13 +39,12 @@
       enable = true;
       minifluxUrl = "http://localhost:7777";
       apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
-      ollamaHost = "http://aiserver:8080";
-      llmModel = "gemma-3-12b";
+      openaiHost = "http://aiserver:8080";
       embedModel = "qwen3-embedding-8b";
-      autoMarkReadBelow = 5.0;
+      autoMarkReadBelow = 4.5;
       limitUnread = 400;
       maxWorkers = 6;
-      dryRun = true; # Start in dry-run mode - set to false after testing
+      dryRun = false; # Start in dry-run mode - set to false after testing
       schedule = "*-*-* 00,04,08,12,16,20:00"; # Every 4 hours
     };
 
