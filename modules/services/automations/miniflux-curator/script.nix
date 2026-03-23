@@ -26,6 +26,7 @@ let
     import json
     import logging
     import sys
+    from concurrent.futures import ThreadPoolExecutor, as_completed
     from datetime import datetime
 
     import miniflux
@@ -64,8 +65,20 @@ let
             raise
 
 
-    def get_starred_embeddings(client, embed_host, embed_model, limit=150):
-        """Fetch starred articles and their embeddings."""
+    def process_starred_article(article, embed_host, embed_model):
+        """Process a single starred article to get its embedding."""
+        content = article.get("content", "")
+        text = f"{article['title']} {content[:500]}"
+        emb = get_embedding(text, embed_host, embed_model)
+        return {
+            "id": article["id"],
+            "title": article["title"],
+            "embedding": emb
+        }
+
+
+    def get_starred_embeddings(client, embed_host, embed_model, limit=150, max_workers=4):
+        """Fetch starred articles and their embeddings in parallel."""
         logging.info("Fetching starred articles...")
         starred = client.get_entries(starred=True, limit=limit)["entries"]
 
@@ -73,20 +86,26 @@ let
             logging.warning("No starred articles found")
             return []
 
-        logging.info(f"Computing embeddings for {len(starred)} starred articles...")
+        logging.info(f"Computing embeddings for {len(starred)} starred articles (parallel={max_workers})...")
         starred_embeddings = []
+        completed = 0
 
-        for i, s in enumerate(starred):
-            content = s.get("content", "")
-            text = f"{s['title']} {content[:500]}"
-            emb = get_embedding(text, embed_host, embed_model)
-            starred_embeddings.append({
-                "id": s["id"],
-                "title": s["title"],
-                "embedding": emb
-            })
-            if (i + 1) % 10 == 0:
-                logging.info(f"  Processed {i + 1}/{len(starred)} starred articles...")
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(process_starred_article, s, embed_host, embed_model): s
+                for s in starred
+            }
+            
+            for future in as_completed(futures):
+                try:
+                    result = future.result()
+                    starred_embeddings.append(result)
+                    completed += 1
+                    if completed % 10 == 0:
+                        logging.info(f"  Processed {completed}/{len(starred)} starred articles...")
+                except Exception as e:
+                    article = futures[future]
+                    logging.error(f"Failed to process starred article '{article['title'][:50]}...': {e}")
 
         return starred_embeddings
 
@@ -149,9 +168,10 @@ let
 
         embed_host = config["embedding"]["host"]
         embed_model = config["embedding"]["model"]
+        max_workers = config.get("max_workers", 4)
 
         # Get starred embeddings
-        starred_embeddings = get_starred_embeddings(client, embed_host, embed_model)
+        starred_embeddings = get_starred_embeddings(client, embed_host, embed_model, max_workers=max_workers)
 
         if not starred_embeddings:
             logging.warning("Cannot proceed without starred articles. Exiting.")
@@ -176,20 +196,41 @@ let
             logging.info("No unread entries to process.")
             return
 
-        logging.info(f"Processing {len(unread)} unread entries...")
+        logging.info(f"Processing {len(unread)} unread entries (parallel={max_workers})...")
 
-        # Score each entry
+        # Score each entry in parallel
         scored = []
-        for i, entry in enumerate(unread):
-            score, reason = score_entry(entry, starred_embeddings, embed_host, embed_model)
-            scored.append({
-                "id": entry["id"],
-                "title": entry["title"],
-                "score": score,
-                "reason": reason
-            })
-            if (i + 1) % 10 == 0:
-                logging.info(f"  Scored {i + 1}/{len(unread)} entries...")
+        completed = 0
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(score_entry, entry, starred_embeddings, embed_host, embed_model): entry
+                for entry in unread
+            }
+            
+            for future in as_completed(futures):
+                entry = futures[future]
+                try:
+                    score, reason = future.result()
+                    scored.append({
+                        "id": entry["id"],
+                        "title": entry["title"],
+                        "score": score,
+                        "reason": reason
+                    })
+                    completed += 1
+                    if completed % 10 == 0:
+                        logging.info(f"  Scored {completed}/{len(unread)} entries...")
+                except Exception as e:
+                    logging.error(f"Failed to score entry '{entry['title'][:50]}...': {e}")
+                    # Add entry with neutral score on error so it's not lost
+                    scored.append({
+                        "id": entry["id"],
+                        "title": entry["title"],
+                        "score": 5.0,
+                        "reason": f"Error during scoring: {str(e)[:50]}"
+                    })
+                    completed += 1
 
         # Sort by score descending
         scored.sort(key=lambda x: x["score"], reverse=True)
@@ -247,6 +288,7 @@ pkgs.writeShellApplication {
     LIMIT_UNREAD=''${LIMIT_UNREAD:-400}
     DRY_RUN=''${DRY_RUN:-true}
     EMBED_MODEL=''${EMBED_MODEL:-qwen3-embedding-8b}
+    MAX_WORKERS=''${MAX_WORKERS:-4}
 
     # Create temporary config file
     CONFIG_FILE=$(mktemp)
@@ -261,6 +303,7 @@ pkgs.writeShellApplication {
     auto_mark_read_below: $AUTO_MARK_READ_BELOW
     limit_unread: $LIMIT_UNREAD
     dry_run: $DRY_RUN
+    max_workers: $MAX_WORKERS
     EOF
 
     exec ${pythonEnv}/bin/python ${curatorPy} --config "$CONFIG_FILE"
