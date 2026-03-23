@@ -1,12 +1,12 @@
 { pkgs, inputs }:
 
 let
-  # Use unstable nixpkgs for the miniflux Python package
+  # Use unstable nixpkgs for the miniflux Python package  
   unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-
+  
   # Python environment with required packages
-  pythonEnv = pkgs.python3.withPackages (ps: [
-    unstablePkgs.python3Packages.miniflux
+  pythonEnv = unstablePkgs.python3.withPackages (ps: [
+    ps.miniflux
     ps.pyyaml
     ps.numpy
   ]);
@@ -77,7 +77,7 @@ let
         starred_embeddings = []
 
         for i, s in enumerate(starred):
-            text = f"{s['title']} {s.get('content', ''')[:500]}"
+            text = f"{s['title']} {s.get('content', '''')[:500]}"
             emb = get_ollama_embedding(text, ollama_host, embed_model)
             starred_embeddings.append({
                 "id": s["id"],
