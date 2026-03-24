@@ -233,6 +233,7 @@ in
         "qwen3.5-9b-8"
         "qwen3-embedding-8b"
         "gemma-3-12b"
+        "mistral-small-4-119b"
       ];
     };
     headroom = {
