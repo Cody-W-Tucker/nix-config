@@ -226,41 +226,37 @@ def main():
         logging.warning("Cannot proceed without starred articles. Exiting.")
         return
 
-    # Fetch unread entries (oldest first to clear backlog)
-    logging.info("Fetching unread entries (oldest first)...")
+    # Use after_entry_id to only fetch entries we haven't processed yet
+    logging.info(
+        "Fetching unread entries with ID > "
+        f"{last_processed_id}..."
+    )
     unread = []
-    offset = 0
+    after_id = last_processed_id
     limit_per_batch = 100
     max_total = limit_unread
 
     while len(unread) < max_total:
         batch = client.get_entries(
-            status="unread", limit=limit_per_batch, offset=offset,
-            order="id", direction="asc"
+            status="unread",
+            limit=limit_per_batch,
+            after_entry_id=after_id,
+            order="id",
+            direction="asc"
         )["entries"]
         if not batch:
             break
         unread.extend(batch)
-        offset += limit_per_batch
+        # Update after_id to the last entry's ID to get next batch
+        after_id = batch[-1]["id"]
         logging.info(f"  Fetched {len(unread)} unread entries...")
+        # Prevent infinite loop if we got entries but all have same ID
+        if len(batch) < limit_per_batch:
+            break
 
     if not unread:
-        logging.info("No unread entries to process.")
+        logging.info("No new unread entries to process.")
         return
-
-    # Filter to only process new entries (avoid re-scoring)
-    new_entries = [e for e in unread if e["id"] > last_processed_id]
-    already = len(unread) - len(new_entries)
-    logging.info(
-        f"Found {len(new_entries)} new entries to process "
-        f"(filtered {already} already processed)"
-    )
-
-    if not new_entries:
-        logging.info("No new entries to process. Exiting.")
-        return
-
-    unread = new_entries  # Replace with filtered list
 
     logging.info(
         f"Processing {len(unread)} unread entries (batch_size={batch_size})..."
