@@ -77,18 +77,4 @@
     ubatchSize = 4096;
     ttl = 1200;
   };
-  # Mistral Small 4 119B - Large reasoning model
-  # Q4_0 quantization: ~60GB weights, requires substantial VRAM
-  # Multi-part model: keep both -00001-of-00002.gguf and -00002-of-00002.gguf in model directory
-  # llama.cpp automatically loads all parts when first part is referenced
-  "mistral-small-4-119b" = {
-    file = "mistralai_Mistral-Small-4-119B-2603-Q4_0-00001-of-00002.gguf";
-    gpuLayers = 999;
-    # Conservative context for 92GB VRAM with Q4 weights
-    contextSize = 32768;
-    threads = 16;
-    batchSize = 2048;
-    ubatchSize = 2048;
-    ttl = 3600;
-  };
 }
