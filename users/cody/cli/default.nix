@@ -18,6 +18,7 @@
     jq
     taskwarrior-tui
     timewarrior
+    tree
   ];
 
   home.sessionVariables = {
