@@ -6,7 +6,10 @@ let
 
   # Python package with required libraries
   curatorPy = unstablePkgs.writers.writePython3Bin "miniflux-curator" {
-    libraries = with unstablePkgs.python3Packages; [ miniflux numpy ];
+    libraries = with unstablePkgs.python3Packages; [
+      miniflux
+      numpy
+    ];
   } (builtins.readFile ./curator.py);
 in
 
