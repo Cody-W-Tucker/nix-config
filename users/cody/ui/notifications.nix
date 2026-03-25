@@ -49,14 +49,6 @@
       hide-on-clear = false;
       hide-on-action = true;
       script-fail-notify = true;
-      scripts = {
-        kdeconnect-open-sms = {
-          exec = "kdeconnect-sms";
-          app-name = "KDE Connect";
-          summary = "Messages";
-          run-on = "action";
-        };
-      };
       widget-config = {
         title = {
           text = "Notification Center";
