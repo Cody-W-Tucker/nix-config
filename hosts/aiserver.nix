@@ -255,6 +255,7 @@ in
         dbPath = "/var/lib/headroom/headroom-memory.db";
       };
     };
+    # Rename promtail host label to match machine name
     promtail.configuration.scrape_configs = [
       {
         job_name = "journal";
