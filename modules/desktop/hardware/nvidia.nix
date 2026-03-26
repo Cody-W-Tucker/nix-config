@@ -66,11 +66,9 @@
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     __GL_GSYNC_ALLOWED = "1";
-    WLR_NO_HARDWARE_CURSORS = "1"; # Fixes NVIDIA cursor issues in HDR
+    __GL_VRR_ALLOWED = "0";
     # Required for Firefox/Zen hardware acceleration with NVIDIA
     MOZ_DISABLE_RDD_SANDBOX = "1";
-    # Additional VA-API debug info
-    LIBVA_MESSAGING_LEVEL = "1";
   };
 
   # Global Electron flags for NVIDIA Wayland — fixes scroll glitches and rendering artifacts (system-wide)
@@ -78,5 +76,6 @@
     --enable-features=UseOzonePlatform,WaylandWindowDecorations,VaapiVideoDecodeLinuxGL
     --ozone-platform-hint=auto
     --disable-gpu-shader-disk-cache
+    --enable-features=WaylandLinuxDrmSyncobj
   '';
 }
