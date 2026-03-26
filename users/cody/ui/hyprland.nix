@@ -10,7 +10,6 @@
   imports = [
     ./hyprland/settings.nix
     ./hyprland/autostart.nix
-    ./hyprland/kanban.nix
   ];
 
   home.packages = with pkgs; [
