@@ -81,7 +81,6 @@
       packages.${system} = {
         headroom-ai = pkgs.callPackage ./packages/headroom-ai { };
         llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
-        rlm-cli = pkgs.callPackage ./packages/rlm-cli { };
       };
 
       # Builds the different systems
