@@ -16,6 +16,11 @@
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
+    rules = ''
+      Unless otherwise stated, you are operating in a nixos system.
+
+      Use nix shell to access common packages if needed.
+    '';
     settings = {
       theme = lib.mkForce "system";
       lsp = {
