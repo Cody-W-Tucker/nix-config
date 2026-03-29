@@ -8,6 +8,7 @@ in
   xdg.userDirs = {
     enable = true;
     createDirectories = true;
+    setSessionVariables = false;
     extraConfig = {
       PROJECTS = "$HOME/Projects";
     };
@@ -23,7 +24,7 @@ in
     HISTFILE = "${xdg.dataHome}/histfile";
 
     NPM_CONFIG_USERCONFIG = writeText "npmrc" ''
-      prefix=${xdg.cacheHome}/npm
+      prefix=${xdg.dataHome}/npm
       cache=${xdg.cacheHome}/npm
       tmp=$XDG_RUNTIME_DIR/npm
       init-module=${xdg.configHome}/npm/config/npm-init.js

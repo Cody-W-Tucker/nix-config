@@ -30,6 +30,7 @@
       package = pkgs.adwaita-icon-theme;
       name = "Adwaita";
     };
+    gtk4.theme = null; # Let Stylix handle GTK4 via CSS
   };
 
   # Bluetooth applet for Waybar
