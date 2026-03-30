@@ -1,4 +1,9 @@
-{ pkgs, config, inputs, ... }:
+{
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 {
   # Folder structure
   systemd.tmpfiles.rules = [
@@ -17,6 +22,9 @@
     # Syncthing share directory
     "d /mnt/media/Share 2775 root media - -"
   ];
+
+  # Open Port for kobo sync
+  networking.firewall.allowedTCPPorts = [ 8083 ];
 
   # Media Management
   services = {
@@ -39,13 +47,15 @@
       port = 9123;
     };
 
-    # Calibre web for reading Books (using unstable for latest features)
+    # Calibre web for reading Books (with Kobo sync support)
     calibre-web = {
       enable = true;
       group = "media";
       listen.port = 8083;
       options.calibreLibrary = "/mnt/media/Media/Books";
-      package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.calibre-web;
+      package = pkgs.calibre-web.overridePythonAttrs (oldAttrs: {
+        dependencies = oldAttrs.dependencies ++ oldAttrs.optional-dependencies.kobo;
+      });
     };
 
     # Using for server for readarr
