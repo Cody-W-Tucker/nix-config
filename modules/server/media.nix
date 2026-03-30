@@ -215,6 +215,13 @@
         locations."/" = {
           proxyPass = "http://localhost:8083";
           proxyWebsockets = true;
+          extraConfig = ''
+            # Kobo sync requires large headers
+            proxy_busy_buffers_size   1024k;
+            proxy_buffers   4 512k;
+            proxy_buffer_size   1024k;
+            proxy_set_header X-Scheme $scheme;
+          '';
         };
         kTLS = true;
       };
