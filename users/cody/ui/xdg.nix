@@ -26,7 +26,6 @@ in
     NPM_CONFIG_USERCONFIG = writeText "npmrc" ''
       prefix=${xdg.dataHome}/npm
       cache=${xdg.cacheHome}/npm
-      tmp=$XDG_RUNTIME_DIR/npm
       init-module=${xdg.configHome}/npm/config/npm-init.js
     '';
   };
