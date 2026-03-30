@@ -8,6 +8,41 @@
   ...
 }:
 
+let
+  # Model configuration for Morphic
+  # Using current OpenAI models (gpt-5.4 series - March 2026)
+  # Docs: https://platform.openai.com/docs/models
+  modelsJson = pkgs.writeText "morphic-models.json" ''
+    {
+      "models": [
+        {
+          "id": "gpt-5.4",
+          "name": "GPT-5.4",
+          "provider": "OpenAI",
+          "providerId": "openai",
+          "enabled": true,
+          "toolCallType": "native"
+        },
+        {
+          "id": "gpt-5.4-mini",
+          "name": "GPT-5.4 Mini",
+          "provider": "OpenAI",
+          "providerId": "openai",
+          "enabled": true,
+          "toolCallType": "native"
+        },
+        {
+          "id": "gpt-5.4-nano",
+          "name": "GPT-5.4 Nano",
+          "provider": "OpenAI",
+          "providerId": "openai",
+          "enabled": true,
+          "toolCallType": "native"
+        }
+      ]
+    }
+  '';
+in
 {
   # Runtime
   virtualisation.docker = {
@@ -61,6 +96,9 @@
       config.sops.templates."morphic-morphic-env".path
       # Database connection using SOPS secrets
       config.sops.templates."morphic-db-env".path
+    ];
+    volumes = [
+      "${modelsJson}:/app/public/config/models.json:ro"
     ];
     ports = [
       "13000:3000/tcp"
