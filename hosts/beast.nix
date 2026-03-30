@@ -29,6 +29,7 @@ in
     ../modules/desktop/gaming
     ../modules/desktop/hardware/nvidia.nix
     ../modules/services/llama-swap
+    ../modules/services/morphic.nix
     ../modules/server/ai
 
     # Using community hardware configurations
