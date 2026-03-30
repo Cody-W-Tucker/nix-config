@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, inputs, ... }:
 {
   # Folder structure
   systemd.tmpfiles.rules = [
@@ -39,12 +39,13 @@
       port = 9123;
     };
 
-    # Calibre web for reading Books
+    # Calibre web for reading Books (using unstable for latest features)
     calibre-web = {
       enable = true;
       group = "media";
       listen.port = 8083;
       options.calibreLibrary = "/mnt/media/Media/Books";
+      package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.calibre-web;
     };
 
     # Using for server for readarr
