@@ -8,15 +8,16 @@
     ./content.nix
     ./excalidraw.nix
     ./homepage-dashboard.nix
+    ./karakeep.nix
     ./media.nix
     ./monitoring.nix
     ./paperless.nix
     ./photos.nix
     ./samba.nix
+    ./searxng.nix
+    ./security.nix
     ../services/syncthing.nix
     ./nginx-syncthing.nix
-    ./security.nix
-    ./karakeep.nix
   ];
 
   # Create the acme secret in sops
