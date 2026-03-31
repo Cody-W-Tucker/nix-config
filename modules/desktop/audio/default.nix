@@ -1,39 +1,80 @@
 { pkgs, ... }:
 
 {
-  # Enable sound with pipewire
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    wireplumber.enable = true; # Required for priority rules in host specific configs
-  };
-  # Enable rtkit for real-time scheduling for audio
-  security.rtkit.enable = true;
-
-  # Ensure headset doesn't switch profiles
-  services.pipewire.wireplumber.extraConfig."11-bluetooth-policy" = {
-    "wireplumber.settings" = {
-      "bluetooth.autoswitch-to-headset-profile" = false;
-    };
-  };
-
-  # Bluetooth support
-  hardware = {
-    bluetooth = {
+    wireplumber = {
       enable = true;
-      powerOnBoot = true;
-      settings = {
-        General = {
-          FastConnectable = true; # Improve connection speed
-          JustWorksRepairing = "always";
-          ControllerMode = "bredr"; # Allow low energy mode?
-          MultiProfile = "multiple"; # Allow multiple profiles
+      extraConfig = {
+        "bluetooth" = {
+          "wireplumber.settings" = {
+            "bluetooth.autoswitch-to-headset-profile" = false;
+          };
+          "monitor.bluez.properties" = {
+            "bluez5.roles" = [
+              "a2dp_sink"
+              "a2dp_source"
+            ];
+            "bluez5.codecs" = [
+              "sbc_xq"
+              "sbc"
+              "aac"
+            ];
+            "bluez5.enable-sbc-xq" = true;
+            "bluez5.hfphsp-backend" = "native";
+            "bluez5.a2dp.ldac.quality" = "hq";
+            "bluez5.a2dp.aac.bitratemode" = "hq";
+          };
+        };
+        "bluetooth-seat-monitoring" = {
+          "wireplumber.profiles" = {
+            main = {
+              "monitor.bluez.seat-monitoring" = "disabled";
+            };
+          };
+        };
+        "bluetooth-device-profile" = {
+          "monitor.bluez.rules" = [
+            {
+              matches = [
+                {
+                  "device.name" = "~bluez_card.*";
+                }
+              ];
+              actions.update-props = {
+                "device.profile" = "a2dp-sink";
+              };
+            }
+          ];
         };
       };
     };
   };
-  # Bluetooth audio support
+
+  security.rtkit.enable = true;
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+        ControllerMode = "bredr";
+        FastConnectable = true;
+        JustWorksRepairing = "always";
+        MultiProfile = "multiple";
+      };
+      Policy = {
+        AutoEnable = true;
+      };
+    };
+  };
+
   services.blueman.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    pbpctrl
+  ];
 }

@@ -71,6 +71,10 @@ in
       "kvm-intel"
       "btusb"
     ];
+    extraModprobeConfig = ''
+      options btusb enable_autosuspend=n
+      options mt7925e disable_aspm=Y
+    '';
   };
 
   # Networking
