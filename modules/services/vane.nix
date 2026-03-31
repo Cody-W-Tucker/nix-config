@@ -1,6 +1,8 @@
 # Vane AI Search Tool
-# Simple single-container AI search interface
-# https://github.com/itzcrazykns1337/Vane
+# https://github.com/ItzCrazyKns/Vane
+#
+# This uses the official Docker image with optional patches mounted at runtime
+# instead of building from source (which requires complex Node.js native addon handling)
 
 {
   config,
@@ -9,6 +11,11 @@
   ...
 }:
 
+let
+  # Directory for runtime patches (applied via volume mount)
+  vanePatchesDir = "/var/lib/vane-patches";
+
+in
 {
   # Enable Docker
   virtualisation.docker = {
@@ -25,12 +32,19 @@
     ];
     volumes = [
       "vane-data:/home/vane/data:rw"
+      # Mount patches directory if you have custom modifications
+      # "${vanePatchesDir}:/app/patches:ro"
     ];
     log-driver = "journald";
     autoStart = true;
     extraOptions = [
       "--network=vane"
     ];
+    # Optional: Add environment variables for configuration
+    environment = {
+      PORT = "3000";
+      # Add other Vane config here
+    };
   };
 
   # Docker network for Vane
@@ -72,6 +86,11 @@
     ];
     wantedBy = [ "multi-user.target" ];
   };
+
+  # Create patches directory (for runtime customization)
+  systemd.tmpfiles.rules = [
+    "d ${vanePatchesDir} 0755 root root -"
+  ];
 
   # Firewall - allow access to Vane web UI
   networking.firewall.allowedTCPPorts = [ 3000 ];
