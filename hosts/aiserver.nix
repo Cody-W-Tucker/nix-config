@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   self,
+  config,
   ...
 }:
 
@@ -35,6 +36,7 @@ in
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
     inputs.nixos-hardware.nixosModules.common-cpu-amd
+    inputs.searcher.nixosModules.default
   ];
 
   # Home-manager configuration with hardware-specific settings
@@ -212,6 +214,11 @@ in
   ];
 
   services = {
+    vane = {
+      enable = true;
+      exaApiKeyFile = config.sops.secrets."exa-api-key".path;
+      port = 4110;
+    };
     llama-swap = {
       # Hot loading models from llama-cpp
       enable = true;
@@ -270,4 +277,7 @@ in
   };
 
   system.stateVersion = "25.11"; # Don't change
+
+  # SOPS secrets for Vane service
+  sops.secrets."exa-api-key" = { };
 }

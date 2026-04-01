@@ -60,6 +60,11 @@
       url = "github:madjinn/whisp-away";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    searcher = {
+      # custom perplexity replacement for agentic search
+      url = "github:Cody-W-Tucker/searcher";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
