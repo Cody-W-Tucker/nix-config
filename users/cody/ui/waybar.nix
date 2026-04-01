@@ -33,10 +33,13 @@ in
         position = "top";
         layer = "top";
         spacing = 4;
-        modules-left = [ "group/workspaces" ];
+        modules-left = [
+          "group/workspaces"
+          "custom/agenda"
+        ];
         modules-center = [
           "custom/notification"
-          "group/clock"
+          "clock"
           "custom/weather"
         ];
         modules-right = [
@@ -51,17 +54,6 @@ in
           format = "{icon} {windows}";
           window-rewrite = favorite_apps;
           window-rewrite-default = "󰏗";
-        };
-        "group/clock" = {
-          orientation = "horizontal";
-          drawer = {
-            transition-duration = 500;
-            transition-left-to-right = true;
-          };
-          modules = [
-            "clock"
-            "custom/agenda"
-          ];
         };
         "group/workspaces" = {
           orientation = "horizontal";
@@ -130,11 +122,22 @@ in
         };
         "custom/agenda" = {
           exec =
-            nextmeeting
-            + " --skip-all-day-meeting --waybar --gcalcli-cmdline \"gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv\"";
-          on-click = nextmeeting + "--open-meet-url";
+            let
+              nextmeetingWithClass = pkgs.writeShellScript "nextmeeting-with-class" ''
+                OUTPUT=$(${nextmeeting} --skip-all-day-meeting --waybar --gcalcli-cmdline "gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv")
+                if echo "$OUTPUT" | grep -q '"text": "No meeting'; then
+                  echo '{"text":""}'
+                else
+                  # Extract the text value and prepend calendar icon
+                  TEXT=$(echo "$OUTPUT" | sed 's/.*"text": "\([^"]*\)".*/\1/')
+                  echo "{\"text\":\"󰃶 $TEXT\"}"
+                fi
+              '';
+            in
+            builtins.toString nextmeetingWithClass;
+          on-click = nextmeeting + " --open-meet-url";
           on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
-          format = "󰃶 {}";
+          format = "{}";
           return-type = "json";
           interval = 59;
           tooltip = true;
