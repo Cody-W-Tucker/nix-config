@@ -517,11 +517,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775094194,
-        "narHash": "sha256-Lk+yrOO3fZBr0ca70A8ZmHbTl/HSMJeZIA27ReHY0mE=",
+        "lastModified": 1775095025,
+        "narHash": "sha256-YWFtuZB4fn4kjaIv/d497Dh1S6Bp8TorXwtGYbw88a4=",
         "owner": "Cody-W-Tucker",
         "repo": "searcher",
-        "rev": "c6d858e5f3c889cc101c96525a2159c91e19333f",
+        "rev": "564f1bc95a57ee8969f9cd89cffce0df089958c3",
         "type": "github"
       },
       "original": {
