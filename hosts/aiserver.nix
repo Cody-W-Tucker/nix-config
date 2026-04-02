@@ -215,10 +215,19 @@ in
     }
   ];
 
+  # SOPS secrets for Vane service
+  sops.secrets."exa-api-key" = { };
+  sops.secrets."opencode-zen-api-key" = { };
+
   services = {
     vane = {
       enable = true;
-      exaApiKeyFile = config.sops.secrets."exa-api-key".path;
+      exaApiKey = config.sops.secrets."exa-api-key".path;
+      openaiApiKey = config.sops.secrets."opencode-zen-api-key".path;
+      openaiEndpoint = "https://opencode.ai/zen/v1/";
+      chatModels = [
+        "kimi-k2.5"
+      ];
       port = 4110;
     };
     llama-swap = {
@@ -279,7 +288,4 @@ in
   };
 
   system.stateVersion = "25.11"; # Don't change
-
-  # SOPS secrets for Vane service
-  sops.secrets."exa-api-key" = { };
 }
