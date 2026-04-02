@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   programs.mcp = {
     enable = true;
@@ -22,18 +20,6 @@
           "run"
           "github:utensils/mcp-nixos"
         ];
-      };
-      memory = {
-        command = "nix-shell";
-        args = [
-          "-p"
-          "nodejs"
-          "--run"
-          "npx -y @modelcontextprotocol/server-memory"
-        ];
-        env = {
-          MEMORY_FILE_PATH = "/home/codyt/.config/mcp/memory.json";
-        };
       };
     };
   };
