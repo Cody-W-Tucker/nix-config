@@ -3,11 +3,12 @@
 {
   imports = [
     ./actual-budget.nix
-    ./arm.nix
     ./adguard.nix
+    ./arm.nix
     ./content.nix
     ./excalidraw.nix
     ./homepage-dashboard.nix
+    ./kanban.nix
     ./karakeep.nix
     ./media.nix
     ./monitoring.nix
