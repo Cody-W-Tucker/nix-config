@@ -151,6 +151,8 @@ in
     useDHCP = lib.mkDefault true;
   };
 
+  networking.firewall.allowedTCPPorts = [ 4110 ];
+
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-uuid/73998e5d-b64f-4148-bacb-af7b7883746a";
