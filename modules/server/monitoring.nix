@@ -21,14 +21,22 @@
         datasources = [
           {
             name = "Prometheus";
+            uid = "prometheus";
             type = "prometheus";
             url = "http://localhost:${toString config.services.prometheus.port}";
           }
-          # {
-          #   name = "Loki";
-          #   type = "loki";
-          #   url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}";
-          # }
+          {
+            name = "Loki";
+            uid = "loki";
+            type = "loki";
+            url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}";
+          }
+          {
+            name = "Tempo";
+            uid = "tempo";
+            type = "tempo";
+            url = "http://localhost:${toString config.services.tempo.settings.server.http_listen_port}";
+          }
         ];
       };
     };
@@ -176,6 +184,56 @@
       };
     };
 
+    tempo = {
+      enable = true;
+      settings = {
+        multitenancy_enabled = false;
+        stream_over_http_enabled = true;
+        server = {
+          http_listen_address = "127.0.0.1";
+          http_listen_port = 3200;
+          grpc_listen_port = 9095;
+        };
+        distributor.receivers.otlp.protocols = {
+          grpc.endpoint = "127.0.0.1:4327";
+          http.endpoint = "127.0.0.1:4328";
+        };
+        ingester.max_block_duration = "5m";
+        compactor.compaction = {
+          block_retention = "168h";
+          compacted_block_retention = "1h";
+        };
+        storage.trace = {
+          backend = "local";
+          wal.path = "/var/lib/tempo/wal";
+          local.path = "/var/lib/tempo/traces";
+        };
+      };
+    };
+
+    opentelemetry-collector = {
+      enable = true;
+      settings = {
+        receivers.otlp.protocols = {
+          grpc.endpoint = "0.0.0.0:4317";
+          http.endpoint = "0.0.0.0:4318";
+        };
+        processors.batch = { };
+        exporters.otlp = {
+          endpoint = "127.0.0.1:4327";
+          tls.insecure = true;
+        };
+        service = {
+          pipelines.traces = {
+            receivers = [ "otlp" ];
+            processors = [ "batch" ];
+            exporters = [ "otlp" ];
+          };
+          telemetry.logs.level = "warn";
+        };
+      };
+    };
+
     promtail = {
       enable = true;
       configuration = {
@@ -227,6 +285,8 @@
   # Open port 3090 for Loki
   networking.firewall.allowedTCPPorts = [
     3090
+    4317
+    4318
     9001
   ];
 }

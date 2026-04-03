@@ -1,6 +1,6 @@
 { pkgs }:
 
-pkgs.writeShellScriptBin "update" ''
+pkgs.writeShellScriptBin "pull-update" ''
   set -euo pipefail
 
   host="$(hostname -s)"
@@ -66,7 +66,7 @@ pkgs.writeShellScriptBin "update" ''
   if [ "$trace_enabled" -eq 1 ] && [ -z "''${TRACEPARENT:-}" ] && [ "''${1:-}" != "--trace-inner" ]; then
     exec "$otel_cli" exec "''${otel_base_args[@]}" \
       --service codyos-update \
-      --name nixos.rebuild \
+      --name nixos.pull_update \
       --attrs "host=$host,repo=/etc/nixos" \
       -- "$0" --trace-inner "$@"
   fi
@@ -83,25 +83,18 @@ pkgs.writeShellScriptBin "update" ''
     "system.health.baseline" \
     "host=$host,failed_units=$failed_units_before,error_logs_15m=$error_logs_before"
 
-  trace_exec nix.format nix fmt
+  git_rev_before="$(git rev-parse --short HEAD)"
+  trace_exec git.pull git pull
+  git_rev_after="$(git rev-parse --short HEAD)"
 
-  # Check for unimported .nix files
-  trace_exec nix.check_imports check-imports
-
-  trace_exec git.stage git add .
-
-  if [ -z "''${1:-}" ]; then
-    echo "Enter commit message:"
-    read -r commit_message
-    commit_message=''${commit_message:-"Update NixOS configuration"}
-  else
-    commit_message="$1"
+  changed="false"
+  if [ "$git_rev_before" != "$git_rev_after" ]; then
+    changed="true"
   fi
 
-  trace_exec git.commit git commit -m "$commit_message"
-
-  current_rev="$(git rev-parse --short HEAD)"
-  emit_span "git.commit.summary" "host=$host,git_sha=$current_rev"
+  emit_span \
+    "git.pull.summary" \
+    "host=$host,git_sha_before=$git_rev_before,git_sha_after=$git_rev_after,git_changed=$changed"
 
   trace_exec nixos.switch sudo nixos-rebuild switch
 
@@ -119,6 +112,4 @@ pkgs.writeShellScriptBin "update" ''
     "nixos.switch.health" \
     "host=$host,failed_units_before=$failed_units_before,failed_units_after=$failed_units_after,failed_units_delta=$failed_units_delta,error_logs_15m_before=$error_logs_before,error_logs_15m_after=$error_logs_after,error_logs_delta=$error_logs_delta" \
     "$health_status"
-
-  trace_exec git.push git push
 ''
