@@ -24,6 +24,12 @@
             type = "prometheus";
             url = "http://localhost:${toString config.services.prometheus.port}";
           }
+          {
+            name = "Tempo";
+            type = "tempo";
+            uid = "tempo";
+            url = "http://localhost:${toString config.services.tempo.settings.server.http_listen_port}";
+          }
         ];
       };
     };
