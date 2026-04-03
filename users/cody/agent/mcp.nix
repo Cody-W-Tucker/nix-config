@@ -1,4 +1,14 @@
+{ pkgs, config, ... }:
+let
+  grafanaMcpWrapper = pkgs.writeShellScriptBin "grafana-mcp-wrapper" ''
+    export GRAFANA_URL="https://monitoring.homehub.tv"
+    export GRAFANA_SERVICE_ACCOUNT_TOKEN=$(cat ${config.sops.secrets.grafana-mcp-token.path})
+    exec ${pkgs.mcp-grafana}/bin/mcp-grafana
+  '';
+in
 {
+  sops.secrets.grafana-mcp-token = { };
+
   programs.mcp = {
     enable = true;
     servers = {
@@ -20,6 +30,9 @@
           "run"
           "github:utensils/mcp-nixos"
         ];
+      };
+      grafana = {
+        command = "${grafanaMcpWrapper}/bin/grafana-mcp-wrapper";
       };
     };
   };
