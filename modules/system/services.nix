@@ -16,6 +16,8 @@
     prometheus.exporters.smartctl = {
       enable = true;
       openFirewall = true;
+      user = "root";
+      group = "root";
     };
   };
 
