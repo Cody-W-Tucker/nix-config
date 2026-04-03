@@ -24,18 +24,24 @@
             uid = "prometheus";
             type = "prometheus";
             url = "http://localhost:${toString config.services.prometheus.port}";
+            jsonData = { };
+            secureJsonData = { };
           }
           {
             name = "Loki";
             uid = "loki";
             type = "loki";
             url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}";
+            jsonData = { };
+            secureJsonData = { };
           }
           {
             name = "Tempo";
             uid = "tempo";
             type = "tempo";
             url = "http://localhost:${toString config.services.tempo.settings.server.http_listen_port}";
+            jsonData = { };
+            secureJsonData = { };
           }
         ];
       };
