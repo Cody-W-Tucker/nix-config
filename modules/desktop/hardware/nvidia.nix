@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   # Load nvidia driver for Xorg and Wayland
@@ -10,6 +15,15 @@
     package = config.boot.kernelPackages.nvidiaPackages.beta;
     nvidiaSettings = false;
   };
+
+  # NVIDIA GPU monitoring for Prometheus
+  services.prometheus.exporters.nvidia-gpu = {
+    enable = true;
+    port = 9835;
+  };
+
+  # Open firewall for NVIDIA GPU exporter
+  networking.firewall.allowedTCPPorts = [ 9835 ];
 
   environment = {
     # Use EGL for Wayland

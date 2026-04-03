@@ -94,6 +94,17 @@
             }
           ];
         }
+        {
+          job_name = "nvidia-gpu";
+          static_configs = [
+            {
+              targets = [ "beast:9835" ];
+              labels = {
+                host = "beast";
+              };
+            }
+          ];
+        }
       ];
     };
     loki = {
