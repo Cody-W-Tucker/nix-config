@@ -71,6 +71,29 @@
             }
           ];
         }
+        {
+          job_name = "smartctl";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.smartctl.port}" ];
+              labels = {
+                host = "server";
+              };
+            }
+            {
+              targets = [ "beast:9633" ];
+              labels = {
+                host = "beast";
+              };
+            }
+            {
+              targets = [ "aiserver:9633" ];
+              labels = {
+                host = "aiserver";
+              };
+            }
+          ];
+        }
       ];
     };
     loki = {
