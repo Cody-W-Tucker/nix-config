@@ -35,6 +35,7 @@
     };
     prometheus = {
       enable = true;
+      extraFlags = [ "--web.enable-remote-write-receiver" ];
       port = 9001;
       exporters = {
         node = {
@@ -191,11 +192,38 @@
           grpc.endpoint = "127.0.0.1:4327";
           http.endpoint = "127.0.0.1:4328";
         };
+        distributor.enable_metrics_generator_ring = true;
         ingester.max_block_duration = "5m";
         compactor.compaction = {
           block_retention = "168h";
           compacted_block_retention = "1h";
         };
+        metrics_generator = {
+          ring = {
+            kvstore.store = "inmemory";
+            instance_addr = "127.0.0.1";
+          };
+          processor.local_blocks.filter_server_spans = false;
+          registry.external_labels = {
+            source = "tempo";
+            host = "server";
+          };
+          storage = {
+            path = "/var/lib/tempo/generator/wal";
+            remote_write = [
+              {
+                url = "http://127.0.0.1:${toString config.services.prometheus.port}/api/v1/write";
+                send_exemplars = true;
+              }
+            ];
+          };
+          traces_storage.path = "/var/lib/tempo/generator/traces";
+        };
+        overrides.defaults.metrics_generator.processors = [
+          "local-blocks"
+          "service-graphs"
+          "span-metrics"
+        ];
         storage.trace = {
           backend = "local";
           wal.path = "/var/lib/tempo/wal";
