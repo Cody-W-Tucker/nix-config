@@ -192,7 +192,6 @@
           grpc.endpoint = "127.0.0.1:4327";
           http.endpoint = "127.0.0.1:4328";
         };
-        distributor.enable_metrics_generator_ring = true;
         ingester.max_block_duration = "5m";
         compactor.compaction = {
           block_retention = "168h";
