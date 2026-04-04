@@ -51,9 +51,13 @@
     recommendedOptimisation = true;
     recommendedGzipSettings = true;
     recommendedProxySettings = true;
+    # Enable access logging for Loki
     appendHttpConfig = ''
       proxy_headers_hash_max_size 1024;
       proxy_headers_hash_bucket_size 128;
+      
+      # Access log for Loki ingestion
+      access_log /var/log/nginx/access.log;
     '';
     # These services are on the beast machine
     virtualHosts = {

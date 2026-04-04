@@ -325,6 +325,19 @@
               }
             ];
           }
+          {
+            job_name = "nginx-access";
+            static_configs = [
+              {
+                targets = [ "localhost" ];
+                labels = {
+                  job = "nginx-access";
+                  host = "server";
+                  __path__ = "/var/log/nginx/access.log";
+                };
+              }
+            ];
+          }
         ];
       };
       # extraFlags
@@ -341,6 +354,9 @@
       kTLS = true;
     };
   };
+
+  users.users.promtail.extraGroups = [ "nginx" ];
+
   # Open port 3090 for Loki
   networking.firewall.allowedTCPPorts = [
     3090
