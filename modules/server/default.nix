@@ -57,6 +57,17 @@
     '';
     # These services are on the beast machine
     virtualHosts = {
+      # Internal status endpoint for metrics
+      "localhost" = {
+        listen = [ { addr = "127.0.0.1"; port = 9114; } ];
+        locations."/nginx_status" = {
+          extraConfig = ''
+            stub_status on;
+            allow 127.0.0.1;
+            deny all;
+          '';
+        };
+      };
       "qdrant.homehub.tv" = {
         useACMEHost = "homehub.tv";
         forceSSL = true;

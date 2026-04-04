@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   services = {
     grafana = {
@@ -42,6 +42,23 @@
           enable = true;
           enabledCollectors = [ "systemd" ];
           port = 9002;
+        };
+        nginx = {
+          enable = true;
+          port = 9115;
+          scrapeUri = "http://127.0.0.1:9114/nginx_status";
+        };
+        nginxlog = {
+          enable = true;
+          group = "nginx";
+          settings = {
+            consul.enable = false;
+            namespaces = [{
+              name = "nginxlog";
+              format = ''$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'';
+              source.files = [ "/var/log/nginx/access.log" ];
+            }];
+          };
         };
       };
       scrapeConfigs = [
@@ -103,6 +120,28 @@
               targets = [ "beast:9835" ];
               labels = {
                 host = "beast";
+              };
+            }
+          ];
+        }
+        {
+          job_name = "nginx";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:9115" ];
+              labels = {
+                host = "server";
+              };
+            }
+          ];
+        }
+        {
+          job_name = "nginx-logs";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:9117" ];
+              labels = {
+                host = "server";
               };
             }
           ];
