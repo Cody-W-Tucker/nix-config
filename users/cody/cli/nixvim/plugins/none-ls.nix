@@ -25,6 +25,7 @@
           prettier = {
             enable = true;
             disableTsServerFormatter = true;
+            package = pkgs.prettier;
             settings = ''
               {
                 extra_args = { "--no-semi" },
