@@ -55,7 +55,7 @@
     appendHttpConfig = ''
       proxy_headers_hash_max_size 1024;
       proxy_headers_hash_bucket_size 128;
-      
+
       # Access log for Loki ingestion
       access_log /var/log/nginx/access.log;
     '';
@@ -63,7 +63,12 @@
     virtualHosts = {
       # Internal status endpoint for metrics
       "localhost" = {
-        listen = [ { addr = "127.0.0.1"; port = 9114; } ];
+        listen = [
+          {
+            addr = "127.0.0.1";
+            port = 9114;
+          }
+        ];
         locations."/nginx_status" = {
           extraConfig = ''
             stub_status on;

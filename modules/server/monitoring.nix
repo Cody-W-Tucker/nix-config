@@ -53,11 +53,13 @@
           group = "nginx";
           settings = {
             consul.enable = false;
-            namespaces = [{
-              name = "nginxlog";
-              format = ''$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'';
-              source.files = [ "/var/log/nginx/access.log" ];
-            }];
+            namespaces = [
+              {
+                name = "nginxlog";
+                format = ''$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'';
+                source.files = [ "/var/log/nginx/access.log" ];
+              }
+            ];
           };
         };
       };
