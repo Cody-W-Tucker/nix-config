@@ -240,10 +240,13 @@
               kvstore = {
                 store = "inmemory";
               };
-              instance_addr = "127.0.0.1";
               replication_factor = 1;
             };
           };
+        };
+        memberlist = {
+          bind_addr = [ "127.0.0.1" ];
+          bind_port = 7946;
         };
         compactor.compaction = {
           block_retention = "168h";
