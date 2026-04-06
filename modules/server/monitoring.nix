@@ -233,7 +233,13 @@
           grpc.endpoint = "127.0.0.1:4327";
           http.endpoint = "127.0.0.1:4328";
         };
-        ingester.max_block_duration = "5m";
+        ingester = {
+          max_block_duration = "5m";
+          ring = {
+            kvstore.store = "inmemory";
+            instance_addr = "127.0.0.1";
+          };
+        };
         compactor.compaction = {
           block_retention = "168h";
           compacted_block_retention = "1h";
