@@ -1,13 +1,31 @@
 { pkgs, config, ... }:
 let
-  grafanaMcpWrapper = pkgs.writeShellScriptBin "grafana-mcp-wrapper" ''
-    export GRAFANA_URL="https://monitoring.homehub.tv"
-    export GRAFANA_SERVICE_ACCOUNT_TOKEN=$(cat ${config.sops.secrets.grafana-mcp-token.path})
-    exec ${pkgs.mcp-grafana}/bin/mcp-grafana
-  '';
+  grafanaMcp = pkgs.writeShellApplication {
+    name = "grafana-mcp";
+    text = ''
+      export GRAFANA_URL="https://monitoring.homehub.tv"
+      GRAFANA_SERVICE_ACCOUNT_TOKEN="$(< ${config.sops.secrets.grafana-mcp-token.path})"
+      export GRAFANA_SERVICE_ACCOUNT_TOKEN
+
+      exec ${pkgs.mcp-grafana}/bin/mcp-grafana "$@"
+    '';
+  };
+
+  karakeepMcp = pkgs.writeShellApplication {
+    name = "karakeep-mcp";
+    runtimeInputs = [ pkgs.nodejs ];
+    text = ''
+      export KARAKEEP_API_ADDR="https://karakeep.homehub.tv"
+      KARAKEEP_API_KEY="$(< ${config.sops.secrets.karakeep-api-key.path})"
+      export KARAKEEP_API_KEY
+
+      exec npx -y @karakeep/mcp "$@"
+    '';
+  };
 in
 {
   sops.secrets.grafana-mcp-token = { };
+  sops.secrets.karakeep-api-key = { };
 
   programs.mcp = {
     enable = true;
@@ -32,7 +50,10 @@ in
         ];
       };
       grafana = {
-        command = "${grafanaMcpWrapper}/bin/grafana-mcp-wrapper";
+        command = "${grafanaMcp}/bin/grafana-mcp";
+      };
+      karakeep = {
+        command = "${karakeepMcp}/bin/karakeep-mcp";
       };
     };
   };
