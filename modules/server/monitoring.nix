@@ -235,9 +235,14 @@
         };
         ingester = {
           max_block_duration = "5m";
-          ring = {
-            kvstore.store = "inmemory";
-            instance_addr = "127.0.0.1";
+          lifecycler = {
+            ring = {
+              kvstore = {
+                store = "inmemory";
+              };
+              instance_addr = "127.0.0.1";
+              replication_factor = 1;
+            };
           };
         };
         compactor.compaction = {
