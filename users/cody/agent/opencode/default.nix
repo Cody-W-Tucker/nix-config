@@ -21,8 +21,8 @@
 
       Use nix shell to access common packages if needed.
     '';
+    tui.theme = lib.mkForce "system";
     settings = {
-      theme = lib.mkForce "system";
       lsp = {
         nix = {
           command = [ "${lib.getExe pkgs.nil}" ];
