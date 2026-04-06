@@ -8,9 +8,9 @@
   imports = [
     ./commands/taskwarrior
     ../../packages/desloppify
-    ./tools/code-search
     ./tools/rtk
     ./skills/obsidian
+    ./skills/code-search
   ];
 
   programs.opencode = {
