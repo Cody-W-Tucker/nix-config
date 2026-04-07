@@ -30,6 +30,7 @@ in
     ../modules/desktop
     ../modules/services/headroom
     ../modules/desktop/hardware/rocm.nix
+    ../modules/desktop/hardware/amdgpu-metrics.nix
     ../modules/services/llama-swap
     ../modules/system/strix-hardware
     # Using community hardware nixosConfigurations
@@ -266,6 +267,13 @@ in
         dbPath = "/var/lib/headroom/headroom-memory.db";
       };
     };
+    
+    # Enable AMD GPU metrics exporter for Prometheus
+    prometheus.exporters.node = {
+      enable = true;
+      openFirewall = true;
+    };
+    
     # Rename promtail host label to match machine name
     promtail.configuration.scrape_configs = [
       {
@@ -285,6 +293,12 @@ in
         ];
       }
     ];
+  };
+  
+  # Enable AMD GPU metrics exporter
+  hardware.amdgpu.metricsExporter = {
+    enable = true;
+    interval = "30s";
   };
 
   system.stateVersion = "25.11"; # Don't change
