@@ -74,7 +74,6 @@
     settings = {
       general = {
         hide_cursor = true;
-        grace = 300; # 5mins.
         ignore_empty_input = true;
       };
       background = lib.mkForce [
