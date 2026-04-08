@@ -63,6 +63,10 @@ pkgs.writeShellScriptBin "pull-update" ''
     journalctl -b -p err --since "-15 min" --no-pager -q | wc -l | tr -d ' '
   }
 
+  count_recent_coredumps() {
+    journalctl -b -p crit --since "-15 min" --no-pager -q | grep -i "dumped core\|segfault\|sigsegv\|sigabrt" | wc -l | tr -d ' '
+  }
+
   if [ "$trace_enabled" -eq 1 ] && [ -z "''${TRACEPARENT:-}" ] && [ "''${1:-}" != "--trace-inner" ]; then
     exec "$otel_cli" exec "''${otel_base_args[@]}" \
       --service codyos-update \
@@ -79,9 +83,10 @@ pkgs.writeShellScriptBin "pull-update" ''
 
   failed_units_before="$(count_failed_units)"
   error_logs_before="$(count_recent_errors)"
+  coredumps_before="$(count_recent_coredumps)"
   emit_span \
     "system.health.baseline" \
-    "host=$host,failed_units=$failed_units_before,error_logs_15m=$error_logs_before"
+    "host=$host,failed_units=$failed_units_before,error_logs_15m=$error_logs_before,coredumps_15m=$coredumps_before"
 
   git_rev_before="$(git rev-parse --short HEAD)"
   trace_exec git.pull git pull
@@ -100,16 +105,18 @@ pkgs.writeShellScriptBin "pull-update" ''
 
   failed_units_after="$(count_failed_units)"
   error_logs_after="$(count_recent_errors)"
+  coredumps_after="$(count_recent_coredumps)"
   failed_units_delta=$((failed_units_after - failed_units_before))
   error_logs_delta=$((error_logs_after - error_logs_before))
+  coredumps_delta=$((coredumps_after - coredumps_before))
 
   health_status="ok"
-  if [ "$failed_units_delta" -gt 0 ] || [ "$error_logs_delta" -gt 0 ]; then
+  if [ "$failed_units_delta" -gt 0 ] || [ "$error_logs_delta" -gt 0 ] || [ "$coredumps_delta" -gt 0 ]; then
     health_status="error"
   fi
 
   emit_span \
     "nixos.switch.health" \
-    "host=$host,failed_units_before=$failed_units_before,failed_units_after=$failed_units_after,failed_units_delta=$failed_units_delta,error_logs_15m_before=$error_logs_before,error_logs_15m_after=$error_logs_after,error_logs_delta=$error_logs_delta" \
+    "host=$host,failed_units_before=$failed_units_before,failed_units_after=$failed_units_after,failed_units_delta=$failed_units_delta,error_logs_15m_before=$error_logs_before,error_logs_15m_after=$error_logs_after,error_logs_delta=$error_logs_delta,coredumps_15m_before=$coredumps_before,coredumps_15m_after=$coredumps_after,coredumps_delta=$coredumps_delta" \
     "$health_status"
 ''
