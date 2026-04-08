@@ -267,13 +267,13 @@ in
         dbPath = "/var/lib/headroom/headroom-memory.db";
       };
     };
-    
+
     # Enable AMD GPU metrics exporter for Prometheus
     prometheus.exporters.node = {
       enable = true;
       openFirewall = true;
     };
-    
+
     # Rename promtail host label to match machine name
     promtail.configuration.scrape_configs = [
       {
@@ -294,7 +294,7 @@ in
       }
     ];
   };
-  
+
   # Enable AMD GPU metrics exporter
   hardware.amdgpu.metricsExporter = {
     enable = true;
