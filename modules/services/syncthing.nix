@@ -33,7 +33,6 @@
     "d /mnt 0755 root root - -"
     "d /mnt/backup 0755 codyt users - -"
     "d /mnt/backup/Share 0755 codyt users - -"
-    "d /mnt/backup/Obsidian 0755 codyt users - -"
   ];
 
   # Hostname-specific folder configurations
@@ -58,13 +57,6 @@
           "aiserver"
           "beast"
           "server"
-        ];
-      };
-      "Cody's Obsidian" = {
-        path = "/mnt/backup/Obsidian";
-        devices = [
-          "Cody's Pixel"
-          "beast"
         ];
       };
     })

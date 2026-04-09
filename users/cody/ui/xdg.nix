@@ -4,13 +4,16 @@ let
   inherit (config) xdg;
 in
 {
-  # Enable XDG user directories with custom Projects folder
+  # Enable XDG user directories with custom folders
   xdg.userDirs = {
     enable = true;
     createDirectories = true;
     setSessionVariables = false;
     extraConfig = {
       PROJECTS = "$HOME/Projects";
+      KNOWLEDGE = "$HOME/Knowledge";
+      KNOWLEDGE_PERSONAL = "$HOME/Knowledge/Personal";
+      KNOWLEDGE_BASE = "$HOME/Knowledge/Base";
     };
   };
 

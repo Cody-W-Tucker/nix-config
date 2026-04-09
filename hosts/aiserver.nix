@@ -175,14 +175,6 @@ in
         "nofail"
       ];
     };
-    "/home/codyt/Knowledge/Personal" = {
-      device = "/mnt/backup/Obsidian";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
     "/home/codyt/Music" = {
       device = "/mnt/backup/Share/Music";
       fsType = "none";

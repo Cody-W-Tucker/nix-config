@@ -135,14 +135,6 @@ in
         "nofail"
       ];
     };
-    "/home/codyt/Knowledge/Personal" = {
-      device = "/mnt/backup/Obsidian";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
     "/mnt/server-books" = {
       device = "192.168.1.31:/mnt/media/Media/Books";
       fsType = "nfs";
