@@ -8,7 +8,6 @@
     ./content.nix
     ./excalidraw.nix
     ./homepage-dashboard.nix
-    ./kanban.nix
     ./karakeep.nix
     ./media.nix
     ./monitoring.nix
