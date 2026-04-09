@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./obsidian # Obsidian declarative configuration
     ./ui
     ./cli
     ./agent

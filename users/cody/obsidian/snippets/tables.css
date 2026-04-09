@@ -1,0 +1,27 @@
+/* Force tables to expand instead of scroll */
+.markdown-preview-view table {
+  table-layout: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+/* Ensure table contents wrap */
+.markdown-preview-view td,
+.markdown-preview-view th {
+  white-space: normal !important;
+  word-wrap: break-word;
+  min-width: 50px !important;
+}
+
+/* Contain images within cells */
+.markdown-preview-view img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Override container constraints */
+.markdown-preview-view div:has(> table) {
+  overflow: visible !important;
+  max-width: none !important;
+}
