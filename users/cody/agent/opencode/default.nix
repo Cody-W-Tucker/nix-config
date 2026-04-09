@@ -23,6 +23,7 @@
     '';
     tui.theme = lib.mkForce "system";
     settings = {
+      autoupdate = false;
       lsp = {
         nix = {
           command = [ "${lib.getExe pkgs.nil}" ];
