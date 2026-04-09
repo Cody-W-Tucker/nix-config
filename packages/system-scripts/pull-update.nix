@@ -68,11 +68,12 @@ pkgs.writeShellScriptBin "pull-update" ''
   }
 
   if [ "$trace_enabled" -eq 1 ] && [ -z "''${TRACEPARENT:-}" ] && [ "''${1:-}" != "--trace-inner" ]; then
+    # otel-cli 0.4.5 crashes when exec is given a script directly.
     exec "$otel_cli" exec "''${otel_base_args[@]}" \
       --service codyos-update \
       --name nixos.pull_update \
       --attrs "host=$host,repo=/etc/nixos" \
-      -- "$0" --trace-inner "$@"
+      -- ${pkgs.bash}/bin/bash "$0" --trace-inner "$@"
   fi
 
   if [ "''${1:-}" = "--trace-inner" ]; then
