@@ -91,13 +91,11 @@ Tips for running persistent agent services and scheduled tasks:
 - **Set `WorkingDirectory`** in all service configs to prevent path issues
 - **Set `PATH` explicitly** if service calls external binaries (systemd doesn't inherit shell PATH)
 
-## Observability & Tracing
+## Observability
 
-- The monitoring host now runs `Grafana`, `Loki`, `Tempo`, and `OpenTelemetry Collector` in `modules/server/monitoring.nix`
-- `update` emits `nixos.rebuild` traces and `pull-update` emits `nixos.pull_update` traces with service name `codyos-update`
-- Trace health spans include failed unit count and recent error-log deltas after `nixos-rebuild switch`
+- The monitoring host runs `Grafana`, `Loki`, `Tempo`, and `Prometheus` in `modules/server/monitoring.nix`
 - Use the Grafana API or MCP to discover current datasource UIDs before querying; legacy Grafana DB state may differ from repo intent
-- If Grafana MCP calls return `502`, check `grafana.service`, `tempo.service`, and `opentelemetry-collector.service` on `server` first
+- If Grafana MCP calls return `502`, check `grafana.service` and related services on `server` first
 
 ## Requirements:
 

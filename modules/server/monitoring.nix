@@ -286,29 +286,6 @@
       };
     };
 
-    opentelemetry-collector = {
-      enable = true;
-      settings = {
-        receivers.otlp.protocols = {
-          grpc.endpoint = "0.0.0.0:4317";
-          http.endpoint = "0.0.0.0:4318";
-        };
-        processors.batch = { };
-        exporters.otlp = {
-          endpoint = "127.0.0.1:4327";
-          tls.insecure = true;
-        };
-        service = {
-          pipelines.traces = {
-            receivers = [ "otlp" ];
-            processors = [ "batch" ];
-            exporters = [ "otlp" ];
-          };
-          telemetry.logs.level = "warn";
-        };
-      };
-    };
-
     promtail = {
       enable = true;
       configuration = {
@@ -376,8 +353,6 @@
   # Open port 3090 for Loki
   networking.firewall.allowedTCPPorts = [
     3090
-    4317
-    4318
     9001
   ];
 }

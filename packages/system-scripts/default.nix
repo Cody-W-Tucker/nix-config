@@ -6,7 +6,6 @@
 let
   scriptNames = [
     ./check-imports.nix
-    ./pull-update.nix
     ./update.nix
   ];
 
@@ -15,5 +14,5 @@ in
 
 {
   # Adding the scripts to the system packages
-  environment.systemPackages = scriptPackages ++ [ pkgs.otel-cli ];
+  environment.systemPackages = scriptPackages;
 }

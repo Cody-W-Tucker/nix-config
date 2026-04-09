@@ -114,7 +114,7 @@
         gg = "lazygit";
         op = "opencode";
         copy = "kitten clipboard";
-        pullUpdate = "pull-update";
+        pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
         upgrade = ''
           cd /etc/nixos &&
           sudo nix flake update
