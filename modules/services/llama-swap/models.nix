@@ -78,13 +78,14 @@
     ttl = 1200;
   };
   # Gemma 4 26B - Advanced reasoning and long context capabilities
-  # UD-Q5_K_XL quantization: ~20GB weights, fits in 92GB VRAM with room for long context
+  # UD-Q5_K_XL quantization: ~20GB weights, ~72GB remaining for KV cache
+  # Native 256K context window - using max for long document processing
   "gemma-4-26b" = {
     file = "gemma-4-26B-A4B-it-UD-Q5_K_XL.gguf";
     gpuLayers = 999;
-    contextSize = 131072;
+    contextSize = 262144; # 256K native context
     threads = 16;
-    batchSize = 4096;
+    batchSize = 8192; # Increased for better throughput with large context
     ubatchSize = 4096;
     ttl = 1800;
   };
