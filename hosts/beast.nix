@@ -189,23 +189,13 @@ in
     };
   };
 
-  # Renaming the logging client to machine hostname
-  services.promtail.configuration.scrape_configs = [
+  services.fluent-bit.settings.pipeline.inputs = [
     {
-      job_name = "journal";
-      journal = {
-        max_age = "12h";
-        labels = {
-          job = "systemd-journal";
-          host = "beast";
-        };
-      };
-      relabel_configs = [
-        {
-          source_labels = [ "__journal__systemd_unit" ];
-          target_label = "unit";
-        }
-      ];
+      name = "systemd";
+      tag = "journal";
+      read_from_tail = true;
+      strip_underscores = true;
+      lowercase = true;
     }
   ];
 

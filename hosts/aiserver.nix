@@ -275,25 +275,16 @@ in
       openFirewall = true;
     };
 
-    # Rename promtail host label to match machine name
-    promtail.configuration.scrape_configs = [
+    fluent-bit.settings.pipeline.inputs = [
       {
-        job_name = "journal";
-        journal = {
-          max_age = "12h";
-          labels = {
-            job = "systemd-journal";
-            host = "aiserver";
-          };
-        };
-        relabel_configs = [
-          {
-            source_labels = [ "__journal__systemd_unit" ];
-            target_label = "unit";
-          }
-        ];
+        name = "systemd";
+        tag = "journal";
+        read_from_tail = true;
+        strip_underscores = true;
+        lowercase = true;
       }
     ];
+
   };
 
   # Enable AMD GPU metrics exporter

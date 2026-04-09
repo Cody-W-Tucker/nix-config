@@ -15,41 +15,27 @@
       };
     };
 
-    # Promtail collects logs and sends them to Loki
-    promtail = {
+    fluent-bit = {
       enable = true;
-      configuration = {
-        server = {
-          http_listen_port = 9080;
-          grpc_listen_port = 0;
+      settings = {
+        service = {
+          flush = 1;
+          log_level = "info";
         };
-        positions = {
-          filename = "/tmp/positions.yaml";
-        };
-        clients = [
+        pipeline.outputs = [
           {
-            url = "http://server:3090/loki/api/v1/push";
+            name = "loki";
+            match = "journal";
+            host = "server";
+            port = 3090;
+            labels = "job=systemd-journal,host=$hostname,unit=$unit";
+            line_format = "json";
           }
         ];
-        # Include scrape configs in the machine config
-        #
-        # scrape_configs = [{
-        #   job_name = "journal";
-        #   journal = {
-        #     max_age = "12h";
-        #     labels = {
-        #       job = "systemd-journal";
-        #       host = "workstation";
-        #     };
-        #   };
-        #   relabel_configs = [{
-        #     source_labels = [ "__journal__systemd_unit" ];
-        #     target_label = "unit";
-        #   }];
-        # }];
       };
     };
   };
+
   # Open port for Loki
   networking.firewall.allowedTCPPorts = [ 9002 ];
 }

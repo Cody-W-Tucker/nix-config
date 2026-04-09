@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   services = {
     grafana = {
@@ -286,54 +286,49 @@
       };
     };
 
-    promtail = {
+    fluent-bit = {
       enable = true;
-      configuration = {
-        server = {
-          http_listen_port = 3091;
-          grpc_listen_port = 0;
+      settings = {
+        service = {
+          flush = 1;
+          log_level = "info";
         };
-        positions = {
-          filename = "/tmp/positions.yaml";
+        pipeline = {
+          inputs = [
+            {
+              name = "systemd";
+              tag = "journal";
+              read_from_tail = true;
+              strip_underscores = true;
+              lowercase = true;
+            }
+            {
+              name = "tail";
+              tag = "nginx.access";
+              path = "/var/log/nginx/access.log";
+              read_from_head = false;
+            }
+          ];
+          outputs = [
+            {
+              name = "loki";
+              match = "journal";
+              host = "127.0.0.1";
+              port = config.services.loki.configuration.server.http_listen_port;
+              labels = "job=systemd-journal,host=$hostname,unit=$unit";
+              line_format = "json";
+            }
+            {
+              name = "loki";
+              match = "nginx.access";
+              host = "127.0.0.1";
+              port = config.services.loki.configuration.server.http_listen_port;
+              labels = "job=nginx-access,host=${config.networking.hostName}";
+              line_format = "json";
+            }
+          ];
         };
-        clients = [
-          {
-            url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
-          }
-        ];
-        scrape_configs = [
-          {
-            job_name = "journal";
-            journal = {
-              max_age = "12h";
-              labels = {
-                job = "systemd-journal";
-                host = "server";
-              };
-            };
-            relabel_configs = [
-              {
-                source_labels = [ "__journal__systemd_unit" ];
-                target_label = "unit";
-              }
-            ];
-          }
-          {
-            job_name = "nginx-access";
-            static_configs = [
-              {
-                targets = [ "localhost" ];
-                labels = {
-                  job = "nginx-access";
-                  host = "server";
-                  __path__ = "/var/log/nginx/access.log";
-                };
-              }
-            ];
-          }
-        ];
       };
-      # extraFlags
     };
 
     nginx.virtualHosts."monitoring.homehub.tv" = {
@@ -348,7 +343,11 @@
     };
   };
 
-  users.users.promtail.extraGroups = [ "nginx" ];
+  # Grant Fluent Bit access to nginx logs in addition to the journal access from the module.
+  systemd.services.fluent-bit.serviceConfig.SupplementaryGroups = lib.mkForce [
+    "systemd-journal"
+    "nginx"
+  ];
 
   # Open port 3090 for Loki
   networking.firewall.allowedTCPPorts = [
