@@ -5,12 +5,6 @@
 }:
 
 let
-  fastPpuccin = pkgs.runCommand "fastppuccin-theme" { } ''
-    mkdir -p $out
-    cp ${./themes/FastPpuccin/theme.css} $out/theme.css
-    cp ${./themes/FastPpuccin/manifest.json} $out/manifest.json
-  '';
-
   sharedSnippets = [
     ./snippets/mermaid.css
     ./snippets/tables.css
@@ -52,7 +46,6 @@ in
 
       corePlugins = sharedCorePlugins;
       cssSnippets = sharedSnippets;
-      themes = [ fastPpuccin ];
       hotkeys = import ./hotkeys.nix;
     };
 
