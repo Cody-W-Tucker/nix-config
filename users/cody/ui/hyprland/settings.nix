@@ -144,16 +144,11 @@ in
       "match:title ^(Firefox — Sharing Indicator)$, workspace special silent"
       "match:title ^(Zen — Sharing Indicator)$, workspace special silent"
       "match:title ^(.*is sharing (your screen|a window).)$, workspace special silent"
-
-      # Customizing Obsidian
-      "match:class ^(obsidian)$, opacity 0.99 0.99 0.99"
-      "match:class ^(obsidian)$, no_blur on"
-      "match:class ^(obsidian$), no_shadow on"
     ];
 
     # Workspace and monitor set in flake.nix
     workspace = hardwareConfig.workspace ++ specialWorkspaces;
-    monitor = hardwareConfig.monitor;
+    inherit (hardwareConfig) monitor;
     animations = {
       enabled = true;
       bezier = [

@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
@@ -10,6 +11,20 @@ let
     ./snippets/tables.css
     ./snippets/print.css
   ];
+
+  obsidianLinterPlugin = pkgs.fetchzip {
+    url = "https://github.com/platers/obsidian-linter/releases/download/1.30.0/obsidian-linter.zip";
+    hash = "sha256-GlfRvFoH33W8T1I3hiZmZHzy99DazJRMgu13ufIOoyg=";
+  };
+
+  withSharedSnippets =
+    settings:
+    lib.mkMerge [
+      {
+        cssSnippets = lib.mkBefore sharedSnippets;
+      }
+      settings
+    ];
 
   sharedCorePlugins = [
     "file-explorer"
@@ -31,6 +46,15 @@ let
   ];
 in
 {
+  stylix.targets.obsidian = {
+    vaultNames = [
+      "Personal"
+      "Base"
+    ];
+
+    fonts.override.sizes.applications = 16;
+  };
+
   programs.obsidian = {
     enable = true;
     package = config.lib.nixGL.wrap pkgs.obsidian;
@@ -45,6 +69,12 @@ in
       };
 
       corePlugins = sharedCorePlugins;
+      communityPlugins = [
+        {
+          pkg = obsidianLinterPlugin;
+          settings = builtins.fromJSON (builtins.readFile ./obsidian-linter-data.json);
+        }
+      ];
       cssSnippets = sharedSnippets;
       hotkeys = import ./hotkeys.nix;
     };
@@ -52,7 +82,7 @@ in
     vaults = {
       Personal = {
         target = "/home/codyt/Knowledge/Personal";
-        settings = {
+        settings = withSharedSnippets {
           extraFiles = {
             "daily-notes.json".text = builtins.toJSON {
               format = "YYYY/MM-MMMM/YYYY-MM-DD-dddd";
@@ -70,6 +100,7 @@ in
 
       Base = {
         target = "/home/codyt/Knowledge/Base";
+        settings = withSharedSnippets { };
       };
     };
   };
