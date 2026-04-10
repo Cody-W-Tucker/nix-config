@@ -37,10 +37,7 @@ let
     "properties"
     "daily-notes"
     "templates"
-    "note-composer"
     "command-palette"
-    "outline"
-    "word-count"
     "bases"
     "webviewer"
   ];
