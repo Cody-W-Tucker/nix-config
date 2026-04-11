@@ -144,6 +144,63 @@ in
         "nfsvers=4.2"
       ];
     };
+
+    # Multi-device Btrfs workspace pool spanning the two secondary NVMe drives.
+    "/mnt/work" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvolid=5"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+    "/mnt/work/dev" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvol=dev"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+    "/mnt/work/vm" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvol=vm"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+    "/mnt/work/cache" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvol=cache"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+    "/mnt/work/media" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvol=media"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
   };
 
   swapDevices = [
