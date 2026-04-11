@@ -63,13 +63,14 @@ in
         promptDelete = false;
         trashOption = "none";
         showInlineTitle = false;
+        vimMode = true;
       };
 
       corePlugins = sharedCorePlugins;
       communityPlugins = [
         {
           pkg = obsidianLinterPlugin;
-          settings = builtins.fromJSON (builtins.readFile ./obsidian-linter-data.json);
+          settings = builtins.fromJSON (builtins.readFile ./plugin-data/obsidian-linter-data.json);
         }
       ];
       cssSnippets = sharedSnippets;
@@ -94,7 +95,6 @@ in
           };
         };
       };
-
       Base = {
         target = "/home/codyt/Knowledge/Base";
         settings = withSharedSnippets { };
