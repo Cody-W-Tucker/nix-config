@@ -144,6 +144,99 @@ in
         "nfsvers=4.2"
       ];
     };
+
+    # Multi-device Btrfs workspace pool spanning the two secondary NVMe drives.
+    "/mnt/work" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvolid=5"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+    "/mnt/work/dev" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvol=dev"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+    "/mnt/work/vm" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvol=vm"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+    "/mnt/work/cache" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvol=cache"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+    "/mnt/work/media" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = [
+        "subvol=media"
+        "compress=zstd"
+        "noatime"
+        "discard=async"
+        "nofail"
+      ];
+    };
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /mnt/work/dev 0755 codyt users - -"
+    "d /mnt/work/vm 0755 codyt users - -"
+    "d /mnt/work/cache 0755 codyt users - -"
+    "d /mnt/work/media 0755 codyt users - -"
+  ];
+
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "monthly";
+    fileSystems = [ "/mnt/work" ];
+  };
+
+  systemd.services.work-btrfs-nocow = {
+    description = "Apply NOCOW attribute to workspace heavy-write directories";
+    wantedBy = [ "multi-user.target" ];
+    after = [
+      "mnt-work-vm.mount"
+      "mnt-work-cache.mount"
+    ];
+    requires = [
+      "mnt-work-vm.mount"
+      "mnt-work-cache.mount"
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "work-btrfs-nocow" ''
+        set -eu
+
+        # Apply NOCOW to empty directories so future VM images and caches avoid CoW overhead.
+        ${pkgs.e2fsprogs}/bin/chattr +C /mnt/work/vm
+        ${pkgs.e2fsprogs}/bin/chattr +C /mnt/work/cache
+      '';
+    };
   };
 
   swapDevices = [
