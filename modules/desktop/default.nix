@@ -12,7 +12,8 @@ let
             pkgs.python3
             pkgs.python3Packages.pip
           ]
-        }"
+        }" \
+        --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc ]}"
     '';
   };
 in
