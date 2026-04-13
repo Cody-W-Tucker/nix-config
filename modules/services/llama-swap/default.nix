@@ -24,6 +24,12 @@ let
           description = "Alias exposed by llama-server.";
         };
 
+        mmprojFile = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "Optional multimodal projector GGUF file name passed to llama-server with `--mmproj`. Download it from the same release as the base GGUF and store it under a model-specific name to avoid filename collisions such as `mmproj-F16.gguf`.";
+        };
+
         ttl = lib.mkOption {
           type = lib.types.int;
           default = 600;
@@ -134,6 +140,10 @@ let
         (toString model.ubatchSize)
         "-t"
         (toString model.threads)
+      ]
+      ++ lib.optionals (model.mmprojFile != null) [
+        "--mmproj"
+        "${cfg.modelDirectory}/${model.mmprojFile}"
       ]
       ++ model.extraArgs
     );

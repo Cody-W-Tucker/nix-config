@@ -3,6 +3,13 @@
 # - Recommended minimum: 128K for thinking capabilities
 # - Batch size should equal context size for efficient GPU utilization
 # - 35B Q8_0: ~38GB weights, 32K context fits safely in 92GB VRAM
+#
+# Multimodal models must also set `mmprojFile` to the matching projector GGUF
+# or llama-server will reject image input even if the base model supports vision.
+#
+# Upstream repos often publish generic projector names such as `mmproj-F16.gguf`.
+# Rename them when downloading into `/srv/llama-swap/models` so different model
+# families do not overwrite each other.
 
 {
   "qwen3.5-0.8b" = {
@@ -43,6 +50,7 @@
   };
   "qwen3.5-35b" = {
     file = "Qwen3.5-35B-A3B-Q8_0.gguf";
+    mmprojFile = "Qwen3.5-35B-A3B-mmproj-F16.gguf";
     gpuLayers = 999;
     # 65536 context needed for ~44K+ token prompts
     # batchSize 8192 balances speed with 92GB VRAM
@@ -70,6 +78,7 @@
   # UD-Q4_K_XL quantization: ~7.0GB weights, fits well in 92GB VRAM with room for context
   "gemma-3-12b" = {
     file = "gemma-3-12b-it-UD-Q4_K_XL.gguf";
+    mmprojFile = "gemma-3-12b-it-mmproj-F16.gguf";
     gpuLayers = 999;
     contextSize = 131072;
     threads = 16;
@@ -82,6 +91,7 @@
   # Native 256K context window - using max for long document processing
   "gemma-4-26b" = {
     file = "gemma-4-26B-A4B-it-UD-Q5_K_XL.gguf";
+    mmprojFile = "gemma-4-26B-A4B-it-mmproj-F16.gguf";
     gpuLayers = 999;
     contextSize = 262144; # 256K native context
     threads = 16;
