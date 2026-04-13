@@ -8,7 +8,6 @@ pkgs.writeShellApplication {
   runtimeInputs = [
     pkgs.nix
     pkgs.git
-    pkgs.sudo
     pkgs.nixos-rebuild
     checkImports
   ];
