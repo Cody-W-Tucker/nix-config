@@ -1,7 +1,16 @@
 { pkgs }:
 
-pkgs.writeShellScriptBin "web-search" ''
-  #!/usr/bin/env bash
+pkgs.writeShellApplication {
+  name = "web-search";
+  runtimeInputs = [
+    pkgs.procps
+    pkgs.rofi
+    pkgs.jq
+    pkgs.xdg-utils
+  ];
+  text = ''
+    set -euo pipefail
+
     if pgrep -x "rofi" > /dev/null; then
       # Rofi is running, kill it
       pkill -x rofi
@@ -25,15 +34,15 @@ pkgs.writeShellScriptBin "web-search" ''
     }
 
     main() {
-      platform=$( (gen_list) | ${pkgs.rofi}/bin/rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom -theme-str 'imagebox { enabled: false; width: 0px; }')
+      platform=$(gen_list | rofi -dmenu -i -l 7 -p 'Select Search Platform' -no-custom -theme-str 'imagebox { enabled: false; width: 0px; }')
 
       if [[ -n "$platform" ]]; then
-        query=$(${pkgs.rofi}/bin/rofi -dmenu -p 'Enter Search Query' -l 0 -theme-str 'imagebox { enabled: false; width: 0px; } window { height: 200px; }')
+        query=$(rofi -dmenu -p 'Enter Search Query' -l 0 -theme-str 'imagebox { enabled: false; width: 0px; } window { height: 200px; }')
         base_url=''${URLS[$platform]}
 
         if [[ -n "$query" ]]; then
           # Properly encode query including spaces
-          url=''${base_url}$(${pkgs.jq}/bin/jq -Rr @uri <<< "$query")
+          url=''${base_url}$(jq -Rr @uri <<< "$query")
         else
           # Extract base domain (handles URLs with paths/parameters)
           protocol="''${base_url%%://*}"
@@ -42,9 +51,10 @@ pkgs.writeShellScriptBin "web-search" ''
           url="$protocol://$domain/"
         fi
 
-        ${pkgs.xdg-utils}/bin/xdg-open "$url"
+        xdg-open "$url"
       fi
     }
 
     main
-''
+  '';
+}
