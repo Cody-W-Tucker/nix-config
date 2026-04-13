@@ -31,13 +31,7 @@
     xdg-utils # xdg-open
     usbutils # For listing USB devices
     udiskie # For mounting USB devices
-    udisks # For managing disks
-    udev # Device manager
-    kitty # Terminal emulator
-    obsidian # Note-taking app
-    cifs-utils # For mounting CIFS shares
     seahorse # GNOME keyring manager
-    openrazer-daemon # Razer device support
   ];
 
   networking.firewall = {

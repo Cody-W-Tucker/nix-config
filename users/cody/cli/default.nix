@@ -15,7 +15,6 @@
     fastfetch
     unzip
     zip
-    jq
     taskwarrior-tui
     timewarrior
     tree
@@ -109,7 +108,6 @@
         cd = "z";
         ll = "eza -l";
         ls = "eza";
-        fo = "find-and-open-file";
         rr = "yazi";
         gg = "lazygit";
         op = "opencode";

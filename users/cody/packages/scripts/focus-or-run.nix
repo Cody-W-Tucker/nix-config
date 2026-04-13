@@ -1,18 +1,28 @@
 { pkgs }:
 
-pkgs.writeShellScriptBin "focus-or-run" ''
-  # Focus an existing window by class, or launch the application if not found
-  # Usage: focus-or-run <window_class> <command_to_run>
+pkgs.writeShellApplication {
+  name = "focus-or-run";
+  runtimeInputs = [
+    pkgs.hyprland
+    pkgs.jq
+    pkgs.coreutils
+  ];
+  text = ''
+    set -euo pipefail
 
-  APP_CLASS="$1"
-  APP_CMD="$2"
+    # Focus an existing window by class, or launch the application if not found
+    # Usage: focus-or-run <window_class> <command_to_run>
 
-  # Get window address directly using hyprctl and jq
-  WINDOW_ADDRESS=$(${pkgs.hyprland}/bin/hyprctl clients -j | ${pkgs.jq}/bin/jq -r --arg a "$APP_CLASS" '.[] | select(.class | test($a; "i")) | .address' | head -n1)
+    APP_CLASS="$1"
+    APP_CMD="$2"
 
-  if [ -n "$WINDOW_ADDRESS" ]; then
-    ${pkgs.hyprland}/bin/hyprctl dispatch focuswindow "address:$WINDOW_ADDRESS"
-  else
-    $APP_CMD &
-  fi
-''
+    # Get window address directly using hyprctl and jq
+    WINDOW_ADDRESS=$(hyprctl clients -j | jq -r --arg a "$APP_CLASS" '.[] | select(.class | test($a; "i")) | .address' | head -n1)
+
+    if [ -n "$WINDOW_ADDRESS" ]; then
+      hyprctl dispatch focuswindow "address:$WINDOW_ADDRESS"
+    else
+      $APP_CMD &
+    fi
+  '';
+}
