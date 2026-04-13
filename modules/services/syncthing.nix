@@ -16,9 +16,6 @@
       "server" = {
         id = "KBLKS5F-5MMRUM6-M2LZHPW-CQMDXM4-RPHV7WT-V7Y6PQZ-QK3WUC2-MFRB7AC";
       };
-      "Cody's Pixel" = {
-        id = "T3CJ4YF-RDXUROW-E7NZOKN-BZXE67E-NQWOHVO-UD5BCCS-2A6KONP-LTA5BQF";
-      };
       "beast" = {
         id = "WS3XKRH-JILABRE-NLK2NU6-BGPXTOY-TOO2K75-UYEY7HB-KO7NKAC-I37UGQ3";
       };
