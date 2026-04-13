@@ -91,6 +91,12 @@ Tips for running persistent agent services and scheduled tasks:
 - **Set `WorkingDirectory`** in all service configs to prevent path issues
 - **Set `PATH` explicitly** if service calls external binaries (systemd doesn't inherit shell PATH)
 
+## AI Serving
+
+- `services.llama-swap` models that accept image input via `llama-server` need the matching projector GGUF passed with `--mmproj`
+- A multimodal GGUF without `--mmproj` will still load, but OpenAI-compatible image requests fail with `image input is not supported`
+- Projector files from Hugging Face are often named generically like `mmproj-F16.gguf`; rename them per model when storing under `/srv/llama-swap/models` to avoid collisions
+
 ## Observability
 
 - The monitoring host runs `Grafana`, `Loki`, `Tempo`, and `Prometheus` in `modules/server/monitoring.nix`
