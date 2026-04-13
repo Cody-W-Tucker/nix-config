@@ -1,5 +1,23 @@
 { pkgs, ... }:
 
+let
+  kdenliveWithSpeechRuntime = pkgs.symlinkJoin {
+    name = "kdenlive-with-speech-runtime";
+    paths = [ pkgs.kdePackages.kdenlive ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram "$out/bin/kdenlive" \
+        --prefix PATH : "${
+          pkgs.lib.makeBinPath [
+            pkgs.python3
+            pkgs.python3Packages.pip
+          ]
+        }" \
+        --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc ]}"
+    '';
+  };
+in
+
 {
   imports = [
     ./audio
@@ -32,6 +50,7 @@
     usbutils # For listing USB devices
     udiskie # For mounting USB devices
     seahorse # GNOME keyring manager
+    kdenliveWithSpeechRuntime # Video editor; speech tools are configured from inside Kdenlive
   ];
 
   networking.firewall = {
