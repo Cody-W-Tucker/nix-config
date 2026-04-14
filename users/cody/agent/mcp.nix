@@ -27,8 +27,10 @@ let
     name = "actual-budget-mcp";
     runtimeInputs = [ pkgs.docker ];
     text = ''
-      export ACTUAL_PASSWORD="$(< ${config.sops.secrets.actual-budget-mcp-password.path})"
-      export ACTUAL_BUDGET_SYNC_ID="$(< ${config.sops.secrets.actual-budget-mcp-sync-id.path})"
+      ACTUAL_PASSWORD="$(< ${config.sops.secrets.actual-budget-mcp-password.path})"
+      export ACTUAL_PASSWORD
+      ACTUAL_BUDGET_SYNC_ID="$(< ${config.sops.secrets.actual-budget-mcp-sync-id.path})"
+      export ACTUAL_BUDGET_SYNC_ID
 
       exec docker run \
         -i \
