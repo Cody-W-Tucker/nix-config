@@ -40,7 +40,7 @@ let
     "command-palette"
     "bases"
     "webviewer"
-    "composer"
+    "note-composer"
   ];
 in
 {
