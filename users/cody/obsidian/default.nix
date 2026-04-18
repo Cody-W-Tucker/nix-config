@@ -40,6 +40,7 @@ let
     "command-palette"
     "bases"
     "webviewer"
+    "composer"
   ];
 in
 {
