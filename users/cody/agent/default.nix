@@ -18,6 +18,6 @@ in
     llmPkgs.rtk
     llmPkgs.openspec
     llmPkgs.ck
-    llmPkgs.pi
+    llmPkgs.qmd
   ];
 }
