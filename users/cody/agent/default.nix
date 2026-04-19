@@ -17,7 +17,6 @@ in
   home.packages = [
     llmPkgs.rtk
     llmPkgs.openspec
-    llmPkgs.ck
     llmPkgs.qmd
   ];
 }
