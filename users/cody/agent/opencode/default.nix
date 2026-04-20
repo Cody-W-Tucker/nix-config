@@ -16,7 +16,7 @@
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
-    rules = ''
+    context = ''
       Unless otherwise stated, you are operating in a nixos system.
 
       Use nix shell to access common packages if needed.
