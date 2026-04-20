@@ -65,6 +65,11 @@
       url = "github:Cody-W-Tucker/searcher";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    googleworkspace-cli = {
+      # Google Workspace CLI for Drive, Gmail, Calendar, and related APIs.
+      url = "github:googleworkspace/cli";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =

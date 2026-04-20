@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 
@@ -18,6 +19,7 @@
     taskwarrior-tui
     timewarrior
     tree
+    inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   home.sessionVariables = {
