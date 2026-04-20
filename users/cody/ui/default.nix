@@ -33,9 +33,6 @@
     gtk4.theme = null; # Let Stylix handle GTK4 via CSS
   };
 
-  # Bluetooth applet for Waybar
-  services.blueman-applet.enable = true; # Bluetooth manager
-
   home.packages = with pkgs; [
     # list of stable packages go here
     grim # Screenshot utility
@@ -52,7 +49,6 @@
       wl-copy -n < $txtfname
     '')
     hyprpicker # Color picker for Hyprland
-    playerctl # Media player control utility
     libnotify # Notification library
     todoist # cli client
     nautilus # File manager
@@ -65,61 +61,70 @@
     kdePackages.kpeople # Contact integration for KDE Connect SMS
   ];
 
-  programs.chromium = {
-    enable = true;
-    commandLineArgs = [ "--load-media-router-component-extension=1" ];
+  services = {
+    # Bluetooth manager systray
+    blueman-applet.enable = true;
+    tailscale-systray.enable = true;
+
+    # Control media via cli and waybar
+    playerctld.enable = true;
+    mpris-proxy.enable = true;
+
+    kdeconnect = {
+      # Connect phone to computer
+      enable = true;
+      indicator = true;
+    };
+
+    cliphist = {
+      # Clipboard history
+      enable = true;
+      allowImages = true;
+      systemdTargets = "graphical-session.target";
+      extraOptions = [
+        "-max-dedupe-search"
+        "10"
+        "-max-items"
+        "50"
+      ];
+    };
   };
 
-  programs.obs-studio = {
-    # Obs for screenrecording
-    enable = true;
-  };
-
-  # Clipboard history
-  services.cliphist = {
-    enable = true;
-    allowImages = true;
-    systemdTargets = "graphical-session.target";
-    extraOptions = [
-      "-max-dedupe-search"
-      "10"
-      "-max-items"
-      "50"
-    ];
-  };
-
-  # Playerctl Daemon to control media players from Waybar
-  services.playerctld.enable = true;
-  services.mpris-proxy.enable = true;
-
-  # KDE Connect for device integration
-  services.kdeconnect = {
-    enable = true;
-    indicator = true;
-  };
-
-  # Zen browser via Firefox module for hardware acceleration settings
-  programs.firefox = {
-    enable = true;
-    package = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    profiles.default = {
-      settings = {
-        # Enable VA-API video decoding
-        "media.ffmpeg.vaapi.enabled" = true;
-        # Force enable VA-API (even if blacklisted)
-        "media.ffmpeg.vaapi-force-enabled" = true;
-        # Enable hardware decoding
-        "media.hardware-video-decoding.enabled" = true;
-        # Enable WebRender for better GPU acceleration
-        "gfx.webrender.all" = true;
-        "gfx.webrender.enabled" = true;
-        # Enable DMA-BUF for Wayland
-        "widget.dmabuf.force-enabled" = true;
-        # Additional NVIDIA fixes
-        "media.ffmpeg.dmabuf-textures.enabled" = true;
-        "media.rdd-ffmpeg.enabled" = true;
-        # Disable software fallback for video decoding
-        "media.decoder-doctor.notifications-allowed" = false;
+  programs = {
+    chromium = {
+      enable = true;
+      # Chromecast improvement
+      commandLineArgs = [ "--load-media-router-component-extension=1" ];
+    };
+    obs-studio = {
+      # Obs for screenrecording
+      enable = true;
+    };
+    firefox = {
+      # Zen browser via Firefox module
+      enable = true;
+      # Replace firefox with zen browser to use home manager module
+      package = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      profiles.default = {
+        # hardware acceleration settings
+        settings = {
+          # Enable VA-API video decoding
+          "media.ffmpeg.vaapi.enabled" = true;
+          # Force enable VA-API (even if blacklisted)
+          "media.ffmpeg.vaapi-force-enabled" = true;
+          # Enable hardware decoding
+          "media.hardware-video-decoding.enabled" = true;
+          # Enable WebRender for better GPU acceleration
+          "gfx.webrender.all" = true;
+          "gfx.webrender.enabled" = true;
+          # Enable DMA-BUF for Wayland
+          "widget.dmabuf.force-enabled" = true;
+          # Additional NVIDIA fixes
+          "media.ffmpeg.dmabuf-textures.enabled" = true;
+          "media.rdd-ffmpeg.enabled" = true;
+          # Disable software fallback for video decoding
+          "media.decoder-doctor.notifications-allowed" = false;
+        };
       };
     };
   };
