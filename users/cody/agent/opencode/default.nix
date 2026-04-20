@@ -11,6 +11,7 @@
     ./tools/rtk
     ./skills/obsidian
     ./skills/code-search
+    ./skills/google-workspace
   ];
 
   programs.opencode = {
