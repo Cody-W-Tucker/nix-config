@@ -9,6 +9,7 @@
 {
   imports = [
     ./nixvim
+    inputs.crm-cli.homeManagerModules.default
   ];
 
   home.packages = with pkgs; [
@@ -30,15 +31,15 @@
   # Enable Stylix for theming
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
-  # Use eza instead of ls
   programs.eza = {
+    # Use eza instead of ls
     enable = true;
     git = true;
     icons = "auto";
   };
 
-  # Yazi file viewer
   programs.yazi = {
+    # Yazi file viewer
     enable = true;
     enableZshIntegration = true;
     shellWrapperName = "y";
@@ -54,12 +55,17 @@
     };
   };
 
+  programs."crm-cli" = {
+    enable = true;
+    autoMount = true; # Mount the crm to a virtual filesystem to view leads, contacts, etc. on "disk."
+    settings.mount.default_path = "${config.home.homeDirectory}/Knowledge/CRM";
+  };
+
   # Lazygit
   programs.lazygit = {
     enable = true;
   };
 
-  # Git configuration
   programs.git = {
     enable = true;
     # Global gitignore
@@ -84,10 +90,12 @@
       pull.rebase = true;
       push.autoSetupRemote = true;
       core.editor = "nvim";
-      color.ui = "auto";
-      color.branch = "auto";
-      color.diff = "auto";
-      color.status = "auto";
+      color = {
+        ui = "auto";
+        branch = "auto";
+        diff = "auto";
+        status = "auto";
+      };
     };
   };
 

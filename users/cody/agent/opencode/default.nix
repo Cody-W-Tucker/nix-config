@@ -12,6 +12,7 @@
     ./skills/obsidian
     ./skills/code-search
     ./skills/google-workspace
+    ./skills/crm
   ];
 
   programs.opencode = {

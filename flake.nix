@@ -70,6 +70,11 @@
       url = "github:googleworkspace/cli";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    crm-cli = {
+      # Headless CLI-first CRM with a Home Manager module and OpenCode skill.
+      url = "github:Cody-W-Tucker/crm.cli";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
