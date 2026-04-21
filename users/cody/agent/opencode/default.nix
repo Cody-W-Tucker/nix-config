@@ -26,6 +26,56 @@
     tui.theme = lib.mkForce "system";
     settings = {
       autoupdate = false;
+      default_agent = "build";
+      agent = {
+        build = {
+          permission = {
+            "actualBudget_*" = "deny";
+            "karakeep_*" = "deny";
+            "grafana_*" = "deny";
+            skill = {
+              "obsidian-*" = "deny";
+              "gws-*" = "deny";
+              "crm-*" = "deny";
+            };
+          };
+        };
+
+        plan = {
+          description = "Knowledge work agent for notes, bookmarks, dashboards, and research.";
+          permission = {
+            edit = "deny";
+            bash = "ask";
+            "actualBudget_*" = "deny";
+            "karakeep_*" = "allow";
+            "grafana_*" = "allow";
+            skill = {
+              "obsidian-*" = "allow";
+              qmd = "allow";
+              "gws-*" = "deny";
+              "crm-*" = "deny";
+            };
+          };
+        };
+
+        business = {
+          mode = "primary";
+          description = "Business operations agent for CRM, accounting, and Google Workspace workflows.";
+          permission = {
+            edit = "deny";
+            bash = "ask";
+            "actualBudget_*" = "allow";
+            "karakeep_*" = "deny";
+            "grafana_*" = "deny";
+            skill = {
+              "obsidian-*" = "deny";
+              qmd = "deny";
+              "gws-*" = "allow";
+              "crm-*" = "allow";
+            };
+          };
+        };
+      };
       lsp = {
         nix = {
           command = [ "${lib.getExe pkgs.nil}" ];

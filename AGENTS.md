@@ -103,6 +103,11 @@ Tips for running persistent agent services and scheduled tasks:
 - Use the Grafana API or MCP to discover current datasource UIDs before querying; legacy Grafana DB state may differ from repo intent
 - If Grafana MCP calls return `502`, check `grafana.service` and related services on `server` first
 
+## OpenCode
+
+- Scope OpenCode access per agent in `users/cody/agent/opencode/default.nix` using `programs.opencode.settings.agent.<name>.permission`
+- Keep `build` focused on coding work, `plan` on knowledge work, and separate business/accounting workflows into a dedicated primary agent
+
 ## Requirements:
 
 - Keep this file updated using these rules.
