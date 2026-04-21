@@ -63,7 +63,7 @@
           description = "Business operations agent for CRM, accounting, and Google Workspace workflows.";
           permission = {
             edit = "deny";
-            bash = "ask";
+            bash = "allow";
             "actualBudget_*" = "allow";
             "karakeep_*" = "deny";
             "grafana_*" = "deny";
