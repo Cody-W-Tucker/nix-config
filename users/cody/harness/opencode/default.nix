@@ -9,8 +9,6 @@
     ./agents/logging
     ./agents/knowledge
     ./agents/business
-    ./commands/taskwarrior
-    ../../packages/desloppify
     ./tools/rtk
   ];
 
@@ -46,18 +44,6 @@
           initialization = {
             formatting = {
               command = [ "${lib.getExe pkgs.nixfmt}" ];
-            };
-          };
-        };
-      };
-      provider = {
-        llama-swap = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "llama-swap (aiserver)";
-          options.baseURL = "http://aiserver:8080/v1";
-          models = {
-            "qwen3.5-35b" = {
-              name = "Qwen3.5";
             };
           };
         };

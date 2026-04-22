@@ -1,5 +1,4 @@
 {
-  # These rules get added to the global AGENTS.md file for opencode
   programs.opencode.skills = {
     qmd = ''
       ---

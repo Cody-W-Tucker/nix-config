@@ -1,7 +1,6 @@
 {
   pkgs,
   config,
-  inputs,
   ...
 }:
 
@@ -28,8 +27,8 @@ let
 in
 {
   imports = [
-    ../../skills/google-workspace
-    ../../skills/crm
+    ./skills/google-workspace
+    ./skills/crm
   ];
 
   sops.secrets.actual-budget-mcp-password = { };
@@ -51,17 +50,7 @@ in
     mode: primary
     tools:
       "actualBudget_*": true
-    permission:
-      edit: deny
-      bash: allow
-      "context7_*": deny
-      "nixos-option-search_*": deny
-      skill:
-        "*": deny
-        "gws-*": allow
-        "crm-*": allow
     ---
-
     Business mode for accounting, CRM, and Google Workspace tasks.
   '';
 }

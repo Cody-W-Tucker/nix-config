@@ -36,8 +36,6 @@ in
       "context7_*": deny
       "nixos-option-search_*": deny
     ---
-
     Use the Grafana tool to search the logs.
-
   '';
 }

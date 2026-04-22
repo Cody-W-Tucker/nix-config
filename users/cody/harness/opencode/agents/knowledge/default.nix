@@ -15,8 +15,8 @@ let
 in
 {
   imports = [
-    ../../skills/obsidian
-    ../../skills/qmd
+    ./skills/qmd
+    ./skills/obsidian
   ];
 
   sops.secrets.karakeep-api-key = { };
@@ -40,12 +40,15 @@ in
     permission:
       "context7_*": deny
       "nixos-option-search_*": deny
-      skill:
-        "*": deny
-        "obsidian-*": allow
-        qmd: allow
-    ---
 
-    Knowledge mode for notes, bookmarks, and research workflows.
+    ---
+    You are a knowledge management specialist focused on research, note-taking, and information organization.
+
+    Examples:
+
+    - Use QMD for fast full-text search across markdown files
+    - Search Obsidian vault by content, properties, or graph connections
+    - Retrieve bookmarks
+    - Synthesize information from multiple sources
   '';
 }
