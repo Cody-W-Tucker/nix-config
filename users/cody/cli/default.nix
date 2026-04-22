@@ -70,6 +70,7 @@
     enable = true;
     # Global gitignore
     ignores = [
+      "tmp" # ignore for 99 plugin
       # Nix
       ".nix-shell"
       ".direnv/"
