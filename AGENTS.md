@@ -1,14 +1,14 @@
 # CodyOS
 
-You are assisting a user working on a modern NixOS system config using flakes.
+You are assisting a user working on a NixOS system config using flakes.
 
 Here's a overview on common patterns and practices you'll help with.
 
 ## Build Testing
 
-You don't have access to the `sudo` command. `sudo` is required to effect a system rebuild.
+Only test builds when making risky changes: new services, complex module refactors, or unfamiliar Nix patterns. Simple edits like updating package lists, changing existing values, or minor configuration tweaks rarely need pre-testing—the user will catch issues during their `update` run.
 
-These build commands are for testing if the build will actually work. If you're unsure whether the config change will build properly you may use the proper build command.
+If the system doesn't build, check the logs and solve the issues.
 
 ```bash
 # Test build current host
@@ -21,34 +21,7 @@ nixos-rebuild dry-run --flake .#beast
 nix flake check
 ```
 
-If the system doesn't build, check the logs and solve the issues.
-
 Once the changes have settled, the user will run the `update` script to build and activate the system.
-
-## Repo map
-
-```text
-.
-├── hosts/              # Machine identity: boot, disks, hostname, networking, hardware-specific overrides, system.stateVersion
-│   ├── aiserver.nix    # AI workstation configuration
-│   ├── beast.nix       # Desktop workstation configuration
-│   └── server.nix      # Media and homelab server configuration
-├── modules/            # Reusable NixOS modules organized by purpose
-│   ├── desktop/        # Desktop environment: WMs, compositors (Hyprland), printing, display settings
-│   ├── server/         # Server services: one service per file (nginx, monitoring, media, etc)
-│   ├── services/       # Shared services: Syncthing and other cross-host services
-│   └── system/         # System-wide config: locale, users, networking, logging, shared packages
-├── packages/           # Custom packages and scripts: internal CLI tools, patched packages
-├── secrets/            # SOPS declarations and encrypted material
-├── users/              # Home Manager configurations: shells, dev tools, dotfiles, home.stateVersion
-│   ├── cody/           # User 'cody' configuration
-│   │   ├── agent/      # AI agent tools (opencode, MCP configs)
-│   │   ├── cli/        # CLI tools (nixvim, shell configs)
-│   │   ├── packages/   # Custom user packages and scripts
-│   │   └── ui/         # Desktop UI (Hyprland, rofi, waybar, notifications)
-│   └── home.nix        # Shared home configuration entry point
-└── wallpapers/         # Static assets
-```
 
 ## High-value repo rules
 
@@ -70,48 +43,5 @@ Once the changes have settled, the user will run the `update` script to build an
 
 - New files must be git-tracked or flakes won't see them
 - Never commit raw secrets (use SOPS-NIX.)
-  - The user will need to add secrets via the sops edit command.
-
-## Systemd Service Operations
-
-Tips for running persistent agent services and scheduled tasks:
-
-### Timers and Scheduling
-
-- Use `Type = "oneshot"` with paired `.timer` units for scheduled tasks
-- **Always set `Persistent = true`** in timer configs
-  - Without it, missed runs (during downtime) are skipped forever
-  - With it, missed runs execute immediately on next boot
-
-### Common Pitfalls
-
-- **`start-limit-inhibited`**: Rapid restarts trigger systemd rate limiting
-  - Check: `systemctl status <service>` shows "start-limit-hit"
-  - Fix: `systemctl reset-failed <service>` then `systemctl start <service>`
-- **Set `WorkingDirectory`** in all service configs to prevent path issues
-- **Set `PATH` explicitly** if service calls external binaries (systemd doesn't inherit shell PATH)
-
-## AI Serving
-
-- `services.llama-swap` models that accept image input via `llama-server` need the matching projector GGUF passed with `--mmproj`
-- A multimodal GGUF without `--mmproj` will still load, but OpenAI-compatible image requests fail with `image input is not supported`
-- Projector files from Hugging Face are often named generically like `mmproj-F16.gguf`; rename them per model when storing under `/srv/llama-swap/models` to avoid collisions
-
-## Observability
-
-- The monitoring host runs `Grafana`, `Loki`, `Tempo`, and `Prometheus` in `modules/server/monitoring.nix`
-- Use the Grafana API or MCP to discover current datasource UIDs before querying; legacy Grafana DB state may differ from repo intent
-- If Grafana MCP calls return `502`, check `grafana.service` and related services on `server` first
-
-## OpenCode
-
-- Define primary OpenCode agents inline in `users/cody/agent/opencode/default.nix` via `programs.opencode.agents`
-- Keep only quiet shared MCP servers in `users/cody/agent/mcp.nix` under `programs.mcp.servers`; define noisier OpenCode-only MCP servers under `programs.opencode.settings.mcp`
-- Disable non-global MCP tools globally with `programs.opencode.settings.tools`, then re-enable them per agent in the markdown agent frontmatter
-- Keep `build` focused on coding work, `plan` on problem analysis, `knowledge` on notes and bookmarks, and `business` on accounting/CRM workflows
-
-## Requirements:
-
-- Keep this file updated using these rules.
-  - If you learn something new about the system or if something changes
-  - it would be helpful to see every time.
+- The user will need to add secrets via the sops edit command.
+- You don't have access to the `sudo` command. `sudo` is required to effect a system rebuild.
