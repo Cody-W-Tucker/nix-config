@@ -28,7 +28,6 @@ in
   imports = [
     ../modules/system/base.nix
     ../modules/desktop
-    ../modules/services/headroom
     ../modules/desktop/hardware/rocm.nix
     ../modules/desktop/hardware/amdgpu-metrics.nix
     ../modules/services/llama-swap
@@ -110,32 +109,38 @@ in
   # Strix halo tweaks
   nixpkgs.config.rocmTargets = [ "gfx1151" ]; # gfx1151 for Strix Halo
 
-  hardware.strix-halo.ryzenadj = {
-    enable = true;
-    # Power limits for sustained AI workloads
-    # Adjust based on your cooling and power supply
-    stapmLimit = 120000; # 120W sustained (conservative for longevity)
-    fastLimit = 160000; # 160W burst
-    slowLimit = 140000; # 140W average
-    tctlTemp = 95; # 95°C thermal limit
-  };
-
-  # EC-SU_AXB35 fan control for GMKtec EVO-X2
-  hardware.strix-halo.ec-su-axb35 = {
-    enable = true;
-    # CLI tool to monitor fans/temps
-    monitor.enable = true;
-    # Start with auto mode - adjust based on temps
-    powerMode = "performance";
-    fans = {
-      fan1 = {
-        mode = "auto";
-      };
-      fan2 = {
-        mode = "auto";
-      };
-      fan3 = {
-        mode = "auto";
+  hardware = {
+    amdgpu.metricsExporter = {
+      # Enable AMD GPU metrics exporter
+      enable = true;
+      interval = "30s";
+    };
+    strix-halo.ryzenadj = {
+      enable = true;
+      # Power limits for sustained AI workloads
+      # Adjust based on your cooling and power supply
+      stapmLimit = 120000; # 120W sustained (conservative for longevity)
+      fastLimit = 160000; # 160W burst
+      slowLimit = 140000; # 140W average
+      tctlTemp = 95; # 95°C thermal limit
+    };
+    strix-halo.ec-su-axb35 = {
+      # EC-SU_AXB35 fan control for GMKtec EVO-X2
+      enable = true;
+      # CLI tool to monitor fans/temps
+      monitor.enable = true;
+      # Start with auto mode - adjust based on temps
+      powerMode = "performance";
+      fans = {
+        fan1 = {
+          mode = "auto";
+        };
+        fan2 = {
+          mode = "auto";
+        };
+        fan3 = {
+          mode = "auto";
+        };
       };
     };
   };
@@ -240,26 +245,6 @@ in
         "gemma-4-26b"
       ];
     };
-    headroom = {
-      # Smart context compression service - proxies llama-swap
-      enable = true;
-      listenAddress = "0.0.0.0";
-      openFirewall = true;
-      port = 8787;
-      upstream = {
-        kind = "openai-compatible";
-        baseUrl = "http://localhost:8080";
-      };
-      serviceEnvironment = {
-        # Disable GPU for Kompress compression (ROCm/MIOpen errors)
-        HIP_VISIBLE_DEVICES = "";
-        CUDA_VISIBLE_DEVICES = "";
-      };
-      memory = {
-        enable = true;
-        dbPath = "/var/lib/headroom/headroom-memory.db";
-      };
-    };
 
     # Enable AMD GPU metrics exporter for Prometheus
     prometheus.exporters.node = {
@@ -276,13 +261,6 @@ in
         lowercase = true;
       }
     ];
-
-  };
-
-  # Enable AMD GPU metrics exporter
-  hardware.amdgpu.metricsExporter = {
-    enable = true;
-    interval = "30s";
   };
 
   system.stateVersion = "25.11"; # Don't change

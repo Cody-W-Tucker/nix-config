@@ -94,7 +94,6 @@
 
       # Custom packages exposed via the flake
       packages.${system} = {
-        headroom-ai = pkgs.callPackage ./packages/headroom-ai { };
         llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
       };
 
