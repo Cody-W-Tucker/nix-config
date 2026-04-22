@@ -1,4 +1,3 @@
-{ ... }:
 {
   # Global MCP tools for all agents
   programs.mcp = {
@@ -12,6 +11,10 @@
           "--run"
           "npx -y @upstash/context7-mcp"
         ];
+      };
+      gh_grep = {
+        type = "remote";
+        url = "https://mcp.grep.app";
       };
       nixos-option-search = {
         command = "nix";

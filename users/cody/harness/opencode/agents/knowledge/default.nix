@@ -38,8 +38,6 @@ in
     tools:
       "karakeep_*": true
     permission:
-      edit: allow
-      bash: allow
       "context7_*": deny
       "nixos-option-search_*": deny
       skill:
