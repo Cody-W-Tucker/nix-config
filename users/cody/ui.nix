@@ -5,7 +5,7 @@
     ./obsidian # Obsidian declarative configuration
     ./ui
     ./cli
-    ./agent
+    ./harness
     ./packages/scripts
   ];
 

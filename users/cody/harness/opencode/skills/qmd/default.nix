@@ -1,7 +1,7 @@
 {
   # These rules get added to the global AGENTS.md file for opencode
   programs.opencode.skills = {
-    semantic-search = ''
+    qmd = ''
       ---
       name: qmd
       description: Search markdown knowledge bases, notes, and documentation using QMD. Use when users ask to search notes, find documents, or look up information.

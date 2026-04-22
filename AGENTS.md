@@ -105,8 +105,10 @@ Tips for running persistent agent services and scheduled tasks:
 
 ## OpenCode
 
-- Scope OpenCode access per agent in `users/cody/agent/opencode/default.nix` using `programs.opencode.settings.agent.<name>.permission`
-- Keep `build` focused on coding work, `plan` on knowledge work, and separate business/accounting workflows into a dedicated primary agent
+- Define primary OpenCode agents inline in `users/cody/agent/opencode/default.nix` via `programs.opencode.agents`
+- Keep only quiet shared MCP servers in `users/cody/agent/mcp.nix` under `programs.mcp.servers`; define noisier OpenCode-only MCP servers under `programs.opencode.settings.mcp`
+- Disable non-global MCP tools globally with `programs.opencode.settings.tools`, then re-enable them per agent in the markdown agent frontmatter
+- Keep `build` focused on coding work, `plan` on problem analysis, `knowledge` on notes and bookmarks, and `business` on accounting/CRM workflows
 
 ## Requirements:
 
