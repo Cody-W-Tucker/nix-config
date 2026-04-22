@@ -59,5 +59,53 @@
         silent = true;
       };
     }
+    {
+      mode = "v";
+      key = "<Leader>9v";
+      action.__raw = ''function() require("99").visual() end'';
+      options = {
+        silent = true;
+        desc = "99 Visual";
+      };
+    }
+    {
+      mode = "n";
+      key = "<Leader>9s";
+      action.__raw = ''function() require("99").search() end'';
+      options = {
+        silent = true;
+        desc = "99 Search";
+      };
+    }
+    {
+      mode = [
+        "n"
+        "v"
+      ];
+      key = "<Leader>9x";
+      action.__raw = ''function() require("99").stop_all_requests() end'';
+      options = {
+        silent = true;
+        desc = "99 Stop";
+      };
+    }
+    {
+      mode = "n";
+      key = "<Leader>9m";
+      action.__raw = ''function() require("99.extensions.telescope").select_model() end'';
+      options = {
+        silent = true;
+        desc = "99 Model";
+      };
+    }
+    {
+      mode = "n";
+      key = "<Leader>9p";
+      action.__raw = ''function() require("99.extensions.telescope").select_provider() end'';
+      options = {
+        silent = true;
+        desc = "99 Provider";
+      };
+    }
   ];
 }

@@ -7,6 +7,7 @@
     ./plugins/none-ls.nix
     ./plugins/conform.nix
     ./plugins/cmp.nix
+    ./plugins/99.nix
     ./plugins/lualine.nix
     ./plugins/telescope.nix
     ./plugins/treesitter.nix
