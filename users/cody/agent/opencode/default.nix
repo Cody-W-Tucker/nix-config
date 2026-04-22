@@ -19,9 +19,21 @@
     enable = true;
     enableMcpIntegration = true;
     context = ''
-      Unless otherwise stated, you are operating in a nixos system.
+      Unless otherwise stated, you are operating in a NixOS system.
 
-      Use nix shell to access common packages if needed.
+      This is a minimal environment. Common language runtimes (python, node, etc.) are not globally available.
+
+      Use `nix shell` only when a required tool or runtime is missing.
+
+      Do NOT use `nix shell` for standard Unix utilities that are typically available (e.g., bash, coreutils, grep, sed, awk, git).
+
+      Examples:
+      - Python: nix shell nixpkgs#python3 --command python script.py
+      - Node: nix shell nixpkgs#nodejs --command node script.js
+
+      Do not assume system-wide installations of languages or external tools.
+
+      If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
     '';
     tui.theme = lib.mkForce "system";
     settings = {
