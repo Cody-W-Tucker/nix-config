@@ -6,6 +6,7 @@
 
 {
   imports = [
+    ./obsidian
     ./hyprland.nix
     ./rofi.nix
     ./waybar.nix
