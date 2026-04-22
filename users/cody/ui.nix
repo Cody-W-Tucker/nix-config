@@ -69,8 +69,6 @@
 
     # Enable Wayland backend for Firefox (and other Mozilla apps)
     MOZ_ENABLE_WAYLAND = "1";
-    # Disable RDD sandbox in Mozilla (may help with video decoding issues)
-    MOZ_DISABLE_RDD_SANDBOX = "1";
 
     # ---------------------------
     # Qt Toolkit Configuration

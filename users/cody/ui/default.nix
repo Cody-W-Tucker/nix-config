@@ -110,16 +110,12 @@
         settings = {
           # Enable VA-API video decoding
           "media.ffmpeg.vaapi.enabled" = true;
-          # Force enable VA-API (even if blacklisted)
-          "media.ffmpeg.vaapi-force-enabled" = true;
           # Enable hardware decoding
           "media.hardware-video-decoding.enabled" = true;
           # Enable WebRender for better GPU acceleration
           "gfx.webrender.all" = true;
           "gfx.webrender.enabled" = true;
-          # Enable DMA-BUF for Wayland
-          "widget.dmabuf.force-enabled" = true;
-          # Additional NVIDIA fixes
+          # Additional video-path settings
           "media.ffmpeg.dmabuf-textures.enabled" = true;
           "media.rdd-ffmpeg.enabled" = true;
           # Disable software fallback for video decoding
