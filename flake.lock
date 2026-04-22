@@ -176,11 +176,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776738182,
-        "narHash": "sha256-M6RC93pDMUGGs/8FRDHe6JywAROewcMmYg0KjyhFQqc=",
+        "lastModified": 1776859947,
+        "narHash": "sha256-pbmyz8Rmk2tzirQls/0PcyqoDE/jm9V5xasmad9yAHQ=",
         "owner": "Cody-W-Tucker",
         "repo": "crm.cli",
-        "rev": "16133b4e83a48a246c3530bb7479197075ba1e1b",
+        "rev": "ae73727212ada4a573eb661b009b8669c31a4446",
         "type": "github"
       },
       "original": {
