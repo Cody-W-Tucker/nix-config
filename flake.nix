@@ -75,6 +75,10 @@
       url = "github:Cody-W-Tucker/crm.cli";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    rlm = {
+      # Local Recursive Language Model CLI under active development.
+      url = "github:Cody-W-Tucker/rlm";
+    };
   };
 
   outputs =
