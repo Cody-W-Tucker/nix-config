@@ -4,6 +4,7 @@
   duckdb,
   fetchFromGitHub,
   makeWrapper,
+  perl,
   uv,
 }:
 
@@ -20,12 +21,17 @@ buildGoModule rec {
 
   vendorHash = "sha256-KhZgPVBn9x7YfBw9Kh0oVzF+Yxlxp7FeBPjd5zSQKjM=";
 
+  postPatch = ''
+    perl -0pi -e 's@repo := &DuckDBRepository\{@if _, err := db.ExecContext(ctx, "LOAD fts"); err != nil {\n\tif _, installErr := db.ExecContext(ctx, "INSTALL fts"); installErr != nil {\n\t\treturn nil, fmt.Errorf("failed to install fts extension: %w", installErr)\n\t}\n\n\tif _, loadErr := db.ExecContext(ctx, "LOAD fts"); loadErr != nil {\n\t\treturn nil, fmt.Errorf("failed to load fts extension: %w", loadErr)\n\t}\n}\n\nrepo := &DuckDBRepository{@' internal/storage/duckdb.go
+  '';
+
   subPackages = [
     "cmd/gh-start-search"
   ];
 
   nativeBuildInputs = [
     makeWrapper
+    perl
   ];
 
   buildInputs = [
