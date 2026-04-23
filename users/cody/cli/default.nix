@@ -3,6 +3,7 @@
   pkgs,
   lib,
   inputs,
+  self,
   ...
 }:
 
@@ -103,6 +104,9 @@
   # Enable GitHub CLI
   programs.gh = {
     enable = true;
+    extensions = [
+      self.packages.${pkgs.stdenv.hostPlatform.system}.gh-star-search
+    ];
   };
 
   programs = {

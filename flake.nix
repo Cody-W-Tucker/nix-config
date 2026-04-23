@@ -94,6 +94,7 @@
 
       # Custom packages exposed via the flake
       packages.${system} = {
+        gh-star-search = pkgs.callPackage ./packages/gh-star-search { };
         llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
       };
 
