@@ -82,7 +82,7 @@ in
     networkmanager.enable = true;
     networkmanager.settings.connection = {
       # MT7925 Bluetooth is more stable when NetworkManager does not power-save Wi-Fi.
-      wifi.powersave = 2;
+      "wifi.powersave" = 2;
     };
     useDHCP = lib.mkDefault true; # Enables DHCP on each ethernet and wireless interface.
   };
