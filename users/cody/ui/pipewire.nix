@@ -1,6 +1,7 @@
 { pkgs, ... }:
 let
   inherit (pkgs) rnnoise-plugin;
+  rnnoiseLadspaPath = "${rnnoise-plugin}/lib/ladspa";
 in
 {
   # RNNoise configuration
@@ -17,7 +18,7 @@ in
                 {
                   type = "ladspa";
                   name = "rnnoise";
-                  plugin = "${rnnoise-plugin}/lib/ladspa/librnnoise_ladspa.so";
+                  plugin = "ladspa/librnnoise_ladspa";
                   label = "noise_suppressor_mono";
                   control = {
                     "VAD Threshold (%)" = 80.0;
@@ -42,4 +43,8 @@ in
       ];
     };
   };
+
+  systemd.user.services.pipewire.Service.Environment = [
+    "LADSPA_PATH=${rnnoiseLadspaPath}"
+  ];
 }
