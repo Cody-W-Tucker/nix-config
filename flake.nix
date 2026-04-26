@@ -38,7 +38,8 @@
     nixvim = {
       # Configures neovim and related plugins.
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # Nixvim tests against their nixpkgs version and we shouldn't follow our own if we want the benefit.
+      # inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     zen-browser = {
       # Modern web browser based on firefox.
