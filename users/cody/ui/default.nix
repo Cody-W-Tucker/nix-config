@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   pkgs,
   ...
@@ -102,6 +103,7 @@
     firefox = {
       # Zen browser via Firefox module
       enable = true;
+      configPath = "${config.xdg.configHome}/mozilla/firefox";
       # Replace firefox with zen browser to use home manager module
       package = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
       profiles.default = {
