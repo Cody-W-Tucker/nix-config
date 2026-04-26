@@ -33,7 +33,6 @@
 
       If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
     '';
-    tui.theme = lib.mkForce "system";
     settings = {
       autoupdate = false;
       default_agent = "build";
