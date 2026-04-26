@@ -76,6 +76,11 @@
       url = "github:Cody-W-Tucker/crm.cli";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    cognitive-assistant = {
+      # Generated prompt and skill artifacts for a personalized cognitive assistant.
+      url = "github:Cody-W-Tucker/Cognitive-Assistant";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     rlm = {
       # Local Recursive Language Model CLI under active development.
       url = "github:Cody-W-Tucker/rlm";
