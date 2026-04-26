@@ -44,6 +44,7 @@ in
       inherit hardwareConfig;
     };
     users.codyt = {
+      home.stateVersion = "25.05";
       imports = [
         ../users/cody/ui.nix
         ../secrets/home-secrets.nix

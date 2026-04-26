@@ -92,5 +92,4 @@
     WLR_USE_LIBINPUT = "1";
   };
 
-  home.stateVersion = "26.05";
 }

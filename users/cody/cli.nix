@@ -11,5 +11,4 @@
     model = "pc105";
   };
 
-  home.stateVersion = "26.05";
 }

@@ -63,8 +63,6 @@
   ];
 
   services = {
-    # Bluetooth manager systray
-    blueman-applet.enable = true;
     tailscale-systray.enable = true;
 
     # Control media via cli and waybar

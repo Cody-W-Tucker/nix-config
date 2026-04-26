@@ -25,6 +25,7 @@
       inherit inputs self;
     };
     users.codyt = {
+      home.stateVersion = "23.11";
       imports = [
         ../users/cody/cli.nix
         ../secrets/home-secrets.nix

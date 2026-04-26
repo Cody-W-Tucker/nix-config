@@ -20,10 +20,6 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
-    # Required because home-manager.useGlobalPkgs doesn't inherit nixpkgs.config from NixOS
-    # This allows unfree packages like copilot-vim to be installed
-    # See: https://github.com/nix-community/home-manager/issues/3267
-    nixpkgs.config.allowUnfree = true;
     colorschemes.catppuccin = {
       enable = true;
       settings = {
@@ -68,7 +64,6 @@
       web-devicons.enable = true;
       direnv.enable = true;
       zig.enable = true;
-      copilot-vim.enable = true;
     };
     # Set the leader key to <Space>
     globals.mapleader = " ";

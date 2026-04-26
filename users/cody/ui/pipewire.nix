@@ -18,7 +18,7 @@ in
                 {
                   type = "ladspa";
                   name = "rnnoise";
-                  plugin = "ladspa/librnnoise_ladspa";
+                  plugin = "librnnoise_ladspa";
                   label = "noise_suppressor_mono";
                   control = {
                     "VAD Threshold (%)" = 80.0;
@@ -44,7 +44,8 @@ in
     };
   };
 
-  systemd.user.services.pipewire.Service.Environment = [
-    "LADSPA_PATH=${rnnoiseLadspaPath}"
-  ];
+  xdg.configFile."systemd/user/pipewire.service.d/zz-rnnoise.conf".text = ''
+    [Service]
+    Environment="LADSPA_PATH=${rnnoiseLadspaPath}"
+  '';
 }
