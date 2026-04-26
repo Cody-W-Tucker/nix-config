@@ -4,7 +4,6 @@
   imports = [
     inputs.sops-nix.nixosModules.sops
     inputs.home-manager.nixosModules.home-manager
-    inputs.flake-programs-sqlite.nixosModules.programs-sqlite
     ../../packages/system-scripts
     ./locale.nix
     ./nix.nix

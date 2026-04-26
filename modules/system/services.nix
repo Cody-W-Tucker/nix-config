@@ -1,10 +1,20 @@
 # Core system services
 
-{ ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # Enables prompts to install missing packages when running commands
-  programs.command-not-found.enable = true;
+  programs.command-not-found = {
+    enable = true;
+    dbPath =
+      lib.mkForce
+        inputs.flake-programs-sqlite.packages.${pkgs.stdenv.hostPlatform.system}.programs-sqlite;
+  };
 
   services = {
     # Logrotate
