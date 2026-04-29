@@ -27,7 +27,8 @@ in
   programs.rlm = {
     enable = true;
     apiKeyFile = config.sops.secrets."opencode-zen-api-key".path;
-    model = "kimi-k2.5";
+    model = "gpt-5.4";
+    subModel = "kimi-k2.5";
     openaiBaseUrl = "https://opencode.ai/zen/v1";
   };
 }
