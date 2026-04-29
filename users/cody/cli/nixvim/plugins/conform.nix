@@ -1,11 +1,19 @@
+{ pkgs, ... }:
+
 {
   programs.nixvim.plugins = {
     conform-nvim = {
       enable = true;
+      autoInstall = {
+        enable = true;
+        overrides = {
+          black = pkgs.black;
+        };
+      };
       settings = {
         format_on_save = {
-          timeoutMs = 500;
-          lspFallback = true;
+          timeout_ms = 500;
+          lsp_format = "fallback";
         };
         formatters_by_ft = {
           astro = [ "prettier" ];
