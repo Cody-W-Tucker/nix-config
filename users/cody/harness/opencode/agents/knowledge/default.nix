@@ -12,6 +12,18 @@ let
       exec npx -y @karakeep/mcp "$@"
     '';
   };
+
+  qdrantMcp = pkgs.writeShellApplication {
+    name = "qdrant-mcp";
+    runtimeInputs = [ pkgs.uv ];
+    text = ''
+      export QDRANT_URL="https://qdrant.homehub.tv"
+      export FASTEMBED_CACHE_PATH="$HOME/.cache/fastembed"
+      mkdir -p "$FASTEMBED_CACHE_PATH"
+
+      exec uvx --python 3.12 mcp-server-qdrant "$@"
+    '';
+  };
 in
 {
   imports = [
@@ -28,7 +40,14 @@ in
       enabled = true;
     };
 
+    mcp.qdrant = {
+      type = "local";
+      command = [ "${qdrantMcp}/bin/qdrant-mcp" ];
+      enabled = true;
+    };
+
     tools."karakeep_*" = false;
+    tools."qdrant_*" = false;
   };
 
   programs.opencode.agents.knowledge = ''
@@ -37,6 +56,7 @@ in
     mode: subagent
     tools:
       "karakeep_*": true
+      "qdrant_*": true
     permission:
       "context7_*": deny
       "nixos-option-search_*": deny
@@ -49,6 +69,7 @@ in
     - Use QMD for fast full-text search across markdown files
     - Search Obsidian vault by content, properties, or graph connections
     - Retrieve bookmarks
+    - Store and retrieve semantic memory in Qdrant collections
     - Synthesize information from multiple sources
   '';
 }
