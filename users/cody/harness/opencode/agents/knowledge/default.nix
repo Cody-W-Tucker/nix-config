@@ -34,7 +34,7 @@ in
   programs.opencode.agents.knowledge = ''
     ---
     description: Knowledge work agent for notes, bookmarks, dashboards, and research.
-    mode: primary
+    mode: subagent
     tools:
       "karakeep_*": true
     permission:
