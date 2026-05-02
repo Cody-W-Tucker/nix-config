@@ -12,6 +12,7 @@
     ./agents/existential
     ./agents/operational
     ./agents/rlm
+    ./skills/humanizer
     ./tools/rtk
   ];
 
