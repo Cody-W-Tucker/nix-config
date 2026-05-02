@@ -9,7 +9,8 @@
     ./agents/logging
     ./agents/knowledge
     ./agents/business
-    ./agents/cognitive-assistant
+    ./agents/existential
+    ./agents/operational
     ./agents/rlm
     ./tools/rtk
   ];
