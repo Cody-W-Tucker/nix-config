@@ -12,18 +12,6 @@ let
       exec npx -y @karakeep/mcp "$@"
     '';
   };
-
-  qdrantMcp = pkgs.writeShellApplication {
-    name = "qdrant-mcp";
-    runtimeInputs = [ pkgs.uv ];
-    text = ''
-      export QDRANT_URL="https://qdrant.homehub.tv:443"
-      export FASTEMBED_CACHE_PATH="$HOME/.cache/fastembed"
-      mkdir -p "$FASTEMBED_CACHE_PATH"
-
-      exec uvx --python 3.12 mcp-server-qdrant "$@"
-    '';
-  };
 in
 {
   imports = [
@@ -39,15 +27,7 @@ in
       command = [ "${karakeepMcp}/bin/karakeep-mcp" ];
       enabled = true;
     };
-
-    mcp.qdrant = {
-      type = "local";
-      command = [ "${qdrantMcp}/bin/qdrant-mcp" ];
-      enabled = true;
-    };
-
     tools."karakeep_*" = false;
-    tools."qdrant_*" = false;
   };
 
   programs.opencode.agents.knowledge = ''

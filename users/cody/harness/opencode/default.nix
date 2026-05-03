@@ -35,6 +35,11 @@
       Do not assume system-wide installations of languages or external tools.
 
       If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
+
+      Memory retrieval:
+      - Use enabled read-only Qdrant tools to retrieve durable memories when prior context would materially improve the answer.
+      - Always pass an explicit `collection_name`; this harness does not configure a default collection.
+      - Store or update memories through the memory subagent rather than writing directly from general agents.
     '';
     settings = {
       autoupdate = false;
