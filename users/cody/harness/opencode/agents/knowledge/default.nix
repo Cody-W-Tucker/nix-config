@@ -17,7 +17,7 @@ let
     name = "qdrant-mcp";
     runtimeInputs = [ pkgs.uv ];
     text = ''
-      export QDRANT_URL="https://qdrant.homehub.tv"
+      export QDRANT_URL="https://qdrant.homehub.tv:443"
       export FASTEMBED_CACHE_PATH="$HOME/.cache/fastembed"
       mkdir -p "$FASTEMBED_CACHE_PATH"
 
