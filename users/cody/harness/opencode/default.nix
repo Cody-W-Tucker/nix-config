@@ -8,6 +8,7 @@
   imports = [
     ./agents/logging
     ./agents/knowledge
+    ./agents/memory
     ./agents/business
     ./agents/existential
     ./agents/operational

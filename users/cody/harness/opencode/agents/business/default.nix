@@ -29,6 +29,7 @@ in
   imports = [
     ./skills/google-workspace
     ./skills/crm
+    ./skills/tasks
   ];
 
   sops.secrets.actual-budget-mcp-password = { };

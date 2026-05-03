@@ -56,7 +56,6 @@ in
     mode: subagent
     tools:
       "karakeep_*": true
-      "qdrant_*": true
     permission:
       "context7_*": deny
       "nixos-option-search_*": deny
@@ -69,7 +68,6 @@ in
     - Use QMD for fast full-text search across markdown files
     - Search Obsidian vault by content, properties, or graph connections
     - Retrieve bookmarks
-    - Store and retrieve semantic memory in Qdrant collections
     - Synthesize information from multiple sources
   '';
 }
