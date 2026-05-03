@@ -12,6 +12,7 @@
     ./agents/business
     ./agents/existential
     ./agents/operational
+    ./skills/agent-browser
     ./skills/humanizer
     ./tools/rtk
   ];
