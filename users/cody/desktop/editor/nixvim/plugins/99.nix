@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  plugin99 = pkgs.callPackage ../../../packages/99 { };
+  plugin99 = pkgs.callPackage ../../../../packages/99 { };
 in
 {
   programs.nixvim = {

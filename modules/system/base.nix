@@ -1,9 +1,13 @@
-{ inputs, ... }:
+{
+  inputs,
+  home-manager-input,
+  ...
+}:
 
 {
   imports = [
     inputs.sops-nix.nixosModules.sops
-    inputs.home-manager.nixosModules.home-manager
+    home-manager-input.nixosModules.home-manager
     ../../packages/system-scripts
     ./locale.nix
     ./nix.nix

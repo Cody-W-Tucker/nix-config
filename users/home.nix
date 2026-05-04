@@ -11,7 +11,6 @@
 
     sharedModules = [
       inputs.sops-nix.homeModules.sops
-      inputs.stylix.homeModules.stylix
     ];
   };
 }

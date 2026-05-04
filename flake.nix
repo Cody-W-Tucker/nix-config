@@ -30,6 +30,11 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    home-manager-stable = {
+      # Stable Home Manager for hosts that use stable nixpkgs.
+      url = "github:nix-community/home-manager/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     stylix = {
       # Configures theming for the desktop and cli.
       url = "github:danth/stylix";
@@ -95,7 +100,10 @@
     }:
     let
       system = "x86_64-linux";
-      specialArgs = { inherit inputs self; };
+      specialArgs = {
+        inherit inputs self;
+        home-manager-input = inputs.home-manager;
+      };
       pkgs = nixpkgs-unstable.legacyPackages.${system};
     in
     {
@@ -115,7 +123,10 @@
           modules = [ ./hosts/beast.nix ];
         };
         server = inputs.nixpkgs.lib.nixosSystem {
-          inherit system specialArgs;
+          inherit system;
+          specialArgs = specialArgs // {
+            home-manager-input = inputs.home-manager-stable;
+          };
           modules = [ ./hosts/server.nix ];
         };
         aiserver = inputs.nixpkgs-unstable.lib.nixosSystem {

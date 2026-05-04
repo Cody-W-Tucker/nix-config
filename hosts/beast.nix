@@ -46,7 +46,7 @@ in
     users.codyt = {
       home.stateVersion = "25.05";
       imports = [
-        ../users/cody/ui.nix
+        ../users/cody/desktop.nix
         ../secrets/home-secrets.nix
         inputs.nixvim.homeModules.nixvim
       ];

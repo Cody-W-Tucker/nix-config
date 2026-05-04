@@ -1,139 +1,47 @@
 {
   config,
-  pkgs,
-  lib,
   inputs,
+  pkgs,
   self,
+  lib,
   ...
 }:
 
 {
-  imports = [
-    ./nixvim
-    inputs.crm-cli.homeManagerModules.default
-  ];
-
-  home.packages = with pkgs; [
-    fd
-    fastfetch
-    unzip
-    zip
-    taskwarrior-tui
-    timewarrior
-    tree
-    inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
-  ];
-
-  home.sessionVariables = {
-    VISUAL = "nvim";
-    TERMINAL = "kitty";
-  };
-
-  # Enable Stylix for theming
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-
-  programs.eza = {
-    # Use eza instead of ls
-    enable = true;
-    git = true;
-    icons = "auto";
-  };
-
-  programs.yazi = {
-    # Yazi file viewer
-    enable = true;
-    enableZshIntegration = true;
-    shellWrapperName = "y";
-    theme = {
-      git = {
-        status_modified = "#${config.lib.stylix.colors.base0A}";
-        status_added = "#${config.lib.stylix.colors.base0B}";
-        status_deleted = "#${config.lib.stylix.colors.base08}";
-        status_renamed = "#${config.lib.stylix.colors.base0D}";
-        status_copied = "#${config.lib.stylix.colors.base0D}";
-        status_untracked = "#${config.lib.stylix.colors.base0C}";
-      };
-    };
-  };
-
-  programs."crm-cli" = {
-    enable = true;
-    autoMount = true; # Mount the crm to a virtual filesystem to view leads, contacts, etc. on "disk."
-    settings.mount.default_path = "${config.home.homeDirectory}/Knowledge/CRM";
-  };
-
-  # Lazygit
-  programs.lazygit = {
-    enable = true;
-  };
-
-  programs.git = {
-    enable = true;
-    # Global gitignore
-    ignores = [
-      "tmp" # ignore for 99 plugin
-      # Nix
-      ".nix-shell"
-      ".direnv/"
-      # Python
-      "__pycache__/"
-    ];
-
-    # Additional configuration
-    settings = {
-      user = {
-        name = "Cody W Tucker";
-        email = "cody@tmvsocial.com";
-      };
-      alias = {
-        st = "status";
-      };
-      init.defaultBranch = "main";
-      pull.rebase = true;
-      push.autoSetupRemote = true;
-      core.editor = "nvim";
-      color = {
-        ui = "auto";
-        branch = "auto";
-        diff = "auto";
-        status = "auto";
-      };
-    };
-  };
-
-  # Enable GitHub CLI
-  programs.gh = {
-    enable = true;
-    extensions = [
-      self.packages.${pkgs.stdenv.hostPlatform.system}.gh-star-search
-    ];
-  };
-
   programs = {
-    zsh = {
+    yazi = {
+      # Yazi file viewer
       enable = true;
-      syntaxHighlighting.enable = true;
-      autosuggestion.enable = true;
-      enableCompletion = true;
-      history.path = "${config.xdg.dataHome}/zsh/zsh_history";
-      history.size = 10000;
+      enableZshIntegration = true;
+      shellWrapperName = "y";
+      theme = {
+        git = {
+          status_modified = "#${config.lib.stylix.colors.base0A}";
+          status_added = "#${config.lib.stylix.colors.base0B}";
+          status_deleted = "#${config.lib.stylix.colors.base08}";
+          status_renamed = "#${config.lib.stylix.colors.base0D}";
+          status_copied = "#${config.lib.stylix.colors.base0D}";
+          status_untracked = "#${config.lib.stylix.colors.base0C}";
+        };
+      };
+    };
+    "crm-cli" = {
+      enable = true;
+      autoMount = true; # Mount the crm to a virtual filesystem to view leads, contacts, etc. on "disk."
+      settings.mount.default_path = "${config.home.homeDirectory}/Knowledge/CRM";
+    };
+    gh = {
+      # Enable GitHub CLI
+      enable = true;
+      extensions = [
+        self.packages.${pkgs.stdenv.hostPlatform.system}.gh-star-search
+      ];
+    };
+    zsh = {
       shellAliases = {
         ssh- = "kitty +kitten ssh";
-        cat = "bat";
-        cd = "z";
-        ll = "eza -l";
-        ls = "eza";
         rr = "yazi";
-        gg = "lazygit";
-        op = "opencode";
         copy = "kitten clipboard";
-        pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
-        upgrade = ''
-          cd /etc/nixos &&
-          sudo nix flake update
-          sudo nixos-rebuild switch
-        '';
-        gcCleanup = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       };
       plugins = [
         {
@@ -153,16 +61,7 @@
         }
       '';
     };
-    bash = {
-      historyFile = "${config.xdg.dataHome}/bash/bash_history";
-    };
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-    };
     fzf = {
-      enable = true;
-      enableZshIntegration = true;
       colors = lib.mkForce {
         "fg+" = "#" + config.lib.stylix.colors.base0D;
         "bg+" = "-1";
@@ -245,10 +144,6 @@
       '';
     };
     bat = {
-      enable = true;
-      config = {
-        pager = "less -FR";
-      };
       themes =
         let
           src = pkgs.fetchFromGitHub {
@@ -265,7 +160,38 @@
           };
         };
     };
-    zoxide.enable = true;
-    ripgrep.enable = true;
+    chromium = {
+      enable = true;
+      # Chromecast improvement
+      commandLineArgs = [ "--load-media-router-component-extension=1" ];
+    };
+    obs-studio = {
+      # Obs for screenrecording
+      enable = true;
+    };
+    firefox = {
+      # Zen browser via Firefox module
+      enable = true;
+      configPath = "${config.xdg.configHome}/mozilla/firefox";
+      # Replace firefox with zen browser to use home manager module
+      package = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      profiles.default = {
+        # hardware acceleration settings
+        settings = {
+          # Enable VA-API video decoding
+          "media.ffmpeg.vaapi.enabled" = true;
+          # Enable hardware decoding
+          "media.hardware-video-decoding.enabled" = true;
+          # Enable WebRender for better GPU acceleration
+          "gfx.webrender.all" = true;
+          "gfx.webrender.enabled" = true;
+          # Additional video-path settings
+          "media.ffmpeg.dmabuf-textures.enabled" = true;
+          "media.rdd-ffmpeg.enabled" = true;
+          # Disable software fallback for video decoding
+          "media.decoder-doctor.notifications-allowed" = false;
+        };
+      };
+    };
   };
 }

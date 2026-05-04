@@ -1,18 +1,13 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   imports = [
-    ./ui
-    ./cli
+    ./core.nix
+    ./desktop
     ./harness
     ./packages/scripts
+    inputs.stylix.homeModules.stylix
   ];
-
-  # Keyboard
-  home.keyboard = {
-    layout = "us";
-    model = "pc105";
-  };
 
   # Styling and themes
   stylix = {

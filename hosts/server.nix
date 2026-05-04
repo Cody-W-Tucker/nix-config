@@ -27,9 +27,8 @@
     users.codyt = {
       home.stateVersion = "23.11";
       imports = [
-        ../users/cody/cli.nix
+        ../users/cody/server.nix
         ../secrets/home-secrets.nix
-        inputs.nixvim.homeModules.nixvim
       ];
       home.enableNixpkgsReleaseCheck = false;
     };
