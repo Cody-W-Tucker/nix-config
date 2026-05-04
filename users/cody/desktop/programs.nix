@@ -14,16 +14,29 @@
       enable = true;
       enableZshIntegration = true;
       shellWrapperName = "y";
-      theme = {
-        git = {
-          status_modified = "#${config.lib.stylix.colors.base0A}";
-          status_added = "#${config.lib.stylix.colors.base0B}";
-          status_deleted = "#${config.lib.stylix.colors.base08}";
-          status_renamed = "#${config.lib.stylix.colors.base0D}";
-          status_copied = "#${config.lib.stylix.colors.base0D}";
-          status_untracked = "#${config.lib.stylix.colors.base0C}";
-        };
-      };
+      plugins.git = pkgs.yaziPlugins.git;
+      settings.plugin.prepend_fetchers = [
+        {
+          id = "git";
+          url = "*";
+          run = "git";
+        }
+        {
+          id = "git";
+          url = "*/";
+          run = "git";
+        }
+      ];
+      initLua = ''
+        th.git = th.git or {}
+        th.git.modified = ui.Style():fg("#${config.lib.stylix.colors.base0A}")
+        th.git.added = ui.Style():fg("#${config.lib.stylix.colors.base0B}")
+        th.git.deleted = ui.Style():fg("#${config.lib.stylix.colors.base08}")
+        th.git.updated = ui.Style():fg("#${config.lib.stylix.colors.base0D}")
+        th.git.untracked = ui.Style():fg("#${config.lib.stylix.colors.base0C}")
+
+        require("git"):setup()
+      '';
     };
     "crm-cli" = {
       enable = true;
