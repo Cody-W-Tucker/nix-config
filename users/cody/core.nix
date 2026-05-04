@@ -74,7 +74,15 @@
       };
     };
 
-    lazygit.enable = true;
+    lazygit = {
+      enable = true;
+      settings = {
+        gui.paging = {
+          colorArg = "always";
+          paging = "delta --dark --paging=never";
+        };
+      };
+    };
     ripgrep.enable = true;
     zoxide.enable = true;
 
