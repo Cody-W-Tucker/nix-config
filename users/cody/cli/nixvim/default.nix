@@ -53,7 +53,6 @@
       csvview.enable = true;
       nix.enable = true;
       lazygit.enable = true;
-      git-conflict.enable = true;
       gitsigns.enable = true;
       markdown-preview.enable = true;
       commentary.enable = true;
