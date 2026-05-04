@@ -4,8 +4,6 @@
   imports = [
     ./core.nix
     ./desktop
-    ./harness
-    ./packages/scripts
     inputs.stylix.homeModules.stylix
   ];
 
