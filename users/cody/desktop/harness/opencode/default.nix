@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -15,6 +16,10 @@
     ./skills/agent-browser
     ./skills/humanizer
     ./tools/rtk
+  ];
+
+  home.packages = [
+    inputs.cognitive-assistant.packages.${pkgs.stdenv.hostPlatform.system}.verify-alignment
   ];
 
   programs.opencode = {
