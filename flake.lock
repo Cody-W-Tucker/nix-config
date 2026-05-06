@@ -179,11 +179,11 @@
         "rlm": "rlm"
       },
       "locked": {
-        "lastModified": 1778017360,
-        "narHash": "sha256-yY5ypixQ1/AtkFylzKOx3Z7n0dDSLTk6XdMl9/IDX0c=",
+        "lastModified": 1778031227,
+        "narHash": "sha256-3qoFcxJSaaT559jiojXBqEgUfjI7jAOI28xtdGIn50w=",
         "owner": "Cody-W-Tucker",
         "repo": "Cognitive-Assistant",
-        "rev": "bc95c93f6c79c040843669d5d38f376dda0391a5",
+        "rev": "fcca874e7ab9fba2bb568d6a25e39bdffce7a932",
         "type": "github"
       },
       "original": {
@@ -729,11 +729,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1778017203,
-        "narHash": "sha256-gi60z89argF4h3kX2/+4lEpK9I9PVoZoldSA1Zaoq5g=",
+        "lastModified": 1778031092,
+        "narHash": "sha256-CGa0HCdCndRdqIZPC5vITHhf/TYjEXu7yEVK3G77as4=",
         "owner": "Cody-W-Tucker",
         "repo": "rlm",
-        "rev": "537fdea0a51b2859fee5ab24e2ff268d9ddeb32e",
+        "rev": "02c3e8f6f5a8adcbfa7751f7676e094ec6379af9",
         "type": "github"
       },
       "original": {
@@ -747,11 +747,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1777659107,
-        "narHash": "sha256-t+8t1+kOrmdGq7/cDPk1QbKGSBRqWFl1v84yXqYOAIU=",
+        "lastModified": 1778031092,
+        "narHash": "sha256-CGa0HCdCndRdqIZPC5vITHhf/TYjEXu7yEVK3G77as4=",
         "owner": "Cody-W-Tucker",
         "repo": "rlm",
-        "rev": "f56db807e0d44b9d96837d8e0060986d5c1aa771",
+        "rev": "02c3e8f6f5a8adcbfa7751f7676e094ec6379af9",
         "type": "github"
       },
       "original": {
