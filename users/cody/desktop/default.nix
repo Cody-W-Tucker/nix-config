@@ -73,6 +73,7 @@
     wttrbar # Weather bar for Waybar
     vesktop # Discord client
     kdePackages.kpeople # Contact integration for KDE Connect SMS
+    doxx # Cli tool to open docx
   ];
 
   services = {
