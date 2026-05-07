@@ -17,7 +17,7 @@ pkgs.writeShellApplication {
     APP_CMD="$2"
 
     # Get window address directly using hyprctl and jq
-    WINDOW_ADDRESS=$(hyprctl clients -j | jq -r --arg a "$APP_CLASS" '.[] | select(.class | test($a; "i")) | .address' | head -n1)
+    WINDOW_ADDRESS=$(hyprctl clients -j | jq -r --arg a "$APP_CLASS" '.[] | select(.class | test("^(?:" + $a + ")$"; "i")) | .address' | head -n1)
 
     if [ -n "$WINDOW_ADDRESS" ]; then
       hyprctl dispatch focuswindow "address:$WINDOW_ADDRESS"
