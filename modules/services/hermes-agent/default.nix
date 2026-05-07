@@ -9,7 +9,9 @@
 let
   hermesPackage = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+  bundledSkillsDir = hermesPackage.upstreamSrc + "/skills";
   skillDirs = [
+    bundledSkillsDir
     inputs.cognitive-assistant.lib.operational.skillsDir
     inputs.cognitive-assistant.lib.existential.skillsDir
   ];
@@ -31,6 +33,7 @@ in
     enable = true;
     package = hermesPackage;
     environmentFiles = [ config.sops.templates."hermes-env".path ];
+    skills.bundled.enable = false;
     extraPackages = with pkgs; [
       curl
       git
