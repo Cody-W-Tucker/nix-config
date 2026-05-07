@@ -58,6 +58,11 @@ in
         default = "kimi-k2.5";
         provider = "opencode-zen";
       };
+      platforms.discord.home_channel = {
+        platform = "discord";
+        chat_id = "1502095470334578779";
+        name = "#bot-updates";
+      };
       toolsets = [ "all" ];
       agent = {
         max_turns = 60;
