@@ -17,10 +17,14 @@ in
   imports = [ inputs.hermes-agent.nixosModules.default ];
 
   sops.secrets."opencode-zen-api-key" = { };
+  sops.secrets."hermes-telegram-bot-token" = { };
+  sops.secrets."hermes-telegram-allowed-users" = { };
 
   sops.templates."hermes-env" = {
     content = ''
       OPENAI_API_KEY=${config.sops.placeholder."opencode-zen-api-key"}
+      TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
+      TELEGRAM_ALLOWED_USERS=${config.sops.placeholder."hermes-telegram-allowed-users"}
     '';
   };
 

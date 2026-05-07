@@ -20,6 +20,7 @@
       "input"
       "documents"
       "openrazer"
+      "hermes"
     ];
     shell = pkgs.zsh;
     hashedPassword = "$y$j9T$2gGzaHfv1JMUMtHdaXBGF/$RoEaBINI46v1yFpR1bSgPc9ovAyzqjgSSTxuNhRiOn4";
