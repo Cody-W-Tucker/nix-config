@@ -16,16 +16,19 @@ in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
 
-  sops.secrets."opencode-zen-api-key" = { };
-  sops.secrets."hermes-telegram-bot-token" = { };
-  sops.secrets."hermes-telegram-allowed-users" = { };
-
-  sops.templates."hermes-env" = {
-    content = ''
-      OPENAI_API_KEY=${config.sops.placeholder."opencode-zen-api-key"}
-      TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
-      TELEGRAM_ALLOWED_USERS=${config.sops.placeholder."hermes-telegram-allowed-users"}
-    '';
+  sops = {
+    secrets = {
+      "opencode-zen-api-key" = { };
+      "hermes-telegram-bot-token" = { };
+      "hermes-telegram-allowed-users" = { };
+    };
+    templates."hermes-env" = {
+      content = ''
+        OPENCODE_ZEN_API_KEY=${config.sops.placeholder."opencode-zen-api-key"}
+        TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
+        TELEGRAM_ALLOWED_USERS=${config.sops.placeholder."hermes-telegram-allowed-users"}
+      '';
+    };
   };
 
   services.hermes-agent = {
@@ -49,12 +52,16 @@ in
     settings = {
       model = {
         default = "kimi-k2.5";
-        provider = "custom";
-        base_url = "https://opencode.ai/zen/v1";
+        provider = "opencode-zen";
       };
+      toolsets = [ "all" ];
       agent = {
         max_turns = 60;
         reasoning_effort = "medium";
+      };
+      memory = {
+        memory_enabled = true;
+        user_profile_enabled = true;
       };
       skills.external_dirs = skillDirs;
     };
