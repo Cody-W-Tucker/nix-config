@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  options,
   pkgs,
   ...
 }:
@@ -15,6 +16,7 @@ let
     inputs.cognitive-assistant.lib.operational.skillsDir
     inputs.cognitive-assistant.lib.existential.skillsDir
   ];
+  hermesConfigOption = if options.services.hermes-agent ? settings then "settings" else "config";
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
@@ -27,13 +29,9 @@ in
     '';
   };
 
-  environment.systemPackages = [ hermesPackage ];
-
   services.hermes-agent = {
     enable = true;
     package = hermesPackage;
-    environmentFiles = [ config.sops.templates."hermes-env".path ];
-    skills.bundled.enable = false;
     extraPackages = with pkgs; [
       curl
       git
@@ -41,8 +39,8 @@ in
       nix
       ripgrep
     ];
+    environmentFiles = [ config.sops.templates."hermes-env".path ];
     documents = {
-      "SOUL.md" = soulFile;
       "AGENTS.md" = ''
         Operate as a NixOS-native assistant.
 
@@ -51,7 +49,12 @@ in
         Do not use `nix shell` for standard Unix utilities that are already present.
       '';
     };
-    config = {
+  }
+  // lib.optionalAttrs (options.services.hermes-agent ? addToSystemPackages) {
+    addToSystemPackages = true;
+  }
+  // {
+    ${hermesConfigOption} = {
       model = {
         default = "kimi-k2.5";
         provider = "custom";
@@ -83,6 +86,9 @@ in
       streaming.enabled = true;
       skills.external_dirs = skillDirs;
     };
+  }
+  // lib.optionalAttrs (options.services.hermes-agent ? skills) {
+    skills.bundled.enable = false;
   };
 
   system.activationScripts."hermes-agent-soulfile" = lib.stringAfter [ "hermes-agent-setup" ] ''
@@ -92,4 +98,11 @@ in
       -D ${soulFile} \
       ${config.services.hermes-agent.stateDir}/.hermes/SOUL.md
   '';
+
+  environment.systemPackages = lib.optional (
+    !(options.services.hermes-agent ? addToSystemPackages)
+  ) hermesPackage;
+  environment.variables = lib.optionalAttrs (!(options.services.hermes-agent ? addToSystemPackages)) {
+    HERMES_HOME = "${config.services.hermes-agent.stateDir}/.hermes";
+  };
 }
