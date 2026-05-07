@@ -2,21 +2,16 @@
   config,
   inputs,
   lib,
-  options,
   pkgs,
   ...
 }:
 
 let
-  hermesPackage = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
-  bundledSkillsDir = hermesPackage.upstreamSrc + "/skills";
   skillDirs = [
-    bundledSkillsDir
     inputs.cognitive-assistant.lib.operational.skillsDir
     inputs.cognitive-assistant.lib.existential.skillsDir
   ];
-  hermesConfigOption = if options.services.hermes-agent ? settings then "settings" else "config";
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
@@ -31,13 +26,11 @@ in
 
   services.hermes-agent = {
     enable = true;
-    package = hermesPackage;
+    addToSystemPackages = true;
     extraPackages = with pkgs; [
       curl
-      git
       jq
       nix
-      ripgrep
     ];
     environmentFiles = [ config.sops.templates."hermes-env".path ];
     documents = {
@@ -49,46 +42,18 @@ in
         Do not use `nix shell` for standard Unix utilities that are already present.
       '';
     };
-  }
-  // lib.optionalAttrs (options.services.hermes-agent ? addToSystemPackages) {
-    addToSystemPackages = true;
-  }
-  // {
-    ${hermesConfigOption} = {
+    settings = {
       model = {
         default = "kimi-k2.5";
         provider = "custom";
         base_url = "https://opencode.ai/zen/v1";
       };
-      terminal = {
-        backend = "local";
-        timeout = 180;
-        lifetime_seconds = 300;
-      };
-      browser.inactivity_timeout = 120;
       agent = {
         max_turns = 60;
         reasoning_effort = "medium";
       };
-      memory = {
-        memory_enabled = true;
-        user_profile_enabled = true;
-        memory_char_limit = 2200;
-        user_char_limit = 1375;
-        nudge_interval = 10;
-      };
-      compression = {
-        enabled = true;
-        threshold = 0.50;
-        target_ratio = 0.20;
-        protect_last_n = 20;
-      };
-      streaming.enabled = true;
       skills.external_dirs = skillDirs;
     };
-  }
-  // lib.optionalAttrs (options.services.hermes-agent ? skills) {
-    skills.bundled.enable = false;
   };
 
   system.activationScripts."hermes-agent-soulfile" = lib.stringAfter [ "hermes-agent-setup" ] ''
@@ -98,11 +63,4 @@ in
       -D ${soulFile} \
       ${config.services.hermes-agent.stateDir}/.hermes/SOUL.md
   '';
-
-  environment.systemPackages = lib.optional (
-    !(options.services.hermes-agent ? addToSystemPackages)
-  ) hermesPackage;
-  environment.variables = lib.optionalAttrs (!(options.services.hermes-agent ? addToSystemPackages)) {
-    HERMES_HOME = "${config.services.hermes-agent.stateDir}/.hermes";
-  };
 }

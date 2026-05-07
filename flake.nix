@@ -87,8 +87,8 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     hermes-agent = {
-      # Nix package and NixOS module for Hermes Agent.
-      url = "github:0xrsydn/nix-hermes-agent";
+      # Upstream Hermes Agent flake with package and NixOS module.
+      url = "github:NousResearch/hermes-agent";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     rlm = {
