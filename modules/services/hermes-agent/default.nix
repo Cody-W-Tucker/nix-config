@@ -8,7 +8,19 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+  karakeepMcp = pkgs.writeShellApplication {
+    name = "karakeep-mcp";
+    runtimeInputs = [ pkgs.nodejs ];
+    text = ''
+      export KARAKEEP_API_ADDR="https://karakeep.homehub.tv"
+      KARAKEEP_API_KEY="$(< ${config.sops.secrets.karakeep-api-key.path})"
+      export KARAKEEP_API_KEY
+
+      exec npx -y @karakeep/mcp "$@"
+    '';
+  };
   skillDirs = [
+    ./skills
     inputs.cognitive-assistant.lib.operational.skillsDir
     inputs.cognitive-assistant.lib.existential.skillsDir
   ];
@@ -18,6 +30,7 @@ in
 
   sops = {
     secrets = {
+      "karakeep-api-key" = { };
       "opencode-zen-api-key" = { };
       "hermes-discord-bot-token" = { };
       "hermes-discord-allowed-users" = { };
@@ -44,6 +57,7 @@ in
       nix
     ];
     environmentFiles = [ config.sops.templates."hermes-env".path ];
+    mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
     documents = {
       "AGENTS.md" = ''
         Operate as a NixOS-native assistant.
