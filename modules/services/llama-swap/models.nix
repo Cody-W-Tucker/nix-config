@@ -74,6 +74,27 @@
       "6"
     ];
   };
+  # GLM-OCR 0.9B - multimodal OCR model for document/image text extraction.
+  "glm-ocr-f16" = {
+    file = "GLM-OCR-f16.gguf";
+    mmprojFile = "mmproj-GLM-OCR-Q8_0.gguf";
+    gpuLayers = 999;
+    contextSize = 8192;
+    threads = 8;
+    batchSize = 2048;
+    ubatchSize = 1024;
+    ttl = 600;
+  };
+  "glm-ocr-q8" = {
+    file = "GLM-OCR-Q8_0.gguf";
+    mmprojFile = "mmproj-GLM-OCR-Q8_0.gguf";
+    gpuLayers = 999;
+    contextSize = 8192;
+    threads = 8;
+    batchSize = 1024;
+    ubatchSize = 512;
+    ttl = 600;
+  };
   # Gemma 3 12B - Good balance of quality and speed for reasoning tasks
   # UD-Q4_K_XL quantization: ~7.0GB weights, fits well in 92GB VRAM with room for context
   "gemma-3-12b" = {

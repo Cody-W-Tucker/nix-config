@@ -242,6 +242,7 @@ in
         "qwen3.5-35b"
         "qwen3.5-9b-8"
         "qwen3-embedding-8b"
+        "glm-ocr-f16"
         "gemma-3-12b"
         "gemma-4-26b"
       ];
