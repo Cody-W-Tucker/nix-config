@@ -1,26 +1,12 @@
 {
   config,
   inputs,
-  lib,
   pkgs,
   ...
 }:
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
-  normalizeLocalSkills = pkgs.writeShellScript "hermes-normalize-local-skills" ''
-    set -eu
-
-    skills_dir="${config.services.hermes-agent.stateDir}/.hermes/skills"
-
-    if [ ! -d "$skills_dir" ]; then
-      exit 0
-    fi
-
-    chown -R ${config.services.hermes-agent.user}:${config.services.hermes-agent.group} "$skills_dir"
-    find "$skills_dir" -type d -exec chmod 2770 {} +
-    find "$skills_dir" -type f -exec chmod u+rw,g+rw,o-rwx {} +
-  '';
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
     runtimeInputs = [ pkgs.nodejs ];
@@ -94,6 +80,12 @@ in
         default = "kimi-k2.5";
         provider = "opencode-zen";
       };
+      max_turns = 100;
+      terminal = {
+        backend = "local";
+        cwd = ".";
+        timeout = 180;
+      };
       platforms.discord.home_channel = {
         platform = "discord";
         chat_id = "1502095470334578779";
@@ -111,16 +103,4 @@ in
       skills.external_dirs = skillDirs;
     };
   };
-
-  system.activationScripts."hermes-agent-soulfile" = lib.stringAfter [ "hermes-agent-setup" ] ''
-    install -o ${config.services.hermes-agent.user} \
-      -g ${config.services.hermes-agent.group} \
-      -m 0644 \
-      -D ${soulFile} \
-      ${config.services.hermes-agent.stateDir}/.hermes/SOUL.md
-
-    ${normalizeLocalSkills}
-  '';
-
-  systemd.services.hermes-agent.serviceConfig.ExecStartPost = [ normalizeLocalSkills ];
 }
