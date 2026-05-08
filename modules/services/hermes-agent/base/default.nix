@@ -61,6 +61,7 @@ in
       extraPackages = with pkgs; [
         curl
         jq
+        libopus
         nix
       ];
       environment = {
