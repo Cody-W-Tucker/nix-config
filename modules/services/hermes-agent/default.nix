@@ -43,7 +43,10 @@ in
 
   sops = {
     secrets = {
-      "karakeep-api-key" = { };
+      "karakeep-api-key" = {
+        owner = config.services.hermes-agent.user;
+        group = config.services.hermes-agent.group;
+      };
       "opencode-zen-api-key" = { };
       "hermes-discord-bot-token" = { };
       "hermes-discord-allowed-users" = { };
