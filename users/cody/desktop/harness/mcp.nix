@@ -1,19 +1,3 @@
-{ pkgs, ... }:
-
-let
-  qdrantReadOnlyMcp = pkgs.writeShellApplication {
-    name = "qdrant-read-only-mcp";
-    runtimeInputs = [ pkgs.uv ];
-    text = ''
-      export QDRANT_URL="https://qdrant.homehub.tv:443"
-      export QDRANT_READ_ONLY=true
-      export FASTEMBED_CACHE_PATH="$HOME/.cache/fastembed"
-      mkdir -p "$FASTEMBED_CACHE_PATH"
-
-      exec uvx --python 3.12 mcp-server-qdrant "$@"
-    '';
-  };
-in
 {
   # Global MCP tools for all agents
   programs.mcp = {
@@ -38,9 +22,6 @@ in
           "run"
           "github:utensils/mcp-nixos"
         ];
-      };
-      qdrantRead = {
-        command = "${qdrantReadOnlyMcp}/bin/qdrant-read-only-mcp";
       };
     };
   };
