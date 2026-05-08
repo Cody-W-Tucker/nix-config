@@ -8,6 +8,7 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+  inherit (inputs.cognitive-assistant.lib.operational) systemPromptFile;
 
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
@@ -73,7 +74,8 @@ in
       environmentFiles = [ config.sops.templates."hermes-env".path ];
       mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
       documents = {
-        inherit soulFile;
+        "SOUL.md" = soulFile;
+        "USER.md" = systemPromptFile;
         "AGENTS.md" = ''
           Operate as a NixOS-native assistant.
 
