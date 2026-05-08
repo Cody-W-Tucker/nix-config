@@ -211,6 +211,7 @@ in
 
   systemd.tmpfiles.rules = [
     "d /mnt/work/dev 0755 codyt users - -"
+    "d /mnt/work/dev/hermes 2770 hermes hermes - -"
     "d /mnt/work/vm 0755 codyt users - -"
     "d /mnt/work/cache 0755 codyt users - -"
     "d /mnt/work/media 0755 codyt users - -"
