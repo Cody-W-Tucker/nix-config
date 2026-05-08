@@ -8,6 +8,19 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+  normalizeLocalSkills = pkgs.writeShellScript "hermes-normalize-local-skills" ''
+    set -eu
+
+    skills_dir="${config.services.hermes-agent.stateDir}/.hermes/skills"
+
+    if [ ! -d "$skills_dir" ]; then
+      exit 0
+    fi
+
+    chown -R ${config.services.hermes-agent.user}:${config.services.hermes-agent.group} "$skills_dir"
+    find "$skills_dir" -type d -exec chmod 2770 {} +
+    find "$skills_dir" -type f -exec chmod u+rw,g+rw,o-rwx {} +
+  '';
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
     runtimeInputs = [ pkgs.nodejs ];
@@ -56,6 +69,12 @@ in
       jq
       nix
     ];
+    environment = {
+      API_SERVER_ENABLED = "true";
+      API_SERVER_HOST = "127.0.0.1";
+      API_SERVER_PORT = "8642";
+      API_SERVER_KEY = "local-only";
+    };
     environmentFiles = [ config.sops.templates."hermes-env".path ];
     mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
     documents = {
@@ -96,5 +115,9 @@ in
       -m 0644 \
       -D ${soulFile} \
       ${config.services.hermes-agent.stateDir}/.hermes/SOUL.md
+
+    ${normalizeLocalSkills}
   '';
+
+  systemd.services.hermes-agent.serviceConfig.ExecStartPost = [ normalizeLocalSkills ];
 }
