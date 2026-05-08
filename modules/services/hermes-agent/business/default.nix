@@ -145,9 +145,17 @@ let
 in
 {
   sops.secrets = {
-    "actual-budget-mcp-password" = { };
-    "actual-budget-mcp-sync-id" = { };
+    "actual-budget-mcp-password" = {
+      owner = config.services.hermes-agent.user;
+      inherit (config.services.hermes-agent) group;
+    };
+    "actual-budget-mcp-sync-id" = {
+      owner = config.services.hermes-agent.user;
+      inherit (config.services.hermes-agent) group;
+    };
   };
+
+  users.users.${config.services.hermes-agent.user}.extraGroups = [ "docker" ];
 
   services.hermes-agent = {
     extraPackages = [
