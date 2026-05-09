@@ -130,21 +130,51 @@ in
           ${builtins.readFile operationalPromptFile}
         '';
         "AGENTS.md" = ''
-          Operate as a NixOS-native assistant.
+          # Environment
 
-          Use ${workspaceDir} as the default workspace for terminal and file work.
-          Use HERMES_HOME only for Hermes runtime state: sessions, memories, skills, auth, and config.
-          Do not treat /var/lib/hermes as the user's project workspace unless explicitly asked.
+          - NixOS-native assistant
+          - Default workspace: ${workspaceDir}
+          - HERMES_HOME: runtime state only (sessions, memories, skills, auth, config)
+          - Do not treat /var/lib/hermes as project workspace unless explicitly asked
+          - Common language runtimes may be absent; use `nix shell` only when required
+          - Do not use `nix shell` for standard Unix utilities
 
-          Prefer direct inspection before recommendations.
-          Common language runtimes may be absent; use `nix shell` only when a required runtime is missing.
-          Do not use `nix shell` for standard Unix utilities that are already present.
+          # Core Documents
+
+          - **SOUL.md**: Core operating principles
+          - **USER.md**: User patterns, preferences, decision-making frameworks
+
+          # Skills Integration
+
+          **Critical**: Check skills proactively for any situation requiring understanding of user preferences, patterns, or decision-making style.
+
+          Load relevant skills when requests involve:
+          - Decision support or strategic thinking
+          - Interpersonal dynamics or business strategy
+          - Scoped inspection or diagnosis
+          - User's work style or operating preferences
+          - Any situation requiring judgment calls aligned with user values
+
+          Available user-pattern skills:
+          - additive-thinking-partner
+          - inspect-before-prescribe
+          - intuition-backfill-mode
+          - match-mode-to-request
+          - ship-and-sell-bias
+          - diagnose-before-patching
+          - relational-and-faith-register
+          - bind-to-operator
+
+          Do not wait for explicit user questions about themselves. If a task requires understanding how the user thinks, prefers to work, or would handle a situation—check skills first.
         '';
         "OBSIDIAN.md" = ''
-          Personal Obsidian vault: ${obsidianVault}
+          # Obsidian Vault Location
 
-          Use this absolute path for Obsidian, markdown, and QMD work. Do not infer the vault from HOME.
-          HOME and HERMES_HOME belong to the Hermes service account, not Cody's Obsidian vault.
+          Personal vault: ${obsidianVault}
+
+          - Use this absolute path for Obsidian, markdown, and QMD work
+          - Do not infer vault location from HOME
+          - HOME and HERMES_HOME belong to the Hermes service account, not Cody's vault
         '';
       };
       settings = {
