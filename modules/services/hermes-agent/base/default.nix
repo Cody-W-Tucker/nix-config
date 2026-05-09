@@ -130,7 +130,7 @@ in
           ${builtins.readFile existentialPromptFile}
           ${builtins.readFile operationalPromptFile}
         '';
-        "MEMORY" = memory;
+        "MEMORY.md" = memory;
         "AGENTS.md" = ''
           # Environment
 
