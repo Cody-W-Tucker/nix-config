@@ -10,6 +10,15 @@ let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
   inherit (inputs.cognitive-assistant.lib.operational) systemPromptFile;
 
+  workspaceDir = "/mnt/work/dev/hermes";
+  obsidianVault = "/home/codyt/Knowledge/Personal";
+
+  skillSeedDirs = config.codyos.hermes-agent.skillDirs ++ [
+    inputs.cognitive-assistant.lib.operational.skillsDir
+    inputs.cognitive-assistant.lib.existential.skillsDir
+  ];
+  skillSeedDirArgs = lib.escapeShellArgs (map toString skillSeedDirs);
+
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
     runtimeInputs = [ pkgs.nodejs ];
@@ -28,7 +37,7 @@ in
   options.codyos.hermes-agent.skillDirs = lib.mkOption {
     type = lib.types.listOf lib.types.path;
     default = [ ];
-    description = "Category-owned skill directories exposed to Hermes.";
+    description = "Category-owned skill directories seeded into Hermes' mutable skill store.";
   };
 
   config = {
@@ -55,10 +64,48 @@ in
       };
     };
 
+    system.activationScripts = {
+      hermes-agent-seed-skills = lib.stringAfter [ "hermes-agent-setup" ] ''
+        skills_dir="${config.services.hermes-agent.stateDir}/.hermes/skills"
+        mkdir -p "$skills_dir"
+        chown ${config.services.hermes-agent.user}:${config.services.hermes-agent.group} "$skills_dir"
+        chmod 2770 "$skills_dir"
+
+        for src in ${skillSeedDirArgs}; do
+          if [ ! -d "$src" ]; then
+            continue
+          fi
+
+          while IFS= read -r -d "" skill_md; do
+            skill_dir="$(dirname "$skill_md")"
+            rel="''${skill_dir#$src/}"
+            target="$skills_dir/$rel"
+
+            if [ -e "$target/SKILL.md" ]; then
+              continue
+            fi
+
+            mkdir -p "$(dirname "$target")"
+            cp -aL "$skill_dir" "$target"
+            chown -R ${config.services.hermes-agent.user}:${config.services.hermes-agent.group} "$target"
+            chmod -R u+rwX,g+rwX,o-rwx "$target"
+          done < <(find "$src" -name SKILL.md -print0)
+        done
+      '';
+
+      hermes-agent-obsidian-access = lib.stringAfter [ "users" ] ''
+        if [ -d "${obsidianVault}" ]; then
+          ${pkgs.acl}/bin/setfacl -m u:${config.services.hermes-agent.user}:--x /home/codyt
+          ${pkgs.acl}/bin/setfacl -R -m u:${config.services.hermes-agent.user}:rwX "${obsidianVault}"
+          find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -d -m u:${config.services.hermes-agent.user}:rwX {} +
+        fi
+      '';
+    };
+
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      workingDirectory = "/mnt/work/dev/hermes";
+      workingDirectory = workspaceDir;
       extraPackages = with pkgs; [
         curl
         jq
@@ -70,6 +117,8 @@ in
         API_SERVER_HOST = "127.0.0.1";
         API_SERVER_PORT = "8642";
         API_SERVER_KEY = "local-only";
+        KNOWLEDGE_PERSONAL = obsidianVault;
+        OBSIDIAN_VAULT = obsidianVault;
       };
       environmentFiles = [ config.sops.templates."hermes-env".path ];
       mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
@@ -79,9 +128,19 @@ in
         "AGENTS.md" = ''
           Operate as a NixOS-native assistant.
 
+          Use ${workspaceDir} as the default workspace for terminal and file work.
+          Use HERMES_HOME only for Hermes runtime state: sessions, memories, skills, auth, and config.
+          Do not treat /var/lib/hermes as the user's project workspace unless explicitly asked.
+
           Prefer direct inspection before recommendations.
           Common language runtimes may be absent; use `nix shell` only when a required runtime is missing.
           Do not use `nix shell` for standard Unix utilities that are already present.
+        '';
+        "OBSIDIAN.md" = ''
+          Personal Obsidian vault: ${obsidianVault}
+
+          Use this absolute path for Obsidian, markdown, and QMD work. Do not infer the vault from HOME.
+          HOME and HERMES_HOME belong to the Hermes service account, not Cody's Obsidian vault.
         '';
       };
       settings = {
@@ -92,7 +151,7 @@ in
         max_turns = 100;
         terminal = {
           backend = "local";
-          cwd = ".";
+          cwd = workspaceDir;
           timeout = 180;
         };
         platforms.discord.home_channel = {
@@ -109,10 +168,7 @@ in
           memory_enabled = true;
           user_profile_enabled = true;
         };
-        skills.external_dirs = config.codyos.hermes-agent.skillDirs ++ [
-          inputs.cognitive-assistant.lib.operational.skillsDir
-          inputs.cognitive-assistant.lib.existential.skillsDir
-        ];
+        skills.external_dirs = [ ];
       };
     };
   };
