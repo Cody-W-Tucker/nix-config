@@ -185,6 +185,7 @@ in
           default = "kimi-k2.5";
           provider = "opencode-zen";
         };
+        display.tool_progress = "off";
         max_turns = 100;
         terminal = {
           backend = "local";
