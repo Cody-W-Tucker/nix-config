@@ -6,7 +6,6 @@
 }:
 
 let
-  realWhispAway = inputs.whisp-away.packages.${pkgs.stdenv.hostPlatform.system}.default;
   whispAwaySafe = pkgs.writeShellApplication {
     name = "whisp-away-safe";
     runtimeInputs = [
@@ -16,7 +15,6 @@ let
     text = ''
       set -eu
 
-      real_whisp_away="${realWhispAway}/bin/whisp-away"
       pidfile="/tmp/whisp-away-recording.pid"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
@@ -87,7 +85,7 @@ let
           ;;
       esac
 
-      exec "$real_whisp_away" "$@"
+      exec whisp-away "$@"
     '';
   };
 in
