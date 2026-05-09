@@ -8,6 +8,7 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+  inherit (inputs.cognitive-assistant.lib.operational.toolSpecs) memory;
   operationalPromptFile = inputs.cognitive-assistant.lib.operational.systemPromptFile;
   existentialPromptFile = inputs.cognitive-assistant.lib.existential.systemPromptFile;
 
@@ -129,6 +130,7 @@ in
           ${builtins.readFile existentialPromptFile}
           ${builtins.readFile operationalPromptFile}
         '';
+        "MEMORY" = memory;
         "AGENTS.md" = ''
           # Environment
 
@@ -143,6 +145,7 @@ in
 
           - **SOUL.md**: Core operating principles
           - **USER.md**: User patterns, preferences, decision-making frameworks
+          - **MEMORY.md**: A list of what counts to save as durable objects in memory
 
           # Skills Integration
 
