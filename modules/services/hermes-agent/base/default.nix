@@ -8,7 +8,8 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
-  inherit (inputs.cognitive-assistant.lib.operational) systemPromptFile;
+  operationalPromptFile = inputs.cognitive-assistant.lib.operational.systemPromptFile;
+  existentialPromptFile = inputs.cognitive-assistant.lib.existential.systemPromptFile;
 
   workspaceDir = "/mnt/work/dev/hermes";
   obsidianVault = "/home/codyt/Knowledge/Personal";
@@ -124,7 +125,10 @@ in
       mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
       documents = {
         "SOUL.md" = soulFile;
-        "USER.md" = systemPromptFile;
+        "USER.md" = pkgs.writeText "USER.md" ''
+          ${builtins.readFile existentialPromptFile}
+          ${builtins.readFile operationalPromptFile}
+        '';
         "AGENTS.md" = ''
           Operate as a NixOS-native assistant.
 
