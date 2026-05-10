@@ -12,7 +12,6 @@ let
   operationalPromptFile = inputs.cognitive-assistant.lib.operational.systemPromptFile;
   existentialPromptFile = inputs.cognitive-assistant.lib.existential.systemPromptFile;
 
-  workspaceDir = "/mnt/work/dev/hermes";
   obsidianVault = "/home/codyt/Knowledge/Personal";
 
   skillSeedDirs = config.codyos.hermes-agent.skillDirs ++ [
@@ -122,7 +121,7 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      workingDirectory = workspaceDir;
+      workingDirectory = "/mnt/work/dev/hermes";
       extraPackages = with pkgs; [
         curl
         jq
@@ -151,7 +150,7 @@ in
           # Environment
 
           - NixOS-native assistant
-          - Default workspace: ${workspaceDir}
+          - Default workspace: ${config.services.hermes-agent.workingDirectory}
           - HERMES_HOME: runtime state only (sessions, memories, skills, auth, config)
           - Do not treat /var/lib/hermes as project workspace unless explicitly asked
           - Common language runtimes may be absent; use `nix shell` only when required
@@ -205,13 +204,18 @@ in
         max_turns = 100;
         terminal = {
           backend = "local";
-          cwd = workspaceDir;
+          cwd = config.services.hermes-agent.workingDirectory;
           timeout = 180;
         };
-        platforms.discord.home_channel = {
-          platform = "discord";
-          chat_id = "1502095470334578779";
-          name = "#bot-updates";
+        discord = {
+          require_mention = true; # Respond only when @mentioned
+          auto_thread = true; # Isolate each conversation in a thread
+          reactions = true; # Emoji reactions for processing state
+          free_response_channels = [ ]; # Channels that respond without @mention
+          home_channel = "1502095470334578779"; # hermes-home (text)
+        };
+        environment = {
+          DISCORD_HOME_CHANNEL = "1502095470334578779";
         };
         toolsets = [ "all" ];
         agent = {
@@ -221,6 +225,14 @@ in
         memory = {
           memory_enabled = true;
           user_profile_enabled = true;
+        };
+        compression = {
+          enabled = true;
+          threshold = 0.85;
+        };
+        checkpoints = {
+          enabled = true;
+          max_snapshots = 50;
         };
         skills.external_dirs = [ ];
       };
