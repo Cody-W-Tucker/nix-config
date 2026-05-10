@@ -145,7 +145,7 @@ in
           ${builtins.readFile existentialPromptFile}
           ${builtins.readFile operationalPromptFile}
         '';
-        "MEMORY.md" = memory;
+        "MEMORY.md" = memory; # Guidelines on what to save. Hermes uses state dir MEMORY.md
         "AGENTS.md" = ''
           # Environment
 
@@ -225,6 +225,13 @@ in
         memory = {
           memory_enabled = true;
           user_profile_enabled = true;
+          provider = "holographic";
+        };
+        plugins = {
+          "hermes-memory-store" = {
+            auto_extract = false;
+            default_trust = 0.5;
+          };
         };
         compression = {
           enabled = true;
