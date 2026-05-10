@@ -32,6 +32,17 @@ let
       exec npx -y @karakeep/mcp "$@"
     '';
   };
+
+  exaMcp = pkgs.writeShellApplication {
+    name = "exa-mcp";
+    runtimeInputs = [ pkgs.nodejs ];
+    text = ''
+      EXA_API_KEY="$(< ${config.sops.secrets.exa-api-key.path})"
+      export EXA_API_KEY
+
+      exec npx -y exa-mcp-server "$@"
+    '';
+  };
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
@@ -46,6 +57,10 @@ in
     sops = {
       secrets = {
         "karakeep-api-key" = {
+          owner = config.services.hermes-agent.user;
+          inherit (config.services.hermes-agent) group;
+        };
+        "exa-api-key" = {
           owner = config.services.hermes-agent.user;
           inherit (config.services.hermes-agent) group;
         };
@@ -124,6 +139,7 @@ in
       };
       environmentFiles = [ config.sops.templates."hermes-env".path ];
       mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
+      mcpServers.exa.command = "${exaMcp}/bin/exa-mcp";
       documents = {
         "SOUL.md" = soulFile;
         "USER.md" = pkgs.writeText "USER.md" ''
