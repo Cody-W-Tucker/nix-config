@@ -160,6 +160,9 @@ in
 
   networking.firewall.allowedTCPPorts = [ 4110 ];
 
+  # Remote lockdown: prevent Syncthing from continuing file propagation on this host.
+  services.syncthing.enable = lib.mkForce false;
+
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-uuid/73998e5d-b64f-4148-bacb-af7b7883746a";
@@ -171,38 +174,6 @@ in
       options = [
         "fmask=0077"
         "dmask=0077"
-      ];
-    };
-    "/home/codyt/Documents" = {
-      device = "/mnt/backup/Share/Documents";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
-    "/home/codyt/Music" = {
-      device = "/mnt/backup/Share/Music";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
-    "/home/codyt/Pictures" = {
-      device = "/mnt/backup/Share/Pictures";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
-    "/home/codyt/Videos" = {
-      device = "/mnt/backup/Share/Videos";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
       ];
     };
   };
