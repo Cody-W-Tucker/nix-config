@@ -167,7 +167,7 @@ in
       };
       settings = {
         model = {
-          default = "gpt-5.5";
+          default = "gpt-5.4";
           provider = "openai-codex";
         };
         fallback_model = {
