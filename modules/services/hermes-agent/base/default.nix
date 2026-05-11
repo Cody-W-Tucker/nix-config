@@ -167,7 +167,11 @@ in
       };
       settings = {
         model = {
-          default = "kimi-k2.5";
+          default = "gpt-5.5";
+          provider = "openai-codex";
+        };
+        fallback_model = {
+          model = "kimi-k2.5";
           provider = "opencode-zen";
         };
         display.tool_progress = "off";
