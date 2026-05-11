@@ -10,6 +10,7 @@
     ./agents/logging
     ./agents/knowledge
     ./agents/verify-alignment
+    ./agents/business
     ./agents/existential
     ./agents/operational
     ./skills/agent-browser
