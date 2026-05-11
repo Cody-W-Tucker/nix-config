@@ -19,32 +19,12 @@ let
     inputs.cognitive-assistant.lib.existential.skillsDir
   ];
   skillSeedDirArgs = lib.escapeShellArgs (map toString skillSeedDirs);
-
-  karakeepMcp = pkgs.writeShellApplication {
-    name = "karakeep-mcp";
-    runtimeInputs = [ pkgs.nodejs ];
-    text = ''
-      export KARAKEEP_API_ADDR="https://karakeep.homehub.tv"
-      KARAKEEP_API_KEY="$(< ${config.sops.secrets.karakeep-api-key.path})"
-      export KARAKEEP_API_KEY
-
-      exec npx -y @karakeep/mcp "$@"
-    '';
-  };
-
-  exaMcp = pkgs.writeShellApplication {
-    name = "exa-mcp";
-    runtimeInputs = [ pkgs.nodejs ];
-    text = ''
-      EXA_API_KEY="$(< ${config.sops.secrets.exa-api-key.path})"
-      export EXA_API_KEY
-
-      exec npx -y exa-mcp-server "$@"
-    '';
-  };
 in
 {
-  imports = [ inputs.hermes-agent.nixosModules.default ];
+  imports = [
+    inputs.hermes-agent.nixosModules.default
+    ./hermes-mcp.nix
+  ];
 
   options.codyos.hermes-agent.skillDirs = lib.mkOption {
     type = lib.types.listOf lib.types.path;
@@ -55,14 +35,6 @@ in
   config = {
     sops = {
       secrets = {
-        "karakeep-api-key" = {
-          owner = config.services.hermes-agent.user;
-          inherit (config.services.hermes-agent) group;
-        };
-        "exa-api-key" = {
-          owner = config.services.hermes-agent.user;
-          inherit (config.services.hermes-agent) group;
-        };
         "opencode-zen-api-key" = { };
         "hermes-discord-bot-token" = { };
         "hermes-discord-allowed-users" = { };
@@ -137,8 +109,6 @@ in
         OBSIDIAN_VAULT = obsidianVault;
       };
       environmentFiles = [ config.sops.templates."hermes-env".path ];
-      mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
-      mcpServers.exa.command = "${exaMcp}/bin/exa-mcp";
       documents = {
         "SOUL.md" = soulFile;
         "USER.md" = pkgs.writeText "USER.md" ''
