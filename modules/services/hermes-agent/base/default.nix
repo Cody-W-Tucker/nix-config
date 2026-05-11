@@ -167,12 +167,30 @@ in
       };
       settings = {
         model = {
-          default = "gpt-5.4";
+          default = "gpt-5.5";
           provider = "openai-codex";
         };
         fallback_model = {
           model = "kimi-k2.5";
           provider = "opencode-zen";
+        };
+        auxiliary = {
+          session_search = {
+            model = "kimi-k2.5";
+            provider = "opencode-zen";
+          };
+          compression = {
+            model = "kimi-k2.5";
+            provider = "opencode-zen";
+          };
+          web_extract = {
+            model = "kimi-k2.5";
+            provider = "opencode-zen";
+          };
+          title_generation = {
+            model = "kimi-k2.5";
+            provider = "opencode-zen";
+          };
         };
         display.tool_progress = "off";
         max_turns = 100;
