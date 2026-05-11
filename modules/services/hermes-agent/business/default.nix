@@ -6,9 +6,8 @@
 }:
 
 let
-  system = pkgs.stdenv.hostPlatform.system;
-  crmCli = inputs.crm-cli.packages.${system}.crm-cli;
-  googleWorkspaceCli = inputs.googleworkspace-cli.packages.${system}.gws;
+  crmCli = inputs.crm-cli.packages.${pkgs.stdenv.hostPlatform.system}.crm-cli;
+  googleWorkspaceCli = inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.gws;
 
   actualBudgetMcp = pkgs.writeShellApplication {
     name = "actual-budget-mcp";
