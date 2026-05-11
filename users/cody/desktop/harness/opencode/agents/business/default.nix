@@ -48,7 +48,7 @@ in
   programs.opencode.agents.business = ''
     ---
     description: Business operations agent for CRM, accounting, and Google Workspace workflows.
-    mode: primary
+    mode: subagent
     tools:
       "actualBudget_*": true
     ---
