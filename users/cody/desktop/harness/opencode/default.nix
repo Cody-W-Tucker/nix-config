@@ -8,6 +8,7 @@
 {
   imports = [
     ./agents/logging
+    ./agents/knowledge
     ./agents/verify-alignment
     ./agents/existential
     ./agents/operational
