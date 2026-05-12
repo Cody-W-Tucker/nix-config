@@ -14,10 +14,23 @@ let
 
   obsidianVault = "/home/codyt/Knowledge/Personal";
 
-  externalSkillDirs = config.codyos.hermes-agent.skillDirs ++ [
+  cognitiveAssistantSkillDirs = [
     inputs.cognitive-assistant.lib.operational.skillsDir
     inputs.cognitive-assistant.lib.existential.skillsDir
   ];
+
+  cognitiveAssistantSkillNames = lib.pipe cognitiveAssistantSkillDirs [
+    (map (dir: lib.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir dir))))
+    lib.flatten
+    lib.unique
+    (lib.sort (a: b: a < b))
+  ];
+
+  cognitiveAssistantSkillList = lib.concatMapStringsSep "\n" (
+    name: "- ${name}"
+  ) cognitiveAssistantSkillNames;
+
+  externalSkillDirs = config.codyos.hermes-agent.skillDirs ++ cognitiveAssistantSkillDirs;
 in
 {
   imports = [
@@ -114,7 +127,7 @@ in
           - **SOUL.md**: Core operating principles
           - **USER.md**: User patterns, preferences, decision-making frameworks
           - **MEMORY.md**: A list of what counts to save as durable objects in memory
-          - **TASKS.md": Instructions on how to save tasks for the user.
+          - **TASKS.md**": Instructions on how to save tasks for the user.
 
           # Skills Integration
 
@@ -128,10 +141,7 @@ in
           - Any situation requiring judgment calls aligned with user values
 
           Available user-pattern skills:
-          ${lib.concatMapStringsSep "\n          " (dir: "- ${baseNameOf dir}") [
-            inputs.cognitive-assistant.lib.operational.skillsDir
-            inputs.cognitive-assistant.lib.existential.skillsDir
-          ]}
+          ${cognitiveAssistantSkillList}
 
           Do not wait for explicit user questions about themselves. If a task requires understanding how the user thinks, prefers to work, or would handle a situation—check skills first.
         '';
