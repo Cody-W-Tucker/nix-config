@@ -64,6 +64,15 @@ in
     '';
     users.users.${config.services.hermes-agent.user}.extraGroups = [ "users" ];
 
+    # Force restart when declarative settings change. The upstream module
+    # writes config.yaml via activation script but does not restart the
+    # service, so running agents keep stale in-memory config.
+    systemd.services.hermes-agent.restartTriggers = [
+      (pkgs.writeText "hermes-agent-config-trigger" (
+        builtins.toJSON config.services.hermes-agent.settings
+      ))
+    ];
+
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
@@ -119,14 +128,10 @@ in
           - Any situation requiring judgment calls aligned with user values
 
           Available user-pattern skills:
-          - additive-thinking-partner
-          - inspect-before-prescribe
-          - intuition-backfill-mode
-          - match-mode-to-request
-          - ship-and-sell-bias
-          - diagnose-before-patching
-          - relational-and-faith-register
-          - bind-to-operator
+          ${lib.concatMapStringsSep "\n          " (dir: "- ${baseNameOf dir}") [
+            inputs.cognitive-assistant.lib.operational.skillsDir
+            inputs.cognitive-assistant.lib.existential.skillsDir
+          ]}
 
           Do not wait for explicit user questions about themselves. If a task requires understanding how the user thinks, prefers to work, or would handle a situation—check skills first.
         '';
