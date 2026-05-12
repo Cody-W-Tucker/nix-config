@@ -176,16 +176,16 @@ in
         };
         auxiliary = {
           session_search = {
-            model = "kimi-k2.5";
-            provider = "opencode-zen";
+            model = "gpt-5.4-mini";
+            provider = "openai-codex";
           };
           compression = {
             model = "kimi-k2.5";
             provider = "opencode-zen";
           };
           web_extract = {
-            model = "kimi-k2.5";
-            provider = "opencode-zen";
+            model = "gpt-5.4-mini";
+            provider = "openai-codex";
           };
           title_generation = {
             model = "kimi-k2.5";
@@ -205,6 +205,7 @@ in
             tool_progress = "off";
           };
           telegram = {
+            streaming = true;
             tool_progress = "off";
           };
         };
