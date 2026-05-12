@@ -1,6 +1,6 @@
 ---
 name: obsidian-cli
-description: Use when interacting with a running Obsidian instance through the obsidian CLI.
+description: Use only when interacting with an already running Obsidian GUI instance through the obsidian CLI.
 version: 1.0.0
 author: Cody Tucker
 license: MIT
@@ -14,13 +14,17 @@ prerequisites:
 
 # Obsidian CLI
 
-Use the `obsidian` CLI when working against the live app. This is preferred for note edits that should immediately appear in Obsidian and trigger plugin or view updates.
+Use the `obsidian` CLI only when working against an already running Obsidian GUI app in the user's graphical session. The CLI is not headless; it connects to a live Obsidian instance and fails when run from a service context without that instance.
+
+For headless Hermes work, use direct Markdown file operations in the vault instead of the `obsidian` command.
 
 ## When to Use
 
-- Read, create, append, and search notes in an open vault.
-- Set properties and work with daily notes or tasks.
-- Inspect backlinks, tags, and vault state.
+- Read, create, append, and search notes in an open vault when Obsidian is already running.
+- Set properties and work with daily notes or tasks through the live app.
+- Inspect backlinks, tags, and vault state through the live app.
+
+Do not use this skill from Hermes' systemd service context unless the user confirms Obsidian is running and reachable from that process.
 
 ## Rules
 

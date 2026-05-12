@@ -14,11 +14,10 @@ let
 
   obsidianVault = "/home/codyt/Knowledge/Personal";
 
-  skillSeedDirs = config.codyos.hermes-agent.skillDirs ++ [
+  externalSkillDirs = config.codyos.hermes-agent.skillDirs ++ [
     inputs.cognitive-assistant.lib.operational.skillsDir
     inputs.cognitive-assistant.lib.existential.skillsDir
   ];
-  skillSeedDirArgs = lib.escapeShellArgs (map toString skillSeedDirs);
 in
 {
   imports = [
@@ -29,7 +28,7 @@ in
   options.codyos.hermes-agent.skillDirs = lib.mkOption {
     type = lib.types.listOf lib.types.path;
     default = [ ];
-    description = "Category-owned skill directories seeded into Hermes' mutable skill store.";
+    description = "Category-owned skill directories exposed to Hermes as external skills.";
   };
 
   config = {
@@ -53,42 +52,39 @@ in
     };
 
     system.activationScripts = {
-      hermes-agent-seed-skills = lib.stringAfter [ "hermes-agent-setup" ] ''
-        skills_dir="${config.services.hermes-agent.stateDir}/.hermes/skills"
-        mkdir -p "$skills_dir"
-        chown ${config.services.hermes-agent.user}:${config.services.hermes-agent.group} "$skills_dir"
-        chmod 2770 "$skills_dir"
+      hermes-agent-state-permissions = lib.stringAfter [ "hermes-agent-setup" ] ''
+        hermes_home="${config.services.hermes-agent.stateDir}/.hermes"
 
-        for src in ${skillSeedDirArgs}; do
-          if [ ! -d "$src" ]; then
-            continue
-          fi
+        if [ -d "$hermes_home" ]; then
+          find "$hermes_home" -type d -exec chmod 2770 {} +
+          find "$hermes_home" -type f \
+            ! -name auth.json \
+            ! -name .env \
+            ! -name config.yaml \
+            ! -name cli-config.yaml \
+            -exec chmod g+rw {} +
 
-          while IFS= read -r -d "" skill_md; do
-            skill_dir="$(dirname "$skill_md")"
-            rel="''${skill_dir#$src/}"
-            target="$skills_dir/$rel"
-
-            if [ -e "$target/SKILL.md" ]; then
-              continue
-            fi
-
-            mkdir -p "$(dirname "$target")"
-            cp -aL "$skill_dir" "$target"
-            chown -R ${config.services.hermes-agent.user}:${config.services.hermes-agent.group} "$target"
-            chmod -R u+rwX,g+rwX,o-rwx "$target"
-          done < <(find "$src" -name SKILL.md -print0)
-        done
+          [ ! -f "$hermes_home/auth.json" ] || chmod 0600 "$hermes_home/auth.json"
+          [ ! -f "$hermes_home/.env" ] || chmod 0640 "$hermes_home/.env"
+          [ ! -f "$hermes_home/config.yaml" ] || chmod 0640 "$hermes_home/config.yaml"
+          [ ! -f "$hermes_home/cli-config.yaml" ] || chmod 0640 "$hermes_home/cli-config.yaml"
+        fi
       '';
 
-      hermes-agent-obsidian-access = lib.stringAfter [ "users" ] ''
+      hermes-agent-obsidian-permissions = lib.stringAfter [ "users" ] ''
         if [ -d "${obsidianVault}" ]; then
-          ${pkgs.acl}/bin/setfacl -m u:${config.services.hermes-agent.user}:--x /home/codyt
-          ${pkgs.acl}/bin/setfacl -R -m u:${config.services.hermes-agent.user}:rwX "${obsidianVault}"
-          find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -d -m u:${config.services.hermes-agent.user}:rwX {} +
+          ${pkgs.acl}/bin/setfacl -x u:${config.services.hermes-agent.user} /home/codyt 2>/dev/null || true
+          ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${obsidianVault}" 2>/dev/null || true
+          find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
+
+          chgrp -hR users "${obsidianVault}"
+          chmod -R u+rwX,g+rwX "${obsidianVault}"
+          find "${obsidianVault}" -type d -exec chmod g+s {} +
         fi
       '';
     };
+
+    users.users.${config.services.hermes-agent.user}.extraGroups = [ "users" ];
 
     services.hermes-agent = {
       enable = true;
@@ -240,7 +236,7 @@ in
           enabled = true;
           max_snapshots = 50;
         };
-        skills.external_dirs = [ ];
+        skills.external_dirs = map toString externalSkillDirs;
       };
     };
   };
