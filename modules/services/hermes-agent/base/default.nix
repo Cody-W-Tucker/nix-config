@@ -95,6 +95,7 @@ in
         jq
         libopus
         nix
+        playwright-driver.browsers
       ];
       environment = {
         API_SERVER_ENABLED = "true";
@@ -180,6 +181,7 @@ in
         };
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";
+          PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers}";
         };
         toolsets = [ "all" ];
         agent = {
