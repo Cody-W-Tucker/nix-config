@@ -192,20 +192,11 @@ in
             provider = "opencode-zen";
           };
         };
-        streaming = {
-          enabled = true;
-          transport = "edit";
-          edit_interval = 1.0;
-          buffer_threshold = 40;
-          cursor = " ▉";
-          fresh_final_after_seconds = 60;
-        };
         display.platforms = {
           discord = {
             tool_progress = "off";
           };
           telegram = {
-            streaming = true;
             tool_progress = "off";
           };
         };
