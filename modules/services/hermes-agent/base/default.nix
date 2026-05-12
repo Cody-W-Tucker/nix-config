@@ -42,7 +42,7 @@ in
       };
       templates."hermes-env" = {
         content = ''
-          OPENCODE_API_KEY=${config.sops.placeholder."opencode-api-key"}
+          OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
           DISCORD_BOT_TOKEN=${config.sops.placeholder."hermes-discord-bot-token"}
           DISCORD_ALLOWED_USERS=${config.sops.placeholder."hermes-discord-allowed-users"}
           TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
