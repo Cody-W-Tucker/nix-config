@@ -34,7 +34,7 @@ in
   config = {
     sops = {
       secrets = {
-        "opencode-zen-api-key" = { };
+        "opencode-api-key" = { };
         "hermes-discord-bot-token" = { };
         "hermes-discord-allowed-users" = { };
         "hermes-telegram-bot-token" = { };
@@ -42,7 +42,7 @@ in
       };
       templates."hermes-env" = {
         content = ''
-          OPENCODE_ZEN_API_KEY=${config.sops.placeholder."opencode-zen-api-key"}
+          OPENCODE_API_KEY=${config.sops.placeholder."opencode-api-key"}
           DISCORD_BOT_TOKEN=${config.sops.placeholder."hermes-discord-bot-token"}
           DISCORD_ALLOWED_USERS=${config.sops.placeholder."hermes-discord-allowed-users"}
           TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
@@ -51,193 +51,146 @@ in
       };
     };
 
-    system.activationScripts = {
-      hermes-agent-state-permissions = lib.stringAfter [ "hermes-agent-setup" ] ''
-        hermes_home="${config.services.hermes-agent.stateDir}/.hermes"
+    hermes-agent-obsidian-permissions = lib.stringAfter [ "users" ] ''
+      if [ -d "${obsidianVault}" ]; then
+        ${pkgs.acl}/bin/setfacl -x u:${config.services.hermes-agent.user} /home/codyt 2>/dev/null || true
+        ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${obsidianVault}" 2>/dev/null || true
+        find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
 
-        if [ -d "$hermes_home" ]; then
-          find "$hermes_home" -type d -exec chmod 2770 {} +
-          find "$hermes_home" -type f \
-            ! -name auth.json \
-            ! -name .env \
-            ! -name config.yaml \
-            ! -name cli-config.yaml \
-            -exec chmod g+rw {} +
+        chgrp -hR users "${obsidianVault}"
+        chmod -R u+rwX,g+rwX "${obsidianVault}"
+        find "${obsidianVault}" -type d -exec chmod g+s {} +
+      fi
+    '';
+  };
 
-          [ ! -f "$hermes_home/auth.json" ] || chmod 0600 "$hermes_home/auth.json"
-          [ ! -f "$hermes_home/.env" ] || chmod 0640 "$hermes_home/.env"
-          [ ! -f "$hermes_home/config.yaml" ] || chmod 0640 "$hermes_home/config.yaml"
-          [ ! -f "$hermes_home/cli-config.yaml" ] || chmod 0640 "$hermes_home/cli-config.yaml"
-        fi
+  users.users.${config.services.hermes-agent.user}.extraGroups = [ "users" ];
+
+  services.hermes-agent = {
+    enable = true;
+    addToSystemPackages = true;
+    workingDirectory = "/mnt/work/dev/hermes";
+    extraPackages = with pkgs; [
+      curl
+      jq
+      libopus
+      nix
+    ];
+    environment = {
+      API_SERVER_ENABLED = "true";
+      API_SERVER_HOST = "127.0.0.1";
+      API_SERVER_PORT = "8642";
+      API_SERVER_KEY = "local-only";
+      OBSIDIAN_VAULT = obsidianVault;
+    };
+    environmentFiles = [ config.sops.templates."hermes-env".path ];
+    documents = {
+      "SOUL.md" = soulFile;
+      "USER.md" = pkgs.writeText "USER.md" ''
+        ${builtins.readFile existentialPromptFile}
+        ${builtins.readFile operationalPromptFile}
       '';
+      "MEMORY.md" = memory; # Guidelines on what to save. Hermes uses state dir MEMORY.md
+      "AGENTS.md" = ''
+        # Environment
 
-      hermes-agent-obsidian-permissions = lib.stringAfter [ "users" ] ''
-        if [ -d "${obsidianVault}" ]; then
-          ${pkgs.acl}/bin/setfacl -x u:${config.services.hermes-agent.user} /home/codyt 2>/dev/null || true
-          ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${obsidianVault}" 2>/dev/null || true
-          find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
+        - NixOS-native assistant
+        - Default workspace: ${config.services.hermes-agent.workingDirectory}
+        - HERMES_HOME: runtime state only (sessions, memories, skills, auth, config)
+        - Do not treat /var/lib/hermes as project workspace unless explicitly asked
+        - Common language runtimes may be absent; use `nix shell` only when required
+        - Do not use `nix shell` for standard Unix utilities
 
-          chgrp -hR users "${obsidianVault}"
-          chmod -R u+rwX,g+rwX "${obsidianVault}"
-          find "${obsidianVault}" -type d -exec chmod g+s {} +
-        fi
+        # Core Documents
+
+        - **SOUL.md**: Core operating principles
+        - **USER.md**: User patterns, preferences, decision-making frameworks
+        - **MEMORY.md**: A list of what counts to save as durable objects in memory
+
+        # Skills Integration
+
+        **Critical**: Check skills proactively for any situation requiring understanding of user preferences, patterns, or decision-making style.
+
+        Load relevant skills when requests involve:
+        - Decision support or strategic thinking
+        - Interpersonal dynamics or business strategy
+        - Scoped inspection or diagnosis
+        - User's work style or operating preferences
+        - Any situation requiring judgment calls aligned with user values
+
+        Available user-pattern skills:
+        - additive-thinking-partner
+        - inspect-before-prescribe
+        - intuition-backfill-mode
+        - match-mode-to-request
+        - ship-and-sell-bias
+        - diagnose-before-patching
+        - relational-and-faith-register
+        - bind-to-operator
+
+        Do not wait for explicit user questions about themselves. If a task requires understanding how the user thinks, prefers to work, or would handle a situation—check skills first.
+      '';
+      "OBSIDIAN.md" = ''
+        # Obsidian Vault Location
+
+        Personal vault: ${obsidianVault}
+
+        - Use this absolute path for Obsidian, markdown, and QMD work
+        - Do not infer vault location from HOME
+        - HOME and HERMES_HOME belong to the Hermes service account, not Cody's vault
       '';
     };
-
-    users.users.${config.services.hermes-agent.user}.extraGroups = [ "users" ];
-
-    services.hermes-agent = {
-      enable = true;
-      addToSystemPackages = true;
-      workingDirectory = "/mnt/work/dev/hermes";
-      extraPackages = with pkgs; [
-        curl
-        jq
-        libopus
-        nix
-      ];
-      environment = {
-        API_SERVER_ENABLED = "true";
-        API_SERVER_HOST = "127.0.0.1";
-        API_SERVER_PORT = "8642";
-        API_SERVER_KEY = "local-only";
-        KNOWLEDGE_PERSONAL = obsidianVault;
-        OBSIDIAN_VAULT = obsidianVault;
+    settings = {
+      model = {
+        default = "kimi-k2.5";
+        provider = "opencode-go";
       };
-      environmentFiles = [ config.sops.templates."hermes-env".path ];
-      documents = {
-        "SOUL.md" = soulFile;
-        "USER.md" = pkgs.writeText "USER.md" ''
-          ${builtins.readFile existentialPromptFile}
-          ${builtins.readFile operationalPromptFile}
-        '';
-        "MEMORY.md" = memory; # Guidelines on what to save. Hermes uses state dir MEMORY.md
-        "AGENTS.md" = ''
-          # Environment
-
-          - NixOS-native assistant
-          - Default workspace: ${config.services.hermes-agent.workingDirectory}
-          - HERMES_HOME: runtime state only (sessions, memories, skills, auth, config)
-          - Do not treat /var/lib/hermes as project workspace unless explicitly asked
-          - Common language runtimes may be absent; use `nix shell` only when required
-          - Do not use `nix shell` for standard Unix utilities
-
-          # Core Documents
-
-          - **SOUL.md**: Core operating principles
-          - **USER.md**: User patterns, preferences, decision-making frameworks
-          - **MEMORY.md**: A list of what counts to save as durable objects in memory
-
-          # Skills Integration
-
-          **Critical**: Check skills proactively for any situation requiring understanding of user preferences, patterns, or decision-making style.
-
-          Load relevant skills when requests involve:
-          - Decision support or strategic thinking
-          - Interpersonal dynamics or business strategy
-          - Scoped inspection or diagnosis
-          - User's work style or operating preferences
-          - Any situation requiring judgment calls aligned with user values
-
-          Available user-pattern skills:
-          - additive-thinking-partner
-          - inspect-before-prescribe
-          - intuition-backfill-mode
-          - match-mode-to-request
-          - ship-and-sell-bias
-          - diagnose-before-patching
-          - relational-and-faith-register
-          - bind-to-operator
-
-          Do not wait for explicit user questions about themselves. If a task requires understanding how the user thinks, prefers to work, or would handle a situation—check skills first.
-        '';
-        "OBSIDIAN.md" = ''
-          # Obsidian Vault Location
-
-          Personal vault: ${obsidianVault}
-
-          - Use this absolute path for Obsidian, markdown, and QMD work
-          - Do not infer vault location from HOME
-          - HOME and HERMES_HOME belong to the Hermes service account, not Cody's vault
-        '';
-      };
-      settings = {
-        model = {
-          default = "gpt-5.4";
-          provider = "openai-codex";
-        };
-        fallback_model = {
-          model = "kimi-k2.5";
-          provider = "opencode-zen";
-        };
-        auxiliary = {
-          session_search = {
-            model = "gpt-5.4-mini";
-            provider = "openai-codex";
-          };
-          compression = {
-            model = "kimi-k2.5";
-            provider = "opencode-zen";
-          };
-          web_extract = {
-            model = "gpt-5.4-mini";
-            provider = "openai-codex";
-          };
-          title_generation = {
-            model = "kimi-k2.5";
-            provider = "opencode-zen";
-          };
-        };
-        display.platforms = {
-          discord = {
-            tool_progress = "off";
-          };
-          telegram = {
-            tool_progress = "off";
-          };
-        };
-        max_turns = 100;
-        terminal = {
-          backend = "local";
-          cwd = config.services.hermes-agent.workingDirectory;
-          timeout = 180;
-        };
+      display.platforms = {
         discord = {
-          require_mention = true; # Respond only when @mentioned
-          auto_thread = true; # Isolate each conversation in a thread
-          reactions = true; # Emoji reactions for processing state
-          free_response_channels = [ ]; # Channels that respond without @mention
-          home_channel = "1502095470334578779"; # hermes-home (text)
+          tool_progress = "off";
         };
-        environment = {
-          DISCORD_HOME_CHANNEL = "1502095470334578779";
-        };
-        toolsets = [ "all" ];
-        agent = {
-          max_turns = 60;
-          reasoning_effort = "medium";
-        };
-        memory = {
-          memory_enabled = true;
-          user_profile_enabled = true;
-          provider = "holographic";
-        };
-        plugins = {
-          "hermes-memory-store" = {
-            auto_extract = false;
-            default_trust = 0.5;
-          };
-        };
-        compression = {
-          enabled = true;
-          threshold = 0.85;
-        };
-        checkpoints = {
-          enabled = true;
-          max_snapshots = 50;
-        };
-        skills.external_dirs = map toString externalSkillDirs;
       };
+      max_turns = 100;
+      terminal = {
+        backend = "local";
+        cwd = config.services.hermes-agent.workingDirectory;
+        timeout = 180;
+      };
+      discord = {
+        require_mention = true; # Respond only when @mentioned
+        auto_thread = true; # Isolate each conversation in a thread
+        reactions = true; # Emoji reactions for processing state
+        free_response_channels = [ ]; # Channels that respond without @mention
+        home_channel = "1502095470334578779"; # hermes-home (text)
+      };
+      environment = {
+        DISCORD_HOME_CHANNEL = "1502095470334578779";
+      };
+      toolsets = [ "all" ];
+      agent = {
+        max_turns = 60;
+        reasoning_effort = "medium";
+      };
+      memory = {
+        memory_enabled = true;
+        user_profile_enabled = true;
+        provider = "holographic";
+      };
+      plugins = {
+        "hermes-memory-store" = {
+          auto_extract = false;
+          default_trust = 0.5;
+        };
+      };
+      compression = {
+        enabled = true;
+        threshold = 0.85;
+      };
+      checkpoints = {
+        enabled = true;
+        max_snapshots = 50;
+      };
+      skills.external_dirs = map toString externalSkillDirs;
     };
   };
 }

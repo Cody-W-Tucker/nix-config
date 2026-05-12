@@ -187,13 +187,13 @@ in
 
   # SOPS secrets for Vane service
   sops.secrets."exa-api-key" = { };
-  sops.secrets."opencode-zen-api-key" = { };
+  sops.secrets."opencode-api-key" = { };
 
   services = {
     vane = {
       enable = true;
       exaApiKey = config.sops.secrets."exa-api-key".path;
-      openaiApiKey = config.sops.secrets."opencode-zen-api-key".path;
+      openaiApiKey = config.sops.secrets."opencode-api-key".path;
       openaiEndpoint = "https://opencode.ai/zen/v1/";
       chatModels = [
         "kimi-k2.5"

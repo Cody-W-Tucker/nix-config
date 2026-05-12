@@ -22,13 +22,13 @@ in
     llmPkgs.qmd
   ];
 
-  sops.secrets."opencode-zen-api-key" = { };
+  sops.secrets."opencode-api-key" = { };
 
   programs.rlm = {
     enable = true;
-    apiKeyFile = config.sops.secrets."opencode-zen-api-key".path;
-    model = "kimi-k2.5";
-    subModel = "kimi-k2.5";
-    openaiBaseUrl = "https://opencode.ai/zen/v1";
+    apiKeyFile = config.sops.secrets."opencode-api-key".path;
+    model = "kimi-k2.6";
+    subModel = "kimi-k2.6";
+    openaiBaseUrl = "https://opencode.ai/zen/go/v1";
   };
 }
