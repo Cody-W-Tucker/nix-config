@@ -127,4 +127,13 @@ in
       };
     };
   };
+
+  xdg.desktopEntries.obsidian = {
+    name = "Obsidian";
+    comment = "Knowledge base";
+    exec = ''obsidian "obsidian://open?vault=Personal"'';
+    icon = "obsidian";
+    categories = [ "Office" ];
+    mimeType = [ "x-scheme-handler/obsidian" ];
+  };
 }
