@@ -71,11 +71,13 @@ in
 
     system.activationScripts.hermes-agent-obsidian-permissions = lib.stringAfter [ "users" ] ''
       if [ -d "${obsidianVault}" ]; then
-        ${pkgs.acl}/bin/setfacl -x u:${config.services.hermes-agent.user} /home/codyt 2>/dev/null || true
+        ${pkgs.acl}/bin/setfacl -m u:${config.services.hermes-agent.user}:--x /home/codyt
         ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${obsidianVault}" 2>/dev/null || true
         find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
 
         chgrp -hR users "${obsidianVault}"
+        ${pkgs.acl}/bin/setfacl -R -m g::rwX "${obsidianVault}"
+        find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -m d:g::rwx {} +
         chmod -R u+rwX,g+rwX "${obsidianVault}"
         find "${obsidianVault}" -type d -exec chmod g+s {} +
       fi
