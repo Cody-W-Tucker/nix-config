@@ -13,6 +13,7 @@ let
   existentialPromptFile = inputs.cognitive-assistant.lib.existential.systemPromptFile;
 
   obsidianVault = "/home/codyt/Knowledge/Personal";
+  projectWorkspace = "/mnt/work/dev/hermes";
 
   cognitiveAssistantSkillDirs = [
     inputs.cognitive-assistant.lib.operational.skillsDir
@@ -93,7 +94,6 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      workingDirectory = "/mnt/work/dev/hermes";
       extraPackages = with pkgs; [
         curl
         jq
@@ -112,7 +112,18 @@ in
       documents = {
         "SOUL.md" = soulFile;
         "USER.md" = pkgs.writeText "USER.md" ''
+          # Dual Layer User Bio
+
+          ## Existential Layer
+
+          To understand what the user wants and how they see the world.
+
           ${builtins.readFile existentialPromptFile}
+
+          ## Operational Layer
+
+          To see how they work.
+
           ${builtins.readFile operationalPromptFile}
         '';
         "MEMORY.md" = memory; # Guidelines on what to save. Hermes uses state dir MEMORY.md
@@ -121,9 +132,9 @@ in
           # Environment
 
           - NixOS-native assistant
-          - Default workspace: ${config.services.hermes-agent.workingDirectory}
+          - Default project workspace: ${projectWorkspace}
           - HERMES_HOME: runtime state only (sessions, memories, skills, auth, config)
-          - Do not treat /var/lib/hermes as project workspace unless explicitly asked
+          - Do not treat /var/lib/hermes/workspace as project workspace unless explicitly asked
           - Common language runtimes may be absent; use `nix shell` only when required
           - Do not use `nix shell` for standard Unix utilities
 
@@ -150,15 +161,6 @@ in
 
           Do not wait for explicit user questions about themselves. If a task requires understanding how the user thinks, prefers to work, or would handle a situation—check skills first.
         '';
-        "OBSIDIAN.md" = ''
-          # Obsidian Vault Location
-
-          Personal vault: ${obsidianVault}
-
-          - Use this absolute path for Obsidian, markdown, and QMD work
-          - Do not infer vault location from HOME
-          - HOME and HERMES_HOME belong to the Hermes service account, not Cody's vault
-        '';
       };
       settings = {
         model = {
@@ -173,7 +175,7 @@ in
         max_turns = 100;
         terminal = {
           backend = "local";
-          cwd = config.services.hermes-agent.workingDirectory;
+          cwd = projectWorkspace;
           timeout = 180;
         };
         discord = {
