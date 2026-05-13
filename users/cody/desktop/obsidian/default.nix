@@ -62,7 +62,6 @@ let
     "templates"
     "command-palette"
     "bases"
-    "webviewer"
     "note-composer"
   ];
 in
