@@ -17,6 +17,29 @@ let
     hash = "sha256-GlfRvFoH33W8T1I3hiZmZHzy99DazJRMgu13ufIOoyg=";
   };
 
+  obsidianTrayPlugin = pkgs.runCommand "obsidian-tray-0.3.5" { } ''
+    mkdir -p $out
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/dragonwocky/obsidian-tray/releases/download/0.3.5/main.js";
+        hash = "sha256-BHGlkLij4wgpP10upwgFN3rBVmBTcoVl1j6ktVCUrUI=";
+      }
+    } $out/main.js
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/dragonwocky/obsidian-tray/releases/download/0.3.5/manifest.json";
+        hash = "sha256-gOjuAtf7mcgrlH162TrC37BmP0hQthSMfeOAN+/kSjQ=";
+      }
+    } $out/manifest.json
+  '';
+
+  sharedCommunityPlugins = [
+    {
+      pkg = obsidianLinterPlugin;
+      settings = builtins.fromJSON (builtins.readFile ./plugin-data/obsidian-linter-data.json);
+    }
+  ];
+
   withSharedSnippets =
     settings:
     lib.mkMerge [
@@ -68,12 +91,7 @@ in
       };
 
       corePlugins = sharedCorePlugins;
-      communityPlugins = [
-        {
-          pkg = obsidianLinterPlugin;
-          settings = builtins.fromJSON (builtins.readFile ./plugin-data/obsidian-linter-data.json);
-        }
-      ];
+      communityPlugins = sharedCommunityPlugins;
       cssSnippets = sharedSnippets;
       hotkeys = import ./hotkeys.nix;
     };
@@ -82,6 +100,13 @@ in
       Personal = {
         target = "/home/codyt/Knowledge/Personal";
         settings = withSharedSnippets {
+          communityPlugins = sharedCommunityPlugins ++ [
+            {
+              pkg = obsidianTrayPlugin;
+              settings = builtins.fromJSON (builtins.readFile ./plugin-data/tray-data.json);
+            }
+          ];
+
           extraFiles = {
             "daily-notes.json".text = builtins.toJSON {
               format = "YYYY/MM-MMMM/YYYY-MM-DD-dddd";
