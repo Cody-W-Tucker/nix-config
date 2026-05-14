@@ -166,7 +166,7 @@ in
       };
       settings = {
         model = {
-          default = "kimi-k2.5";
+          default = "kimi-k2.6";
           provider = "opencode-go";
         };
         display.platforms = {
