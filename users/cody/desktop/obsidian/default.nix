@@ -33,6 +33,22 @@ let
     } $out/manifest.json
   '';
 
+  obsidianAutoDailyNotePlugin = pkgs.runCommand "auto-daily-note-1.0.0" { } ''
+    mkdir -p $out
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/litegral/auto-daily-note/releases/download/1.0.0/main.js";
+        hash = "sha256-GhXQ8oQGWrgyHJb+uVBlQW3XP3IohBwAedSuVuKQkZ0=";
+      }
+    } $out/main.js
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/litegral/auto-daily-note/releases/download/1.0.0/manifest.json";
+        hash = "sha256-eZwUnAItdSKr/LBy3xkWiRhw5QGJJRh/brGlzWP/iy4=";
+      }
+    } $out/manifest.json
+  '';
+
   sharedCommunityPlugins = [
     {
       pkg = obsidianLinterPlugin;
@@ -103,6 +119,9 @@ in
             {
               pkg = obsidianTrayPlugin;
               settings = builtins.fromJSON (builtins.readFile ./plugin-data/tray-data.json);
+            }
+            {
+              pkg = obsidianAutoDailyNotePlugin;
             }
           ];
 
