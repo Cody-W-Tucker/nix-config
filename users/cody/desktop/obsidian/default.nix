@@ -49,6 +49,28 @@ let
     } $out/manifest.json
   '';
 
+  obsidianRolloverDailyTodosPlugin = pkgs.runCommand "obsidian-rollover-daily-todos-1.2.0" { } ''
+    mkdir -p $out
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/lumoe/obsidian-rollover-daily-todos/releases/download/1.2.0/main.js";
+        hash = "sha256-TwgpNjyVgHnqAioVScLq59iB4axgpB3x/I7J/9m8Ock=";
+      }
+    } $out/main.js
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/lumoe/obsidian-rollover-daily-todos/releases/download/1.2.0/manifest.json";
+        hash = "sha256-m1JvPjwSFF3kKAlils5gFbztfGK6kQpbC3kDQMUQH8E=";
+      }
+    } $out/manifest.json
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/lumoe/obsidian-rollover-daily-todos/releases/download/1.2.0/versions.json";
+        hash = "sha256-8oIWEqT4PYeeIyhVzLqSUNpp4SSK19GlAuo52RRD8gs=";
+      }
+    } $out/versions.json
+  '';
+
   sharedCommunityPlugins = [
     {
       pkg = obsidianLinterPlugin;
@@ -122,6 +144,10 @@ in
             }
             {
               pkg = obsidianAutoDailyNotePlugin;
+            }
+            {
+              pkg = obsidianRolloverDailyTodosPlugin;
+              settings = builtins.fromJSON (builtins.readFile ./plugin-data/rollover-daily-todos-data.json);
             }
           ];
 

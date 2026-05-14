@@ -1,0 +1,8 @@
+{
+  "templateHeading": "## Outstanding Tasks",
+  "deleteOnComplete": true,
+  "removeEmptyTodos": true,
+  "rolloverChildren": true,
+  "rolloverOnFileCreate": true,
+  "doneStatusMarkers": "xX-"
+}
