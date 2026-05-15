@@ -1,0 +1,12 @@
+/* Collapse inactive comment-block lines in Live Preview */
+.is-live-preview .cm-line:not(.cm-active):has(> .cm-comment-start:first-child),
+.is-live-preview .cm-line:not(.cm-active):has(> .cm-comment:first-child):not(:has(.cm-comment-start)):not(:has(.cm-comment-end)),
+.is-live-preview .cm-line:not(.cm-active):has(.cm-comment-end):has(> .cm-comment:first-child):not(:has(.cm-comment-start)),
+.is-live-preview .cm-line:not(.cm-active):has(> .cm-comment-end:first-child):not(:has(.cm-comment-start)) {
+  display: none;
+}
+
+/* Collapse the br-only spacer line directly above a hidden comment block */
+.is-live-preview .cm-line:not(.cm-active):has(> br:only-child):has(+ .cm-line > .cm-comment-start:first-child) {
+  display: none;
+}

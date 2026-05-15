@@ -8,6 +8,7 @@
 let
   sharedSnippets = [
     ./snippets/mermaid.css
+    ./snippets/hide-inactive-comments.css
     ./snippets/tables.css
     ./snippets/print.css
   ];
