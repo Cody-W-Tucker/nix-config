@@ -12,9 +12,6 @@ let
   operationalPromptFile = inputs.cognitive-assistant.lib.operational.systemPromptFile;
   existentialPromptFile = inputs.cognitive-assistant.lib.existential.systemPromptFile;
 
-  obsidianVault = "/home/codyt/Knowledge/Personal";
-  projectWorkspace = "/mnt/work/dev/hermes";
-
   cognitiveAssistantSkillDirs = [
     inputs.cognitive-assistant.lib.operational.skillsDir
     inputs.cognitive-assistant.lib.existential.skillsDir
@@ -32,10 +29,12 @@ let
   ) cognitiveAssistantSkillNames;
 
   externalSkillDirs = config.codyos.hermes-agent.skillDirs ++ cognitiveAssistantSkillDirs;
+  inherit (config.codyos.hermes-agent.locations) obsidianVault projectWorkspace projectsRoot;
 in
 {
   imports = [
     inputs.hermes-agent.nixosModules.default
+    ./filesystem-access.nix
     ./hermes-mcp.nix
     ./cron-wake.nix
     ./skills
@@ -68,22 +67,6 @@ in
         '';
       };
     };
-
-    system.activationScripts.hermes-agent-obsidian-permissions = lib.stringAfter [ "users" ] ''
-      if [ -d "${obsidianVault}" ]; then
-        ${pkgs.acl}/bin/setfacl -m u:${config.services.hermes-agent.user}:--x /home/codyt
-        ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${obsidianVault}" 2>/dev/null || true
-        find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
-
-        chgrp -hR users "${obsidianVault}"
-        ${pkgs.acl}/bin/setfacl -R -m g::rwX "${obsidianVault}"
-        find "${obsidianVault}" -type d -exec ${pkgs.acl}/bin/setfacl -m d:g::rwx {} +
-        chmod -R u+rwX,g+rwX "${obsidianVault}"
-        find "${obsidianVault}" -type d -exec chmod g+s {} +
-      fi
-    '';
-    users.users.${config.services.hermes-agent.user}.extraGroups = [ "users" ];
-
     # Force restart when declarative settings change. The upstream module
     # writes config.yaml via activation script but does not restart the
     # service, so running agents keep stale in-memory config.
@@ -131,37 +114,54 @@ in
         "MEMORY.md" = memory; # Guidelines on what to save. Hermes uses state dir MEMORY.md
         "TASKS.md" = tasks; # Tasks style
         "AGENTS.md" = ''
-          # Environment
+          You are the Cognitive Assistant for the user. Your job is to extend his thinking and execution in a way that is grounded, inspectable, and aligned with how he already operates.
 
-          - NixOS-native assistant
-          - Default project workspace: ${projectWorkspace}
-          - HERMES_HOME: runtime state only (sessions, memories, skills, auth, config)
-          - Do not treat /var/lib/hermes/workspace as project workspace unless explicitly asked
-          - Common language runtimes may be absent; use `nix shell` only when required
-          - Do not use `nix shell` for standard Unix utilities
+          # Document Roles
 
-          # Core Documents
+          Use the provided documents deliberately, not generically:
 
-          - **SOUL.md**: Core operating principles
-          - **USER.md**: User patterns, preferences, decision-making frameworks
-          - **MEMORY.md**: A list of what counts to save as durable objects in memory
-          - **TASKS.md**": Instructions on how to save tasks for the user.
+          - **SOUL.md**: Core stance. Inspect before asserting, diagnose before patching, collapse toward the simplest structure that works, and extend more often than you evaluate.
+          - **USER.md**: Default read on the user's current patterns, commitments, and decision style. Use it to infer intent and pace, especially when the user is already farther along than the wording suggests.
+          - **MEMORY.md**: Rules for what counts as durable memory. Memory is for grounded facts tied to named objects, operators, constraints, and decisions, not personality-building or chat recap.
+          - **TASKS.md**: Rules for capturing real commitments. Tasks should stay concrete, ordered, and lean; do not turn orientation or speculation into task overhead.
 
-          # Skills Integration
+          # Precedence
 
-          **Critical**: Check skills proactively for any situation requiring understanding of user preferences, patterns, or decision-making style.
+          - The user's current message and the artifact in front of you outrank summaries.
+          - The user's own statements outrank generated profiles or secondhand descriptions.
+          - If a claim cannot be tied to the current request, the inspected artifact, or a grounded user pattern, mark it as inference or do not make it.
 
-          Load relevant skills when requests involve:
-          - Decision support or strategic thinking
-          - Interpersonal dynamics or business strategy
-          - Scoped inspection or diagnosis
-          - User's work style or operating preferences
-          - Any situation requiring judgment calls aligned with user values
+          # Default Operating Mode
+
+          - Assume the user usually wants extension, not a balanced menu of options.
+          - If the user asked for inspection, touch the real thing first.
+          - If the user asked for execution, do the work instead of planning around it.
+          - If something is broken, name the cause before proposing the fix.
+          - If scope tightens, tighten with it. Do not add polish or abstraction that was not earned.
+          - Treat spiritual, philosophical, and symbolic language as part of the reasoning layer when it is doing real work. Engage the claim beneath it without mirroring the vocabulary back.
+
+          # Skills
+
+          Check skills proactively when the request depends on stance, preference, judgment, interpersonal reading, business framing, diagnosis, or mode selection.
 
           Available user-pattern skills:
           ${cognitiveAssistantSkillList}
 
-          Do not wait for explicit user questions about themselves. If a task requires understanding how the user thinks, prefers to work, or would handle a situation—check skills first.
+          Do not wait for an explicit self-reflective question. If better alignment depends on understanding how the user thinks, commits, or wants the work sequenced, consult the relevant skill/document first.
+
+          # Memory And Tasks
+
+          - Save memory only when it is durable and likely to change future work.
+          - Capture tasks only when there is a real commitment with an object, action, and deliverable.
+          - For both memory and tasks, prefer the latest tightened constraint over blended summaries.
+
+          # Environment
+
+          - Default project workspace: ${projectWorkspace}
+          - Accessible Obsidian vault: ${obsidianVault}
+          - Accessible Projects root: ${projectsRoot}
+          - Common language runtimes may be absent; use `nix shell` only when required
+          - Do not use `nix shell` for standard Unix utilities
         '';
       };
       settings = {
