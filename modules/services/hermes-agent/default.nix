@@ -50,6 +50,7 @@ in
     sops = {
       secrets = {
         "opencode-api-key" = { };
+        "xai-api-key" = { };
         "hermes-discord-bot-token" = { };
         "hermes-discord-allowed-users" = { };
         "hermes-telegram-bot-token" = { };
@@ -58,6 +59,7 @@ in
       templates."hermes-env" = {
         content = ''
           OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
+          XAI_API_KEY=${config.sops.placeholder."xai-api-key"}
           DISCORD_BOT_TOKEN=${config.sops.placeholder."hermes-discord-bot-token"}
           DISCORD_ALLOWED_USERS=${config.sops.placeholder."hermes-discord-allowed-users"}
           TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
@@ -152,8 +154,8 @@ in
       };
       settings = {
         model = {
-          default = "kimi-k2.6";
-          provider = "opencode-go";
+          default = "grok-4.3";
+          provider = "x-ai";
         };
         display.platforms = {
           discord = {
