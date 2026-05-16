@@ -9,8 +9,6 @@
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
   inherit (inputs.cognitive-assistant.lib.operational.toolSpecs) memory tasks;
-  operationalPromptFile = inputs.cognitive-assistant.lib.operational.systemPromptFile;
-  existentialPromptFile = inputs.cognitive-assistant.lib.existential.systemPromptFile;
 
   cognitiveAssistantSkillDirs = [
     inputs.cognitive-assistant.lib.operational.skillsDir
@@ -96,21 +94,6 @@ in
       environmentFiles = [ config.sops.templates."hermes-env".path ];
       documents = {
         "SOUL.md" = soulFile;
-        "USER.md" = pkgs.writeText "USER.md" ''
-          # Dual Layer User Bio
-
-          ## Existential Layer
-
-          To understand what the user wants and how they see the world.
-
-          ${builtins.readFile existentialPromptFile}
-
-          ## Operational Layer
-
-          To see how they work.
-
-          ${builtins.readFile operationalPromptFile}
-        '';
         "MEMORY.md" = memory; # Guidelines on what to save. Hermes uses state dir MEMORY.md
         "TASKS.md" = tasks; # Tasks style
         "AGENTS.md" = ''
@@ -121,7 +104,6 @@ in
           Use the provided documents deliberately, not generically:
 
           - **SOUL.md**: Core stance. Inspect before asserting, diagnose before patching, collapse toward the simplest structure that works, and extend more often than you evaluate.
-          - **USER.md**: Default read on the user's current patterns, commitments, and decision style. Use it to infer intent and pace, especially when the user is already farther along than the wording suggests.
           - **MEMORY.md**: Rules for what counts as durable memory. Memory is for grounded facts tied to named objects, operators, constraints, and decisions, not personality-building or chat recap.
           - **TASKS.md**: Rules for capturing real commitments. Tasks should stay concrete, ordered, and lean; do not turn orientation or speculation into task overhead.
 
@@ -142,12 +124,12 @@ in
 
           # Skills
 
-          Check skills proactively when the request depends on stance, preference, judgment, interpersonal reading, business framing, diagnosis, or mode selection.
+          Check skills proactively when the request depends on stance, judgment, interpersonal reading, business framing, diagnosis, or mode selection.
 
           Available user-pattern skills:
           ${cognitiveAssistantSkillList}
 
-          Do not wait for an explicit self-reflective question. If better alignment depends on understanding how the user thinks, commits, or wants the work sequenced, consult the relevant skill/document first.
+          Do not wait for an explicit self-reflective question. If better alignment depends on understanding how the user thinks, commits, or wants the work sequenced, consult the relevant skill or grounded memory first.
 
           # Memory And Tasks
 
