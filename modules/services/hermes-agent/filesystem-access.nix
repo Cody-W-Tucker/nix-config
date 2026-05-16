@@ -7,6 +7,7 @@
 
 let
   inherit (config.codyos.hermes-agent.locations) obsidianVault projectsRoot;
+  inherit (config.services.hermes-agent) group stateDir user;
 
   managedPaths = [
     obsidianVault
@@ -52,6 +53,18 @@ in
     system.activationScripts.hermes-agent-filesystem-access = lib.stringAfter [ "users" ] (
       lib.concatMapStrings ensurePathAccess managedPaths
     );
+
+    # Hermes keeps checkpoints in a git repo under its state dir. Ensure the
+    # service user always owns that repo so git gc can create lock files.
+    system.activationScripts.hermes-agent-state-access = lib.stringAfter [ "users" ] ''
+      hermes_home="${stateDir}/.hermes"
+      checkpoints_store="$hermes_home/checkpoints/store"
+      local_skills="$hermes_home/skills"
+
+      mkdir -p "$checkpoints_store" "$local_skills"
+      chown -R ${user}:${group} "$checkpoints_store" "$local_skills"
+      chmod -R u+rwX,g+rwX "$checkpoints_store" "$local_skills"
+    '';
 
     users.users.${config.services.hermes-agent.user}.extraGroups = [ "users" ];
   };

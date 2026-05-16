@@ -26,8 +26,8 @@ let
     name: "- ${name}"
   ) cognitiveAssistantSkillNames;
 
-  externalSkillDirs = config.codyos.hermes-agent.skillDirs ++ cognitiveAssistantSkillDirs;
   inherit (config.codyos.hermes-agent.locations) obsidianVault projectWorkspace projectsRoot;
+  externalSkillDirs = config.codyos.hermes-agent.skillDirs ++ cognitiveAssistantSkillDirs;
 in
 {
   imports = [
@@ -125,6 +125,8 @@ in
           # Skills
 
           Check skills proactively when the request depends on stance, judgment, interpersonal reading, business framing, diagnosis, or mode selection.
+
+          If a skill is an external overlay under `~/.hermes/skills/external-overlays/`, treat the generated `SKILL.md` as a wrapper around a read-only upstream skill snapshot. Preserve durable changes in `references/hermes-local-amendments.md` for that skill instead of rewriting the wrapper unless the user explicitly asks you to rewrite the wrapper itself.
 
           Available user-pattern skills:
           ${cognitiveAssistantSkillList}
