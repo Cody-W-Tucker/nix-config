@@ -9,6 +9,8 @@
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
   inherit (inputs.cognitive-assistant.lib.operational.toolSpecs) memory tasks;
+  caPackages = inputs.cognitive-assistant.packages.${pkgs.stdenv.hostPlatform.system} or { };
+  crystallizePackage = lib.optional (caPackages ? crystallize) caPackages.crystallize;
 
   cognitiveAssistantSkillDirs = [
     inputs.cognitive-assistant.lib.operational.skillsDir
@@ -32,6 +34,7 @@ in
 {
   imports = [
     inputs.hermes-agent.nixosModules.default
+    ./automations
     ./filesystem-access.nix
     ./hermes-mcp.nix
     ./cron-wake.nix
@@ -45,6 +48,7 @@ in
   };
 
   config = {
+    codyos.hermes-agent.automations.crystallize.enable = true;
     codyos.hermes-agent.cronWake.enable = true;
 
     sops = {
@@ -79,15 +83,17 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      extraPackages = with pkgs; [
-        binutils
-        curl
-        glibc.bin
-        jq
-        libopus
-        nix
-        playwright-driver.browsers
-      ];
+      extraPackages =
+        (with pkgs; [
+          binutils
+          curl
+          glibc.bin
+          jq
+          libopus
+          nix
+          playwright-driver.browsers
+        ])
+        ++ crystallizePackage;
       environment = {
         API_SERVER_ENABLED = "true";
         API_SERVER_HOST = "127.0.0.1";
