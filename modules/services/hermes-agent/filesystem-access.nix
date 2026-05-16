@@ -54,6 +54,8 @@ in
       lib.concatMapStrings ensurePathAccess managedPaths
     );
 
+    systemd.services.hermes-agent.serviceConfig.ReadWritePaths = lib.mkAfter managedPaths;
+
     # Hermes keeps checkpoints in a git repo under its state dir. Ensure the
     # service user always owns that repo so git gc can create lock files.
     system.activationScripts.hermes-agent-state-access = lib.stringAfter [ "users" ] ''

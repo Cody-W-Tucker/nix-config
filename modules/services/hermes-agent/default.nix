@@ -89,6 +89,7 @@ in
         API_SERVER_HOST = "127.0.0.1";
         API_SERVER_PORT = "8642";
         API_SERVER_KEY = "local-only";
+        LD_LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libopus ];
         OBSIDIAN_VAULT = obsidianVault;
       };
       environmentFiles = [ config.sops.templates."hermes-env".path ];
@@ -293,5 +294,6 @@ in
         };
       };
     };
+
   };
 }
