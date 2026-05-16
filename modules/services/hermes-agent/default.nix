@@ -78,7 +78,9 @@ in
       enable = true;
       addToSystemPackages = true;
       extraPackages = with pkgs; [
+        binutils
         curl
+        glibc.bin
         jq
         libopus
         nix
