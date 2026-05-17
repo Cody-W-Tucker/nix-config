@@ -40,10 +40,12 @@ in
     "actual-budget-mcp-password" = {
       owner = config.services.hermes-agent.user;
       inherit (config.services.hermes-agent) group;
+      mode = "0440";
     };
     "actual-budget-mcp-sync-id" = {
       owner = config.services.hermes-agent.user;
       inherit (config.services.hermes-agent) group;
+      mode = "0440";
     };
   };
 
