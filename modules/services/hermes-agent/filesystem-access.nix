@@ -56,6 +56,19 @@ in
 
     systemd.services.hermes-agent.serviceConfig.ReadWritePaths = lib.mkAfter managedPaths;
 
+    system.activationScripts.hermes-agent-auth-store-access =
+      lib.stringAfter [ "hermes-agent-setup" ]
+        ''
+          hermes_home="${stateDir}/.hermes"
+
+          for auth_file in "$hermes_home/auth.json" "$hermes_home/auth.lock"; do
+            if [ -e "$auth_file" ]; then
+              chown ${user}:${group} "$auth_file"
+              chmod 0600 "$auth_file"
+            fi
+          done
+        '';
+
     # Hermes keeps checkpoints in a git repo under its state dir. Ensure the
     # service user always owns that repo so git gc can create lock files.
     system.activationScripts.hermes-agent-state-access = lib.stringAfter [ "users" ] ''
