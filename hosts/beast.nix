@@ -73,7 +73,7 @@ in
       "btusb"
     ];
     extraModprobeConfig = ''
-      options btusb enable_autosuspend=n
+      options btusb enable_autosuspend=n reset=1
       options mt7925e disable_aspm=Y
     '';
   };
