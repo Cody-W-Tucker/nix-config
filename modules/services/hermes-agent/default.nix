@@ -8,7 +8,13 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
-  inherit (config.codyos.hermes-agent.locations) obsidianVault projectWorkspace projectsRoot;
+  inherit (config.codyos.hermes-agent.locations) obsidianVault projectsRoot;
+  inherit (config.services.hermes-agent)
+    group
+    stateDir
+    user
+    workingDirectory
+    ;
 in
 {
   imports = [
@@ -42,14 +48,21 @@ in
         '';
       };
     };
-    # Force restart when declarative settings change. The upstream module
-    # writes config.yaml via activation script but does not restart the
-    # service, so running agents keep stale in-memory config.
+    # Force restart when declarative settings or SOUL change. The upstream
+    # module writes config.yaml and workspace documents via activation script
+    # but does not restart the service afterward.
     systemd.services.hermes-agent.restartTriggers = [
       (pkgs.writeText "hermes-agent-config-trigger" (
         builtins.toJSON config.services.hermes-agent.settings
       ))
+      soulFile
     ];
+
+    # Hermes loads its primary identity from HERMES_HOME/SOUL.md, not from the
+    # workspace documents directory.
+    system.activationScripts.hermes-agent-soul = lib.stringAfter [ "hermes-agent-setup" ] ''
+      install -o ${user} -g ${group} -m 0640 ${soulFile} ${stateDir}/.hermes/SOUL.md
+    '';
 
     # Make config.yaml fully declarative. Upstream merges generated settings
     # into any existing config when configFile is null, which preserves stale
@@ -80,7 +93,6 @@ in
       };
       environmentFiles = [ config.sops.templates."hermes-env".path ];
       documents = {
-        "SOUL.md" = soulFile;
         "AGENTS.md" = ''
           You are the Cognitive Assistant for the user. Your job is to extend his thinking and execution in a grounded, inspectable way that aligns with how he already operates.
 
@@ -94,7 +106,7 @@ in
 
           # Environment
 
-          - **Default project workspace**: ${projectWorkspace} (your isolated workspace)
+          - **Default workspace**: ${workingDirectory} (your shared working directory)
           - **Obsidian vault**: ${obsidianVault} (shared space for saves/reads the user can also edit)
           - **Projects root**: ${projectsRoot} (user projects likely live here)
           - Common language runtimes may be absent; use `nix shell` only when required
@@ -114,7 +126,6 @@ in
         max_turns = 100;
         terminal = {
           backend = "local";
-          cwd = projectWorkspace;
           timeout = 180;
         };
         discord = {
