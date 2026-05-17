@@ -176,7 +176,6 @@ in
       full_cm_proto = true;
     };
     render = {
-      cm_fs_passthrough = "2";
       direct_scanout = "2";
     };
     general = {
@@ -212,7 +211,6 @@ in
       };
     };
     dwindle = {
-      pseudotile = "yes";
       preserve_split = "yes";
     };
     master = {
