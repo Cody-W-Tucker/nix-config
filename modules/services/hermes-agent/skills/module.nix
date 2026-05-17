@@ -18,7 +18,9 @@ let
     (lib.sort (a: b: a < b))
   ];
 
-  cognitiveAssistantSkillList = lib.concatMapStringsSep "\n" (name: "- ${name}") cognitiveAssistantSkillNames;
+  cognitiveAssistantSkillList = lib.concatMapStringsSep "\n" (
+    name: "- ${name}"
+  ) cognitiveAssistantSkillNames;
 in
 {
   options.codyos.hermes-agent.skills = {

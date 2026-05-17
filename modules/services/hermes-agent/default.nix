@@ -52,6 +52,14 @@ in
       ))
     ];
 
+    # Make config.yaml fully declarative. Upstream merges generated settings
+    # into any existing config when configFile is null, which preserves stale
+    # runtime keys like old skills.external_dirs entries. Writing the final
+    # settings JSON here forces activation to overwrite config.yaml instead.
+    services.hermes-agent.configFile = pkgs.writeText "hermes-config.json" (
+      builtins.toJSON config.services.hermes-agent.settings
+    );
+
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;

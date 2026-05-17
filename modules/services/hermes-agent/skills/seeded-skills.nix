@@ -11,31 +11,29 @@ let
   seedDirsShell = lib.concatMapStringsSep " " lib.escapeShellArg seedDirs;
 in
 {
-  config.system.activationScripts.hermes-agent-seeded-skills =
-    lib.stringAfter [ "users" ]
-      ''
-        hermes_home="${stateDir}/.hermes"
-        local_skills_root="$hermes_home/skills"
+  config.system.activationScripts.hermes-agent-seeded-skills = lib.stringAfter [ "users" ] ''
+    hermes_home="${stateDir}/.hermes"
+    local_skills_root="$hermes_home/skills"
 
-        mkdir -p "$local_skills_root"
+    mkdir -p "$local_skills_root"
 
-        for source_dir in ${seedDirsShell}; do
-          [ -d "$source_dir" ] || continue
+    for source_dir in ${seedDirsShell}; do
+      [ -d "$source_dir" ] || continue
 
-          ${pkgs.findutils}/bin/find "$source_dir" -type f -name SKILL.md | while IFS= read -r skill_md; do
-            skill_dir="$(dirname "$skill_md")"
-            rel_dir="''${skill_dir#"$source_dir"/}"
-            dest_dir="$local_skills_root/$rel_dir"
+      ${pkgs.findutils}/bin/find "$source_dir" -type f -name SKILL.md | while IFS= read -r skill_md; do
+        skill_dir="$(dirname "$skill_md")"
+        rel_dir="''${skill_dir#"$source_dir"/}"
+        dest_dir="$local_skills_root/$rel_dir"
 
-            if [ -e "$dest_dir/SKILL.md" ]; then
-              continue
-            fi
+        if [ -e "$dest_dir/SKILL.md" ]; then
+          continue
+        fi
 
-            mkdir -p "$(dirname "$dest_dir")"
-            cp -r "$skill_dir" "$dest_dir"
-            chown -R ${user}:${group} "$dest_dir"
-            chmod -R u+rwX,g+rwX "$dest_dir"
-          done
-        done
-      '';
+        mkdir -p "$(dirname "$dest_dir")"
+        cp -r "$skill_dir" "$dest_dir"
+        chown -R ${user}:${group} "$dest_dir"
+        chmod -R u+rwX,g+rwX "$dest_dir"
+      done
+    done
+  '';
 }
