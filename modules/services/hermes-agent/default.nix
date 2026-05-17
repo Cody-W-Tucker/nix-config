@@ -75,6 +75,7 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
+      extraDependencyGroups = [ "messaging" ];
       extraPackages = with pkgs; [
         binutils
         curl
@@ -126,6 +127,7 @@ in
         max_turns = 100;
         terminal = {
           backend = "local";
+          cwd = workingDirectory;
           timeout = 180;
         };
         discord = {
@@ -150,6 +152,7 @@ in
           provider = "holographic";
         };
         plugins = {
+          disabled = [ "google_chat-platform" ];
           "hermes-memory-store" = {
             auto_extract = false;
             default_trust = 0.5;
@@ -168,6 +171,11 @@ in
 
     systemd.services.hermes-agent.environment = {
       LD_LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libopus ];
+    };
+
+    systemd.services.hermes-agent.serviceConfig = {
+      TimeoutStopSec = 210;
+      UnsetEnvironment = [ "MESSAGING_CWD" ];
     };
 
   };
