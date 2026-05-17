@@ -20,7 +20,7 @@ in
     for source_dir in ${seedDirsShell}; do
       [ -d "$source_dir" ] || continue
 
-      ${pkgs.findutils}/bin/find "$source_dir" -type f -name SKILL.md | while IFS= read -r skill_md; do
+      ${pkgs.findutils}/bin/find -L "$source_dir" -name SKILL.md | while IFS= read -r skill_md; do
         skill_dir="$(dirname "$skill_md")"
         rel_dir="''${skill_dir#"$source_dir"/}"
         dest_dir="$local_skills_root/$rel_dir"
