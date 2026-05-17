@@ -45,6 +45,10 @@
     settings = {
       autoupdate = false;
       default_agent = "build";
+      permission.external_directory = {
+        "/nix/store" = "allow";
+        "/nix/store/**" = "allow";
+      };
       lsp = {
         nix = {
           command = [ "${lib.getExe pkgs.nil}" ];
