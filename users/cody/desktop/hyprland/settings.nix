@@ -21,7 +21,7 @@ let
   ];
 
   specialWorkspaces = [
-    "special:ai, on-created-empty: ${webApp}=https://search.homehub.tv"
+    "special:ai, on-created-empty: ${webApp}=https://www.perplexity.ai/"
     "special:dev, on-created-empty: ${terminal}"
     "special:media, on-created-empty: ${webApp}=https://www.youtube.com/"
     "special:think, on-created-empty: ${webApp}=https://draw.homehub.tv/"
