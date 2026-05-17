@@ -25,12 +25,16 @@ in
         rel_dir="''${skill_dir#"$source_dir"/}"
         dest_dir="$local_skills_root/$rel_dir"
 
+        if [ -L "$dest_dir" ] || [ -L "$dest_dir/SKILL.md" ]; then
+          rm -rf "$dest_dir"
+        fi
+
         if [ -e "$dest_dir/SKILL.md" ]; then
           continue
         fi
 
         mkdir -p "$(dirname "$dest_dir")"
-        cp -r "$skill_dir" "$dest_dir"
+        cp -rL "$skill_dir" "$dest_dir"
         chown -R ${user}:${group} "$dest_dir"
         chmod -R u+rwX,g+rwX "$dest_dir"
       done
