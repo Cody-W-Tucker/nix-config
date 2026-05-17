@@ -31,10 +31,12 @@ in
         "karakeep-api-key" = {
           owner = config.services.hermes-agent.user;
           inherit (config.services.hermes-agent) group;
+          mode = "0440";
         };
         "exa-api-key" = {
           owner = config.services.hermes-agent.user;
           inherit (config.services.hermes-agent) group;
+          mode = "0440";
         };
       };
     };
