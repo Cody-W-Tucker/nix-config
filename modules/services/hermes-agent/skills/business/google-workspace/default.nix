@@ -1,12 +1,6 @@
-{
-  inputs,
-  pkgs,
-  self,
-  ...
-}:
+{ inputs, pkgs, ... }:
 
 let
-  skillHelper = import "${self}/modules/shared/skill-adaptations.nix" { inherit inputs pkgs; };
   googleWorkspaceSkill = name: "${inputs.googleworkspace-cli}/skills/${name}/SKILL.md";
 
   gmailTriageSkill = pkgs.writeText "gws-gmail-triage-SKILL.md" (
@@ -40,7 +34,7 @@ let
       (builtins.readFile (googleWorkspaceSkill "gws-gmail-triage"))
   );
 
-  rawGoogleWorkspaceSkills = pkgs.linkFarm "hermes-agent-google-workspace-skills" [
+  googleWorkspaceSkills = pkgs.linkFarm "hermes-agent-google-workspace-skills" [
     {
       name = "gws-shared/SKILL.md";
       path = googleWorkspaceSkill "gws-shared";
@@ -82,11 +76,7 @@ let
       path = googleWorkspaceSkill "gws-workflow-meeting-prep";
     }
   ];
-  googleWorkspaceSkills = skillHelper.adaptSkillDir {
-    sourceDir = rawGoogleWorkspaceSkills;
-    outputName = "hermes-agent-google-workspace-skills-adapted";
-  };
 in
 {
-  codyos.hermes-agent.skillDirs = [ googleWorkspaceSkills ];
+  codyos.hermes-agent.skills.seedDirs = [ googleWorkspaceSkills ];
 }

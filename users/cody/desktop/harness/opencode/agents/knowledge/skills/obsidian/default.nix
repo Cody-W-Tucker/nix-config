@@ -1,16 +1,6 @@
 {
-  inputs,
-  pkgs,
-  self,
-  ...
-}:
-
-let
-  skillHelper = import "${self}/modules/shared/skill-adaptations.nix" { inherit inputs pkgs; };
-in
-{
   programs.opencode.skills = {
-    obsidian-cli = skillHelper.applyToText "obsidian-cli" ''
+    obsidian-cli = ''
       ---
       name: obsidian-cli
       description: Interact with Obsidian vaults using the Obsidian CLI to read, create, search, and manage notes, tasks, properties, and more. Also supports plugin and theme development with commands to reload plugins, run JavaScript, capture errors, take screenshots, and inspect the DOM. Use when the user asks to interact with their Obsidian vault, manage notes, search vault content, perform vault operations from the command line, or develop and debug Obsidian plugins and themes.
@@ -78,7 +68,7 @@ in
 
       Run `obsidian help` to see additional developer commands including CDP and debugger controls.
     '';
-    obsidian-markdown = skillHelper.applyToText "obsidian-markdown" ''
+    obsidian-markdown = ''
       ---
       name: obsidian-markdown
       description: Create and edit Obsidian Flavored Markdown with wikilinks, embeds, callouts, properties, and other Obsidian-specific syntax. Use when working with .md files in Obsidian, or when the user mentions wikilinks, callouts, frontmatter, tags, embeds, or Obsidian notes.

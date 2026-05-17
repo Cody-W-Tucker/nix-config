@@ -1,8 +1,9 @@
 {
   imports = [
+    ./module.nix
+    ./seeded-skills.nix
     ./agent-browser
     ./business
-    ./external-overlays.nix
     ./knowledge
   ];
 }

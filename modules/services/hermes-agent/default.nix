@@ -9,46 +9,18 @@
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
   inherit (inputs.cognitive-assistant.lib.operational.toolSpecs) memory tasks;
-  caPackages = inputs.cognitive-assistant.packages.${pkgs.stdenv.hostPlatform.system} or { };
-  crystallizePackage = lib.optional (caPackages ? crystallize) caPackages.crystallize;
-
-  cognitiveAssistantSkillDirs = [
-    inputs.cognitive-assistant.lib.operational.skillsDir
-    inputs.cognitive-assistant.lib.existential.skillsDir
-  ];
-
-  cognitiveAssistantSkillNames = lib.pipe cognitiveAssistantSkillDirs [
-    (map (dir: lib.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir dir))))
-    lib.flatten
-    lib.unique
-    (lib.sort (a: b: a < b))
-  ];
-
-  cognitiveAssistantSkillList = lib.concatMapStringsSep "\n" (
-    name: "- ${name}"
-  ) cognitiveAssistantSkillNames;
-
   inherit (config.codyos.hermes-agent.locations) obsidianVault projectWorkspace projectsRoot;
-  externalSkillDirs = config.codyos.hermes-agent.skillDirs ++ cognitiveAssistantSkillDirs;
 in
 {
   imports = [
     inputs.hermes-agent.nixosModules.default
-    ./automations
     ./filesystem-access.nix
     ./hermes-mcp.nix
     ./cron-wake.nix
     ./skills
   ];
 
-  options.codyos.hermes-agent.skillDirs = lib.mkOption {
-    type = lib.types.listOf lib.types.path;
-    default = [ ];
-    description = "Category-owned skill directories exposed to Hermes as external skills.";
-  };
-
   config = {
-    codyos.hermes-agent.automations.crystallize.enable = true;
     codyos.hermes-agent.cronWake.enable = true;
 
     sops = {
@@ -83,17 +55,15 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      extraPackages =
-        (with pkgs; [
-          binutils
-          curl
-          glibc.bin
-          jq
-          libopus
-          nix
-          playwright-driver.browsers
-        ])
-        ++ crystallizePackage;
+      extraPackages = with pkgs; [
+        binutils
+        curl
+        glibc.bin
+        jq
+        libopus
+        nix
+        playwright-driver.browsers
+      ];
       environment = {
         API_SERVER_ENABLED = "true";
         API_SERVER_HOST = "127.0.0.1";
@@ -111,16 +81,9 @@ in
 
           The following skills map directly to how the user handles specific situations:
 
-          ${cognitiveAssistantSkillList}
+          ${config.codyos.hermes-agent.skills.userPatternSkillList}
 
           When alignment depends on understanding how the user thinks, acts, or prefers work to be sequenced, prioritize these skills. Consult the relevant skill or grounded memory first.
-
-          # Read-Only Skills
-
-          Skills under `~/.hermes/skills/external-overlays/` are read-only upstream snapshots. The generated `SKILL.md` acts as a wrapper.
-
-          - Do NOT edit the wrapper directly (writes will fail across rebuilds)
-          - Save durable changes in `references/hermes-local-amendments.md` for that skill instead
 
           # Environment
 
@@ -181,98 +144,6 @@ in
         checkpoints = {
           enabled = true;
           max_snapshots = 50;
-        };
-        skills = {
-          external_dirs = map toString externalSkillDirs;
-          disabled = [
-            "airtable"
-            "apple-notes"
-            "apple-reminders"
-            "architecture-diagram"
-            # "arxiv"
-            "ascii-art"
-            "ascii-video"
-            "audiocraft"
-            "baoyu-comic"
-            "baoyu-infographic"
-            "blogwatcher"
-            "claude-code"
-            "claude-design"
-            "codebase-inspection"
-            "codex"
-            "comfyui"
-            "creative-ideation"
-            "debugging-hermes-tui-commands"
-            "design-md"
-            "dogfood"
-            "dspy"
-            "excalidraw"
-            "findmy"
-            "gif-search"
-            "github-auth"
-            "github-code-review"
-            "github-issues"
-            "github-pr-workflow"
-            "github-repo-management"
-            "godmode"
-            "google-workspace"
-            "heartmula"
-            # "hermes-agent"
-            # "hermes-agent-skill-authoring"
-            "himalaya"
-            "huggingface-hub"
-            # "humanizer"
-            "imessage"
-            "jupyter-live-kernel"
-            # "kanban-orchestrator"
-            # "kanban-worker"
-            "linear"
-            "llama-cpp"
-            "llm-wiki"
-            "lm-evaluation-harness"
-            "macos-computer-use"
-            "manim-video"
-            "maps"
-            "minecraft-modpack-server"
-            "nano-pdf"
-            "native-mcp"
-            "node-inspect-debugger"
-            "notion"
-            "obliteratus"
-            "obsidian"
-            "ocr-and-documents"
-            "opencode"
-            "openhue"
-            "p5js"
-            "pixel-art"
-            "plan"
-            "pokemon-player"
-            "polymarket"
-            "popular-web-designs"
-            "powerpoint"
-            "pretext"
-            "python-debugpy"
-            "requesting-code-review"
-            "research-paper-writing"
-            "segment-anything"
-            "sketch"
-            "songsee"
-            "songwriting-and-ai-music"
-            "spike"
-            "spotify"
-            "subagent-driven-development"
-            "systematic-debugging"
-            "teams-meeting-pipeline"
-            "test-driven-development"
-            "touchdesigner-mcp"
-            "vllm"
-            "webhook-subscriptions"
-            "weights-and-biases"
-            "writing-plans"
-            "xurl"
-            # "youtube-content"
-            "yuanbao"
-          ];
         };
       };
     };

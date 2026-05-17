@@ -1,16 +1,6 @@
 {
-  inputs,
-  pkgs,
-  self,
-  ...
-}:
-
-let
-  skillHelper = import "${self}/modules/shared/skill-adaptations.nix" { inherit inputs pkgs; };
-in
-{
   programs.opencode.skills = {
-    humanizer = skillHelper.applyToText "humanizer" ''
+    humanizer = ''
       ---
       name: humanizer
       version: 2.5.1

@@ -1,14 +1,8 @@
-{
-  inputs,
-  pkgs,
-  self,
-  ...
-}:
+{ inputs, pkgs, ... }:
 
 let
-  skillHelper = import "${self}/modules/shared/skill-adaptations.nix" { inherit inputs pkgs; };
 
-  rawCrmSkills = pkgs.linkFarm "hermes-agent-crm-skills" [
+  crmSkills = pkgs.linkFarm "hermes-agent-crm-skills" [
     {
       name = "business/SKILL.md";
       path = pkgs.writeText "business-SKILL.md" ''
@@ -27,11 +21,7 @@ let
       path = "${inputs.crm-cli}/skills/SKILL.md";
     }
   ];
-  crmSkills = skillHelper.adaptSkillDir {
-    sourceDir = rawCrmSkills;
-    outputName = "hermes-agent-crm-skills-adapted";
-  };
 in
 {
-  codyos.hermes-agent.skillDirs = [ crmSkills ];
+  codyos.hermes-agent.skills.seedDirs = [ crmSkills ];
 }

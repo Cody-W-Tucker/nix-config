@@ -1,16 +1,6 @@
 {
-  inputs,
-  pkgs,
-  self,
-  ...
-}:
-
-let
-  skillHelper = import "${self}/modules/shared/skill-adaptations.nix" { inherit inputs pkgs; };
-in
-{
   programs.opencode.skills = {
-    qmd = skillHelper.applyToText "qmd" ''
+    qmd = ''
       ---
       name: qmd
       description: Search markdown knowledge bases, notes, and documentation using QMD. Use when users ask to search notes, find documents, or look up information.
