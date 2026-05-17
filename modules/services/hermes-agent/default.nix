@@ -8,7 +8,6 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
-  inherit (inputs.cognitive-assistant.lib.operational.toolSpecs) memory tasks;
   inherit (config.codyos.hermes-agent.locations) obsidianVault projectWorkspace projectsRoot;
 in
 {
