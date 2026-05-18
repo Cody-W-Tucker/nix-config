@@ -76,6 +76,7 @@ in
       enable = true;
       addToSystemPackages = true;
       extraDependencyGroups = [
+        "edge-tts"
         "messaging"
         "voice"
       ];
