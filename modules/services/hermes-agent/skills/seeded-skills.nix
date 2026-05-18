@@ -29,14 +29,13 @@ in
           rm -rf "$dest_dir"
         fi
 
-        if [ -e "$dest_dir/SKILL.md" ]; then
-          continue
+        if [ ! -e "$dest_dir/SKILL.md" ]; then
+          mkdir -p "$(dirname "$dest_dir")"
+          cp -rL "$skill_dir" "$dest_dir"
         fi
 
-        mkdir -p "$(dirname "$dest_dir")"
-        cp -rL "$skill_dir" "$dest_dir"
         chown -R ${user}:${group} "$dest_dir"
-        chmod -R u+rwX,g+rwX "$dest_dir"
+        chmod -R u+rwX,g+rX "$dest_dir"
       done
     done
   '';

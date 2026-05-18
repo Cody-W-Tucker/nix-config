@@ -52,6 +52,10 @@ let
       path = googleWorkspaceSkill "gws-calendar";
     }
     {
+      name = "gws-calendar-insert/SKILL.md";
+      path = googleWorkspaceSkill "gws-calendar-insert";
+    }
+    {
       name = "gws-sheets/SKILL.md";
       path = googleWorkspaceSkill "gws-sheets";
     }

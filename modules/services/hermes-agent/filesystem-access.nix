@@ -60,13 +60,33 @@ in
       lib.stringAfter [ "hermes-agent-setup" ]
         ''
           hermes_home="${stateDir}/.hermes"
+          hermes_env="$hermes_home/.env"
+          gws_key="${stateDir}/.config/gws/.encryption_key"
 
-          for auth_file in "$hermes_home/auth.json" "$hermes_home/auth.lock"; do
+          if [ -d "$hermes_home" ]; then
+            chown ${user}:${group} "$hermes_home"
+            chmod 2770 "$hermes_home"
+          fi
+
+          for auth_file in "$hermes_home/auth.json" "$hermes_home/auth.lock" "$hermes_home/auth.json.corrupt"; do
             if [ -e "$auth_file" ]; then
               chown ${user}:${group} "$auth_file"
               chmod 0600 "$auth_file"
             fi
           done
+
+          if [ -e "$hermes_env" ]; then
+            chown ${user}:${group} "$hermes_env"
+            chmod 0640 "$hermes_env"
+
+            # The unit now sets terminal.cwd declaratively; drop stale legacy env.
+            ${pkgs.gnused}/bin/sed -i '/^MESSAGING_CWD=/d' "$hermes_env"
+          fi
+
+          if [ -e "$gws_key" ]; then
+            chown ${user}:${group} "$gws_key"
+            chmod 0600 "$gws_key"
+          fi
         '';
 
     # Hermes keeps checkpoints in a git repo under its state dir. Ensure the
