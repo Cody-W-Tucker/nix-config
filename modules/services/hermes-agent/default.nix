@@ -75,7 +75,10 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      extraDependencyGroups = [ "messaging" ];
+      extraDependencyGroups = [
+        "messaging"
+        "voice"
+      ];
       extraPackages = with pkgs; [
         binutils
         curl
@@ -170,7 +173,14 @@ in
     };
 
     systemd.services.hermes-agent.environment = {
-      LD_LIBRARY_PATH = lib.makeLibraryPath [ pkgs.libopus ];
+      # faster-whisper's ctranslate2 CUDA path needs the NVIDIA driver libs
+      # and CUDA runtime visible at runtime; these are provided by the host,
+      # not the sealed Hermes venv.
+      LD_LIBRARY_PATH = lib.concatStringsSep ":" [
+        "/run/opengl-driver/lib"
+        "/run/current-system/sw/lib"
+        (lib.makeLibraryPath [ pkgs.libopus ])
+      ];
     };
 
     systemd.services.hermes-agent.serviceConfig = {
