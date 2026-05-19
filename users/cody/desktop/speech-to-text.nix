@@ -35,6 +35,21 @@ let
         esac
       }
 
+      find_recording_pids() {
+        for proc in /proc/[0-9]*; do
+          [ -r "$proc/cmdline" ] || continue
+
+          pid="''${proc#/proc/}"
+          cmdline="$(tr '\000' ' ' < "$proc/cmdline" 2>/dev/null || true)"
+
+          case "$cmdline" in
+            *"pw-record --channels 1 --rate 16000 --format s16 --volume 1.5 $runtime_dir/voice-recording-"*.wav*)
+              printf '%s\n' "$pid"
+              ;;
+          esac
+        done
+      }
+
       stop_pid() {
         pid="$1"
 
@@ -69,7 +84,16 @@ let
           stop_pid "$pid"
         fi
 
+        for orphan_pid in $(find_recording_pids); do
+          [ "$orphan_pid" = "$pid" ] && continue
+          stop_pid "$orphan_pid"
+        done
+
         if [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; then
+          rm -f "$pidfile"
+        fi
+
+        if [ -f "$pidfile" ] && ! is_recording_pid "$pid"; then
           rm -f "$pidfile"
         fi
       }
