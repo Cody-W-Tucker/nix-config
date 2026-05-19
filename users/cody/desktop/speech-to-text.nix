@@ -75,6 +75,7 @@ let
       }
 
       cleanup_stale_recording() {
+        mode="$1"
         pid=""
         if [ -f "$pidfile" ]; then
           pid="$(tr -d '[:space:]' < "$pidfile" 2>/dev/null || true)"
@@ -82,19 +83,21 @@ let
 
         if is_recording_pid "$pid"; then
           stop_pid "$pid"
-        fi
-
-        for orphan_pid in $(find_recording_pids); do
-          [ "$orphan_pid" = "$pid" ] && continue
-          stop_pid "$orphan_pid"
-        done
-
-        if [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; then
+        elif [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; then
           rm -f "$pidfile"
         fi
 
         if [ -f "$pidfile" ] && ! is_recording_pid "$pid"; then
           rm -f "$pidfile"
+        fi
+
+        # Full /proc scans are noticeably slower on the hot path, so only use
+        # them as a fallback when stop couldn't identify the recorder from the pidfile.
+        if [ "$mode" = stop ] && ! is_recording_pid "$pid"; then
+          for orphan_pid in $(find_recording_pids); do
+            [ "$orphan_pid" = "$pid" ] && continue
+            stop_pid "$orphan_pid"
+          done
         fi
       }
 
@@ -102,10 +105,10 @@ let
 
       case "$command" in
         start)
-          cleanup_stale_recording
+          cleanup_stale_recording start
           ;;
         stop)
-          cleanup_stale_recording
+          cleanup_stale_recording stop
           ;;
       esac
 
