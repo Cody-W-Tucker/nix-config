@@ -95,10 +95,17 @@ in
       hermes_home="${stateDir}/.hermes"
       checkpoints_store="$hermes_home/checkpoints/store"
       local_skills="$hermes_home/skills"
+      local_scripts="$hermes_home/scripts"
 
-      mkdir -p "$checkpoints_store" "$local_skills"
-      chown -R ${user}:${group} "$checkpoints_store" "$local_skills"
-      chmod -R u+rwX,g+rwX "$checkpoints_store" "$local_skills"
+      mkdir -p "$checkpoints_store" "$local_skills" "$local_scripts"
+      chown -R ${user}:${group} "$checkpoints_store" "$local_skills" "$local_scripts"
+      chmod 2770 "$local_scripts"
+      chmod -R u+rwX,g+rwX "$checkpoints_store" "$local_skills" "$local_scripts"
+
+      # Hermes cron script hooks execute files directly, so common script
+      # types need explicit execute bits even when they were created from a
+      # non-executable editor or tool.
+      ${pkgs.findutils}/bin/find "$local_scripts" -type f \( -name '*.sh' -o -name '*.py' \) -exec chmod ug+x {} +
     '';
 
     users.users.${config.services.hermes-agent.user}.extraGroups = [ "users" ];

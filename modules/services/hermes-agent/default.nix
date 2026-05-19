@@ -88,6 +88,7 @@ in
         libopus
         nix
         playwright-driver.browsers
+        python3Minimal
       ];
       environment = {
         API_SERVER_ENABLED = "true";
