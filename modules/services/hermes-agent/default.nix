@@ -80,7 +80,7 @@ in
       install -o ${user} -g ${group} -m 0640 ${soulFile} ${stateDir}/.hermes/SOUL.md
     '';
 
-    services.hermes-agent.services.hermes-agent = {
+    services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
       extraDependencyGroups = [
