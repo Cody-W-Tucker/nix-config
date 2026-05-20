@@ -137,7 +137,7 @@ in
       settings = {
         model = {
           default = "grok-4.3";
-          provider = "x-ai";
+          provider = "xai-oauth";
         };
         display.platforms = {
           discord = {
