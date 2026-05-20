@@ -13,7 +13,7 @@ let
 
         Business mode for accounting, CRM, and Google Workspace tasks.
 
-        Use the CRM, Google Workspace, task-tracking, and Actual Budget MCP tools when the work calls for them.
+        Use the CRM, Google Workspace, and task-tracking tools when the work calls for them.
       '';
     }
     {
