@@ -4,7 +4,7 @@
       # MUST BE FIRST - Environment setup
       "uwsm finalize" # Initializes WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE
 
-      "uwsm app -- feishin" # Music player
+      # "uwsm app -- feishin" # Music player
     ];
   };
 }
