@@ -22,6 +22,7 @@ in
     ./filesystem-access.nix
     ./hermes-mcp.nix
     ./cron-wake.nix
+    ./toolsets
     ./skills
   ];
 
@@ -97,7 +98,6 @@ in
         jq
         libopus
         nix
-        playwright-driver.browsers
         python3Minimal
       ];
       environment = {
@@ -161,27 +161,8 @@ in
         };
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";
-          PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers}";
         };
         web.backend = "exa";
-        toolsets = [
-          "web"
-          "search"
-          "vision"
-          "skills"
-          "browser"
-          "cronjob"
-          "messaging"
-          "file"
-          "tts"
-          "todo"
-          "memory"
-          "session_search"
-          "clarify"
-          "code_execution"
-          "delegation"
-          "kanban"
-        ];
         agent = {
           max_turns = 60;
           reasoning_effort = "medium";
