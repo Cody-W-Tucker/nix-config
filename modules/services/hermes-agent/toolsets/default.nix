@@ -1,7 +1,6 @@
 let
-  fullToolsets = [
+  apiToolsets = [
     "web"
-    "search"
     "vision"
     "skills"
     "cronjob"
@@ -17,9 +16,23 @@ let
     "kanban"
   ];
 
+  cliToolsets = [
+    "web"
+    "vision"
+    "skills"
+    "cronjob"
+    "file"
+    "todo"
+    "memory"
+    "session_search"
+    "clarify"
+    "code_execution"
+    "delegation"
+    "kanban"
+  ];
+
   minimalInteractiveToolsets = [
     "web"
-    "search"
     "vision"
     "skills"
     "file"
@@ -30,7 +43,6 @@ let
 
   minimalCronToolsets = [
     "web"
-    "search"
     "vision"
     "skills"
     "file"
@@ -44,9 +56,9 @@ in
     # the top-level toolsets key. Keep the high-trust interfaces broad and
     # the ambient/background ones narrow.
     platform_toolsets = {
-      api_server = fullToolsets;
-      cli = fullToolsets;
-      telegram = fullToolsets;
+      api_server = apiToolsets;
+      cli = cliToolsets;
+      telegram = apiToolsets;
 
       # Discord is noisy and easy to distract through. Keep it oriented
       # toward grounded research, recall, and handoff rather than broad
