@@ -71,7 +71,7 @@ in
           for auth_file in "$hermes_home/auth.json" "$hermes_home/auth.lock" "$hermes_home/auth.json.corrupt"; do
             if [ -e "$auth_file" ]; then
               chown ${user}:${group} "$auth_file"
-              chmod 0600 "$auth_file"
+              chmod 0660 "$auth_file"
             fi
           done
 
