@@ -32,6 +32,7 @@ in
       secrets = {
         "opencode-api-key" = { };
         "xai-api-key" = { };
+        "exa-api-key" = { };
         "hermes-discord-bot-token" = { };
         "hermes-discord-allowed-users" = { };
         "hermes-telegram-bot-token" = { };
@@ -41,6 +42,7 @@ in
         content = ''
           OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
           XAI_API_KEY=${config.sops.placeholder."xai-api-key"}
+          EXA_API_KEY=${config.sops.placeholder."exa-api-key"}
           DISCORD_BOT_TOKEN=${config.sops.placeholder."hermes-discord-bot-token"}
           DISCORD_ALLOWED_USERS=${config.sops.placeholder."hermes-discord-allowed-users"}
           TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
@@ -161,7 +163,25 @@ in
           DISCORD_HOME_CHANNEL = "1502095470334578779";
           PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers}";
         };
-        toolsets = [ "all" ];
+        web.backend = "exa";
+        toolsets = [
+          "web"
+          "search"
+          "vision"
+          "skills"
+          "browser"
+          "cronjob"
+          "messaging"
+          "file"
+          "tts"
+          "todo"
+          "memory"
+          "session_search"
+          "clarify"
+          "code_execution"
+          "delegation"
+          "kanban"
+        ];
         agent = {
           max_turns = 60;
           reasoning_effort = "medium";
