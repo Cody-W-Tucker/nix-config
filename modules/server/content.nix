@@ -39,8 +39,8 @@
       enable = true;
       minifluxUrl = "http://localhost:7777";
       apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
-      openaiHost = "http://aiserver:8080";
-      embedModel = "qwen3-embedding-8b";
+      openaiHost = "http://beast:8081";
+      embedModel = "qwen3-embedding-0.6b";
       autoMarkReadBelow = 4.5;
       limitUnread = 400;
       batchSize = 64;

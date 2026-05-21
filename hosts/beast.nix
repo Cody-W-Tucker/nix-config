@@ -263,6 +263,7 @@ in
       "qwen3.5-0.8b"
       "qwen3.5-4b"
       "qwen3.5-9b"
+      "qwen3-embedding-0.6b"
       "glm-ocr-q8"
     ];
     modelOverrides = {

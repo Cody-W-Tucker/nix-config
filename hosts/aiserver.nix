@@ -36,7 +36,6 @@ in
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
     inputs.nixos-hardware.nixosModules.common-cpu-amd
-    inputs.searcher.nixosModules.default
   ];
 
   # Home-manager configuration with hardware-specific settings
@@ -158,8 +157,6 @@ in
     useDHCP = lib.mkDefault true;
   };
 
-  networking.firewall.allowedTCPPorts = [ 4110 ];
-
   # Remote lockdown: prevent Syncthing from continuing file propagation on this host.
   services.syncthing.enable = lib.mkForce false;
 
@@ -185,21 +182,7 @@ in
     }
   ];
 
-  # SOPS secrets for Vane service
-  sops.secrets."exa-api-key" = { };
-  sops.secrets."opencode-api-key" = { };
-
   services = {
-    vane = {
-      enable = true;
-      exaApiKey = config.sops.secrets."exa-api-key".path;
-      openaiApiKey = config.sops.secrets."opencode-api-key".path;
-      openaiEndpoint = "https://opencode.ai/zen/v1/";
-      chatModels = [
-        "kimi-k2.5"
-      ];
-      port = 4110;
-    };
     llama-swap = {
       # Hot loading models from llama-cpp
       enable = true;

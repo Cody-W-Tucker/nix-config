@@ -74,6 +74,20 @@
       "6"
     ];
   };
+  "qwen3-embedding-0.6b" = {
+    file = "Qwen3-Embedding-0.6B-Q8_0.gguf";
+    gpuLayers = 999;
+    contextSize = 32768;
+    threads = 4;
+    batchSize = 4096;
+    ubatchSize = 2048;
+    ttl = 300;
+    extraArgs = [
+      "--embeddings"
+      "--pooling"
+      "last"
+    ];
+  };
   # GLM-OCR 0.9B - multimodal OCR model for document/image text extraction.
   "glm-ocr-f16" = {
     file = "GLM-OCR-f16.gguf";
