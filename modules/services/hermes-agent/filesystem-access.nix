@@ -66,6 +66,14 @@ in
           if [ -d "$hermes_home" ]; then
             chown ${user}:${group} "$hermes_home"
             chmod 2770 "$hermes_home"
+
+            # Older Hermes runs could leave shared state subdirectories owner-only.
+            # Normalize the top-level tree so interactive CLI users in the hermes
+            # group can traverse into HERMES_HOME and read managed files like .env.
+            ${pkgs.findutils}/bin/find "$hermes_home" -mindepth 1 -maxdepth 1 -type d \
+              -exec chown ${user}:${group} {} +
+            ${pkgs.findutils}/bin/find "$hermes_home" -mindepth 1 -maxdepth 1 -type d \
+              -exec chmod 2770 {} +
           fi
 
           for auth_file in "$hermes_home/auth.json" "$hermes_home/auth.lock" "$hermes_home/auth.json.corrupt"; do
