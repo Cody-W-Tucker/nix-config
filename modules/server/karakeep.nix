@@ -10,7 +10,7 @@
       OPENAI_API_KEY = "opencode";
       OPENAI_BASE_URL = "http://beast:8081/v1";
       INFERENCE_TEXT_MODEL = "qwen3.5-4b";
-      INFERENCE_CONTEXT_LENGTH = "65536";
+      INFERENCE_CONTEXT_LENGTH = "8192";
       INFERENCE_MAX_OUTPUT_TOKENS = "8192";
       INFERENCE_OUTPUT_SCHEMA = "structured";
       INFERENCE_IMAGE_MODEL = "glm-ocr-q8";

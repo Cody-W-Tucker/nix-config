@@ -262,16 +262,12 @@ in
     enabledModels = [
       "qwen3.5-0.8b"
       "qwen3.5-4b"
-      "qwen3.5-9b"
       "qwen3-embedding-0.6b"
       "glm-ocr-q8"
     ];
     modelOverrides = {
       # Short TTL for larger models - only used programmatically, free VRAM quickly
       "qwen3.5-4b" = {
-        ttl = 10;
-      };
-      "qwen3.5-9b" = {
         ttl = 10;
       };
       "qwen3.5-0.8b" = {

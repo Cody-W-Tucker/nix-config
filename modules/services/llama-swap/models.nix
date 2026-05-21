@@ -24,7 +24,7 @@
   "qwen3.5-4b" = {
     file = "Qwen3.5-4B-Q8_0.gguf";
     gpuLayers = 999;
-    contextSize = 65536;
+    contextSize = 8192;
     threads = 4;
     batchSize = 4096;
     ubatchSize = 4096;
