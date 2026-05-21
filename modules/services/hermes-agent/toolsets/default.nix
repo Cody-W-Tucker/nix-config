@@ -51,23 +51,29 @@ let
   ];
 in
 {
-  config.services.hermes-agent.settings = {
-    # Hermes gateway/CLI resolves active tools from platform_toolsets, not
-    # the top-level toolsets key. Keep the high-trust interfaces broad and
-    # the ambient/background ones narrow.
-    platform_toolsets = {
-      api_server = apiToolsets;
-      cli = cliToolsets;
-      telegram = apiToolsets;
+  config.services.hermes-agent = {
+    # Native Hermes web_search/web_extract with web.backend = "exa" needs the
+    # optional exa-py SDK built into the sealed venv on NixOS.
+    extraDependencyGroups = [ "exa" ];
 
-      # Discord is noisy and easy to distract through. Keep it oriented
-      # toward grounded research, recall, and handoff rather than broad
-      # execution surface.
-      discord = minimalInteractiveToolsets;
+    settings = {
+      # Hermes gateway/CLI resolves active tools from platform_toolsets, not
+      # the top-level toolsets key. Keep the high-trust interfaces broad and
+      # the ambient/background ones narrow.
+      platform_toolsets = {
+        api_server = apiToolsets;
+        cli = cliToolsets;
+        telegram = apiToolsets;
 
-      # Cron should stay narrow: enough to inspect, recall, and run bounded
-      # work, but not the whole interactive surface.
-      cron = minimalCronToolsets;
+        # Discord is noisy and easy to distract through. Keep it oriented
+        # toward grounded research, recall, and handoff rather than broad
+        # execution surface.
+        discord = minimalInteractiveToolsets;
+
+        # Cron should stay narrow: enough to inspect, recall, and run bounded
+        # work, but not the whole interactive surface.
+        cron = minimalCronToolsets;
+      };
     };
   };
 }
