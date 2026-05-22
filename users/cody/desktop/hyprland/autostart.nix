@@ -1,10 +1,10 @@
 {
-  wayland.windowManager.hyprland.settings = {
-    exec-once = [
-      # MUST BE FIRST - Environment setup
-      "uwsm finalize" # Initializes WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE
+  wayland.windowManager.hyprland.extraConfig = ''
+    -- MUST BE FIRST - Environment setup
+    hl.on("hyprland.start", function()
+      hl.exec_cmd("uwsm finalize")
 
-      # "uwsm app -- feishin" # Music player
-    ];
-  };
+      -- hl.exec_cmd("uwsm app -- feishin") -- Music player
+    end)
+  '';
 }
