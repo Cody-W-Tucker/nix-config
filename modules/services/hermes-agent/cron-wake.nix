@@ -38,7 +38,7 @@ in
         User = hermesAgent.user;
         Group = hermesAgent.group;
         WorkingDirectory = hermesAgent.workingDirectory;
-        ExecStart = "hermes cron tick";
+        ExecStart = "${lib.getExe hermesAgent.package} cron tick";
         UMask = "0007";
       };
     };
