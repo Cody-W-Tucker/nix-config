@@ -14,6 +14,21 @@ let
     projectsRoot
   ];
 
+  sharedRuntimeDirs = [
+    "checkpoints"
+    "memories"
+    "scripts"
+    "sessions"
+    "skills"
+  ];
+
+  servicePrivateFiles = [
+    ".env"
+    "auth.json"
+    "auth.json.corrupt"
+    "auth.lock"
+  ];
+
   ensurePathAccess = path: ''
     if [ -d "${path}" ]; then
       ${pkgs.acl}/bin/setfacl -m u:${config.services.hermes-agent.user}:--x /home/codyt
@@ -60,36 +75,30 @@ in
       lib.stringAfter [ "hermes-agent-setup" ]
         ''
           hermes_home="${stateDir}/.hermes"
-          hermes_env="$hermes_home/.env"
           gws_key="${stateDir}/.config/gws/.encryption_key"
 
           if [ -d "$hermes_home" ]; then
             chown ${user}:${group} "$hermes_home"
             chmod 2770 "$hermes_home"
-
-            # Older Hermes runs could leave shared state subdirectories owner-only.
-            # Normalize the top-level tree so interactive CLI users in the hermes
-            # group can traverse into HERMES_HOME and read managed files like .env.
-            ${pkgs.findutils}/bin/find "$hermes_home" -mindepth 1 -maxdepth 1 -type d \
-              -exec chown ${user}:${group} {} +
-            ${pkgs.findutils}/bin/find "$hermes_home" -mindepth 1 -maxdepth 1 -type d \
-              -exec chmod 2770 {} +
           fi
 
-          for auth_file in "$hermes_home/auth.json" "$hermes_home/auth.lock" "$hermes_home/auth.json.corrupt"; do
-            if [ -e "$auth_file" ]; then
-              chown ${user}:${group} "$auth_file"
-              chmod 0660 "$auth_file"
+          for private_file in ${lib.concatMapStringsSep " " lib.escapeShellArg servicePrivateFiles}; do
+            target="$hermes_home/$private_file"
+            if [ -e "$target" ]; then
+              chown ${user}:${group} "$target"
+
+              case "$private_file" in
+                .env)
+                  chmod 0640 "$target"
+                  # The unit now sets terminal.cwd declaratively; drop stale legacy env.
+                  ${pkgs.gnused}/bin/sed -i '/^MESSAGING_CWD=/d' "$target"
+                  ;;
+                *)
+                  chmod 0660 "$target"
+                  ;;
+              esac
             fi
           done
-
-          if [ -e "$hermes_env" ]; then
-            chown ${user}:${group} "$hermes_env"
-            chmod 0640 "$hermes_env"
-
-            # The unit now sets terminal.cwd declaratively; drop stale legacy env.
-            ${pkgs.gnused}/bin/sed -i '/^MESSAGING_CWD=/d' "$hermes_env"
-          fi
 
           if [ -e "$gws_key" ]; then
             chown ${user}:${group} "$gws_key"
@@ -102,18 +111,24 @@ in
     system.activationScripts.hermes-agent-state-access = lib.stringAfter [ "users" ] ''
       hermes_home="${stateDir}/.hermes"
       checkpoints_store="$hermes_home/checkpoints/store"
-      local_skills="$hermes_home/skills"
-      local_scripts="$hermes_home/scripts"
 
-      mkdir -p "$checkpoints_store" "$local_skills" "$local_scripts"
-      chown -R ${user}:${group} "$checkpoints_store" "$local_skills" "$local_scripts"
-      chmod 2770 "$local_scripts"
-      chmod -R u+rwX,g+rwX "$checkpoints_store" "$local_skills" "$local_scripts"
+      mkdir -p "$checkpoints_store"
+      chown -R ${user}:${group} "$checkpoints_store"
+      chmod -R u+rwX,g+rwX "$checkpoints_store"
+
+      for dir_name in ${lib.concatMapStringsSep " " lib.escapeShellArg sharedRuntimeDirs}; do
+        dir_path="$hermes_home/$dir_name"
+
+        mkdir -p "$dir_path"
+        chown -R ${user}:${group} "$dir_path"
+        chmod 2770 "$dir_path"
+        chmod -R u+rwX,g+rwX "$dir_path"
+      done
 
       # Hermes cron script hooks execute files directly, so common script
       # types need explicit execute bits even when they were created from a
       # non-executable editor or tool.
-      ${pkgs.findutils}/bin/find "$local_scripts" -type f \( -name '*.sh' -o -name '*.py' \) -exec chmod ug+x {} +
+      ${pkgs.findutils}/bin/find "$hermes_home/scripts" -type f \( -name '*.sh' -o -name '*.py' \) -exec chmod ug+x {} +
     '';
 
     users.users.${config.services.hermes-agent.user}.extraGroups = [ "users" ];

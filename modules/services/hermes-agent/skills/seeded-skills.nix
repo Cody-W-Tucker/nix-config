@@ -24,8 +24,17 @@ in
         skill_dir="$(dirname "$skill_md")"
         rel_dir="''${skill_dir#"$source_dir"/}"
         dest_dir="$local_skills_root/$rel_dir"
+        needs_reset=0
 
+        # Seeded skills must live under HERMES_HOME as normal files so Hermes
+        # can edit them. Older runs may have left symlinks back into /nix/store.
         if [ -L "$dest_dir" ] || [ -L "$dest_dir/SKILL.md" ]; then
+          needs_reset=1
+        elif [ -d "$dest_dir" ] && ${pkgs.findutils}/bin/find "$dest_dir" -type l -print -quit | ${pkgs.gnugrep}/bin/grep -q .; then
+          needs_reset=1
+        fi
+
+        if [ "$needs_reset" -eq 1 ]; then
           rm -rf "$dest_dir"
         fi
 
@@ -35,7 +44,7 @@ in
         fi
 
         chown -R ${user}:${group} "$dest_dir"
-        chmod -R u+rwX,g+rX "$dest_dir"
+        chmod -R u+rwX,g+rwX "$dest_dir"
       done
     done
   '';
