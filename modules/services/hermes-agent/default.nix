@@ -16,6 +16,41 @@ let
     workingDirectory
     ;
 
+  auxiliaryTaskNames = [
+    "vision"
+    "web_extract"
+    "compression"
+    "skills_hub"
+    "approval"
+    "mcp"
+    "title_generation"
+    "triage_specifier"
+    "kanban_decomposer"
+    "profile_describer"
+    "curator"
+  ];
+
+  strongerAuxiliaryTaskNames = [
+    "compression"
+    "triage_specifier"
+    "kanban_decomposer"
+    "profile_describer"
+    "curator"
+  ];
+
+  opencodeGoAuxiliarySettings =
+    lib.recursiveUpdate
+      (lib.genAttrs auxiliaryTaskNames (_: {
+        provider = "opencode-go";
+        model = "deepseek-v4-flash";
+      }))
+      (
+        lib.genAttrs strongerAuxiliaryTaskNames (_: {
+          provider = "opencode-go";
+          model = "kimi-k2.6";
+        })
+      );
+
   hermesManagedRuntimeFixes = pkgs.python312Packages.buildPythonPackage {
     pname = "hermes-managed-runtime-fixes";
     version = "1";
@@ -181,6 +216,7 @@ in
           max_turns = 60;
           reasoning_effort = "medium";
         };
+        auxiliary = opencodeGoAuxiliarySettings;
         memory = {
           memory_enabled = true;
           user_profile_enabled = true;
