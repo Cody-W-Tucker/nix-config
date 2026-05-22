@@ -88,6 +88,59 @@
       "last"
     ];
   };
+  # Qwen3-ASR audio transcription models for llama-server /audio/transcriptions.
+  "qwen3-asr-0.6b" = {
+    file = "Qwen3-ASR-0.6B-Q8_0.gguf";
+    mmprojFile = "mmproj-Qwen3-ASR-0.6B-Q8_0.gguf";
+    gpuLayers = 999;
+    # ASR does not need a huge context window; 8K is plenty for chunked audio
+    # and keeps the KV cache small.
+    contextSize = 8192;
+    threads = 4;
+    batchSize = 1024;
+    ubatchSize = 512;
+    ttl = 300;
+    # Use deterministic decoding for transcription. The generic chat sampler
+    # chain is slower and can loop/repeat on ASR outputs.
+    extraArgs = [
+      "--samplers"
+      "top_k"
+      "--top-k"
+      "1"
+      "--temp"
+      "0"
+    ];
+  };
+  "qwen3-asr-1.7b" = {
+    file = "Qwen3-ASR-1.7B-Q8_0.gguf";
+    mmprojFile = "mmproj-Qwen3-ASR-1.7B-Q8_0.gguf";
+    gpuLayers = 999;
+    contextSize = 8192;
+    threads = 6;
+    batchSize = 2048;
+    ubatchSize = 1024;
+    ttl = 450;
+    extraArgs = [
+      "--samplers"
+      "top_k"
+      "--top-k"
+      "1"
+      "--temp"
+      "0"
+    ];
+  };
+  # OuteTTS 0.2 is the llama.cpp-documented TTS path today.
+  # On beast this model uses `upstream.cmd` to run a tiny OpenAI-compatible wrapper
+  # around `llama-tts`, so the generated llama-server command is intentionally overridden.
+  "outetts-0.2-500m" = {
+    file = "OuteTTS-0.2-500M-Q8_0.gguf";
+    gpuLayers = 999;
+    contextSize = 8192;
+    threads = 4;
+    batchSize = 512;
+    ubatchSize = 256;
+    ttl = 300;
+  };
   # GLM-OCR 0.9B - multimodal OCR model for document/image text extraction.
   "glm-ocr-f16" = {
     file = "GLM-OCR-f16.gguf";

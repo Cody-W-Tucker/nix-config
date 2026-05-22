@@ -21,6 +21,8 @@ let
     # Use CUDA for whisper (faster than Vulkan on Nvidia)
     whispAcceleration = "cuda";
   };
+
+  llamaTtsPackage = pkgs.llama-cpp.override { cudaSupport = true; };
 in
 {
   imports = [
@@ -264,6 +266,9 @@ in
       "qwen3.5-4b"
       "qwen3-embedding-0.6b"
       "glm-ocr-q8"
+      "qwen3-asr-1.7b"
+      "qwen3-asr-0.6b"
+      "outetts-0.2-500m"
     ];
     modelOverrides = {
       # Short TTL for larger models - only used programmatically, free VRAM quickly
@@ -275,6 +280,19 @@ in
           "--parallel"
           "4"
         ];
+      };
+      "outetts-0.2-500m" = {
+        upstream = {
+          cmd = ''
+            ${pkgs.python3}/bin/python3 ${../modules/services/llama-swap/llama-tts-openai-server.py} \
+              --host 127.0.0.1 \
+              --port ''${PORT} \
+              --llama-tts ${lib.getExe' llamaTtsPackage "llama-tts"} \
+              --model /srv/llama-swap/models/OuteTTS-0.2-500M-Q8_0.gguf \
+              --vocoder /srv/llama-swap/models/WavTokenizer-Large-75-F16.gguf \
+              --model-id outetts-0.2-500m
+          '';
+        };
       };
     };
   };

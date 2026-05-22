@@ -59,8 +59,16 @@
         ENABLE_RAG_HYBRID_SEARCH = "True";
 
         # Speech to Text
-        WHISPER_MODEL = "base";
+        WHISPER_LANGUAGE = "en-US";
         WHISPER_VAD_FILTER = "True";
+        AUDIO_STT_ENGINE = "openai";
+        AUDIO_STT_MODEL = "qwen3-asr-0.6b";
+        AUDIO_STT_OPENAI_API_BASE_URL = "http://127.0.0.1:8081/v1";
+
+        AUDIO_TTS_ENGINE = "openai";
+        AUDIO_TTS_MODEL = "outetts-0.2-500m";
+        AUDIO_TTS_VOICE = "";
+        AUDIO_TTS_OPENAI_API_BASE_URL = "http://127.0.0.1:8081/v1";
       };
     };
     tika = {

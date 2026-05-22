@@ -77,11 +77,18 @@ let
           default = [ ];
           description = "Additional llama-server arguments appended to the generated command.";
         };
+
+        upstream = lib.mkOption {
+          type = settingsFormat.type;
+          default = { };
+          description = "Raw llama-swap model settings merged over the generated defaults. Use this to override `cmd` or add upstream-only fields such as `proxy`, `aliases`, or `concurrencyLimit`.";
+        };
       };
     }
   );
 
   defaultModelCatalog = import ./models.nix;
+  settingsFormat = pkgs.formats.yaml { };
 
   defaultServerPackage =
     if cfg.acceleration == "rocm" then
@@ -148,10 +155,14 @@ let
       ++ model.extraArgs
     );
 
-  renderedModels = lib.mapAttrs (_: model: {
-    cmd = mkModelCommand model;
-    inherit (model) ttl;
-  }) selectedModels;
+  renderedModels = lib.mapAttrs (
+    _: model:
+    {
+      cmd = mkModelCommand model;
+      inherit (model) ttl;
+    }
+    // model.upstream
+  ) selectedModels;
 in
 {
   options.services.llama-swap = {
@@ -256,6 +267,7 @@ in
     systemd.tmpfiles.rules = [
       "d /srv/llama-swap 0755 root root - -"
       "d ${cfg.modelDirectory} 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+      "d /srv/llama-swap/voices 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
     ];
   };
 }
