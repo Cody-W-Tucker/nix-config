@@ -140,7 +140,7 @@ in
           provider = "xai-oauth";
         };
         fallback_model = {
-          default = "kimi-k2.6";
+          model = "kimi-k2.6";
           provider = "opencode-go";
         };
         auxiliary = {
