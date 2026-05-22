@@ -5,6 +5,9 @@
   ...
 }:
 
+let
+  inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+in
 {
   imports = [
     ./agents/logging
@@ -25,7 +28,8 @@
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
-    context = ''
+    context = builtins.readFile soulFile + ''
+
       Unless otherwise stated, you are operating in a NixOS system.
 
       This is a minimal environment. Common language runtimes (python, node, etc.) are not globally available.
