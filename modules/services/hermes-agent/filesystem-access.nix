@@ -15,6 +15,7 @@ let
   ];
 
   sharedRuntimeDirs = [
+    "cron"
     "checkpoints"
     "memories"
     "scripts"
