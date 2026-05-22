@@ -17,41 +17,6 @@ let
     ;
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
 
-  auxiliaryTaskNames = [
-    "vision"
-    "web_extract"
-    "compression"
-    "skills_hub"
-    "approval"
-    "mcp"
-    "title_generation"
-    "triage_specifier"
-    "kanban_decomposer"
-    "profile_describer"
-    "curator"
-  ];
-
-  strongerAuxiliaryTaskNames = [
-    "compression"
-    "triage_specifier"
-    "kanban_decomposer"
-    "profile_describer"
-    "curator"
-  ];
-
-  opencodeGoAuxiliarySettings =
-    lib.recursiveUpdate
-      (lib.genAttrs auxiliaryTaskNames (_: {
-        provider = "opencode-go";
-        model = "deepseek-v4-flash";
-      }))
-      (
-        lib.genAttrs strongerAuxiliaryTaskNames (_: {
-          provider = "opencode-go";
-          model = "kimi-k2.6";
-        })
-      );
-
 in
 {
   imports = [
@@ -124,11 +89,6 @@ in
       enable = true;
       addToSystemPackages = true;
       package = llmPkgs.hermes-agent;
-      extraDependencyGroups = [
-        "edge-tts"
-        "messaging"
-        "voice"
-      ];
       extraPackages = with pkgs; [
         binutils
         curl
@@ -179,6 +139,56 @@ in
           default = "grok-4.3";
           provider = "xai-oauth";
         };
+        fallback_model = {
+          default = "kimi-k2.6";
+          provider = "opencode-go";
+        };
+        auxiliary = {
+          vision = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          web_extract = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          compression = {
+            provider = "opencode-go";
+            model = "kimi-k2.6";
+          };
+          skills_hub = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          approval = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          mcp = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          title_generation = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          triage_specifier = {
+            provider = "opencode-go";
+            model = "kimi-k2.6";
+          };
+          kanban_decomposer = {
+            provider = "opencode-go";
+            model = "kimi-k2.6";
+          };
+          profile_describer = {
+            provider = "opencode-go";
+            model = "kimi-k2.6";
+          };
+          curator = {
+            provider = "opencode-go";
+            model = "kimi-k2.6";
+          };
+        };
         display.platforms = {
           discord = {
             tool_progress = "off";
@@ -205,7 +215,6 @@ in
           max_turns = 60;
           reasoning_effort = "medium";
         };
-        auxiliary = opencodeGoAuxiliarySettings;
         memory = {
           memory_enabled = true;
           user_profile_enabled = true;
