@@ -42,9 +42,6 @@ let
     "${mainMod} SHIFT, Tab, exec, web-search"
     "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n \"{result}\" | wl-copy'"
 
-    # Task Management
-    "${mainMod}, T, exec, ${terminal} --class taskwarrior-tui -e taskwarrior-tui"
-
     # Screenshots
     "${mainMod}, S, exec, screenshot-ocr"
     ''${mainMod} SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
