@@ -58,11 +58,22 @@ let
     dontUnpack = true;
 
     installPhase = ''
-      site_packages="$out/${pkgs.python312.sitePackages}"
-      mkdir -p "$site_packages"
-      install -m 0644 ${./sitecustomize.py} "$site_packages/sitecustomize.py"
+            site_packages="$out/${pkgs.python312.sitePackages}"
+            mkdir -p "$site_packages"
+            install -m 0644 ${./hermes_managed_runtime.py} "$site_packages/hermes_managed_runtime.py"
+            cat > "$site_packages/zz-hermes-managed-runtime.pth" <<'EOF'
+      import hermes_managed_runtime; hermes_managed_runtime.apply()
+      EOF
     '';
   };
+
+  hermesManagedPackage = inputs.hermes-agent.packages.${pkgs.system}.default.overrideAttrs (old: {
+    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.makeWrapper ];
+    postFixup = (old.postFixup or "") + ''
+      wrapProgram "$out/bin/hermes" \
+        --prefix PYTHONPATH : "${hermesManagedRuntimeFixes}/${pkgs.python312.sitePackages}"
+    '';
+  });
 in
 {
   imports = [
@@ -134,6 +145,7 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
+      package = hermesManagedPackage;
       extraDependencyGroups = [
         "edge-tts"
         "messaging"

@@ -8,6 +8,7 @@
 let
   inherit (config.codyos.hermes-agent.locations) obsidianVault projectsRoot;
   inherit (config.services.hermes-agent) group stateDir user;
+  interactiveUser = "codyt";
 
   managedPaths = [
     obsidianVault
@@ -117,6 +118,11 @@ in
       chown -R ${user}:${group} "$checkpoints_store"
       chmod -R u+rwX,g+rwX "$checkpoints_store"
 
+      if [ -d "$hermes_home" ]; then
+        ${pkgs.acl}/bin/setfacl -m u:${interactiveUser}:rwx "$hermes_home"
+        ${pkgs.acl}/bin/setfacl -m d:u:${interactiveUser}:rwx "$hermes_home"
+      fi
+
       for dir_name in ${lib.concatMapStringsSep " " lib.escapeShellArg sharedRuntimeDirs}; do
         dir_path="$hermes_home/$dir_name"
 
@@ -124,6 +130,10 @@ in
         chown -R ${user}:${group} "$dir_path"
         chmod 2770 "$dir_path"
         chmod -R u+rwX,g+rwX "$dir_path"
+        ${pkgs.acl}/bin/setfacl -R -m u:${interactiveUser}:rwX "$dir_path"
+        ${pkgs.acl}/bin/setfacl -R -m m::rwx "$dir_path"
+        ${pkgs.acl}/bin/setfacl -m d:u:${interactiveUser}:rwx "$dir_path"
+        ${pkgs.acl}/bin/setfacl -m d:m::rwx "$dir_path"
       done
 
       # Hermes cron script hooks execute files directly, so common script
