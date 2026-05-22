@@ -22,6 +22,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "lua";
     package = null; # null to use NixOS module
     portalPackage = null; # null to use NixOS module
     systemd.enable = false; # Since using UWSM, disable systemd

@@ -13,10 +13,19 @@ let
   hardwareConfig = {
     # Top monitor should be DP-1
     workspace = [
-      "1, monitor:DP-1, default:true"
+      {
+        workspace = "1";
+        monitor = "DP-1";
+        default = true;
+      }
     ];
     monitor = [
-      "DP-1,3840x2160@240,0x0,1.5"
+      {
+        output = "DP-1";
+        mode = "3840x2160@240";
+        position = "0x0";
+        scale = 1.5;
+      }
     ];
     # Never suspend
     hypridle.suspendTimeout = null;
