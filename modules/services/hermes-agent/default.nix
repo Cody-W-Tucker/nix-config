@@ -15,6 +15,19 @@ let
     user
     workingDirectory
     ;
+
+  hermesManagedRuntimeFixes = pkgs.python312Packages.buildPythonPackage {
+    pname = "hermes-managed-runtime-fixes";
+    version = "1";
+    format = "other";
+    dontUnpack = true;
+
+    installPhase = ''
+      site_packages="$out/${pkgs.python312.sitePackages}"
+      mkdir -p "$site_packages"
+      install -m 0644 ${./sitecustomize.py} "$site_packages/sitecustomize.py"
+    '';
+  };
 in
 {
   imports = [
@@ -100,6 +113,7 @@ in
         nix
         python3Minimal
       ];
+      extraPythonPackages = [ hermesManagedRuntimeFixes ];
       environment = {
         API_SERVER_ENABLED = "true";
         API_SERVER_HOST = "127.0.0.1";
