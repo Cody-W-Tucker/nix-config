@@ -59,7 +59,8 @@
         ENABLE_RAG_HYBRID_SEARCH = "True";
 
         # Speech to Text
-        WHISPER_LANGUAGE = "en-US";
+        WHISPER_MODEL = "medium";
+        WHISPER_LANGUAGE = "en";
         WHISPER_VAD_FILTER = "True";
         AUDIO_STT_ENGINE = "openai";
         AUDIO_STT_MODEL = "qwen3-asr-0.6b";
