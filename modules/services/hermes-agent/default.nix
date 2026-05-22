@@ -15,6 +15,7 @@ let
     user
     workingDirectory
     ;
+  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
 
   auxiliaryTaskNames = [
     "vision"
@@ -51,29 +52,6 @@ let
         })
       );
 
-  hermesManagedRuntimeFixes = pkgs.python312Packages.buildPythonPackage {
-    pname = "hermes-managed-runtime-fixes";
-    version = "1";
-    format = "other";
-    dontUnpack = true;
-
-    installPhase = ''
-            site_packages="$out/${pkgs.python312.sitePackages}"
-            mkdir -p "$site_packages"
-            install -m 0644 ${./hermes_managed_runtime.py} "$site_packages/hermes_managed_runtime.py"
-            cat > "$site_packages/zz-hermes-managed-runtime.pth" <<'EOF'
-      import hermes_managed_runtime; hermes_managed_runtime.apply()
-      EOF
-    '';
-  };
-
-  hermesManagedPackage = inputs.hermes-agent.packages.${pkgs.system}.default.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.makeWrapper ];
-    postFixup = (old.postFixup or "") + ''
-      wrapProgram "$out/bin/hermes" \
-        --prefix PYTHONPATH : "${hermesManagedRuntimeFixes}/${pkgs.python312.sitePackages}"
-    '';
-  });
 in
 {
   imports = [
@@ -145,7 +123,7 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      package = hermesManagedPackage;
+      package = llmPkgs.hermes-agent;
       extraDependencyGroups = [
         "edge-tts"
         "messaging"
@@ -160,7 +138,6 @@ in
         nix
         python3Minimal
       ];
-      extraPythonPackages = [ hermesManagedRuntimeFixes ];
       environment = {
         API_SERVER_ENABLED = "true";
         API_SERVER_HOST = "127.0.0.1";
