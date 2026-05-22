@@ -7,6 +7,18 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+  userPatternSkillNames =
+    lib.pipe
+      [
+        inputs.cognitive-assistant.lib.operational.skillNames
+        inputs.cognitive-assistant.lib.existential.skillNames
+      ]
+      [
+        lib.flatten
+        lib.unique
+        (lib.sort (a: b: a < b))
+      ];
+  userPatternSkillList = lib.concatMapStringsSep "\n" (name: "- ${name}") userPatternSkillNames;
 in
 {
   imports = [
@@ -29,6 +41,14 @@ in
     enable = true;
     enableMcpIntegration = true;
     context = builtins.readFile soulFile + ''
+
+      # User-Pattern Skills
+
+      The following skills map directly to how the user handles specific situations:
+
+      ${userPatternSkillList}
+
+      When alignment depends on understanding how the user thinks, acts, or prefers work to be sequenced, prioritize these skills. Consult the relevant skill first.
 
       Unless otherwise stated, you are operating in a NixOS system.
 
