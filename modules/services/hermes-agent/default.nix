@@ -143,10 +143,6 @@ in
             provider = "opencode-go";
             model = "deepseek-v4-flash";
           };
-          web_extract = {
-            provider = "opencode-go";
-            model = "deepseek-v4-flash";
-          };
           approval = {
             provider = "opencode-go";
             model = "deepseek-v4-flash";
@@ -197,7 +193,7 @@ in
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";
         };
-        web.provider = "exa";
+        web.backend = "exa";
         agent = {
           max_turns = 60;
           reasoning_effort = "medium";
