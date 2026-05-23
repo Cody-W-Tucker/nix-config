@@ -1,11 +1,13 @@
 {
   inputs,
   pkgs,
+  config,
   hardwareConfig ? { },
   ...
 }:
 
 let
+  sharedFasterWhisperCache = "/mnt/work/cache/ai/faster-whisper";
   whispAwaySafe = pkgs.writeShellApplication {
     name = "whisp-away-safe";
     runtimeInputs = [
@@ -122,13 +124,16 @@ in
 
   services.whisp-away = {
     enable = hardwareConfig.enableWhisp or true;
-    defaultModel = "small.en";
-    defaultBackend = "whisper-cpp";
+    defaultModel = "medium.en";
+    defaultBackend = "faster-whisper";
     # Use acceleration from hardware config, fallback to CPU for fast builds
     accelerationType = hardwareConfig.whispAcceleration or "cpu";
     useClipboard = false;
     useCrane = false;
   };
+
+  home.file.".cache/faster-whisper".source =
+    config.lib.file.mkOutOfStoreSymlink sharedFasterWhisperCache;
 
   home.packages = [ whispAwaySafe ];
 }

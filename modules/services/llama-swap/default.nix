@@ -14,8 +14,9 @@ let
     {
       options = {
         file = lib.mkOption {
-          type = lib.types.str;
-          description = "GGUF file name inside the llama-swap model directory.";
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "GGUF file name inside the llama-swap model directory. Leave null when `upstream.cmd` fully replaces the generated llama-server command.";
         };
 
         alias = lib.mkOption {
@@ -117,6 +118,11 @@ let
     name: _: builtins.elem name cfg.enabledModels
   ) resolvedModelCatalog;
 
+  modelsMissingFileAndCmd = lib.mapAttrsToList (
+    name: model: lib.optional (model.file == null && !(model.upstream ? cmd)) name
+  ) selectedModels;
+  invalidGeneratedModels = lib.flatten modelsMissingFileAndCmd;
+
   llamaServer = lib.getExe' cfg.serverPackage "llama-server";
 
   mkModelCommand =
@@ -157,8 +163,10 @@ let
 
   renderedModels = lib.mapAttrs (
     _: model:
-    {
+    (lib.optionalAttrs (!(model.upstream ? cmd)) {
       cmd = mkModelCommand model;
+    })
+    // {
       inherit (model) ttl;
     }
     // model.upstream
@@ -241,6 +249,10 @@ in
       {
         assertion = unknownPreloads == [ ];
         message = "Preloaded llama-swap models must also be enabled: ${lib.concatStringsSep ", " unknownPreloads}";
+      }
+      {
+        assertion = invalidGeneratedModels == [ ];
+        message = "llama-swap models without `file` must provide `upstream.cmd`: ${lib.concatStringsSep ", " invalidGeneratedModels}";
       }
     ];
 

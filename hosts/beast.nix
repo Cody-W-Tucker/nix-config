@@ -23,6 +23,23 @@ let
   };
 
   llamaTtsPackage = pkgs.llama-cpp.override { cudaSupport = true; };
+  # Keep the faster-whisper weights on the workspace volume so Open WebUI STT
+  # and whisp-away reuse one model download.
+  sharedFasterWhisperCache = "/mnt/work/cache/ai/faster-whisper";
+  llamaAudioCompatPython = pkgs.python313.withPackages (
+    ps: with ps; [
+      accelerate
+      datasets
+      fastapi
+      faster-whisper
+      python-multipart
+      sentencepiece
+      soundfile
+      torch
+      transformers
+      uvicorn
+    ]
+  );
 in
 {
   imports = [
@@ -217,6 +234,8 @@ in
     "d /mnt/work/vm 0755 codyt users - -"
     "d /mnt/work/cache 0755 codyt users - -"
     "d /mnt/work/media 0755 codyt users - -"
+    "d /mnt/work/cache/ai 0755 codyt users - -"
+    "d ${sharedFasterWhisperCache} 0755 codyt users - -"
   ];
 
   services.btrfs.autoScrub = {
@@ -261,6 +280,16 @@ in
     port = 8081;
     modelOwner = "codyt";
     modelGroup = "users";
+    serviceEnvironment = {
+      # Wrapper processes still need a writable private cache for other
+      # Hugging Face assets such as SpeechT5 TTS files.
+      HF_HOME = "/var/cache/llama-swap/huggingface";
+      XDG_CACHE_HOME = "/var/cache/llama-swap";
+      LD_LIBRARY_PATH = lib.concatStringsSep ":" [
+        "/run/opengl-driver/lib"
+        "/run/current-system/sw/lib"
+      ];
+    };
     enabledModels = [
       "qwen3.5-0.8b"
       "qwen3.5-4b"
@@ -269,6 +298,8 @@ in
       "qwen3-asr-1.7b"
       "qwen3-asr-0.6b"
       "outetts-0.2-500m"
+      "whisper-medium"
+      "transformers-speecht5"
     ];
     modelOverrides = {
       # Short TTL for larger models - only used programmatically, free VRAM quickly
@@ -294,7 +325,42 @@ in
           '';
         };
       };
+      "whisper-medium" = {
+        upstream = {
+          cmd = ''
+            ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/faster-whisper-openai-server.py} \
+              --host 127.0.0.1 \
+              --port ''${PORT} \
+              --model medium.en \
+              --model-id whisper-medium \
+              --device cuda \
+              --compute-type int8 \
+              --download-root ${sharedFasterWhisperCache} \
+              --language en \
+              --vad-filter
+          '';
+        };
+      };
+      "transformers-speecht5" = {
+        upstream = {
+          cmd = ''
+            ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/transformers-tts-openai-server.py} \
+              --host 127.0.0.1 \
+              --port ''${PORT} \
+              --model-id transformers-speecht5 \
+              --device cuda
+          '';
+        };
+      };
     };
+  };
+
+  systemd.services.llama-swap.serviceConfig = {
+    CacheDirectory = "llama-swap";
+    DynamicUser = lib.mkForce false;
+    User = "codyt";
+    Group = "users";
+    ReadWritePaths = lib.mkAfter [ sharedFasterWhisperCache ];
   };
 
   services.fluent-bit.settings.pipeline.inputs = [

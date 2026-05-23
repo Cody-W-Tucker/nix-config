@@ -141,6 +141,14 @@
     ubatchSize = 256;
     ttl = 300;
   };
+  # Wrapper-backed audio models can omit `file` because beast replaces the
+  # generated llama-server command with an OpenAI-compatible helper process.
+  "whisper-medium" = {
+    ttl = 300;
+  };
+  "transformers-speecht5" = {
+    ttl = 300;
+  };
   # GLM-OCR 0.9B - multimodal OCR model for document/image text extraction.
   "glm-ocr-f16" = {
     file = "GLM-OCR-f16.gguf";
