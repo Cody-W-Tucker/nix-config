@@ -1,6 +1,7 @@
 let
   apiToolsets = [
     "web"
+    "search"
     "vision"
     "skills"
     "cronjob"
@@ -18,6 +19,7 @@ let
 
   cliToolsets = [
     "web"
+    "search"
     "vision"
     "skills"
     "cronjob"
@@ -33,6 +35,7 @@ let
 
   minimalInteractiveToolsets = [
     "web"
+    "search"
     "vision"
     "skills"
     "file"
@@ -43,6 +46,7 @@ let
 
   minimalCronToolsets = [
     "web"
+    "search"
     "vision"
     "skills"
     "file"
