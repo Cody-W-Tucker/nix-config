@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  pkgs,
   ...
 }:
 
@@ -21,13 +22,90 @@ let
   cognitiveAssistantSkillList = lib.concatMapStringsSep "\n" (
     name: "- ${name}"
   ) cognitiveAssistantSkillNames;
+
+  operationalSkillNames = lib.attrNames (
+    lib.filterAttrs (_: type: type == "directory") (
+      builtins.readDir inputs.cognitive-assistant.lib.operational.skillsDir
+    )
+  );
+
+  existentialSkillNames = lib.attrNames (
+    lib.filterAttrs (_: type: type == "directory") (
+      builtins.readDir inputs.cognitive-assistant.lib.existential.skillsDir
+    )
+  );
+
+  categorizedSkillLinks =
+    category: root: names:
+    map (name: {
+      name = "${category}/${name}/SKILL.md";
+      path = "${root}/${name}/SKILL.md";
+    }) names;
+
+  operationalSkills = pkgs.linkFarm "hermes-agent-operational-skills" (
+    categorizedSkillLinks "operational" inputs.cognitive-assistant.lib.operational.skillsDir
+      operationalSkillNames
+  );
+
+  existentialSkills = pkgs.linkFarm "hermes-agent-existential-skills" (
+    categorizedSkillLinks "existential" inputs.cognitive-assistant.lib.existential.skillsDir
+      existentialSkillNames
+  );
+
+  cognitiveAssistantFlatSkillDirs = operationalSkillNames ++ existentialSkillNames;
 in
 {
   options.codyos.hermes-agent.skills = {
+    skillPacks = lib.mkOption {
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            name = lib.mkOption {
+              type = lib.types.str;
+              description = "Human-readable name for this Hermes skill pack.";
+            };
+
+            root = lib.mkOption {
+              type = lib.types.path;
+              description = "Root directory containing Hermes-style skill directories.";
+            };
+
+            mode = lib.mkOption {
+              type = lib.types.enum [
+                "mutable"
+                "managed"
+              ];
+              default = "mutable";
+              description = ''
+                How the pack is copied into Hermes' local skill tree.
+
+                mutable: copy only when the local skill is absent or malformed; local agent edits survive.
+                managed: replace the local skill from the pack on each activation; Nix is source of truth.
+              '';
+            };
+
+            staleDirs = lib.mkOption {
+              type = lib.types.listOf lib.types.str;
+              default = [ ];
+              description = "Relative local skill directories to remove before seeding this pack.";
+            };
+          };
+        }
+      );
+      default = [ ];
+      description = "Declarative Hermes skill packs to seed into the mutable local skills tree.";
+    };
+
     seedDirs = lib.mkOption {
       type = lib.types.listOf lib.types.path;
       default = [ ];
-      description = "Skill directories to seed into Hermes' mutable local skills tree.";
+      description = "Legacy mutable skill directories to seed into Hermes' local skills tree.";
+    };
+
+    staleDirs = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Relative local skill directories to remove before skill seeding.";
     };
 
     userPatternSkillList = lib.mkOption {
@@ -39,9 +117,37 @@ in
 
   config = {
     codyos.hermes-agent.skills = {
-      seedDirs = cognitiveAssistantSkillDirs;
+      skillPacks = [
+        {
+          name = "cognitive-assistant-operational";
+          root = operationalSkills;
+          mode = "managed";
+          staleDirs = operationalSkillNames;
+        }
+        {
+          name = "cognitive-assistant-existential";
+          root = existentialSkills;
+          mode = "managed";
+          staleDirs = existentialSkillNames;
+        }
+      ];
+      staleDirs = cognitiveAssistantFlatSkillDirs;
       userPatternSkillList = cognitiveAssistantSkillList;
     };
+
+    # A malformed local skill directory without SKILL.md shadows the bundled
+    # skill of the same name. This happened with hermes-agent: only references/
+    # existed under the local tree, so the enabled bundled skill could not load.
+    system.activationScripts.hermes-agent-clean-malformed-skills = lib.stringAfter [ "users" ] ''
+      local_skills_root="${config.services.hermes-agent.stateDir}/.hermes/skills"
+
+      for rel_dir in autonomous-ai-agents/hermes-agent; do
+        skill_dir="$local_skills_root/$rel_dir"
+        if [ -d "$skill_dir" ] && [ ! -e "$skill_dir/SKILL.md" ]; then
+          rm -rf "$skill_dir"
+        fi
+      done
+    '';
 
     services.hermes-agent.settings.skills.disabled = [
       "airtable"

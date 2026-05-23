@@ -36,51 +36,70 @@ let
 
   googleWorkspaceSkills = pkgs.linkFarm "hermes-agent-google-workspace-skills" [
     {
-      name = "gws-shared/SKILL.md";
+      name = "tools/gws-shared/SKILL.md";
       path = googleWorkspaceSkill "gws-shared";
     }
     {
-      name = "gws-drive/SKILL.md";
+      name = "tools/gws-drive/SKILL.md";
       path = googleWorkspaceSkill "gws-drive";
     }
     {
-      name = "gws-gmail/SKILL.md";
+      name = "tools/gws-gmail/SKILL.md";
       path = googleWorkspaceSkill "gws-gmail";
     }
     {
-      name = "gws-calendar/SKILL.md";
+      name = "tools/gws-calendar/SKILL.md";
       path = googleWorkspaceSkill "gws-calendar";
     }
     {
-      name = "gws-calendar-insert/SKILL.md";
+      name = "tools/gws-calendar-insert/SKILL.md";
       path = googleWorkspaceSkill "gws-calendar-insert";
     }
     {
-      name = "gws-sheets/SKILL.md";
+      name = "tools/gws-sheets/SKILL.md";
       path = googleWorkspaceSkill "gws-sheets";
     }
     {
-      name = "gws-tasks/SKILL.md";
+      name = "tools/gws-tasks/SKILL.md";
       path = googleWorkspaceSkill "gws-tasks";
     }
     {
-      name = "gws-drive-upload/SKILL.md";
+      name = "tools/gws-drive-upload/SKILL.md";
       path = googleWorkspaceSkill "gws-drive-upload";
     }
     {
-      name = "gws-gmail-triage/SKILL.md";
+      name = "tools/gws-gmail-triage/SKILL.md";
       path = gmailTriageSkill;
     }
     {
-      name = "gws-calendar-agenda/SKILL.md";
+      name = "tools/gws-calendar-agenda/SKILL.md";
       path = googleWorkspaceSkill "gws-calendar-agenda";
     }
     {
-      name = "gws-workflow-meeting-prep/SKILL.md";
+      name = "tools/gws-workflow-meeting-prep/SKILL.md";
       path = googleWorkspaceSkill "gws-workflow-meeting-prep";
     }
   ];
 in
 {
-  codyos.hermes-agent.skills.seedDirs = [ googleWorkspaceSkills ];
+  codyos.hermes-agent.skills.skillPacks = [
+    {
+      name = "google-workspace-tools";
+      root = googleWorkspaceSkills;
+      mode = "managed";
+      staleDirs = [
+        "gws-calendar"
+        "gws-calendar-agenda"
+        "gws-calendar-insert"
+        "gws-drive"
+        "gws-drive-upload"
+        "gws-gmail"
+        "gws-gmail-triage"
+        "gws-shared"
+        "gws-sheets"
+        "gws-tasks"
+        "gws-workflow-meeting-prep"
+      ];
+    }
+  ];
 }
