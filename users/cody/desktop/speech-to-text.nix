@@ -109,9 +109,6 @@ let
         start)
           cleanup_stale_recording start
           ;;
-        stop)
-          cleanup_stale_recording stop
-          ;;
       esac
 
       exec whisp-away "$@"
