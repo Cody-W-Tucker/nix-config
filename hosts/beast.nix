@@ -301,6 +301,10 @@ in
       "whisper-medium"
       "transformers-speecht5"
     ];
+    preloadModels = [
+      "whisper-medium"
+      "transformers-speecht5"
+    ];
     modelOverrides = {
       # Short TTL for larger models - only used programmatically, free VRAM quickly
       "qwen3.5-4b" = {
@@ -326,6 +330,7 @@ in
         };
       };
       "whisper-medium" = {
+        ttl = 1800;
         upstream = {
           cmd = ''
             ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/faster-whisper-openai-server.py} \
@@ -341,6 +346,7 @@ in
         };
       };
       "transformers-speecht5" = {
+        ttl = 1800;
         upstream = {
           cmd = ''
             ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/transformers-tts-openai-server.py} \
