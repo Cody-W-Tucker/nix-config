@@ -17,6 +17,20 @@ in
 
     mkdir -p "$local_skills_root"
 
+    # Hermes resolves local skills from category/skill directories. If a partial
+    # directory exists without SKILL.md, it can shadow the real packaged skill.
+    for category_dir in "$local_skills_root"/*; do
+      [ -d "$category_dir" ] || continue
+
+      for skill_dir in "$category_dir"/*; do
+        [ -d "$skill_dir" ] || continue
+
+        if [ ! -e "$skill_dir/SKILL.md" ]; then
+          rm -rf "$skill_dir"
+        fi
+      done
+    done
+
     for source_dir in ${seedDirsShell}; do
       [ -d "$source_dir" ] || continue
 

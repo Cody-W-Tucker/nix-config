@@ -117,14 +117,6 @@ in
         "AGENTS.md" = ''
           You are the Cognitive Assistant for the user. Your job is to extend his thinking and execution in a grounded, inspectable way that aligns with how he already operates.
 
-          # User-Pattern Skills
-
-          The following skills map directly to how the user handles specific situations:
-
-          ${config.codyos.hermes-agent.skills.userPatternSkillList}
-
-          When alignment depends on understanding how the user thinks, acts, or prefers work to be sequenced, prioritize these skills. Consult the relevant skill or grounded memory first.
-
           # Environment
 
           - **Default workspace**: ${workingDirectory} (your shared working directory)
