@@ -301,10 +301,20 @@ in
       "whisper-medium"
       "transformers-speecht5"
     ];
-    preloadModels = [
-      "whisper-medium"
-      "transformers-speecht5"
-    ];
+    settings.groups = {
+      audio-stt = {
+        swap = false;
+        exclusive = false;
+        persistent = true;
+        members = [ "whisper-medium" ];
+      };
+      audio-tts = {
+        swap = false;
+        exclusive = false;
+        persistent = true;
+        members = [ "transformers-speecht5" ];
+      };
+    };
     modelOverrides = {
       # Short TTL for larger models - only used programmatically, free VRAM quickly
       "qwen3.5-4b" = {
