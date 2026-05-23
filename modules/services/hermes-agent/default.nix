@@ -131,12 +131,12 @@ in
       };
       settings = {
         model = {
-          default = "gpt-5.5";
-          provider = "openai-codex";
+          default = "grok-4.3";
+          provider = "xai-oauth";
         };
         fallback_model = {
-          model = "grok-4.3";
-          provider = "xai-oauth";
+          model = "kimi-k2.6";
+          provider = "opencode-go";
         };
         auxiliary = {
           vision = {
@@ -144,14 +144,6 @@ in
             model = "deepseek-v4-flash";
           };
           web_extract = {
-            provider = "opencode-go";
-            model = "deepseek-v4-flash";
-          };
-          compression = {
-            provider = "opencode-go";
-            model = "kimi-k2.6";
-          };
-          skills_hub = {
             provider = "opencode-go";
             model = "deepseek-v4-flash";
           };
