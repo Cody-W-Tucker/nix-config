@@ -6,9 +6,10 @@
 }:
 
 let
-  inherit (config.codyos.hermes-agent.locations) obsidianVault projectsRoot;
+  inherit (config.codyos.hermes-agent.locations) nixosConfigRoot obsidianVault projectsRoot;
   inherit (config.services.hermes-agent) group stateDir user;
   managedPaths = [
+    nixosConfigRoot
     obsidianVault
     projectsRoot
   ];
@@ -49,6 +50,12 @@ in
       type = lib.types.str;
       default = "/home/codyt/Knowledge/Personal";
       description = "Obsidian vault path exposed to Hermes.";
+    };
+
+    nixosConfigRoot = lib.mkOption {
+      type = lib.types.str;
+      default = "/etc/nixos";
+      description = "NixOS config repo path exposed to Hermes.";
     };
 
     projectsRoot = lib.mkOption {

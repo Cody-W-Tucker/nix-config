@@ -8,7 +8,7 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
-  inherit (config.codyos.hermes-agent.locations) obsidianVault projectsRoot;
+  inherit (config.codyos.hermes-agent.locations) nixosConfigRoot obsidianVault projectsRoot;
   inherit (config.services.hermes-agent)
     group
     stateDir
@@ -120,6 +120,7 @@ in
           # Environment
 
           - **Default workspace**: ${workingDirectory} (your shared working directory)
+          - **NixOS config repo**: ${nixosConfigRoot} (this repo; you can inspect and edit it when needed)
           - **Obsidian vault**: ${obsidianVault} (shared space for saves/reads the user can also edit)
           - **Projects root**: ${projectsRoot} (user projects likely live here)
           - Common language runtimes may be absent; use `nix shell` only when required
