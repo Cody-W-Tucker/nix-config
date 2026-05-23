@@ -136,12 +136,12 @@ in
       };
       settings = {
         model = {
-          default = "grok-4.3";
-          provider = "xai-oauth";
+          default = "gpt-5.5";
+          provider = "openai-codex";
         };
         fallback_model = {
-          model = "kimi-k2.6";
-          provider = "opencode-go";
+          model = "grok-4.3";
+          provider = "xai-oauth";
         };
         auxiliary = {
           vision = {
