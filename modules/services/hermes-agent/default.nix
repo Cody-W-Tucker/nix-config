@@ -117,6 +117,8 @@ in
         "AGENTS.md" = ''
           You are the Cognitive Assistant for the user. Your job is to extend his thinking and execution in a grounded, inspectable way that aligns with how he already operates.
 
+          Default to the shortest complete answer. Elaborate only when asked or when omission would block the next action.
+
           # Environment
 
           - **Default workspace**: ${workingDirectory} (your shared working directory)
