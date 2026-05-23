@@ -52,7 +52,6 @@ let
       existentialSkillNames
   );
 
-  cognitiveAssistantFlatSkillDirs = operationalSkillNames ++ existentialSkillNames;
 in
 {
   options.codyos.hermes-agent.skills = {
@@ -84,11 +83,6 @@ in
               '';
             };
 
-            staleDirs = lib.mkOption {
-              type = lib.types.listOf lib.types.str;
-              default = [ ];
-              description = "Relative local skill directories to remove before seeding this pack.";
-            };
           };
         }
       );
@@ -100,12 +94,6 @@ in
       type = lib.types.listOf lib.types.path;
       default = [ ];
       description = "Legacy mutable skill directories to seed into Hermes' local skills tree.";
-    };
-
-    staleDirs = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = "Relative local skill directories to remove before skill seeding.";
     };
 
     userPatternSkillList = lib.mkOption {
@@ -122,16 +110,13 @@ in
           name = "cognitive-assistant-operational";
           root = operationalSkills;
           mode = "managed";
-          staleDirs = operationalSkillNames;
         }
         {
           name = "cognitive-assistant-existential";
           root = existentialSkills;
           mode = "managed";
-          staleDirs = existentialSkillNames;
         }
       ];
-      staleDirs = cognitiveAssistantFlatSkillDirs;
       userPatternSkillList = cognitiveAssistantSkillList;
     };
 

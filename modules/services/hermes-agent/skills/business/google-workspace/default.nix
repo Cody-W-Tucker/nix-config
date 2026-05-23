@@ -87,19 +87,6 @@ in
       name = "google-workspace-tools";
       root = googleWorkspaceSkills;
       mode = "managed";
-      staleDirs = [
-        "gws-calendar"
-        "gws-calendar-agenda"
-        "gws-calendar-insert"
-        "gws-drive"
-        "gws-drive-upload"
-        "gws-gmail"
-        "gws-gmail-triage"
-        "gws-shared"
-        "gws-sheets"
-        "gws-tasks"
-        "gws-workflow-meeting-prep"
-      ];
     }
   ];
 }

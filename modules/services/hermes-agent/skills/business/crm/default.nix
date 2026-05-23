@@ -15,7 +15,6 @@ in
       name = "crm-tools";
       root = crmSkills;
       mode = "managed";
-      staleDirs = [ "crm-cli" ];
     }
   ];
 }

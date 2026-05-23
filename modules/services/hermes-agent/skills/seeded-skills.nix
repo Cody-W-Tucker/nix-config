@@ -13,7 +13,6 @@ let
     name = "legacy-seed-dir";
     root = dir;
     mode = "mutable";
-    staleDirs = [ ];
   }) cfg.seedDirs;
 
   skillPacks = cfg.skillPacks ++ legacySeedPacks;
@@ -22,8 +21,6 @@ let
     seed_skill_pack ${lib.escapeShellArg pack.root} ${lib.escapeShellArg pack.mode}
   '') skillPacks;
 
-  staleDirs = cfg.staleDirs ++ lib.flatten (map (pack: pack.staleDirs) skillPacks);
-  staleDirsShell = lib.concatMapStringsSep " " lib.escapeShellArg staleDirs;
 in
 {
   config.system.activationScripts.hermes-agent-seeded-skills = lib.stringAfter [ "users" ] ''
@@ -31,20 +28,6 @@ in
     local_skills_root="$hermes_home/skills"
 
     mkdir -p "$local_skills_root"
-
-    # Remove explicit migration/stale paths before seeding. This is how we move
-    # flat generated skills into Hermes-style category/skill directories without
-    # leaving duplicate skill names behind.
-    for rel_dir in ${staleDirsShell}; do
-      [ -n "$rel_dir" ] || continue
-      case "$rel_dir" in
-        /*|*..*)
-          echo "refusing unsafe Hermes stale skill path: $rel_dir" >&2
-          continue
-          ;;
-      esac
-      rm -rf "$local_skills_root/$rel_dir"
-    done
 
     # Hermes resolves local skills from category/skill directories. If a partial
     # directory exists without SKILL.md, it can shadow the real packaged skill.

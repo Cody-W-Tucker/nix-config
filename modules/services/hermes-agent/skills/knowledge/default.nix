@@ -29,12 +29,6 @@ in
       name = "knowledge-tools";
       root = knowledgeSkillsDir;
       mode = "managed";
-      staleDirs = [
-        "note-taking/obsidian-bases"
-        "note-taking/obsidian-cli"
-        "note-taking/obsidian-markdown"
-        "research/qmd"
-      ];
     }
   ];
 }
