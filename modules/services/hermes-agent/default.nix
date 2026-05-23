@@ -197,7 +197,7 @@ in
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";
         };
-        web.backend = "exa";
+        web.provider = "exa";
         agent = {
           max_turns = 60;
           reasoning_effort = "medium";
