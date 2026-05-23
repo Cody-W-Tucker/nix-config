@@ -41,6 +41,8 @@
       stateDir = "/var/lib/open-webui";
       openFirewall = true;
       environment = {
+        # TODO: make all this declarative instead of having to configure in the admin panel.
+        # ENABLE_PERSISTENT_CONFIG = "False"
         WEBUI_URL = "https://ai.homehub.tv";
         WEBUI_SECRET_KEY = "local-only";
         USE_CUDA_DOCKER = "true";
