@@ -91,6 +91,7 @@ in
       package = hermesPkg;
       extraDependencyGroups = [
         "edge-tts"
+        "firecrawl"
         "messaging"
         "voice"
       ];
