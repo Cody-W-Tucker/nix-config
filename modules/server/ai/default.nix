@@ -1,5 +1,23 @@
 { pkgs, ... }:
 
+let
+  openWebuiFrontend = pkgs.open-webui.frontend.overrideAttrs (oldAttrs: {
+    postPatch = (oldAttrs.postPatch or "") + ''
+      substituteInPlace package.json \
+        --replace-fail '"bits-ui": "^2.0.0",' '"bits-ui": "^2.0.0",
+        "@internationalized/date": "^3.12.0",'
+    '';
+  });
+
+  openWebuiPackage = pkgs.open-webui.overridePythonAttrs (oldAttrs: {
+    dependencies = oldAttrs.dependencies ++ [ pkgs.python313Packages.qdrant-client ];
+    makeWrapperArgs = [ "--set FRONTEND_BUILD_DIR ${openWebuiFrontend}/share/open-webui" ];
+    passthru = oldAttrs.passthru // {
+      frontend = openWebuiFrontend;
+    };
+  });
+in
+
 {
   # Docker is still used for Open WebUI pipelines.
   virtualisation = {
@@ -33,9 +51,7 @@
   services = {
     open-webui = {
       enable = true;
-      package = pkgs.open-webui.overridePythonAttrs (oldAttrs: {
-        dependencies = oldAttrs.dependencies ++ [ pkgs.python313Packages.qdrant-client ];
-      });
+      package = openWebuiPackage;
       host = "0.0.0.0";
       port = 8080;
       stateDir = "/var/lib/open-webui";

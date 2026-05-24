@@ -64,7 +64,10 @@
     whisp-away = {
       # Voice dictation for Linux using OpenAI's Whisper models.
       url = "github:madjinn/whisp-away";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # Keep whisp-away on the last known-good nixpkgs revision; the latest
+      # unstable update changed its fetch/build behavior without changing the
+      # whisp-away source revision itself.
+      inputs.nixpkgs.url = "github:nixos/nixpkgs/d233902339c02a9c334e7e593de68855ad26c4cb";
     };
     searcher = {
       # custom perplexity replacement for agentic search
