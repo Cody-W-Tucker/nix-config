@@ -1,6 +1,12 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
+  # Newer Stylix walks `config.lib` while building target options, and nixvim's
+  # exported lib attrset now recurses there during flake checks after input updates.
+  # Keep nixvim's internal extended lib for module evaluation, but don't re-export
+  # it onto Home Manager's `lib` option.
+  lib.nixvim = lib.mkForce { };
+
   imports = [
     ./keymaps.nix
     ./plugins/lsp.nix
