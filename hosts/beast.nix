@@ -22,7 +22,6 @@ let
     whispAcceleration = "cuda";
   };
 
-  llamaTtsPackage = pkgs.llama-cpp.override { cudaSupport = true; };
   # Keep the faster-whisper weights on the workspace volume so Open WebUI STT
   # and whisp-away reuse one model download.
   sharedFasterWhisperCache = "/mnt/work/cache/ai/faster-whisper";
@@ -315,6 +314,7 @@ in
     modelOverrides = {
       # Short TTL for larger models - only used programmatically, free VRAM quickly
       "qwen3.5-4b" = {
+        contextSize = 16384;
         ttl = 10;
       };
       "qwen3.5-0.8b" = {
