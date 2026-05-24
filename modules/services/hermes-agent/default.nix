@@ -15,7 +15,7 @@ let
     user
     workingDirectory
     ;
-  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  hermesPkg = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
 in
 {
@@ -93,7 +93,7 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      package = llmPkgs.hermes-agent;
+      package = hermesPkg;
       extraPackages = with pkgs; [
         binutils
         curl
