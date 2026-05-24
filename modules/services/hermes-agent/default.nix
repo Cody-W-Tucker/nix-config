@@ -64,6 +64,11 @@ in
         soulFile
       ];
       environment = {
+        # The packaged Hermes runtime is missing bundled web plugin manifests
+        # (and the xai web plugin entirely), so force plugin discovery to read
+        # from the pinned source tree where the full plugins/ dir exists.
+        HERMES_BUNDLED_PLUGINS = "${inputs.hermes-agent}/plugins";
+
         # faster-whisper's ctranslate2 CUDA path needs the NVIDIA driver libs
         # and CUDA runtime visible at runtime; these are provided by the host,
         # not the sealed Hermes venv.
@@ -103,10 +108,6 @@ in
         API_SERVER_HOST = "127.0.0.1";
         API_SERVER_PORT = "8642";
         API_SERVER_KEY = "local-only";
-        # The packaged Hermes runtime is missing bundled web plugin manifests
-        # (and the xai web plugin entirely), so force plugin discovery to read
-        # from the pinned source tree where the full plugins/ dir exists.
-        HERMES_BUNDLED_PLUGINS = "${inputs.hermes-agent}/plugins";
         OBSIDIAN_VAULT = obsidianVault;
       };
       environmentFiles = [ config.sops.templates."hermes-env".path ];
