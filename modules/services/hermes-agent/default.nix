@@ -89,6 +89,11 @@ in
       enable = true;
       addToSystemPackages = true;
       package = hermesPkg;
+      extraDependencyGroups = [
+        "edge-tts"
+        "messaging"
+        "voice"
+      ];
       extraPackages = with pkgs; [
         binutils
         curl
