@@ -15,7 +15,40 @@ let
     user
     workingDirectory
     ;
-  hermesPkg = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hermesPkgBase = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hermesPkg = hermesPkgBase.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      python_overrides="$out/share/hermes-agent/python-overrides"
+      site_packages="${hermesPkgBase.passthru.hermesVenv}/lib/python3.12/site-packages"
+
+      mkdir -p "$python_overrides"
+      cp "$site_packages/hermes_constants.py" "$python_overrides/hermes_constants.py"
+      cp -rL "$site_packages/hermes_cli" "$python_overrides/hermes_cli"
+      chmod -R u+w "$python_overrides"
+
+      constants_py="$python_overrides/hermes_constants.py"
+      auth_py="$python_overrides/hermes_cli/auth.py"
+
+      if [ -z "$constants_py" ] || [ -z "$auth_py" ]; then
+        echo "failed to locate Hermes auth sources in $out" >&2
+        exit 1
+      fi
+
+      # This host intentionally shares HERMES_HOME between the hermes service
+      # user and the codyt CLI via the hermes group. Upstream's single-user
+      # hardening changes the auth store parent to 0700 and auth.json to 0600,
+      # which strands OAuth credentials on whichever account wrote them last.
+      substituteInPlace "$constants_py" \
+        --replace-fail "os.chmod(parent, 0o700)" "os.chmod(parent, 0o2770)"
+      substituteInPlace "$auth_py" \
+        --replace-fail "stat.S_IRUSR | stat.S_IWUSR," "stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP," \
+        --replace-fail "auth_file.chmod(stat.S_IRUSR | stat.S_IWUSR)" "auth_file.chmod(stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP)"
+
+      for bin_name in hermes hermes-agent hermes-acp; do
+        wrapProgram "$out/bin/$bin_name" --prefix PYTHONPATH : "$python_overrides"
+      done
+    '';
+  });
 
 in
 {
