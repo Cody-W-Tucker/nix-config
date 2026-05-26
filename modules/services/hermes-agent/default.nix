@@ -200,18 +200,34 @@ in
           triage_specifier = {
             provider = "opencode-go";
             model = "kimi-k2.6";
+            extra_body = {
+              thinking.type = "enabled";
+              reasoning_effort = "medium";
+            };
           };
           kanban_decomposer = {
             provider = "opencode-go";
             model = "kimi-k2.6";
+            extra_body = {
+              thinking.type = "enabled";
+              reasoning_effort = "medium";
+            };
           };
           profile_describer = {
             provider = "opencode-go";
             model = "kimi-k2.6";
+            extra_body = {
+              thinking.type = "enabled";
+              reasoning_effort = "medium";
+            };
           };
           curator = {
             provider = "opencode-go";
             model = "kimi-k2.6";
+            extra_body = {
+              thinking.type = "enabled";
+              reasoning_effort = "medium";
+            };
           };
         };
         display.platforms = {
