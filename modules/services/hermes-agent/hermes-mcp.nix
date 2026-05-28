@@ -1,10 +1,5 @@
-{
-  pkgs,
-  config,
-  ...
-}:
+{ pkgs, config, ... }:
 let
-  gbrainMcpUrl = "http://127.0.0.1:3131/mcp";
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
     runtimeInputs = [ pkgs.nodejs ];
@@ -31,16 +26,7 @@ in
     };
 
     services.hermes-agent = {
-      mcpServers = {
-        gbrain = {
-          url = gbrainMcpUrl;
-          headers = {
-            Accept = "application/json, text/event-stream";
-            Authorization = "Bearer \${GBRAIN_MCP_TOKEN}";
-          };
-        };
-        karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
-      };
+      mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
     };
   };
 }

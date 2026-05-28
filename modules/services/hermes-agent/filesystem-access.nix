@@ -8,12 +8,10 @@
 let
   inherit (config.codyos.hermes-agent.locations) nixosConfigRoot obsidianVault projectsRoot;
   inherit (config.services.hermes-agent) group stateDir user;
-  gbrainRoot = "/home/codyt/Knowledge/GBrain";
   managedPaths = [
     nixosConfigRoot
     obsidianVault
     projectsRoot
-    gbrainRoot
   ];
 
   sharedRuntimeDirs = [
@@ -33,16 +31,17 @@ let
   ];
 
   ensurePathAccess = path: ''
-    mkdir -p "${path}"
-    ${pkgs.acl}/bin/setfacl -m u:${config.services.hermes-agent.user}:--x /home/codyt
-    ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${path}" 2>/dev/null || true
-    find "${path}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
+    if [ -d "${path}" ]; then
+      ${pkgs.acl}/bin/setfacl -m u:${config.services.hermes-agent.user}:--x /home/codyt
+      ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${path}" 2>/dev/null || true
+      find "${path}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
 
-    chgrp -hR users "${path}"
-    ${pkgs.acl}/bin/setfacl -R -m g::rwX "${path}"
-    find "${path}" -type d -exec ${pkgs.acl}/bin/setfacl -m d:g::rwx {} +
-    chmod -R u+rwX,g+rwX "${path}"
-    find "${path}" -type d -exec chmod g+s {} +
+      chgrp -hR users "${path}"
+      ${pkgs.acl}/bin/setfacl -R -m g::rwX "${path}"
+      find "${path}" -type d -exec ${pkgs.acl}/bin/setfacl -m d:g::rwx {} +
+      chmod -R u+rwX,g+rwX "${path}"
+      find "${path}" -type d -exec chmod g+s {} +
+    fi
   '';
 in
 {

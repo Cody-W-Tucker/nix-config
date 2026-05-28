@@ -118,11 +118,8 @@
       # Official NixOS formatter with directory support
       formatter.x86_64-linux = nixpkgs-unstable.legacyPackages.${system}.nixfmt-tree;
 
-      homeManagerModules.gbrain = import ./packages/gbrain/module.nix;
-
       # Custom packages exposed via the flake
       packages.${system} = {
-        gbrain = pkgs.callPackage ./packages/gbrain/package.nix { };
         gh-star-search = pkgs.callPackage ./packages/gh-star-search { };
         llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
       };

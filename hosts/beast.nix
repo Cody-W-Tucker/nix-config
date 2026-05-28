@@ -47,7 +47,6 @@ in
     ../modules/desktop/gaming
     ../modules/desktop/hardware/nvidia.nix
     ../modules/services/llama-swap
-    ../packages/gbrain/service.nix
     ../modules/services/hermes-agent
     ../modules/server/ai
 
@@ -110,19 +109,6 @@ in
 
   # Ensure 14th Gen Intel CPU works correctly
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-  sops.templates."gbrain-opencode-env" = {
-    content = ''
-      OPENROUTER_API_KEY=${config.sops.placeholder."opencode-api-key"}
-      OPENROUTER_BASE_URL=https://opencode.ai/zen/go/v1
-    '';
-    owner = "codyt";
-    group = "users";
-    mode = "0640";
-  };
-
-  services.gbrain.enable = true;
-  services.gbrain.environmentFile = config.sops.templates."gbrain-opencode-env".path;
 
   # System fileSystems
   fileSystems = {
@@ -336,12 +322,6 @@ in
           "--parallel"
           "4"
         ];
-      };
-      "qwen3-embedding-0.6b" = {
-        gpuLayers = 999;
-        contextSize = 8192;
-        batchSize = 512;
-        ubatchSize = 512;
       };
       "whisper-medium" = {
         ttl = 1800;

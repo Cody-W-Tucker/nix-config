@@ -31,8 +31,8 @@
       "force-multi-line-array-style": ""
     },
     "insert-yaml-attributes": {
-      "enabled": true,
-      "text-to-insert": "type: note\naliases: \ntags: "
+      "enabled": false,
+      "text-to-insert": "aliases: \ntags: "
     },
     "move-tags-to-yaml": {
       "enabled": false,
@@ -41,7 +41,7 @@
     },
     "remove-yaml-keys": {
       "enabled": true,
-      "yaml-keys-to-remove": "date created\ndate modified\ncreatedDate\nmodifiedDate"
+      "yaml-keys-to-remove": "date created\ndate modified\ncreatedDate\nmodifiedDate\ncreated"
     },
     "sort-yaml-array-values": {
       "enabled": true,
@@ -60,9 +60,9 @@
     "yaml-timestamp": {
       "enabled": true,
       "date-created": true,
-      "date-created-key": "created",
+      "date-created-key": "dateCreated",
       "date-modified": true,
-      "date-modified-key": "modified",
+      "date-modified-key": "dateModified",
       "format": "YYYY-MM-DD",
       "convert-to-utc": false,
       "date-created-source-of-truth": "frontmatter",

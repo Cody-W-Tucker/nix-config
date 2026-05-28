@@ -2,7 +2,6 @@
   config,
   inputs,
   pkgs,
-  self,
   ...
 }:
 
@@ -13,9 +12,7 @@ in
 {
   imports = [
     inputs.rlm.homeManagerModules.default
-    self.homeManagerModules.gbrain
     ./opencode
-    ./gbrain
     ./mcp.nix
   ];
 

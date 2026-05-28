@@ -144,10 +144,7 @@ in
         API_SERVER_KEY = "local-only";
         OBSIDIAN_VAULT = obsidianVault;
       };
-      environmentFiles = [
-        config.sops.templates."hermes-env".path
-        "/home/codyt/.config/environment.d/90-gbrain.conf"
-      ];
+      environmentFiles = [ config.sops.templates."hermes-env".path ];
       configFile = pkgs.writeText "hermes-config.json" (
         # Make config.yaml fully declarative. Upstream merges generated settings
         # into any existing config when configFile is null, which preserves stale
