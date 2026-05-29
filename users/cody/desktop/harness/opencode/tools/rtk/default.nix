@@ -1,4 +1,13 @@
+{ inputs, pkgs, ... }:
+
+let
+  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+in
+
 {
+  home.packages = [
+    llmPkgs.rtk
+  ];
   # Install RTK plugin to global opencode plugins directory
   home.file.".config/opencode/plugins/rtk.ts".source = ./plugin.ts;
 

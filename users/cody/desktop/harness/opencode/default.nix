@@ -30,7 +30,7 @@ in
     ./agents/operational
     ./skills/agent-browser
     ./skills/humanizer
-    ./tools/rtk
+    # ./tools/rtk Disable until https://github.com/rtk-ai/rtk/pull/1048 merged into llm-agents
   ];
 
   home.packages = [
