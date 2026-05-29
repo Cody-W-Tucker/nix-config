@@ -1,7 +1,19 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
-  googleWorkspaceSkill = name: "${inputs.googleworkspace-cli}/skills/${name}/SKILL.md";
+  googleWorkspaceSkillsRoot = "${inputs.googleworkspace-cli}/skills";
+  googleWorkspaceSkill = name: "${googleWorkspaceSkillsRoot}/${name}/SKILL.md";
+
+  gwsSkillNames = lib.pipe (builtins.readDir googleWorkspaceSkillsRoot) [
+    (lib.filterAttrs (name: type: type == "directory" && lib.hasPrefix "gws-" name))
+    lib.attrNames
+    (lib.sort (a: b: a < b))
+  ];
 
   gmailTriageSkill = pkgs.writeText "gws-gmail-triage-SKILL.md" (
     builtins.replaceStrings
@@ -34,52 +46,21 @@ let
       (builtins.readFile (googleWorkspaceSkill "gws-gmail-triage"))
   );
 
-  googleWorkspaceSkills = pkgs.linkFarm "hermes-agent-google-workspace-skills" [
-    {
-      name = "tools/gws-shared/SKILL.md";
-      path = googleWorkspaceSkill "gws-shared";
-    }
-    {
-      name = "tools/gws-drive/SKILL.md";
-      path = googleWorkspaceSkill "gws-drive";
-    }
-    {
-      name = "tools/gws-gmail/SKILL.md";
-      path = googleWorkspaceSkill "gws-gmail";
-    }
-    {
-      name = "tools/gws-calendar/SKILL.md";
-      path = googleWorkspaceSkill "gws-calendar";
-    }
-    {
-      name = "tools/gws-calendar-insert/SKILL.md";
-      path = googleWorkspaceSkill "gws-calendar-insert";
-    }
-    {
-      name = "tools/gws-sheets/SKILL.md";
-      path = googleWorkspaceSkill "gws-sheets";
-    }
-    {
-      name = "tools/gws-tasks/SKILL.md";
-      path = googleWorkspaceSkill "gws-tasks";
-    }
-    {
-      name = "tools/gws-drive-upload/SKILL.md";
-      path = googleWorkspaceSkill "gws-drive-upload";
-    }
-    {
-      name = "tools/gws-gmail-triage/SKILL.md";
-      path = gmailTriageSkill;
-    }
-    {
-      name = "tools/gws-calendar-agenda/SKILL.md";
-      path = googleWorkspaceSkill "gws-calendar-agenda";
-    }
-    {
-      name = "tools/gws-workflow-meeting-prep/SKILL.md";
-      path = googleWorkspaceSkill "gws-workflow-meeting-prep";
-    }
-  ];
+  gmailTriageSkillDir = pkgs.runCommand "gws-gmail-triage-skill" { } ''
+    mkdir -p "$out"
+    cp ${gmailTriageSkill} "$out/SKILL.md"
+  '';
+
+  customSkillDirs = {
+    "gws-gmail-triage" = gmailTriageSkillDir;
+  };
+
+  googleWorkspaceSkills = pkgs.linkFarm "hermes-agent-google-workspace-skills" (
+    map (name: {
+      name = "tools/${name}";
+      path = lib.attrByPath [ name ] "${googleWorkspaceSkillsRoot}/${name}" customSkillDirs;
+    }) gwsSkillNames
+  );
 in
 {
   codyos.hermes-agent.skills.skillPacks = [

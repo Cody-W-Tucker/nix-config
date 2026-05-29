@@ -1,20 +1,28 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 
 let
-  skill = name: builtins.readFile "${inputs.googleworkspace-cli}/skills/${name}/SKILL.md";
+  skillsRoot = "${inputs.googleworkspace-cli}/skills";
+  skill = name: builtins.readFile "${skillsRoot}/${name}/SKILL.md";
+  gwsSkills = builtins.listToAttrs (
+    map
+      (name: {
+        inherit name;
+        value = skill name;
+      })
+      (
+        lib.pipe (builtins.readDir skillsRoot) [
+          (lib.filterAttrs (name: type: type == "directory" && lib.hasPrefix "gws-" name))
+          builtins.attrNames
+          (lib.sort (a: b: a < b))
+        ]
+      )
+  );
 in
 {
   # Curated Google Workspace skills from the pinned upstream flake.
-  programs.opencode.skills = {
-    gws-shared = skill "gws-shared";
-    gws-drive = skill "gws-drive";
-    gws-gmail = skill "gws-gmail";
-    gws-calendar = skill "gws-calendar";
-    gws-sheets = skill "gws-sheets";
-    gws-tasks = skill "gws-tasks";
-
-    # Helper skills for common high-value workflows.
-    gws-drive-upload = skill "gws-drive-upload";
+  programs.opencode.skills = gwsSkills // {
+    # Keep inbox triage tuned for agent use while preserving the full upstream
+    # sibling layout (`gws-gmail-read`, `gws-gmail-reply`, etc.).
     gws-gmail-triage =
       builtins.replaceStrings
         [
@@ -44,7 +52,5 @@ in
           "gws gmail +triage --query 'in:inbox' --labels"
         ]
         (skill "gws-gmail-triage");
-    gws-calendar-agenda = skill "gws-calendar-agenda";
-    gws-workflow-meeting-prep = skill "gws-workflow-meeting-prep";
   };
 }

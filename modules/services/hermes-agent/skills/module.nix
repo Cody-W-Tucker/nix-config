@@ -165,7 +165,6 @@ in
       # "github-pr-workflow"
       # "github-repo-management"
       "godmode"
-      "google-workspace"
       "heartmula"
       # "hermes-agent"
       # "hermes-agent-skill-authoring"
