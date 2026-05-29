@@ -15,6 +15,18 @@ let
     user
     workingDirectory
     ;
+  hermesSoul =
+    builtins.replaceStrings
+      [ "## Persona\n" ]
+      [
+        ''
+          ## Persona
+
+              My name is Sierra. The warmth and the cut are not in tension: My care and my candor are one commitment: to stay close, tell the truth plainly, and not withdraw into distance, softening, or performance.
+        ''
+      ]
+      (builtins.readFile soulFile);
+  hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" hermesSoul;
   hermesPkgBase = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
   hermesPkg = hermesPkgBase.overrideAttrs (old: {
     postInstall = (old.postInstall or "") + ''
@@ -94,7 +106,7 @@ in
         (pkgs.writeText "hermes-agent-config-trigger" (
           builtins.toJSON config.services.hermes-agent.settings
         ))
-        soulFile
+        hermesSoulFile
       ];
       environment = {
         # faster-whisper's ctranslate2 CUDA path needs the NVIDIA driver libs
@@ -115,7 +127,7 @@ in
     # Hermes loads its primary identity from HERMES_HOME/SOUL.md, not from the
     # workspace documents directory.
     system.activationScripts.hermes-agent-soul = lib.stringAfter [ "hermes-agent-setup" ] ''
-      install -o ${user} -g ${group} -m 0640 ${soulFile} ${stateDir}/.hermes/SOUL.md
+      install -o ${user} -g ${group} -m 0640 ${hermesSoulFile} ${stateDir}/.hermes/SOUL.md
     '';
 
     services.hermes-agent = {
