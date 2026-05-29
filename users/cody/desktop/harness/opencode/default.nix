@@ -26,10 +26,9 @@ in
     ./agents/knowledge
     ./agents/verify-alignment
     ./agents/business
-    ./agents/existential
-    ./agents/operational
     ./skills/agent-browser
     ./skills/humanizer
+    ./skills/cognitive
     # ./tools/rtk Disable until https://github.com/rtk-ai/rtk/pull/1048 merged into llm-agents
   ];
 
