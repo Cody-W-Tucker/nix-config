@@ -8,6 +8,7 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+  memoryToolSpec = builtins.readFile inputs.cognitive-assistant.lib.operational.toolSpecs.memory;
   inherit (config.codyos.hermes-agent.locations) nixosConfigRoot obsidianVault projectsRoot;
   inherit (config.services.hermes-agent)
     group
@@ -178,7 +179,17 @@ in
           - **Projects root**: ${projectsRoot} (user projects likely live here)
           - Common language runtimes may be absent; use `nix shell` only when required
           - Do NOT use `nix shell` for standard Unix utilities
+
+          # Memory
+
+          - The full memory tool spec lives in `MEMORY-TOOL.md`. Follow it when deciding what to store, update, delete, or ignore.
+          - The holographic provider is active. Use its own tool surface for structured relational recall rather than flattening everything into snapshot memory.
+          - Use built-in `memory` for compact durable notes that should appear in future session snapshots.
+          - When the answer may depend on prior cognitive patterns, decision drivers, recurring structures, theory-of-mind inferences, relationship dynamics, collaboration tendencies, or CA architecture, use holographic recall before answering.
+          - For that work, prefer probing or reasoning first, then synthesize the returned facts into the answer instead of dumping raw tool output.
+          - When a stable snapshot note and a structured relational fact are both useful, write both deliberately.
         '';
+        "MEMORY-TOOL.md" = memoryToolSpec;
       };
       settings = {
         model = {
@@ -263,6 +274,17 @@ in
         agent = {
           max_turns = 60;
           reasoning_effort = "medium";
+        };
+        curator = {
+          enabled = true;
+          interval_hours = 24 * 7;
+          min_idle_hours = 2;
+          stale_after_days = 30;
+          archive_after_days = 90;
+          backup = {
+            enabled = true;
+            keep = 5;
+          };
         };
         memory = {
           memory_enabled = true;
