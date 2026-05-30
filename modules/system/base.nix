@@ -6,11 +6,11 @@
 
 {
   # Cap coredump storage so /var/lib/systemd/coredump does not balloon.
-  systemd.coredump.extraConfig = ''
-    MaxUse=500M
-    KeepFree=2G
-    ProcessSizeMax=100M
-  '';
+  systemd.coredump.settings = {
+    Coredump.MaxUse = "500M";
+    Coredump.KeepFree = "2G";
+    Coredump.ProcessSizeMax = "100M";
+  };
 
   imports = [
     inputs.sops-nix.nixosModules.sops
