@@ -173,10 +173,10 @@ in
       full_cm_proto = true;
     };
     render = {
-      direct_scanout = "2";
+      direct_scanout = "0";
     };
     general = {
-      allow_tearing = true;
+      allow_tearing = false;
       border_size = "2";
       gaps_in = "2";
       gaps_out = "2";
