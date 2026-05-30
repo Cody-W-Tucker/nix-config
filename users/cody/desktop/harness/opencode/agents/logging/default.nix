@@ -28,7 +28,7 @@ in
   programs.opencode.agents.logging = ''
     ---
     description: read logs to understand issues.
-    mode: subagent
+    mode: agent
     tools:
       "grafana_*": true
     permission:
@@ -36,6 +36,5 @@ in
       "context7_*": deny
       "nixos-option-search_*": deny
     ---
-    Use the Grafana tool to search the logs.
   '';
 }
