@@ -6,6 +6,9 @@
   ...
 }:
 
+let
+  lockCommand = "pidof hyprlock || hyprlock";
+in
 {
   imports = [
     ./hyprland/settings.nix
@@ -44,15 +47,15 @@
       enable = true;
       settings = {
         general = {
-          lock_cmd = "pidof hyprlock || hyprlock";
-          before_sleep_cmd = "hyprlock";
+          lock_cmd = lockCommand;
+          before_sleep_cmd = lockCommand;
           after_sleep_cmd = "hyprctl dispatch dpms on";
         };
 
         listener = [
           {
             timeout = 900; # 15min.
-            on-timeout = "hyprlock";
+            on-timeout = lockCommand;
           }
           {
             timeout = 1800; # 30min.

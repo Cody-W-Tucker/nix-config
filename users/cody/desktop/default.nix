@@ -74,13 +74,14 @@
     vesktop # Discord client
     kdePackages.kpeople # Contact integration for KDE Connect SMS
     doxx # Cli tool to open docx
+    playerctl # MPRIS cli; also provides playerctld D-Bus activation
   ];
 
   services = {
     tailscale-systray.enable = true;
 
-    # Control media via cli and waybar
-    playerctld.enable = true;
+    # Control media via cli and waybar. Let D-Bus activation start playerctld
+    # on demand so it does not race with the package's own activation file.
     mpris-proxy.enable = true;
 
     kdeconnect = {

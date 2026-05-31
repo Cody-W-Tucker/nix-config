@@ -323,6 +323,14 @@ in
           "4"
         ];
       };
+      # Embeddings traffic here is short-form; use a smaller KV/cache footprint and
+      # avoid flash-attn to reduce startup instability in llama-server.
+      "qwen3-embedding-0.6b" = {
+        contextSize = 8192;
+        batchSize = 1024;
+        ubatchSize = 512;
+        flashAttention = false;
+      };
       "whisper-medium" = {
         ttl = 1800;
         upstream = {
@@ -356,6 +364,8 @@ in
 
   systemd.services.llama-swap.serviceConfig = {
     CacheDirectory = "llama-swap";
+    ProcSubset = lib.mkForce "all";
+    ProtectProc = lib.mkForce "default";
     DynamicUser = lib.mkForce false;
     User = "codyt";
     Group = "users";
