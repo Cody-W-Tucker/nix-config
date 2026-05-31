@@ -7,9 +7,11 @@
 {
   # Cap coredump storage so /var/lib/systemd/coredump does not balloon.
   systemd.coredump.settings = {
-    Coredump.MaxUse = "500M";
-    Coredump.KeepFree = "2G";
-    Coredump.ProcessSizeMax = "100M";
+    Coredump = {
+      KeepFree = "2G";
+      MaxUse = "500M";
+      ProcessSizeMax = "100M";
+    };
   };
 
   imports = [
