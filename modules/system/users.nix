@@ -19,7 +19,6 @@
       "bluetooth"
       "input"
       "documents"
-      "openrazer"
       "hermes"
     ];
     shell = pkgs.zsh;

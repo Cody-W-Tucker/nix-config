@@ -25,7 +25,6 @@ in
     ./logging.nix
     ./printing.nix
     ../services/syncthing.nix
-    ./hardware/razer.nix
     ./hardware/wifi.nix
     ./vpn
   ];
