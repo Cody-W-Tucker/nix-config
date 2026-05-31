@@ -63,10 +63,6 @@
     whisp-away = {
       # Voice dictation for Linux using OpenAI's Whisper models.
       url = "github:madjinn/whisp-away";
-      # Keep whisp-away on the last known-good nixpkgs revision; the latest
-      # unstable update changed its fetch/build behavior without changing the
-      # whisp-away source revision itself.
-      inputs.nixpkgs.url = "github:nixos/nixpkgs/d233902339c02a9c334e7e593de68855ad26c4cb";
     };
     googleworkspace-cli = {
       # Google Workspace CLI for Drive, Gmail, Calendar, and related APIs.
