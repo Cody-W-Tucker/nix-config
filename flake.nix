@@ -44,7 +44,6 @@
       # Configures neovim and related plugins.
       url = "github:nix-community/nixvim";
       # Nixvim tests against their nixpkgs version and we shouldn't follow our own if we want the benefit.
-      # inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     zen-browser = {
       # Modern web browser based on firefox.
@@ -68,11 +67,6 @@
       # unstable update changed its fetch/build behavior without changing the
       # whisp-away source revision itself.
       inputs.nixpkgs.url = "github:nixos/nixpkgs/d233902339c02a9c334e7e593de68855ad26c4cb";
-    };
-    searcher = {
-      # custom perplexity replacement for agentic search
-      url = "github:Cody-W-Tucker/searcher";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     googleworkspace-cli = {
       # Google Workspace CLI for Drive, Gmail, Calendar, and related APIs.
