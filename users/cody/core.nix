@@ -12,8 +12,6 @@
     packages = with pkgs; [
       fastfetch
       fd
-      taskwarrior-tui
-      timewarrior
       tree
       unzip
       zip
