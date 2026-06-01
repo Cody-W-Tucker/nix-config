@@ -316,11 +316,10 @@ in
       };
     };
     modelOverrides = {
-      # qwen3.5-4b is used by Karakeep for summarization (INFERENCE_CONTEXT_LENGTH=8192).
-      # Disable reasoning so the <think> trace doesn't consume the budget.
-      # Context kept at 8192 (16384 triggered repeated n_ctx() crashes on load).
+      # qwen3.5-4b is used by Karakeep for summarization. Disable reasoning so
+      # the <think> trace does not consume the context budget.
       "qwen3.5-4b" = {
-        contextSize = 8192;
+        contextSize = 16384;
         ttl = 60;
         extraArgs = [
           "--reasoning"
