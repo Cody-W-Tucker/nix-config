@@ -316,10 +316,16 @@ in
       };
     };
     modelOverrides = {
-      # Short TTL for larger models - only used programmatically, free VRAM quickly
+      # qwen3.5-4b is used by Karakeep for summarization (INFERENCE_CONTEXT_LENGTH=8192).
+      # Disable reasoning so the <think> trace doesn't consume the budget.
+      # Context kept at 8192 (16384 triggered repeated n_ctx() crashes on load).
       "qwen3.5-4b" = {
-        contextSize = 16384;
-        ttl = 10;
+        contextSize = 8192;
+        ttl = 60;
+        extraArgs = [
+          "--reasoning"
+          "off"
+        ];
       };
       "qwen3.5-0.8b" = {
         extraArgs = [
@@ -336,7 +342,7 @@ in
         flashAttention = false;
       };
       "whisper-medium" = {
-        ttl = 1800;
+        ttl = 300; # 5 min idle before llama-swap considers unloading (voice stack)
         upstream = {
           cmd = ''
             ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/faster-whisper-openai-server.py} \
@@ -352,7 +358,7 @@ in
         };
       };
       "transformers-speecht5" = {
-        ttl = 1800;
+        ttl = 300; # 5 min idle before llama-swap considers unloading (voice stack)
         upstream = {
           cmd = ''
             ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/transformers-tts-openai-server.py} \
