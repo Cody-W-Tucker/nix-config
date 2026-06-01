@@ -239,9 +239,13 @@ in
 
   services.btrfs.autoScrub = {
     enable = true;
-    interval = "monthly";
+    interval = "monthly 09:00";
     fileSystems = [ "/mnt/work" ];
   };
+
+  # Spread the monthly scrub over a window so it rarely collides with
+  # suspend transitions (this host sleeps after 2 h of idle).
+  systemd.timers."btrfs-scrub-mnt-work".timerConfig.RandomizedDelaySec = "3h";
 
   systemd.services.work-btrfs-nocow = {
     description = "Apply NOCOW attribute to workspace heavy-write directories";
