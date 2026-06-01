@@ -456,6 +456,27 @@
         "type": "github"
       }
     },
+    "herdr": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1780259119,
+        "narHash": "sha256-zim9JSVCfbSrH5XovifGFST9J1kYkjou7E5oeBXfF34=",
+        "owner": "ogulcancelik",
+        "repo": "herdr",
+        "rev": "0016a8a088c12cd4b6187487fe799ac42e52cc15",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ogulcancelik",
+        "ref": "v0.6.6",
+        "repo": "herdr",
+        "type": "github"
+      }
+    },
     "hermes-agent": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -935,6 +956,7 @@
         "crm-cli": "crm-cli",
         "flake-programs-sqlite": "flake-programs-sqlite",
         "googleworkspace-cli": "googleworkspace-cli",
+        "herdr": "herdr",
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
         "home-manager-stable": "home-manager-stable",
