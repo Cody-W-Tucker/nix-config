@@ -10,8 +10,11 @@
       OPENAI_API_KEY = "opencode";
       OPENAI_BASE_URL = "http://beast:8081/v1";
       INFERENCE_TEXT_MODEL = "qwen3.5-4b";
-      INFERENCE_CONTEXT_LENGTH = "8192";
-      INFERENCE_MAX_OUTPUT_TOKENS = "8192";
+      # beast runs qwen3.5-4b at an 8K llama.cpp context. Leave headroom for
+      # Karakeep's system prompt and structured-output schema so requests stay
+      # under the model limit instead of failing at ~8.3K prompt tokens.
+      INFERENCE_CONTEXT_LENGTH = "6144";
+      INFERENCE_MAX_OUTPUT_TOKENS = "1024";
       INFERENCE_OUTPUT_SCHEMA = "structured";
       INFERENCE_IMAGE_MODEL = "glm-ocr-q8";
       EMBEDDING_TEXT_MODEL = "qwen3-embedding-0.6b";
