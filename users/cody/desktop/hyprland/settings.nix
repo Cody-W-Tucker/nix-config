@@ -67,6 +67,7 @@ let
     # Special workspaces
     "${mainMod}, RETURN, togglespecialworkspace, ai"
     "${mainMod}, D, togglespecialworkspace, dev"
+    "${mainMod} Shift, D, exec, [workspace special:dev] ${terminal} -e herdr" # agent runner
     "${mainMod}, E, togglespecialworkspace, think"
     "${mainMod}, Y, togglespecialworkspace, media"
     "${mainMod} SHIFT, Y, movetoworkspacesilent, special:media"
