@@ -171,9 +171,11 @@ in
 
     # Multi-device Btrfs workspace pool spanning the two secondary NVMe drives.
     "/mnt/work" = {
-      device = "none";
+      device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.requires=work-btrfs-device-scan.service"
+        "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
         "device=/dev/disk/by-partlabel/work-b"
         "subvolid=5"
@@ -184,9 +186,11 @@ in
       ];
     };
     "/mnt/work/dev" = {
-      device = "none";
+      device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.requires=work-btrfs-device-scan.service"
+        "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
         "device=/dev/disk/by-partlabel/work-b"
         "subvol=dev"
@@ -197,9 +201,11 @@ in
       ];
     };
     "/mnt/work/vm" = {
-      device = "none";
+      device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.requires=work-btrfs-device-scan.service"
+        "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
         "device=/dev/disk/by-partlabel/work-b"
         "subvol=vm"
@@ -210,9 +216,11 @@ in
       ];
     };
     "/mnt/work/cache" = {
-      device = "none";
+      device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.requires=work-btrfs-device-scan.service"
+        "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
         "device=/dev/disk/by-partlabel/work-b"
         "subvol=cache"
@@ -223,9 +231,11 @@ in
       ];
     };
     "/mnt/work/media" = {
-      device = "none";
+      device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.requires=work-btrfs-device-scan.service"
+        "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
         "device=/dev/disk/by-partlabel/work-b"
         "subvol=media"
@@ -256,6 +266,22 @@ in
   # Spread the monthly scrub over a window so it rarely collides with
   # suspend transitions (this host sleeps after 2 h of idle).
   systemd.timers."btrfs-scrub-mnt-work".timerConfig.RandomizedDelaySec = "3h";
+
+  systemd.services.work-btrfs-device-scan = {
+    description = "Scan workspace Btrfs pool devices";
+    before = [
+      "mnt-work.mount"
+      "mnt-work-dev.mount"
+      "mnt-work-vm.mount"
+      "mnt-work-cache.mount"
+      "mnt-work-media.mount"
+    ];
+    unitConfig.DefaultDependencies = false;
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.btrfs-progs}/bin/btrfs device scan /dev/disk/by-partlabel/work-a /dev/disk/by-partlabel/work-b";
+    };
+  };
 
   systemd.services.work-btrfs-nocow = {
     description = "Apply NOCOW attribute to workspace heavy-write directories";
