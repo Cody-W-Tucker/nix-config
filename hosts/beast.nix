@@ -25,6 +25,19 @@ let
   # Keep the faster-whisper weights on the workspace volume so Open WebUI STT
   # and whisp-away reuse one model download.
   sharedFasterWhisperCache = "/mnt/work/cache/ai/faster-whisper";
+  workBtrfsMembers = [
+    "/dev/disk/by-partlabel/work-a"
+    "/dev/disk/by-partlabel/work-b"
+  ];
+  workBtrfsMemberArgs = lib.concatStringsSep " " workBtrfsMembers;
+  workBtrfsMountOptions = lib.concatStringsSep "," [
+    "device=/dev/disk/by-partlabel/work-a"
+    "device=/dev/disk/by-partlabel/work-b"
+    "subvolid=5"
+    "compress=zstd"
+    "noatime"
+    "discard=async"
+  ];
   llamaAudioCompatPython = pkgs.python313.withPackages (
     ps: with ps; [
       accelerate
@@ -203,7 +216,7 @@ in
     unitConfig.DefaultDependencies = false;
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.btrfs-progs}/bin/btrfs device scan /dev/disk/by-partlabel/work-a /dev/disk/by-partlabel/work-b";
+      ExecStart = "${pkgs.btrfs-progs}/bin/btrfs device scan ${workBtrfsMemberArgs}";
     };
   };
 
@@ -229,8 +242,8 @@ in
         fi
 
         exec ${pkgs.util-linux}/bin/mount -t btrfs \
-          -o device=/dev/disk/by-partlabel/work-a,device=/dev/disk/by-partlabel/work-b,subvolid=5,compress=zstd,noatime,discard=async \
-          /dev/disk/by-partlabel/work-a /mnt/work
+          -o ${workBtrfsMountOptions} \
+          ${builtins.head workBtrfsMembers} /mnt/work
       '';
       ExecStop = pkgs.writeShellScript "work-btrfs-umount" ''
         set -eu
@@ -240,6 +253,11 @@ in
         fi
       '';
     };
+  };
+
+  systemd.services."btrfs-scrub-mnt-work" = {
+    after = [ "work-btrfs-mount.service" ];
+    requires = [ "work-btrfs-mount.service" ];
   };
 
   systemd.services.work-btrfs-nocow = {
