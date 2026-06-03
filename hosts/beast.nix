@@ -171,9 +171,11 @@ in
 
     # Multi-device Btrfs workspace pool spanning the two secondary NVMe drives.
     "/mnt/work" = {
-      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      device = "none";
       fsType = "btrfs";
       options = [
+        "device=/dev/disk/by-partlabel/work-a"
+        "device=/dev/disk/by-partlabel/work-b"
         "subvolid=5"
         "compress=zstd"
         "noatime"
@@ -182,9 +184,11 @@ in
       ];
     };
     "/mnt/work/dev" = {
-      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      device = "none";
       fsType = "btrfs";
       options = [
+        "device=/dev/disk/by-partlabel/work-a"
+        "device=/dev/disk/by-partlabel/work-b"
         "subvol=dev"
         "compress=zstd"
         "noatime"
@@ -193,9 +197,11 @@ in
       ];
     };
     "/mnt/work/vm" = {
-      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      device = "none";
       fsType = "btrfs";
       options = [
+        "device=/dev/disk/by-partlabel/work-a"
+        "device=/dev/disk/by-partlabel/work-b"
         "subvol=vm"
         "compress=zstd"
         "noatime"
@@ -204,9 +210,11 @@ in
       ];
     };
     "/mnt/work/cache" = {
-      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      device = "none";
       fsType = "btrfs";
       options = [
+        "device=/dev/disk/by-partlabel/work-a"
+        "device=/dev/disk/by-partlabel/work-b"
         "subvol=cache"
         "compress=zstd"
         "noatime"
@@ -215,9 +223,11 @@ in
       ];
     };
     "/mnt/work/media" = {
-      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      device = "none";
       fsType = "btrfs";
       options = [
+        "device=/dev/disk/by-partlabel/work-a"
+        "device=/dev/disk/by-partlabel/work-b"
         "subvol=media"
         "compress=zstd"
         "noatime"
@@ -239,7 +249,7 @@ in
 
   services.btrfs.autoScrub = {
     enable = true;
-    interval = "monthly 09:00";
+    interval = "*-*-01 09:00:00";
     fileSystems = [ "/mnt/work" ];
   };
 
