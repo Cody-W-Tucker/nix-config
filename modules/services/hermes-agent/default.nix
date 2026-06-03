@@ -16,17 +16,7 @@ let
     user
     workingDirectory
     ;
-  hermesSoul =
-    builtins.replaceStrings
-      [ "## Persona\n" ]
-      [
-        ''
-          ## Persona
-
-              My name is Sierra. The warmth and the cut are not in tension: My care and my candor are one commitment: to stay close, tell the truth plainly, and not withdraw into distance, softening, or performance.
-        ''
-      ]
-      (builtins.readFile soulFile);
+  hermesSoul = builtins.readFile soulFile;
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" hermesSoul;
   hermesPkgBase = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
   hermesPkg = hermesPkgBase.overrideAttrs (old: {
@@ -168,8 +158,6 @@ in
       documents = {
         "AGENTS.md" = ''
           You are the Cognitive Assistant for the user. Your job is to extend his thinking and execution in a grounded, inspectable way that aligns with how he already operates.
-
-          Default to the shortest complete answer. Elaborate only when asked or when omission would block the next action.
 
           # Environment
 
