@@ -169,87 +169,8 @@ in
       ];
     };
 
-    # Multi-device Btrfs workspace pool spanning the two secondary NVMe drives.
-    "/mnt/work" = {
-      device = "/dev/disk/by-partlabel/work-a";
-      fsType = "btrfs";
-      options = [
-        "x-systemd.device-bound=no"
-        "x-systemd.requires=work-btrfs-device-scan.service"
-        "x-systemd.after=work-btrfs-device-scan.service"
-        "device=/dev/disk/by-partlabel/work-a"
-        "device=/dev/disk/by-partlabel/work-b"
-        "subvolid=5"
-        "compress=zstd"
-        "noatime"
-        "discard=async"
-        "nofail"
-      ];
-    };
-    "/mnt/work/dev" = {
-      device = "/dev/disk/by-partlabel/work-a";
-      fsType = "btrfs";
-      options = [
-        "x-systemd.device-bound=no"
-        "x-systemd.requires=work-btrfs-device-scan.service"
-        "x-systemd.after=work-btrfs-device-scan.service"
-        "device=/dev/disk/by-partlabel/work-a"
-        "device=/dev/disk/by-partlabel/work-b"
-        "subvol=dev"
-        "compress=zstd"
-        "noatime"
-        "discard=async"
-        "nofail"
-      ];
-    };
-    "/mnt/work/vm" = {
-      device = "/dev/disk/by-partlabel/work-a";
-      fsType = "btrfs";
-      options = [
-        "x-systemd.device-bound=no"
-        "x-systemd.requires=work-btrfs-device-scan.service"
-        "x-systemd.after=work-btrfs-device-scan.service"
-        "device=/dev/disk/by-partlabel/work-a"
-        "device=/dev/disk/by-partlabel/work-b"
-        "subvol=vm"
-        "compress=zstd"
-        "noatime"
-        "discard=async"
-        "nofail"
-      ];
-    };
-    "/mnt/work/cache" = {
-      device = "/dev/disk/by-partlabel/work-a";
-      fsType = "btrfs";
-      options = [
-        "x-systemd.device-bound=no"
-        "x-systemd.requires=work-btrfs-device-scan.service"
-        "x-systemd.after=work-btrfs-device-scan.service"
-        "device=/dev/disk/by-partlabel/work-a"
-        "device=/dev/disk/by-partlabel/work-b"
-        "subvol=cache"
-        "compress=zstd"
-        "noatime"
-        "discard=async"
-        "nofail"
-      ];
-    };
-    "/mnt/work/media" = {
-      device = "/dev/disk/by-partlabel/work-a";
-      fsType = "btrfs";
-      options = [
-        "x-systemd.device-bound=no"
-        "x-systemd.requires=work-btrfs-device-scan.service"
-        "x-systemd.after=work-btrfs-device-scan.service"
-        "device=/dev/disk/by-partlabel/work-a"
-        "device=/dev/disk/by-partlabel/work-b"
-        "subvol=media"
-        "compress=zstd"
-        "noatime"
-        "discard=async"
-        "nofail"
-      ];
-    };
+    # /mnt/work is mounted by work-btrfs-mount.service so systemd does not
+    # depend on an individual multi-device Btrfs member reaching SYSTEMD_READY=1.
   };
 
   systemd.tmpfiles.rules = [
@@ -275,11 +196,9 @@ in
   systemd.services.work-btrfs-device-scan = {
     description = "Scan workspace Btrfs pool devices";
     before = [
-      "mnt-work.mount"
-      "mnt-work-dev.mount"
-      "mnt-work-vm.mount"
-      "mnt-work-cache.mount"
-      "mnt-work-media.mount"
+      "work-btrfs-mount.service"
+      "work-btrfs-nocow.service"
+      "btrfs-scrub-mnt-work.service"
     ];
     unitConfig.DefaultDependencies = false;
     serviceConfig = {
@@ -288,16 +207,49 @@ in
     };
   };
 
+  systemd.services.work-btrfs-mount = {
+    description = "Mount workspace Btrfs pool";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "work-btrfs-device-scan.service" ];
+    requires = [ "work-btrfs-device-scan.service" ];
+    before = [
+      "work-btrfs-nocow.service"
+      "btrfs-scrub-mnt-work.service"
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "work-btrfs-mount" ''
+        set -eu
+
+        mkdir -p /mnt/work
+
+        if ${pkgs.util-linux}/bin/mountpoint -q /mnt/work; then
+          exit 0
+        fi
+
+        exec ${pkgs.util-linux}/bin/mount -t btrfs \
+          -o device=/dev/disk/by-partlabel/work-a,device=/dev/disk/by-partlabel/work-b,subvolid=5,compress=zstd,noatime,discard=async \
+          /dev/disk/by-partlabel/work-a /mnt/work
+      '';
+      ExecStop = pkgs.writeShellScript "work-btrfs-umount" ''
+        set -eu
+
+        if ${pkgs.util-linux}/bin/mountpoint -q /mnt/work; then
+          exec ${pkgs.util-linux}/bin/umount /mnt/work
+        fi
+      '';
+    };
+  };
+
   systemd.services.work-btrfs-nocow = {
     description = "Apply NOCOW attribute to workspace heavy-write directories";
     wantedBy = [ "multi-user.target" ];
     after = [
-      "mnt-work-vm.mount"
-      "mnt-work-cache.mount"
+      "work-btrfs-mount.service"
     ];
     requires = [
-      "mnt-work-vm.mount"
-      "mnt-work-cache.mount"
+      "work-btrfs-mount.service"
     ];
     serviceConfig = {
       Type = "oneshot";
