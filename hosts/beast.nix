@@ -174,6 +174,7 @@ in
       device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.device-bound=no"
         "x-systemd.requires=work-btrfs-device-scan.service"
         "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
@@ -189,6 +190,7 @@ in
       device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.device-bound=no"
         "x-systemd.requires=work-btrfs-device-scan.service"
         "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
@@ -204,6 +206,7 @@ in
       device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.device-bound=no"
         "x-systemd.requires=work-btrfs-device-scan.service"
         "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
@@ -219,6 +222,7 @@ in
       device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.device-bound=no"
         "x-systemd.requires=work-btrfs-device-scan.service"
         "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
@@ -234,6 +238,7 @@ in
       device = "/dev/disk/by-partlabel/work-a";
       fsType = "btrfs";
       options = [
+        "x-systemd.device-bound=no"
         "x-systemd.requires=work-btrfs-device-scan.service"
         "x-systemd.after=work-btrfs-device-scan.service"
         "device=/dev/disk/by-partlabel/work-a"
