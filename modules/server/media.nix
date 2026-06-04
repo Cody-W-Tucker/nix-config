@@ -107,7 +107,7 @@
       package = pkgs.transmission_4;
       group = "media";
       openRPCPort = true; # Allows Sonarr/Radarr to connect
-      openPeerPorts = false; # Allows torrent peers to connect
+      openPeerPorts = false; # Does not open peer ports on the firewall
       settings = {
         download-dir = "/mnt/media/Media/Downloads"; # Adjust as needed
         incomplete-dir = "/mnt/media/Media/Downloads/incomplete";
@@ -188,6 +188,11 @@
     vpnNamespace = "wg";
   };
 
+  users.users.jellyfin.extraGroups = [
+    "render"
+    "video"
+  ];
+
   # NGINX
   services.nginx = {
     virtualHosts = {
@@ -244,6 +249,7 @@
         forceSSL = true;
         useACMEHost = "homehub.tv";
         locations."/" = {
+          recommendedProxySettings = true;
           proxyPass = "http://127.0.0.1:5055";
           proxyWebsockets = true;
         };
