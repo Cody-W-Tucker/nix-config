@@ -36,11 +36,16 @@ let
       ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${path}" 2>/dev/null || true
       find "${path}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
 
-      chgrp -hR users "${path}"
-      ${pkgs.acl}/bin/setfacl -R -m g::rwX "${path}"
-      find "${path}" -type d -exec ${pkgs.acl}/bin/setfacl -m d:g::rwx {} +
-      chmod -R u+rwX,g+rwX "${path}"
-      find "${path}" -type d -exec chmod g+s {} +
+      # Shared roots only need directory-level policy: keep directories in the
+      # users group, make them group-writable/traversable, and seed default
+      # ACLs so ordinary creates inherit collaborative access.
+      chgrp users "${path}"
+      chmod 2775 "${path}"
+      ${pkgs.acl}/bin/setfacl -m g::rwx,d:g::rwx "${path}"
+
+      find "${path}" -type d \( ! -group users -o ! -perm -2000 -o ! -perm -0020 \) -exec chgrp users {} +
+      find "${path}" -type d -exec chmod g+rws,u+rwx {} +
+      find "${path}" -type d -exec ${pkgs.acl}/bin/setfacl -m g::rwx,d:g::rwx {} +
     fi
   '';
 in

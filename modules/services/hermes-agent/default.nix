@@ -26,16 +26,27 @@ let
 
       mkdir -p "$python_overrides"
       cp "$site_packages/hermes_constants.py" "$python_overrides/hermes_constants.py"
+      cp "$site_packages/utils.py" "$python_overrides/utils.py"
       cp -rL "$site_packages/hermes_cli" "$python_overrides/hermes_cli"
       chmod -R u+w "$python_overrides"
 
       constants_py="$python_overrides/hermes_constants.py"
       auth_py="$python_overrides/hermes_cli/auth.py"
+      utils_py="$python_overrides/utils.py"
 
-      if [ -z "$constants_py" ] || [ -z "$auth_py" ]; then
+      if [ -z "$constants_py" ] || [ -z "$auth_py" ] || [ -z "$utils_py" ]; then
         echo "failed to locate Hermes auth sources in $out" >&2
         exit 1
       fi
+
+      # Hermes often writes project files atomically via mkstemp + rename.
+      # For new files that leaves mode 0600 behind unless we derive a default
+      # from the parent directory's readable/writable classes.
+      substituteInPlace "$utils_py" \
+        --replace-fail '"""Capture the permission bits of *path* if it exists, else ``None``."""' '"""Capture the target file mode, falling back to parent directory defaults."""' \
+        --replace-fail '        return stat.S_IMODE(path.stat().st_mode) if path.exists() else None' '        if path.exists():
+            return stat.S_IMODE(path.stat().st_mode)
+        return stat.S_IMODE(path.parent.stat().st_mode) & 0o666 if path.parent.exists() else None'
 
       # This host intentionally shares HERMES_HOME between the hermes service
       # user and the codyt CLI via the hermes group. Upstream's single-user
