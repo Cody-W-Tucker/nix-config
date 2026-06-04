@@ -1,0 +1,12 @@
+diff --git a/hermes_constants.py b/hermes_constants.py
+index 6e2d39a..4f5bfb6 100644
+--- a/hermes_constants.py
++++ b/hermes_constants.py
+@@ -269,7 +269,7 @@ def secure_parent_dir(path: Path) -> None:
+     if parent == Path("/") or len(parent.parts) < 3:
+         return
+     try:
+-        os.chmod(parent, 0o700)
++        os.chmod(parent, 0o2770)
+     except OSError:
+         pass

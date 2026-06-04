@@ -1,0 +1,15 @@
+diff --git a/utils.py b/utils.py
+index 8ec1d9f..5bb7302 100644
+--- a/utils.py
++++ b/utils.py
+@@ -36,6 +36,8 @@ def env_var_enabled(name: str, default: str = "") -> bool:
+ def _preserve_file_mode(path: Path) -> "int | None":
+-    """Capture the permission bits of *path* if it exists, else ``None``."""
++    """Capture the target file mode, falling back to parent directory defaults."""
+     try:
+-        return stat.S_IMODE(path.stat().st_mode) if path.exists() else None
++        if path.exists():
++            return stat.S_IMODE(path.stat().st_mode)
++        return stat.S_IMODE(path.parent.stat().st_mode) & 0o666 if path.parent.exists() else None
+     except OSError:
+         return None

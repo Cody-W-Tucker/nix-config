@@ -1,0 +1,32 @@
+diff --git a/hermes_cli/auth.py b/hermes_cli/auth.py
+index 34e0e04..a10be5d 100644
+--- a/hermes_cli/auth.py
++++ b/hermes_cli/auth.py
+@@ -1098,5 +1098,5 @@ def _save_auth_store(auth_store: Dict[str, Any]) -> Path:
+         fd = os.open(
+             str(tmp_path),
+             os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+-            stat.S_IRUSR | stat.S_IWUSR,
++            stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP,
+         )
+@@ -1123,5 +1123,5 @@ def _save_auth_store(auth_store: Dict[str, Any]) -> Path:
+     # Restrict file permissions to owner only
+     try:
+-        auth_file.chmod(stat.S_IRUSR | stat.S_IWUSR)
++        auth_file.chmod(stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP)
+     except OSError:
+         pass
+@@ -1940,5 +1940,5 @@ def _save_qwen_cli_tokens(tokens: Dict[str, Any]) -> Path:
+     fd = os.open(
+         str(tmp_path),
+         os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+-        stat.S_IRUSR | stat.S_IWUSR,
++        stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP,
+     )
+@@ -4445,5 +4445,5 @@ def _save_nous_shared_store(provider_state: Dict[str, Any]) -> None:
+             fd = os.open(
+                 str(tmp),
+                 os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+-                stat.S_IRUSR | stat.S_IWUSR,
++                stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP,
+             )

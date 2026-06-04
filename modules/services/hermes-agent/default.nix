@@ -19,68 +19,39 @@ let
   hermesSoul = builtins.readFile soulFile;
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" hermesSoul;
   hermesPkgBase = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hermesPythonOverridePatches = [
+    ./patches/utils-parent-default-mode.patch
+    ./patches/hermes-home-group-access.patch
+    ./patches/auth-store-group-access.patch
+  ];
   hermesPkg = hermesPkgBase.overrideAttrs (old: {
     postInstall = (old.postInstall or "") + ''
-            python_overrides="$out/share/hermes-agent/python-overrides"
-            site_packages="${hermesPkgBase.passthru.hermesVenv}/lib/python3.12/site-packages"
+      python_overrides="$out/share/hermes-agent/python-overrides"
+      site_packages="${hermesPkgBase.passthru.hermesVenv}/lib/python3.12/site-packages"
 
-            mkdir -p "$python_overrides"
-            cp "$site_packages/hermes_constants.py" "$python_overrides/hermes_constants.py"
-            cp "$site_packages/utils.py" "$python_overrides/utils.py"
-            cp -rL "$site_packages/hermes_cli" "$python_overrides/hermes_cli"
-            chmod -R u+w "$python_overrides"
+      mkdir -p "$python_overrides"
+      cp "$site_packages/hermes_constants.py" "$python_overrides/hermes_constants.py"
+      cp "$site_packages/utils.py" "$python_overrides/utils.py"
+      cp -rL "$site_packages/hermes_cli" "$python_overrides/hermes_cli"
+      chmod -R u+w "$python_overrides"
 
-            constants_py="$python_overrides/hermes_constants.py"
-            auth_py="$python_overrides/hermes_cli/auth.py"
-            utils_py="$python_overrides/utils.py"
+      if [ ! -f "$python_overrides/hermes_constants.py" ] || [ ! -f "$python_overrides/hermes_cli/auth.py" ] || [ ! -f "$python_overrides/utils.py" ]; then
+        echo "failed to locate Hermes auth sources in $out" >&2
+        exit 1
+      fi
 
-            if [ -z "$constants_py" ] || [ -z "$auth_py" ] || [ -z "$utils_py" ]; then
-              echo "failed to locate Hermes auth sources in $out" >&2
-              exit 1
-            fi
+      # This host intentionally shares HERMES_HOME between the hermes service
+      # user and the codyt CLI via the hermes group, so keep the upstream
+      # local patches explicit and reviewable in ./patches.
+      for patch_file in ${
+        lib.concatMapStringsSep " " lib.escapeShellArg (map toString hermesPythonOverridePatches)
+      }; do
+        patch -p1 -d "$python_overrides" < "$patch_file"
+      done
 
-            # Hermes often writes project files atomically via mkstemp + rename.
-            # For new files that leaves mode 0600 behind unless we derive a default
-            # from the parent directory's readable/writable classes.
-            "${hermesPkgBase.passthru.hermesVenv}/bin/python3" - <<PY
-      from pathlib import Path
-      import re
-
-      path = Path("$utils_py")
-      source = path.read_text()
-      new = """def _preserve_file_mode(path: Path) -> \"int | None\":
-          \"\"\"Capture the target file mode, falling back to parent directory defaults.\"\"\"
-          try:
-              if path.exists():
-                  return stat.S_IMODE(path.stat().st_mode)
-              return stat.S_IMODE(path.parent.stat().st_mode) & 0o666 if path.parent.exists() else None
-          except OSError:
-              return None
-      """
-      source, count = re.subn(
-          r'def _preserve_file_mode\(path: Path\) -> "int \| None":\n(?:    .*\n)+?    except OSError:\n        return None\n',
-          new,
-          source,
-          count=1,
-      )
-      if count != 1:
-          raise SystemExit("failed to patch utils.py file mode preservation")
-      path.write_text(source)
-      PY
-
-            # This host intentionally shares HERMES_HOME between the hermes service
-            # user and the codyt CLI via the hermes group. Upstream's single-user
-            # hardening changes the auth store parent to 0700 and auth.json to 0600,
-            # which strands OAuth credentials on whichever account wrote them last.
-            substituteInPlace "$constants_py" \
-              --replace-fail "os.chmod(parent, 0o700)" "os.chmod(parent, 0o2770)"
-            substituteInPlace "$auth_py" \
-              --replace-fail "stat.S_IRUSR | stat.S_IWUSR," "stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP," \
-              --replace-fail "auth_file.chmod(stat.S_IRUSR | stat.S_IWUSR)" "auth_file.chmod(stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP)"
-
-            for bin_name in hermes hermes-agent hermes-acp; do
-              wrapProgram "$out/bin/$bin_name" --prefix PYTHONPATH : "$python_overrides"
-            done
+      for bin_name in hermes hermes-agent hermes-acp; do
+        wrapProgram "$out/bin/$bin_name" --prefix PYTHONPATH : "$python_overrides"
+      done
     '';
   });
 
