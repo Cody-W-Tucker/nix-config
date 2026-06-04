@@ -110,6 +110,7 @@ in
       };
       serviceConfig = {
         TimeoutStopSec = 210;
+        UMask = "0007";
         UnsetEnvironment = [ "MESSAGING_CWD" ];
       };
     };
