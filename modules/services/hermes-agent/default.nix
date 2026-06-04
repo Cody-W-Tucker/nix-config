@@ -19,11 +19,10 @@ let
   hermesSoul = builtins.readFile soulFile;
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" hermesSoul;
   hermesPkgBase = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  hermesPythonOverridePatches = [
-    ./patches/utils-parent-default-mode.patch
-    ./patches/hermes-home-group-access.patch
-    ./patches/auth-store-group-access.patch
-  ];
+  hermesPythonOverridePatchDir = builtins.path {
+    path = ./patches;
+    name = "hermes-agent-patches";
+  };
   hermesPkg = hermesPkgBase.overrideAttrs (old: {
     postInstall = (old.postInstall or "") + ''
       python_overrides="$out/share/hermes-agent/python-overrides"
@@ -43,9 +42,7 @@ let
       # This host intentionally shares HERMES_HOME between the hermes service
       # user and the codyt CLI via the hermes group, so keep the upstream
       # local patches explicit and reviewable in ./patches.
-      for patch_file in ${
-        lib.concatMapStringsSep " " lib.escapeShellArg (map toString hermesPythonOverridePatches)
-      }; do
+      for patch_file in ${hermesPythonOverridePatchDir}/*.patch; do
         patch -p1 -d "$python_overrides" < "$patch_file"
       done
 
