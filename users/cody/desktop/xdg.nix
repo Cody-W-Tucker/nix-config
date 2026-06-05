@@ -1,7 +1,13 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 let
   inherit (pkgs) writeText;
   inherit (config) xdg;
+  hermesDesktopPkg = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop;
 in
 {
   # Enable XDG user directories with custom folders
@@ -60,6 +66,19 @@ in
       "x-scheme-handler/https" = "zen.desktop";
     };
   };
+
+  xdg.desktopEntries.hermes-desktop = {
+    name = "Hermes Desktop";
+    comment = "Native desktop shell for Hermes Agent";
+    exec = "hermes-desktop";
+    icon = "${hermesDesktopPkg}/share/hermes-desktop/dist/hermes.png";
+    categories = [
+      "Development"
+      "Utility"
+    ];
+    terminal = false;
+  };
+
   # Install the Applications
   home.packages = with pkgs; [
     # list of stable packages go here

@@ -19,6 +19,7 @@ let
   hermesSoul = builtins.readFile soulFile;
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" hermesSoul;
   hermesPkgBase = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hermesDesktopPkg = hermesPkg.passthru.hermesDesktop;
   hermesPythonOverridePatchDir = builtins.path {
     path = ./patches;
     name = "hermes-agent-patches";
@@ -114,6 +115,10 @@ in
         UnsetEnvironment = [ "MESSAGING_CWD" ];
       };
     };
+
+    environment.systemPackages = lib.mkIf config.services.hermes-agent.addToSystemPackages [
+      hermesDesktopPkg
+    ];
 
     # Hermes loads its primary identity from HERMES_HOME/SOUL.md, not from the
     # workspace documents directory.
