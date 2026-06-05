@@ -7,34 +7,6 @@ let
 in
 
 {
-  # Docker is still used for Open WebUI pipelines.
-  virtualisation = {
-    docker = {
-      enable = true;
-      rootless = {
-        enable = true;
-        setSocketVariable = true;
-      };
-      autoPrune = {
-        enable = true;
-        dates = "weekly";
-      };
-    };
-    oci-containers.backend = "docker";
-    oci-containers.containers = {
-      "pipelines" = {
-        autoStart = true;
-        image = "ghcr.io/open-webui/pipelines:main";
-        ports = [ "9099:9099" ];
-        volumes = [ "/var/lib/pipelines/pipelines:/app/pipelines" ];
-        extraOptions = [
-          "--add-host=host.docker.internal:host-gateway"
-          "--network=host"
-          "--pull=always"
-        ];
-      };
-    };
-  };
   # Local AI models
   services = {
     open-webui = {
@@ -103,12 +75,6 @@ in
       };
     };
   };
-  # Make the pipelines dir
-  systemd.tmpfiles.rules = [
-    "d /var/lib/pipelines 0755 root root - -"
-  ];
-  systemd.services."docker-pipelines".requires = [ "docker.service" ];
-
   # Since we run open-webui on beast and the nginx server is on the server, we must open the port so the web server can proxy them
   networking.firewall.allowedTCPPorts = [
     8080
