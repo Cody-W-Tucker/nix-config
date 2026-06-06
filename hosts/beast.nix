@@ -120,6 +120,15 @@ in
     useDHCP = lib.mkDefault true; # Enables DHCP on each ethernet and wireless interface.
   };
 
+  # System Docker is required for the Actual Budget MCP wrapper.
+  virtualisation.docker = {
+    enable = true;
+    autoPrune = {
+      enable = true;
+      dates = "weekly";
+    };
+  };
+
   # Ensure 14th Gen Intel CPU works correctly
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 

@@ -10,6 +10,8 @@ let
       ACTUAL_BUDGET_SYNC_ID="$(< ${config.sops.secrets.actual-budget-mcp-sync-id.path})"
       export ACTUAL_BUDGET_SYNC_ID
 
+      unset DOCKER_HOST
+
       exec docker run \
         -i \
         --rm \
