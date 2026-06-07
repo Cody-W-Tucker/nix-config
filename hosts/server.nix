@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   self,
   ...
@@ -115,6 +116,8 @@
 
   # Tailscale - run: "sudo tailscale up --auth-key=KEY" with the key generated at https://login.tailscale.com/admin/machines/new-linux
   services.tailscale.enable = true;
+
+  virtualisation.docker.package = pkgs.docker_29;
 
   # Static host entry for aiserver (Tailscale IP)
   networking.hosts."100.68.141.25" = [ "aiserver" ];
