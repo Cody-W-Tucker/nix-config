@@ -7,9 +7,9 @@
 
 let
   mainMod = "SUPER";
-  browser = "uwsm app -- zen --new-tab";
-  webApp = "uwsm app -- chromium --new-window --app";
-  terminal = "uwsm app -- kitty";
+  browser = "zen --new-tab";
+  webApp = "chromium --new-window --app";
+  terminal = "kitty";
 
   # Helper to focus or run applications
   focusOrRun = appClass: cmd: "exec, focus-or-run '${appClass}' '${cmd}'";

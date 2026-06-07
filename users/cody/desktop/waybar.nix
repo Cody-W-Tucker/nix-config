@@ -82,7 +82,7 @@ in
               ""
             ];
           };
-          on-click-right = "uwsm-app -- pavucontrol";
+          on-click-right = "pavucontrol";
         };
         mpris = {
           format = "{player_icon} {title}";
@@ -223,7 +223,7 @@ in
           format = "{percentage_free}% ";
         };
         temperature = {
-          on-click = "uwsm app -- kitty -e btop";
+          on-click = "kitty -e btop";
           format = "{temperatureC}°C ";
           format-critical = "{temperatureC}°C ";
           tooltip-format = "{temperatureF}°F";
