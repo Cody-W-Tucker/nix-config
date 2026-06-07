@@ -29,10 +29,7 @@ let
     "/dev/disk/by-partlabel/work-a"
     "/dev/disk/by-partlabel/work-b"
   ];
-  workBtrfsMemberArgs = lib.concatStringsSep " " workBtrfsMembers;
-  workBtrfsMountOptions = lib.concatStringsSep "," [
-    "device=/dev/disk/by-partlabel/work-a"
-    "device=/dev/disk/by-partlabel/work-b"
+  workBtrfsMountOptions = map (device: "device=${device}") workBtrfsMembers ++ [
     "subvolid=5"
     "compress=zstd"
     "noatime"
@@ -190,9 +187,11 @@ in
         "nfsvers=4.2"
       ];
     };
-
-    # /mnt/work is mounted by work-btrfs-mount.service so systemd does not
-    # depend on an individual multi-device Btrfs member reaching SYSTEMD_READY=1.
+    "/mnt/work" = {
+      device = "/dev/disk/by-uuid/34882b6b-6f50-4caa-93ff-b27688c41f1a";
+      fsType = "btrfs";
+      options = workBtrfsMountOptions;
+    };
   };
 
   systemd.tmpfiles.rules = [
@@ -215,68 +214,19 @@ in
   # suspend transitions (this host sleeps after 2 h of idle).
   systemd.timers."btrfs-scrub-mnt-work".timerConfig.RandomizedDelaySec = "3h";
 
-  systemd.services.work-btrfs-device-scan = {
-    description = "Scan workspace Btrfs pool devices";
-    before = [
-      "work-btrfs-mount.service"
-      "work-btrfs-nocow.service"
-      "btrfs-scrub-mnt-work.service"
-    ];
-    unitConfig.DefaultDependencies = false;
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.btrfs-progs}/bin/btrfs device scan ${workBtrfsMemberArgs}";
-    };
-  };
-
-  systemd.services.work-btrfs-mount = {
-    description = "Mount workspace Btrfs pool";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "work-btrfs-device-scan.service" ];
-    requires = [ "work-btrfs-device-scan.service" ];
-    before = [
-      "work-btrfs-nocow.service"
-      "btrfs-scrub-mnt-work.service"
-    ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "work-btrfs-mount" ''
-        set -eu
-
-        mkdir -p /mnt/work
-
-        if ${pkgs.util-linux}/bin/mountpoint -q /mnt/work; then
-          exit 0
-        fi
-
-        exec ${pkgs.util-linux}/bin/mount -t btrfs \
-          -o ${workBtrfsMountOptions} \
-          ${builtins.head workBtrfsMembers} /mnt/work
-      '';
-      ExecStop = pkgs.writeShellScript "work-btrfs-umount" ''
-        set -eu
-
-        if ${pkgs.util-linux}/bin/mountpoint -q /mnt/work; then
-          exec ${pkgs.util-linux}/bin/umount /mnt/work
-        fi
-      '';
-    };
-  };
-
   systemd.services."btrfs-scrub-mnt-work" = {
-    after = [ "work-btrfs-mount.service" ];
-    requires = [ "work-btrfs-mount.service" ];
+    after = [ "mnt-work.mount" ];
+    requires = [ "mnt-work.mount" ];
   };
 
   systemd.services.work-btrfs-nocow = {
     description = "Apply NOCOW attribute to workspace heavy-write directories";
     wantedBy = [ "multi-user.target" ];
     after = [
-      "work-btrfs-mount.service"
+      "mnt-work.mount"
     ];
     requires = [
-      "work-btrfs-mount.service"
+      "mnt-work.mount"
     ];
     serviceConfig = {
       Type = "oneshot";
