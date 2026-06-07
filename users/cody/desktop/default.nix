@@ -43,7 +43,6 @@
       package = pkgs.adwaita-icon-theme;
       name = "Adwaita";
     };
-    gtk4.theme = null; # Let Stylix handle GTK4 via CSS
   };
 
   home.packages = with pkgs; [

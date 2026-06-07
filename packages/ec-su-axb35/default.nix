@@ -13,7 +13,7 @@ let
     owner = "cmetz";
     repo = "ec-su_axb35-linux";
     rev = "main";
-    sha256 = "sha256-ESXL5o75ESxm1h6N4OiBFcZzoQNEkxP1cY6wEk5UdNc=";
+    sha256 = "sha256-VuKP1wYqjkxsMGZo6W+MPiie/5slQrB08DKfF+kXgJo=";
   };
 
   kernelModule = stdenv.mkDerivation {
