@@ -31,6 +31,13 @@
     };
   };
 
+  systemd.services.fwupd-refresh.serviceConfig.ExecStart = lib.mkForce [
+    ""
+    # The timer runs as a system user with no desktop polkit agent, so the
+    # default interactive auth path fails even though a manual desktop refresh works.
+    "${lib.getExe pkgs.fwupd} refresh --no-authenticate"
+  ];
+
   # Include all firmware for devices like Bluetooth
   hardware.enableRedistributableFirmware = true;
 }
