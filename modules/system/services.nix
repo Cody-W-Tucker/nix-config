@@ -35,7 +35,7 @@
     ""
     # The timer runs as a system user with no desktop polkit agent, so the
     # default interactive auth path fails even though a manual desktop refresh works.
-    "${lib.getExe pkgs.fwupd} refresh --no-authenticate"
+    "${lib.getExe' pkgs.fwupd "fwupdmgr"} refresh --no-authenticate"
   ];
 
   # Include all firmware for devices like Bluetooth
