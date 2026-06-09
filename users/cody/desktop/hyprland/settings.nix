@@ -76,7 +76,7 @@ let
     "${mainMod}, P, exec, pkill -SIGUSR1 waybar"
 
     # Whisper dictation - hold to record
-    "${mainMod}, Escape, exec, whisp-away-safe start"
+    "${mainMod}, Escape, exec, llama-dictate start"
   ];
 in
 {
@@ -125,7 +125,7 @@ in
 
     bindr = [
       # Whisper dictation - release keybind to transcribe
-      "${mainMod}, Escape, exec, whisp-away-safe stop"
+      "${mainMod}, Escape, exec, llama-dictate stop"
     ];
     windowrule = [
       # Kitty

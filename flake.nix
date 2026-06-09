@@ -60,10 +60,6 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    whisp-away = {
-      # Voice dictation for Linux using OpenAI's Whisper models.
-      url = "github:madjinn/whisp-away";
-    };
     googleworkspace-cli = {
       # Google Workspace CLI for Drive, Gmail, Calendar, and related APIs.
       url = "github:googleworkspace/cli";
