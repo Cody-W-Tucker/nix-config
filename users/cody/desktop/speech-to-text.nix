@@ -117,7 +117,7 @@ let
 in
 
 {
-  imports = [ inputs.whisp-away.nixosModules.home-manager ];
+  imports = [ ./whisp-away ];
 
   services.whisp-away = {
     enable = hardwareConfig.enableWhisp or true;
