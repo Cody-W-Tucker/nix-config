@@ -289,7 +289,7 @@ in
       # qwen3.5-4b is used by Karakeep for summarization. Disable reasoning so
       # the <think> trace does not consume the context budget.
       "qwen3.5-4b" = {
-        contextSize = 16384;
+        contextSize = 32768;
         ttl = 60;
         extraArgs = [
           "--reasoning"
