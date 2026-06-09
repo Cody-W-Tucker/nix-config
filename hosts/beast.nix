@@ -275,13 +275,13 @@ in
       audio-stt = {
         swap = false;
         exclusive = false;
-        persistent = true;
+        persistent = false;
         members = [ "whisper-medium" ];
       };
       audio-tts = {
         swap = false;
         exclusive = false;
-        persistent = true;
+        persistent = false;
         members = [ "transformers-speecht5" ];
       };
     };
