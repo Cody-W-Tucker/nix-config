@@ -271,6 +271,7 @@ in
       "whisper-medium"
       "transformers-speecht5"
     ];
+    preloadModels = [ "whisper-medium" ];
     settings.groups = {
       audio-stt = {
         swap = false;
@@ -311,7 +312,7 @@ in
         flashAttention = false;
       };
       "whisper-medium" = {
-        ttl = 300; # 5 min idle before llama-swap considers unloading (voice stack)
+        ttl = 0; # Keep STT warm until another group explicitly evicts it.
         upstream = {
           cmd = ''
             ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/faster-whisper-openai-server.py} \
