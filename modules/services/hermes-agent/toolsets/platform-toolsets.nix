@@ -15,6 +15,7 @@ let
     "code_execution"
     "delegation"
     "kanban"
+    "terminal"
   ];
 
   cliToolsets = [

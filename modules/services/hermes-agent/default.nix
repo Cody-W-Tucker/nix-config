@@ -164,6 +164,7 @@ in
           - **Default workspace**: ${workingDirectory} (your shared working directory)
           - **NixOS config repo**: ${nixosConfigRoot} (this repo; you can inspect and edit it when needed)
           - **Obsidian vault**: ${obsidianVault} (shared space for saves/reads the user can also edit)
+          - **Knowledge search via `qmd`**: (your search tool access to the user's personal knowledge base)
           - **Projects root**: ${projectsRoot} (user projects likely live here)
           - Common language runtimes may be absent; use `nix shell` only when required
           - Do NOT use `nix shell` for standard Unix utilities
