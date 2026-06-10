@@ -26,7 +26,7 @@ writeShellApplication {
     export MEM0_DEFAULT_USER_ID=''${MEM0_DEFAULT_USER_ID:-codyt}
     export MEM0_COLLECTION_NAME=''${MEM0_COLLECTION_NAME:-shared-agent-memory}
     export MEM0_LLM_PROVIDER=''${MEM0_LLM_PROVIDER:-openai}
-    export MEM0_LLM_MODEL=''${MEM0_LLM_MODEL:-qwen3.5-4b}
+    export MEM0_LLM_MODEL=''${MEM0_LLM_MODEL:-qwen3.5-0.8b}
     export MEM0_EMBEDDER_PROVIDER=''${MEM0_EMBEDDER_PROVIDER:-openai}
     export MEM0_EMBEDDER_MODEL=''${MEM0_EMBEDDER_MODEL:-qwen3-embedding-0.6b}
     export MEM0_OPENAI_BASE_URL=''${MEM0_OPENAI_BASE_URL:-http://127.0.0.1:8081/v1}
