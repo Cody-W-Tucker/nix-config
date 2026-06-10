@@ -114,6 +114,7 @@
     kitty = {
       enable = true;
       settings = {
+        auto_reload_config = "-1";
         shell_integration = "no-cursor";
         window_padding_width = "0 8";
         confirm_os_window_close = "0";
