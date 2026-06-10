@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 # Shared user config safe for all machines
 
@@ -88,6 +88,7 @@
       enable = true;
       syntaxHighlighting.enable = true;
       autosuggestion.enable = true;
+      autosuggestion.highlight = "fg=#${config.lib.stylix.colors.base04}";
       enableCompletion = true;
       history.path = "$HOME/.local/share/zsh/zsh_history";
       history.size = 10000;

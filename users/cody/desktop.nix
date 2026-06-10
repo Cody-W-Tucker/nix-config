@@ -13,6 +13,9 @@
     polarity = "dark";
     targets.nixvim.enable = false;
     targets.firefox.profileNames = [ "default" ];
+    targets.kitty.fonts.override = {
+      size = 16;
+    };
     opacity = {
       applications = 0.9;
       terminal = 0.8;
