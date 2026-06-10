@@ -104,6 +104,7 @@
         home-manager-input = inputs.home-manager;
       };
       pkgs = nixpkgs-unstable.legacyPackages.${system};
+      enCoreWebSmPackage = pkgs.callPackage ./packages/en-core-web-sm { };
       mem0aiPackage = pkgs.callPackage ./packages/mem0ai { };
     in
     {
@@ -114,8 +115,10 @@
       packages.${system} = {
         gh-star-search = pkgs.callPackage ./packages/gh-star-search { };
         llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
+        en-core-web-sm = enCoreWebSmPackage;
         mem0ai = mem0aiPackage;
         mem0-mcp = pkgs.callPackage ./packages/mem0-mcp {
+          enCoreWebSm = enCoreWebSmPackage;
           mem0ai = mem0aiPackage;
         };
       };

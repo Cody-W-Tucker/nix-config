@@ -1,12 +1,16 @@
 {
   writeShellApplication,
   python313,
+  enCoreWebSm,
   mem0ai,
 }:
 
 let
   pythonEnv = python313.withPackages (ps: [
+    enCoreWebSm
+    ps.fastembed
     mem0ai
+    ps.spacy
     ps.fastmcp
     ps.pydantic
   ]);

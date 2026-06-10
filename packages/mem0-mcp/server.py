@@ -69,6 +69,19 @@ def parse_metadata(metadata: Optional[str]) -> Optional[dict]:
     return json.loads(metadata)
 
 
+def build_filters(user_id: Optional[str], agent_id: Optional[str]) -> dict:
+    filters = {}
+
+    resolved_user_id = user_id or os.environ.get("MEM0_DEFAULT_USER_ID", "codyt")
+    if resolved_user_id:
+        filters["user_id"] = resolved_user_id
+
+    if agent_id:
+        filters["agent_id"] = agent_id
+
+    return filters
+
+
 @mcp.tool()
 def add_memory(
     content: str = Field(description="Content to store as durable memory"),
@@ -94,9 +107,8 @@ def search_memories(
 ) -> str:
     result = memory.search(
         query=query,
-        user_id=user_id or os.environ.get("MEM0_DEFAULT_USER_ID", "codyt"),
-        agent_id=agent_id,
-        limit=limit,
+        filters=build_filters(user_id, agent_id),
+        top_k=limit,
     )
     return json.dumps(result, indent=2)
 
@@ -107,8 +119,7 @@ def get_all_memories(
     agent_id: Optional[str] = Field(default=None, description="Optional agent ID scope"),
 ) -> str:
     result = memory.get_all(
-        user_id=user_id or os.environ.get("MEM0_DEFAULT_USER_ID", "codyt"),
-        agent_id=agent_id,
+        filters=build_filters(user_id, agent_id),
     )
     return json.dumps(result, indent=2)
 
