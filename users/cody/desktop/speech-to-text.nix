@@ -21,8 +21,17 @@ let
       pidfile="/tmp/llama-dictate-recording.pid"
       pathfile="/tmp/llama-dictate-recording.path"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-      api_url="http://127.0.0.1:8081/v1/audio/transcriptions"
+      api_base_url="http://127.0.0.1:8081/v1"
+      api_url="$api_base_url/audio/transcriptions"
+      models_url="$api_base_url/models"
       model="whisper-medium"
+
+      warm_model() {
+        # Trigger llama-swap to load the STT backend while recording starts.
+        ${pkgs.curl}/bin/curl --silent --show-error --fail \
+          --max-time 60 \
+          "$models_url" >/dev/null 2>&1 &
+      }
 
       is_recording_pid() {
         pid="$1"
@@ -154,6 +163,7 @@ let
       case "$command" in
         start)
           cleanup_stale_recording start
+          warm_model
           recording_path="$runtime_dir/voice-recording-$(date +%s%N).wav"
           pw-record --channels 1 --rate 16000 --format s16 --volume 1.5 "$recording_path" >/dev/null 2>&1 &
           recording_pid="$!"
