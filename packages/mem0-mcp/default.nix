@@ -38,6 +38,17 @@ writeShellApplication {
     umask 0007
     mkdir -p "$MEM0_DATA_DIR"
 
+    # OpenCode and Hermes share this SQLite DB via a common group, so keep the
+    # main file group-writable no matter which side creates it first.
+    touch "$MEM0_HISTORY_DB_PATH"
+    chmod 0660 "$MEM0_HISTORY_DB_PATH" 2>/dev/null || true
+
+    for sidecar in "$MEM0_HISTORY_DB_PATH-wal" "$MEM0_HISTORY_DB_PATH-shm"; do
+      if [ -e "$sidecar" ]; then
+        chmod 0660 "$sidecar" 2>/dev/null || true
+      fi
+    done
+
     exec ${pythonEnv}/bin/python ${./server.py} "$@"
   '';
 }
