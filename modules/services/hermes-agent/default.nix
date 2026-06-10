@@ -167,7 +167,8 @@ in
           - **Default workspace**: ${workingDirectory} (your shared working directory)
           - **NixOS config repo**: ${nixosConfigRoot} (this repo; you can inspect and edit it when needed)
           - **Obsidian vault**: ${obsidianVault} (shared space for saves/reads the user can also edit)
-          - **Miniflux**: MCP access is available against `https://rss.homehub.tv/`; use it for RSS triage, morning unread summaries, bookmarking/saving, and marking items read
+          - **Miniflux**: use the Miniflux MCP tools for RSS triage, morning unread summaries, bookmarking/saving, and marking items read; the public UI and MCP endpoint are `https://rss.homehub.tv/`
+          - Do not use `web_extract` against `rss.homehub.tv`; Hermes blocks that URL because it resolves to a private LAN address behind nginx
           - **Knowledge search via `qmd`**: (your search tool access to the user's personal knowledge base)
           - **Projects root**: ${projectsRoot} (user projects likely live here)
           - Common language runtimes may be absent; use `nix shell` only when required

@@ -39,6 +39,16 @@ let
       mainProgram = "miniflux-mcp";
     };
   };
+  minifluxMcpWrapped = pkgs.writeShellApplication {
+    name = "miniflux-mcp";
+    text = ''
+      export MINIFLUX_URL="https://rss.homehub.tv/"
+      MINIFLUX_API_KEY="$(< ${config.sops.secrets."miniflux/API_KEY".path})"
+      export MINIFLUX_API_KEY
+
+      exec ${minifluxMcp}/bin/miniflux-mcp "$@"
+    '';
+  };
 in
 
 {
@@ -50,13 +60,18 @@ in
           inherit (config.services.hermes-agent) group;
           mode = "0440";
         };
+        "miniflux/API_KEY" = {
+          owner = config.services.hermes-agent.user;
+          inherit (config.services.hermes-agent) group;
+          mode = "0440";
+        };
       };
     };
 
     services.hermes-agent = {
       mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
       mcpServers.mem0.command = "${mem0Mcp}/bin/mem0-mcp";
-      mcpServers.miniflux.command = "${minifluxMcp}/bin/miniflux-mcp";
+      mcpServers.miniflux.command = "${minifluxMcpWrapped}/bin/miniflux-mcp";
     };
   };
 }
