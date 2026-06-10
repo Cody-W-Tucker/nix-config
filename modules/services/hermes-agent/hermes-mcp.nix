@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  self,
+  ...
+}:
 let
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
@@ -11,6 +16,7 @@ let
       exec npx -y @karakeep/mcp "$@"
     '';
   };
+  mem0Mcp = self.packages.${pkgs.stdenv.hostPlatform.system}.mem0-mcp;
 in
 
 {
@@ -27,6 +33,7 @@ in
 
     services.hermes-agent = {
       mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
+      mcpServers.mem0.command = "${mem0Mcp}/bin/mem0-mcp";
     };
   };
 }

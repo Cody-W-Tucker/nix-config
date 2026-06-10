@@ -104,6 +104,7 @@
         home-manager-input = inputs.home-manager;
       };
       pkgs = nixpkgs-unstable.legacyPackages.${system};
+      mem0aiPackage = pkgs.callPackage ./packages/mem0ai { };
     in
     {
       # Official NixOS formatter with directory support
@@ -113,6 +114,10 @@
       packages.${system} = {
         gh-star-search = pkgs.callPackage ./packages/gh-star-search { };
         llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
+        mem0ai = mem0aiPackage;
+        mem0-mcp = pkgs.callPackage ./packages/mem0-mcp {
+          mem0ai = mem0aiPackage;
+        };
       };
 
       # Builds the different systems

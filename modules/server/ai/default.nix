@@ -7,6 +7,8 @@ let
 in
 
 {
+  imports = [ ./mem0.nix ];
+
   # Local AI models
   services = {
     open-webui = {

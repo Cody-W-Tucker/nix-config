@@ -172,11 +172,10 @@ in
           # Memory
 
           - The full memory tool spec lives in `MEMORY-TOOL.md`. Follow it when deciding what to store, update, delete, or ignore.
-          - The holographic provider is active. Use its own tool surface for structured relational recall rather than flattening everything into snapshot memory.
-          - Use built-in `memory` for compact durable notes that should appear in future session snapshots.
-          - When the answer may depend on prior cognitive patterns, decision drivers, recurring structures, theory-of-mind inferences, relationship dynamics, collaboration tendencies, or CA architecture, use holographic recall before answering.
-          - For that work, prefer probing or reasoning first, then synthesize the returned facts into the answer instead of dumping raw tool output.
-          - When a stable snapshot note and a structured relational fact are both useful, write both deliberately.
+          - Default to the shared `mem0` MCP server for durable memory work so OpenCode and Hermes can both read and build on the same memory base.
+          - Use built-in `memory` only when the note should stay Hermes-local or belong in Hermes snapshots rather than the shared cross-agent store.
+          - Prefer storing memory in `mem0` when it should matter across future sessions, tools, or agents.
+          - When a stable snapshot note and a shared `mem0` fact are both useful, write both deliberately.
         '';
         "MEMORY-TOOL.md" = memoryToolSpec;
       };
@@ -278,7 +277,7 @@ in
         memory = {
           memory_enabled = true;
           user_profile_enabled = true;
-          provider = "holographic";
+          provider = "mem0";
         };
         plugins = {
           disabled = [ "google_chat-platform" ];
