@@ -42,7 +42,7 @@ let
   minifluxMcpWrapped = pkgs.writeShellApplication {
     name = "miniflux-mcp";
     text = ''
-      export MINIFLUX_URL="https://rss.homehub.tv/"
+      export MINIFLUX_URL="https://rss.homehub.tv"
       MINIFLUX_API_KEY="$(< ${config.sops.secrets."miniflux/API_KEY".path})"
       export MINIFLUX_API_KEY
 

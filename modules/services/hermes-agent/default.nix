@@ -82,7 +82,7 @@ in
           OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
           XAI_API_KEY=${config.sops.placeholder."xai-api-key"}
           FIRECRAWL_API_KEY=${config.sops.placeholder."firecrawl-api-key"}
-          MINIFLUX_URL=https://rss.homehub.tv/
+          MINIFLUX_URL=https://rss.homehub.tv
           MINIFLUX_API_KEY=${config.sops.placeholder."miniflux/API_KEY"}
           DISCORD_BOT_TOKEN=${config.sops.placeholder."hermes-discord-bot-token"}
           DISCORD_ALLOWED_USERS=${config.sops.placeholder."hermes-discord-allowed-users"}
@@ -167,7 +167,7 @@ in
           - **Default workspace**: ${workingDirectory} (your shared working directory)
           - **NixOS config repo**: ${nixosConfigRoot} (this repo; you can inspect and edit it when needed)
           - **Obsidian vault**: ${obsidianVault} (shared space for saves/reads the user can also edit)
-          - **Miniflux**: use the Miniflux MCP tools for RSS triage, morning unread summaries, bookmarking/saving, and marking items read; the public UI and MCP endpoint are `https://rss.homehub.tv/`
+          - **Miniflux**: use the Miniflux MCP tools for RSS triage, morning unread summaries, bookmarking/saving, and marking items read; the public UI and MCP endpoint are `https://rss.homehub.tv`
           - Do not use `web_extract` against `rss.homehub.tv`; Hermes blocks that URL because it resolves to a private LAN address behind nginx
           - **Knowledge search via `qmd`**: (your search tool access to the user's personal knowledge base)
           - **Projects root**: ${projectsRoot} (user projects likely live here)
