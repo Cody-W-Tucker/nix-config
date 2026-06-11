@@ -21,16 +21,15 @@ let
       pidfile="/tmp/llama-dictate-recording.pid"
       pathfile="/tmp/llama-dictate-recording.path"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-      api_base_url="http://127.0.0.1:8081/v1"
-      api_url="$api_base_url/audio/transcriptions"
-      models_url="$api_base_url/models"
+      api_url="http://127.0.0.1:8081/v1/audio/transcriptions"
+      warmup_url="http://127.0.0.1:8081/upstream/whisper-medium/health"
       model="whisper-medium"
 
       warm_model() {
-        # Trigger llama-swap to load the STT backend while recording starts.
+        # Ask llama-swap to bring up the STT backend without sending fake audio.
         ${pkgs.curl}/bin/curl --silent --show-error --fail \
           --max-time 60 \
-          "$models_url" >/dev/null 2>&1 &
+          "$warmup_url" >/dev/null 2>&1 &
       }
 
       is_recording_pid() {
