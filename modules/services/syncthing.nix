@@ -19,9 +19,6 @@
       "beast" = {
         id = "WS3XKRH-JILABRE-NLK2NU6-BGPXTOY-TOO2K75-UYEY7HB-KO7NKAC-I37UGQ3";
       };
-      "aiserver" = {
-        id = "2HCQD2S-RHNRARF-CR7XUXC-J76FL3E-DIA7TGH-OC7VVGF-BADHGJY-ZFWNCQY";
-      };
     };
   };
 
@@ -41,7 +38,6 @@
         devices = [
           "server"
           "beast"
-          "aiserver"
         ];
       };
     })
@@ -51,21 +47,8 @@
       "share" = {
         path = "/mnt/backup/Share";
         devices = [
-          "aiserver"
           "beast"
           "server"
-        ];
-      };
-    })
-
-    # Aiserver folders
-    (lib.mkIf (config.networking.hostName == "aiserver") {
-      "share" = {
-        path = "/mnt/backup/Share";
-        devices = [
-          "server"
-          "beast"
-          "aiserver"
         ];
       };
     })

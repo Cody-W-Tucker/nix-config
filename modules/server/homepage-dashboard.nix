@@ -257,13 +257,6 @@ in
                 description = "File Synchronization - Beast";
               };
             }
-            {
-              AIServerSyncthing = {
-                href = "https://aiserver-syncthing.${domain}";
-                icon = "syncthing";
-                description = "File Synchronization - AI Server";
-              };
-            }
           ];
         }
 

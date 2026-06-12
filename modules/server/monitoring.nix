@@ -89,12 +89,6 @@
                 host = "beast";
               };
             }
-            {
-              targets = [ "aiserver:9002" ];
-              labels = {
-                host = "aiserver";
-              };
-            }
           ];
         }
         {
@@ -110,12 +104,6 @@
               targets = [ "beast:9633" ];
               labels = {
                 host = "beast";
-              };
-            }
-            {
-              targets = [ "aiserver:9633" ];
-              labels = {
-                host = "aiserver";
               };
             }
           ];

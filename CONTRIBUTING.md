@@ -25,7 +25,6 @@ The goals of this repo are:
 ## Hosts in this repo
 
 - `beast` - desktop workstation
-- `aiserver` - AI workstation
 - `server` - media and homelab server
 
 ## Core principles
@@ -266,7 +265,6 @@ Before merging or switching, run the narrowest useful validation.
 
 ```bash
 sudo nixos-rebuild build --flake .#beast
-sudo nixos-rebuild build --flake .#aiserver
 sudo nixos-rebuild build --flake .#server
 ```
 

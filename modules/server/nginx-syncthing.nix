@@ -18,11 +18,6 @@
           "100.108.143.19:8384" = { };
         };
       };
-      aiserver_syncthing = {
-        servers = {
-          "100.68.141.25:8384" = { };
-        };
-      };
     };
   };
 
@@ -48,14 +43,6 @@
       useACMEHost = "homehub.tv";
       locations."/" = {
         proxyPass = "http://beast_syncthing/";
-      };
-      kTLS = true;
-    };
-    "aiserver-syncthing.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://aiserver_syncthing/";
       };
       kTLS = true;
     };

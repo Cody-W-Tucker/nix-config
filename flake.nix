@@ -136,10 +136,6 @@
           };
           modules = [ ./hosts/server.nix ];
         };
-        aiserver = inputs.nixpkgs-unstable.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = [ ./hosts/aiserver.nix ];
-        };
       };
     };
 }

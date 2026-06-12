@@ -119,6 +119,4 @@
 
   virtualisation.docker.package = pkgs.docker_29;
 
-  # Static host entry for aiserver (Tailscale IP)
-  networking.hosts."100.68.141.25" = [ "aiserver" ];
 }
