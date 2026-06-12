@@ -44,6 +44,13 @@ def create_app(args: argparse.Namespace) -> FastAPI:
 
     app = FastAPI(lifespan=lifespan)
 
+    @app.get("/")
+    async def root():
+        return {
+            "status": "ok",
+            "model": app.state.model_id,
+        }
+
     @app.get("/health")
     @app.get("/v1/health")
     async def health():

@@ -337,6 +337,7 @@ in
               --device cuda \
               --compute-type int8 \
               --download-root ${sharedFasterWhisperCache} \
+              --vad-filter \
               --language en
           '';
         };
