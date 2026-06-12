@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 # Shared user config safe for all machines
 
@@ -23,28 +23,23 @@
 
   programs = {
     bash.historyFile = "$HOME/.local/share/bash/bash_history";
-
     bat = {
       enable = true;
       config.pager = "less -FR";
     };
-
     direnv = {
       enable = true;
       nix-direnv.enable = true;
     };
-
     eza = {
       enable = true;
       git = true;
       icons = "auto";
     };
-
     fzf = {
       enable = true;
       enableZshIntegration = true;
     };
-
     git = {
       enable = true;
       ignores = [
@@ -71,7 +66,6 @@
         };
       };
     };
-
     lazygit = {
       enable = true;
       settings = {
@@ -83,12 +77,10 @@
     };
     ripgrep.enable = true;
     zoxide.enable = true;
-
     zsh = {
       enable = true;
       syntaxHighlighting.enable = true;
       autosuggestion.enable = true;
-      autosuggestion.highlight = "fg=#${config.lib.stylix.colors.base04}";
       enableCompletion = true;
       history.path = "$HOME/.local/share/zsh/zsh_history";
       history.size = 10000;

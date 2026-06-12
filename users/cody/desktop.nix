@@ -1,4 +1,9 @@
-{ pkgs, inputs, ... }:
+{
+  pkgs,
+  inputs,
+  config,
+  ...
+}:
 
 {
   imports = [
@@ -7,14 +12,18 @@
     inputs.stylix.homeModules.stylix
   ];
 
+  programs.zsh.autosuggestion.highlight = "fg=#${config.lib.stylix.colors.base04}";
+
   # Styling and themes
   stylix = {
     enable = true;
     polarity = "dark";
-    targets.nixvim.enable = false;
-    targets.firefox.profileNames = [ "default" ];
-    targets.kitty.fonts.override = {
-      size = 16;
+    targets = {
+      nixvim.enable = false;
+      firefox.profileNames = [ "default" ];
+      kitty.fonts.override = {
+        size = 16;
+      };
     };
     opacity = {
       applications = 0.9;
@@ -87,5 +96,4 @@
     # Use libinput for input devices in wlroots compositors
     WLR_USE_LIBINPUT = "1";
   };
-
 }
