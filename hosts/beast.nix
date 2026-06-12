@@ -311,12 +311,15 @@ in
         ubatchSize = 512;
         flashAttention = false;
       };
-      # OCR prefers deterministic decoding; keep batching modest on the 3070
-      # since this host uses the larger F16 weights.
+      # OCR prefers deterministic decoding. Allow a small amount of request
+      # parallelism, but keep batching modest on the 3070 now that this host
+      # uses the larger F16 weights.
       "glm-ocr-f16" = {
         batchSize = 1024;
         ubatchSize = 512;
         extraArgs = [
+          "--parallel"
+          "2"
           "--samplers"
           "top_k"
           "--top-k"
