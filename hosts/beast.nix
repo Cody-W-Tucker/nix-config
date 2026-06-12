@@ -267,7 +267,7 @@ in
       "qwen3.5-0.8b"
       "qwen3.5-4b"
       "qwen3-embedding-0.6b"
-      "glm-ocr-q8"
+      "glm-ocr-f16"
       "whisper-medium"
       "transformers-speecht5"
     ];
@@ -310,6 +310,20 @@ in
         batchSize = 1024;
         ubatchSize = 512;
         flashAttention = false;
+      };
+      # OCR prefers deterministic decoding; keep batching modest on the 3070
+      # since this host uses the larger F16 weights.
+      "glm-ocr-f16" = {
+        batchSize = 1024;
+        ubatchSize = 512;
+        extraArgs = [
+          "--samplers"
+          "top_k"
+          "--top-k"
+          "1"
+          "--temp"
+          "0"
+        ];
       };
       "whisper-medium" = {
         ttl = 0; # Keep STT warm until another group explicitly evicts it.

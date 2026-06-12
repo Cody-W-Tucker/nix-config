@@ -13,7 +13,7 @@
       INFERENCE_CONTEXT_LENGTH = "16384";
       INFERENCE_MAX_OUTPUT_TOKENS = "1024";
       INFERENCE_OUTPUT_SCHEMA = "structured";
-      INFERENCE_IMAGE_MODEL = "glm-ocr-q8";
+      INFERENCE_IMAGE_MODEL = "glm-ocr-f16";
       EMBEDDING_TEXT_MODEL = "qwen3-embedding-0.6b";
       INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
       INFERENCE_FETCH_TIMEOUT_SEC = "300"; # Default 5 mins
