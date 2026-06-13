@@ -10,6 +10,8 @@ let
   nixosConfigRoot = "/etc/nixos";
   obsidianVault = "/home/codyt/Knowledge/Personal";
   projectsRoot = "/home/codyt/Projects";
+  existential = inputs.cognitive-assistant.lib.existential;
+  operational = inputs.cognitive-assistant.lib.operational;
   inherit (config.services.hermes-agent)
     group
     stateDir
@@ -31,9 +33,9 @@ in
         - **Default workspace**: ${workingDirectory} (your shared working directory)
         - **NixOS config repo**: ${nixosConfigRoot} (this repo; you can inspect and edit it when needed)
         - **Obsidian vault**: ${obsidianVault} (shared space for saves/reads the user can also edit)
-        - **Miniflux**: use the Miniflux MCP tools for RSS triage, morning unread summaries, bookmarking/saving, and marking items read; the public UI and MCP endpoint are `https://rss.homehub.tv`
-        - Do not use `web_extract` against `rss.homehub.tv`; Hermes blocks that URL because it resolves to a private LAN address behind nginx
+        - **Miniflux**: use the Miniflux MCP tools for RSS triage.
         - **Knowledge search via `qmd`**: (your search tool access to the user's personal knowledge base)
+        - **Extended Human Profiles**: The user maintains detailed profiles in your workspace. Consult (with targeted search) if a deeper understanding on the user's theory of mind would produce measurable better results for highly personalized tasks or conversations.
         - **Projects root**: ${projectsRoot} (user projects likely live here)
         - Common language runtimes may be absent; use `nix shell` only when required
         - Do NOT use `nix shell` for standard Unix utilities
@@ -47,7 +49,9 @@ in
         - When a stable snapshot note and a shared `mem0` fact are both useful, write both deliberately.
       '';
 
-      "MEMORY-TOOL.md" = builtins.readFile inputs.cognitive-assistant.lib.operational.toolSpecs.memory;
+      "MEMORY-TOOL.md" = builtins.readFile operational.toolSpecs.memory;
+      "EXISTENTIAL-HUMAN-PROFILE.md" = builtins.readFile existential.humanProfile;
+      "OPERATIONAL-HUMAN-PROFILE.md" = builtins.readFile operational.humanProfile;
     };
 
     # Hermes loads its primary identity from HERMES_HOME/SOUL.md, not from the
