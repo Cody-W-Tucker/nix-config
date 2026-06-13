@@ -6,13 +6,10 @@
 }:
 
 let
-  cfg = config.codyos.hermes-agent.cronWake;
   hermesAgent = config.services.hermes-agent;
 in
 {
-  options.codyos.hermes-agent.cronWake.enable = lib.mkEnableOption "wake timers for Hermes cron jobs";
-
-  config = lib.mkIf cfg.enable {
+  config = {
     systemd.services.hermes-agent-cron-tick = {
       description = "Run due Hermes cron jobs";
       after = [ "network-online.target" ];

@@ -1,10 +1,10 @@
 {
-  pkgs,
   config,
-  lib,
+  pkgs,
   self,
   ...
 }:
+
 let
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
@@ -17,7 +17,9 @@ let
       exec npx -y @karakeep/mcp "$@"
     '';
   };
+
   mem0Mcp = self.packages.${pkgs.stdenv.hostPlatform.system}.mem0-mcp;
+
   minifluxMcp = pkgs.buildGoModule rec {
     pname = "miniflux-mcp";
     version = "unstable-2025-11-25";
@@ -39,6 +41,7 @@ let
       mainProgram = "miniflux-mcp";
     };
   };
+
   minifluxMcpWrapped = pkgs.writeShellApplication {
     name = "miniflux-mcp";
     text = ''
@@ -50,21 +53,18 @@ let
     '';
   };
 in
-
 {
   config = {
-    sops = {
-      secrets = {
-        "karakeep-api-key" = {
-          owner = config.services.hermes-agent.user;
-          inherit (config.services.hermes-agent) group;
-          mode = "0440";
-        };
-        "miniflux/API_KEY" = {
-          owner = config.services.hermes-agent.user;
-          inherit (config.services.hermes-agent) group;
-          mode = "0440";
-        };
+    sops.secrets = {
+      "karakeep-api-key" = {
+        owner = config.services.hermes-agent.user;
+        inherit (config.services.hermes-agent) group;
+        mode = "0440";
+      };
+      "miniflux/API_KEY" = {
+        owner = config.services.hermes-agent.user;
+        inherit (config.services.hermes-agent) group;
+        mode = "0440";
       };
     };
 

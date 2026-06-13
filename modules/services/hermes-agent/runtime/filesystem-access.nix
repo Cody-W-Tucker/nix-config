@@ -6,8 +6,11 @@
 }:
 
 let
-  inherit (config.codyos.hermes-agent.locations) nixosConfigRoot obsidianVault projectsRoot;
+  nixosConfigRoot = "/etc/nixos";
+  obsidianVault = "/home/codyt/Knowledge/Personal";
+  projectsRoot = "/home/codyt/Projects";
   inherit (config.services.hermes-agent) group stateDir user;
+
   managedPaths = [
     nixosConfigRoot
     obsidianVault
@@ -36,9 +39,6 @@ let
       ${pkgs.acl}/bin/setfacl -R -x u:${config.services.hermes-agent.user} "${path}" 2>/dev/null || true
       find "${path}" -type d -exec ${pkgs.acl}/bin/setfacl -x d:u:${config.services.hermes-agent.user} {} + 2>/dev/null || true
 
-      # Shared roots only need directory-level policy: keep directories in the
-      # users group, make them group-writable/traversable, and seed default
-      # ACLs so ordinary creates inherit collaborative access.
       chgrp users "${path}"
       chmod 2775 "${path}"
       ${pkgs.acl}/bin/setfacl -m g::rwx,d:g::rwx "${path}"
@@ -50,38 +50,12 @@ let
   '';
 in
 {
-  options.codyos.hermes-agent.locations = {
-    obsidianVault = lib.mkOption {
-      type = lib.types.str;
-      default = "/home/codyt/Knowledge/Personal";
-      description = "Obsidian vault path exposed to Hermes.";
-    };
-
-    nixosConfigRoot = lib.mkOption {
-      type = lib.types.str;
-      default = "/etc/nixos";
-      description = "NixOS config repo path exposed to Hermes.";
-    };
-
-    projectsRoot = lib.mkOption {
-      type = lib.types.str;
-      default = "/home/codyt/Projects";
-      description = "Projects root path Hermes can access.";
-    };
-
-    projectWorkspace = lib.mkOption {
-      type = lib.types.str;
-      default = "/mnt/work/dev/hermes";
-      description = "Default Hermes working directory.";
-    };
-  };
-
   config = {
+    systemd.services.hermes-agent.serviceConfig.ReadWritePaths = lib.mkAfter managedPaths;
+
     system.activationScripts.hermes-agent-filesystem-access = lib.stringAfter [ "users" ] (
       lib.concatMapStrings ensurePathAccess managedPaths
     );
-
-    systemd.services.hermes-agent.serviceConfig.ReadWritePaths = lib.mkAfter managedPaths;
 
     system.activationScripts.hermes-agent-auth-store-access =
       lib.stringAfter [ "hermes-agent-setup" ]
@@ -102,7 +76,6 @@ in
               case "$private_file" in
                 .env)
                   chmod 0640 "$target"
-                  # The unit now sets terminal.cwd declaratively; drop stale legacy env.
                   ${pkgs.gnused}/bin/sed -i '/^MESSAGING_CWD=/d' "$target"
                   ;;
                 *)
@@ -118,8 +91,6 @@ in
           fi
         '';
 
-    # Hermes keeps checkpoints in a git repo under its state dir. Ensure the
-    # service user always owns that repo so git gc can create lock files.
     system.activationScripts.hermes-agent-state-access = lib.stringAfter [ "users" ] ''
       hermes_home="${stateDir}/.hermes"
       checkpoints_store="$hermes_home/checkpoints/store"
@@ -137,9 +108,6 @@ in
         chmod -R u+rwX,g+rwX "$dir_path"
       done
 
-      # Hermes cron script hooks execute files directly, so common script
-      # types need explicit execute bits even when they were created from a
-      # non-executable editor or tool.
       ${pkgs.findutils}/bin/find "$hermes_home/scripts" -type f \( -name '*.sh' -o -name '*.py' \) -exec chmod ug+x {} +
     '';
 
