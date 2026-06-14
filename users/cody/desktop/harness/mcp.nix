@@ -3,6 +3,10 @@
   programs.mcp = {
     enable = true;
     servers = {
+      exa = {
+        type = "remote";
+        url = "https://mcp.exa.ai/mcp";
+      };
       context7 = {
         command = "nix-shell";
         args = [
