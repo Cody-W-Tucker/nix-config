@@ -18,8 +18,6 @@ let
     '';
   };
 
-  mem0Mcp = self.packages.${pkgs.stdenv.hostPlatform.system}.mem0-mcp;
-
   minifluxMcp = pkgs.buildGoModule rec {
     pname = "miniflux-mcp";
     version = "unstable-2025-11-25";
@@ -70,7 +68,6 @@ in
 
     services.hermes-agent = {
       mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
-      mcpServers.mem0.command = "${mem0Mcp}/bin/mem0-mcp";
       mcpServers.miniflux.command = "${minifluxMcpWrapped}/bin/miniflux-mcp";
     };
   };

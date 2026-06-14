@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  self,
   ...
 }:
 
@@ -10,6 +11,15 @@ let
     path = ./patches;
     name = "hermes-agent-patches";
   };
+  enCoreWebSm = self.packages.${pkgs.stdenv.hostPlatform.system}.en-core-web-sm;
+  mem0ai = self.packages.${pkgs.stdenv.hostPlatform.system}.mem0ai;
+  mem0PythonSupport = pkgs.python313.withPackages (ps: [
+    enCoreWebSm
+    ps.fastembed
+    mem0ai
+    ps.spacy
+  ]);
+  mem0PythonPath = "${mem0PythonSupport}/${pkgs.python313.sitePackages}";
 in
 {
   config.services.hermes-agent.package = hermesPkgBase.overrideAttrs (old: {
@@ -36,7 +46,7 @@ in
       done
 
       for bin_name in hermes hermes-agent hermes-acp; do
-        wrapProgram "$out/bin/$bin_name" --prefix PYTHONPATH : "$python_overrides"
+        wrapProgram "$out/bin/$bin_name" --prefix PYTHONPATH : "$python_overrides:${mem0PythonPath}"
       done
     '';
   });

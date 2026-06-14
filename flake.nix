@@ -117,6 +117,10 @@
         llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
         en-core-web-sm = enCoreWebSmPackage;
         mem0ai = mem0aiPackage;
+        mem0-http = pkgs.callPackage ./packages/mem0-http {
+          enCoreWebSm = enCoreWebSmPackage;
+          mem0ai = mem0aiPackage;
+        };
         mem0-mcp = pkgs.callPackage ./packages/mem0-mcp {
           enCoreWebSm = enCoreWebSmPackage;
           mem0ai = mem0aiPackage;

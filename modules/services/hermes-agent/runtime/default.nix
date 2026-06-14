@@ -17,6 +17,7 @@ in
 {
   imports = [
     ./filesystem-access.nix
+    ./mem0-local-provider.nix
     ./cron-tick.nix
   ];
 
