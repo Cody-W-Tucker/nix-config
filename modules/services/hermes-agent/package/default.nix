@@ -5,39 +5,66 @@
 }:
 
 let
-  hermesPkgBase = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  hermesPythonOverridePatchDir = builtins.path {
-    path = ./patches;
-    name = "hermes-agent-patches";
+  system = pkgs.stdenv.hostPlatform.system;
+  hermesPkgSrc = pkgs.applyPatches {
+    name = "hermes-agent-src";
+    src = inputs.hermes-agent;
+    patches = [
+      ./patches/hermes-home-group-access.patch
+      ./patches/auth-store-group-access.patch
+    ];
   };
+  makeHermesPackage =
+    {
+      extraPythonPackages ? [ ],
+      extraDependencyGroups ? [ ],
+    }:
+    let
+      hermesPkg = pkgs.callPackage "${hermesPkgSrc}/nix/hermes-agent.nix" {
+        inherit (inputs.hermes-agent.inputs) uv2nix pyproject-nix pyproject-build-systems;
+        npm-lockfile-fix = inputs.hermes-agent.inputs.npm-lockfile-fix.packages.${system}.default;
+        rev = inputs.hermes-agent.rev or null;
+        inherit extraPythonPackages extraDependencyGroups;
+      };
+      hermesDesktop = pkgs.callPackage "${hermesPkgSrc}/nix/desktop.nix" {
+        hermesAgent = hermesPkg;
+        hermesNpmLib = hermesPkg.passthru.hermesNpmLib;
+        electron = pkgs.electron;
+      };
+    in
+    pkgs.symlinkJoin {
+      name = hermesPkg.name;
+      paths = [
+        hermesPkg
+        hermesDesktop
+      ];
+      postBuild = ''
+        rm "$out/bin/hermes"
+        cat > "$out/bin/hermes" <<EOF
+        #!${pkgs.runtimeShell}
+        if [ "\$1" = "desktop" ] || [ "\$1" = "gui" ]; then
+          shift
+          exec "$out/bin/hermes-desktop" "\$@"
+        fi
+
+        exec "${hermesPkg}/bin/hermes" "\$@"
+        EOF
+        chmod +x "$out/bin/hermes"
+      '';
+      passthru = (hermesPkg.passthru or { }) // {
+        inherit hermesDesktop;
+        override =
+          args:
+          makeHermesPackage (
+            {
+              inherit extraPythonPackages extraDependencyGroups;
+            }
+            // args
+          );
+      };
+      meta = hermesPkg.meta;
+    };
 in
 {
-  config.services.hermes-agent.package = hermesPkgBase.overrideAttrs (old: {
-    postInstall = (old.postInstall or "") + ''
-      python_overrides="$out/share/hermes-agent/python-overrides"
-      site_packages="${hermesPkgBase.passthru.hermesVenv}/lib/python3.12/site-packages"
-
-      mkdir -p "$python_overrides"
-      cp "$site_packages/hermes_constants.py" "$python_overrides/hermes_constants.py"
-      cp "$site_packages/utils.py" "$python_overrides/utils.py"
-      cp -rL "$site_packages/hermes_cli" "$python_overrides/hermes_cli"
-      chmod -R u+w "$python_overrides"
-
-      if [ ! -f "$python_overrides/hermes_constants.py" ] || [ ! -f "$python_overrides/hermes_cli/auth.py" ] || [ ! -f "$python_overrides/utils.py" ]; then
-        echo "failed to locate Hermes auth sources in $out" >&2
-        exit 1
-      fi
-
-      # This host intentionally shares HERMES_HOME between the hermes service
-      # user and the codyt CLI via the hermes group, so keep the upstream
-      # local patches explicit and reviewable in ./patches.
-      for patch_file in ${hermesPythonOverridePatchDir}/*.patch; do
-        patch -p1 -d "$python_overrides" < "$patch_file"
-      done
-
-      for bin_name in hermes hermes-agent hermes-acp; do
-        wrapProgram "$out/bin/$bin_name" --prefix PYTHONPATH : "$python_overrides"
-      done
-    '';
-  });
+  config.services.hermes-agent.package = makeHermesPackage { };
 }
