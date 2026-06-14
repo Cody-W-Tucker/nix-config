@@ -34,6 +34,7 @@ in
       extraPackages = with pkgs; [
         binutils
         curl
+        ffmpeg
         glibc.bin
         jq
         libopus
@@ -136,6 +137,25 @@ in
         };
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";
+        };
+        voice = {
+          auto_tts = true;
+        };
+        stt = {
+          enabled = true;
+          provider = "xai";
+          xai = {
+            model = "grok-stt";
+          };
+        };
+        tts = {
+          provider = "xai";
+          xai = {
+            voice_id = "ara";
+            language = "en";
+            sample_rate = 24000;
+            bit_rate = 128000;
+          };
         };
         agent = {
           max_turns = 60;
