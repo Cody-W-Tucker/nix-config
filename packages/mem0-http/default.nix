@@ -12,7 +12,6 @@ let
     ps.fastembed
     mem0ai
     ps.pydantic
-    ps.spacy
     ps.uvicorn
   ]);
 in

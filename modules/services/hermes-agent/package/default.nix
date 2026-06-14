@@ -17,7 +17,6 @@ let
     enCoreWebSm
     ps.fastembed
     mem0ai
-    ps.spacy
   ]);
   mem0PythonPath = "${mem0PythonSupport}/${pkgs.python313.sitePackages}";
 in

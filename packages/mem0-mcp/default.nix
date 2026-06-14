@@ -10,7 +10,6 @@ let
     enCoreWebSm
     ps.fastembed
     mem0ai
-    ps.spacy
     ps.fastmcp
     ps.pydantic
   ]);
