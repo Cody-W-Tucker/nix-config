@@ -1,6 +1,13 @@
-{ python313Packages, fetchPypi }:
+{
+  fetchPypi,
+  pythonPkgs ? null,
+  python313Packages ? null,
+}:
 
-python313Packages.buildPythonPackage rec {
+let
+  py = if pythonPkgs != null then pythonPkgs else python313Packages;
+in
+py.buildPythonPackage rec {
   pname = "mem0ai";
   version = "2.0.4";
   pyproject = true;
@@ -10,17 +17,17 @@ python313Packages.buildPythonPackage rec {
     hash = "sha256-DP/b2qlhqkNxxwfl+Q8llhrgzxcBaav2qvatuhTGvKE=";
   };
 
-  nativeBuildInputs = with python313Packages; [
+  nativeBuildInputs = with py; [
     pythonRelaxDepsHook
   ];
 
-  build-system = with python313Packages; [
+  build-system = with py; [
     hatchling
   ];
 
   pythonRelaxDeps = [ "protobuf" ];
 
-  dependencies = with python313Packages; [
+  dependencies = with py; [
     openai
     posthog
     protobuf

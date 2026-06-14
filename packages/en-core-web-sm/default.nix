@@ -1,6 +1,13 @@
-{ python313Packages, fetchurl }:
+{
+  fetchurl,
+  pythonPkgs ? null,
+  python313Packages ? null,
+}:
 
-python313Packages.buildPythonPackage rec {
+let
+  py = if pythonPkgs != null then pythonPkgs else python313Packages;
+in
+py.buildPythonPackage rec {
   pname = "en-core-web-sm";
   version = "3.8.0";
   format = "wheel";
@@ -10,7 +17,7 @@ python313Packages.buildPythonPackage rec {
     hash = "sha256-GTJCnbcn1L/z3u1rNM/AXfF3lPSlLusmz4ko98Gg+4U=";
   };
 
-  propagatedBuildInputs = with python313Packages; [
+  propagatedBuildInputs = with py; [
     spacy
   ];
 

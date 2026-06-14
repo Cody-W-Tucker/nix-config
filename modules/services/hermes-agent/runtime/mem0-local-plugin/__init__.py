@@ -7,6 +7,9 @@ import logging
 import os
 import threading
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from typing import Any, Dict, List
 
 from agent.memory_provider import MemoryProvider
@@ -76,8 +79,6 @@ CONCLUDE_SCHEMA = {
 class Mem0LocalMemoryProvider(MemoryProvider):
     def __init__(self):
         self._config = None
-        self._client = None
-        self._client_lock = threading.Lock()
         self._api_key = ""
         self._host = "http://127.0.0.1:8765"
         self._user_id = "hermes-user"
@@ -121,17 +122,31 @@ class Mem0LocalMemoryProvider(MemoryProvider):
             {"key": "rerank", "description": "Enable reranking for recall", "default": "true", "choices": ["true", "false"]},
         ]
 
-    def _get_client(self):
-        with self._client_lock:
-            if self._client is not None:
-                return self._client
-            try:
-                from mem0 import MemoryClient
+    def _request(self, method: str, path: str, *, payload: dict | None = None, query: dict | None = None) -> Any:
+        url = f"{self._host.rstrip('/')}{path}"
+        if query:
+            query_string = urllib.parse.urlencode({k: v for k, v in query.items() if v is not None})
+            if query_string:
+                url = f"{url}?{query_string}"
 
-                self._client = MemoryClient(api_key=self._api_key, host=self._host)
-                return self._client
-            except ImportError:
-                raise RuntimeError("mem0 package not installed. Ensure mem0ai is on the Hermes PYTHONPATH.")
+        data = None
+        headers = {
+            "Authorization": f"Token {self._api_key}",
+            "Content-Type": "application/json",
+        }
+        if payload is not None:
+            data = json.dumps(payload).encode("utf-8")
+
+        request = urllib.request.Request(url, data=data, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                body = response.read().decode("utf-8")
+                return json.loads(body) if body else {}
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"{e.code} {e.reason}: {body}") from e
+        except urllib.error.URLError as e:
+            raise RuntimeError(f"Connection failed: {e.reason}") from e
 
     def _is_breaker_open(self) -> bool:
         if self._consecutive_failures < _BREAKER_THRESHOLD:
@@ -200,13 +215,16 @@ class Mem0LocalMemoryProvider(MemoryProvider):
 
         def _run():
             try:
-                client = self._get_client()
                 results = self._unwrap_results(
-                    client.search(
-                        query=query,
-                        filters=self._read_filters(),
-                        rerank=self._rerank,
-                        top_k=5,
+                    self._request(
+                        "POST",
+                        "/v3/memories/search/",
+                        payload={
+                            "query": query,
+                            "filters": self._read_filters(),
+                            "rerank": self._rerank,
+                            "top_k": 5,
+                        },
                     )
                 )
                 if results:
@@ -227,13 +245,16 @@ class Mem0LocalMemoryProvider(MemoryProvider):
 
         def _sync():
             try:
-                client = self._get_client()
-                client.add(
-                    [
-                        {"role": "user", "content": user_content},
-                        {"role": "assistant", "content": assistant_content},
-                    ],
-                    **self._write_filters(),
+                self._request(
+                    "POST",
+                    "/v3/memories/add/",
+                    payload={
+                        "messages": [
+                            {"role": "user", "content": user_content},
+                            {"role": "assistant", "content": assistant_content},
+                        ],
+                        **self._write_filters(),
+                    },
                 )
                 self._record_success()
             except Exception as e:
@@ -253,14 +274,15 @@ class Mem0LocalMemoryProvider(MemoryProvider):
         if self._is_breaker_open():
             return json.dumps({"error": "Mem0-local API temporarily unavailable. Will retry automatically."})
 
-        try:
-            client = self._get_client()
-        except Exception as e:
-            return tool_error(str(e))
-
         if tool_name == "mem0_profile":
             try:
-                memories = self._unwrap_results(client.get_all(filters=self._read_filters()))
+                memories = self._unwrap_results(
+                    self._request(
+                        "POST",
+                        "/v3/memories/",
+                        payload={"filters": self._read_filters()},
+                    )
+                )
                 self._record_success()
                 if not memories:
                     return json.dumps({"result": "No memories stored yet."})
@@ -278,11 +300,15 @@ class Mem0LocalMemoryProvider(MemoryProvider):
             top_k = min(int(args.get("top_k", 10)), 50)
             try:
                 results = self._unwrap_results(
-                    client.search(
-                        query=query,
-                        filters=self._read_filters(),
-                        rerank=rerank,
-                        top_k=top_k,
+                    self._request(
+                        "POST",
+                        "/v3/memories/search/",
+                        payload={
+                            "query": query,
+                            "filters": self._read_filters(),
+                            "rerank": rerank,
+                            "top_k": top_k,
+                        },
                     )
                 )
                 self._record_success()
@@ -299,10 +325,14 @@ class Mem0LocalMemoryProvider(MemoryProvider):
             if not conclusion:
                 return tool_error("Missing required parameter: conclusion")
             try:
-                client.add(
-                    [{"role": "user", "content": conclusion}],
-                    **self._write_filters(),
-                    infer=False,
+                self._request(
+                    "POST",
+                    "/v3/memories/add/",
+                    payload={
+                        "messages": [{"role": "user", "content": conclusion}],
+                        "infer": False,
+                        **self._write_filters(),
+                    },
                 )
                 self._record_success()
                 return json.dumps({"result": "Fact stored."})
@@ -316,8 +346,6 @@ class Mem0LocalMemoryProvider(MemoryProvider):
         for thread in (self._prefetch_thread, self._sync_thread):
             if thread and thread.is_alive():
                 thread.join(timeout=5.0)
-        with self._client_lock:
-            self._client = None
 
 
 def register(ctx) -> None:
