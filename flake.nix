@@ -116,6 +116,8 @@
         gh-star-search = pkgs.callPackage ./packages/gh-star-search { };
         llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
         en-core-web-sm = enCoreWebSmPackage;
+        kokoro-model = pkgs.callPackage ./packages/kokoro-model { };
+        kokoro-voices = pkgs.callPackage ./packages/kokoro-voices { };
         mem0ai = mem0aiPackage;
         mem0-http = pkgs.callPackage ./packages/mem0-http {
           enCoreWebSm = enCoreWebSmPackage;

@@ -44,22 +44,13 @@
       "last"
     ];
   };
-  # OuteTTS 0.2 is the llama.cpp-documented TTS path today.
-  # On beast this model uses `upstream.cmd` to run a tiny OpenAI-compatible wrapper
-  # around `llama-tts`, so the generated llama-server command is intentionally overridden.
-  "outetts-0.2-500m" = {
-    file = "OuteTTS-0.2-500M-Q8_0.gguf";
-    gpuLayers = 999;
-    contextSize = 8192;
-    threads = 4;
-    batchSize = 512;
-    ubatchSize = 256;
-    ttl = 300;
-  };
   # Wrapper-backed audio models can omit `file` because beast replaces the
   # generated llama-server command with an OpenAI-compatible helper process.
   "whisper-medium" = {
     ttl = 300;
+  };
+  "kokoro-82m" = {
+    ttl = 0; # Keep TTS warm (resident model load) until another group evicts it.
   };
   # GLM-OCR-f16 - multimodal OCR model for document/image text extraction.
   "glm-ocr-f16" = {

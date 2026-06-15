@@ -156,8 +156,8 @@ in
           openai = {
             api_key = "local-only";
             base_url = "http://127.0.0.1:8081/v1";
-            model = "outetts-0.2-500m";
-            voice = "en_female_1";
+            model = "kokoro-82m";
+            voice = "af_heart";
           };
         };
         agent = {

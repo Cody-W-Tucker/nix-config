@@ -35,25 +35,34 @@ let
     "noatime"
     "discard=async"
   ];
-  llamaAudioCompatPython = pkgs.python313.withPackages (
-    ps: with ps; [
-      accelerate
-      datasets
-      fastapi
-      faster-whisper
-      python-multipart
-      sentencepiece
-      soundfile
-      torch
-      transformers
-      uvicorn
-    ]
-  );
-  outettsFemaleSpeaker = pkgs.fetchurl {
-    name = "outetts-en-female-1.json";
-    url = "https://raw.githubusercontent.com/edwko/OuteTTS/0.2.2/outetts.js/version/v1/default_speakers/en_female_1.json";
-    hash = "sha256-nEMEdKoHH8mM+1tQN0RofgbFlnt72GQ9unXBTUTUFfs=";
-  };
+  llamaAudioCompatPython =
+    let
+      # Kokoro (and future torch-based audio models) need a CUDA-enabled torch
+      # for GPU inference. The base python313Packages.torch is CPU-only.
+      torchWithCuda = pkgs.python313Packages.torch.override {
+        cudaSupport = true;
+      };
+    in
+    pkgs.python313.withPackages (
+      ps: with ps; [
+        accelerate
+        datasets
+        # Provide the spacy model that misaki's G2P (used by kokoro) requires.
+        # Without it in the same env, misaki calls spacy.cli.download which fails
+        # in the Nix python env (no pip/uv).
+        (pkgs.callPackage ../packages/en-core-web-sm { pythonPkgs = ps; })
+        fastapi
+        faster-whisper
+        kokoro
+        numpy
+        python-multipart
+        sentencepiece
+        soundfile
+        torchWithCuda
+        transformers
+        uvicorn
+      ]
+    );
 in
 {
   imports = [
@@ -274,7 +283,7 @@ in
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
       "whisper-medium"
-      "outetts-0.2-500m"
+      "kokoro-82m"
     ];
     preloadModels = [ "whisper-medium" ];
     settings.groups = {
@@ -284,7 +293,7 @@ in
         persistent = false;
         members = [
           "whisper-medium"
-          "outetts-0.2-500m"
+          "kokoro-82m"
         ];
       };
     };
@@ -347,18 +356,19 @@ in
           '';
         };
       };
-      "outetts-0.2-500m" = {
-        ttl = 300;
+      "kokoro-82m" = {
+        ttl = 0; # Keep resident for low-latency TTS.
         upstream = {
           cmd = ''
-            ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/llama-tts-openai-server.py} \
+            ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/kokoro-openai-server.py} \
               --host 127.0.0.1 \
               --port ''${PORT} \
-              --model ${config.services.llama-swap.modelDirectory}/OuteTTS-0.2-500M-Q8_0.gguf \
-              --vocoder ${config.services.llama-swap.modelDirectory}/WavTokenizer-Large-75-F16.gguf \
-              --llama-tts ${lib.getExe' config.services.llama-swap.serverPackage "llama-tts"} \
-              --speaker-file ${outettsFemaleSpeaker} \
-              --model-id outetts-0.2-500m
+              --model-id kokoro-82m \
+              --lang-code a \
+              --default-voice af_heart \
+              --voices-dir ${self.packages.${pkgs.stdenv.hostPlatform.system}.kokoro-voices} \
+              --model-path ${self.packages.${pkgs.stdenv.hostPlatform.system}.kokoro-model}/kokoro-v1_0.pth \
+              --config-path ${self.packages.${pkgs.stdenv.hostPlatform.system}.kokoro-model}/config.json
           '';
         };
       };
