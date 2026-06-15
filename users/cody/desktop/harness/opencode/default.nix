@@ -31,6 +31,7 @@ in
     ./skills/agent-browser
     ./skills/humanizer
     ./skills/cognitive
+    ./tools/model-router
     # ./tools/rtk Disable until https://github.com/rtk-ai/rtk/pull/1048 merged into llm-agents
   ];
 
@@ -78,6 +79,7 @@ in
     settings = {
       autoupdate = false;
       default_agent = "build";
+      model = "openai/gpt-5.4-fast";
       permission.external_directory = {
         "/nix/store" = "allow";
         "/nix/store/**" = "allow";
