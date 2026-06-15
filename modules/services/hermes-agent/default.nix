@@ -143,9 +143,11 @@ in
         };
         stt = {
           enabled = true;
-          provider = "xai";
-          xai = {
-            model = "grok-stt";
+          provider = "openai";
+          openai = {
+            api_key = "local-only";
+            base_url = "http://127.0.0.1:8081/v1";
+            model = "whisper-medium";
           };
         };
         tts = {

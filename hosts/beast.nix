@@ -269,6 +269,7 @@ in
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
       "whisper-medium"
+      "outetts-0.2-500m"
       "transformers-speecht5"
     ];
     preloadModels = [ "whisper-medium" ];
@@ -283,7 +284,10 @@ in
         swap = false;
         exclusive = false;
         persistent = false;
-        members = [ "transformers-speecht5" ];
+        members = [
+          "outetts-0.2-500m"
+          "transformers-speecht5"
+        ];
       };
     };
     modelOverrides = {
@@ -342,6 +346,20 @@ in
               --download-root ${sharedFasterWhisperCache} \
               --vad-filter \
               --language en
+          '';
+        };
+      };
+      "outetts-0.2-500m" = {
+        ttl = 300;
+        upstream = {
+          cmd = ''
+            ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/llama-tts-openai-server.py} \
+              --host 127.0.0.1 \
+              --port ''${PORT} \
+              --model ${config.services.llama-swap.modelDirectory}/OuteTTS-0.2-500M-Q8_0.gguf \
+              --vocoder ${config.services.llama-swap.modelDirectory}/WavTokenizer-Large-75-F16.gguf \
+              --llama-tts ${lib.getExe' config.services.llama-swap.serverPackage "llama-tts"} \
+              --model-id outetts-0.2-500m
           '';
         };
       };
