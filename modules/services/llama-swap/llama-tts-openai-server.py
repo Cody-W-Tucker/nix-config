@@ -18,6 +18,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--vocoder", required=True)
     parser.add_argument("--llama-tts", required=True)
     parser.add_argument("--model-id", required=True)
+    parser.add_argument("--speaker-file")
     return parser
 
 
@@ -108,6 +109,8 @@ class Handler(BaseHTTPRequestHandler):
                 "-o",
                 output_file,
             ]
+            if self.server.speaker_file:
+                cmd.extend(["--tts-speaker-file", self.server.speaker_file])
 
             result = subprocess.run(cmd, capture_output=True, text=True)
             if result.returncode != 0:
@@ -140,6 +143,7 @@ def main():
     httpd.vocoder_path = args.vocoder
     httpd.llama_tts = args.llama_tts
     httpd.model_id = args.model_id
+    httpd.speaker_file = args.speaker_file
     httpd.serve_forever()
 
 

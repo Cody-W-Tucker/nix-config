@@ -49,6 +49,11 @@ let
       uvicorn
     ]
   );
+  outettsFemaleSpeaker = pkgs.fetchurl {
+    name = "outetts-en-female-1.json";
+    url = "https://raw.githubusercontent.com/edwko/OuteTTS/0.2.2/outetts.js/version/v1/default_speakers/en_female_1.json";
+    hash = "sha256-nEMEdKoHH8mM+1tQN0RofgbFlnt72GQ9unXBTUTUFfs=";
+  };
 in
 {
   imports = [
@@ -359,6 +364,7 @@ in
               --model ${config.services.llama-swap.modelDirectory}/OuteTTS-0.2-500M-Q8_0.gguf \
               --vocoder ${config.services.llama-swap.modelDirectory}/WavTokenizer-Large-75-F16.gguf \
               --llama-tts ${lib.getExe' config.services.llama-swap.serverPackage "llama-tts"} \
+              --speaker-file ${outettsFemaleSpeaker} \
               --model-id outetts-0.2-500m
           '';
         };
