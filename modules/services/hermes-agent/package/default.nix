@@ -13,6 +13,75 @@ let
       ./patches/hermes-home-group-access.patch
       ./patches/auth-store-group-access.patch
     ];
+    postPatch = ''
+            old_titlebar_overlay=$(cat <<'EOF'
+      function getTitleBarOverlayOptions() {
+        if (IS_MAC) {
+          return { height: TITLEBAR_HEIGHT }
+        }
+
+        if (rendererTitleBarTheme) {
+          return {
+            color: rendererTitleBarTheme.background,
+            height: TITLEBAR_HEIGHT,
+            symbolColor: rendererTitleBarTheme.foreground
+          }
+        }
+
+        const useDarkColors = nativeTheme.shouldUseDarkColors
+
+        return {
+          color: useDarkColors ? '#111111' : '#f7f7f7',
+          height: TITLEBAR_HEIGHT,
+          symbolColor: useDarkColors ? '#f7f7f7' : '#242424'
+        }
+      }
+      EOF
+      )
+
+            new_titlebar_overlay=$(cat <<'EOF'
+      function getTitleBarOverlayOptions() {
+        if (IS_MAC) {
+          return { height: TITLEBAR_HEIGHT }
+        }
+
+        if (process.platform === 'linux') {
+          return false
+        }
+
+        if (rendererTitleBarTheme) {
+          return {
+            color: rendererTitleBarTheme.background,
+            height: TITLEBAR_HEIGHT,
+            symbolColor: rendererTitleBarTheme.foreground
+          }
+        }
+
+        const useDarkColors = nativeTheme.shouldUseDarkColors
+
+        return {
+          color: useDarkColors ? '#111111' : '#f7f7f7',
+          height: TITLEBAR_HEIGHT,
+          symbolColor: useDarkColors ? '#f7f7f7' : '#242424'
+        }
+      }
+
+      function updateTitleBarOverlay(win) {
+        const overlay = getTitleBarOverlayOptions()
+
+        if (!overlay) {
+          return
+        }
+
+        win?.setTitleBarOverlay?.(overlay)
+      }
+      EOF
+      )
+
+            substituteInPlace apps/desktop/electron/main.cjs \
+              --replace-fail "$old_titlebar_overlay" "$new_titlebar_overlay" \
+              --replace-fail 'mainWindow?.setTitleBarOverlay?.(getTitleBarOverlayOptions())' 'updateTitleBarOverlay(mainWindow)'
+    '';
   };
   makeHermesPackage =
     {
