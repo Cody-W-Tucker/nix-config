@@ -46,8 +46,6 @@ in
         API_SERVER_HOST = "127.0.0.1";
         API_SERVER_PORT = "8642";
         API_SERVER_KEY = "local-only";
-        MEM0_API_KEY = "local-only";
-        MEM0_HOST = "http://127.0.0.1:8765";
         OBSIDIAN_VAULT = obsidianVault;
         VOICE_TOOLS_OPENAI_KEY = "local-only";
       };
@@ -177,7 +175,7 @@ in
         };
         memory = {
           memory_enabled = true;
-          provider = "mem0-local";
+          provider = "holographic";
           user_profile_enabled = true;
         };
         plugins = {

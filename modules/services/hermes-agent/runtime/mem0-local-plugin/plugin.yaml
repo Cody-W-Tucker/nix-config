@@ -1,4 +1,0 @@
-name: mem0-local
-version: 1.0.0
-description: Local shared Mem0 provider backed by the CodyOS Mem0 HTTP shim.
-pip_dependencies: []

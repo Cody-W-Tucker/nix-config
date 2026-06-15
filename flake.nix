@@ -105,7 +105,6 @@
       };
       pkgs = nixpkgs-unstable.legacyPackages.${system};
       enCoreWebSmPackage = pkgs.callPackage ./packages/en-core-web-sm { };
-      mem0aiPackage = pkgs.callPackage ./packages/mem0ai { };
     in
     {
       # Official NixOS formatter with directory support
@@ -118,15 +117,6 @@
         en-core-web-sm = enCoreWebSmPackage;
         kokoro-model = pkgs.callPackage ./packages/kokoro-model { };
         kokoro-voices = pkgs.callPackage ./packages/kokoro-voices { };
-        mem0ai = mem0aiPackage;
-        mem0-http = pkgs.callPackage ./packages/mem0-http {
-          enCoreWebSm = enCoreWebSmPackage;
-          mem0ai = mem0aiPackage;
-        };
-        mem0-mcp = pkgs.callPackage ./packages/mem0-mcp {
-          enCoreWebSm = enCoreWebSmPackage;
-          mem0ai = mem0aiPackage;
-        };
       };
 
       # Builds the different systems

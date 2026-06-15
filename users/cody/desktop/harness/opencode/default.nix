@@ -69,10 +69,7 @@ in
 
       # Memory
 
-      - A shared `mem0` MCP server is available.
-      - Default to `mem0` for durable memory work that should be shared across OpenCode and Hermes.
-      - Use `mem0` to store, search, update, and delete cross-session facts according to the memory policy below.
-      - Do not save everything. Follow the memory tool spec carefully when deciding what deserves storage.
+      - Use durable memory sparingly. Follow the memory tool spec carefully when deciding what deserves storage.
 
       ## Memory Tool Spec
 
@@ -81,11 +78,6 @@ in
     settings = {
       autoupdate = false;
       default_agent = "build";
-      mcp.mem0 = {
-        type = "local";
-        command = [ "${self.packages.${pkgs.stdenv.hostPlatform.system}.mem0-mcp}/bin/mem0-mcp" ];
-        enabled = true;
-      };
       permission.external_directory = {
         "/nix/store" = "allow";
         "/nix/store/**" = "allow";
