@@ -31,12 +31,31 @@ let
         hermesNpmLib = hermesPkg.passthru.hermesNpmLib;
         electron = pkgs.electron;
       };
+      hermesDesktopEntry = pkgs.makeDesktopItem {
+        name = "hermes-agent";
+        desktopName = "Hermes Agent";
+        comment = "Desktop app for Hermes Agent";
+        exec = "hermes-desktop";
+        icon = "hermes-agent";
+        terminal = false;
+        categories = [
+          "Development"
+          "Utility"
+        ];
+        startupNotify = true;
+      };
+      hermesDesktopIcon = pkgs.runCommandLocal "hermes-agent-desktop-icon" { } ''
+        mkdir -p "$out/share/icons/hicolor/512x512/apps"
+        cp "${hermesPkgSrc}/apps/desktop/assets/icon.png" "$out/share/icons/hicolor/512x512/apps/hermes-agent.png"
+      '';
     in
     pkgs.symlinkJoin {
       name = hermesPkg.name;
       paths = [
         hermesPkg
         hermesDesktop
+        hermesDesktopEntry
+        hermesDesktopIcon
       ];
       postBuild = ''
         rm "$out/bin/hermes"
