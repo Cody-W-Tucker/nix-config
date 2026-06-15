@@ -15,7 +15,7 @@
   "qwen3.5-0.8b" = {
     file = "Qwen3.5-0.8B-UD-Q8_K_XL.gguf";
     gpuLayers = 999;
-    contextSize = 65536;
+    contextSize = 16384;
     threads = 2;
     batchSize = 2048;
     ubatchSize = 2048;
@@ -30,50 +30,6 @@
     ubatchSize = 512;
     ttl = 450;
   };
-  "qwen3.5-9b" = {
-    file = "Qwen3.5-9B-Q4_K_M.gguf";
-    gpuLayers = 999;
-    contextSize = 131072;
-    threads = 8;
-    batchSize = 8192;
-    ubatchSize = 8192;
-    ttl = 900;
-  };
-  "qwen3.5-9b-8" = {
-    file = "Qwen3.5-9B-UD-Q8_K_XL.gguf";
-    gpuLayers = 999;
-    contextSize = 131072;
-    threads = 8;
-    batchSize = 8192;
-    ubatchSize = 8192;
-    ttl = 900;
-  };
-  "qwen3.5-35b" = {
-    file = "Qwen3.5-35B-A3B-Q8_0.gguf";
-    mmprojFile = "Qwen3.5-35B-A3B-mmproj-F16.gguf";
-    gpuLayers = 999;
-    # 65536 context needed for ~44K+ token prompts
-    # batchSize 8192 balances speed with 92GB VRAM
-    contextSize = 65536;
-    threads = 16;
-    batchSize = 8192;
-    ubatchSize = 8192;
-    ttl = 1800;
-  };
-  "qwen3-embedding-8b" = {
-    file = "Qwen3-Embedding-8B-Q4_K_M.gguf";
-    gpuLayers = 999;
-    contextSize = 40960;
-    threads = 8;
-    batchSize = 8192;
-    ubatchSize = 8192;
-    ttl = 300;
-    extraArgs = [
-      "--embeddings"
-      "--parallel"
-      "6"
-    ];
-  };
   "qwen3-embedding-0.6b" = {
     file = "Qwen3-Embedding-0.6B-Q8_0.gguf";
     gpuLayers = 999;
@@ -86,47 +42,6 @@
       "--embeddings"
       "--pooling"
       "last"
-    ];
-  };
-  # Qwen3-ASR audio transcription models for llama-server /audio/transcriptions.
-  "qwen3-asr-0.6b" = {
-    file = "Qwen3-ASR-0.6B-Q8_0.gguf";
-    mmprojFile = "mmproj-Qwen3-ASR-0.6B-Q8_0.gguf";
-    gpuLayers = 999;
-    # ASR does not need a huge context window; 8K is plenty for chunked audio
-    # and keeps the KV cache small.
-    contextSize = 8192;
-    threads = 4;
-    batchSize = 1024;
-    ubatchSize = 512;
-    ttl = 300;
-    # Use deterministic decoding for transcription. The generic chat sampler
-    # chain is slower and can loop/repeat on ASR outputs.
-    extraArgs = [
-      "--samplers"
-      "top_k"
-      "--top-k"
-      "1"
-      "--temp"
-      "0"
-    ];
-  };
-  "qwen3-asr-1.7b" = {
-    file = "Qwen3-ASR-1.7B-Q8_0.gguf";
-    mmprojFile = "mmproj-Qwen3-ASR-1.7B-Q8_0.gguf";
-    gpuLayers = 999;
-    contextSize = 8192;
-    threads = 6;
-    batchSize = 2048;
-    ubatchSize = 1024;
-    ttl = 450;
-    extraArgs = [
-      "--samplers"
-      "top_k"
-      "--top-k"
-      "1"
-      "--temp"
-      "0"
     ];
   };
   # OuteTTS 0.2 is the llama.cpp-documented TTS path today.
@@ -146,10 +61,7 @@
   "whisper-medium" = {
     ttl = 300;
   };
-  "transformers-speecht5" = {
-    ttl = 300;
-  };
-  # GLM-OCR 0.9B - multimodal OCR model for document/image text extraction.
+  # GLM-OCR-f16 - multimodal OCR model for document/image text extraction.
   "glm-ocr-f16" = {
     file = "GLM-OCR-f16.gguf";
     mmprojFile = "mmproj-GLM-OCR-Q8_0.gguf";
@@ -159,40 +71,5 @@
     batchSize = 2048;
     ubatchSize = 1024;
     ttl = 600;
-  };
-  "glm-ocr-q8" = {
-    file = "GLM-OCR-Q8_0.gguf";
-    mmprojFile = "mmproj-GLM-OCR-Q8_0.gguf";
-    gpuLayers = 999;
-    contextSize = 8192;
-    threads = 8;
-    batchSize = 1024;
-    ubatchSize = 512;
-    ttl = 600;
-  };
-  # Gemma 3 12B - Good balance of quality and speed for reasoning tasks
-  # UD-Q4_K_XL quantization: ~7.0GB weights, fits well in 92GB VRAM with room for context
-  "gemma-3-12b" = {
-    file = "gemma-3-12b-it-UD-Q4_K_XL.gguf";
-    mmprojFile = "gemma-3-12b-it-mmproj-F16.gguf";
-    gpuLayers = 999;
-    contextSize = 131072;
-    threads = 16;
-    batchSize = 4096;
-    ubatchSize = 4096;
-    ttl = 1200;
-  };
-  # Gemma 4 26B - Advanced reasoning and long context capabilities
-  # UD-Q5_K_XL quantization: ~20GB weights, ~72GB remaining for KV cache
-  # Native 256K context window - using max for long document processing
-  "gemma-4-26b" = {
-    file = "gemma-4-26B-A4B-it-UD-Q5_K_XL.gguf";
-    mmprojFile = "gemma-4-26B-A4B-it-mmproj-F16.gguf";
-    gpuLayers = 999;
-    contextSize = 262144; # 256K native context
-    threads = 16;
-    batchSize = 8192; # Increased for better throughput with large context
-    ubatchSize = 4096;
-    ttl = 1800;
   };
 }

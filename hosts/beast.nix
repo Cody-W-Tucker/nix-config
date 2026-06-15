@@ -275,23 +275,16 @@ in
       "glm-ocr-f16"
       "whisper-medium"
       "outetts-0.2-500m"
-      "transformers-speecht5"
     ];
     preloadModels = [ "whisper-medium" ];
     settings.groups = {
-      audio-stt = {
-        swap = false;
-        exclusive = false;
-        persistent = false;
-        members = [ "whisper-medium" ];
-      };
-      audio-tts = {
+      audio-stack = {
         swap = false;
         exclusive = false;
         persistent = false;
         members = [
+          "whisper-medium"
           "outetts-0.2-500m"
-          "transformers-speecht5"
         ];
       };
     };
@@ -366,18 +359,6 @@ in
               --llama-tts ${lib.getExe' config.services.llama-swap.serverPackage "llama-tts"} \
               --speaker-file ${outettsFemaleSpeaker} \
               --model-id outetts-0.2-500m
-          '';
-        };
-      };
-      "transformers-speecht5" = {
-        ttl = 300; # 5 min idle before llama-swap considers unloading (voice stack)
-        upstream = {
-          cmd = ''
-            ${llamaAudioCompatPython}/bin/python3 ${../modules/services/llama-swap/transformers-tts-openai-server.py} \
-              --host 127.0.0.1 \
-              --port ''${PORT} \
-              --model-id transformers-speecht5 \
-              --device cuda
           '';
         };
       };

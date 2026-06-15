@@ -49,6 +49,7 @@ in
         MEM0_API_KEY = "local-only";
         MEM0_HOST = "http://127.0.0.1:8765";
         OBSIDIAN_VAULT = obsidianVault;
+        VOICE_TOOLS_OPENAI_KEY = "local-only";
       };
       environmentFiles = [ config.sops.templates."hermes-env".path ];
       configFile = pkgs.writeText "hermes-config.json" (
@@ -151,12 +152,12 @@ in
           };
         };
         tts = {
-          provider = "xai";
-          xai = {
-            voice_id = "ara";
-            language = "en";
-            sample_rate = 24000;
-            bit_rate = 128000;
+          provider = "openai";
+          openai = {
+            api_key = "local-only";
+            base_url = "http://127.0.0.1:8081/v1";
+            model = "outetts-0.2-500m";
+            voice = "en_female_1";
           };
         };
         agent = {
