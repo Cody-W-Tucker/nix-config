@@ -2,7 +2,6 @@
   lib,
   pkgs,
   inputs,
-  self,
   ...
 }:
 
@@ -32,7 +31,7 @@ in
     ./skills/humanizer
     ./skills/cognitive
     ./tools/model-router
-    # ./tools/rtk Disable until https://github.com/rtk-ai/rtk/pull/1048 merged into llm-agents
+    ./tools/rtk
   ];
 
   home.packages = [
@@ -50,7 +49,7 @@ in
 
       ${userPatternSkillList}
 
-      When alignment depends on understanding how the user thinks, acts, or prefers work to be sequenced, prioritize these skills. Consult the relevant skill first.
+      When alignment depends on understanding how the user thinks, acts, or prefers work to be sequenced, consult these skills.
 
       Unless otherwise stated, you are operating in a NixOS system.
 
@@ -67,14 +66,6 @@ in
       Do not assume system-wide installations of languages or external tools.
 
       If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
-
-      # Memory
-
-      - Use durable memory sparingly. Follow the memory tool spec carefully when deciding what deserves storage.
-
-      ## Memory Tool Spec
-
-      ${memoryToolSpec}
     '';
     settings = {
       autoupdate = false;
