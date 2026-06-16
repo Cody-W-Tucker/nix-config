@@ -27,32 +27,56 @@ let
   operationalProfileFile = pkgs.writeText "hermes-operational-human-profile.md" (
     builtins.readFile operational.humanProfile
   );
+  userPatternSkillNames =
+    lib.pipe
+      [
+        inputs.cognitive-assistant.lib.operational.skillNames
+        inputs.cognitive-assistant.lib.existential.skillNames
+      ]
+      [
+        lib.flatten
+        lib.unique
+        (lib.sort (a: b: a < b))
+      ];
+  userPatternSkillList = lib.concatMapStringsSep "\n" (name: "- ${name}") userPatternSkillNames;
 in
 
 {
   config = {
     services.hermes-agent.documents = {
       "AGENTS.md" = ''
-        You are the Cognitive Assistant for the user. Your job is to extend his thinking and execution in a grounded, inspectable way that aligns with how he already operates.
+        Hermes is running in a declarative NixOS environment.
+        Persistent configuration lives in `${nixosConfigRoot}/modules/services/hermes-agent`, and mutable runtime state lives under `${stateDir}/.hermes`.
+        You can inspect and edit the NixOS repo, but you cannot rebuild from here. Changes only persist when they are written back to the repo.
 
         # Environment
 
-        - **Default workspace**: ${workingDirectory} (your shared working directory)
-        - **NixOS config repo**: ${nixosConfigRoot} (this repo; you can inspect and edit it when needed)
-        - **Obsidian vault**: ${obsidianVault} (shared space for saves/reads the user can also edit)
-        - **Miniflux**: use the Miniflux MCP tools for RSS triage.
-        - **Knowledge search via `qmd`**: (your search tool access to the user's personal knowledge base)
-        - **Extended Human Profiles**: in `${workingDirectory}/human-profiles/`. Search (via qmd) if a deeper understanding on the user's theory of mind would produce measurable better results for highly personalized tasks or conversations.
-        - **Projects root**: ${projectsRoot} (user projects likely live here)
-        - Common language runtimes may be absent; use `nix shell` only when required
-        - Do NOT use `nix shell` for standard Unix utilities
+        This is a minimal environment. Common language runtimes may not be globally available.
+        Use `nix shell` only when a required tool or runtime is missing.
+        Do not use `nix shell` for standard Unix utilities that are typically available, such as `bash`, `coreutils`, `grep`, `sed`, `awk`, or `git`.
 
-        # Memory
+        ## Working Context
 
-        - The full memory tool spec lives in `MEMORY-TOOL.md`. Follow it when deciding what to store, update, delete, or ignore.
-        - Use durable memory deliberately rather than by default.
+        - **Default workspace**: `${workingDirectory}`
+        - **Projects root**: `${projectsRoot}` for user projects
+        - **Obsidian vault**: `${obsidianVault}` as a shared read/write space
+
+        ## Tool Notes
+
+        - **Miniflux**: use the Miniflux MCP instead of curling the Miniflux URL for RSS operations.
+        - **Memory**: the full memory tool spec lives at `${workingDirectory}/MEMORY-TOOL.md`. Consult it before storing, updating, deleting, or ignoring memory entries.
+
+        ## Personalization Sources
+
+        Use these when user-specific context would materially improve the result, especially for personalized tasks or conversations.
+
+        - **Extended Human Profiles**: search `${workingDirectory}/human-profiles/` through the `qmd` `human-profiles` collection instead of reading the files directly.
+        - **PKM and Journal**: use `qmd` to search the user's personal knowledge base.
+
+        High-salience user-pattern skills:
+
+        ${userPatternSkillList}
       '';
-
       "MEMORY-TOOL.md" = builtins.readFile operational.toolSpecs.memory;
     };
 

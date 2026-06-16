@@ -7,7 +7,6 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
-  memoryToolSpec = builtins.readFile inputs.cognitive-assistant.lib.operational.toolSpecs.memory;
   userPatternSkillNames =
     lib.pipe
       [
