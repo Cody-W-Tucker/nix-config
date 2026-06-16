@@ -18,6 +18,7 @@ let
     "terminal"
   ];
 
+  # Desktop shares cli toolsets
   cliToolsets = [
     "web"
     "search"
@@ -32,6 +33,7 @@ let
     "code_execution"
     "delegation"
     "kanban"
+    "terminal"
   ];
 
   minimalInteractiveToolsets = [
