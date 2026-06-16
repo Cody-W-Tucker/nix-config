@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  self,
   ...
 }:
 
@@ -18,7 +17,7 @@ let
     '';
   };
 
-  minifluxMcp = pkgs.buildGoModule rec {
+  minifluxMcp = pkgs.buildGoModule {
     pname = "miniflux-mcp";
     version = "unstable-2025-11-25";
 

@@ -66,56 +66,6 @@ in
           model = "kimi-k2.6";
           provider = "opencode-go";
         };
-        auxiliary = {
-          vision = {
-            provider = "opencode-go";
-            model = "deepseek-v4-flash";
-          };
-          approval = {
-            provider = "opencode-go";
-            model = "deepseek-v4-flash";
-          };
-          mcp = {
-            provider = "opencode-go";
-            model = "deepseek-v4-flash";
-          };
-          title_generation = {
-            provider = "opencode-go";
-            model = "deepseek-v4-flash";
-          };
-          triage_specifier = {
-            provider = "opencode-go";
-            model = "kimi-k2.6";
-            extra_body = {
-              thinking.type = "enabled";
-              reasoning_effort = "medium";
-            };
-          };
-          kanban_decomposer = {
-            provider = "opencode-go";
-            model = "kimi-k2.6";
-            extra_body = {
-              thinking.type = "enabled";
-              reasoning_effort = "medium";
-            };
-          };
-          profile_describer = {
-            provider = "opencode-go";
-            model = "kimi-k2.6";
-            extra_body = {
-              thinking.type = "enabled";
-              reasoning_effort = "medium";
-            };
-          };
-          curator = {
-            provider = "opencode-go";
-            model = "kimi-k2.6";
-            extra_body = {
-              thinking.type = "enabled";
-              reasoning_effort = "medium";
-            };
-          };
-        };
         display.platforms = {
           discord = {
             tool_progress = "off";

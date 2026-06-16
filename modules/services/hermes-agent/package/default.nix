@@ -98,7 +98,7 @@ let
       hermesDesktop = pkgs.callPackage "${hermesPkgSrc}/nix/desktop.nix" {
         hermesAgent = hermesPkg;
         hermesNpmLib = hermesPkg.passthru.hermesNpmLib;
-        electron = pkgs.electron;
+        inherit (pkgs) electron;
       };
       hermesDesktopEntry = pkgs.makeDesktopItem {
         name = "hermes-agent";
@@ -119,7 +119,7 @@ let
       '';
     in
     pkgs.symlinkJoin {
-      name = hermesPkg.name;
+      inherit (hermesPkg) name;
       paths = [
         hermesPkg
         hermesDesktop
@@ -150,7 +150,7 @@ let
             // args
           );
       };
-      meta = hermesPkg.meta;
+      inherit (hermesPkg) meta;
     };
 in
 {
