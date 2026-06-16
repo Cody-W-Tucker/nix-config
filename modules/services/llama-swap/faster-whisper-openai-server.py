@@ -5,11 +5,15 @@ import os
 import tempfile
 from contextlib import asynccontextmanager
 from pathlib import Path
+import logging
 
 import uvicorn
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from faster_whisper import WhisperModel
+
+
+logger = logging.getLogger(__name__)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -30,13 +34,33 @@ def build_parser() -> argparse.ArgumentParser:
 def create_app(args: argparse.Namespace) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        app.state.model = WhisperModel(
-            args.model,
-            device=args.device,
-            compute_type=args.compute_type,
-            download_root=args.download_root,
-        )
+        device = args.device
+
+        try:
+            app.state.model = WhisperModel(
+                args.model,
+                device=device,
+                compute_type=args.compute_type,
+                download_root=args.download_root,
+            )
+        except RuntimeError as err:
+            if device != "cuda" or "CUDA failed" not in str(err):
+                raise
+
+            logger.warning(
+                "Failed to initialize faster-whisper on CUDA (%s); falling back to CPU",
+                err,
+            )
+            device = "cpu"
+            app.state.model = WhisperModel(
+                args.model,
+                device=device,
+                compute_type=args.compute_type,
+                download_root=args.download_root,
+            )
+
         app.state.model_id = args.model_id
+        app.state.device = device
         app.state.default_language = args.language
         app.state.beam_size = args.beam_size
         app.state.vad_filter = args.vad_filter
@@ -49,12 +73,13 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         return {
             "status": "ok",
             "model": app.state.model_id,
+            "device": app.state.device,
         }
 
     @app.get("/health")
     @app.get("/v1/health")
     async def health():
-        return {"status": "ok"}
+        return {"status": "ok", "device": app.state.device}
 
     @app.get("/models")
     @app.get("/v1/models")
