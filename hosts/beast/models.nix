@@ -10,7 +10,16 @@ let
   # and whisp-away reuse one model download.
   sharedFasterWhisperCache = "/mnt/work/cache/ai/faster-whisper";
 
-  llamaAudioCompatPython =
+  whisperPython = pkgs.python313.withPackages (
+    ps: with ps; [
+      fastapi
+      faster-whisper
+      python-multipart
+      uvicorn
+    ]
+  );
+
+  kokoroPython =
     let
       # Kokoro (and future torch-based audio models) need a CUDA-enabled torch
       # for GPU inference. The base python313Packages.torch is CPU-only.
@@ -20,21 +29,14 @@ let
     in
     pkgs.python313.withPackages (
       ps: with ps; [
-        accelerate
-        datasets
         # Provide the spacy model that misaki's G2P (used by kokoro) requires.
         # Without it in the same env, misaki calls spacy.cli.download which fails
         # in the Nix python env (no pip/uv).
         (pkgs.callPackage ../../packages/en-core-web-sm { pythonPkgs = ps; })
         fastapi
-        faster-whisper
         kokoro
         numpy
-        python-multipart
-        sentencepiece
-        soundfile
         torchWithCuda
-        transformers
         uvicorn
       ]
     );
@@ -126,7 +128,7 @@ in
         ttl = 0; # Keep STT warm until another group explicitly evicts it.
         upstream = {
           cmd = ''
-            ${llamaAudioCompatPython}/bin/python3 ${../../modules/services/llama-swap/faster-whisper-openai-server.py} \
+            ${whisperPython}/bin/python3 ${../../modules/services/llama-swap/faster-whisper-openai-server.py} \
               --host 127.0.0.1 \
               --port ''${PORT} \
               --model medium.en \
@@ -143,7 +145,7 @@ in
         ttl = 0; # Keep resident for low-latency TTS.
         upstream = {
           cmd = ''
-            ${llamaAudioCompatPython}/bin/python3 ${../../modules/services/llama-swap/kokoro-openai-server.py} \
+            ${kokoroPython}/bin/python3 ${../../modules/services/llama-swap/kokoro-openai-server.py} \
               --host 127.0.0.1 \
               --port ''${PORT} \
               --model-id kokoro-82m \
