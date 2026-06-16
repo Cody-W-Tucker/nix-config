@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 
 {
   imports = [
@@ -10,6 +10,10 @@
       "miniflux/ADMIN_PASSWORD" = { };
       "miniflux/ADMIN_USERNAME" = { };
       "miniflux/API_KEY" = {
+        group = config.users.groups.miniflux-curator.name;
+        owner = config.users.users.miniflux-curator.name;
+      };
+      "karakeep-api-key" = {
         group = config.users.groups.miniflux-curator.name;
         owner = config.users.users.miniflux-curator.name;
       };
@@ -39,12 +43,16 @@
       enable = true;
       minifluxUrl = "http://localhost:7777";
       apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
+      karakeepUrl = "https://karakeep.homehub.tv";
+      karakeepApiKeyFile = config.sops.secrets."karakeep-api-key".path;
       openaiHost = "http://beast:8081";
       embedModel = "qwen3-embedding-0.6b";
       autoMarkReadBelow = 4.5;
       limitUnread = 400;
+      karakeepFetchLimit = 100;
+      referenceLimit = 50;
       batchSize = 64;
-      dryRun = false; # Start in dry-run mode - set to false after testing
+      dryRun = false; # set true to test
       schedule = "*-*-* 00,04,08,12,16,20:00"; # Every 4 hours
     };
 

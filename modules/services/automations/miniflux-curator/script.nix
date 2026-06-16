@@ -24,6 +24,8 @@ pkgs.writeShellApplication {
     # Validate required environment variables
     : "''${MINIFLUX_URL:?MINIFLUX_URL environment variable not set}"
     : "''${MINIFLUX_API_KEY:?MINIFLUX_API_KEY environment variable not set}"
+    : "''${KARAKEEP_URL:?KARAKEEP_URL environment variable not set}"
+    : "''${KARAKEEP_API_KEY:?KARAKEEP_API_KEY environment variable not set}"
     : "''${OPENAI_HOST:?OPENAI_HOST environment variable not set}"
 
     # Optional config with defaults
@@ -32,6 +34,8 @@ pkgs.writeShellApplication {
     export DRY_RUN=''${DRY_RUN:-true}
     export EMBED_MODEL=''${EMBED_MODEL:-qwen3-embedding-8b}
     export BATCH_SIZE=''${BATCH_SIZE:-64}
+    export KARAKEEP_FETCH_LIMIT=''${KARAKEEP_FETCH_LIMIT:-100}
+    export REFERENCE_LIMIT=''${REFERENCE_LIMIT:-50}
 
     exec ${curatorPy}/bin/miniflux-curator
   '';

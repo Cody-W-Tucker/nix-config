@@ -26,6 +26,17 @@ in
       description = "Path to file containing Miniflux API key";
     };
 
+    karakeepUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "http://localhost:3000";
+      description = "Karakeep instance URL";
+    };
+
+    karakeepApiKeyFile = lib.mkOption {
+      type = lib.types.path;
+      description = "Path to file containing Karakeep API key";
+    };
+
     openaiHost = lib.mkOption {
       type = lib.types.str;
       default = "http://localhost:8080"; # Llama-cpp default
@@ -42,6 +53,18 @@ in
       type = lib.types.int;
       default = 64;
       description = "Number of articles to embed per batch request (default: 64)";
+    };
+
+    karakeepFetchLimit = lib.mkOption {
+      type = lib.types.int;
+      default = 100;
+      description = "Number of recent Karakeep bookmarks to fetch before reference selection";
+    };
+
+    referenceLimit = lib.mkOption {
+      type = lib.types.int;
+      default = 50;
+      description = "Maximum Karakeep bookmarks selected for reference embeddings";
     };
 
     autoMarkReadBelow = lib.mkOption {
@@ -81,16 +104,20 @@ in
       path = [ curatorScript ];
       environment = {
         MINIFLUX_URL = cfg.minifluxUrl;
+        KARAKEEP_URL = cfg.karakeepUrl;
         OPENAI_HOST = cfg.openaiHost;
         EMBED_MODEL = cfg.embedModel;
         AUTO_MARK_READ_BELOW = toString cfg.autoMarkReadBelow;
         LIMIT_UNREAD = toString cfg.limitUnread;
         DRY_RUN = lib.boolToString cfg.dryRun;
         BATCH_SIZE = toString cfg.batchSize;
+        KARAKEEP_FETCH_LIMIT = toString cfg.karakeepFetchLimit;
+        REFERENCE_LIMIT = toString cfg.referenceLimit;
         STATE_FILE = "/var/lib/miniflux-curator/state.json";
       };
       script = ''
         export MINIFLUX_API_KEY=$(cat ${cfg.apiKeyFile})
+        export KARAKEEP_API_KEY=$(cat ${cfg.karakeepApiKeyFile})
         miniflux-curator
       '';
       startAt = cfg.schedule;
