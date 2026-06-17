@@ -31,6 +31,7 @@ in
     ./skills/cognitive
     ./tools/model-router
     ./tools/rtk
+    ./tools/voice
   ];
 
   home.packages = [
@@ -65,6 +66,14 @@ in
       Do not assume system-wide installations of languages or external tools.
 
       If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
+
+      When finishing substantial work, or when blocked and waiting on the user, you may call the `speak` tool once with a short status line if audible feedback would save the user from reading the full response immediately.
+      Use it sparingly: substantial completions, important blockers, or long-running work finishing in the background.
+      Do not use it for routine progress updates or normal back-and-forth.
+      Good examples:
+      - Fixed the voice plugin, but we can still tune when it speaks.
+      - The build passed, but we should still verify the runtime path.
+      Keep spoken lines under about 120 characters and avoid code paths unless they matter.
     '';
     settings = {
       autoupdate = false;
