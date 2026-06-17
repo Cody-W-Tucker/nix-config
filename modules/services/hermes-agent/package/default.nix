@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   pkgs,
   ...
@@ -6,6 +7,7 @@
 
 let
   system = pkgs.stdenv.hostPlatform.system;
+  inherit (config.services.hermes-agent) stateDir workingDirectory;
   hermesPkgSrc = pkgs.applyPatches {
     name = "hermes-agent-src";
     src = inputs.hermes-agent;
@@ -127,6 +129,15 @@ let
         hermesDesktopIcon
       ];
       postBuild = ''
+        rm "$out/bin/hermes-desktop"
+        cat > "$out/bin/hermes-desktop" <<EOF
+        #!${pkgs.runtimeShell}
+        export HERMES_HOME=${pkgs.lib.escapeShellArg "${stateDir}/.hermes"}
+        cd ${pkgs.lib.escapeShellArg workingDirectory} || exit \$?
+        exec "${hermesDesktop}/bin/hermes-desktop" "\$@"
+        EOF
+        chmod +x "$out/bin/hermes-desktop"
+
         rm "$out/bin/hermes"
         cat > "$out/bin/hermes" <<EOF
         #!${pkgs.runtimeShell}
