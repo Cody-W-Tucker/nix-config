@@ -68,10 +68,10 @@ in
 
         ## Personalization Sources
 
-        Use these when user-specific context would materially improve the result, especially for personalized tasks or conversations.
+        When the user asks for your persective on a subject and user-specific context would materially improve the result, route like this:
 
-        - **Extended Human Profiles**: search `${workingDirectory}/human-profiles/` through the `qmd` `human-profiles` collection instead of reading the files directly.
-        - **PKM and Journal**: use `qmd` to search the user's personal knowledge base.
+        1. **Light personalization** (default): Use `qmd` against the `human-profiles` collection and the PKM/journal collections first.
+        2. **Deeper personalization**: Load one or more of the high-salience user-pattern skills below when the situation matches their trigger conditions.
 
         High-salience user-pattern skills:
 
