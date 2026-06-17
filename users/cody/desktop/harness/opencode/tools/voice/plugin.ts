@@ -48,27 +48,28 @@ async function playAudio(buffer: Buffer): Promise<boolean> {
   try {
     await writeFile(file, buffer)
 
-    await new Promise<void>((resolve, reject) => {
+    return await new Promise<boolean>((resolve) => {
       const child = spawn("mpv", ["--no-terminal", "--really-quiet", file], {
+        detached: true,
         stdio: "ignore",
       })
 
-      child.once("error", reject)
-      child.once("exit", (code) => {
-        if (code === 0) {
-          resolve()
-          return
-        }
+      child.once("error", () => {
+        void rm(dir, { force: true, recursive: true })
+        resolve(false)
+      })
 
-        reject(new Error(`mpv exited with code ${code ?? "unknown"}`))
+      child.once("spawn", () => {
+        child.unref()
+        resolve(true)
+      })
+
+      child.once("exit", () => {
+        void rm(dir, { force: true, recursive: true })
       })
     })
-
-    return true
   } catch {
     return false
-  } finally {
-    await rm(dir, { force: true, recursive: true })
   }
 }
 
