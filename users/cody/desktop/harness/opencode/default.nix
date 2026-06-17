@@ -78,7 +78,6 @@ in
     settings = {
       autoupdate = false;
       default_agent = "build";
-      model = "openai/gpt-5.4-fast";
       permission.external_directory = {
         "/nix/store" = "allow";
         "/nix/store/**" = "allow";
