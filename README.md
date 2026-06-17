@@ -20,7 +20,7 @@ Nix provides the safety properties for that: inspectable config, reproducible bu
 
 ### Hermes as system infrastructure
 
-- [Hermes](./modules/services/hermes-agent/default.nix) is configured as part of the OS, with [runtime](./modules/services/hermes-agent/runtime/default.nix), [memory and personalization documents](./modules/services/hermes-agent/documents/default.nix), [MCP wiring](./modules/services/hermes-agent/mcp/default.nix), [secrets](./modules/services/hermes-agent/secrets/default.nix), [skills](./modules/services/hermes-agent/skills/module.nix), and [toolsets](./modules/services/hermes-agent/toolsets/default.nix) declared in Nix.
+- [Hermes](./modules/services/hermes-agent/default.nix) is configured as part of the OS, with runtime, [memory and personalization documents](./modules/services/hermes-agent/documents/default.nix), [MCP wiring](./modules/services/hermes-agent/mcp/default.nix), [secrets](./modules/services/hermes-agent/secrets/default.nix), [skills](./modules/services/hermes-agent/skills/module.nix), and [toolsets](./modules/services/hermes-agent/toolsets/default.nix) declared in Nix.
 - That means agent capability is part of the machine definition, not a loose collection of tools someone has to reinstall and reconnect by hand.
 
 ### OpenCode as a reusable work surface
