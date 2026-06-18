@@ -6,6 +6,7 @@
 }:
 
 let
+  crmDatabasePath = "/home/codyt/.crm/crm.db";
   ldLibraryPath = lib.concatStringsSep ":" [
     "/run/opengl-driver/lib"
     "/run/current-system/sw/lib"
@@ -28,6 +29,7 @@ in
       ];
 
       environment = {
+        CRM_DB = crmDatabasePath;
         LD_LIBRARY_PATH = ldLibraryPath;
       };
 

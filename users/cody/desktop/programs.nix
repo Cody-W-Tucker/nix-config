@@ -7,6 +7,9 @@
   ...
 }:
 
+let
+  crmDatabasePath = "${config.home.homeDirectory}/.crm/crm.db";
+in
 {
   programs = {
     kitty = {
@@ -72,7 +75,10 @@
     "crm-cli" = {
       enable = true;
       autoMount = true; # Mount the crm to a virtual filesystem to view leads, contacts, etc. on "disk."
-      settings.mount.default_path = "${config.home.homeDirectory}/Knowledge/CRM";
+      settings = {
+        database.path = crmDatabasePath;
+        mount.default_path = "${config.home.homeDirectory}/Knowledge/CRM";
+      };
     };
     gh = {
       # Enable GitHub CLI

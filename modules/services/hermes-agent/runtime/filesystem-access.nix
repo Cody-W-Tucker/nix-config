@@ -7,11 +7,13 @@
 
 let
   nixosConfigRoot = "/etc/nixos";
+  crmDatabaseDir = "/home/codyt/.crm";
   obsidianVault = "/home/codyt/Knowledge/Personal";
   projectsRoot = "/home/codyt/Projects";
   inherit (config.services.hermes-agent) group stateDir user;
 
   managedPaths = [
+    crmDatabaseDir
     nixosConfigRoot
     obsidianVault
     projectsRoot
