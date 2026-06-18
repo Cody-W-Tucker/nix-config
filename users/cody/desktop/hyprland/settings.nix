@@ -77,6 +77,9 @@ let
 
     # Whisper dictation - hold to record
     "${mainMod}, Escape, exec, llama-dictate start"
+
+    # Whisper dictation - recover from orphaned recorder
+    "${mainMod} SHIFT, Escape, exec, llama-dictate recover"
   ];
 in
 {

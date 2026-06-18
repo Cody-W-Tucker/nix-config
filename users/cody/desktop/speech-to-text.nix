@@ -67,6 +67,21 @@ let
         done
       }
 
+      find_any_recording_pids() {
+        for proc in /proc/[0-9]*; do
+          [ -r "$proc/cmdline" ] || continue
+
+          pid="''${proc#/proc/}"
+          cmdline="$(tr '\000' ' ' < "$proc/cmdline" 2>/dev/null || true)"
+
+          case "$cmdline" in
+            *"pw-record --channels 1 --rate 16000 --format s16 --volume 1.5 /run/user/"*"/voice-recording-"*".wav"*)
+              printf '%s\n' "$pid"
+              ;;
+          esac
+        done
+      }
+
       stop_pid() {
         pid="$1"
 
@@ -95,6 +110,7 @@ let
         mode="$1"
         pid=""
         path=""
+        stopped=0
 
         if [ -f "$pidfile" ]; then
           pid="$(tr -d '[:space:]' < "$pidfile" 2>/dev/null || true)"
@@ -105,26 +121,48 @@ let
 
         if is_recording_pid "$pid" "$path"; then
           stop_pid "$pid"
+          stopped=1
         elif [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; then
           rm -f "$pidfile"
+        fi
+
+        # If pid bookkeeping is stale but the path is still known, only look
+        # for a recorder tied to that exact path. Avoid broad scans here so
+        # normal start/stop stays immediate.
+        if [ "$mode" = start ] && [ -n "$path" ] && [ "$stopped" -eq 0 ]; then
+          for orphan_pid in $(find_recording_pids "$path"); do
+            [ "$orphan_pid" = "$pid" ] && continue
+            stop_pid "$orphan_pid"
+            stopped=1
+          done
         fi
 
         if [ -f "$pidfile" ] && ! is_recording_pid "$pid" "$path"; then
           rm -f "$pidfile"
         fi
 
-        # Full /proc scans are noticeably slower on the hot path, so only use
-        # them as a fallback when stop couldn't identify the recorder from the pidfile.
-        if [ "$mode" = stop ] && [ -n "$path" ] && ! is_recording_pid "$pid" "$path"; then
-          for orphan_pid in $(find_recording_pids "$path"); do
-            [ "$orphan_pid" = "$pid" ] && continue
-            stop_pid "$orphan_pid"
-          done
+        if [ "$mode" = start ] && [ "$stopped" -eq 1 ]; then
+          rm -f "$pidfile" "$pathfile"
         fi
 
-        if [ "$mode" = start ] && [ -n "$path" ]; then
+        if [ "$mode" = start ] && [ -n "$path" ] && [ "$stopped" -eq 0 ]; then
           rm -f "$path" "$pathfile"
         fi
+
+        [ "$stopped" -eq 1 ]
+      }
+
+      recover_recording() {
+        recovered=0
+
+        for orphan_pid in $(find_any_recording_pids); do
+          stop_pid "$orphan_pid"
+          recovered=1
+        done
+
+        rm -f "$pidfile" "$pathfile"
+
+        [ "$recovered" -eq 1 ]
       }
 
       transcribe_and_type() {
@@ -161,7 +199,9 @@ let
 
       case "$command" in
         start)
-          cleanup_stale_recording start
+          if cleanup_stale_recording start; then
+            exit 0
+          fi
           warm_model
           recording_path="$runtime_dir/voice-recording-$(date +%s%N).wav"
           pw-record --channels 1 --rate 16000 --format s16 --volume 1.5 "$recording_path" >/dev/null 2>&1 &
@@ -170,7 +210,7 @@ let
           printf '%s\n' "$recording_path" > "$pathfile"
           ;;
         stop)
-          cleanup_stale_recording stop
+          cleanup_stale_recording stop || true
 
           path=""
           if [ -f "$pathfile" ]; then
@@ -188,8 +228,11 @@ let
 
           rm -f "$path"
           ;;
+        recover)
+          recover_recording || true
+          ;;
         *)
-          printf 'usage: llama-dictate <start|stop>\n' >&2
+          printf 'usage: llama-dictate <start|stop|recover>\n' >&2
           exit 1
           ;;
       esac
