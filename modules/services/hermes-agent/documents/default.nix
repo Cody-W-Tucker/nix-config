@@ -26,18 +26,6 @@ let
   operationalProfileFile = pkgs.writeText "hermes-operational-human-profile.md" (
     builtins.readFile operational.humanProfile
   );
-  userPatternSkillNames =
-    lib.pipe
-      [
-        inputs.cognitive-assistant.lib.operational.skillNames
-        inputs.cognitive-assistant.lib.existential.skillNames
-      ]
-      [
-        lib.flatten
-        lib.unique
-        (lib.sort (a: b: a < b))
-      ];
-  userPatternSkillList = lib.concatMapStringsSep "\n" (name: "- ${name}") userPatternSkillNames;
   agentsDocument = ''
     Hermes is running in a declarative NixOS environment.
     Persistent configuration lives in `${nixosConfigRoot}/modules/services/hermes-agent`, and mutable runtime state lives under `${stateDir}/.hermes`.
@@ -57,19 +45,22 @@ let
 
     ## Tool Notes
 
-    - **Miniflux**: use the Miniflux MCP instead of curling the Miniflux URL for RSS operations.
-    - **Memory**: the full memory tool spec lives at `${workingDirectory}/MEMORY-TOOL.md`. Consult it before storing, updating, deleting, or ignoring memory entries.
+    - **Memory and Tasks**: the full tool specs at `${workingDirectory}/MEMORY-SPEC.md` and `${workingDirectory}/TASK-SPEC.md`. Consult when managing memory and structuring tasks respectively.
 
-    ## Personalization Sources
+    ### Internal Context Sources
 
-    When the user asks for your persective on a subject and user-specific context would materially improve the result, route like this:
+    qmd is the primary source for internal knowledge stored in Obsidian-backed collections.
 
-    1. **Light personalization** (default): Use `qmd` against the `human-profiles` collection and the PKM/journal collections first.
-    2. **Deeper personalization**: Load one or more of the high-salience user-pattern skills below when the situation matches their trigger conditions.
+    If the user asks a factual or direct question that could plausibly be answered from internal knowledge, search qmd before saying you do not know.
 
-    High-salience user-pattern skills:
+    For internal knowledge questions:
+    1. Search the most relevant qmd collections first.
+    2. Run additional searches with adjacent terms, synonyms, project names, or likely note titles if the first search is thin.
+    3. Synthesize the answer from the retrieved material when the evidence is sufficient, even if no single note states it verbatim.
 
-    ${userPatternSkillList}
+    When the user asks for your persective on a subject and user-specific context would materially improve the result use `qmd` and synthesize an answer.
+
+    Do not default to "I don't know" when the answer is likely in the knowledge base but has not been searched yet.
   '';
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" ''
     ${builtins.readFile soulFile}
@@ -84,7 +75,8 @@ in
   config = {
     services.hermes-agent.documents = {
       "AGENTS.md" = agentsDocument;
-      "MEMORY-TOOL.md" = builtins.readFile operational.toolSpecs.memory;
+      "MEMORY-SPEC.md" = builtins.readFile operational.toolSpecs.memory;
+      "TASK-SPEC.md" = builtins.readFile operational.toolSpecs.tasks;
     };
 
     systemd.tmpfiles.rules = [
