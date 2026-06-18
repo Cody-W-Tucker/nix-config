@@ -14,7 +14,7 @@ let
     # Controls the monitor layout for hyprland
     workspace = [ "1, monitor:DP-1, default:true" ];
     monitor = [
-      "DP-1,2560x1440@239.97,0x0,1,bitdepth,10,vrr,2"
+      "DP-1,2560x1440@239.97,0x0,1,bitdepth,10"
     ];
     # Suspend after 2 hours of idle
     hypridle.suspendTimeout = 7200;
