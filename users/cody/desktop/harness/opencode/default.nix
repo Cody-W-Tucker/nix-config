@@ -6,19 +6,7 @@
 }:
 
 let
-  inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
-  userPatternSkillNames =
-    lib.pipe
-      [
-        inputs.cognitive-assistant.lib.operational.skillNames
-        inputs.cognitive-assistant.lib.existential.skillNames
-      ]
-      [
-        lib.flatten
-        lib.unique
-        (lib.sort (a: b: a < b))
-      ];
-  userPatternSkillList = lib.concatMapStringsSep "\n" (name: "- ${name}") userPatternSkillNames;
+  inherit (inputs.cognitive-assistant.lib.artifacts.alignment) soulFile;
 in
 {
   imports = [
@@ -43,13 +31,7 @@ in
     enableMcpIntegration = true;
     context = builtins.readFile soulFile + ''
 
-      # User-Pattern Skills
-
-      The following skills map directly to how the user handles specific situations:
-
-      ${userPatternSkillList}
-
-      When alignment depends on understanding how the user thinks, acts, or prefers work to be sequenced, consult these skills.
+      # Environment
 
       Unless otherwise stated, you are operating in a NixOS system.
 
@@ -67,13 +49,12 @@ in
 
       If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
 
-      When finishing substantial work, or when blocked and waiting on the user, you may call the `speak` tool once with a short status line if audible feedback would save the user from reading the full response immediately.
-      Use it sparingly: substantial completions, important blockers, or long-running work finishing in the background.
+      When finishing long-running work, you should call the `speak` tool once with a short status line if audible feedback would save the user from reading the full response immediately.
       Do not use it for routine progress updates or normal back-and-forth.
       Good examples:
-      - Fixed the voice plugin, but we can still tune when it speaks.
-      - The build passed, but we should still verify the runtime path.
-      Keep spoken lines under about 120 characters and avoid code paths unless they matter.
+      - Hey Cody...... Fixed the voice plugin, but I didn't know how you wanted to handle <situation>.
+      - Hey Cody...... The build passed, but you may want to review the <specific_choice> I made to accomplish <goal>.
+      Keep spoken lines short and avoid code paths.
     '';
     settings = {
       autoupdate = false;

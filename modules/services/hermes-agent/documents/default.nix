@@ -10,15 +10,15 @@ let
   nixosConfigRoot = "/etc/nixos";
   obsidianVault = "/home/codyt/Knowledge/Personal";
   projectsRoot = "/home/codyt/Projects";
-  existential = inputs.cognitive-assistant.lib.existential;
-  operational = inputs.cognitive-assistant.lib.operational;
+  artifacts = inputs.cognitive-assistant.lib.artifacts;
+  inherit (artifacts) operational existential;
   inherit (config.services.hermes-agent)
     group
     stateDir
     user
     workingDirectory
     ;
-  inherit (inputs.cognitive-assistant.lib.alignment) soulFile;
+  inherit (artifacts.alignment) soulFile;
   humanProfilesDir = "${workingDirectory}/human-profiles";
   existentialProfileFile = pkgs.writeText "hermes-existential-human-profile.md" (
     builtins.readFile existential.humanProfile

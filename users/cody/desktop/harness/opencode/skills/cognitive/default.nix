@@ -1,18 +1,11 @@
-{ inputs, ... }:
+{
+  inputs,
+  ...
+}:
 
 let
-  existential = inputs.cognitive-assistant.lib.existential;
-  operational = inputs.cognitive-assistant.lib.existential;
+  skills = inputs.cognitive-assistant.lib.artifacts.skills.files;
 in
 {
-  programs.opencode.skills = builtins.listToAttrs (
-    map (name: {
-      inherit name;
-      value = builtins.readFile (existential.skillFile name);
-    }) existential.skillNames
-    ++ map (name: {
-      inherit name;
-      value = builtins.readFile (operational.skillFile name);
-    }) operational.skillNames
-  );
+  programs.opencode.skills = skills;
 }

@@ -1,7 +1,7 @@
 { inputs, ... }:
 
 let
-  prompt = builtins.readFile inputs.cognitive-assistant.lib.alignment.toolSpecs.verifyAlignment;
+  prompt = builtins.readFile inputs.cognitive-assistant.lib.artifacts.alignment.toolSpecs.verifyAlignment;
 in
 {
   programs.opencode.agents."verify-alignment" = ''

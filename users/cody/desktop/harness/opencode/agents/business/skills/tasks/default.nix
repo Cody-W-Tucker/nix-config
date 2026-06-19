@@ -11,7 +11,7 @@ let
         "# Task Skill"
         "Use This Skill For"
       ]
-      (builtins.readFile inputs.cognitive-assistant.lib.operational.toolSpecs.tasks);
+      (builtins.readFile inputs.cognitive-assistant.lib.artifacts.operational.toolSpecs.tasks);
 in
 {
   programs.opencode.skills.tasks = ''

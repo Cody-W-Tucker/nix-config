@@ -2,56 +2,15 @@
   config,
   inputs,
   lib,
-  pkgs,
   ...
 }:
 
 let
-  cognitiveAssistantSkillDirs = [
-    inputs.cognitive-assistant.lib.operational.skillsDir
-    inputs.cognitive-assistant.lib.existential.skillsDir
-  ];
-
-  cognitiveAssistantSkillNames = lib.pipe cognitiveAssistantSkillDirs [
-    (map (dir: lib.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir dir))))
-    lib.flatten
-    lib.unique
-    (lib.sort (a: b: a < b))
-  ];
+  cognitiveAssistantSkills = inputs.cognitive-assistant.lib.artifacts.skills;
 
   cognitiveAssistantSkillList = lib.concatMapStringsSep "\n" (
     name: "- ${name}"
-  ) cognitiveAssistantSkillNames;
-
-  operationalSkillNames = lib.attrNames (
-    lib.filterAttrs (_: type: type == "directory") (
-      builtins.readDir inputs.cognitive-assistant.lib.operational.skillsDir
-    )
-  );
-
-  existentialSkillNames = lib.attrNames (
-    lib.filterAttrs (_: type: type == "directory") (
-      builtins.readDir inputs.cognitive-assistant.lib.existential.skillsDir
-    )
-  );
-
-  categorizedSkillLinks =
-    category: root: names:
-    map (name: {
-      name = "${category}/${name}/SKILL.md";
-      path = "${root}/${name}/SKILL.md";
-    }) names;
-
-  operationalSkills = pkgs.linkFarm "hermes-agent-operational-skills" (
-    categorizedSkillLinks "operational" inputs.cognitive-assistant.lib.operational.skillsDir
-      operationalSkillNames
-  );
-
-  existentialSkills = pkgs.linkFarm "hermes-agent-existential-skills" (
-    categorizedSkillLinks "existential" inputs.cognitive-assistant.lib.existential.skillsDir
-      existentialSkillNames
-  );
-
+  ) cognitiveAssistantSkills.names;
 in
 {
   options.codyos.hermes-agent.skills = {
@@ -107,13 +66,8 @@ in
     codyos.hermes-agent.skills = {
       skillPacks = [
         {
-          name = "cognitive-assistant-operational";
-          root = operationalSkills;
-          mode = "managed";
-        }
-        {
-          name = "cognitive-assistant-existential";
-          root = existentialSkills;
+          name = "cognitive-assistant";
+          root = cognitiveAssistantSkills.categorized;
           mode = "managed";
         }
       ];
