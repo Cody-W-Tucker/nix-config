@@ -46,10 +46,11 @@ let
     ## Tool Notes
 
     - **Memory and Tasks**: the full tool specs at `${workingDirectory}/MEMORY-SPEC.md` and `${workingDirectory}/TASK-SPEC.md`. Consult when managing memory and structuring tasks respectively.
+    - **CRM**: Use the CRM cli tool for all people operations. (keeping track of deals, contacts, companies, email addresses, etc.)
 
     ### Internal Context Sources
 
-    qmd is the primary source for internal knowledge stored in Obsidian-backed collections.
+    `qmd` is the primary source for internal knowledge (people/project context, thoughts, ideas and journals) stored in Obsidian-backed collections.
 
     If the user asks a factual or direct question that could plausibly be answered from internal knowledge, search qmd before saying you do not know.
 
@@ -74,7 +75,6 @@ in
 {
   config = {
     services.hermes-agent.documents = {
-      "AGENTS.md" = agentsDocument;
       "MEMORY-SPEC.md" = builtins.readFile operational.toolSpecs.memory;
       "TASK-SPEC.md" = builtins.readFile operational.toolSpecs.tasks;
     };
