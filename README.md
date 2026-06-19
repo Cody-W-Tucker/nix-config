@@ -4,7 +4,7 @@ CodyOS is a self-improving operating system built on top of NixOS.
 
 The bet is that if a machine is declarative, legible, and reversible, AI can help shape it around the person using it.
 
-That means the OS is not fixed. It can be edited, extended, and tuned over time based on what the person actually needs. When you get a new computer, just install it on the new one and you're up and running in a matter of minutes.
+That means the OS is not fixed. It can be edited, extended, and tuned over time based on what the person actually needs.
 
 It is also a bet on owning the system instead of renting it. Instead of fitting yourself into a sandbox someone else designed, the machine can grow with you and keep adapting to the way you actually work.
 
