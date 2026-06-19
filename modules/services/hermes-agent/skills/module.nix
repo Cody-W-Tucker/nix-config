@@ -68,7 +68,7 @@ in
         {
           name = "cognitive-assistant";
           root = cognitiveAssistantSkills.categorized;
-          mode = "managed";
+          mode = "mutable";
         }
       ];
       userPatternSkillList = cognitiveAssistantSkillList;

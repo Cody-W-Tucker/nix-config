@@ -32,8 +32,8 @@ Nix provides the safety properties for that: inspectable config, reproducible bu
 
 - [Cognitive Assistant](https://github.com/Cody-W-Tucker/Cognitive-Assistant) is the personalization upstream for this repo. It generates user-specific artifacts like soul text, human profiles, skills, and alignment specs.
 - This repo then wires those artifacts into Hermes and OpenCode so personalization does not stay trapped in prompts. It becomes part of the machine's actual agent behavior.
-- The flow is: [Cognitive Assistant](https://github.com/Cody-W-Tucker/Cognitive-Assistant) describes the person, and CodyOS describes the machine. Together they produce a system that can be steered by personalized AI instead of a generic assistant living in a generic environment.
-- Upstream artifacts are visible directly here: [existential human profile](https://github.com/Cody-W-Tucker/Cognitive-Assistant/blob/main/workspaces/existential/artifacts/human_profile.md), [operational human profile](https://github.com/Cody-W-Tucker/Cognitive-Assistant/blob/main/workspaces/operational/artifacts/human_profile.md), [generated existential skills](https://github.com/Cody-W-Tucker/Cognitive-Assistant/tree/main/workspaces/existential/artifacts/skills), [generated operational skills](https://github.com/Cody-W-Tucker/Cognitive-Assistant/tree/main/workspaces/operational/artifacts/skills), and the [SOUL artifact](https://github.com/Cody-W-Tucker/Cognitive-Assistant/blob/main/workspaces/alignment/artifacts/SOUL.md).
+- The flow is: Cognitive Assistant describes the person, and CodyOS describes the machine. Together they produce a system that can be steered by personalized AI instead of a generic assistant living in a generic environment.
+- Upstream artifacts are visible directly here: [existential profile](https://github.com/Cody-W-Tucker/Cognitive-Assistant/blob/main/workspaces/existential/artifacts/human_profile.md), [operational profile](https://github.com/Cody-W-Tucker/Cognitive-Assistant/blob/main/workspaces/operational/artifacts/human_profile.md), [generated skills](https://github.com/Cody-W-Tucker/Cognitive-Assistant/tree/main/workspaces/skills), and the [SOUL artifact](https://github.com/Cody-W-Tucker/Cognitive-Assistant/blob/main/workspaces/alignment/artifacts/SOUL.md).
 
 ### Hyprland ergonomics
 
@@ -43,5 +43,5 @@ Nix provides the safety properties for that: inspectable config, reproducible bu
 
 ### Automations that live with the machine
 
-- Some workflows belong in the system, not in a checklist. The [Miniflux curator](./modules/services/automations/miniflux-curator/default.nix) is one example: it produces a curated feed by comparing new RSS items against the things the user has already saved and shown interest in.
+- Some workflows belong in the system, not in a checklist. The [Miniflux curator](./modules/services/automations/miniflux-curator) is one example: it produces a curated feed by comparing new RSS items against the things the user has already saved and shown interest in.
 - The larger idea is that repeated work should become infrastructure when possible.
