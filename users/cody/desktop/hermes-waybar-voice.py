@@ -1,23 +1,27 @@
 #!/usr/bin/env python3
-import asyncio
-import base64
 import fcntl
 import json
 import os
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
-import urllib.parse
 import urllib.request
 from pathlib import Path
 
-import websockets
 
+HERMES_BASE_URL = os.environ.get("HERMES_BASE_URL", "http://127.0.0.1:8642").rstrip("/")
+SPEECH_BASE_URL = os.environ.get("HERMES_SPEECH_BASE_URL", "http://127.0.0.1:8081").rstrip("/")
+AUTH_TOKEN = os.environ.get("HERMES_API_TOKEN", "local-only")
+CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "local")
+TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "whisper-1")
+SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "tts-1")
+SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "alloy")
+CLIP_SECONDS = float(os.environ.get("HERMES_VOICE_CLIP_SECONDS", "5"))
+MAX_MESSAGES = int(os.environ.get("HERMES_VOICE_MAX_MESSAGES", "24"))
 
-BASE_URL = os.environ.get("HERMES_BASE_URL", "http://127.0.0.1:8642").rstrip("/")
-TOKEN = os.environ.get("HERMES_DASHBOARD_SESSION_TOKEN", "cody-waybar-local")
 RUNTIME_DIR = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "hermes-waybar-voice"
 PID_FILE = RUNTIME_DIR / "worker.pid"
 LOCK_FILE = RUNTIME_DIR / "worker.lock"
@@ -151,193 +155,178 @@ def toggle() -> None:
         start_worker()
 
 
-def ws_url() -> str:
-    parsed = urllib.parse.urlparse(BASE_URL)
-    scheme = "wss" if parsed.scheme == "https" else "ws"
-    netloc = parsed.netloc or parsed.path
-    return f"{scheme}://{netloc}/api/ws?token={urllib.parse.quote(TOKEN)}"
-
-
-async def rpc(ws, method: str, params: dict | None = None) -> dict:
-    rpc.counter += 1
-    request_id = rpc.counter
-    await ws.send(json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": params or {}}) + "\n")
-    while not STOP:
-        try:
-            message = await asyncio.wait_for(ws.recv(), timeout=1)
-        except asyncio.TimeoutError:
+def load_messages() -> list[dict[str, str]]:
+    messages = read_json(SESSION_FILE).get("messages")
+    if not isinstance(messages, list):
+        return []
+    clean: list[dict[str, str]] = []
+    for message in messages:
+        if not isinstance(message, dict):
             continue
-        for line in str(message).splitlines():
-            if not line.strip():
-                continue
-            try:
-                event = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if event.get("id") == request_id:
-                if "error" in event:
-                    raise RuntimeError(str(event["error"]))
-                result = event.get("result")
-                return result if isinstance(result, dict) else {"value": result}
-            await handle_event(event)
-    raise RuntimeError("stopped")
+        role = message.get("role")
+        content = message.get("content")
+        if role in {"system", "user", "assistant"} and isinstance(content, str) and content.strip():
+            clean.append({"role": role, "content": content})
+    return clean[-MAX_MESSAGES:]
 
 
-rpc.counter = 0
+def save_messages(messages: list[dict[str, str]]) -> None:
+    write_json(SESSION_FILE, {"messages": messages[-MAX_MESSAGES:]})
 
 
-async def handle_event(event: dict) -> None:
-    text = transcript_from_event(event)
-    if text:
-        set_status("heard", f"Heard: {text[:80]}")
+def http_json(url: str, payload: dict, timeout: int = 120) -> dict:
+    body = json.dumps(payload).encode()
+    request = urllib.request.Request(
+        url,
+        data=body,
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {AUTH_TOKEN}"},
+        method="POST",
+    )
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        data = json.loads(response.read().decode())
+    return data if isinstance(data, dict) else {}
 
 
-def nested_get(data, keys: tuple[str, ...]):
-    current = data
-    for key in keys:
-        if not isinstance(current, dict) or key not in current:
-            return None
-        current = current[key]
-    return current
-
-
-def event_type_and_payload(event: dict) -> tuple[str, dict]:
-    method = str(event.get("method") or event.get("type") or event.get("event") or "")
-    params = event.get("params") if isinstance(event.get("params"), dict) else {}
-    if method == "event":
-        event_type = str(params.get("type") or "")
-        payload = params.get("payload") if isinstance(params.get("payload"), dict) else {}
-        return event_type, payload
-    return method, params if params else event
-
-
-def session_id_from_result(result: dict) -> str | None:
-    candidates = [
-        result.get("session_id"),
-        result.get("sessionId"),
-        result.get("id"),
-        nested_get(result, ("session", "id")),
-        nested_get(result, ("session", "session_id")),
-        result.get("value"),
-    ]
-    for candidate in candidates:
-        if isinstance(candidate, str) and candidate:
-            return candidate
-    return None
-
-
-async def open_session(ws) -> str:
-    saved = read_json(SESSION_FILE).get("session_id")
-    if isinstance(saved, str) and saved:
+def record_clip(path: Path) -> bool:
+    set_status("listening", f"Hermes voice recording {CLIP_SECONDS:g}s clip")
+    process = subprocess.Popen(
+        ["pw-record", "--target", "@DEFAULT_AUDIO_SOURCE@", str(path)],
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    deadline = time.time() + CLIP_SECONDS
+    while not STOP and time.time() < deadline and process.poll() is None:
+        time.sleep(0.1)
+    if process.poll() is None:
+        process.terminate()
         try:
-            result = await rpc(ws, "session.resume", {"session_id": saved})
-            session_id = session_id_from_result(result) or saved
-            write_json(SESSION_FILE, {"session_id": session_id})
-            set_status("listening", "Hermes voice resumed")
-            return session_id
-        except Exception:
-            pass
-    result = await rpc(ws, "session.create", {"close_on_disconnect": False, "source": "waybar-voice"})
-    session_id = session_id_from_result(result)
-    if not session_id:
-        raise RuntimeError("Hermes did not return a session id")
-    write_json(SESSION_FILE, {"session_id": session_id})
-    set_status("listening", "Hermes voice session created")
-    return session_id
+            process.wait(timeout=2)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=2)
+    return path.exists() and path.stat().st_size > 1024 and not STOP
 
 
-def transcript_from_event(event: dict) -> str | None:
-    method, payload = event_type_and_payload(event)
-    if "transcript" not in method and "voice" not in method and "speech" not in method:
-        if not any(key in payload for key in ("transcript", "utterance")):
-            return None
-    text = payload.get("transcript") or payload.get("text") or payload.get("utterance")
+def transcribe(path: Path) -> str | None:
+    set_status("transcribing", "Hermes voice transcribing")
+    result = subprocess.run(
+        [
+            "curl",
+            "-sS",
+            "-X",
+            "POST",
+            f"{SPEECH_BASE_URL}/v1/audio/transcriptions",
+            "-H",
+            f"Authorization: Bearer {AUTH_TOKEN}",
+            "-F",
+            f"model={TRANSCRIPTION_MODEL}",
+            "-F",
+            f"file=@{path};type=audio/wav",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    payload = json.loads(result.stdout)
+    text = payload.get("text") if isinstance(payload, dict) else None
     if not isinstance(text, str) or not text.strip():
-        return None
-    final_value = payload.get("final") or payload.get("is_final") or payload.get("complete")
-    status = str(payload.get("status") or payload.get("state") or method).lower()
-    if final_value is False and "final" not in status and "complete" not in status and "end" not in status:
         return None
     return text.strip()
 
 
-async def wait_for_transcript(ws) -> str | None:
-    while not STOP:
-        try:
-            message = await asyncio.wait_for(ws.recv(), timeout=1)
-        except asyncio.TimeoutError:
-            continue
-        for line in str(message).splitlines():
-            if not line.strip():
-                continue
-            try:
-                event = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            text = transcript_from_event(event)
-            if text:
-                return text
-            await handle_event(event)
-    return None
-
-
-async def wait_for_reply(ws) -> str | None:
-    deltas: list[str] = []
-    while not STOP:
-        try:
-            message = await asyncio.wait_for(ws.recv(), timeout=1)
-        except asyncio.TimeoutError:
-            continue
-        for line in str(message).splitlines():
-            if not line.strip():
-                continue
-            try:
-                event = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            method, payload = event_type_and_payload(event)
-            if method == "message.delta":
-                text = payload.get("text")
-                if isinstance(text, str) and text:
-                    deltas.append(text)
-                continue
-            if method == "message.complete":
-                text = payload.get("text")
-                if isinstance(text, str) and text.strip():
-                    return text.strip()
-                reply = "".join(deltas).strip()
-                return reply or None
-            if method == "error":
-                error_message = payload.get("message")
-                if isinstance(error_message, str) and error_message:
-                    raise RuntimeError(error_message)
-            await handle_event(event)
-    return None
-
-
-def speak(text: str) -> None:
-    url = f"{BASE_URL}/api/audio/speak?token={urllib.parse.quote(TOKEN)}"
-    body = json.dumps({"text": text}).encode()
-    request = urllib.request.Request(
-        url,
-        data=body,
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {TOKEN}"},
-        method="POST",
+def chat(messages: list[dict[str, str]]) -> str | None:
+    payload = http_json(
+        f"{HERMES_BASE_URL}/v1/chat/completions",
+        {"model": CHAT_MODEL, "messages": messages, "stream": False},
     )
-    with urllib.request.urlopen(request, timeout=120) as response:
-        payload = json.loads(response.read().decode())
-    data_url = payload.get("data_url") if isinstance(payload, dict) else None
-    if not isinstance(data_url, str) or "," not in data_url:
+    choices = payload.get("choices")
+    if not isinstance(choices, list) or not choices:
+        return None
+    first = choices[0]
+    if not isinstance(first, dict):
+        return None
+    message = first.get("message")
+    if isinstance(message, dict) and isinstance(message.get("content"), str):
+        return message["content"].strip() or None
+    text = first.get("text")
+    return text.strip() if isinstance(text, str) and text.strip() else None
+
+
+def speech_suffix(content_type: str) -> str:
+    if "mpeg" in content_type or "mp3" in content_type:
+        return ".mp3"
+    if "ogg" in content_type:
+        return ".ogg"
+    return ".wav"
+
+
+def synthesize(text: str) -> Path | None:
+    set_status("speaking", "Hermes voice synthesizing")
+    request_path = RUNTIME_DIR / f"tts-request-{int(time.time() * 1000)}.json"
+    headers_path = RUNTIME_DIR / f"tts-headers-{int(time.time() * 1000)}.txt"
+    audio_path = RUNTIME_DIR / f"tts-{int(time.time() * 1000)}.wav"
+    request_path.write_text(json.dumps({"model": SPEECH_MODEL, "voice": SPEECH_VOICE, "input": text}))
+    try:
+        subprocess.run(
+            [
+                "curl",
+                "-sS",
+                "-D",
+                str(headers_path),
+                "-X",
+                "POST",
+                f"{SPEECH_BASE_URL}/v1/audio/speech",
+                "-H",
+                f"Authorization: Bearer {AUTH_TOKEN}",
+                "-H",
+                "Content-Type: application/json",
+                "--data-binary",
+                f"@{request_path}",
+                "-o",
+                str(audio_path),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        if not audio_path.exists() or audio_path.stat().st_size == 0:
+            return None
+        content_type = "audio/wav"
+        try:
+            for line in headers_path.read_text().splitlines():
+                if line.lower().startswith("content-type:"):
+                    content_type = line.split(":", 1)[1].strip()
+                    break
+        except OSError:
+            pass
+        final_path = audio_path.with_suffix(speech_suffix(content_type))
+        if final_path != audio_path:
+            audio_path.replace(final_path)
+            audio_path = final_path
+        return audio_path
+    finally:
+        for temp_path in (request_path, headers_path):
+            try:
+                temp_path.unlink()
+            except OSError:
+                pass
+
+
+def play_audio(path: Path) -> None:
+    set_status("speaking", "Hermes voice speaking")
+    players = [["mpv", "--no-terminal", "--really-quiet", str(path)]] if path.suffix == ".mp3" else [
+        ["pw-play", str(path)],
+        ["mpv", "--no-terminal", "--really-quiet", str(path)],
+    ]
+    for command in players:
+        try:
+            player = subprocess.Popen(command, stdin=subprocess.DEVNULL)
+            break
+        except FileNotFoundError:
+            player = None
+    if player is None:
         return
-    metadata, encoded = data_url.split(",", 1)
-    suffix = ".wav"
-    if "mpeg" in metadata or "mp3" in metadata:
-        suffix = ".mp3"
-    elif "ogg" in metadata:
-        suffix = ".ogg"
-    audio_path = RUNTIME_DIR / f"tts-{int(time.time() * 1000)}{suffix}"
-    audio_path.write_bytes(base64.b64decode(encoded))
-    player = subprocess.Popen(["mpv", "--no-terminal", "--really-quiet", str(audio_path)])
     while player.poll() is None:
         if STOP:
             player.terminate()
@@ -347,13 +336,9 @@ def speak(text: str) -> None:
                 player.kill()
             break
         time.sleep(0.1)
-    try:
-        audio_path.unlink()
-    except OSError:
-        pass
 
 
-async def worker_loop() -> None:
+def worker_loop() -> None:
     ensure_runtime()
     with LOCK_FILE.open("w") as lock:
         try:
@@ -361,34 +346,53 @@ async def worker_loop() -> None:
         except BlockingIOError:
             return
         PID_FILE.write_text(str(os.getpid()))
-        set_status("connecting", "Hermes voice connecting")
-        recording = False
+        set_status("starting", "Hermes voice starting")
         try:
-            async with websockets.connect(ws_url(), ping_interval=20, ping_timeout=20) as ws:
-                session_id = await open_session(ws)
-                while not STOP:
-                    set_status("listening", "Hermes voice listening")
-                    await rpc(ws, "voice.record", {"action": "start", "session_id": session_id})
-                    recording = True
-                    transcript = await wait_for_transcript(ws)
-                    if not transcript:
+            messages = load_messages()
+            while not STOP:
+                with tempfile.NamedTemporaryFile(prefix="clip-", suffix=".wav", dir=RUNTIME_DIR, delete=False) as handle:
+                    clip_path = Path(handle.name)
+                clip_path.unlink(missing_ok=True)
+                try:
+                    if not record_clip(clip_path):
                         continue
-                    recording = False
-                    await rpc(ws, "voice.record", {"action": "stop", "session_id": session_id})
-                    set_status("thinking", f"Hermes thinking: {transcript[:80]}")
-                    await rpc(ws, "prompt.submit", {"session_id": session_id, "text": transcript})
-                    reply = await wait_for_reply(ws)
-                    if reply:
-                        set_status("speaking", "Hermes voice speaking")
-                        speak(reply)
-                if recording:
-                    await rpc(ws, "voice.record", {"action": "stop", "session_id": session_id})
+                    transcript = transcribe(clip_path)
+                finally:
+                    try:
+                        clip_path.unlink()
+                    except OSError:
+                        pass
+                if not transcript:
+                    set_status("listening", "Hermes voice listening")
+                    continue
+                set_status("thinking", f"Hermes thinking: {transcript[:80]}")
+                messages.append({"role": "user", "content": transcript})
+                messages = messages[-MAX_MESSAGES:]
+                reply = chat(messages)
+                if not reply:
+                    continue
+                messages.append({"role": "assistant", "content": reply})
+                messages = messages[-MAX_MESSAGES:]
+                save_messages(messages)
+                audio_path = synthesize(reply)
+                if audio_path:
+                    try:
+                        play_audio(audio_path)
+                    finally:
+                        try:
+                            audio_path.unlink()
+                        except OSError:
+                            pass
+        except (OSError, urllib.error.URLError, subprocess.SubprocessError, json.JSONDecodeError) as error:
+            set_status("error", f"Hermes voice error: {error}")
+            raise
         finally:
             try:
                 PID_FILE.unlink()
             except FileNotFoundError:
                 pass
-            set_status("idle", "Hermes voice idle")
+            if STOP:
+                set_status("idle", "Hermes voice idle")
 
 
 def request_stop(_signum, _frame) -> None:
@@ -409,7 +413,7 @@ def main() -> int:
     elif command == "cleanup":
         reset_runtime(clear_session=True, hard=True)
     elif command == "worker":
-        asyncio.run(worker_loop())
+        worker_loop()
     else:
         print(f"unknown command: {command}", file=sys.stderr)
         return 2

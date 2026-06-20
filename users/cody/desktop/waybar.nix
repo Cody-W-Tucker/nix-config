@@ -8,15 +8,18 @@
 
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  hermesDashboardSessionToken = "cody-waybar-local";
-  hermesVoicePython = pkgs.python3.withPackages (pythonPackages: [ pythonPackages.websockets ]);
   hermesVoice = pkgs.writeShellApplication {
     name = "hermes-waybar-voice";
-    runtimeInputs = [ pkgs.mpv ];
+    runtimeInputs = [
+      pkgs.curl
+      pkgs.mpv
+      pkgs.pipewire
+    ];
     text = ''
       export HERMES_BASE_URL="http://127.0.0.1:8642"
-      export HERMES_DASHBOARD_SESSION_TOKEN="${hermesDashboardSessionToken}"
-      exec ${hermesVoicePython}/bin/python ${./hermes-waybar-voice.py} "$@"
+      export HERMES_SPEECH_BASE_URL="http://127.0.0.1:8081"
+      export HERMES_API_TOKEN="local-only"
+      exec ${pkgs.python3}/bin/python ${./hermes-waybar-voice.py} "$@"
     '';
   };
   hermesVoiceCmd = lib.getExe hermesVoice;
