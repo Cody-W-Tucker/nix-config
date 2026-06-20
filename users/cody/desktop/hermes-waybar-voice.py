@@ -40,7 +40,7 @@ START_FRAMES = int(os.environ.get("HERMES_VOICE_START_FRAMES", "2"))
 PRE_ROLL_SECONDS = float(os.environ.get("HERMES_VOICE_PRE_ROLL_SECONDS", "0.3"))
 MIN_UTTERANCE_SECONDS = float(os.environ.get("HERMES_VOICE_MIN_UTTERANCE_SECONDS", "0.35"))
 TRAILING_SILENCE_SECONDS = float(os.environ.get("HERMES_VOICE_TRAILING_SILENCE_SECONDS", "0.9"))
-MAX_UTTERANCE_SECONDS = float(os.environ.get("HERMES_VOICE_MAX_UTTERANCE_SECONDS", "25"))
+MAX_UTTERANCE_SECONDS = float(os.environ.get("HERMES_VOICE_MAX_UTTERANCE_SECONDS", "90"))
 MAX_AUDIO_QUEUE_SECONDS = float(os.environ.get("HERMES_VOICE_MAX_AUDIO_QUEUE_SECONDS", "5"))
 
 RUNTIME_DIR = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "hermes-waybar-voice"
@@ -77,6 +77,29 @@ def set_status(state: str, tooltip: str) -> None:
     write_json(STATUS_FILE, {"state": state, "tooltip": tooltip, "updated_at": time.time()})
 
 
+def compact_text(text: str, limit: int = 28) -> str:
+    normalized = " ".join(text.split())
+    if len(normalized) <= limit:
+        return normalized
+    return normalized[: limit - 1].rstrip() + "…"
+
+
+def session_title() -> str | None:
+    messages = read_json(SESSION_FILE).get("messages")
+    if not isinstance(messages, list):
+        return None
+    for preferred_role in ("user", "assistant", "system"):
+        for message in messages:
+            if not isinstance(message, dict):
+                continue
+            if message.get("role") != preferred_role:
+                continue
+            content = message.get("content")
+            if isinstance(content, str) and content.strip():
+                return compact_text(content)
+    return None
+
+
 def read_pid() -> int | None:
     try:
         return int(PID_FILE.read_text().strip())
@@ -110,10 +133,21 @@ def waybar_status() -> None:
     running = process_running(read_pid())
     status = read_json(STATUS_FILE)
     tooltip = status.get("tooltip") if isinstance(status.get("tooltip"), str) else None
+    title = session_title()
     if running:
-        output = {"text": "", "tooltip": tooltip or "Hermes voice running", "class": "running"}
+        output = {
+            "text": f" {title}" if title else " Hermes",
+            "tooltip": tooltip or "Hermes voice running",
+            "class": "running",
+        }
+    elif title:
+        output = {
+            "text": f" {title}",
+            "tooltip": tooltip or "Hermes voice ready to resume",
+            "class": "paused",
+        }
     else:
-        output = {"text": "", "tooltip": tooltip or "Hermes voice idle", "class": "idle"}
+        output = {"text": "", "tooltip": tooltip or "Hermes voice idle", "class": "empty"}
     print(json.dumps(output), flush=True)
 
 
@@ -136,7 +170,7 @@ def stop_worker(clear_session: bool = False, hard: bool = False) -> None:
             SESSION_FILE.unlink()
         except FileNotFoundError:
             pass
-    set_status("idle", "Hermes voice idle")
+    set_status("idle", "Hermes voice cleared" if clear_session else "Hermes voice idle")
 
 
 def start_worker() -> None:
@@ -192,7 +226,13 @@ def load_messages() -> list[dict[str, str]]:
 
 
 def save_messages(messages: list[dict[str, str]]) -> None:
-    write_json(SESSION_FILE, {"messages": messages[-MAX_MESSAGES:]})
+    trimmed = messages[-MAX_MESSAGES:]
+    title = None
+    for message in trimmed:
+        if message.get("role") == "user" and isinstance(message.get("content"), str) and message["content"].strip():
+            title = compact_text(message["content"])
+            break
+    write_json(SESSION_FILE, {"messages": trimmed, "title": title})
 
 
 def http_json(url: str, payload: dict, timeout: int = 120) -> dict:
