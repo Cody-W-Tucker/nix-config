@@ -19,6 +19,9 @@ let
       export HERMES_BASE_URL="http://127.0.0.1:8642"
       export HERMES_SPEECH_BASE_URL="http://127.0.0.1:8081"
       export HERMES_API_TOKEN="local-only"
+      export HERMES_TRANSCRIPTION_MODEL="whisper-medium"
+      export HERMES_SPEECH_MODEL="kokoro-82m"
+      export HERMES_SPEECH_VOICE="af_heart"
       exec ${pkgs.python3}/bin/python ${./hermes-waybar-voice.py} "$@"
     '';
   };

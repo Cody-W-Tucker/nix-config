@@ -20,9 +20,9 @@ HERMES_BASE_URL = os.environ.get("HERMES_BASE_URL", "http://127.0.0.1:8642").rst
 SPEECH_BASE_URL = os.environ.get("HERMES_SPEECH_BASE_URL", "http://127.0.0.1:8081").rstrip("/")
 AUTH_TOKEN = os.environ.get("HERMES_API_TOKEN", "local-only")
 CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "local")
-TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "whisper-1")
-SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "tts-1")
-SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "alloy")
+TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "whisper-medium")
+SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "kokoro-82m")
+SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "af_heart")
 MAX_MESSAGES = int(os.environ.get("HERMES_VOICE_MAX_MESSAGES", "24"))
 
 AUDIO_RATE = int(os.environ.get("HERMES_VOICE_SAMPLE_RATE", "16000"))
