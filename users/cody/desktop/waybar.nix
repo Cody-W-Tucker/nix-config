@@ -8,8 +8,7 @@
 
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  hermesDashboardSessionToken =
-    config.services.hermes-agent.environment.HERMES_DASHBOARD_SESSION_TOKEN;
+  hermesDashboardSessionToken = "cody-waybar-local";
   hermesVoicePython = pkgs.python3.withPackages (pythonPackages: [ pythonPackages.websockets ]);
   hermesVoice = pkgs.writeShellApplication {
     name = "hermes-waybar-voice";
