@@ -2,13 +2,17 @@
 import fcntl
 import json
 import os
+import queue
 import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.request
+import wave
+from collections import deque
 from pathlib import Path
 
 
@@ -19,8 +23,25 @@ CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "local")
 TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "whisper-1")
 SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "tts-1")
 SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "alloy")
-CLIP_SECONDS = float(os.environ.get("HERMES_VOICE_CLIP_SECONDS", "5"))
 MAX_MESSAGES = int(os.environ.get("HERMES_VOICE_MAX_MESSAGES", "24"))
+
+AUDIO_RATE = int(os.environ.get("HERMES_VOICE_SAMPLE_RATE", "16000"))
+AUDIO_CHANNELS = 1
+AUDIO_SAMPLE_WIDTH = 2
+FRAME_MS = int(os.environ.get("HERMES_VOICE_FRAME_MS", "30"))
+FRAME_SAMPLES = max(1, AUDIO_RATE * FRAME_MS // 1000)
+FRAME_BYTES = FRAME_SAMPLES * AUDIO_SAMPLE_WIDTH * AUDIO_CHANNELS
+FRAME_SECONDS = FRAME_SAMPLES / AUDIO_RATE
+START_RMS = int(os.environ.get("HERMES_VOICE_START_RMS", "700"))
+SILENCE_RMS = int(os.environ.get("HERMES_VOICE_SILENCE_RMS", "350"))
+START_NOISE_MULTIPLIER = float(os.environ.get("HERMES_VOICE_START_NOISE_MULTIPLIER", "3.0"))
+SILENCE_NOISE_MULTIPLIER = float(os.environ.get("HERMES_VOICE_SILENCE_NOISE_MULTIPLIER", "1.8"))
+START_FRAMES = int(os.environ.get("HERMES_VOICE_START_FRAMES", "2"))
+PRE_ROLL_SECONDS = float(os.environ.get("HERMES_VOICE_PRE_ROLL_SECONDS", "0.3"))
+MIN_UTTERANCE_SECONDS = float(os.environ.get("HERMES_VOICE_MIN_UTTERANCE_SECONDS", "0.35"))
+TRAILING_SILENCE_SECONDS = float(os.environ.get("HERMES_VOICE_TRAILING_SILENCE_SECONDS", "0.9"))
+MAX_UTTERANCE_SECONDS = float(os.environ.get("HERMES_VOICE_MAX_UTTERANCE_SECONDS", "25"))
+MAX_AUDIO_QUEUE_SECONDS = float(os.environ.get("HERMES_VOICE_MAX_AUDIO_QUEUE_SECONDS", "5"))
 
 RUNTIME_DIR = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "hermes-waybar-voice"
 PID_FILE = RUNTIME_DIR / "worker.pid"
@@ -187,25 +208,155 @@ def http_json(url: str, payload: dict, timeout: int = 120) -> dict:
     return data if isinstance(data, dict) else {}
 
 
-def record_clip(path: Path) -> bool:
-    set_status("listening", f"Hermes voice recording {CLIP_SECONDS:g}s clip")
-    process = subprocess.Popen(
-        ["pw-record", "--target", "@DEFAULT_AUDIO_SOURCE@", str(path)],
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    deadline = time.time() + CLIP_SECONDS
-    while not STOP and time.time() < deadline and process.poll() is None:
-        time.sleep(0.1)
-    if process.poll() is None:
-        process.terminate()
+class PipewireAudioStream:
+    def __init__(self) -> None:
+        self.queue: queue.Queue[bytes] = queue.Queue(
+            maxsize=max(1, int(MAX_AUDIO_QUEUE_SECONDS / FRAME_SECONDS))
+        )
+        self.process: subprocess.Popen[bytes] | None = None
+        self.reader: threading.Thread | None = None
+
+    def __enter__(self) -> "PipewireAudioStream":
+        command = [
+            "pw-record",
+            "--target",
+            "@DEFAULT_AUDIO_SOURCE@",
+            "--rate",
+            str(AUDIO_RATE),
+            "--channels",
+            str(AUDIO_CHANNELS),
+            "--format",
+            "s16",
+            "-",
+        ]
+        self.process = subprocess.Popen(
+            command,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+        self.reader = threading.Thread(target=self._read_frames, daemon=True)
+        self.reader.start()
+        return self
+
+    def __exit__(self, _exc_type, _exc_value, _traceback) -> None:
+        self.close()
+
+    def _read_frames(self) -> None:
+        if self.process is None or self.process.stdout is None:
+            return
+        while True:
+            frame = self.process.stdout.read(FRAME_BYTES)
+            if not frame:
+                return
+            if len(frame) < FRAME_BYTES:
+                continue
+            try:
+                self.queue.put_nowait(frame)
+            except queue.Full:
+                try:
+                    self.queue.get_nowait()
+                except queue.Empty:
+                    pass
+                try:
+                    self.queue.put_nowait(frame)
+                except queue.Full:
+                    pass
+
+    def read_frame(self, timeout: float = 0.2) -> bytes | None:
         try:
-            process.wait(timeout=2)
+            return self.queue.get(timeout=timeout)
+        except queue.Empty:
+            return None
+
+    def drain(self) -> None:
+        while True:
+            try:
+                self.queue.get_nowait()
+            except queue.Empty:
+                return
+
+    def running(self) -> bool:
+        return self.process is not None and self.process.poll() is None
+
+    def close(self) -> None:
+        if self.process is None or self.process.poll() is not None:
+            return
+        self.process.terminate()
+        try:
+            self.process.wait(timeout=2)
         except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait(timeout=2)
-    return path.exists() and path.stat().st_size > 1024 and not STOP
+            self.process.kill()
+            self.process.wait(timeout=2)
+
+
+def frame_rms(frame: bytes) -> int:
+    sample_count = len(frame) // AUDIO_SAMPLE_WIDTH
+    if sample_count <= 0:
+        return 0
+    total = 0
+    for index in range(0, len(frame) - 1, AUDIO_SAMPLE_WIDTH):
+        sample = int.from_bytes(frame[index : index + AUDIO_SAMPLE_WIDTH], "little", signed=True)
+        total += sample * sample
+    return int((total / sample_count) ** 0.5)
+
+
+def write_wav(path: Path, frames: list[bytes]) -> None:
+    with wave.open(str(path), "wb") as wav:
+        wav.setnchannels(AUDIO_CHANNELS)
+        wav.setsampwidth(AUDIO_SAMPLE_WIDTH)
+        wav.setframerate(AUDIO_RATE)
+        wav.writeframes(b"".join(frames))
+
+
+def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
+    set_status("listening", "Hermes voice listening")
+    audio.drain()
+    pre_roll: deque[bytes] = deque(maxlen=max(1, int(PRE_ROLL_SECONDS / FRAME_SECONDS)))
+    noise_floor = SILENCE_RMS
+    loud_frames = 0
+    frames: list[bytes] | None = None
+    silence_seconds = 0.0
+
+    while not STOP:
+        frame = audio.read_frame()
+        if frame is None:
+            if not audio.running():
+                raise RuntimeError("pw-record stopped while Hermes was listening")
+            continue
+
+        rms = frame_rms(frame)
+        if frames is None:
+            pre_roll.append(frame)
+            start_threshold = max(START_RMS, int(noise_floor * START_NOISE_MULTIPLIER))
+            if rms >= start_threshold:
+                loud_frames += 1
+            else:
+                loud_frames = 0
+                noise_floor = (noise_floor * 0.95) + (rms * 0.05)
+            if loud_frames >= START_FRAMES:
+                frames = list(pre_roll)
+                silence_seconds = 0.0
+                set_status("recording", "Hermes voice capturing speech")
+            continue
+
+        frames.append(frame)
+        elapsed = len(frames) * FRAME_SECONDS
+        silence_threshold = max(SILENCE_RMS, int(noise_floor * SILENCE_NOISE_MULTIPLIER))
+        if rms < silence_threshold:
+            silence_seconds += FRAME_SECONDS
+        else:
+            silence_seconds = 0.0
+
+        if elapsed >= MAX_UTTERANCE_SECONDS:
+            break
+        if elapsed >= MIN_UTTERANCE_SECONDS and silence_seconds >= TRAILING_SILENCE_SECONDS:
+            break
+
+    if STOP or not frames:
+        return False
+    write_wav(path, frames)
+    return path.exists() and path.stat().st_size > 1024
 
 
 def transcribe(path: Path) -> str | None:
@@ -349,40 +500,42 @@ def worker_loop() -> None:
         set_status("starting", "Hermes voice starting")
         try:
             messages = load_messages()
-            while not STOP:
-                with tempfile.NamedTemporaryFile(prefix="clip-", suffix=".wav", dir=RUNTIME_DIR, delete=False) as handle:
-                    clip_path = Path(handle.name)
-                clip_path.unlink(missing_ok=True)
-                try:
-                    if not record_clip(clip_path):
-                        continue
-                    transcript = transcribe(clip_path)
-                finally:
+            with PipewireAudioStream() as audio:
+                while not STOP:
+                    with tempfile.NamedTemporaryFile(prefix="utterance-", suffix=".wav", dir=RUNTIME_DIR, delete=False) as handle:
+                        utterance_path = Path(handle.name)
+                    utterance_path.unlink(missing_ok=True)
                     try:
-                        clip_path.unlink()
-                    except OSError:
-                        pass
-                if not transcript:
-                    set_status("listening", "Hermes voice listening")
-                    continue
-                set_status("thinking", f"Hermes thinking: {transcript[:80]}")
-                messages.append({"role": "user", "content": transcript})
-                messages = messages[-MAX_MESSAGES:]
-                reply = chat(messages)
-                if not reply:
-                    continue
-                messages.append({"role": "assistant", "content": reply})
-                messages = messages[-MAX_MESSAGES:]
-                save_messages(messages)
-                audio_path = synthesize(reply)
-                if audio_path:
-                    try:
-                        play_audio(audio_path)
+                        if not record_utterance(audio, utterance_path):
+                            continue
+                        transcript = transcribe(utterance_path)
                     finally:
                         try:
-                            audio_path.unlink()
+                            utterance_path.unlink()
                         except OSError:
                             pass
+                    if not transcript:
+                        set_status("listening", "Hermes voice listening")
+                        continue
+                    set_status("thinking", f"Hermes thinking: {transcript[:80]}")
+                    messages.append({"role": "user", "content": transcript})
+                    messages = messages[-MAX_MESSAGES:]
+                    reply = chat(messages)
+                    if not reply:
+                        continue
+                    messages.append({"role": "assistant", "content": reply})
+                    messages = messages[-MAX_MESSAGES:]
+                    save_messages(messages)
+                    audio_path = synthesize(reply)
+                    if audio_path:
+                        try:
+                            play_audio(audio_path)
+                        finally:
+                            try:
+                                audio_path.unlink()
+                            except OSError:
+                                pass
+                    audio.drain()
         except (OSError, urllib.error.URLError, subprocess.SubprocessError, json.JSONDecodeError) as error:
             set_status("error", f"Hermes voice error: {error}")
             raise
