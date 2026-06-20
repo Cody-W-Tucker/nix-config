@@ -46,6 +46,7 @@ in
         API_SERVER_HOST = "127.0.0.1";
         API_SERVER_PORT = "8642";
         API_SERVER_KEY = "local-only";
+        HERMES_DASHBOARD_SESSION_TOKEN = "cody-waybar-local";
         OBSIDIAN_VAULT = obsidianVault;
         VOICE_TOOLS_OPENAI_KEY = "local-only";
       };

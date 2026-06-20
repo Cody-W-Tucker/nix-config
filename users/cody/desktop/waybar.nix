@@ -8,6 +8,24 @@
 
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hermesVoice = pkgs.writeShellApplication {
+    name = "hermes-waybar-voice";
+    runtimeInputs = [
+      pkgs.curl
+      pkgs.mpv
+      pkgs.pipewire
+    ];
+    text = ''
+      export HERMES_BASE_URL="http://127.0.0.1:8642"
+      export HERMES_SPEECH_BASE_URL="http://127.0.0.1:8081"
+      export HERMES_API_TOKEN="local-only"
+      export HERMES_TRANSCRIPTION_MODEL="whisper-medium"
+      export HERMES_SPEECH_MODEL="kokoro-82m"
+      export HERMES_SPEECH_VOICE="af_heart"
+      exec ${pkgs.python3}/bin/python ${./hermes-waybar-voice.py} "$@"
+    '';
+  };
+  hermesVoiceCmd = lib.getExe hermesVoice;
   favorite_apps = {
     "Zen Browser" = "🞋";
     "spotify" = "";
@@ -44,6 +62,7 @@ in
         ];
         modules-right = [
           "privacy"
+          "custom/hermes-voice"
           "mpris"
           "pulseaudio"
           "group/hardware"
@@ -115,6 +134,17 @@ in
               tooltip-icon-size = 24;
             }
           ];
+        };
+        "custom/hermes-voice" = {
+          exec = "${hermesVoiceCmd} status";
+          on-click = "${hermesVoiceCmd} toggle";
+          on-click-right = "${hermesVoiceCmd} reset";
+          on-click-middle = "${hermesVoiceCmd} cleanup";
+          format = "{}";
+          return-type = "json";
+          interval = 2;
+          tooltip = true;
+          escape = true;
         };
         tray = {
           icon-size = 21;
