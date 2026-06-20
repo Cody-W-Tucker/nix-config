@@ -540,8 +540,8 @@ def worker_loop() -> None:
         set_status("starting", "Hermes voice starting")
         try:
             messages = load_messages()
-            with PipewireAudioStream() as audio:
-                while not STOP:
+            while not STOP:
+                with PipewireAudioStream() as audio:
                     with tempfile.NamedTemporaryFile(prefix="utterance-", suffix=".wav", dir=RUNTIME_DIR, delete=False) as handle:
                         utterance_path = Path(handle.name)
                     utterance_path.unlink(missing_ok=True)
@@ -554,28 +554,27 @@ def worker_loop() -> None:
                             utterance_path.unlink()
                         except OSError:
                             pass
-                    if not transcript:
-                        set_status("listening", "Hermes voice listening")
-                        continue
-                    set_status("thinking", f"Hermes thinking: {transcript[:80]}")
-                    messages.append({"role": "user", "content": transcript})
-                    messages = messages[-MAX_MESSAGES:]
-                    reply = chat(messages)
-                    if not reply:
-                        continue
-                    messages.append({"role": "assistant", "content": reply})
-                    messages = messages[-MAX_MESSAGES:]
-                    save_messages(messages)
-                    audio_path = synthesize(reply)
-                    if audio_path:
+                if not transcript:
+                    set_status("listening", "Hermes voice listening")
+                    continue
+                set_status("thinking", f"Hermes thinking: {transcript[:80]}")
+                messages.append({"role": "user", "content": transcript})
+                messages = messages[-MAX_MESSAGES:]
+                reply = chat(messages)
+                if not reply:
+                    continue
+                messages.append({"role": "assistant", "content": reply})
+                messages = messages[-MAX_MESSAGES:]
+                save_messages(messages)
+                audio_path = synthesize(reply)
+                if audio_path:
+                    try:
+                        play_audio(audio_path)
+                    finally:
                         try:
-                            play_audio(audio_path)
-                        finally:
-                            try:
-                                audio_path.unlink()
-                            except OSError:
-                                pass
-                    audio.drain()
+                            audio_path.unlink()
+                        except OSError:
+                            pass
         except (OSError, urllib.error.URLError, subprocess.SubprocessError, json.JSONDecodeError) as error:
             set_status("error", f"Hermes voice error: {error}")
             raise
