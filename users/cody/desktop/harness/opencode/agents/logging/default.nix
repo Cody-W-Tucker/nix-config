@@ -28,7 +28,7 @@ in
   programs.opencode.agents.logging = ''
     ---
     description: read logs to understand issues.
-    mode: primary
+    mode: subagent
     tools:
       "grafana_*": true
     permission:
