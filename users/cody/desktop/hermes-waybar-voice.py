@@ -17,7 +17,9 @@ from pathlib import Path
 
 
 HERMES_BASE_URL = os.environ.get("HERMES_BASE_URL", "http://127.0.0.1:8642").rstrip("/")
-SPEECH_BASE_URL = os.environ.get("HERMES_SPEECH_BASE_URL", "http://127.0.0.1:8081").rstrip("/")
+SPEECH_BASE_URL = os.environ.get(
+    "HERMES_SPEECH_BASE_URL", "http://127.0.0.1:8081"
+).rstrip("/")
 AUTH_TOKEN = os.environ.get("HERMES_API_TOKEN", "local-only")
 CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "local")
 TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "whisper-medium")
@@ -34,14 +36,26 @@ FRAME_BYTES = FRAME_SAMPLES * AUDIO_SAMPLE_WIDTH * AUDIO_CHANNELS
 FRAME_SECONDS = FRAME_SAMPLES / AUDIO_RATE
 START_RMS = int(os.environ.get("HERMES_VOICE_START_RMS", "700"))
 SILENCE_RMS = int(os.environ.get("HERMES_VOICE_SILENCE_RMS", "350"))
-START_NOISE_MULTIPLIER = float(os.environ.get("HERMES_VOICE_START_NOISE_MULTIPLIER", "3.0"))
-SILENCE_NOISE_MULTIPLIER = float(os.environ.get("HERMES_VOICE_SILENCE_NOISE_MULTIPLIER", "1.8"))
+START_NOISE_MULTIPLIER = float(
+    os.environ.get("HERMES_VOICE_START_NOISE_MULTIPLIER", "3.0")
+)
+SILENCE_NOISE_MULTIPLIER = float(
+    os.environ.get("HERMES_VOICE_SILENCE_NOISE_MULTIPLIER", "1.8")
+)
 START_FRAMES = int(os.environ.get("HERMES_VOICE_START_FRAMES", "2"))
 PRE_ROLL_SECONDS = float(os.environ.get("HERMES_VOICE_PRE_ROLL_SECONDS", "0.3"))
-MIN_UTTERANCE_SECONDS = float(os.environ.get("HERMES_VOICE_MIN_UTTERANCE_SECONDS", "0.35"))
-TRAILING_SILENCE_SECONDS = float(os.environ.get("HERMES_VOICE_TRAILING_SILENCE_SECONDS", "0.9"))
-MAX_UTTERANCE_SECONDS = float(os.environ.get("HERMES_VOICE_MAX_UTTERANCE_SECONDS", "90"))
-MAX_AUDIO_QUEUE_SECONDS = float(os.environ.get("HERMES_VOICE_MAX_AUDIO_QUEUE_SECONDS", "5"))
+MIN_UTTERANCE_SECONDS = float(
+    os.environ.get("HERMES_VOICE_MIN_UTTERANCE_SECONDS", "0.35")
+)
+TRAILING_SILENCE_SECONDS = float(
+    os.environ.get("HERMES_VOICE_TRAILING_SILENCE_SECONDS", "1.8")
+)
+MAX_UTTERANCE_SECONDS = float(
+    os.environ.get("HERMES_VOICE_MAX_UTTERANCE_SECONDS", "90")
+)
+MAX_AUDIO_QUEUE_SECONDS = float(
+    os.environ.get("HERMES_VOICE_MAX_AUDIO_QUEUE_SECONDS", "5")
+)
 
 RUNTIME_DIR = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "hermes-waybar-voice"
 PID_FILE = RUNTIME_DIR / "worker.pid"
@@ -74,7 +88,9 @@ def write_json(path: Path, data: dict) -> None:
 
 
 def set_status(state: str, tooltip: str) -> None:
-    write_json(STATUS_FILE, {"state": state, "tooltip": tooltip, "updated_at": time.time()})
+    write_json(
+        STATUS_FILE, {"state": state, "tooltip": tooltip, "updated_at": time.time()}
+    )
 
 
 def compact_text(text: str, limit: int = 28) -> str:
@@ -147,7 +163,11 @@ def waybar_status() -> None:
             "class": "paused",
         }
     else:
-        output = {"text": "", "tooltip": tooltip or "Hermes voice idle", "class": "empty"}
+        output = {
+            "text": "",
+            "tooltip": tooltip or "Hermes voice idle",
+            "class": "empty",
+        }
     print(json.dumps(output), flush=True)
 
 
@@ -220,7 +240,11 @@ def load_messages() -> list[dict[str, str]]:
             continue
         role = message.get("role")
         content = message.get("content")
-        if role in {"system", "user", "assistant"} and isinstance(content, str) and content.strip():
+        if (
+            role in {"system", "user", "assistant"}
+            and isinstance(content, str)
+            and content.strip()
+        ):
             clean.append({"role": role, "content": content})
     return clean[-MAX_MESSAGES:]
 
@@ -229,7 +253,11 @@ def save_messages(messages: list[dict[str, str]]) -> None:
     trimmed = messages[-MAX_MESSAGES:]
     title = None
     for message in trimmed:
-        if message.get("role") == "user" and isinstance(message.get("content"), str) and message["content"].strip():
+        if (
+            message.get("role") == "user"
+            and isinstance(message.get("content"), str)
+            and message["content"].strip()
+        ):
             title = compact_text(message["content"])
             break
     write_json(SESSION_FILE, {"messages": trimmed, "title": title})
@@ -240,7 +268,10 @@ def http_json(url: str, payload: dict, timeout: int = 120) -> dict:
     request = urllib.request.Request(
         url,
         data=body,
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {AUTH_TOKEN}"},
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {AUTH_TOKEN}",
+        },
         method="POST",
     )
     with urllib.request.urlopen(request, timeout=timeout) as response:
@@ -336,7 +367,9 @@ def frame_rms(frame: bytes) -> int:
         return 0
     total = 0
     for index in range(0, len(frame) - 1, AUDIO_SAMPLE_WIDTH):
-        sample = int.from_bytes(frame[index : index + AUDIO_SAMPLE_WIDTH], "little", signed=True)
+        sample = int.from_bytes(
+            frame[index : index + AUDIO_SAMPLE_WIDTH], "little", signed=True
+        )
         total += sample * sample
     return int((total / sample_count) ** 0.5)
 
@@ -382,7 +415,9 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
 
         frames.append(frame)
         elapsed = len(frames) * FRAME_SECONDS
-        silence_threshold = max(SILENCE_RMS, int(noise_floor * SILENCE_NOISE_MULTIPLIER))
+        silence_threshold = max(
+            SILENCE_RMS, int(noise_floor * SILENCE_NOISE_MULTIPLIER)
+        )
         if rms < silence_threshold:
             silence_seconds += FRAME_SECONDS
         else:
@@ -390,7 +425,10 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
 
         if elapsed >= MAX_UTTERANCE_SECONDS:
             break
-        if elapsed >= MIN_UTTERANCE_SECONDS and silence_seconds >= TRAILING_SILENCE_SECONDS:
+        if (
+            elapsed >= MIN_UTTERANCE_SECONDS
+            and silence_seconds >= TRAILING_SILENCE_SECONDS
+        ):
             break
 
     if STOP or not frames:
@@ -457,7 +495,9 @@ def synthesize(text: str) -> Path | None:
     request_path = RUNTIME_DIR / f"tts-request-{int(time.time() * 1000)}.json"
     headers_path = RUNTIME_DIR / f"tts-headers-{int(time.time() * 1000)}.txt"
     audio_path = RUNTIME_DIR / f"tts-{int(time.time() * 1000)}.wav"
-    request_path.write_text(json.dumps({"model": SPEECH_MODEL, "voice": SPEECH_VOICE, "input": text}))
+    request_path.write_text(
+        json.dumps({"model": SPEECH_MODEL, "voice": SPEECH_VOICE, "input": text})
+    )
     try:
         subprocess.run(
             [
@@ -506,10 +546,14 @@ def synthesize(text: str) -> Path | None:
 
 def play_audio(path: Path) -> None:
     set_status("speaking", "Hermes voice speaking")
-    players = [["mpv", "--no-terminal", "--really-quiet", str(path)]] if path.suffix == ".mp3" else [
-        ["pw-play", str(path)],
-        ["mpv", "--no-terminal", "--really-quiet", str(path)],
-    ]
+    players = (
+        [["mpv", "--no-terminal", "--really-quiet", str(path)]]
+        if path.suffix == ".mp3"
+        else [
+            ["pw-play", str(path)],
+            ["mpv", "--no-terminal", "--really-quiet", str(path)],
+        ]
+    )
     for command in players:
         try:
             player = subprocess.Popen(command, stdin=subprocess.DEVNULL)
@@ -542,7 +586,12 @@ def worker_loop() -> None:
             messages = load_messages()
             while not STOP:
                 with PipewireAudioStream() as audio:
-                    with tempfile.NamedTemporaryFile(prefix="utterance-", suffix=".wav", dir=RUNTIME_DIR, delete=False) as handle:
+                    with tempfile.NamedTemporaryFile(
+                        prefix="utterance-",
+                        suffix=".wav",
+                        dir=RUNTIME_DIR,
+                        delete=False,
+                    ) as handle:
                         utterance_path = Path(handle.name)
                     utterance_path.unlink(missing_ok=True)
                     try:
@@ -575,7 +624,12 @@ def worker_loop() -> None:
                             audio_path.unlink()
                         except OSError:
                             pass
-        except (OSError, urllib.error.URLError, subprocess.SubprocessError, json.JSONDecodeError) as error:
+        except (
+            OSError,
+            urllib.error.URLError,
+            subprocess.SubprocessError,
+            json.JSONDecodeError,
+        ) as error:
             set_status("error", f"Hermes voice error: {error}")
             raise
         finally:
