@@ -20,7 +20,6 @@ in
   home.packages = [
     llmPkgs.openspec
     llmPkgs.qmd
-    llmPkgs.vessel-browser
   ];
 
   sops.secrets."opencode-api-key" = { };
