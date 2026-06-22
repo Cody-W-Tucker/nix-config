@@ -137,7 +137,7 @@ in
         };
         "custom/hermes-voice" = {
           exec = "${hermesVoiceCmd} status";
-          on-click = "${hermesVoiceCmd} toggle";
+          on-click = "${hermesVoiceCmd} click";
           on-click-right = "${hermesVoiceCmd} reset";
           on-click-middle = "${hermesVoiceCmd} cleanup";
           format = "{}";

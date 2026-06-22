@@ -65,6 +65,7 @@ SESSION_FILE = RUNTIME_DIR / "session.json"
 STATUS_FILE = RUNTIME_DIR / "status.json"
 LOG_FILE = RUNTIME_DIR / "worker.log"
 STOP = False
+INTERRUPT = False
 
 
 def ensure_runtime() -> None:
@@ -92,6 +93,17 @@ def set_status(state: str, tooltip: str) -> None:
     write_json(
         STATUS_FILE, {"state": state, "tooltip": tooltip, "updated_at": time.time()}
     )
+
+
+def interrupt_requested() -> bool:
+    return INTERRUPT and not STOP
+
+
+def consume_interrupt() -> bool:
+    global INTERRUPT
+    was_requested = INTERRUPT
+    INTERRUPT = False
+    return was_requested
 
 
 def compact_text(text: str, limit: int = 28) -> str:
@@ -222,11 +234,13 @@ def reset_runtime(clear_session: bool, hard: bool) -> None:
         set_status("idle", "Hermes voice cleaned up")
 
 
-def toggle() -> None:
+def click() -> None:
     ensure_runtime()
     cleanup_stale_pid()
-    if process_running(read_pid()):
-        stop_worker(clear_session=False, hard=False)
+    pid = read_pid()
+    if process_running(pid):
+        os.kill(pid, signal.SIGUSR1)
+        set_status("interrupting", "Hermes voice interrupting")
     else:
         start_worker()
 
@@ -334,6 +348,8 @@ def http_chat_stream(
     parts: list[str] = []
     with urllib.request.urlopen(request, timeout=timeout) as response:
         for data in iter_sse_data(response):
+            if interrupt_requested():
+                return None
             if data.strip() == "[DONE]":
                 break
             try:
@@ -347,6 +363,30 @@ def http_chat_stream(
                 parts.append(text)
     reply = "".join(parts).strip()
     return reply or None
+
+
+def run_command_interruptibly(command: list[str]) -> subprocess.CompletedProcess[str] | None:
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    while process.poll() is None:
+        if STOP or interrupt_requested():
+            process.terminate()
+            try:
+                process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=2)
+            return None
+        time.sleep(0.1)
+
+    stdout, stderr = process.communicate()
+    if process.returncode:
+        raise subprocess.CalledProcessError(process.returncode, command, stdout, stderr)
+    return subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
 
 
 class PipewireAudioStream:
@@ -462,6 +502,8 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
     silence_seconds = 0.0
 
     while not STOP:
+        if interrupt_requested():
+            return False
         frame = audio.read_frame()
         if frame is None:
             if not audio.running():
@@ -509,7 +551,7 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
 
 def transcribe(path: Path) -> str | None:
     set_status("transcribing", "Hermes voice transcribing")
-    result = subprocess.run(
+    result = run_command_interruptibly(
         [
             "curl",
             "-sS",
@@ -522,11 +564,10 @@ def transcribe(path: Path) -> str | None:
             f"model={TRANSCRIPTION_MODEL}",
             "-F",
             f"file=@{path};type=audio/wav",
-        ],
-        check=True,
-        capture_output=True,
-        text=True,
+        ]
     )
+    if result is None:
+        return None
     payload = json.loads(result.stdout)
     text = payload.get("text") if isinstance(payload, dict) else None
     if not isinstance(text, str) or not text.strip():
@@ -554,11 +595,12 @@ def synthesize(text: str) -> Path | None:
     request_path = RUNTIME_DIR / f"tts-request-{int(time.time() * 1000)}.json"
     headers_path = RUNTIME_DIR / f"tts-headers-{int(time.time() * 1000)}.txt"
     audio_path = RUNTIME_DIR / f"tts-{int(time.time() * 1000)}.wav"
+    result_path: Path | None = None
     request_path.write_text(
         json.dumps({"model": SPEECH_MODEL, "voice": SPEECH_VOICE, "input": text})
     )
     try:
-        subprocess.run(
+        result = run_command_interruptibly(
             [
                 "curl",
                 "-sS",
@@ -575,11 +617,10 @@ def synthesize(text: str) -> Path | None:
                 f"@{request_path}",
                 "-o",
                 str(audio_path),
-            ],
-            check=True,
-            capture_output=True,
-            text=True,
+            ]
         )
+        if result is None or interrupt_requested():
+            return None
         if not audio_path.exists() or audio_path.stat().st_size == 0:
             return None
         content_type = "audio/wav"
@@ -594,11 +635,17 @@ def synthesize(text: str) -> Path | None:
         if final_path != audio_path:
             audio_path.replace(final_path)
             audio_path = final_path
-        return audio_path
+        result_path = audio_path
+        return result_path
     finally:
         for temp_path in (request_path, headers_path):
             try:
                 temp_path.unlink()
+            except OSError:
+                pass
+        if result_path is None:
+            try:
+                audio_path.unlink()
             except OSError:
                 pass
 
@@ -622,7 +669,7 @@ def play_audio(path: Path) -> None:
     if player is None:
         return
     while player.poll() is None:
-        if STOP:
+        if STOP or interrupt_requested():
             player.terminate()
             try:
                 player.wait(timeout=2)
@@ -655,6 +702,8 @@ def worker_loop() -> None:
                     utterance_path.unlink(missing_ok=True)
                     try:
                         if not record_utterance(audio, utterance_path):
+                            if consume_interrupt():
+                                set_status("listening", "Hermes voice listening")
                             continue
                         transcript = transcribe(utterance_path)
                     finally:
@@ -662,14 +711,15 @@ def worker_loop() -> None:
                             utterance_path.unlink()
                         except OSError:
                             pass
-                if not transcript:
+                if consume_interrupt() or not transcript:
                     set_status("listening", "Hermes voice listening")
                     continue
                 set_status("thinking", f"Hermes thinking: {transcript[:80]}")
                 messages.append({"role": "user", "content": transcript})
                 messages = messages[-MAX_MESSAGES:]
                 reply = chat(messages)
-                if not reply:
+                if consume_interrupt() or not reply:
+                    set_status("listening", "Hermes voice listening")
                     continue
                 messages.append({"role": "assistant", "content": reply})
                 messages = messages[-MAX_MESSAGES:]
@@ -683,6 +733,8 @@ def worker_loop() -> None:
                             audio_path.unlink()
                         except OSError:
                             pass
+                if consume_interrupt():
+                    set_status("listening", "Hermes voice listening")
         except (
             OSError,
             urllib.error.URLError,
@@ -705,14 +757,20 @@ def request_stop(_signum, _frame) -> None:
     STOP = True
 
 
+def request_interrupt(_signum, _frame) -> None:
+    global INTERRUPT
+    INTERRUPT = True
+
+
 def main() -> int:
     signal.signal(signal.SIGTERM, request_stop)
     signal.signal(signal.SIGINT, request_stop)
+    signal.signal(signal.SIGUSR1, request_interrupt)
     command = sys.argv[1] if len(sys.argv) > 1 else "status"
     if command == "status":
         waybar_status()
-    elif command == "toggle":
-        toggle()
+    elif command == "click":
+        click()
     elif command == "reset":
         reset_runtime(clear_session=True, hard=False)
     elif command == "cleanup":
