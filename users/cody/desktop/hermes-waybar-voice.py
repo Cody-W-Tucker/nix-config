@@ -26,6 +26,7 @@ TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "whisper-medi
 SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "kokoro-82m")
 SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "af_heart")
 MAX_MESSAGES = int(os.environ.get("HERMES_VOICE_MAX_MESSAGES", "24"))
+CHAT_TIMEOUT_SECONDS = float(os.environ.get("HERMES_CHAT_TIMEOUT_SECONDS", "300"))
 
 AUDIO_RATE = int(os.environ.get("HERMES_VOICE_SAMPLE_RATE", "16000"))
 AUDIO_CHANNELS = 1
@@ -48,7 +49,7 @@ MIN_UTTERANCE_SECONDS = float(
     os.environ.get("HERMES_VOICE_MIN_UTTERANCE_SECONDS", "0.35")
 )
 TRAILING_SILENCE_SECONDS = float(
-    os.environ.get("HERMES_VOICE_TRAILING_SILENCE_SECONDS", "1.8")
+    os.environ.get("HERMES_VOICE_TRAILING_SILENCE_SECONDS", "1.4")
 )
 MAX_UTTERANCE_SECONDS = float(
     os.environ.get("HERMES_VOICE_MAX_UTTERANCE_SECONDS", "90")
@@ -263,7 +264,7 @@ def save_messages(messages: list[dict[str, str]]) -> None:
     write_json(SESSION_FILE, {"messages": trimmed, "title": title})
 
 
-def http_json(url: str, payload: dict, timeout: int = 120) -> dict:
+def http_json(url: str, payload: dict, timeout: float = CHAT_TIMEOUT_SECONDS) -> dict:
     body = json.dumps(payload).encode()
     request = urllib.request.Request(
         url,
@@ -277,6 +278,75 @@ def http_json(url: str, payload: dict, timeout: int = 120) -> dict:
     with urllib.request.urlopen(request, timeout=timeout) as response:
         data = json.loads(response.read().decode())
     return data if isinstance(data, dict) else {}
+
+
+def iter_sse_data(response):
+    data_lines: list[str] = []
+    for raw_line in response:
+        line = raw_line.decode("utf-8", errors="replace").rstrip("\r\n")
+        if not line:
+            if data_lines:
+                yield "\n".join(data_lines)
+                data_lines = []
+            continue
+        if line.startswith(":"):
+            continue
+        if line.startswith("data:"):
+            data_lines.append(line[5:].lstrip())
+    if data_lines:
+        yield "\n".join(data_lines)
+
+
+def chunk_text(payload: dict) -> str:
+    choices = payload.get("choices")
+    if not isinstance(choices, list):
+        return ""
+    parts: list[str] = []
+    for choice in choices:
+        if not isinstance(choice, dict):
+            continue
+        delta = choice.get("delta")
+        if isinstance(delta, dict) and isinstance(delta.get("content"), str):
+            parts.append(delta["content"])
+        message = choice.get("message")
+        if isinstance(message, dict) and isinstance(message.get("content"), str):
+            parts.append(message["content"])
+        text = choice.get("text")
+        if isinstance(text, str):
+            parts.append(text)
+    return "".join(parts)
+
+
+def http_chat_stream(
+    url: str, payload: dict, timeout: float = CHAT_TIMEOUT_SECONDS
+) -> str | None:
+    body = json.dumps(payload).encode()
+    request = urllib.request.Request(
+        url,
+        data=body,
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "text/event-stream",
+            "Authorization": f"Bearer {AUTH_TOKEN}",
+        },
+        method="POST",
+    )
+    parts: list[str] = []
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        for data in iter_sse_data(response):
+            if data.strip() == "[DONE]":
+                break
+            try:
+                payload = json.loads(data)
+            except json.JSONDecodeError:
+                continue
+            if not isinstance(payload, dict):
+                continue
+            text = chunk_text(payload)
+            if text:
+                parts.append(text)
+    reply = "".join(parts).strip()
+    return reply or None
 
 
 class PipewireAudioStream:
@@ -465,21 +535,10 @@ def transcribe(path: Path) -> str | None:
 
 
 def chat(messages: list[dict[str, str]]) -> str | None:
-    payload = http_json(
+    return http_chat_stream(
         f"{HERMES_BASE_URL}/v1/chat/completions",
-        {"model": CHAT_MODEL, "messages": messages, "stream": False},
+        {"model": CHAT_MODEL, "messages": messages, "stream": True},
     )
-    choices = payload.get("choices")
-    if not isinstance(choices, list) or not choices:
-        return None
-    first = choices[0]
-    if not isinstance(first, dict):
-        return None
-    message = first.get("message")
-    if isinstance(message, dict) and isinstance(message.get("content"), str):
-        return message["content"].strip() or None
-    text = first.get("text")
-    return text.strip() if isinstance(text, str) and text.strip() else None
 
 
 def speech_suffix(content_type: str) -> str:
