@@ -245,6 +245,10 @@ def click() -> None:
         start_worker()
 
 
+def pause() -> None:
+    stop_worker(clear_session=False, hard=False)
+
+
 def load_messages() -> list[dict[str, str]]:
     messages = read_json(SESSION_FILE).get("messages")
     if not isinstance(messages, list):
@@ -771,6 +775,8 @@ def main() -> int:
         waybar_status()
     elif command == "click":
         click()
+    elif command == "pause":
+        pause()
     elif command == "reset":
         reset_runtime(clear_session=True, hard=False)
     elif command == "cleanup":

@@ -25,6 +25,12 @@ let
       exec ${pkgs.python3}/bin/python ${./hermes-waybar-voice.py} "$@"
     '';
   };
+  hermesVoiceRepair = pkgs.writeShellApplication {
+    name = "hermes-waybar-repair";
+    text = ''
+      exec ${hermesVoiceCmd} cleanup
+    '';
+  };
   hermesVoiceCmd = lib.getExe hermesVoice;
   favorite_apps = {
     "Zen Browser" = "🞋";
@@ -40,6 +46,8 @@ let
   };
 in
 {
+  home.packages = [ hermesVoiceRepair ];
+
   programs.waybar = {
     enable = true;
     systemd = {
@@ -138,8 +146,8 @@ in
         "custom/hermes-voice" = {
           exec = "${hermesVoiceCmd} status";
           on-click = "${hermesVoiceCmd} click";
-          on-click-right = "${hermesVoiceCmd} reset";
-          on-click-middle = "${hermesVoiceCmd} cleanup";
+          on-click-right = "${hermesVoiceCmd} pause";
+          on-click-middle = "${hermesVoiceCmd} reset";
           format = "{}";
           return-type = "json";
           interval = 2;
