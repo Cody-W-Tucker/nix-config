@@ -19,6 +19,11 @@ let
     "kanban-worker"
     "opencode"
     "youtube-content"
+    "xurl" # X/Twitter via xurl CLI: post, search, DM, media, v2 API.
+    "plan"
+    "spike" # Throwaway experiments to validate an idea before build.
+    "grok" # Delegate coding to xAI Grok Build CLI (features, PRs).
+    "one-three-one-rule" # Structured decision-making framework for technical proposals and trade-off analysis.
   ];
 
   cognitiveAssistantSkills = inputs.cognitive-assistant.lib.artifacts.skills;
