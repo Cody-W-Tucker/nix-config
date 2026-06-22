@@ -173,9 +173,6 @@ in
       force_no_accel = 0;
       kb_layout = "us";
     };
-    debug = {
-      full_cm_proto = true;
-    };
     render = {
       direct_scanout = "0";
     };
