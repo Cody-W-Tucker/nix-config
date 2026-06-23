@@ -28,14 +28,8 @@
   # Enable Stylix for theming
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
-  dconf = {
-    enable = true;
-    settings = {
-      "org/gnome/desktop/interface" = {
-        color-scheme = "prefer-dark";
-      };
-    };
-  };
+  # Keep these enabled without settings letting stylix manage
+  dconf.enable = true;
 
   gtk = {
     enable = true;
@@ -46,7 +40,6 @@
   };
 
   home.packages = with pkgs; [
-    # list of stable packages go here
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     grim # Screenshot utility
     slurp # Selection tool for screenshots
