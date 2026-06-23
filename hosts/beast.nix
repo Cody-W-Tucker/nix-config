@@ -19,8 +19,6 @@ let
     ];
     # Suspend after 2 hours of idle
     hypridle.suspendTimeout = 7200;
-    # Use CUDA for whisper (faster than Vulkan on Nvidia)
-    whispAcceleration = "cuda";
   };
 
   workBtrfsMembers = [
