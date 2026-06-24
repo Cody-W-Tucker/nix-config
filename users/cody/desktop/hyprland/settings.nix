@@ -70,7 +70,7 @@ let
     "${mainMod} Shift, D, exec, [workspace special:dev] ${terminal} -e herdr" # agent runner
     "${mainMod}, E, togglespecialworkspace, think"
     "${mainMod}, Y, togglespecialworkspace, media"
-    "${mainMod} SHIFT, Y, [workspace special:media] ${webApp}=https://www.twitch.tv/"
+    "${mainMod} SHIFT, Y, exec, [workspace special:media] ${webApp}=https://www.twitch.tv/"
 
     # Toggle waybar
     "${mainMod}, P, exec, pkill -SIGUSR1 waybar"
