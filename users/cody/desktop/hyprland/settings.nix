@@ -131,6 +131,10 @@ in
       "${mainMod}, Escape, exec, llama-dictate stop"
     ];
     windowrule = [
+      # Kitty
+      "match:class ^(kitty)$, no_blur on"
+      "match:class ^(kitty)$, opacity 1.0 1.0 1.0 override"
+
       # Ensure all web apps don't float
       "match:initial_class ^(Chromium-browser)$, tile on"
 
@@ -186,8 +190,17 @@ in
     cursor.hide_on_key_press = true;
     decoration = {
       rounding = "10";
-      active_opacity = "1.0";
-      inactive_opacity = "1.0";
+      active_opacity = "0.95";
+      inactive_opacity = "0.75";
+      blur = {
+        enabled = "true";
+        size = "10";
+        passes = "3";
+        new_optimizations = "true";
+        ignore_opacity = true;
+        noise = "0";
+        brightness = "0.60";
+      };
       shadow = {
         enabled = true;
         render_power = "3";
