@@ -31,6 +31,7 @@
     # Use EGL for Wayland
     systemPackages = with pkgs; [
       egl-wayland
+      nvidia-vaapi-driver
       cudaPackages.cudatoolkit
     ];
 
