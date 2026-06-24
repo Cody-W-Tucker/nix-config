@@ -20,6 +20,7 @@ in
   home.packages = [
     llmPkgs.openspec
     llmPkgs.qmd
+    llmPkgs.grok
   ];
 
   sops.secrets."opencode-api-key" = { };
