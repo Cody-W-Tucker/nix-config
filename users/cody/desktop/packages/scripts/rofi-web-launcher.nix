@@ -21,7 +21,7 @@ pkgs.writeShellApplication {
 
     URLS=(
       ["❄️ Nix Options"]="https://mynixos.com/search?q="
-      ["💻 GitHub"]="https://github.com/search?q="
+      ["💻 GitHub"]="https://github.com/search?q=&type=code"
     )
 
     gen_list() {
