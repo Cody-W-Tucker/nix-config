@@ -190,16 +190,10 @@ in
     cursor.hide_on_key_press = true;
     decoration = {
       rounding = "10";
-      active_opacity = "0.95";
-      inactive_opacity = "0.75";
+      active_opacity = "1";
+      inactive_opacity = "1";
       blur = {
-        enabled = "true";
-        size = "10";
-        passes = "3";
-        new_optimizations = "true";
-        ignore_opacity = true;
-        noise = "0";
-        brightness = "0.60";
+        enabled = "false";
       };
       shadow = {
         enabled = true;
