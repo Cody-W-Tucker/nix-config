@@ -133,7 +133,6 @@ let
         cat > "$out/bin/hermes-desktop" <<EOF
         #!${pkgs.runtimeShell}
         export HERMES_HOME=${pkgs.lib.escapeShellArg "${stateDir}/.hermes"}
-        cd ${pkgs.lib.escapeShellArg workingDirectory} || exit \$?
         exec "${hermesDesktop}/bin/hermes-desktop" "\$@"
         EOF
         chmod +x "$out/bin/hermes-desktop"
