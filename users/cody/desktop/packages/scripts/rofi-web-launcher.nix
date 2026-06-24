@@ -18,10 +18,15 @@ pkgs.writeShellApplication {
     fi
 
     declare -A URLS
+    declare -A URL_SUFFIXES
 
     URLS=(
       ["❄️ Nix Options"]="https://mynixos.com/search?q="
-      ["💻 GitHub"]="https://github.com/search?q=&type=code"
+      ["💻 GitHub"]="https://github.com/search?q="
+    )
+
+    URL_SUFFIXES=(
+      ["💻 GitHub"]="&type=code"
     )
 
     gen_list() {
@@ -40,7 +45,8 @@ pkgs.writeShellApplication {
 
         if [[ -n "$query" ]]; then
           # Properly encode query including spaces
-          url=''${base_url}$(jq -Rr @uri <<< "$query")
+          suffix=''${URL_SUFFIXES[$platform]:-}
+          url=''${base_url}$(jq -Rr @uri <<< "$query")$suffix
         else
           # Extract base domain (handles URLs with paths/parameters)
           protocol="''${base_url%%://*}"
