@@ -20,10 +20,8 @@ pkgs.writeShellApplication {
     declare -A URLS
 
     URLS=(
-      ["🔍 Google"]="https://www.google.com/search?q="
       ["❄️ Nix Options"]="https://mynixos.com/search?q="
       ["💻 GitHub"]="https://github.com/search?q="
-      ["📚 Grokipedia"]="https://grokipedia.com/search?q="
     )
 
     gen_list() {
