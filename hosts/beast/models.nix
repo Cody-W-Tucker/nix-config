@@ -95,8 +95,10 @@ in
       };
       "qwen3.5-0.8b" = {
         extraArgs = [
+          "--reasoning"
+          "off"
           "--parallel"
-          "4"
+          "2"
         ];
       };
       # Embeddings traffic here is short-form; use a smaller KV/cache footprint and

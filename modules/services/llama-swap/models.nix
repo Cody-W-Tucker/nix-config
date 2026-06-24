@@ -17,8 +17,8 @@
     gpuLayers = 999;
     contextSize = 16384;
     threads = 2;
-    batchSize = 2048;
-    ubatchSize = 2048;
+    batchSize = 1024;
+    ubatchSize = 512;
     ttl = 300;
   };
   "qwen3.5-4b" = {
