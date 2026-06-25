@@ -51,6 +51,7 @@ in
 
       # Text: HTML, CSS, JS, Markdown, JSON, plain text
       "text/*" = "nvim.desktop";
+      "text/html" = "zen.desktop";
       "application/json" = "nvim.desktop"; # JSON is technically not text/*
       "application/javascript" = "nvim.desktop"; # For explicit JS files
       "application/x-subrip" = "nvim.desktop"; # For .srt subtitle files
