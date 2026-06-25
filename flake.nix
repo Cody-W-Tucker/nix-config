@@ -13,6 +13,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixos-secrets = {
+      # Private flake for SOPS material.
+      url = "git+ssh://git@github.com/Cody-W-Tucker/nixos-secrets.git";
+    };
     flake-programs-sqlite = {
       # Restores command-not-found (helpful messages when you type a command that isn't installed).
       url = "github:wamserma/flake-programs-sqlite";

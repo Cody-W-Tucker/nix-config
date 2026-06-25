@@ -59,7 +59,7 @@ in
       home.stateVersion = "25.05";
       imports = [
         ../users/cody/desktop.nix
-        ../secrets/home-secrets.nix
+        inputs.nixos-secrets.homeModules.default
         inputs.nixvim.homeModules.nixvim
       ];
     };

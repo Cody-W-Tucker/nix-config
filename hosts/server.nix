@@ -29,7 +29,7 @@
       home.stateVersion = "23.11";
       imports = [
         ../users/cody/server.nix
-        ../secrets/home-secrets.nix
+        inputs.nixos-secrets.homeModules.default
       ];
       home.enableNixpkgsReleaseCheck = false;
     };

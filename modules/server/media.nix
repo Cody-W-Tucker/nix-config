@@ -159,7 +159,7 @@
   };
   # Get the encrypted file
   sops.secrets."server-wg.conf" = {
-    sopsFile = ../../secrets/server-wg.yaml;
+    sopsFile = inputs.nixos-secrets.paths.serverWireguardSopsFile;
     mode = "0400"; # Only root can read
   };
 

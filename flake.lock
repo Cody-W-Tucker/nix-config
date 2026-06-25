@@ -610,6 +610,21 @@
         "type": "github"
       }
     },
+    "nixos-secrets": {
+      "locked": {
+        "lastModified": 1782403232,
+        "narHash": "sha256-Nka7UqTUbJo0XEOxqe4fP8n6vseuEkZptfbb7LPN8zI=",
+        "ref": "refs/heads/main",
+        "rev": "6e81d30517e06f6911a3bef3df11e05bd2b546e1",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@github.com/Cody-W-Tucker/nixos-secrets.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/Cody-W-Tucker/nixos-secrets.git"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1774386573,
@@ -931,6 +946,7 @@
         "llm-agents": "llm-agents",
         "nextmeeting": "nextmeeting",
         "nixos-hardware": "nixos-hardware",
+        "nixos-secrets": "nixos-secrets",
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",

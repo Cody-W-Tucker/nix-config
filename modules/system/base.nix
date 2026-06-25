@@ -17,7 +17,7 @@
     ./shell.nix
     ./services.nix
     ./networking.nix
-    ../../secrets/secrets.nix
+    inputs.nixos-secrets.nixosModules.default
     ../../users/home.nix
   ];
 }
