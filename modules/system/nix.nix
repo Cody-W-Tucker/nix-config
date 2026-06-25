@@ -1,11 +1,23 @@
 # Nix package manager settings
 
-{ ... }:
+{ config, ... }:
 
 {
   nixpkgs.config.allowUnfree = true;
 
+  sops.secrets."github-nix-secrets-read" = { };
+  sops.templates."nix-access-tokens.conf" = {
+    content = ''
+      access-tokens = github.com=${config.sops.placeholder."github-nix-secrets-read"}
+    '';
+    owner = "root";
+    mode = "0400";
+  };
+
   nix = {
+    extraOptions = ''
+      !include ${config.sops.templates."nix-access-tokens.conf".path}
+    '';
     settings = {
       auto-optimise-store = true;
       experimental-features = [

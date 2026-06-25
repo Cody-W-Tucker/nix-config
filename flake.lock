@@ -612,17 +612,17 @@
     },
     "nixos-secrets": {
       "locked": {
-        "lastModified": 1782403232,
-        "narHash": "sha256-Nka7UqTUbJo0XEOxqe4fP8n6vseuEkZptfbb7LPN8zI=",
-        "ref": "refs/heads/main",
-        "rev": "6e81d30517e06f6911a3bef3df11e05bd2b546e1",
-        "revCount": 1,
-        "type": "git",
-        "url": "ssh://git@github.com/Cody-W-Tucker/nixos-secrets.git"
+        "lastModified": 1782404775,
+        "narHash": "sha256-j6mUwqhSBsAcZbzIAtnL42NA9r6bqFRjUKsW19CA+cg=",
+        "owner": "Cody-W-Tucker",
+        "repo": "nixos-secrets",
+        "rev": "f432db247006ef2fc8c4feceab28d29aa0a97c1f",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/Cody-W-Tucker/nixos-secrets.git"
+        "owner": "Cody-W-Tucker",
+        "repo": "nixos-secrets",
+        "type": "github"
       }
     },
     "nixpkgs": {

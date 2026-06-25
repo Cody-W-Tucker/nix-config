@@ -15,7 +15,7 @@
     };
     nixos-secrets = {
       # Private flake for SOPS material.
-      url = "git+ssh://git@github.com/Cody-W-Tucker/nixos-secrets.git";
+      url = "github:Cody-W-Tucker/nixos-secrets";
     };
     flake-programs-sqlite = {
       # Restores command-not-found (helpful messages when you type a command that isn't installed).
