@@ -11,6 +11,8 @@ in
       local _99 = require("99")
 
       _99.setup({
+        provider = _99.Providers.OpenCodeProvider,
+        model = "grok-build-0.1",
         completion = {
           source = "cmp",
           custom_rules = {
