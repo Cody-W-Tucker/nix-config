@@ -85,6 +85,10 @@
           summary = "Messages";
           timeout = 60;
         };
+        bluetooth = {
+          state = "ignored";
+          app-name = "Blueman";
+        };
       };
       widgets = [
         "title"
