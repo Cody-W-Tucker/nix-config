@@ -12,7 +12,7 @@ in
 
       _99.setup({
         provider = _99.Providers.OpenCodeProvider,
-        model = "grok-build-0.1",
+        model = "opencode-go/kimi-k2.7-code",
         completion = {
           source = "cmp",
           custom_rules = {
