@@ -53,7 +53,7 @@
       referenceLimit = 50;
       batchSize = 64;
       dryRun = false; # set true to test
-      schedule = "*-*-* 00,04,08,12,16,20:00"; # Every 4 hours
+      schedule = "*-*-* 07:15,23:15"; # 7:15am and 11:15pm
     };
 
     nginx.virtualHosts."rss.homehub.tv" = {
