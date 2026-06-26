@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   programs.nixvim.plugins = {
@@ -32,6 +32,7 @@
         bashls.enable = true; # Bash
         marksman.enable = true; # Markdown
         zls.enable = true; # Zig
+        copilot.enable = true;
         # Keep ts_ls disabled or limited for .astro files – it conflicts
         ts_ls = {
           enable = true;

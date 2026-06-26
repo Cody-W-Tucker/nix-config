@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   # Newer Stylix walks `config.lib` while building target options, and nixvim's
@@ -74,6 +79,9 @@
     # Set the leader key to <Space>
     globals.mapleader = " ";
     extraPlugins = with pkgs.vimPlugins; [ vim-pencil ];
-    extraPackages = with pkgs; [ zig ];
+    extraPackages = with pkgs; [
+      zig
+      inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}."copilot-language-server"
+    ];
   };
 }
