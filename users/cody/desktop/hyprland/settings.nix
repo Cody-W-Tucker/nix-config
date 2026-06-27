@@ -26,7 +26,7 @@ let
     "special:media, on-created-empty: ${webApp}=https://www.youtube.com/"
     "special:think, on-created-empty: ${webApp}=https://draw.homehub.tv/"
     "special:chat, on-created-empty: ${terminal} -e twt"
-    "special:stream, on-created-empty: ${webApp}=https://dashboard.twitch.tv/u/cody_tmv/stream-manager"
+    "special:stream-manager, on-created-empty: ${webApp}=https://dashboard.twitch.tv/u/cody_tmv/stream-manager"
   ];
 
   keybinds = [
