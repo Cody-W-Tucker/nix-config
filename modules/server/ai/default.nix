@@ -33,23 +33,10 @@ in
 
         # Content Extraction
         CONTENT_EXTRACTION_ENGINE = "tika";
-        TIKA_SERVER_URL = "https://tika.homehub.tv";
+        TIKA_SERVER_URL = "http://localhost:9998";
 
         # RAG
         ENABLE_RAG_HYBRID_SEARCH = "True";
-
-        # Speech to Text
-        WHISPER_MODEL = "medium";
-        WHISPER_LANGUAGE = "en";
-        WHISPER_VAD_FILTER = "True";
-        AUDIO_STT_ENGINE = "openai";
-        AUDIO_STT_MODEL = "whisper-medium";
-        AUDIO_STT_OPENAI_API_BASE_URL = "http://127.0.0.1:8081/v1";
-
-        AUDIO_TTS_ENGINE = "openai";
-        AUDIO_TTS_MODEL = "transformers-speecht5";
-        AUDIO_TTS_VOICE = "";
-        AUDIO_TTS_OPENAI_API_BASE_URL = "http://127.0.0.1:8081/v1";
       };
     };
     tika = {

@@ -2,8 +2,6 @@
 
 You are assisting a user working on a NixOS system config using flakes.
 
-Here's a overview on common patterns and practices you'll help with.
-
 ## Build Testing
 
 Only test builds when making risky changes: new services, complex module refactors, or unfamiliar Nix patterns. Simple edits like updating package lists, changing existing values, or minor configuration tweaks rarely need pre-testing—the user will catch issues during their `update` run.
