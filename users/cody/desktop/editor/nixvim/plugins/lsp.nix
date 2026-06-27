@@ -1,6 +1,24 @@
 { ... }:
 
 {
+  programs.nixvim.extraConfigLua = ''
+    if vim.lsp.inline_completion then
+      vim.lsp.inline_completion.enable(true)
+
+      vim.keymap.set("i", "<C-l>", function()
+        if vim.lsp.inline_completion.get() then
+          return ""
+        end
+
+        return "<C-l>"
+      end, {
+        desc = "Accept inline completion",
+        expr = true,
+        replace_keycodes = true,
+      })
+    end
+  '';
+
   programs.nixvim.plugins = {
     lsp = {
       enable = true;
