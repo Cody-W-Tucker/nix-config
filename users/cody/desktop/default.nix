@@ -67,6 +67,7 @@
     kdePackages.kpeople # Contact integration for KDE Connect SMS
     doxx # Cli tool to open docx
     playerctl # MPRIS cli; also provides playerctld D-Bus activation
+    twitch-tui # Read chats from terminal
   ];
 
   services = {
