@@ -33,16 +33,11 @@ in
 
         # Content Extraction
         CONTENT_EXTRACTION_ENGINE = "tika";
-        TIKA_SERVER_URL = "http://localhost:9998";
+        TIKA_SERVER_URL = "https://tika.homehub.tv";
 
         # RAG
         ENABLE_RAG_HYBRID_SEARCH = "True";
       };
-    };
-    tika = {
-      # Content extraction
-      enable = true;
-      port = 9998;
     };
     # Vector Search http port 6333, gRPC port 6334
     qdrant = {

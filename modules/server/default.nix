@@ -42,6 +42,13 @@
     };
   };
 
+  services.tika = {
+    enable = true;
+    port = 9998;
+    listenAddress = "0.0.0.0";
+    openFirewall = true;
+  };
+
   services.nginx = {
     enable = true;
     package = pkgs.nginxMainline;
@@ -118,7 +125,7 @@
         forceSSL = true;
         kTLS = true;
         locations."/" = {
-          proxyPass = "http://192.168.1.20:9998";
+          proxyPass = "http://localhost:9998";
           proxyWebsockets = true;
           extraConfig = ''
             proxy_set_header X-Tika-OCRLanguage "chi_sim+eng";
