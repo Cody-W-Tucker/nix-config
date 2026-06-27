@@ -41,12 +41,6 @@
       };
     };
 
-    audiobookshelf = {
-      enable = true;
-      group = "media";
-      port = 9123;
-    };
-
     # Calibre web for reading Books (with Kobo sync support)
     calibre-web = {
       enable = true;
@@ -226,21 +220,6 @@
             proxy_buffers   4 512k;
             proxy_buffer_size   1024k;
             proxy_set_header X-Scheme $scheme;
-          '';
-        };
-        kTLS = true;
-      };
-      "audiobooks.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:9123";
-          proxyWebsockets = true;
-          extraConfig = ''
-            # Prevent 413 Request Entity Too Large error
-            # by increasing the maximum allowed size of the client request body
-            # For example, set it to 10 GiB
-            client_max_body_size                10240M;
           '';
         };
         kTLS = true;

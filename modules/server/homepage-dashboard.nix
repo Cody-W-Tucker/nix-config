@@ -148,13 +148,6 @@ in
               };
             }
             {
-              AudiobookShelf = {
-                href = "https://audiobooks.${domain}";
-                icon = "audiobookshelf";
-                description = "AudioBook/Podcast Server";
-              };
-            }
-            {
               CalibreWeb = {
                 href = "https://books.${domain}";
                 icon = "calibre";
