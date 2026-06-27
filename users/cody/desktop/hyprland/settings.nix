@@ -25,6 +25,7 @@ let
     "special:dev, on-created-empty: ${terminal}"
     "special:media, on-created-empty: ${webApp}=https://www.youtube.com/"
     "special:think, on-created-empty: ${webApp}=https://draw.homehub.tv/"
+    "special:chat, on-created-empty: ${terminal} -e twt"
   ];
 
   keybinds = [
@@ -66,6 +67,7 @@ let
 
     # Special workspaces
     "${mainMod}, RETURN, togglespecialworkspace, ai"
+    "${mainMod}, T, togglespecialworkspace, chat"
     "${mainMod}, D, togglespecialworkspace, dev"
     "${mainMod} Shift, D, exec, [workspace special:dev] ${terminal} -e herdr" # agent runner
     "${mainMod}, E, togglespecialworkspace, think"
