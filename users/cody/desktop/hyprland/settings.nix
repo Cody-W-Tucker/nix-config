@@ -173,7 +173,7 @@ in
     input = {
       numlock_by_default = "true";
       follow_mouse = "1";
-      sensitivity = "-.7";
+      sensitivity = "-.1";
       force_no_accel = 0;
       kb_layout = "us";
     };
