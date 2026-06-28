@@ -7,6 +7,7 @@
 let
   enabledUpstreamSkills = [
     "arxiv"
+    "computer-use"
     "github-auth"
     "github-code-review"
     "github-issues"
