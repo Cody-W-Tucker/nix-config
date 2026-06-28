@@ -15,17 +15,7 @@ let
   directoryNames =
     path: lib.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir path));
 
-  topLevelUpstreamBundledSkillEntries =
-    lib.filter (entry: builtins.pathExists "${entry.source}/SKILL.md")
-      (
-        map (skill: {
-          name = skill;
-          relDir = skill;
-          source = "${upstreamBundledSkillsRoot}/${skill}";
-        }) (directoryNames upstreamBundledSkillsRoot)
-      );
-
-  categorizedUpstreamBundledSkillEntries = lib.concatMap (
+  upstreamBundledSkillEntries = lib.concatMap (
     category:
     lib.filter (entry: builtins.pathExists "${entry.source}/SKILL.md") (
       map (skill: {
@@ -35,9 +25,6 @@ let
       }) (directoryNames "${upstreamBundledSkillsRoot}/${category}")
     )
   ) (directoryNames upstreamBundledSkillsRoot);
-
-  upstreamBundledSkillEntries =
-    topLevelUpstreamBundledSkillEntries ++ categorizedUpstreamBundledSkillEntries;
 
   upstreamBundledSkillNames = map (entry: entry.name) upstreamBundledSkillEntries;
   unknownEnabledUpstreamSkillNames = lib.filter (

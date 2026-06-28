@@ -1,6 +1,5 @@
 {
   config,
-  hermesComputerUsePackageEnv,
   inputs,
   pkgs,
   ...
@@ -15,7 +14,6 @@ let
     patches = [
       ./patches/hermes-home-group-access.patch
       ./patches/auth-store-group-access.patch
-      ./patches/cua-backend-null-tolerant.patch
     ];
     postPatch = ''
       old_titlebar_overlay=$(cat <<'EOF'
@@ -80,7 +78,6 @@ let
         cat > "$out/bin/hermes-desktop" <<EOF
         #!${pkgs.runtimeShell}
         export HERMES_HOME=${pkgs.lib.escapeShellArg "${stateDir}/.hermes"}
-        ${hermesComputerUsePackageEnv}
         exec "${hermesDesktop}/bin/hermes-desktop" "\$@"
         EOF
         chmod +x "$out/bin/hermes-desktop"
@@ -93,7 +90,6 @@ let
           exec "$out/bin/hermes-desktop" "\$@"
         fi
 
-        ${hermesComputerUsePackageEnv}
         exec "${hermesPkg}/bin/hermes" "\$@"
         EOF
         chmod +x "$out/bin/hermes"
@@ -113,10 +109,5 @@ let
     };
 in
 {
-  imports = [
-    ./cua-driver.nix
-    ./computer-use.nix
-  ];
-
   config.services.hermes-agent.package = makeHermesPackage { };
 }

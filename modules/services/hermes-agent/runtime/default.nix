@@ -1,6 +1,5 @@
 {
   config,
-  hermesComputerUseRuntime,
   lib,
   pkgs,
   ...
@@ -17,21 +16,12 @@ in
 
 {
   imports = [
-    ./computer-use.nix
     ./filesystem-access.nix
     ./cron-tick.nix
   ];
 
   config = {
-    services.dbus.enable = true;
-
-    environment.systemPackages = [
-      pkgs.at-spi2-core
-    ];
-
     systemd.services.hermes-agent = {
-      path = hermesComputerUseRuntime.extraPackages;
-
       restartTriggers = [
         (pkgs.writeText "hermes-agent-config-trigger" (
           builtins.toJSON config.services.hermes-agent.settings
@@ -41,8 +31,7 @@ in
       environment = {
         CRM_DB = crmDatabasePath;
         LD_LIBRARY_PATH = ldLibraryPath;
-      }
-      // hermesComputerUseRuntime.serviceEnvironment;
+      };
 
       serviceConfig = {
         TimeoutStopSec = 210;
