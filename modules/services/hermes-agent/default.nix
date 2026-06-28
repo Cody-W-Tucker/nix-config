@@ -24,12 +24,14 @@ in
   config = {
     services.hermes-agent = {
       enable = true;
+      user = "codyt";
+      group = "users";
+      createUser = false;
       addToSystemPackages = true;
       extraDependencyGroups = [
         "edge-tts"
         "firecrawl"
         "messaging"
-        "voice"
       ];
       extraPackages = with pkgs; [
         binutils
@@ -76,7 +78,7 @@ in
         terminal = {
           backend = "local";
           cwd = workingDirectory;
-          timeout = 180;
+          timeout = 600;
         };
         discord = {
           require_mention = true; # Respond only when @mentioned
@@ -130,7 +132,6 @@ in
           user_profile_enabled = true;
         };
         plugins = {
-          disabled = [ "google_chat-platform" ];
           "hermes-memory-store" = {
             auto_extract = true;
             default_trust = 0.5;
