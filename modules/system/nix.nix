@@ -11,7 +11,8 @@
       access-tokens = github.com=${config.sops.placeholder."github-nix-secrets-read"}
     '';
     owner = "root";
-    mode = "0400";
+    group = "wheel";
+    mode = "0440";
   };
 
   nix = {

@@ -15,8 +15,6 @@ let
     "hermes-agent"
     "hermes-agent-skill-authoring"
     "humanizer"
-    "kanban-orchestrator"
-    "kanban-worker"
     "opencode"
     "youtube-content"
     "xurl" # X/Twitter via xurl CLI: post, search, DM, media, v2 API.
