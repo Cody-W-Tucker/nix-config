@@ -19,13 +19,9 @@
               "a2dp_source"
             ];
             "bluez5.codecs" = [
-              "sbc_xq"
-              "sbc"
               "aac"
             ];
-            "bluez5.enable-sbc-xq" = true;
             "bluez5.hfphsp-backend" = "native";
-            "bluez5.a2dp.ldac.quality" = "hq";
             "bluez5.a2dp.aac.bitratemode" = "hq";
           };
         };

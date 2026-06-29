@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  self,
   ...
 }:
 
@@ -90,10 +89,11 @@ let
 
   defaultModelCatalog = import ./models.nix;
   settingsFormat = pkgs.formats.yaml { };
+  llamaCppStrix = pkgs.callPackage ../../../packages/llama-cpp-strix { };
 
   defaultServerPackage =
     if cfg.acceleration == "rocm" then
-      self.packages.${pkgs.stdenv.hostPlatform.system}.llama-cpp-strix
+      llamaCppStrix
     else if cfg.acceleration == "cuda" then
       pkgs.llama-cpp.override { cudaSupport = true; }
     else

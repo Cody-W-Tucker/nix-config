@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   services.nginx = {
     upstreams = {
@@ -8,11 +6,6 @@
           "127.0.0.1:8384" = { };
         };
       };
-      # workstation_syncthing = {
-      #   servers = {
-      #     "workstation:8384" = { };
-      #   };
-      # };
       beast_syncthing = {
         servers = {
           "100.108.143.19:8384" = { };
@@ -30,14 +23,6 @@
       };
       kTLS = true;
     };
-    # "workstation-syncthing.homehub.tv" = {
-    #   forceSSL = true;
-    #   useACMEHost = "homehub.tv";
-    #   locations."/" = {
-    #     proxyPass = "http://workstation_syncthing/";
-    #   };
-    #   kTLS = true;
-    # };
     "beast-syncthing.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";

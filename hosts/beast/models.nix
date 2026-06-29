@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  self,
   ...
 }:
 
@@ -9,6 +8,7 @@ let
   # Keep the faster-whisper weights on the workspace volume so Open WebUI STT
   # and whisp-away reuse one model download.
   sharedFasterWhisperCache = "/mnt/work/cache/ai/faster-whisper";
+  kokoroAssets = pkgs.callPackage ../../packages/kokoro { };
 
   whisperPython = pkgs.python313.withPackages (
     ps: with ps; [
@@ -153,9 +153,9 @@ in
               --model-id kokoro-82m \
               --lang-code a \
               --default-voice af_heart \
-              --voices-dir ${self.packages.${pkgs.stdenv.hostPlatform.system}.kokoro-voices} \
-              --model-path ${self.packages.${pkgs.stdenv.hostPlatform.system}.kokoro-model}/kokoro-v1_0.pth \
-              --config-path ${self.packages.${pkgs.stdenv.hostPlatform.system}.kokoro-model}/config.json
+              --voices-dir ${kokoroAssets} \
+              --model-path ${kokoroAssets}/kokoro-v1_0.pth \
+              --config-path ${kokoroAssets}/config.json
           '';
         };
       };

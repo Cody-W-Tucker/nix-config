@@ -132,30 +132,6 @@
           '';
         };
       };
-      "ollama.homehub.tv" = {
-        useACMEHost = "homehub.tv";
-        forceSSL = true;
-        kTLS = true;
-        locations."/" = {
-          proxyPass = "http://192.168.1.20:11434";
-          proxyWebsockets = true;
-          extraConfig = ''
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-
-            add_header Access-Control-Allow-Origin '*' always;
-            add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
-            add_header Access-Control-Allow-Headers 'Content-Type, Authorization' always;
-
-            if ($request_method = 'OPTIONS') {
-              add_header Access-Control-Max-Age 1728000;
-              return 204;
-            }
-          '';
-        };
-      };
     };
   };
 

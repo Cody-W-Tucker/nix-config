@@ -1,23 +1,5 @@
 { pkgs, ... }:
 
-let
-  kdenliveWithSpeechRuntime = pkgs.symlinkJoin {
-    name = "kdenlive-with-speech-runtime";
-    paths = [ pkgs.kdePackages.kdenlive ];
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram "$out/bin/kdenlive" \
-        --prefix PATH : "${
-          pkgs.lib.makeBinPath [
-            pkgs.python3
-            pkgs.python3Packages.pip
-          ]
-        }" \
-        --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc ]}"
-    '';
-  };
-in
-
 {
   imports = [
     ./audio
@@ -31,9 +13,6 @@ in
 
   hardware.graphics.enable = true;
 
-  # Enable nix-ld for running non-Nix binaries (AppImages, downloaded binaries, etc.)
-  programs.nix-ld.enable = true;
-
   services = {
     # Allows nautilus (gnome files) to access gvfs mounts (trash and samba shares)
     gvfs.enable = true;
@@ -43,13 +22,11 @@ in
 
   # Install basic desktop environment packages that I want on all my systems.
   environment.systemPackages = with pkgs; [
-    # list of stable packages go here
     pavucontrol # PulseAudio volume control
     xdg-utils # xdg-open
     usbutils # For listing USB devices
     udiskie # For mounting USB devices
     seahorse # GNOME keyring manager
-    kdenliveWithSpeechRuntime # Video editor; speech tools are configured from inside Kdenlive
   ];
 
   networking.firewall = {

@@ -29,6 +29,7 @@ in
     portalPackage = null; # null to use NixOS module
     systemd.enable = false; # Since using UWSM, disable systemd
     xwayland.enable = true;
+    configType = "hyprlang"; # Use hyprlang config format until we add lua support
   };
 
   services = {

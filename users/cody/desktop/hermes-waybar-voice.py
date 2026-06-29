@@ -164,8 +164,9 @@ def waybar_status() -> None:
     tooltip = status.get("tooltip") if isinstance(status.get("tooltip"), str) else None
     title = session_title()
     if running:
+        icon = "" if status.get("state") in {"listening", "recording"} else ""
         output = {
-            "text": f" {title}" if title else " Hermes",
+            "text": f"{icon} {title}" if title else f"{icon} Hermes",
             "tooltip": tooltip or "Hermes voice running",
             "class": "running",
         }

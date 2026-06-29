@@ -2,13 +2,13 @@
   config,
   inputs,
   pkgs,
-  self,
   lib,
   ...
 }:
 
 let
   crmDatabasePath = "${config.home.homeDirectory}/.crm/crm.db";
+  ghStarSearch = pkgs.callPackage ../../../packages/gh-star-search { };
 in
 {
   programs = {
@@ -84,7 +84,7 @@ in
       # Enable GitHub CLI
       enable = true;
       extensions = [
-        self.packages.${pkgs.stdenv.hostPlatform.system}.gh-star-search
+        ghStarSearch
       ];
     };
     zsh = {

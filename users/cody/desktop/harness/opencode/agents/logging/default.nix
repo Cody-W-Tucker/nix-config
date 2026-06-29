@@ -25,9 +25,9 @@ in
     tools."grafana_*" = false;
   };
 
-  programs.opencode.agents.logging = ''
+  programs.opencode.agents.grafana = ''
     ---
-    description: read logs to understand issues.
+    description: use the grafana mcp agent whenever you need to manage Grafana operations.
     mode: subagent
     tools:
       "grafana_*": true

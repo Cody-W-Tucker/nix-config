@@ -13,7 +13,7 @@ from pydantic import BaseModel
 
 # Map OpenAI (and other common) voice names to Kokoro voices.
 # llama-server and OpenAI clients default to these names for /v1/audio/speech.
-# We ship a small set of Kokoro voices via pkgs.kokoro-voices.
+# We ship a small set of Kokoro assets via pkgs.kokoro.
 VOICE_MAP = {
     "alloy": "af_alloy",
     "echo": "am_adam",
@@ -37,7 +37,7 @@ def _normalize_voice(v: str | None) -> str:
 
 def _install_local_voice_provider(voices_dir: str) -> None:
     """Patch so that kokoro's hf_hub_download calls for voices/*.pt are served
-    from the pre-fetched pkgs.kokoro-voices directory. This must be done after
+    from the pre-fetched pkgs.kokoro directory. This must be done after
     the top-level `from kokoro import ...` because kokoro.pipeline binds
     hf_hub_download into its module globals at import time.
     Unknown / unshipped voices fall through to the real hf_hub_download.
@@ -138,17 +138,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--voices-dir",
         default=None,
-        help="Directory of pre-fetched <voice>.pt files (e.g. from pkgs.kokoro-voices) for fully offline use",
+        help="Directory of pre-fetched <voice>.pt files (e.g. from pkgs.kokoro) for fully offline use",
     )
     parser.add_argument(
         "--model-path",
         default=None,
-        help="Path to pre-fetched kokoro-v1_0.pth (or equivalent) from pkgs.kokoro-model",
+        help="Path to pre-fetched kokoro-v1_0.pth (or equivalent) from pkgs.kokoro",
     )
     parser.add_argument(
         "--config-path",
         default=None,
-        help="Path to pre-fetched config.json from pkgs.kokoro-model",
+        help="Path to pre-fetched config.json from pkgs.kokoro",
     )
     return parser
 
@@ -161,7 +161,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         if voices_dir:
             _install_local_voice_provider(voices_dir)
 
-        # Prefer explicit pre-fetched model files (from pkgs.kokoro-model) so we
+        # Prefer explicit pre-fetched model files (from pkgs.kokoro) so we
         # never hit the network for the big weights/config at startup.
         kmodel = None
         if args.model_path and args.config_path:

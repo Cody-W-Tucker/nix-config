@@ -107,21 +107,10 @@
         inherit inputs self;
         home-manager-input = inputs.home-manager;
       };
-      pkgs = nixpkgs-unstable.legacyPackages.${system};
-      enCoreWebSmPackage = pkgs.callPackage ./packages/en-core-web-sm { };
     in
     {
       # Official NixOS formatter with directory support
       formatter.x86_64-linux = nixpkgs-unstable.legacyPackages.${system}.nixfmt-tree;
-
-      # Custom packages exposed via the flake
-      packages.${system} = {
-        gh-star-search = pkgs.callPackage ./packages/gh-star-search { };
-        llama-cpp-strix = pkgs.callPackage ./packages/llama-cpp-strix { };
-        en-core-web-sm = enCoreWebSmPackage;
-        kokoro-model = pkgs.callPackage ./packages/kokoro-model { };
-        kokoro-voices = pkgs.callPackage ./packages/kokoro-voices { };
-      };
 
       # Builds the different systems
       nixosConfigurations = {
