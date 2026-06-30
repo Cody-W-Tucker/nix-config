@@ -34,6 +34,18 @@ in
   };
   # Default applications
   xdg.mime.enable = true;
+  xdg.desktopEntries.doxx = {
+    name = "doxx";
+    genericName = "Word Document Viewer";
+    exec = "${pkgs.kitty}/bin/kitty -e ${pkgs.doxx}/bin/doxx %f";
+    mimeType = [
+      "application/msword"
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      "application/vnd.ms-word.document.macroEnabled.12"
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.template"
+      "application/vnd.ms-word.template.macroEnabled.12"
+    ];
+  };
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -48,6 +60,13 @@ in
 
       # PDFs
       "application/pdf" = "org.pwmt.zathura.desktop";
+
+      # Microsoft Word documents: DOC, DOCX, DOCM, DOTX, DOTM
+      "application/msword" = "doxx.desktop";
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "doxx.desktop";
+      "application/vnd.ms-word.document.macroEnabled.12" = "doxx.desktop";
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.template" = "doxx.desktop";
+      "application/vnd.ms-word.template.macroEnabled.12" = "doxx.desktop";
 
       # Text: HTML, CSS, JS, Markdown, JSON, plain text
       "text/*" = "nvim.desktop";
