@@ -7,7 +7,7 @@
   ...
 }:
 
-# Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | RAM: 64GB | Storage: 2TB & 2 1TB Drives(unmapped) NVMe SSD
+# Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | RAM: 64GB | Storage: 2TB & 2 1TB Drives NVMe SSD
 
 let
   hardwareConfig = {
@@ -69,6 +69,7 @@ in
     kernelPackages = pkgs.linuxPackages_latest;
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
+    extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
     initrd.availableKernelModules = [
       "vmd"
       "xhci_pci"
@@ -81,10 +82,12 @@ in
     kernelModules = [
       "kvm-intel"
       "btusb"
+      "v4l2loopback"
     ];
     extraModprobeConfig = ''
       options btusb enable_autosuspend=n reset=1
       options mt7925e disable_aspm=Y
+      options v4l2loopback exclusive_caps=1 card_label="OBS Virtual Camera"
     '';
   };
 
