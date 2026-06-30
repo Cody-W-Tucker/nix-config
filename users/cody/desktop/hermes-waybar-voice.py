@@ -15,6 +15,8 @@ import wave
 from collections import deque
 from pathlib import Path
 
+from pysilero_vad import SileroVoiceActivityDetector
+
 
 HERMES_BASE_URL = os.environ.get("HERMES_BASE_URL", "http://127.0.0.1:8642").rstrip("/")
 SPEECH_BASE_URL = os.environ.get(
@@ -28,28 +30,19 @@ SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "af_heart")
 MAX_MESSAGES = int(os.environ.get("HERMES_VOICE_MAX_MESSAGES", "24"))
 CHAT_TIMEOUT_SECONDS = float(os.environ.get("HERMES_CHAT_TIMEOUT_SECONDS", "300"))
 
+VOICE_SOURCE = "@DEFAULT_AUDIO_SOURCE@"
 AUDIO_RATE = int(os.environ.get("HERMES_VOICE_SAMPLE_RATE", "16000"))
 AUDIO_CHANNELS = 1
 AUDIO_SAMPLE_WIDTH = 2
-FRAME_MS = int(os.environ.get("HERMES_VOICE_FRAME_MS", "30"))
-FRAME_SAMPLES = max(1, AUDIO_RATE * FRAME_MS // 1000)
-FRAME_BYTES = FRAME_SAMPLES * AUDIO_SAMPLE_WIDTH * AUDIO_CHANNELS
+VAD = SileroVoiceActivityDetector()
+FRAME_SAMPLES = VAD.chunk_samples()
+FRAME_BYTES = VAD.chunk_bytes()
 FRAME_SECONDS = FRAME_SAMPLES / AUDIO_RATE
-START_RMS = int(os.environ.get("HERMES_VOICE_START_RMS", "700"))
-SILENCE_RMS = int(os.environ.get("HERMES_VOICE_SILENCE_RMS", "350"))
-START_NOISE_MULTIPLIER = float(
-    os.environ.get("HERMES_VOICE_START_NOISE_MULTIPLIER", "3.0")
-)
-SILENCE_NOISE_MULTIPLIER = float(
-    os.environ.get("HERMES_VOICE_SILENCE_NOISE_MULTIPLIER", "1.8")
-)
+VAD_THRESHOLD = float(os.environ.get("HERMES_VOICE_VAD_THRESHOLD", "0.5"))
 START_FRAMES = int(os.environ.get("HERMES_VOICE_START_FRAMES", "2"))
 PRE_ROLL_SECONDS = float(os.environ.get("HERMES_VOICE_PRE_ROLL_SECONDS", "0.3"))
-MIN_UTTERANCE_SECONDS = float(
-    os.environ.get("HERMES_VOICE_MIN_UTTERANCE_SECONDS", "0.35")
-)
-TRAILING_SILENCE_SECONDS = float(
-    os.environ.get("HERMES_VOICE_TRAILING_SILENCE_SECONDS", "1.4")
+POST_SPEECH_SILENCE_SECONDS = float(
+    os.environ.get("HERMES_VOICE_POST_SPEECH_SILENCE_SECONDS", "0.9")
 )
 MAX_UTTERANCE_SECONDS = float(
     os.environ.get("HERMES_VOICE_MAX_UTTERANCE_SECONDS", "90")
@@ -57,6 +50,9 @@ MAX_UTTERANCE_SECONDS = float(
 MAX_AUDIO_QUEUE_SECONDS = float(
     os.environ.get("HERMES_VOICE_MAX_AUDIO_QUEUE_SECONDS", "5")
 )
+
+if AUDIO_RATE != 16000:
+    raise ValueError("Hermes voice requires 16 kHz audio for Silero VAD")
 
 RUNTIME_DIR = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "hermes-waybar-voice"
 PID_FILE = RUNTIME_DIR / "worker.pid"
@@ -164,7 +160,13 @@ def waybar_status() -> None:
     tooltip = status.get("tooltip") if isinstance(status.get("tooltip"), str) else None
     title = session_title()
     if running:
-        icon = "" if status.get("state") in {"listening", "recording"} else ""
+        state = status.get("state")
+        if state in {"listening", "recording"}:
+            icon = ""
+        elif state == "speaking":
+            icon = ""
+        else:
+            icon = ""
         output = {
             "text": f"{icon} {title}" if title else f"{icon} Hermes",
             "tooltip": tooltip or "Hermes voice running",
@@ -172,7 +174,7 @@ def waybar_status() -> None:
         }
     elif title:
         output = {
-            "text": f" {title}",
+            "text": f" {title}",
             "tooltip": tooltip or "Hermes voice ready to resume",
             "class": "paused",
         }
@@ -370,7 +372,9 @@ def http_chat_stream(
     return reply or None
 
 
-def run_command_interruptibly(command: list[str]) -> subprocess.CompletedProcess[str] | None:
+def run_command_interruptibly(
+    command: list[str],
+) -> subprocess.CompletedProcess[str] | None:
     process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
@@ -394,6 +398,13 @@ def run_command_interruptibly(command: list[str]) -> subprocess.CompletedProcess
     return subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
 
 
+def command_output(command: list[str]) -> str | None:
+    try:
+        return subprocess.check_output(command, stderr=subprocess.DEVNULL, text=True)
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
 class PipewireAudioStream:
     def __init__(self) -> None:
         self.queue: queue.Queue[bytes] = queue.Queue(
@@ -406,7 +417,7 @@ class PipewireAudioStream:
         command = [
             "pw-record",
             "--target",
-            "@DEFAULT_AUDIO_SOURCE@",
+            VOICE_SOURCE,
             "--rate",
             str(AUDIO_RATE),
             "--channels",
@@ -476,19 +487,6 @@ class PipewireAudioStream:
             self.process.wait(timeout=2)
 
 
-def frame_rms(frame: bytes) -> int:
-    sample_count = len(frame) // AUDIO_SAMPLE_WIDTH
-    if sample_count <= 0:
-        return 0
-    total = 0
-    for index in range(0, len(frame) - 1, AUDIO_SAMPLE_WIDTH):
-        sample = int.from_bytes(
-            frame[index : index + AUDIO_SAMPLE_WIDTH], "little", signed=True
-        )
-        total += sample * sample
-    return int((total / sample_count) ** 0.5)
-
-
 def write_wav(path: Path, frames: list[bytes]) -> None:
     with wave.open(str(path), "wb") as wav:
         wav.setnchannels(AUDIO_CHANNELS)
@@ -501,8 +499,7 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
     set_status("listening", "Hermes voice listening")
     audio.drain()
     pre_roll: deque[bytes] = deque(maxlen=max(1, int(PRE_ROLL_SECONDS / FRAME_SECONDS)))
-    noise_floor = SILENCE_RMS
-    loud_frames = 0
+    speech_frames = 0
     frames: list[bytes] | None = None
     silence_seconds = 0.0
 
@@ -515,16 +512,15 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
                 raise RuntimeError("pw-record stopped while Hermes was listening")
             continue
 
-        rms = frame_rms(frame)
+        speech_probability = VAD(frame)
+
         if frames is None:
             pre_roll.append(frame)
-            start_threshold = max(START_RMS, int(noise_floor * START_NOISE_MULTIPLIER))
-            if rms >= start_threshold:
-                loud_frames += 1
+            if speech_probability >= VAD_THRESHOLD:
+                speech_frames += 1
             else:
-                loud_frames = 0
-                noise_floor = (noise_floor * 0.95) + (rms * 0.05)
-            if loud_frames >= START_FRAMES:
+                speech_frames = 0
+            if speech_frames >= START_FRAMES:
                 frames = list(pre_roll)
                 silence_seconds = 0.0
                 set_status("recording", "Hermes voice capturing speech")
@@ -532,20 +528,14 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
 
         frames.append(frame)
         elapsed = len(frames) * FRAME_SECONDS
-        silence_threshold = max(
-            SILENCE_RMS, int(noise_floor * SILENCE_NOISE_MULTIPLIER)
-        )
-        if rms < silence_threshold:
-            silence_seconds += FRAME_SECONDS
-        else:
+        if speech_probability >= VAD_THRESHOLD:
             silence_seconds = 0.0
+        else:
+            silence_seconds += FRAME_SECONDS
 
         if elapsed >= MAX_UTTERANCE_SECONDS:
             break
-        if (
-            elapsed >= MIN_UTTERANCE_SECONDS
-            and silence_seconds >= TRAILING_SILENCE_SECONDS
-        ):
+        if silence_seconds >= POST_SPEECH_SILENCE_SECONDS:
             break
 
     if STOP or not frames:

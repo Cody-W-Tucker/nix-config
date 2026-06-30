@@ -8,6 +8,7 @@
 
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hermesVoicePython = pkgs.python3.withPackages (ps: [ ps.pysilero-vad ]);
   hermesVoice = pkgs.writeShellApplication {
     name = "hermes-waybar-voice";
     runtimeInputs = [
@@ -22,7 +23,7 @@ let
       export HERMES_TRANSCRIPTION_MODEL="whisper-medium"
       export HERMES_SPEECH_MODEL="kokoro-82m"
       export HERMES_SPEECH_VOICE="af_heart"
-      exec ${pkgs.python3}/bin/python ${./hermes-waybar-voice.py} "$@"
+      exec ${hermesVoicePython}/bin/python ${./hermes-waybar-voice.py} "$@"
     '';
   };
   hermesVoiceRepair = pkgs.writeShellApplication {
