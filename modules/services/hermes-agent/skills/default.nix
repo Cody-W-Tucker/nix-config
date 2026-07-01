@@ -20,6 +20,7 @@ let
     "xurl" # X/Twitter via xurl CLI: post, search, DM, media, v2 API.
     "plan"
     "spike" # Throwaway experiments to validate an idea before build.
+    "llm-wiki"
   ];
 
   cognitiveAssistantSkills = inputs.cognitive-assistant.lib.artifacts.skills;
