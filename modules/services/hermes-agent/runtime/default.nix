@@ -16,7 +16,6 @@ in
 
 {
   imports = [
-    ./filesystem-access.nix
     ./cron-tick.nix
   ];
 
