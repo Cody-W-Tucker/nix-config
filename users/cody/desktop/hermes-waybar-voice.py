@@ -572,7 +572,6 @@ def chat(messages: list[dict[str, str]]) -> str | None:
 def synthesize(text: str) -> Path | None:
     set_status("speaking", "Hermes voice synthesizing")
     request_path = RUNTIME_DIR / f"tts-request-{int(time.time() * 1000)}.json"
-    headers_path = RUNTIME_DIR / f"tts-headers-{int(time.time() * 1000)}.txt"
     audio_path = RUNTIME_DIR / f"tts-{int(time.time() * 1000)}.wav"
     result_path: Path | None = None
     request_path.write_text(
@@ -583,8 +582,6 @@ def synthesize(text: str) -> Path | None:
             [
                 "curl",
                 "-sS",
-                "-D",
-                str(headers_path),
                 "-X",
                 "POST",
                 f"{SPEECH_BASE_URL}/v1/audio/speech",
@@ -602,32 +599,13 @@ def synthesize(text: str) -> Path | None:
             return None
         if not audio_path.exists() or audio_path.stat().st_size == 0:
             return None
-        content_type = "audio/wav"
-        try:
-            for line in headers_path.read_text().splitlines():
-                if line.lower().startswith("content-type:"):
-                    content_type = line.split(":", 1)[1].strip()
-                    break
-        except OSError:
-            pass
-        if "mpeg" in content_type or "mp3" in content_type:
-            speech_suffix = ".mp3"
-        elif "ogg" in content_type:
-            speech_suffix = ".ogg"
-        else:
-            speech_suffix = ".wav"
-        final_path = audio_path.with_suffix(speech_suffix)
-        if final_path != audio_path:
-            audio_path.replace(final_path)
-            audio_path = final_path
         result_path = audio_path
         return result_path
     finally:
-        for temp_path in (request_path, headers_path):
-            try:
-                temp_path.unlink()
-            except OSError:
-                pass
+        try:
+            request_path.unlink()
+        except OSError:
+            pass
         if result_path is None:
             try:
                 audio_path.unlink()
@@ -637,23 +615,10 @@ def synthesize(text: str) -> Path | None:
 
 def play_audio(path: Path) -> None:
     set_status("speaking", "Hermes voice speaking")
-    players = (
-        [["mpv", "--no-terminal", "--really-quiet", str(path)]]
-        if path.suffix == ".mp3"
-        else [
-            ["pw-play", str(path)],
-            ["mpv", "--no-terminal", "--really-quiet", str(path)],
-        ]
+    player = subprocess.Popen(
+        ["mpv", "--no-terminal", "--really-quiet", str(path)],
+        stdin=subprocess.DEVNULL,
     )
-    player = None
-    for command in players:
-        try:
-            player = subprocess.Popen(command, stdin=subprocess.DEVNULL)
-            break
-        except FileNotFoundError:
-            player = None
-    if player is None:
-        return
     wait_for_process_interruptibly(player)
 
 
