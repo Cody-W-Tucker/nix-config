@@ -116,7 +116,7 @@
       nixosConfigurations = {
         beast = inputs.nixpkgs-unstable.lib.nixosSystem {
           inherit system specialArgs;
-          modules = [ ./hosts/beast.nix ];
+          modules = [ ./hosts/beast ];
         };
         server = inputs.nixpkgs.lib.nixosSystem {
           inherit system;
