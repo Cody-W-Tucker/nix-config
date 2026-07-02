@@ -1,6 +1,6 @@
 # CodyOS
 
-You are assisting a user working on a NixOS system config using flakes.
+You are assisting a user working on a NixOS system config using flakes. Full documentation is available at `docs/`.
 
 ## Build Testing
 
