@@ -8,7 +8,6 @@
 
 let
   crmDatabasePath = "${config.home.homeDirectory}/.crm/crm.db";
-  ghStarSearch = pkgs.callPackage ../../../packages/gh-star-search { };
 in
 {
   programs = {
@@ -83,9 +82,6 @@ in
     gh = {
       # Enable GitHub CLI
       enable = true;
-      extensions = [
-        ghStarSearch
-      ];
     };
     zsh = {
       shellAliases = {

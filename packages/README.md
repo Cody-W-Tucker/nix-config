@@ -29,17 +29,6 @@ Maintenance commands installed into the system environment.
 
 Use `check-imports` when adding or moving Nix modules. Use `update` for the normal operator path after changes have settled.
 
-### `gh-star-search`
-
-GitHub CLI extension for full-text search over starred repositories.
-
-Local packaging details:
-
-- `default.nix` delegates to `package.nix` with `pkgs.callPackage`.
-- `package.nix` applies a `postPatch` to load DuckDB FTS support automatically.
-- The wrapper puts `uv` on `PATH` for runtime behavior that needs it.
-- The installed binary is normalized to `gh-star-search`.
-
 ### `en-core-web-sm`
 
 spaCy small English model used by speech and language-processing flows.

@@ -40,6 +40,7 @@ Once the changes have settled, the user will run the `update` script to build an
 ### Flakes & Git
 
 - New files must be git-tracked or flakes won't see them
+- When code changes invalidate local docs or package notes, update the affected documentation in the same change.
 - Never commit raw secrets (use SOPS-NIX.)
 - The user will need to add secrets via the sops edit command.
 - You don't have access to the `sudo` command. `sudo` is required to effect a system rebuild.
