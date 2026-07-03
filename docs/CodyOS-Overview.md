@@ -32,6 +32,8 @@ CodyOS is distributed across two primary hosts, each serving a distinct role in 
 | `beast` | High-performance workstation | Intel i9, NVIDIA GPU, local LLM inference, Hyprland desktop [flake.nix117-120](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/flake.nix#L117-L120)[CONTRIBUTING.md27](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/CONTRIBUTING.md?plain=1#L27-L27) |
 | `server` | Media and homelab hub | Stable nixpkgs, Jellyfin, Nginx reverse proxy, central secrets hub [flake.nix121-127](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/flake.nix#L121-L127)[CONTRIBUTING.md28](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/CONTRIBUTING.md?plain=1#L28-L28) |
 
+In code, those roles resolve to exactly two flake outputs: `nixosConfigurations.beast` and `nixosConfigurations.server`. The operator entry points are `hosts/beast/default.nix` and `hosts/server.nix`, with shared system behavior in `modules/`, user behavior in `users/`, and operational scripts in `packages/system-scripts/`.
+
 ### System Connectivity and Flow
 
 The following diagram illustrates how the natural language intent of the user flows through the code entities defined in the flake.
@@ -109,10 +111,10 @@ For detailed technical specifications, refer to the following sections:
 
 ### [1.1 Repository Structure and Conventions](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/1.1 Repository Structure and Conventions)
 
-Explains the layout of `hosts/`, `modules/`, and `users/`, naming standards (kebab-case), and the use of `AGENTS.md` for LLM guidance. For details, see [Repository Structure and Conventions](/Cody-W-Tucker/nix-config/1.1-repository-structure-and-conventions).
+Explains the layout of `hosts/`, `modules/`, `users/`, and `packages/`, naming standards (kebab-case), and the use of `AGENTS.md` for LLM guidance. For details, see [Repository Structure and Conventions](/Cody-W-Tucker/nix-config/1.1-repository-structure-and-conventions).
 
 ### [1.2 Getting Started](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/1.2 Getting Started#LNaN-LNaN)
 
-A practical guide for bootstrapping new hosts, managing secrets with SOPS, and using the `update` script. For details, see [Getting Started: Building and Updating the System](/Cody-W-Tucker/nix-config/1.2-getting-started:-building-and-updating-the-system).
+A practical guide for bootstrapping new hosts, managing secrets with SOPS, and using the shipped `update`, `pullUpdate`, and `upgrade` workflows. For details, see [Getting Started: Building and Updating the System](/Cody-W-Tucker/nix-config/1.2-getting-started:-building-and-updating-the-system).
 
 **Sources:**[AGENTS.md24-40](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/AGENTS.md?plain=1#L24-L40)[CONTRIBUTING.md12-23](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/CONTRIBUTING.md?plain=1#L12-L23)[hosts/README.md5-22](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/hosts/README.md?plain=1#L5-L22)

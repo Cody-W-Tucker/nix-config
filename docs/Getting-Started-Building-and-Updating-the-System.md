@@ -22,7 +22,7 @@ To test a configuration without applying it to the bootloader or the running sys
 
 ### The Update Script
 
-The repository provides a centralized `update` script to standardize the deployment workflow. This script automates formatting, integrity checks, and git synchronization.
+The repository provides a centralized `update` script to standardize the deployment workflow. This script automates formatting, import validation, committing, rebuilding, and pushing the resulting change.
 
 **Implementation Detail:**
 The `update` script is defined as a `pkgs.writeShellApplication` in [packages/system-scripts/update.nix6-36](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L6-L36) It is automatically included in the system path via the `environment.systemPackages` list in [packages/system-scripts/default.nix17](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/default.nix#L17-L17)
@@ -34,6 +34,17 @@ The `update` script is defined as a `pkgs.writeShellApplication` in [packages/sy
 3. **Commit:** Prompts for a commit message and commits all changes to the local git state [packages/system-scripts/update.nix23-32](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L23-L32)
 4. **Rebuild:** Executes `sudo nixos-rebuild switch` to apply the new configuration [packages/system-scripts/update.nix33](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L33-L33)
 5. **Push:** Synchronizes the local repository with the remote origin [packages/system-scripts/update.nix34](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L34-L34)
+
+The script does **not** run `nix flake update`. Updating inputs is a separate operator choice.
+
+### Related Operator Shortcuts
+
+The Cody Home Manager profile also exposes two shell aliases that cover adjacent workflows:
+
+- `pullUpdate`: `cd /etc/nixos && git pull && sudo nixos-rebuild switch`
+- `upgrade`: `cd /etc/nixos && sudo nix flake update && sudo nixos-rebuild switch`
+
+Use `update` when you want to format, validate, commit, rebuild, and push local config changes. Use `pullUpdate` when you want to rebuild the current checkout after pulling remote changes. Use `upgrade` when you want to refresh flake inputs before rebuilding.
 
 **Sources:**
 

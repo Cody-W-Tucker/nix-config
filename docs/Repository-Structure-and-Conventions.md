@@ -19,11 +19,11 @@ The repository follows a functional decomposition strategy, ensuring that machin
 | Directory | Purpose | Key Contents |
 | --- | --- | --- |
 | `hosts/` | Machine-specific entry points and hardware facts. | `beast/`, `server.nix` |
-| `modules/` | Reusable NixOS system-level modules and services. | `system/`, `services/`, `desktop/` |
+| `modules/` | Reusable NixOS system-level modules and services. | `system/`, `services/`, `desktop/`, `server/` |
 | `users/` | Home Manager configurations (aliased as `cody/` in some contexts). | Shell, UI, and app configs. |
 | `packages/` | Custom derivations and system scripts. | `system-scripts/`, `kokoro/` |
 | `.agents/` | Knowledge base and guidance for AI agents. | `skills/`, `AGENTS.md` |
-| `secrets/` | SOPS declarations and encrypted material. | `.sops.yaml` |
+| `wallpapers/` | Wallpaper assets referenced by desktop configuration. | Static image assets |
 
 ### System Architecture Data Flow
 
@@ -71,9 +71,13 @@ Importable directories should use a `default.nix` file as a "simple import aggre
 ```
 modules/services/hermes-agent/
 ├── default.nix   # The "spine" that imports other files
+├── documents/    # Workspace documents and SOUL installation
+├── mcp/          # MCP server wiring
 ├── package/      # Derivation logic
 ├── runtime/      # Systemd and environment setup
-└── secrets/      # SOPS wiring
+├── secrets/      # SOPS wiring
+├── skills/       # Managed and mutable skills
+└── toolsets/     # Tool exposure and trust boundaries
 ```
 
 **Sources:**[CONTRIBUTING.md146-165](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/CONTRIBUTING.md?plain=1#L146-L165)[modules/services/hermes-agent/default.nix13-22](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/services/hermes-agent/default.nix#L13-L22)[AGENTS.md34-37](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/AGENTS.md?plain=1#L34-L37)
@@ -122,7 +126,7 @@ The repository contains `AGENTS.md` files scattered throughout the tree. These f
 
 ## Module Logic and Implementation
 
-Modules are designed to be single-purpose and self-contained. A common pattern is to bundle the Nginx reverse proxy and SOPS secrets within the service module itself.
+Modules are designed to be single-purpose and self-contained. `default.nix` acts as the assembly spine, while runtime wiring, secrets, package overrides, MCP integrations, and related support surfaces live in sibling paths when the module grows.
 
 ### Service Implementation Pattern
 
@@ -130,15 +134,21 @@ Modules are designed to be single-purpose and self-contained. A common pattern i
 flowchart TD
     subgraph subGraph0 ["Module: modules/services/hermes-agent"]
         DEF["default.nix"]
+        DOC["documents/"]
+        MCP["mcp/"]
         SEC["secrets/"]
         RUN["runtime/"]
         PKG["package/"]
+        SKL["skills/"]
+        TOOL["toolsets/"]
     end
+    DEF --> DOC
+    DEF --> MCP
     DEF --> SEC
     DEF --> RUN
     DEF --> PKG
-    RUN --> SEC
-    RUN --> PKG
+    DEF --> SKL
+    DEF --> TOOL
 ```
 
 ### Nginx and Secrets Wiring
