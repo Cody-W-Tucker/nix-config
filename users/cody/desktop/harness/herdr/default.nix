@@ -1,11 +1,16 @@
-{ config, ... }:
+{
+  config,
+  ...
+}:
 
 let
   colors = config.lib.stylix.colors;
 in
 
 {
-  imports = [ ./module.nix ];
+  imports = [
+    ./module.nix
+  ];
 
   programs.herdr = {
     enable = true;

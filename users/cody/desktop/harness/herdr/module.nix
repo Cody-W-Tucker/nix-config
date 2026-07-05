@@ -9,7 +9,7 @@
 let
   cfg = config.programs.herdr;
   tomlFormat = pkgs.formats.toml { };
-  defaultPackage = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
+  defaultPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
   builtInThemes = [
     "catppuccin"
     "catppuccin-latte"
@@ -32,7 +32,7 @@ let
   ];
   opencodePlugin = ''
     // installed by herdr
-    // managed by Nix; update this file with the pinned herdr input.
+    // managed by Nix; update this file with the pinned llm-agents input.
     // HERDR_INTEGRATION_ID=opencode
     // HERDR_INTEGRATION_VERSION=3
 

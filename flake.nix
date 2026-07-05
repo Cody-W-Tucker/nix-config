@@ -88,11 +88,6 @@
       # Local Recursive Language Model CLI under active development.
       url = "github:Cody-W-Tucker/rlm";
     };
-    herdr = {
-      # Terminal-native agent multiplexer.
-      url = "github:ogulcancelik/herdr/v0.6.6";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
   };
 
   outputs =
