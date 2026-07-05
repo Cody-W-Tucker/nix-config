@@ -9,8 +9,47 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  update-flake:
+  public-safe-pr-check:
+    name: Public-safe PR check (no private flakes)
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - name: Check formatting without evaluating local flake
+        run: nix run nixpkgs#nixfmt-tree -- --ci .
+
+  private-flake-check:
+    name: Private flake check (authenticated when token exists)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      HAS_NIXOS_SECRETS_TOKEN: ${{ secrets.NIX_SECRETS_READ != '' }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - name: Skip private flake check without token
+        if: env.HAS_NIXOS_SECRETS_TOKEN != 'true'
+        run: |
+          printf '%s\n' 'Skipping private flake check because NIX_SECRETS_READ is not available for this PR run.'
+      - name: Configure GitHub access for private flakes
+        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
+        run: |
+          mkdir -p ~/.config/nix
+          printf '%s\n' 'access-tokens = github.com=${{ secrets.NIX_SECRETS_READ }}' >> ~/.config/nix/nix.conf
+      - name: Authenticated private flake check
+        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
+        run: nix flake check --print-build-logs
+
+  update-flake:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      HAS_NIXOS_SECRETS_TOKEN: ${{ secrets.NIX_SECRETS_READ != '' }}
     permissions:
       contents: write
       pull-requests: write
@@ -19,14 +58,24 @@ jobs:
         with:
           fetch-depth: 0
       - uses: DeterminateSystems/determinate-nix-action@v3
+      - name: Require token for private flake updates
+        if: env.HAS_NIXOS_SECRETS_TOKEN != 'true'
+        run: |
+          printf '%s\n' 'Set the NIX_SECRETS_READ secret with read access to Cody-W-Tucker/nixos-secrets.' >&2
+          exit 1
+      - name: Configure GitHub access for private flakes
+        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
+        run: |
+          mkdir -p ~/.config/nix
+          printf '%s\n' 'access-tokens = github.com=${{ secrets.NIX_SECRETS_READ }}' >> ~/.config/nix/nix.conf
       - name: Update flake inputs
-        if: github.event_name != 'pull_request'
+        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
         run: |
           nix flake update
       - name: Flake check
+        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
         run: nix flake check --print-build-logs
       - name: Create Pull Request if changes exist
-        if: github.event_name != 'pull_request'
         id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
