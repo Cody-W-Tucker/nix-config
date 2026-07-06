@@ -12,55 +12,27 @@ Central docs should point here for harness implementation detail.
 - `herdr/module.nix` — local Herdr module logic.
 - `opencode/default.nix` — OpenCode user harness root.
 
-## OpenCode Layout
+## Stack
 
-Primary directories:
+| Component                         | Tool                                                        | Configuration Location                                                                                                     |
+| --------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Harness root                      | Desktop harness import                                      | `default.nix`                                                                                                              |
+| MCP wiring                        | User-session MCP servers and client exposure                | `mcp.nix`                                                                                                                  |
+| Terminal launcher and multiplexer | Herdr                                                       | `herdr/default.nix`, `herdr/module.nix`                                                                                    |
+| Agent runtime surface             | OpenCode                                                    | `opencode/default.nix`                                                                                                     |
+| Agent families                    | Business, Knowledge, Logging, Verify Alignment              | `opencode/agents/business/`, `opencode/agents/knowledge/`, `opencode/agents/logging/`, `opencode/agents/verify-alignment/` |
+| Agent-local skills                | Family-specific skills                                      | `opencode/agents/*/skills/`                                                                                                |
+| Shared skills                     | Agent Browser, Cognitive, Humanizer, shared OpenCode skills | `opencode/skills/`, `opencode/skills/agent-browser/`, `opencode/skills/cognitive/`, `opencode/skills/humanizer/`           |
+| Custom tool plugins               | Voice, Model Router, RTK, other OpenCode tools              | `opencode/tools/`, `opencode/tools/voice/`, `opencode/tools/model-router/`, `opencode/tools/rtk/`                          |
+| Voice/status output               | TTS and spoken status plugin                                | `opencode/tools/voice/`                                                                                                    |
+| Model routing                     | Router configuration and RLM-related tooling                | `opencode/tools/model-router/`, `opencode/default.nix`                                                                     |
+| Context trimming                  | RTK read/context reduction tool                             | `opencode/tools/rtk/`                                                                                                      |
 
-- `opencode/agents/` — agent definitions grouped by role or operating mode.
-- `opencode/agents/*/skills/` — skills that belong to a specific agent family.
-- `opencode/skills/` — shared OpenCode skills available across agents.
-- `opencode/tools/` — custom OpenCode tool plugins packaged for the user session.
+## Layout Notes
 
-Current notable pieces:
+- `opencode/agents/` contains agent definitions grouped by role or operating mode.
+- `opencode/agents/*/skills/` contains skills that belong to a specific agent family.
+- `opencode/skills/` contains shared OpenCode skills available across agents.
+- `opencode/tools/` contains custom OpenCode tool plugins packaged for the user session.
 
-- `opencode/agents/business/` — business/operator agent configuration and its task, CRM, and Google Workspace skills.
-- `opencode/agents/knowledge/` — knowledge/Obsidian-oriented agent configuration and QMD/Obsidian skills.
-- `opencode/agents/logging/` — logging-oriented agent configuration.
-- `opencode/agents/verify-alignment/` — alignment/review agent configuration.
-- `opencode/skills/agent-browser/` — browser automation skill packaging.
-- `opencode/skills/cognitive/` — local cognitive/decision-support skill packaging.
-- `opencode/skills/humanizer/` — writing cleanup skill packaging.
-- `opencode/tools/voice/` — TTS/status voice plugin.
-- `opencode/tools/model-router/` — model routing plugin/configuration.
-- `opencode/tools/rtk/` — read/context trimming tool plugin used to keep long tool results operator-sized.
-
-## Herdr and RLM
-
-Herdr is the terminal-native launcher/multiplexer for agent work. Keep its theme and behavior close to `herdr/default.nix`; keep reusable module behavior in `herdr/module.nix`.
-
-RLM-related behavior is surfaced through the harness and OpenCode tooling rather than a separate top-level user area. If a change affects model routing, recursive language-model execution, or CLI multiplexing from the desktop, start here and then follow the specific tool/module file.
-
-## MCP
-
-`mcp.nix` owns MCP wiring for Cody's user harness. Keep server definitions and client exposure there unless a server belongs entirely to one packaged skill or tool.
-
-When adding a server:
-
-- Keep secrets out of the repo; use SOPS or existing secret plumbing.
-- Prefer stable command names and explicit packages.
-- Document the operator-facing purpose here if it changes how agents are run.
-
-## Tool and Skill Rules
-
-- Put OpenCode plugin implementation files beside their Nix packaging (`plugin.ts` next to `default.nix`).
-- Keep agent-specific skills under that agent when they are not generally reusable.
-- Promote a skill to `opencode/skills/` only when multiple agents should share it.
-- Avoid hiding long shell fragments in Nix strings when a script/tool file would be clearer.
-- Keep tool names CLI-safe and lowercase kebab-case.
-
-## Change Checklist
-
-- Touch `users/cody/README.md` only for user/desktop-level behavior; keep harness internals documented here.
-- Update central `docs/OpenCode-*` or `docs/Herdr-*` pages only as short pointers.
-- Verify module imports when adding a new agent, tool, or skill.
-- Add new files to git before expecting the flake to include them.
+RLM-related behavior is surfaced through the harness and OpenCode tooling rather than a separate top-level user area. Model routing, recursive language-model execution, and CLI multiplexing for the desktop are represented here through the relevant tool or module files.

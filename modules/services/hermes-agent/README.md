@@ -2,8 +2,6 @@
 
 Hermes is the local AI agent service for CodyOS. This directory owns the implementation detail: package wrapping, systemd runtime, SOPS secrets, MCP bridges, document provisioning, skills, and platform toolsets.
 
-Central docs should point here instead of repeating this material.
-
 ## Layout
 
 | Path | Role |
@@ -48,13 +46,11 @@ The package exposes two operator entry points:
 
 ## Secrets
 
-Secrets are SOPS-owned and declared close to the service.
+Secrets are SOPS-owned for the Hermes service.
 
 - `secrets/default.nix` declares core agent secrets such as OpenCode, Firecrawl, Discord, and Telegram credentials.
 - `sops.templates."hermes-env"` aggregates service environment variables into the format Hermes expects.
 - MCP-specific credentials stay near their bridge. For Karakeep, `mcp/default.nix` reads the SOPS secret at runtime and exports it before starting the MCP server.
-
-When adding a new secret, declare it next to the consumer and assign ownership to the Hermes service user/group. Do not place raw values in this tree.
 
 ## MCP bridges
 
@@ -110,10 +106,3 @@ Current skill groups include:
 Toolsets define platform capability access by interface. The CLI has full trust. API, Discord, Telegram, and cron get narrower sets appropriate to their ambient or automated context.
 
 Web search is configured through `toolsets/web-search.nix`, currently using xAI for search and Firecrawl for extraction/crawling.
-
-## Operator notes
-
-- Keep implementation docs in this README when they describe this module's behavior.
-- Keep central docs short and pointer-oriented.
-- Add new files to git before expecting flakes to see them.
-- For risky module changes, test with `nixos-rebuild dry-run --flake .` from `/etc/nixos`. Simple doc-only changes do not need a build.
