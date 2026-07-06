@@ -1,7 +1,4 @@
 # System Modules
-Relevant source files
-- [modules/system/nix.nix](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix)
-- [modules/system/services.nix](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/services.nix)
 
 The `modules/system/` directory contains the shared NixOS configurations applied across all hosts in the CodyOS ecosystem. These modules define the foundational environment, including package manager behavior, core services, security, and networking.
 
@@ -9,33 +6,19 @@ The `modules/system/` directory contains the shared NixOS configurations applied
 
 The system configuration is designed to be modular, separating concerns like hardware firmware, Nix package manager settings, and background services. By centralizing these in `modules/system/`, the configuration ensures consistency between the `beast` workstation and the `server` host.
 
-### Code-to-System Mapping
-
-The following diagram illustrates how specific Nix files map to core system functionalities.
-
-**System Module Entity Map**
-
-```
-
-```
-
-**Sources:**[modules/system/base.nix1-15](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/base.nix#L1-L15)[modules/system/nix.nix1-43](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L1-L43)[modules/system/services.nix1-46](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/services.nix#L1-L46)
-
 ---
 
 ## Nix Package Manager Configuration
 
 The `nix.nix` module manages the behavior of the Nix daemon and package fetching. It enforces the use of **Flakes** and ensures the system remains performant through automated maintenance.
 
-| Feature | Implementation | Purpose |
-| --- | --- | --- |
-| **Experimental Features** | `nix-command`, `flakes` | Enables modern Nix workflows. |
-| **Optimization** | `auto-optimise-store` | Hardlinks identical files in the store to save space. |
-| **Garbage Collection** | `gc.automatic = true` | Weekly cleanup of generations older than 7 days. |
-| **Binary Caches** | `extra-substituters` | Uses Numtide and Nix-community caches for faster builds. |
-| **Secrets** | `github-nix-secrets-read` | Injects GitHub tokens for private flake access. |
-
-**Sources:**[modules/system/nix.nix18-42](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L18-L42)[modules/system/nix.nix8-16](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L8-L16)
+| Feature                   | Implementation            | Purpose                                                  |
+| ------------------------- | ------------------------- | -------------------------------------------------------- |
+| **Experimental Features** | `nix-command`, `flakes`   | Enables modern Nix workflows.                            |
+| **Optimization**          | `auto-optimise-store`     | Hardlinks identical files in the store to save space.    |
+| **Garbage Collection**    | `gc.automatic = true`     | Weekly cleanup of generations older than 7 days.         |
+| **Binary Caches**         | `extra-substituters`      | Uses Numtide and Nix-community caches for faster builds. |
+| **Secrets**               | `github-nix-secrets-read` | Injects GitHub tokens for private flake access.          |
 
 ---
 
@@ -46,8 +29,6 @@ Shared services are defined in `services.nix`, focusing on hardware health, firm
 - **Firmware Management**: The system enables `hardware.enableRedistributableFirmware` and utilizes `fwupd` for device firmware updates. The `fwupd-refresh` service is specifically configured to run as `root` to bypass interactive authentication during background updates.
 - **Hardware Monitoring**: The `prometheus.exporters.smartctl` service is enabled globally to expose storage health metrics for the monitoring stack.
 - **CLI UX**: Integration with `flake-programs-sqlite` allows the `command-not-found` utility to suggest packages from a pre-indexed database when a command is missing.
-
-**Sources:**[modules/system/services.nix12-17](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/services.nix#L12-L17)[modules/system/services.nix23-31](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/services.nix#L23-L31)[modules/system/services.nix34-45](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/services.nix#L34-L45)
 
 ---
 
@@ -94,4 +75,3 @@ flowchart LR
     H_SRV --> OUT_S
 ```
 
-**Sources:**[modules/system/nix.nix1-5](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L1-L5)[modules/system/services.nix1-8](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/services.nix#L1-L8)[modules/system/base.nix1-10](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/base.nix#L1-L10)

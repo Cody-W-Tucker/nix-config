@@ -1,11 +1,4 @@
 # Getting Started: Building and Updating the System
-Relevant source files
-- [.github/workflows/update-flake-lock.yml](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/.github/workflows/update-flake-lock.yml)
-- [modules/system/nix.nix](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix)
-- [modules/system/packages.nix](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/packages.nix)
-- [packages/system-scripts/check-imports.nix](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/check-imports.nix)
-- [packages/system-scripts/default.nix](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/default.nix)
-- [packages/system-scripts/update.nix](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix)
 
 This guide provides the practical procedures for managing the CodyOS lifecycle. It covers the validation of configuration changes, the automated update pipeline, secret management via SOPS, and the specialized scripts used to maintain repository integrity.
 
@@ -25,15 +18,15 @@ To test a configuration without applying it to the bootloader or the running sys
 The repository provides a centralized `update` script to standardize the deployment workflow. This script automates formatting, import validation, committing, rebuilding, and pushing the resulting change.
 
 **Implementation Detail:**
-The `update` script is defined as a `pkgs.writeShellApplication` in [packages/system-scripts/update.nix6-36](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L6-L36) It is automatically included in the system path via the `environment.systemPackages` list in [packages/system-scripts/default.nix17](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/default.nix#L17-L17)
+The `update` script is defined as a `pkgs.writeShellApplication` in [packages/system-scripts/update.nix6-36](../packages/system-scripts/update.nix#L6-L36) It is automatically included in the system path via the `environment.systemPackages` list in [packages/system-scripts/default.nix17](../packages/system-scripts/default.nix#L17-L17)
 
 **Workflow Logic:**
 
-1. **Format:** Runs `nix fmt` on the repository [packages/system-scripts/update.nix18](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L18-L18)
-2. **Validate:** Executes `check-imports` to ensure no dangling `.nix` files exist [packages/system-scripts/update.nix21](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L21-L21)
-3. **Commit:** Prompts for a commit message and commits all changes to the local git state [packages/system-scripts/update.nix23-32](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L23-L32)
-4. **Rebuild:** Executes `sudo nixos-rebuild switch` to apply the new configuration [packages/system-scripts/update.nix33](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L33-L33)
-5. **Push:** Synchronizes the local repository with the remote origin [packages/system-scripts/update.nix34](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L34-L34)
+1. **Format:** Runs `nix fmt` on the repository [packages/system-scripts/update.nix18](../packages/system-scripts/update.nix#L18-L18)
+2. **Validate:** Executes `check-imports` to ensure no dangling `.nix` files exist [packages/system-scripts/update.nix21](../packages/system-scripts/update.nix#L21-L21)
+3. **Commit:** Prompts for a commit message and commits all changes to the local git state [packages/system-scripts/update.nix23-32](../packages/system-scripts/update.nix#L23-L32)
+4. **Rebuild:** Executes `sudo nixos-rebuild switch` to apply the new configuration [packages/system-scripts/update.nix33](../packages/system-scripts/update.nix#L33-L33)
+5. **Push:** Synchronizes the local repository with the remote origin [packages/system-scripts/update.nix34](../packages/system-scripts/update.nix#L34-L34)
 
 The script does **not** run `nix flake update`. Updating inputs is a separate operator choice.
 
@@ -46,11 +39,6 @@ The Cody Home Manager profile also exposes two shell aliases that cover adjacent
 
 Use `update` when you want to format, validate, commit, rebuild, and push local config changes. Use `pullUpdate` when you want to rebuild the current checkout after pulling remote changes. Use `upgrade` when you want to refresh flake inputs before rebuilding.
 
-**Sources:**
-
-- [packages/system-scripts/update.nix1-36](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L1-L36)
-- [packages/system-scripts/default.nix1-19](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/default.nix#L1-L19)
-
 ---
 
 ## Repository Integrity: `check-imports`
@@ -61,8 +49,8 @@ A common failure mode in Nix flakes is adding a new `.nix` file to a directory b
 
 The script performs two primary checks:
 
-1. **Orphaned Files:** It finds all `.nix` files in a directory containing a `default.nix` and verifies they are referenced in that `default.nix`[packages/system-scripts/check-imports.nix49-54](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/check-imports.nix#L49-L54)
-2. **Broken Links:** It verifies that every relative import (e.g., `./module.nix`) in a `default.nix` actually points to an existing file [packages/system-scripts/check-imports.nix57-61](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/check-imports.nix#L57-L61)
+1. **Orphaned Files:** It finds all `.nix` files in a directory containing a `default.nix` and verifies they are referenced in that `default.nix`[packages/system-scripts/check-imports.nix49-54](../packages/system-scripts/check-imports.nix#L49-L54)
+2. **Broken Links:** It verifies that every relative import (e.g., `./module.nix`) in a `default.nix` actually points to an existing file [packages/system-scripts/check-imports.nix57-61](../packages/system-scripts/check-imports.nix#L57-L61)
 
 ### Technical Implementation
 
@@ -93,10 +81,6 @@ flowchart TD
     COMP_EXIST --> ERR_EXIST
 ```
 
-**Sources:**
-
-- [packages/system-scripts/check-imports.nix1-76](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/check-imports.nix#L1-L76)
-
 ---
 
 ## Secret Management with SOPS
@@ -109,38 +93,30 @@ To access private resources, such as the `nixos-secrets` repository, the system 
 
 **Implementation in `modules/system/nix.nix`:**
 
-1. **Secret Declaration:** The system expects a secret named `github-nix-secrets-read`[modules/system/nix.nix8](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L8-L8)
-2. **Template Generation:** A configuration file `nix-access-tokens.conf` is generated, injecting the decrypted token into a format Nix understands: `access-tokens = github.com=${token}`[modules/system/nix.nix9-16](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L9-L16)
-3. **Nix Integration:** The system Nix configuration includes this generated file via `extraOptions`[modules/system/nix.nix19-21](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L19-L21)
-
-**Sources:**
-
-- [modules/system/nix.nix8-21](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L8-L21)
+1. **Secret Declaration:** The system expects a secret named `github-nix-secrets-read`[modules/system/nix.nix8](../modules/system/nix.nix#L8-L8)
+2. **Template Generation:** A configuration file `nix-access-tokens.conf` is generated, injecting the decrypted token into a format Nix understands: `access-tokens = github.com=${token}`[modules/system/nix.nix9-16](../modules/system/nix.nix#L9-L16)
+3. **Nix Integration:** The system Nix configuration includes this generated file via `extraOptions`[modules/system/nix.nix19-21](../modules/system/nix.nix#L19-L21)
 
 ---
 
 ## Automated Maintenance (CI)
 
-The repository uses GitHub Actions to ensure the `flake.lock` file remains current and that the configuration remains buildable.
+The repository uses GitHub Actions to keep `flake.lock` current and to validate pull requests without exposing private flake credentials.
 
 ### Flake Lock Update Workflow
 
-A scheduled workflow runs every Sunday at 4:00 AM UTC [.github/workflows/update-flake-lock.yml5](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/.github/workflows/update-flake-lock.yml#L5-L5)
+A workflow runs on manual dispatch, every Sunday at 4:00 AM UTC, and on pull requests opened, synchronized, or reopened [.github/workflows/update-flake-lock.yml2-7](../.github/workflows/update-flake-lock.yml#L2-L7)
 
 **CI Pipeline Steps:**
 
-1. **Update:** Runs `nix flake update` to pull the latest versions of all inputs [.github/workflows/update-flake-lock.yml25](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/.github/workflows/update-flake-lock.yml#L25-L25)
-2. **Check:** Executes `nix flake check` to ensure the new lockfile doesn't break the flake evaluation [.github/workflows/update-flake-lock.yml27](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/.github/workflows/update-flake-lock.yml#L27-L27)
-3. **PR Creation:** If changes are detected, it opens a Pull Request with the label `dependencies`[.github/workflows/update-flake-lock.yml31-42](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/.github/workflows/update-flake-lock.yml#L31-L42)
+1. **PR Formatting Check:** Pull requests always run the public-safe `nixfmt-tree --ci .` check without evaluating the local flake [.github/workflows/update-flake-lock.yml12-22](../.github/workflows/update-flake-lock.yml#L12-L22)
+2. **PR Flake Check:** Pull requests run `nix flake check --print-build-logs` only when the `NIX_SECRETS_READ` secret is available; otherwise the private flake check is skipped [.github/workflows/update-flake-lock.yml24-46](../.github/workflows/update-flake-lock.yml#L24-L46)
+3. **Scheduled or Manual Update:** Non-PR runs require `NIX_SECRETS_READ`, run `nix flake update`, then run `nix flake check --print-build-logs` [.github/workflows/update-flake-lock.yml48-77](../.github/workflows/update-flake-lock.yml#L48-L77)
+4. **PR Creation:** If changes are detected, the workflow opens or updates `update/flake-lock` with title `chore(flake): update inputs` and labels `dependencies`, `automated`, and `nix` [.github/workflows/update-flake-lock.yml78-91](../.github/workflows/update-flake-lock.yml#L78-L91)
 
 ### Garbage Collection
 
-To prevent the Nix store from consuming excessive disk space, automatic garbage collection is configured at the system level in [modules/system/nix.nix37-41](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L37-L41) It is set to run **weekly** and delete any generations older than **7 days**.
-
-**Sources:**
-
-- [.github/workflows/update-flake-lock.yml1-43](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/.github/workflows/update-flake-lock.yml#L1-L43)
-- [modules/system/nix.nix37-41](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L37-L41)
+To prevent the Nix store from consuming excessive disk space, automatic garbage collection is configured at the system level in [modules/system/nix.nix37-41](../modules/system/nix.nix#L37-L41) It is set to run **weekly** and delete any generations older than **7 days**.
 
 ---
 
@@ -172,10 +148,3 @@ flowchart LR
     NIX_SETTINGS --> SOPS_SECRETS
     GITHUB_ACTION --> FLAKE_LOCK
 ```
-
-**Sources:**
-
-- [packages/system-scripts/update.nix7-13](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/packages/system-scripts/update.nix#L7-L13)
-- [modules/system/nix.nix1-43](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/nix.nix#L1-L43)
-- [modules/system/packages.nix1-11](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/modules/system/packages.nix#L1-L11)
-- [.github/workflows/update-flake-lock.yml1-43](https://github.com/Cody-W-Tucker/nix-config/blob/5a76c557/.github/workflows/update-flake-lock.yml#L1-L43)
