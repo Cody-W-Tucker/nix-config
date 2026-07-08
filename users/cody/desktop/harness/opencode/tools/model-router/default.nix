@@ -25,14 +25,14 @@ let
         tmp_json="$TMPDIR/tiers.json"
         jq '
           .activePreset = "openai"
-          | .presets.openai.fast.model = "openai/gpt-5.4-mini-fast"
-          | .presets.openai.fast.description = "GPT-5.4 Mini Fast for fast exploration and simple tasks"
-          | .presets.openai.medium.model = "openai/gpt-5.5-fast"
-          | .presets.openai.medium.variant = "high"
-          | .presets.openai.medium.description = "GPT-5.5 Fast high for implementation and standard coding"
-          | .presets.openai.heavy.model = "openai/gpt-5.4"
-          | .presets.openai.heavy.variant = null
-          | .presets.openai.heavy.description = "GPT-5.4 for architecture and complex tasks"
+          | .presets.openai.fast.model = "opencode-go/deepseek-v4-flash"
+          | .presets.openai.fast.description = "Deepseek v4 flash for fast exploration and simple tasks"
+          | .presets.openai.medium.model = "xai/grok-build-0.1"
+          | .presets.openai.medium.variant = "medium"
+          | .presets.openai.medium.description = "Grok Build medium for implementation and standard coding"
+          | .presets.openai.heavy.model = "openai/gpt-5.5"
+          | .presets.openai.heavy.variant = "high"
+          | .presets.openai.heavy.description = "GPT-5.5 for architecture and complex tasks"
         ' "$out/tiers.json" > "$tmp_json"
         mv "$tmp_json" "$out/tiers.json"
       '';
