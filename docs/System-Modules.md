@@ -58,7 +58,7 @@ flowchart LR
     OUT_S["Server Generation"]
     subgraph subGraph1 ["Host Definitions"]
         H_BEAST["hosts/beast/default.nix"]
-        H_SRV["hosts/server/default.nix"]
+        H_SRV["hosts/server.nix"]
     end
     subgraph subGraph0 ["Shared Modules"]
         M_NIX["nix.nix"]
@@ -74,4 +74,3 @@ flowchart LR
     H_BEAST --> OUT_B
     H_SRV --> OUT_S
 ```
-

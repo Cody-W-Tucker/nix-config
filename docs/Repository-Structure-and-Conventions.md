@@ -10,8 +10,8 @@ The repository follows a functional decomposition strategy, ensuring that machin
 | ------------- | ------------------------------------------------------------------ | --------------------------------------------- |
 | `hosts/`      | Machine-specific entry points and hardware facts.                  | `beast/`, `server.nix`                        |
 | `modules/`    | Reusable NixOS system-level modules and services.                  | `system/`, `services/`, `desktop/`, `server/` |
-| `users/`      | Home Manager configurations (aliased as `cody/` in some contexts). | Shell, UI, and app configs.                   |
-| `packages/`   | Custom derivations and system scripts.                             | `system-scripts/`, `kokoro/`                  |
+| `users/`      | Home Manager configurations.                                       | `cody/core.nix`, `cody/desktop.nix`, `cody/desktop/` |
+| `packages/`   | Custom derivations and system scripts.                             | `system-scripts/`, `kokoro/`, `en-core-web-sm/`      |
 | `.agents/`    | Knowledge base and guidance for AI agents.                         | `skills/`, `AGENTS.md`                        |
 | `wallpapers/` | Wallpaper assets referenced by desktop configuration.              | Static image assets                           |
 
@@ -27,7 +27,7 @@ flowchart LR
         FLAKE["flake.nix"]
         HOSTS["hosts/ (beast/server)"]
         MODS["modules/ (system/services)"]
-        USERS["users/ (home-manager)"]
+    USERS["users/ (home-manager roles)"]
         PKGS["packages/ (custom)"]
         SECRETS["nixos-secrets (Private Flake)"]
     end
@@ -52,6 +52,8 @@ To ensure consistency across the codebase, the following rules are enforced:
 ### 2. The `default.nix` Pattern
 
 Importable directories should use a `default.nix` file as a "simple import aggregator" [CONTRIBUTING.md146-150](../CONTRIBUTING.md#L146-L150)
+
+For Cody's Home Manager profile, `users/cody/desktop.nix` is the desktop role entrypoint and it imports the `users/cody/desktop/` directory for the detailed module surface [users/cody/desktop.nix9-13](../users/cody/desktop.nix#L9-L13)
 
 - Keep `default.nix` short.
 - Move implementation details to sibling files like `package.nix`, `service.nix`, or `module.nix`[AGENTS.md34-37](../AGENTS.md#L34-L37)

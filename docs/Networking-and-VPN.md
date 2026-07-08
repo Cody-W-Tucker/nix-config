@@ -47,7 +47,7 @@ The following diagram illustrates how different VPN modules are integrated into 
 flowchart LR
     subgraph HostConfigs
         SERVER["hosts/server.nix"]
-        BEAST["hosts/beast.nix"]
+        BEAST["hosts/beast/default.nix"]
     end
     subgraph VPNModules
         TS["modules/desktop/vpn/tailscale.nix"]
@@ -136,4 +136,3 @@ Services are exposed via subdomains. For example:
 - **Jellyfin**: `media.homehub.tv` proxies to `127.0.0.1:8096`[modules/server/media.nix193-197](../modules/server/media.nix#L193-L197)
 - **Calibre-Web**: `books.homehub.tv` proxies to `localhost:8083` with specific buffer tuning for Kobo synchronization [modules/server/media.nix211-223](../modules/server/media.nix#L211-L223)
 - **Prowlarr**: `prowlarr.homehub.tv` proxies to `127.0.0.1:9696`[modules/server/media.nix237-242](../modules/server/media.nix#L237-L242)
-

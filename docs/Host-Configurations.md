@@ -47,7 +47,7 @@ The `beast` host is a high-end workstation designed for development, gaming, and
 - **Composition Root:** `hosts/beast/default.nix` is a thin import spine. It selects host-local files (`ai.nix`, `drives.nix`, `machine.nix`, `models.nix`) and then composes shared desktop and AI modules from `modules/` [hosts/beast/default.nix4-23](../hosts/beast/default.nix#L4-L23)
 - **Storage Topology:** Utilizes a mix of `ext4` for the root partition and a specialized Btrfs pool for work directories at `/mnt/work`, featuring automated scrubbing and NOCOW attributes for VM performance [hosts/beast/drives.nix26-133](../hosts/beast/drives.nix#L26-L133)
 - **AI Stack:** Hosts the primary local AI interface via `open-webui`, integrated with a `qdrant` vector database for RAG (Retrieval-Augmented Generation) [hosts/beast/ai.nix12-61](../hosts/beast/ai.nix#L12-L61)
-- **Desktop Integration:** Passes a `hardwareConfig` abstraction to Home Manager to define monitor layouts (e.g., Samsung Odyssey G65B at 240Hz) and power management timeouts [hosts/beast/machine.nix13-31](../hosts/beast/machine.nix#L13-L31)
+- **Desktop Integration:** Passes a `hardwareConfig` abstraction to Home Manager and imports Cody's desktop role via `users/cody/desktop.nix`, which in turn imports `users/cody/desktop/` for the detailed desktop modules [hosts/beast/machine.nix13-31](../hosts/beast/machine.nix#L13-L31) [users/cody/desktop.nix9-13](../users/cody/desktop.nix#L9-L13)
 
 For detailed hardware tuning and AI service configuration, see [Beast: Desktop Workstation](/Cody-W-Tucker/nix-config/2.1-beast:-desktop-workstation).
 

@@ -2,6 +2,8 @@
 
 This page details the Speech-to-Text (STT) and Text-to-Speech (TTS) infrastructure within CodyOS. The system provides a unified pipeline for voice interaction, ranging from low-latency desktop dictation to a complex, VAD-enabled voice assistant integrated into the Waybar status bar. These services leverage local inference via `llama-swap` to provide OpenAI-compatible APIs for transcription and speech synthesis.
 
+For navigation: Cody's Home Manager desktop role is entered through `users/cody/desktop.nix`, which imports `users/cody/desktop/`; the speech-specific implementation lives under that desktop directory [users/cody/desktop.nix9-13](../users/cody/desktop.nix#L9-L13)
+
 ## Architecture Overview
 
 The speech pipeline is built on three primary server-side components and two client-side scripts. All servers are designed to be managed by `llama-swap`, which handles model lifecycle and hardware acceleration (CUDA/CPU) [modules/services/llama-swap/faster-whisper-openai-server.py37-60](../modules/services/llama-swap/faster-whisper-openai-server.py#L37-L60)
@@ -66,4 +68,3 @@ The service is configured via environment variables in the `hermes-waybar-voice`
 - `HERMES_SPEECH_BASE_URL`: Points to the `llama-swap` STT/TTS port (default `8081`) [users/cody/desktop/waybar.nix21](../users/cody/desktop/waybar.nix#L21-L21)
 - `HERMES_TRANSCRIPTION_MODEL`: Defaults to `whisper-medium`[users/cody/desktop/waybar.nix23](../users/cody/desktop/waybar.nix#L23-L23)
 - `HERMES_SPEECH_VOICE`: Defaults to `af_heart` (Kokoro) [users/cody/desktop/waybar.nix25](../users/cody/desktop/waybar.nix#L25-L25)
-
