@@ -1,11 +1,11 @@
 { pkgs, ... }:
 let
-  inherit (pkgs) rnnoise-plugin;
-  rnnoiseLadspaPath = "${rnnoise-plugin}/lib/ladspa";
+  inherit (pkgs) deepfilternet;
+  ladspaPath = "${deepfilternet}/lib/ladspa";
 in
 {
-  # RNNoise configuration
-  xdg.configFile."pipewire/pipewire.conf.d/99-rnnoise.conf" = {
+  # DeepFilterNet denoising source
+  xdg.configFile."pipewire/pipewire.conf.d/99-deepfilter.conf" = {
     text = builtins.toJSON {
       "context.modules" = [
         {
@@ -17,26 +17,26 @@ in
               nodes = [
                 {
                   type = "ladspa";
-                  name = "rnnoise";
-                  plugin = "librnnoise_ladspa";
-                  label = "noise_suppressor_mono";
+                  name = "deepfilter";
+                  plugin = "libdeep_filter_ladspa";
+                  label = "deep_filter_mono";
                   control = {
-                    "VAD Threshold (%)" = 80.0;
-                    "VAD Grace Period (ms)" = 200;
-                    "Retroactive VAD Grace (ms)" = 0;
+                    "Attenuation Limit (dB)" = 100.0;
                   };
                 }
               ];
             };
             "capture.props" = {
-              "node.name" = "capture.rnnoise_source";
+              "node.name" = "capture.deepfilter_source";
               "node.passive" = true;
               "audio.rate" = 48000;
+              "audio.position" = [ "MONO" ];
             };
             "playback.props" = {
-              "node.name" = "rnnoise_source";
+              "node.name" = "deepfilter_source";
               "media.class" = "Audio/Source";
               "audio.rate" = 48000;
+              "audio.position" = [ "MONO" ];
             };
           };
         }
@@ -44,8 +44,8 @@ in
     };
   };
 
-  xdg.configFile."systemd/user/pipewire.service.d/zz-rnnoise.conf".text = ''
+  xdg.configFile."systemd/user/pipewire.service.d/zz-deepfilter.conf".text = ''
     [Service]
-    Environment="LADSPA_PATH=${rnnoiseLadspaPath}"
+    Environment="LADSPA_PATH=${ladspaPath}"
   '';
 }
