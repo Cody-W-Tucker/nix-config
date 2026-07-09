@@ -12,6 +12,7 @@
     packages = with pkgs; [
       fastfetch
       fd
+      ocrmypdf
       tree
       unzip
       zip
