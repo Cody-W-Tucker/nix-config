@@ -42,11 +42,37 @@ let
         rev = inputs.hermes-agent.rev or null;
         inherit extraPythonPackages extraDependencyGroups;
       };
-      hermesDesktop = pkgs.callPackage "${hermesPkgSrc}/nix/desktop.nix" {
-        hermesAgent = hermesPkg;
+
+      # hermesForDesktop: hermesAgent passed to desktop.nix (becomes HERMES_DESKTOP_HERMES).
+      # Desktop resolver step 4 does `verifyHermesCli` which runs `... --version`.
+      # Upstream CLI only supports `hermes version` subcommand for the version string,
+      # so map top-level --version to the subcommand so the probe exits 0.
+      hermesForDesktop = pkgs.writeShellScriptBin "hermes" ''
+        if [ "$1" = "--version" ]; then
+          exec ${pkgs.lib.getExe hermesPkg} version
+        fi
+        exec ${pkgs.lib.getExe hermesPkg} "$@"
+      '';
+
+      hermesDesktopRaw = pkgs.callPackage "${hermesPkgSrc}/nix/desktop.nix" {
+        hermesAgent = hermesForDesktop;
         hermesNpmLib = hermesPkg.passthru.hermesNpmLib;
         inherit (pkgs) electron;
       };
+
+      # Upstream nix/desktop.nix writes placeholder stamp commit="nix" (len<7).
+      # main.cjs:loadInstallStamp requires schemaVersion=1 and commit >=7 chars.
+      # Rewrite with real flake rev so packaged desktop's stamp is accepted
+      # and resolver does not fall through looking for SOURCE_REPO_ROOT.
+      rev = inputs.hermes-agent.rev or "0000000000000000000000000000000000000000";
+      hermesDesktop = pkgs.runCommandLocal "${hermesDesktopRaw.name}-stamped" { } ''
+        cp -r ${hermesDesktopRaw} "$out"
+        chmod -R u+w "$out"
+        printf '{"schemaVersion":1,"commit":"%s","branch":null,"dirty":false,"source":"nix"}\n' \
+          ${pkgs.lib.escapeShellArg rev} \
+          > "$out/share/hermes-desktop/install-stamp.json"
+      '';
+
       hermesDesktopEntry = pkgs.makeDesktopItem {
         name = "hermes-agent";
         desktopName = "Hermes Agent";
@@ -89,7 +115,9 @@ let
           shift
           exec "$out/bin/hermes-desktop" "\$@"
         fi
-
+        if [ "\$1" = "--version" ]; then
+          exec ${pkgs.lib.getExe hermesPkg} version
+        fi
         exec "${hermesPkg}/bin/hermes" "\$@"
         EOF
         chmod +x "$out/bin/hermes"
