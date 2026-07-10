@@ -28,11 +28,11 @@ let
           | .presets.openai.fast.model = "opencode-go/deepseek-v4-flash"
           | .presets.openai.fast.description = "Deepseek v4 flash for fast exploration and simple tasks"
           | .presets.openai.medium.model = "xai/grok-build-0.1"
-          | .presets.openai.medium.variant = "medium"
+          | .presets.openai.medium.variant = null
           | .presets.openai.medium.description = "Grok Build medium for implementation and standard coding"
-          | .presets.openai.heavy.model = "openai/gpt-5.5"
+          | .presets.openai.heavy.model = "openai/gpt-5.6-terra"
           | .presets.openai.heavy.variant = "high"
-          | .presets.openai.heavy.description = "GPT-5.5 for architecture and complex tasks"
+          | .presets.openai.heavy.description = "GPT-5.6 Terra for architecture and complex tasks"
         ' "$out/tiers.json" > "$tmp_json"
         mv "$tmp_json" "$out/tiers.json"
       '';
