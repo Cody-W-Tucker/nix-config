@@ -184,6 +184,9 @@ def is_good_reference_title(title):
     if not normalized:
         return False
 
+    if normalized.startswith("GitHub - "):
+        return False
+
     semantic_chars = re.sub(r"[^A-Za-z0-9]+", "", normalized)
     if len(semantic_chars) < MIN_REFERENCE_TITLE_CHARS:
         return False
