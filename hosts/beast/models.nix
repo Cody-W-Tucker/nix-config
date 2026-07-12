@@ -5,9 +5,9 @@
 }:
 
 let
-  # Keep the faster-whisper weights on the workspace volume so Open WebUI STT
-  # and whisp-away reuse one model download.
-  sharedFasterWhisperCache = "/mnt/work/cache/ai/faster-whisper";
+  # Keep the faster-whisper weights in the llama-swap service cache
+  # so Open WebUI STT and whisp-away reuse one model download.
+  sharedFasterWhisperCache = "/var/cache/llama-swap/faster-whisper";
   kokoroAssets = pkgs.callPackage ../../packages/kokoro { };
 
   whisperPython = pkgs.python313.withPackages (

@@ -45,7 +45,7 @@ The `beast` host is a high-end workstation designed for development, gaming, and
 
 - **Hardware:** Powered by an Intel i9-14900KF and an NVIDIA 3070 GPU [hosts/beast/machine.nix10](../hosts/beast/machine.nix#L10-L10)
 - **Composition Root:** `hosts/beast/default.nix` is a thin import spine. It selects host-local files (`ai.nix`, `drives.nix`, `machine.nix`, `models.nix`) and then composes shared desktop and AI modules from `modules/` [hosts/beast/default.nix4-23](../hosts/beast/default.nix#L4-L23)
-- **Storage Topology:** Utilizes a mix of `ext4` for the root partition and a specialized Btrfs pool for work directories at `/mnt/work`, featuring automated scrubbing and NOCOW attributes for VM performance [hosts/beast/drives.nix26-133](../hosts/beast/drives.nix#L26-L133)
+- **Storage Topology:** Utilizes `ext4` for the root partition.
 - **AI Stack:** Hosts the primary local AI interface via `open-webui`, integrated with a `qdrant` vector database for RAG (Retrieval-Augmented Generation) [hosts/beast/ai.nix12-61](../hosts/beast/ai.nix#L12-L61)
 - **Desktop Integration:** Passes a `hardwareConfig` abstraction to Home Manager and imports Cody's desktop role via `users/cody/desktop.nix`, which in turn imports `users/cody/desktop/` for the detailed desktop modules [hosts/beast/machine.nix13-31](../hosts/beast/machine.nix#L13-L31) [users/cody/desktop.nix9-13](../users/cody/desktop.nix#L9-L13)
 
@@ -72,6 +72,6 @@ The `server` host acts as the central hub for the `homehub.tv` infrastructure. I
 | **Nixpkgs Channel** | Unstable [flake.nix117](../flake.nix#L117-L117)                                                       | Stable (25.11) [flake.nix121](../flake.nix#L121-L121)                                       |
 | **Primary GPU**     | NVIDIA RTX 3070 [hosts/beast/machine.nix10](../hosts/beast/machine.nix#L10-L10)                       | Intel HD 630 (QSV) [hosts/server.nix10](../hosts/server.nix#L10-L10)                        |
 | **Root Filesystem** | ext4 (noatime) [hosts/beast/drives.nix29](../hosts/beast/drives.nix#L29-L29)                          | ext4 [hosts/server.nix67](../hosts/server.nix#L67-L67)                                      |
-| **Special Storage** | Btrfs Work Pool (NOCOW) [hosts/beast/drives.nix81](../hosts/beast/drives.nix#L81-L81)                 | 4TB HDD Media Pool [hosts/server.nix10](../hosts/server.nix#L10-L10)                        |
+| **Special Storage** | —                                                                                                    | 4TB HDD Media Pool [hosts/server.nix10](../hosts/server.nix#L10-L10)                        |
 | **Networking**      | Tailscale Client [modules/system/base.nix19](../modules/system/base.nix#L19-L19)                      | Tailscale + Nginx Proxy + NFS Server [hosts/server.nix95-118](../hosts/server.nix#L95-L118) |
 | **AI Role**         | Inference (llama-swap, Open-WebUI) [hosts/beast/default.nix16-17](../hosts/beast/default.nix#L16-L17) | Content Extraction (Tika) Proxy                                                                                                                    |

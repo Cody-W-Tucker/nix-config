@@ -61,6 +61,7 @@ in
     ];
     extraModprobeConfig = ''
       options mt7925e disable_aspm=Y
+      options btusb enable_autosuspend=n reset=1
       options v4l2loopback exclusive_caps=1 card_label="OBS Virtual Camera"
     '';
   };

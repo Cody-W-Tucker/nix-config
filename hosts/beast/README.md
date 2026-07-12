@@ -10,7 +10,7 @@ Central docs should point here instead of duplicating this host map.
 | --- | --- |
 | `default.nix` | Host import spine. |
 | `machine.nix` | Machine identity, kernel choice, monitor/workspace hints, and hardware metadata. |
-| `drives.nix` | Local disks, bind mounts, NFS mounts, Btrfs work pool, and storage maintenance. |
+| `drives.nix` | Local disks, bind mounts, NFS mounts, and storage maintenance. |
 | `models.nix` | Local `llama-swap` model catalog and acceleration settings. |
 | `ai.nix` | Open-WebUI, Qdrant, and AI-supporting services. |
 
@@ -23,7 +23,7 @@ Shared modules used heavily by this host include `modules/desktop/hardware/nvidi
 | CPU | Intel Core i9-14900KF, 24 cores / 32 threads. |
 | GPU | NVIDIA RTX 3070, 8GB VRAM. |
 | RAM | 64GB DDR5. |
-| Storage | 2TB NVMe root plus two 1TB NVMe drives for the work pool. |
+ | Storage | 2TB NVMe root. |
 | Kernel | Latest Linux kernel via `pkgs.linuxPackages_latest`. |
 
 The host is tuned for local AI inference, software development, 4K/high-refresh desktop use, and gaming.
@@ -44,9 +44,6 @@ The NVIDIA stack is configured for Wayland desktop use and CUDA workloads.
 `drives.nix` defines the storage layout.
 
 - `/` is ext4 on the 2TB NVMe.
-- `/mnt/work` is a Btrfs pool across the two 1TB NVMe drives.
-- `/mnt/work/vm` and `/mnt/work/cache` get NoCoW via the `work-btrfs-nocow` service for VM images and model/cache-heavy workloads.
-- Btrfs scrub runs monthly.
 - Standard user media/document directories are bind-mounted from the local backup share to stay aligned with Syncthing flows.
 - Server media/books are mounted over NFS with systemd automounts for on-demand access.
 
