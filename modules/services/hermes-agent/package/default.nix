@@ -41,6 +41,11 @@ let
     electron = hermesPkgs.electron;
   };
 
+  hermesDesktopIcon = pkgs.runCommandLocal "hermes-agent-desktop-icon" { } ''
+    mkdir -p "$out/share/icons/hicolor/512x512/apps"
+    cp "${patchedSrc}/apps/desktop/assets/icon.png" "$out/share/icons/hicolor/512x512/apps/hermes-agent.png"
+  '';
+
   # Wrap so that desktop (launched via xdg entry, "hermes desktop", menus, etc.)
   # receives the same API_SERVER_KEY (and other hermes env) that the service
   # gets. The .env is written by activation from environment + sops template.
@@ -58,6 +63,7 @@ let
         exec ${originalHermesDesktop}/bin/hermes-desktop "$@"
       '')
       originalHermesDesktop
+      hermesDesktopIcon
     ];
   };
 
