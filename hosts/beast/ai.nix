@@ -1,4 +1,11 @@
 {
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
+{
   # Local AI models
   services = {
     open-webui = {
@@ -33,6 +40,7 @@
     # Vector Search http port 6333, gRPC port 6334
     qdrant = {
       enable = true;
+      package = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.qdrant;
       settings = {
         storage = {
           storage_path = "/var/lib/qdrant/storage";
