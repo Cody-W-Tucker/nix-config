@@ -15,20 +15,6 @@ let
       ./patches/hermes-home-group-access.patch
       ./patches/auth-store-group-access.patch
     ];
-    postPatch = ''
-      old_titlebar_overlay=$(cat <<'EOF'
-      if (!IS_WINDOWS && IS_WSL) {
-      EOF
-      )
-
-      new_titlebar_overlay=$(cat <<'EOF'
-      if (process.platform === 'linux') {
-      EOF
-      )
-
-            substituteInPlace apps/desktop/electron/main.cjs \
-              --replace-fail "$old_titlebar_overlay" "$new_titlebar_overlay"
-    '';
   };
   makeHermesPackage =
     {

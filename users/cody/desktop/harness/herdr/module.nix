@@ -1,35 +1,11 @@
 {
   config,
   lib,
-  inputs,
-  pkgs,
   ...
 }:
 
 let
   cfg = config.programs.herdr;
-  tomlFormat = pkgs.formats.toml { };
-  defaultPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
-  builtInThemes = [
-    "catppuccin"
-    "catppuccin-latte"
-    "terminal"
-    "tokyo-night"
-    "tokyo-night-day"
-    "dracula"
-    "nord"
-    "gruvbox"
-    "gruvbox-light"
-    "one-dark"
-    "one-light"
-    "solarized"
-    "solarized-light"
-    "kanagawa"
-    "kanagawa-lotus"
-    "rose-pine"
-    "rose-pine-dawn"
-    "vesper"
-  ];
   opencodePlugin = ''
     // installed by herdr
     // managed by Nix; update this file with the pinned llm-agents input.
@@ -169,69 +145,6 @@ let
 in
 {
   options.programs.herdr = {
-    enable = lib.mkEnableOption "Herdr terminal multiplexer";
-
-    package = lib.mkOption {
-      type = lib.types.package;
-      default = defaultPackage;
-      description = "The Herdr package to install.";
-    };
-
-    settings = lib.mkOption {
-      inherit (tomlFormat) type;
-      default = { };
-      description = "Settings written to ~/.config/herdr/config.toml.";
-    };
-
-    onboarding = lib.mkOption {
-      type = lib.types.nullOr lib.types.bool;
-      default = null;
-      description = "Whether to show Herdr onboarding on startup.";
-    };
-
-    theme = lib.mkOption {
-      type = lib.types.nullOr (lib.types.enum builtInThemes);
-      default = null;
-      description = "Built-in Herdr theme name.";
-    };
-
-    worktreeDirectory = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      description = "Directory Herdr uses for Git worktree checkouts.";
-    };
-
-    toastDelivery = lib.mkOption {
-      type = lib.types.nullOr (
-        lib.types.enum [
-          "off"
-          "herdr"
-          "terminal"
-          "system"
-        ]
-      );
-      default = null;
-      description = "How Herdr should deliver notifications.";
-    };
-
-    showAgentLabelsOnPaneBorders = lib.mkOption {
-      type = lib.types.nullOr lib.types.bool;
-      default = null;
-      description = "Show detected agent labels on pane borders.";
-    };
-
-    resumeAgentsOnRestore = lib.mkOption {
-      type = lib.types.nullOr lib.types.bool;
-      default = null;
-      description = "Resume supported agent sessions after a Herdr server restart.";
-    };
-
-    enableSound = lib.mkOption {
-      type = lib.types.nullOr lib.types.bool;
-      default = null;
-      description = "Enable Herdr sound notifications.";
-    };
-
     enableOpencodeIntegration = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -240,38 +153,8 @@ in
   };
 
   config = lib.mkIf cfg.enable (
-    lib.mkMerge [
-      {
-        home.packages = [ cfg.package ];
-        xdg.configFile."herdr/config.toml".source = tomlFormat.generate "herdr-config.toml" (
-          lib.recursiveUpdate (
-            lib.optionalAttrs (cfg.onboarding != null) {
-              onboarding = cfg.onboarding;
-            }
-            // lib.optionalAttrs (cfg.theme != null) {
-              theme.name = cfg.theme;
-            }
-            // lib.optionalAttrs (cfg.worktreeDirectory != null) {
-              worktrees.directory = cfg.worktreeDirectory;
-            }
-            // lib.optionalAttrs (cfg.toastDelivery != null) {
-              ui.toast.delivery = cfg.toastDelivery;
-            }
-            // lib.optionalAttrs (cfg.showAgentLabelsOnPaneBorders != null) {
-              ui.show_agent_labels_on_pane_borders = cfg.showAgentLabelsOnPaneBorders;
-            }
-            // lib.optionalAttrs (cfg.resumeAgentsOnRestore != null) {
-              session.resume_agents_on_restore = cfg.resumeAgentsOnRestore;
-            }
-            // lib.optionalAttrs (cfg.enableSound != null) {
-              ui.sound.enabled = cfg.enableSound;
-            }
-          ) cfg.settings
-        );
-      }
-      (lib.mkIf cfg.enableOpencodeIntegration {
-        home.file.".config/opencode/plugins/herdr-agent-state.js".text = opencodePlugin;
-      })
-    ]
+    lib.mkIf cfg.enableOpencodeIntegration {
+      home.file.".config/opencode/plugins/herdr-agent-state.js".text = opencodePlugin;
+    }
   );
 }

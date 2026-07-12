@@ -2,7 +2,7 @@
 
 let
   openWebuiPackage = pkgs.open-webui.overridePythonAttrs (oldAttrs: {
-    dependencies = oldAttrs.dependencies ++ [ pkgs.python313Packages.qdrant-client ];
+    dependencies = oldAttrs.dependencies ++ [ pkgs.python3.pkgs.qdrant-client ];
   });
 in
 

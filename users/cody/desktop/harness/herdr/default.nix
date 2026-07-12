@@ -1,10 +1,13 @@
 {
   config,
+  inputs,
+  pkgs,
   ...
 }:
 
 let
   colors = config.lib.stylix.colors;
+  herdrPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
 in
 
 {
@@ -14,13 +17,16 @@ in
 
   programs.herdr = {
     enable = true;
-    onboarding = false;
-    theme = "terminal";
-    showAgentLabelsOnPaneBorders = true;
-    toastDelivery = "herdr";
-    enableSound = false;
-    resumeAgentsOnRestore = true;
+    package = herdrPackage;
     settings = {
+      onboarding = false;
+      theme.name = "terminal";
+      ui = {
+        toast.delivery = "herdr";
+        show_agent_labels_on_pane_borders = true;
+        sound.enabled = false;
+      };
+      session.resume_agents_on_restore = true;
       theme.custom = {
         # Map Herdr's smaller palette to Stylix's base16 guide.
         panel_bg = "#${colors.base00}";
