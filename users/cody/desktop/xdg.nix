@@ -98,4 +98,22 @@
     xleak # Excel spreadsheet viewer
     doxx # Word document viewer
   ];
+
+  # Restored Home Manager XDG desktop launcher (historical repo style from
+  # makeDesktopItem in prior hermes package/default.nix). Invokes the patched
+  # hermes-desktop (which shares the managed HERMES_HOME with the service).
+  # Visible in app launchers / menus. Icon provided by the patched desktop
+  # package join.
+  xdg.desktopEntries."hermes-agent" = {
+    name = "Hermes Agent";
+    comment = "Desktop app for Hermes Agent";
+    exec = "hermes-desktop";
+    icon = "hermes-agent";
+    terminal = false;
+    categories = [
+      "Development"
+      "Utility"
+    ];
+    startupNotify = true;
+  };
 }

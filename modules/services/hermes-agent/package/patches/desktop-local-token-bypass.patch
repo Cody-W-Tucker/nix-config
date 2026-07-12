@@ -1,0 +1,28 @@
+--- a/apps/desktop/electron/dashboard-token.ts
++++ b/apps/desktop/electron/dashboard-token.ts
+@@ -54,19 +54,11 @@
+ }
+ 
+ async function resolveServedDashboardToken(baseUrl, fallbackToken, options: any = {}) {
+-  const fetchText = options.fetchText || fetchPublicText
+-
+-  const html = await fetchText(dashboardIndexUrl(baseUrl), {
+-    timeoutMs: options.timeoutMs ?? DEFAULT_TOKEN_FETCH_TIMEOUT_MS
+-  })
+-
+-  const servedToken = extractInjectedDashboardToken(html)
+-
+-  if (servedToken && servedToken !== fallbackToken && typeof options.rememberLog === 'function') {
+-    options.rememberLog('[boot] dashboard served a different session token; using served token for WebSocket auth')
+-  }
+-
+-  return servedToken || fallbackToken
++  // Local desktop child backend flow: `hermes serve` (headless) returns 404 for `/`
++  // and never injects window.__HERMES_SESSION_TOKEN__ (per current docs:
++  // desktop is self-contained, uses tui_gateway JSON-RPC/WS only; never needs
++  // web dashboard). Use the desktop-minted spawn token directly; bypass HTML scrape.
++  return fallbackToken
+ }
+ 
+ /**
+  * A served token that differs from our spawn token while our child is DEAD

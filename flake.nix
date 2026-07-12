@@ -82,7 +82,6 @@
     hermes-agent = {
       # Upstream Hermes Agent flake with package and NixOS module.
       url = "github:NousResearch/hermes-agent";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     rlm = {
       # Local Recursive Language Model CLI under active development.

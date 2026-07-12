@@ -10,6 +10,9 @@
   services = {
     open-webui = {
       enable = true;
+      package = pkgs.open-webui.overridePythonAttrs (oldAttrs: {
+        dependencies = oldAttrs.dependencies ++ [ pkgs.python3Packages.qdrant-client ];
+      });
       host = "0.0.0.0";
       port = 8080;
       stateDir = "/var/lib/open-webui";

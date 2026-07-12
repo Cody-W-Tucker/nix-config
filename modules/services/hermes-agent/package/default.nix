@@ -7,122 +7,65 @@
 
 let
   system = pkgs.stdenv.hostPlatform.system;
-  inherit (config.services.hermes-agent) stateDir workingDirectory;
-  hermesPkgSrc = pkgs.applyPatches {
-    name = "hermes-agent-src";
+  # Build with Hermes' own locked nixpkgs. The desktop's Electron ABI and
+  # node-pty headers must come from the same package set as upstream Hermes.
+  hermesPkgs = inputs.hermes-agent.inputs.nixpkgs.legacyPackages.${system};
+
+  # Apply the minimal desktop compatibility patch. The desktop mints and gives
+  # its local headless `hermes serve` child this token, so it must use that
+  # token directly rather than requesting a web-dashboard document. Patch only
+  # the desktop source; the upstream CLI package and NixOS module stay intact.
+  patchedSrc = hermesPkgs.applyPatches {
+    name = "hermes-agent-desktop-patched";
     src = inputs.hermes-agent;
     patches = [
-      ./patches/hermes-home-group-access.patch
-      ./patches/auth-store-group-access.patch
-      ./patches/update-node-v41-headers-hash.patch
+      ./patches/desktop-local-token-bypass.patch
     ];
   };
-  makeHermesPackage =
-    {
-      extraPythonPackages ? [ ],
-      extraDependencyGroups ? [ ],
-    }:
-    let
-      hermesPkg = pkgs.callPackage "${hermesPkgSrc}/nix/hermes-agent.nix" {
-        inherit (inputs.hermes-agent.inputs) uv2nix pyproject-nix pyproject-build-systems;
-        npm-lockfile-fix = inputs.hermes-agent.inputs.npm-lockfile-fix.packages.${system}.default;
-        rev = inputs.hermes-agent.rev or null;
-        inherit extraPythonPackages extraDependencyGroups;
-      };
 
-      # hermesForDesktop: hermesAgent passed to desktop.nix (becomes HERMES_DESKTOP_HERMES).
-      # Desktop resolver step 4 does `verifyHermesCli` which runs `... --version`.
-      # Upstream CLI only supports `hermes version` subcommand for the version string,
-      # so map top-level --version to the subcommand so the probe exits 0.
-      hermesForDesktop = pkgs.writeShellScriptBin "hermes" ''
-        if [ "$1" = "--version" ]; then
-          exec ${pkgs.lib.getExe hermesPkg} version
-        fi
-        exec ${pkgs.lib.getExe hermesPkg} "$@"
-      '';
+  # hermesNpmLib from the *patched* tree so its `src = ../.;` resolves to the
+  # patched tree (the buildNpmPackage will see our edited .ts files).
+  hermesNpmLib = hermesPkgs.callPackage "${patchedSrc}/nix/lib.nix" {
+    npm-lockfile-fix = inputs.hermes-agent.inputs.npm-lockfile-fix.packages.${system}.default;
+    nodejs = hermesPkgs.nodejs_22;
+  };
 
-      hermesDesktopRaw = pkgs.callPackage "${hermesPkgSrc}/nix/desktop.nix" {
-        hermesAgent = hermesForDesktop;
-        hermesNpmLib = hermesPkg.passthru.hermesNpmLib;
-        inherit (pkgs) electron;
-      };
+  # Use upstream's CLI package (preserves isolated hermes nixpkgs + service
+  # module wiring + managed HERMES_HOME). Desktop only needs the exe path.
+  hermesCli = inputs.hermes-agent.packages.${system}.default;
 
-      # Upstream nix/desktop.nix writes placeholder stamp commit="nix" (len<7).
-      # main.cjs:loadInstallStamp requires schemaVersion=1 and commit >=7 chars.
-      # Rewrite with real flake rev so packaged desktop's stamp is accepted
-      # and resolver does not fall through looking for SOURCE_REPO_ROOT.
-      rev = inputs.hermes-agent.rev or "0000000000000000000000000000000000000000";
-      hermesDesktop = pkgs.runCommandLocal "${hermesDesktopRaw.name}-stamped" { } ''
-        cp -r ${hermesDesktopRaw} "$out"
-        chmod -R u+w "$out"
-        printf '{"schemaVersion":1,"commit":"%s","branch":null,"dirty":false,"source":"nix"}\n' \
-          ${pkgs.lib.escapeShellArg rev} \
-          > "$out/share/hermes-desktop/install-stamp.json"
-      '';
+  # Build the upstream desktop derivation from the patched tree.
+  originalHermesDesktop = hermesPkgs.callPackage "${patchedSrc}/nix/desktop.nix" {
+    inherit hermesNpmLib;
+    hermesAgent = hermesCli;
+    electron = hermesPkgs.electron;
+  };
 
-      hermesDesktopEntry = pkgs.makeDesktopItem {
-        name = "hermes-agent";
-        desktopName = "Hermes Agent";
-        comment = "Desktop app for Hermes Agent";
-        exec = "hermes-desktop";
-        icon = "hermes-agent";
-        terminal = false;
-        categories = [
-          "Development"
-          "Utility"
-        ];
-        startupNotify = true;
-      };
-      hermesDesktopIcon = pkgs.runCommandLocal "hermes-agent-desktop-icon" { } ''
-        mkdir -p "$out/share/icons/hicolor/512x512/apps"
-        cp "${hermesPkgSrc}/apps/desktop/assets/icon.png" "$out/share/icons/hicolor/512x512/apps/hermes-agent.png"
-      '';
-    in
-    pkgs.symlinkJoin {
-      inherit (hermesPkg) name;
-      paths = [
-        hermesPkg
-        hermesDesktop
-        hermesDesktopEntry
-        hermesDesktopIcon
-      ];
-      postBuild = ''
-        rm "$out/bin/hermes-desktop"
-        cat > "$out/bin/hermes-desktop" <<EOF
-        #!${pkgs.runtimeShell}
-        export HERMES_HOME=${pkgs.lib.escapeShellArg "${stateDir}/.hermes"}
-        exec "${hermesDesktop}/bin/hermes-desktop" "\$@"
-        EOF
-        chmod +x "$out/bin/hermes-desktop"
+  # Wrap so that desktop (launched via xdg entry, "hermes desktop", menus, etc.)
+  # receives the same API_SERVER_KEY (and other hermes env) that the service
+  # gets. The .env is written by activation from environment + sops template.
+  # This ensures desktop process.env has the key for any internal API calls
+  # (Bearer auth to local API server on 8642), avoiding 401s. Use symlinkJoin
+  # so icons/share from original are preserved while bin/hermes-desktop is
+  # overridden by the launcher.
+  hermesDesktop = pkgs.symlinkJoin {
+    name = "hermes-agent-desktop-wrapped";
+    paths = [
+      (pkgs.writeShellScriptBin "hermes-desktop" ''
+        set -a
+        . "${config.services.hermes-agent.stateDir}/.hermes/.env" 2>/dev/null || { echo "hermes-desktop: failed to source the hermes .env (missing/unreadable or cannot be sourced)" >&2; exit 1; }
+        set +a
+        exec ${originalHermesDesktop}/bin/hermes-desktop "$@"
+      '')
+      originalHermesDesktop
+    ];
+  };
 
-        rm "$out/bin/hermes"
-        cat > "$out/bin/hermes" <<EOF
-        #!${pkgs.runtimeShell}
-        if [ "\$1" = "desktop" ] || [ "\$1" = "gui" ]; then
-          shift
-          exec "$out/bin/hermes-desktop" "\$@"
-        fi
-        if [ "\$1" = "--version" ]; then
-          exec ${pkgs.lib.getExe hermesPkg} version
-        fi
-        exec "${hermesPkg}/bin/hermes" "\$@"
-        EOF
-        chmod +x "$out/bin/hermes"
-      '';
-      passthru = (hermesPkg.passthru or { }) // {
-        inherit hermesDesktop;
-        override =
-          args:
-          makeHermesPackage (
-            {
-              inherit extraPythonPackages extraDependencyGroups;
-            }
-            // args
-          );
-      };
-      inherit (hermesPkg) meta;
-    };
 in
 {
-  config.services.hermes-agent.package = makeHermesPackage { };
+  # The upstream service module exports the managed HERMES_HOME globally, so
+  # both terminal and XDG launches of this wrapped binary share its state.
+  # Do not override services.hermes-agent.package: its CLI and module retain
+  # ownership of the daemon and state lifecycle.
+  config._module.args.hermesDesktop = hermesDesktop;
 }

@@ -22,6 +22,14 @@ in
   ];
 
   config = {
+    environment.systemPackages = [
+      # Patched desktop via local package/ integration (minimal token-flow
+      # compatibility patch applied to upstream derivation). Uses the managed
+      # HERMES_HOME via wrapper. Upstream service module + its CLI package
+      # and global HERMES_HOME export are preserved untouched.
+      config._module.args.hermesDesktop
+    ];
+
     services.hermes-agent = {
       enable = true;
       user = "codyt";
@@ -47,8 +55,6 @@ in
         API_SERVER_ENABLED = "true";
         API_SERVER_HOST = "127.0.0.1";
         API_SERVER_PORT = "8642";
-        API_SERVER_KEY = "local-only";
-        HERMES_DASHBOARD_SESSION_TOKEN = "cody-waybar-local";
         OBSIDIAN_VAULT = obsidianVault;
         VOICE_TOOLS_OPENAI_KEY = "local-only";
       };

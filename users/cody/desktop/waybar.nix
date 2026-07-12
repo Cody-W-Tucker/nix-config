@@ -19,7 +19,8 @@ let
     text = ''
       export HERMES_BASE_URL="http://127.0.0.1:8642"
       export HERMES_SPEECH_BASE_URL="http://127.0.0.1:8081"
-      export HERMES_API_TOKEN="local-only"
+      HERMES_API_TOKEN="$(< ${config.sops.secrets.hermes-api-server-key.path})"
+      export HERMES_API_TOKEN
       export HERMES_TRANSCRIPTION_MODEL="whisper-medium"
       export HERMES_SPEECH_MODEL="kokoro-82m"
       export HERMES_SPEECH_VOICE="af_heart"
@@ -47,6 +48,8 @@ let
   };
 in
 {
+  sops.secrets.hermes-api-server-key = { };
+
   home.packages = [ hermesVoiceRepair ];
 
   programs.waybar = {
