@@ -14,6 +14,7 @@ let
     patches = [
       ./patches/hermes-home-group-access.patch
       ./patches/auth-store-group-access.patch
+      ./patches/update-node-v41-headers-hash.patch
     ];
   };
   makeHermesPackage =
