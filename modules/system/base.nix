@@ -7,6 +7,7 @@
 {
   imports = [
     inputs.sops-nix.nixosModules.sops
+    inputs.nixos-secrets.nixosModules.default
     home-manager-input.nixosModules.home-manager
     ../../packages/system-scripts
     ./locale.nix
@@ -17,7 +18,6 @@
     ./shell.nix
     ./services.nix
     ./networking.nix
-    inputs.nixos-secrets.nixosModules.default
     ../../users/home.nix
   ];
 }

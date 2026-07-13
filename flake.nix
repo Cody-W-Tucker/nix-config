@@ -119,6 +119,13 @@
           };
           modules = [ ./hosts/server.nix ];
         };
+        nas = inputs.nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = specialArgs // {
+            home-manager-input = inputs.home-manager-stable;
+          };
+          modules = [ ./hosts/nas.nix ];
+        };
       };
     };
 }
