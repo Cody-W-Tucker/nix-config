@@ -4,7 +4,7 @@ The `modules/system/` directory contains the shared NixOS configurations applied
 
 ## Overview of System Architecture
 
-The system configuration is designed to be modular, separating concerns like hardware firmware, Nix package manager settings, and background services. By centralizing these in `modules/system/`, the configuration ensures consistency between the `beast` workstation and the `server` host.
+The system configuration is designed to be modular, separating concerns like hardware firmware, Nix package manager settings, and background services. By centralizing these in `modules/system/`, the configuration ensures consistency between the `beast` workstation and the `nas` host.
 
 ---
 
@@ -55,10 +55,10 @@ The following diagram demonstrates how shared modules are aggregated and applied
 ```mermaid
 flowchart LR
     OUT_B["Beast Generation"]
-    OUT_S["Server Generation"]
+    OUT_N["NAS Generation"]
     subgraph subGraph1 ["Host Definitions"]
         H_BEAST["hosts/beast/default.nix"]
-        H_SRV["hosts/server.nix"]
+        H_NAS["hosts/nas.nix"]
     end
     subgraph subGraph0 ["Shared Modules"]
         M_NIX["nix.nix"]
@@ -68,9 +68,9 @@ flowchart LR
     M_NIX --> H_BEAST
     M_SVC --> H_BEAST
     M_BASE --> H_BEAST
-    M_NIX --> H_SRV
-    M_SVC --> H_SRV
-    M_BASE --> H_SRV
+    M_NIX --> H_NAS
+    M_SVC --> H_NAS
+    M_BASE --> H_NAS
     H_BEAST --> OUT_B
-    H_SRV --> OUT_S
+    H_NAS --> OUT_N
 ```

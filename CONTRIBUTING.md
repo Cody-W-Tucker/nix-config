@@ -25,7 +25,7 @@ The goals of this repo are:
 ## Hosts in this repo
 
 - `beast` - desktop workstation
-- `server` - media and homelab server
+- `server` - media and homelab server (decommissioned; replaced by NAS)
 
 ## Core principles
 
@@ -265,7 +265,7 @@ Before merging or switching, run the narrowest useful validation.
 
 ```bash
 sudo nixos-rebuild build --flake .#beast
-sudo nixos-rebuild build --flake .#server
+sudo nixos-rebuild build --flake .#nas
 ```
 
 ### Switch the current host

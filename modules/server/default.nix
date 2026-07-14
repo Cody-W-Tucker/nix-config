@@ -4,7 +4,6 @@
   imports = [
     ./actual-budget.nix
     ./adguard.nix
-    ./arm.nix
     ./content.nix
     ./excalidraw.nix
     ./homepage-dashboard.nix

@@ -3,8 +3,20 @@
     enable = true;
     port = 2283;
     host = "localhost";
-    mediaLocation = "/mnt/media/Photos";
+    mediaLocation = "/mnt/backup/photos";
     group = "media";
+
+    # Expose GPU 0 to Immich ML via narrow NVIDIA device allowlist.
+    # Setting a non-empty accelerationDevices makes PrivateDevices=false
+    # (default [] means PrivateDevices=true, blocking all GPU access).
+    machine-learning.environment = {
+      CUDA_VISIBLE_DEVICES = "0";
+    };
+    accelerationDevices = [
+      "/dev/nvidiactl"
+      "/dev/nvidia0"
+      "/dev/nvidia-uvm"
+    ];
   };
 
   users.users.immich.extraGroups = [

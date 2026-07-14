@@ -10,7 +10,8 @@
 {
   imports = [
     ../modules/system/base.nix
-    # ../modules/server
+    ../modules/desktop/hardware/nvidia.nix
+    ../modules/server
     # VPN for media
     inputs.vpn-confinement.nixosModules.default
   ];
@@ -30,6 +31,9 @@
     initrd.kernelModules = [ ];
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
+    kernelParams = [ "zfs.zfs_arc_max=4294967296" ];
+    supportedFilesystems = [ "zfs" ];
+    zfs.extraPools = [ "backup" ];
   };
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
@@ -57,19 +61,58 @@
         "dmask=0077"
       ];
     };
+    "/mnt/media" = {
+      device = "/dev/disk/by-uuid/27ddc2ef-8f21-401d-b9eb-3ed4541c16c9";
+      fsType = "ext4";
+    };
+    "/mnt/appdata" = {
+      device = "/dev/disk/by-uuid/17888441-14c2-465f-9786-b2eae0220553";
+      fsType = "btrfs";
+      options = [
+        "subvol=@appdata"
+        "compress=zstd"
+        "noatime"
+      ];
+    };
+    "/mnt/tmp" = {
+      device = "/dev/disk/by-uuid/17888441-14c2-465f-9786-b2eae0220553";
+      fsType = "btrfs";
+      options = [
+        "subvol=@tmp"
+        "compress=zstd"
+        "noatime"
+      ];
+    };
   };
 
   swapDevices = [ ];
 
   # Auto configure usb etc, when plugedin
   services.udisks2.enable = true;
+  services.tailscale.enable = true;
+  services.zfs.autoScrub.enable = true;
+
+  # Syncthing GUI
+  networking.firewall.allowedTCPPorts = [ 8384 ];
+
+  # Docker package
+  virtualisation.docker.package = pkgs.docker_29;
 
   # Networking
   networking = {
     hostName = "nas";
+    hostId = "60f0861b";
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
   };
+
+  # NVIDIA GPU (GTX 1650) — shared module provides kernel driver, CUDA, GPU exporter, power mgmt
+  # Headless: no display manager or desktop session, so X11 nvidia driver is installed but idle.
+  # DO NOT force-empty videoDrivers — hardware.nvidia module requires "nvidia" in the list
+  # to activate kernel modules, firmware, and nvidia-smi.
+  # Enable the /run/opengl-driver symlink farm so non-X services (Jellyfin ffmpeg) can find
+  # libcuda.so.1, libnvcuvid.so, etc. without a running display server.
+  hardware.graphics.enable = true;
 
   # Home-manager configuration
   home-manager = {
@@ -77,12 +120,11 @@
       inherit inputs self;
     };
     users.codyt = {
-      home.stateVersion = "23.11";
+      home.stateVersion = "25.11";
       imports = [
         ../users/cody/server.nix
         inputs.nixos-secrets.homeModules.default
       ];
-      home.enableNixpkgsReleaseCheck = false;
     };
   };
 

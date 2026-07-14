@@ -17,7 +17,7 @@
         "map to guest" = "bad user";
       };
       codytHome = {
-        "path" = "/mnt/media/Share";
+        "path" = "/mnt/backup/Share";
         "browseable" = "yes";
         "read only" = "no";
         "guest ok" = "no";
@@ -27,7 +27,7 @@
         "force group" = "users";
       };
       Music = {
-        "path" = "/mnt/media/Media/Music";
+        "path" = "/mnt/media/Music";
         "browseable" = "yes";
         "read only" = "no";
         "guest ok" = "no";

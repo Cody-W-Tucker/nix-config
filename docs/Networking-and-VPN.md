@@ -16,7 +16,7 @@ The system employs `nftables` as the primary firewall backend [modules/system/ne
 
 ### Host-Specific Configuration
 
-Individual hosts manage their own interface logic. For example, the `server` host uses `networkmanager` and enables DHCP by default [hosts/server.nix61-62](../hosts/server.nix#L61-L62)[hosts/server.nix111](../hosts/server.nix#L111-L111) It also exports specific directories via NFS to the local network (e.g., `192.168.1.20`), opening ports `2049` and `111`[hosts/server.nix94-108](../hosts/server.nix#L94-L108)
+Individual hosts manage their own interface logic. For example, the `nas` host uses `networkmanager` and enables DHCP by default [hosts/nas.nix97-98](../hosts/nas.nix#L97-L98).
 
 ---
 
@@ -29,7 +29,7 @@ The repository supports multiple VPN technologies tailored for different use cas
 Tailscale is used for secure, zero-config point-to-point connectivity between hosts.
 
 - **Implementation**: Enabled via `services.tailscale.enable`[modules/desktop/vpn/tailscale.nix5](../modules/desktop/vpn/tailscale.nix#L5-L5)
-- **Usage**: Applied to both the `server`[hosts/server.nix118](../hosts/server.nix#L118-L118) and desktop environments.
+- **Usage**: Applied to both the `nas`[hosts/nas.nix84](../hosts/nas.nix#L84-L84) and desktop environments.
 
 ### Mullvad VPN
 
@@ -46,7 +46,7 @@ The following diagram illustrates how different VPN modules are integrated into 
 ```mermaid
 flowchart LR
     subgraph HostConfigs
-        SERVER["hosts/server.nix"]
+        NAS["hosts/nas.nix"]
         BEAST["hosts/beast/default.nix"]
     end
     subgraph VPNModules
@@ -59,8 +59,8 @@ flowchart LR
         NET["modules/system/networking.nix"]
     end
     BASE --> NET
-    SERVER --> BASE
-    SERVER --> TS
+    NAS --> BASE
+    NAS --> TS
     BEAST --> VPN_DEF
     VPN_DEF --> TS
     VPN_DEF --> MV
@@ -70,7 +70,7 @@ flowchart LR
 
 ## VPN Confinement (Wireguard Namespaces)
 
-A critical feature of the `server` host is the isolation of the `transmission` bittorrent client. This is achieved using the `vpn-confinement` NixOS module, which forces a systemd service to run inside a dedicated Wireguard network namespace.
+A critical feature of the `nas` host is the isolation of the `transmission` bittorrent client. This is achieved using the `vpn-confinement` NixOS module, which forces a systemd service to run inside a dedicated Wireguard network namespace.
 
 ### Namespace Configuration
 
@@ -123,7 +123,7 @@ flowchart LR
 
 ## Nginx Reverse Proxy and SSL
 
-The `server` host acts as a gateway for various services, routing traffic via Nginx and securing it with ACME-provisioned SSL certificates.
+The `nas` host acts as a gateway for various services, routing traffic via Nginx and securing it with ACME-provisioned SSL certificates.
 
 ### ACME and Cloudflare
 

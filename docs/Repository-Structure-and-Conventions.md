@@ -8,7 +8,7 @@ The repository follows a functional decomposition strategy, ensuring that machin
 
 | Directory     | Purpose                                                            | Key Contents                                  |
 | ------------- | ------------------------------------------------------------------ | --------------------------------------------- |
-| `hosts/`      | Machine-specific entry points and hardware facts.                  | `beast/`, `server.nix`                        |
+| `hosts/`      | Machine-specific entry points and hardware facts.                  | `beast/`, `nas.nix`                            |
 | `modules/`    | Reusable NixOS system-level modules and services.                  | `system/`, `services/`, `desktop/`, `server/` |
 | `users/`      | Home Manager configurations.                                       | `cody/core.nix`, `cody/desktop.nix`, `cody/desktop/` |
 | `packages/`   | Custom derivations and system scripts.                             | `system-scripts/`, `kokoro/`, `en-core-web-sm/`      |
@@ -25,7 +25,7 @@ The following diagram illustrates how `flake.nix` wires these directories into a
 flowchart LR
     subgraph subGraph0 ["Code Entity Space"]
         FLAKE["flake.nix"]
-        HOSTS["hosts/ (beast/server)"]
+        HOSTS["hosts/ (beast/nas)"]
         MODS["modules/ (system/services)"]
     USERS["users/ (home-manager roles)"]
         PKGS["packages/ (custom)"]
@@ -79,7 +79,7 @@ The `flake.nix` file categorizes inputs to balance system stability with the nee
 
 ### Input Tiers
 
-- **Stable (`nixpkgs`):** Tracks `nixos-25.11`. Primarily used for the `server` host to ensure uptime and service reliability [flake.nix9-10](../flake.nix#L9-L10)
+- **Stable (`nixpkgs`):** Tracks `nixos-25.11`. Primarily used for the `nas` host to ensure uptime and service reliability [flake.nix9-10](../flake.nix#L9-L10)
 - **Unstable (`nixpkgs-unstable`):** Tracks `nixos-unstable`. Used for the `beast` workstation to provide the latest Hyprland, AI tools, and kernel updates [flake.nix30-31](../flake.nix#L30-L31)
 
 ### Key AI & Agent Inputs

@@ -26,7 +26,7 @@
           {
             name = "loki";
             match = "journal";
-            host = "server";
+            host = "nas";
             port = 3090;
             labels = "job=systemd-journal,host=$hostname,unit=$unit";
             line_format = "json";

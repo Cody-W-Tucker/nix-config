@@ -13,11 +13,11 @@
     guiAddress = "0.0.0.0:8384";
     # Shared Syncthing device definitions
     settings.devices = {
-      "server" = {
-        id = "KBLKS5F-5MMRUM6-M2LZHPW-CQMDXM4-RPHV7WT-V7Y6PQZ-QK3WUC2-MFRB7AC";
-      };
       "beast" = {
         id = "WS3XKRH-JILABRE-NLK2NU6-BGPXTOY-TOO2K75-UYEY7HB-KO7NKAC-I37UGQ3";
+      };
+      "nas" = {
+        id = "STU55DV-U3QK2RL-7UE5IGR-PRHOSQU-4SK4JUW-Y5YJP5R-IQLNAH2-QXAQBQQ";
       };
     };
   };
@@ -31,24 +31,24 @@
 
   # Hostname-specific folder configurations
   services.syncthing.settings.folders = lib.mkMerge [
-    # Server folders
-    (lib.mkIf (config.networking.hostName == "server") {
-      "share" = {
-        path = "/mnt/media/Share";
-        devices = [
-          "server"
-          "beast"
-        ];
-      };
-    })
-
     # Beast folders
     (lib.mkIf (config.networking.hostName == "beast") {
       "share" = {
         path = "/mnt/backup/Share";
         devices = [
           "beast"
-          "server"
+          "nas"
+        ];
+      };
+    })
+
+    # NAS folders
+    (lib.mkIf (config.networking.hostName == "nas") {
+      "Share" = {
+        path = "/mnt/backup/Share";
+        devices = [
+          "nas"
+          "beast"
         ];
       };
     })

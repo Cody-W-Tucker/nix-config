@@ -8,7 +8,7 @@ in
   services.paperless = {
     enable = true;
     inherit port;
-    mediaDir = "/mnt/media/Documents";
+    mediaDir = "/mnt/backup/documents";
     consumptionDirIsPublic = true;
     passwordFile = config.sops.secrets.paperless-password.path;
     settings = {

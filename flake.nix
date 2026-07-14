@@ -5,8 +5,7 @@
       # Provides hardware-specific modules.
       url = "github:NixOS/nixos-hardware/master";
     };
-
-    # Stable packages (mostly for the server).
+    # Stable packages (for the NAS).
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     sops-nix = {
       # Managing secrets.
@@ -111,13 +110,6 @@
         beast = inputs.nixpkgs-unstable.lib.nixosSystem {
           inherit system specialArgs;
           modules = [ ./hosts/beast ];
-        };
-        server = inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = specialArgs // {
-            home-manager-input = inputs.home-manager-stable;
-          };
-          modules = [ ./hosts/server.nix ];
         };
         nas = inputs.nixpkgs.lib.nixosSystem {
           inherit system;

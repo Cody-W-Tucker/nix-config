@@ -75,7 +75,7 @@
             {
               targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
               labels = {
-                host = "server";
+                host = "${config.networking.hostName}";
               };
             }
           ];
@@ -97,7 +97,7 @@
             {
               targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.smartctl.port}" ];
               labels = {
-                host = "server";
+                host = "${config.networking.hostName}";
               };
             }
             {
@@ -117,6 +117,12 @@
                 host = "beast";
               };
             }
+            {
+              targets = [ "nas:9835" ];
+              labels = {
+                host = "nas";
+              };
+            }
           ];
         }
         {
@@ -125,7 +131,7 @@
             {
               targets = [ "127.0.0.1:9115" ];
               labels = {
-                host = "server";
+                host = "${config.networking.hostName}";
               };
             }
           ];
@@ -136,7 +142,7 @@
             {
               targets = [ "127.0.0.1:9117" ];
               labels = {
-                host = "server";
+                host = "${config.networking.hostName}";
               };
             }
           ];
@@ -253,7 +259,7 @@
           processor.local_blocks.filter_server_spans = false;
           registry.external_labels = {
             source = "tempo";
-            host = "server";
+            host = "${config.networking.hostName}";
           };
           storage = {
             path = "/var/lib/tempo/generator/wal";

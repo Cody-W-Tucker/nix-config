@@ -48,15 +48,7 @@
         "nofail"
       ];
     };
-    "/mnt/server-books" = {
-      device = "192.168.1.31:/mnt/media/Media/Books";
-      fsType = "nfs";
-      options = [
-        "x-systemd.automount"
-        "noauto"
-        "nfsvers=4.2"
-      ];
-    };
+
   };
 
   swapDevices = [

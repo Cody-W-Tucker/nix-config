@@ -56,8 +56,14 @@ in
         }
         {
           resources = {
-            label = "HDD";
+            label = "Media";
             disk = "/mnt/media";
+          };
+        }
+        {
+          resources = {
+            label = "Backup";
+            disk = "/mnt/backup";
           };
         }
         {
@@ -218,13 +224,7 @@ in
                 description = "Media Management";
               };
             }
-            {
-              ARM = {
-                href = "https://arm.${domain}";
-                icon = "https://arm.${domain}/static/img/favicon.png";
-                description = "Automatic DVD Ripping Machine";
-              };
-            }
+
           ];
         }
         {
@@ -237,10 +237,10 @@ in
               };
             }
             {
-              ServerSyncthing = {
-                href = "https://server-syncthing.${domain}";
+              NASSyncthing = {
+                href = "https://nas-syncthing.${domain}";
                 icon = "syncthing";
-                description = "File Synchronization - Server";
+                description = "File Synchronization - NAS";
               };
             }
             {

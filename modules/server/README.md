@@ -1,16 +1,16 @@
 # Server modules
 
-This directory owns the implementation notes for the `server` host. The server is the `homehub.tv` service hub: Nginx ingress, ACME certificates, media automation, photos, documents, file sharing, DNS filtering, Syncthing, and observability.
+This directory owns the shared service modules, currently deployed on the `nas` host. The NAS is the `homehub.tv` service hub: Nginx ingress, ACME certificates, media automation, photos, documents, file sharing, DNS filtering, Syncthing, and observability.
 
 ## Operating model
 
-- Host entry point: `hosts/server.nix`
+- Host entry point: `hosts/nas.nix`
 - Module entry point: `modules/server/default.nix`
 - Public interface: Nginx virtual hosts under `homehub.tv`
 - Certificate model: ACME DNS-01 through Cloudflare, with Nginx in the `acme` group
 - Remote access: Tailscale plus HTTPS subdomains
 - Shared service storage: `/mnt/media`
-- Media library root: `/mnt/media/Media`
+- Media library root: `/mnt/media` (flat category directories)
 - Main service group: `media`
 
 The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for service data. The optical drive mount is reserved for the Automatic Ripping Machine workflow.
@@ -62,15 +62,15 @@ Common service mappings:
 
 ### Storage and permissions
 
-The shared media tree lives under `/mnt/media/Media`:
+The shared media tree lives under `/mnt/media` with flat category directories:
 
 | Path | Purpose | Group |
 | --- | --- | --- |
-| `/mnt/media/Media/Books` | E-books and audiobooks | `media` |
-| `/mnt/media/Media/Downloads` | Torrent download staging | `media` |
-| `/mnt/media/Media/Movies` | Movie library | `media` |
-| `/mnt/media/Media/Music` | Music library | `media` |
-| `/mnt/media/Media/TV Shows` | TV library | `media` |
+| `/mnt/media/Books` | E-books and audiobooks | `media` |
+| `/mnt/media/Downloads` | Torrent download staging | `media` |
+| `/mnt/media/Movies` | Movie library | `media` |
+| `/mnt/media/Music` | Music library | `media` |
+| `/mnt/media/TV Shows` | TV library | `media` |
 
 `systemd.tmpfiles` enforces group ownership and setgid permissions so files created by one service remain writable by the rest of the media stack.
 
@@ -78,7 +78,7 @@ The shared media tree lives under `/mnt/media/Media`:
 
 - Jellyfin serves video at `media.homehub.tv` and runs with access to the `media` group.
 - Hardware transcoding uses the Intel iGPU; keep the Jellyfin user in `render` and `video` when changing acceleration settings.
-- Navidrome serves `/mnt/media/Media/Music` at `music.homehub.tv`.
+- Navidrome serves `/mnt/media/Music` at `music.homehub.tv`.
 - Calibre-Web provides the reader/Kobo-facing web layer, backed by Calibre Server and the books directory.
 
 ### Automation
@@ -125,7 +125,7 @@ Paperless consume behavior is tuned for operator convenience:
 | Share | Path | Purpose |
 | --- | --- | --- |
 | `codytHome` | `/mnt/media/Share` | General personal storage |
-| `Music` | `/mnt/media/Media/Music` | Music library management |
+| `Music` | `/mnt/media/Music` | Music library management |
 | `PaperlessConsume` | `/var/lib/paperless/consume` | Document OCR drop zone |
 
 ### Backups
@@ -202,4 +202,4 @@ When adding or changing a server service:
 3. Add the Nginx vhost in the service module unless it is a cross-host proxy owned by `default.nix`.
 4. Keep secrets in SOPS and quote dashed secret names.
 5. Add dashboard and monitoring entries only if they help operate the service.
-6. For risky service or networking changes, dry-run the server build with `nixos-rebuild dry-run --flake .#server`.
+6. For risky service or networking changes, dry-run the NAS build with `nixos-rebuild dry-run --flake .#nas`.

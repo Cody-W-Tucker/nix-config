@@ -6,21 +6,34 @@
 }:
 {
   # Folder structure
-  systemd.tmpfiles.rules = [
-    # Base directory must be owned by root to avoid unsafe path transitions
-    # when subdirectories are owned by different users
-    "d /mnt/media 0755 root root - -"
-    # Set main media directory
-    "d /mnt/media/Media 2775 root media - -"
-    # Set subdirectories with setgid for group inheritance
-    "d /mnt/media/Media/Books 2775 root media - -"
-    "d /mnt/media/Media/Channels 2775 root media - -"
-    "d /mnt/media/Media/Downloads 2775 root media - -"
-    "d /mnt/media/Media/Movies 2775 root media - -"
-    "d /mnt/media/Media/Music 2775 root media - -"
-    "d /mnt/media/Media/TV\x20Shows 2775 root media - -"
-    # Syncthing share directory
-    "d /mnt/media/Share 2775 root media - -"
+  systemd = {
+    tmpfiles.rules = [
+      # Base directory must be owned by root to avoid unsafe path transitions
+      # when subdirectories are owned by different users
+      "d /mnt/media 0755 root root - -"
+      # Flat media category directories with setgid for group inheritance
+      "d /mnt/media/AudioBookShelf 2775 root media - -"
+      "d /mnt/media/Books 2775 root media - -"
+      "d /mnt/media/Channels 2775 root media - -"
+      "d /mnt/media/Downloads 2775 root media - -"
+      "d /mnt/media/Downloads/incomplete 2775 root media - -"
+      "d /mnt/media/Movies 2775 root media - -"
+      "d /mnt/media/Music 2775 root media - -"
+      "d /mnt/media/TV\\x20Shows 2775 root media - -"
+    ];
+    services.transmission.vpnConfinement = {
+      # Add systemd service to VPN network namespace
+      enable = true;
+      vpnNamespace = "wg";
+    };
+    # Jellyfin runs as a systemd service, not a login shell, so environment.sessionVariables
+    # from the nvidia module don't apply. Tell ffmpeg to use the nvidia VA-API backend.
+    services.jellyfin.environment.LIBVA_DRIVER_NAME = "nvidia";
+  };
+
+  users.users.jellyfin.extraGroups = [
+    "render"
+    "video"
   ];
 
   # Open Port for kobo sync
@@ -37,7 +50,7 @@
       enable = true;
       group = "media";
       settings = {
-        MusicFolder = "/mnt/media/Media/Music";
+        MusicFolder = "/mnt/media/Music";
       };
     };
 
@@ -46,17 +59,17 @@
       enable = true;
       group = "media";
       listen.port = 8083;
-      options.calibreLibrary = "/mnt/media/Media/Books";
+      options.calibreLibrary = "/mnt/media/Books";
       package = pkgs.calibre-web.overridePythonAttrs (oldAttrs: {
         dependencies = oldAttrs.dependencies ++ oldAttrs.optional-dependencies.kobo;
       });
     };
 
-    # Using for server for readarr
+    # Calibre content server for Readarr metadata lookups
     calibre-server = {
       enable = true;
       group = "media";
-      libraries = [ "/mnt/media/Media/Books" ];
+      libraries = [ "/mnt/media/Books" ];
       port = 7007;
       openFirewall = true;
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
@@ -103,8 +116,8 @@
       openRPCPort = true; # Allows Sonarr/Radarr to connect
       openPeerPorts = false; # Does not open peer ports on the firewall
       settings = {
-        download-dir = "/mnt/media/Media/Downloads"; # Adjust as needed
-        incomplete-dir = "/mnt/media/Media/Downloads/incomplete";
+        download-dir = "/mnt/media/Downloads";
+        incomplete-dir = "/mnt/media/Downloads/incomplete";
         incomplete-dir-enabled = true;
         umask = 2; # Group write permissions (so Sonarr/Radarr can move files)
         dht-enabled = true;
@@ -175,17 +188,6 @@
       }
     ];
   };
-
-  # Add systemd service to VPN network namespace
-  systemd.services.transmission.vpnConfinement = {
-    enable = true;
-    vpnNamespace = "wg";
-  };
-
-  users.users.jellyfin.extraGroups = [
-    "render"
-    "video"
-  ];
 
   # NGINX
   services.nginx = {
@@ -295,41 +297,5 @@
         kTLS = true;
       };
     };
-  };
-
-  # Backup media to workstation hard drive
-  # services.borgbackup.jobs.media = {
-  #   user = "codyt";
-  #   paths = "/mnt/media/Media";
-  #   encryption.mode = "none";
-  #   environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
-  #   repo = "codyt@192.168.1.238:/mnt/backup/Media";
-  #   compression = "lz4";
-  #   startAt = "daily";
-  #   exclude = [
-  #     "/mnt/media/Media/Downloads"
-  #     "*.nfo"
-  #     "*.jpg"
-  #     "*.png"
-  #     "*.svg"
-  #   ];
-  # };
-
-  # 1. enable vaapi on OS-level
-  nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-  };
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "iHD";
-  };
-
-  hardware.graphics = {
-    enable = true;
-
-    extraPackages = with pkgs; [
-      intel-ocl # Generic OpenCL support
-      # For Broadwell and newer (ca. 2014+), use with LIBVA_DRIVER_NAME=iHD:
-      intel-media-driver
-    ];
   };
 }
