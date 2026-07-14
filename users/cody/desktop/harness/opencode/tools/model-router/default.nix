@@ -27,9 +27,9 @@ let
           .activePreset = "openai"
           | .presets.openai.fast.model = "opencode-go/deepseek-v4-flash"
           | .presets.openai.fast.description = "Deepseek v4 flash for fast exploration and simple tasks"
-          | .presets.coding.medium.model = "opencode-go/deepseek-v4-pro"
-          | .presets.coding.medium.variant = "high"
-          | .presets.coding.medium.description = "DeepSeek V4 Pro (high) — implementation, refactors, and standard coding work"
+          | .presets.openai.medium.model = "opencode-go/deepseek-v4-pro"
+          | .presets.openai.medium.variant = null
+          | .presets.openai.medium.description = "DeepSeek V4 Pro — implementation, refactors, and standard coding work"
           | .presets.openai.heavy.model = "openai/gpt-5.6-terra"
           | .presets.openai.heavy.variant = "high"
           | .presets.openai.heavy.description = "GPT-5.6 Terra for architecture and complex tasks"
