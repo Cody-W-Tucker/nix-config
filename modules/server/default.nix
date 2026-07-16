@@ -10,6 +10,7 @@
     ./karakeep.nix
     ./media.nix
     ./monitoring.nix
+    ./nfs.nix
     ./paperless.nix
     ./photos.nix
     ./samba.nix

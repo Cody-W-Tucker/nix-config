@@ -1,4 +1,8 @@
+{ config, pkgs, ... }:
+
 {
+  environment.systemPackages = [ pkgs.nfs-utils ];
+
   # System fileSystems
   fileSystems = {
     # Actual drives
@@ -46,6 +50,28 @@
       options = [
         "bind"
         "nofail"
+      ];
+    };
+
+    # NFS mounts from NAS (192.168.1.108)
+    "/home/codyt/Projects" = {
+      device = "192.168.1.108:/mnt/projects";
+      fsType = "nfs";
+      options = [
+        "noatime"
+        "nofail"
+        "x-systemd.automount"
+        "x-systemd.requires=network-online.target"
+      ];
+    };
+    "/home/codyt/Knowledge" = {
+      device = "192.168.1.108:/mnt/knowledge";
+      fsType = "nfs";
+      options = [
+        "noatime"
+        "nofail"
+        "x-systemd.automount"
+        "x-systemd.requires=network-online.target"
       ];
     };
 

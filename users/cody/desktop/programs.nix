@@ -12,10 +12,9 @@ in
   programs = {
     "crm-cli" = {
       enable = true;
-      autoMount = true; # Mount the crm to a virtual filesystem to view leads, contacts, etc. on "disk."
+      autoMount = false; # Mount the crm to a virtual filesystem to view leads, contacts, etc. on "disk."
       settings = {
         database.path = crmDatabasePath;
-        mount.default_path = "${config.home.homeDirectory}/Knowledge/CRM";
       };
     };
     chromium = {
