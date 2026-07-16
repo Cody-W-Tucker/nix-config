@@ -129,6 +129,7 @@
   services.udisks2.enable = true;
   services.tailscale.enable = true;
   services.zfs.autoScrub.enable = true;
+  services.wake-beast.enable = true;
 
   # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
   networking.firewall.allowedTCPPorts = [ 8384 ];

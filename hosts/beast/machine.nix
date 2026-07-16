@@ -75,6 +75,10 @@ in
       "wifi.powersave" = 2;
     };
     useDHCP = lib.mkDefault true; # Enables DHCP on each ethernet and wireless interface.
+    interfaces.eno1.wakeOnLan = {
+      enable = true;
+      policy = [ "magic" ];
+    };
   };
 
   # System Docker is required for the Actual Budget MCP wrapper.

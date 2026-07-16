@@ -17,6 +17,7 @@
     ./security.nix
     ../services/syncthing.nix
     ./nginx-syncthing.nix
+    ./wake-beast.nix
   ];
 
   # Create the acme secret in sops

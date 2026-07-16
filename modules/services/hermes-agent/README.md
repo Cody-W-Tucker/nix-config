@@ -9,7 +9,7 @@ Hermes is the local AI agent service for CodyOS. This directory owns the impleme
 | `default.nix` | Main service integration and high-level `services.hermes-agent` settings. |
 | `package/default.nix` | Upstream package build, local patches, and CLI/desktop wrappers. |
 | `runtime/default.nix` | `hermes-agent` systemd service, environment, restart triggers, and runtime paths. |
-| `runtime/cron-tick.nix` | Scheduled `hermes-agent cron tick` service and timer. |
+
 | `secrets/default.nix` | SOPS secret ownership and the aggregated `hermes-env` template. |
 | `mcp/default.nix` | Secret-wrapped MCP server commands, currently including Karakeep. |
 | `documents/default.nix` | SOUL, human profiles, memory spec, and task spec provisioning. |
@@ -28,7 +28,6 @@ The Nix module turns declarative service settings into a running `hermes-agent` 
 - `UMask = "0007"` keeps service-created state group-accessible.
 - Shutdown has an extended grace period so the agent can persist state cleanly.
 
-The scheduled companion service, `hermes-agent-cron-tick`, runs `hermes-agent cron tick` twice daily and is allowed to wake the system.
 
 ## Package and wrappers
 

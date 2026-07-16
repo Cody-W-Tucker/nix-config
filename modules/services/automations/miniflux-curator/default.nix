@@ -120,6 +120,8 @@ in
         export KARAKEEP_API_KEY=$(cat ${cfg.karakeepApiKeyFile})
         miniflux-curator
       '';
+      requires = [ "wake-beast.service" ];
+      after = [ "wake-beast.service" ];
       startAt = cfg.schedule;
     };
 

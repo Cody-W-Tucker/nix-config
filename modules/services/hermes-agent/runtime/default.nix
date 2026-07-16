@@ -15,10 +15,6 @@ let
 in
 
 {
-  imports = [
-    ./cron-tick.nix
-  ];
-
   config = {
     systemd.services.hermes-agent = {
       restartTriggers = [

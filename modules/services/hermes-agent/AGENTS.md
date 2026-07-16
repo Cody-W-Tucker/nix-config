@@ -27,7 +27,6 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 - `package/patches/`: patched upstream Python behavior when Nix options cannot reach it
 - `runtime/default.nix`: main Hermes service runtime wiring
 - `runtime/filesystem-access.nix`: writable roots, ACLs, state repair
-- `runtime/cron-tick.nix`: scheduled Hermes execution
 - `mcp/default.nix`: MCP server wiring and MCP-specific secret-backed wrappers
 - `secrets/default.nix`: Hermes-owned SOPS secrets and `hermes-env`
 - `documents/default.nix`: workspace docs plus SOUL installation/restart trigger
