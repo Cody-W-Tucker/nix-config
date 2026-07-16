@@ -92,8 +92,8 @@
   services.tailscale.enable = true;
   services.zfs.autoScrub.enable = true;
 
-  # Syncthing GUI
-  networking.firewall.allowedTCPPorts = [ 8384 ];
+  # Syncthing GUI — bind localhost only; reverse proxy handles external access
+  services.syncthing.guiAddress = "127.0.0.1:8384";
 
   # Docker package
   virtualisation.docker.package = pkgs.docker_29;

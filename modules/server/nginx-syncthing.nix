@@ -1,7 +1,7 @@
 {
   services.nginx = {
     upstreams = {
-      server_syncthing = {
+      nas_syncthing = {
         servers = {
           "127.0.0.1:8384" = { };
         };
@@ -15,19 +15,19 @@
   };
 
   services.nginx.virtualHosts = {
-    "server-syncthing.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://server_syncthing/";
-      };
-      kTLS = true;
-    };
     "beast-syncthing.homehub.tv" = {
       forceSSL = true;
       useACMEHost = "homehub.tv";
       locations."/" = {
         proxyPass = "http://beast_syncthing/";
+      };
+      kTLS = true;
+    };
+    "nas-syncthing.homehub.tv" = {
+      forceSSL = true;
+      useACMEHost = "homehub.tv";
+      locations."/" = {
+        proxyPass = "http://nas_syncthing/";
       };
       kTLS = true;
     };

@@ -51,7 +51,7 @@ Common service mappings:
 | Immich | `photos.homehub.tv` | `2283` | `photos.nix` |
 | Grafana | `monitoring.homehub.tv` | `3001` | `monitoring.nix` |
 | Tika | `tika.homehub.tv` | `9998` | `default.nix` |
-| Syncthing UI | `server-syncthing.homehub.tv` | `8384` | `nginx-syncthing.nix` |
+| Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `nginx-syncthing.nix` |
 | Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `nginx-syncthing.nix` |
 
 `default.nix` also proxies selected `homehub.tv` subdomains to the `beast` workstation, including Open-WebUI and Qdrant. Keep that cross-host routing in the ingress layer, not inside unrelated service modules.
@@ -143,14 +143,14 @@ The server also owns core local-network utilities:
 - `nginx-syncthing.nix` exposes Syncthing UIs through Nginx.
 - Shared Syncthing service configuration may live under `modules/services/`; only server-specific proxying belongs here.
 
-Syncthing is a two-host mesh between `server` and `beast`. The shared service module owns device and folder declarations; this directory owns the server-side reverse proxies.
+Syncthing is a two-host mesh between `nas` and `beast`. The shared service module owns device and folder declarations; this directory owns the server-side reverse proxies.
 
 | UI | Target | Notes |
 | --- | --- | --- |
-| `server-syncthing.homehub.tv` | `127.0.0.1:8384` | Local server Syncthing GUI |
+| `nas-syncthing.homehub.tv` | `127.0.0.1:8384` | Local NAS Syncthing GUI |
 | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | Beast Syncthing GUI over Tailscale |
 
-The shared folder paths are host-specific: server uses `/mnt/media/Share`; beast uses `/mnt/backup/Share`.
+The shared folder paths are host-specific: NAS uses `/mnt/media/Share`; beast uses `/mnt/backup/Share`.
 
 Keep DNS and sync changes small and explicit. These services affect the rest of the LAN.
 

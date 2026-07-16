@@ -10,7 +10,7 @@
     openDefaultPorts = true;
     overrideDevices = true;
     overrideFolders = true;
-    guiAddress = "0.0.0.0:8384";
+    guiAddress = lib.mkDefault "0.0.0.0:8384";
     # Shared Syncthing device definitions
     settings.devices = {
       "beast" = {
