@@ -14,7 +14,6 @@ The speech pipeline is built on three primary server-side components and two cli
 | ------------------------ | ---------------- | ----------------------------- | -------------------------- |
 | **Transcription Server** | `faster-whisper` | STT using Whisper models      | `/v1/audio/transcriptions` |
 | **Kokoro TTS**           | `kokoro-82m`     | High-quality, fast TTS        | `/v1/audio/speech`         |
-| **Transformers TTS**     | `speecht5_tts`   | Fallback/Alternative TTS      | `/v1/audio/speech`         |
 | **llama-dictate**        | Shell Script     | Hold-to-talk global dictation | N/A (Client)               |
 | **hermes-waybar-voice**  | Python Script    | VAD-based voice assistant     | N/A (Client)               |
 
@@ -42,10 +41,6 @@ The system uses Kokoro-82M for high-performance speech synthesis. The server inc
 
 - **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `nova`) to Kokoro-specific assets like `af_heart`[modules/services/llama-swap/kokoro-openai-server.py17-26](../modules/services/llama-swap/kokoro-openai-server.py#L17-L26)
 - **Offline Mode**: When `voices-dir` and `model-path` are provided via Nix, the server operates in a fully offline mode [modules/services/llama-swap/kokoro-openai-server.py167-182](../modules/services/llama-swap/kokoro-openai-server.py#L167-L182)
-
-### Transformers TTS Server
-
-A secondary TTS server using Microsoft's `speecht5_tts` is available as a fallback. It utilizes the `Matthijs/cmu-arctic-xvectors` dataset for speaker embeddings [modules/services/llama-swap/transformers-tts-openai-server.py45-58](../modules/services/llama-swap/transformers-tts-openai-server.py#L45-L58)
 
 ## Hermes Voice Assistant
 

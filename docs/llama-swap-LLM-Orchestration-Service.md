@@ -52,10 +52,6 @@ The `kokoro-openai-server.py` script provides an OpenAI-compatible `/v1/audio/sp
 - **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `echo`) to Kokoro-specific voices [modules/services/llama-swap/kokoro-openai-server.py17-26](../modules/services/llama-swap/kokoro-openai-server.py#L17-L26)
 - **Offline Support**: Patches `huggingface_hub` to serve model weights and voices from local Nix store paths rather than downloading them at runtime [modules/services/llama-swap/kokoro-openai-server.py38-62](../modules/services/llama-swap/kokoro-openai-server.py#L38-L62)
 
-### Llama-TTS Wrapper
-
-The `llama-tts-openai-server.py` script wraps the `llama-tts` binary, providing a similar API interface but utilizing the `llama.cpp` ecosystem for synthesis [modules/services/llama-swap/llama-tts-openai-server.py14-22](../modules/services/llama-swap/llama-tts-openai-server.py#L14-L22)
-
 ## Integration and Usage
 
 Services within the NixOS configuration consume `llama-swap` by pointing their API base URLs to the service port (typically `8081`).
@@ -92,7 +88,6 @@ classDiagram
     class TTSServers {
         <<Python Scripts>>
         kokoro-openai-server.py
-        llama-tts-openai-server.py
     }
     class Backends {
         <<Packages>>

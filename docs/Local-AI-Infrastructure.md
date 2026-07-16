@@ -55,7 +55,7 @@ For details, see [llama-swap: LLM Orchestration Service](/Cody-W-Tucker/nix-conf
 The system provides a low-latency voice pipeline for desktop interaction, primarily consumed by the `hermes-waybar-voice` assistant and the `llama-dictate` script.
 
 - **STT Pipeline:** Uses `faster-whisper` wrapped in an OpenAI-compatible FastAPI server [modules/services/llama-swap/faster-whisper-openai-server.py34-139](../modules/services/llama-swap/faster-whisper-openai-server.py#L34-L139) It supports VAD (Voice Activity Detection) filtering to improve transcription accuracy [modules/services/llama-swap/faster-whisper-openai-server.py30](../modules/services/llama-swap/faster-whisper-openai-server.py#L30-L30)
-- **TTS Pipeline:** Multiple providers are supported, including a `kokoro` server and a `transformers-tts` server (SpeechT5) [modules/services/llama-swap/transformers-tts-openai-server.py95-160](../modules/services/llama-swap/transformers-tts-openai-server.py#L95-L160)
+- **TTS Pipeline:** Supports Kokoro-82M for high-quality speech synthesis via an OpenAI-compatible API [modules/services/llama-swap/kokoro-openai-server.py38-105](../modules/services/llama-swap/kokoro-openai-server.py#L38-L105)
 - **Integration:** These services are configured as the primary STT/TTS providers for the `hermes-agent`[modules/services/hermes-agent/default.nix96-113](../modules/services/hermes-agent/default.nix#L96-L113)
 
 For details, see [Speech-to-Text and Text-to-Speech Services](/Cody-W-Tucker/nix-config/5.2-speech-to-text-and-text-to-speech-services).
@@ -83,7 +83,7 @@ The following table maps conceptual infrastructure components to their implement
 | **Model Catalog**  | [modules/services/llama-swap/models.nix](../modules/services/llama-swap/models.nix)                                               | Attribute set of model configs                                                                       |
 | **Orchestrator**   | [modules/services/llama-swap/default.nix](../modules/services/llama-swap/default.nix)                                             | `mkModelCommand`[128-162](../128-162)         |
 | **Whisper Server** | [modules/services/llama-swap/faster-whisper-openai-server.py](../modules/services/llama-swap/faster-whisper-openai-server.py)     | `transcriptions` endpoint [98-134](../98-134) |
-| **TTS Server**     | [modules/services/llama-swap/transformers-tts-openai-server.py](../modules/services/llama-swap/transformers-tts-openai-server.py) | `speech` endpoint [140-158](../140-158)       |
+| **Kokoro TTS**     | [modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py) | `speech` endpoint, voice mapping [17-26](../17-26)       |
 | **NVIDIA Config**  | [modules/desktop/hardware/nvidia.nix](../modules/desktop/hardware/nvidia.nix)                                                     | `hardware.nvidia.open`[15-15](../15-15)       |
 
 ### Service Consumption Diagram
