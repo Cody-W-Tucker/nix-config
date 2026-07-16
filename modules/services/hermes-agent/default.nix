@@ -72,8 +72,34 @@ in
           provider = "xai-oauth";
         };
         fallback_model = {
-          model = "kimi-k2.6";
           provider = "opencode-go";
+          model = "deepseek-v4-pro";
+        };
+        auxiliary = {
+          approval = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          compression = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          web_extract = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
+          curator = {
+            provider = "opencode-go";
+            model = "deepseek-v4-pro";
+            extra_body = {
+              thinking.type = "enabled";
+              reasoning_effort = "medium";
+            };
+          };
+          title_generation = {
+            provider = "opencode-go";
+            model = "deepseek-v4-flash";
+          };
         };
         display.platforms = {
           discord = {
