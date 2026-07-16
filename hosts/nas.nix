@@ -87,13 +87,51 @@
 
   swapDevices = [ ];
 
+  # ── User bind mounts (after ZFS datasets) ────────────────────
+  # Make NAS-local ZFS datasets available under codyt's home directory.
+  # Ordering ensures the ZFS oneshot services create the source mountpoints first.
+
+  fileSystems."/home/codyt/Projects" = {
+    device = "/mnt/projects";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  fileSystems."/home/codyt/Knowledge" = {
+    device = "/mnt/knowledge";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  # Bind mounts must wait for the ZFS dataset services to create their source paths.
+  systemd.mounts = [
+    {
+      what = "/mnt/projects";
+      where = "/home/codyt/Projects";
+      type = "none";
+      options = "bind";
+      wantedBy = [ "local-fs.target" ];
+      after = [ "zfs-create-backup-projects.service" ];
+      requires = [ "zfs-create-backup-projects.service" ];
+    }
+    {
+      what = "/mnt/knowledge";
+      where = "/home/codyt/Knowledge";
+      type = "none";
+      options = "bind";
+      wantedBy = [ "local-fs.target" ];
+      after = [ "zfs-create-backup-knowledge.service" ];
+      requires = [ "zfs-create-backup-knowledge.service" ];
+    }
+  ];
+
   # Auto configure usb etc, when plugedin
   services.udisks2.enable = true;
   services.tailscale.enable = true;
   services.zfs.autoScrub.enable = true;
 
-  # Syncthing GUI — bind localhost only; reverse proxy handles external access
-  services.syncthing.guiAddress = "127.0.0.1:8384";
+  # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
+  networking.firewall.allowedTCPPorts = [ 8384 ];
 
   # Docker package
   virtualisation.docker.package = pkgs.docker_29;

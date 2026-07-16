@@ -33,11 +33,25 @@
   services.syncthing.settings.folders = lib.mkMerge [
     # Beast folders
     (lib.mkIf (config.networking.hostName == "beast") {
-      "share" = {
+      "Share" = {
         path = "/mnt/backup/Share";
         devices = [
           "beast"
           "nas"
+        ];
+        ignorePatterns = [
+          "node_modules"
+          "npm"
+          "pnpm"
+          ".pnpm-store"
+          ".git"
+          ".venv/"
+          ".bundle/"
+          ".next/"
+          "tmp/"
+          "__pycache__/"
+          ".turbo/"
+          ".trash/"
         ];
       };
     })
@@ -49,6 +63,20 @@
         devices = [
           "nas"
           "beast"
+        ];
+        ignorePatterns = [
+          "node_modules"
+          "npm"
+          "pnpm"
+          ".pnpm-store"
+          ".git"
+          ".venv/"
+          ".bundle/"
+          ".next/"
+          "tmp/"
+          "__pycache__/"
+          ".turbo/"
+          ".trash/"
         ];
       };
     })
