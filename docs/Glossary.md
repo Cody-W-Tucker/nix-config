@@ -7,7 +7,7 @@ This page provides definitions for codebase-specific terms, jargon, and domain c
 | Term        | Definition                                                                      | Implementation Pointer                                                                                                                          |
 | ----------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Beast**   | The high-performance desktop workstation host (Intel i9-14900KF / NVIDIA 3070). | [flake.nix117-120](../flake.nix#L117-L120)                                               |
-| **NAS**     | The home lab / NAS host (Intel Kaby Lake, NVIDIA GTX 1650) providing centralized services. | [flake.nix115-121](../flake.nix#L115-L121)                                              |
+| **NAS**     | The home lab / NAS host (Intel i5-14400F, NVIDIA GTX 1650) providing centralized services. | [flake.nix115-121](../flake.nix#L115-L121)                                              |
 | **HomeHub** | The primary domain (`homehub.tv`) used for internal web services.               | [modules/server/homepage-dashboard.nix2](../modules/server/homepage-dashboard.nix#L2-L2) |
 | **Stylix**  | The system-wide theming engine used to unify colors across CLI and GUI.         | [flake.nix42-46](../flake.nix#L42-L46)                                                   |
 | **SOPS**    | Secrets Operations; used for encrypted secret management within the flake.      | [flake.nix11-15](../flake.nix#L11-L15)                                                   |

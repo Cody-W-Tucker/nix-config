@@ -16,7 +16,7 @@ The following diagram illustrates how the logical host roles map to specific Nix
 flowchart LR
     subgraph subGraph2 ["Hardware Profiles"]
         INTEL_14["Intel i9-14900KF"]
-        INTEL_7["Intel i7-7000"]
+        INTEL_5["Intel i5-14400F"]
         NV_3070["NVIDIA 3070"]
         GTX_1650["NVIDIA GTX 1650"]
     end
@@ -31,7 +31,7 @@ flowchart LR
     CONF --> NAS_ENTRY
     BEAST_ENTRY --> INTEL_14
     BEAST_ENTRY --> NV_3070
-    NAS_ENTRY --> INTEL_7
+    NAS_ENTRY --> INTEL_5
     NAS_ENTRY --> GTX_1650
 ```
 
@@ -57,7 +57,7 @@ For detailed hardware tuning and AI service configuration, see [Beast: Desktop W
 
 The `nas` host acts as the central hub for the `homehub.tv` infrastructure. It prioritizes stability by using the `nixos-25.11` stable channel [flake.nix9-10](../flake.nix#L9-L10)
 
-- **Hardware:** Built on an Intel Kaby Lake i7-7000 with 64GB RAM and an NVIDIA GTX 1650 GPU for media transcoding [hosts/nas.nix10-11](../hosts/nas.nix#L10-L11)
+- **Hardware:** Built on an Intel i5-14400F (Raptor Lake) with 64GB DDR5-6000 RAM and an NVIDIA GTX 1650 GPU for media transcoding [hosts/nas.nix10-11](../hosts/nas.nix#L10-L11)
 - **Composition Root:** `hosts/nas.nix` directly imports `../modules/system/base.nix` and `../modules/server`, then attaches the server-specific Home Manager profile from `../users/cody/server.nix` [hosts/nas.nix11-17](../hosts/nas.nix#L11-L17)
 - **Service Hub:** Manages the Nginx reverse proxy architecture, handling SSL via ACME/Cloudflare for all internal services [modules/server/media.nix191-247](../modules/server/media.nix#L191-L247)
 - **Media & Storage:** Orchestrates the "Arr" suite (Sonarr, Radarr, etc.) and Jellyfin, with a dedicated `vpn-confinement` layer for Transmission to ensure all torrent traffic is routed through a Wireguard namespace [modules/server/media.nix30-183](../modules/server/media.nix#L30-L183)

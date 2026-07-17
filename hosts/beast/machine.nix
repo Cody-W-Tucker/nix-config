@@ -7,7 +7,7 @@
   ...
 }:
 
-# Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | RAM: 64GB | Storage: 2TB & 2 1TB Drives NVMe SSD
+# Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | Storage: 2TB & 2 1TB Drives NVMe SSD
 
 let
   hardwareConfig = {

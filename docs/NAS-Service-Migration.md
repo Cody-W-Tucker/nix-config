@@ -8,7 +8,7 @@ Once validated and production traffic is cut over, server is decommissioned — 
 - Boot: Btrfs on 1 TB NVMe (`0e0786ed-3740-4a19-83af-cf356e55393b`), subvolumes `@`, `@home`, `@nix`
 - Imports: `modules/system/base.nix`, `vpn-confinement` (via input); `modules/server` is **commented out**
 - CPU: Intel — `boot.kernelModules = ["kvm-intel"]`, `hardware.cpu.intel.updateMicrocode` already present (verify match with `cat /proc/cpuinfo | grep vendor`)
-- GPU: GTX 1650 (`10de:1f82`), currently `nouveau`; 16 GB RAM
+- GPU: GTX 1650 (`10de:1f82`), NVIDIA proprietary driver 580.142 / CUDA 13.0; 64 GB DDR5-6000 RAM
 - No NFS, Tailscale, or Docker configured
 
 ## Source (`server`) — Key Config

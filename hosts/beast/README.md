@@ -22,7 +22,7 @@ Shared modules used heavily by this host include `modules/desktop/hardware/nvidi
 | --- | --- |
 | CPU | Intel Core i9-14900KF, 24 cores / 32 threads. |
 | GPU | NVIDIA RTX 3070, 8GB VRAM. |
-| RAM | 64GB DDR5. |
+| RAM | 16GB DDR5-6000 |
  | Storage | 2TB NVMe root. |
 | Kernel | Latest Linux kernel via `pkgs.linuxPackages_latest`. |
 
