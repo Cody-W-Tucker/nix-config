@@ -45,7 +45,9 @@ in
           sleep ${toString retryDelay}
         done
 
-        echo "ERROR: Beast readiness check timed out after ${toString (maxRetries * retryDelay)} seconds" >&2
+        echo "ERROR: Beast readiness check timed out after ${
+          toString (maxRetries * retryDelay)
+        } seconds" >&2
         exit 1
       '';
     };

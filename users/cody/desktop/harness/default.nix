@@ -28,8 +28,8 @@ in
   programs.rlm = {
     enable = true;
     apiKeyFile = config.sops.secrets."opencode-api-key".path;
-    model = "gpt-5.5";
-    subModel = "kimi-k2.6";
-    openaiBaseUrl = "https://opencode.ai/zen/v1";
+    model = "deepseek-v4-pro";
+    subModel = "deepseek-v4-flash";
+    openaiBaseUrl = "https://opencode.ai/zen/go/v1";
   };
 }
