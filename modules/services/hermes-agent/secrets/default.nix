@@ -21,6 +21,7 @@
         DISCORD_ALLOWED_USERS=${config.sops.placeholder."hermes-discord-allowed-users"}
         TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
         TELEGRAM_ALLOWED_USERS=${config.sops.placeholder."hermes-telegram-allowed-users"}
+        KARAKEEP_API_KEY=${config.sops.placeholder."karakeep-api-key"}
       '';
     };
   };

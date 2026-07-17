@@ -5,30 +5,15 @@
   ...
 }:
 
-let
-  karakeepMcp = pkgs.writeShellApplication {
-    name = "karakeep-mcp";
-    runtimeInputs = [ pkgs.nodejs ];
-    text = ''
-      export KARAKEEP_API_ADDR="http://127.0.0.1:3005"
-      KARAKEEP_API_KEY="$(< ${config.sops.secrets.karakeep-api-key.path})"
-      export KARAKEEP_API_KEY
-
-      exec npx -y @karakeep/mcp "$@"
-    '';
-  };
-in
 {
   config = {
-    sops.secrets = {
-      "karakeep-api-key" = {
-        owner = lib.mkDefault config.services.hermes-agent.user;
-        group = lib.mkDefault config.services.hermes-agent.group;
-        mode = lib.mkDefault "0440";
-      };
-    };
     services.hermes-agent = {
-      mcpServers.karakeep.command = "${karakeepMcp}/bin/karakeep-mcp";
+      mcpServers.karakeep = {
+        command = lib.getExe' pkgs.nodejs "npx";
+        args = [ "-y" "@karakeep/mcp" ];
+        env.KARAKEEP_API_ADDR = "http://127.0.0.1:3005";
+        env.KARAKEEP_API_KEY = "\${KARAKEEP_API_KEY}";
+      };
     };
   };
 }
