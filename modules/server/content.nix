@@ -14,8 +14,9 @@
         owner = config.users.users.miniflux-curator.name;
       };
       "karakeep-api-key" = {
-        group = config.users.groups.miniflux-curator.name;
+        group = "users";
         owner = config.users.users.miniflux-curator.name;
+        mode = "0440";
       };
     };
 

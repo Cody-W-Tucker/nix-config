@@ -41,6 +41,7 @@
 
   home.packages = with pkgs; [
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop # Hermes Agent desktop app
     grim # Screenshot utility
     slurp # Selection tool for screenshots
     wl-clipboard # Clipboard utility for Wayland

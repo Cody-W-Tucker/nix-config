@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
@@ -21,9 +22,9 @@ in
   config = {
     sops.secrets = {
       "karakeep-api-key" = {
-        owner = config.services.hermes-agent.user;
-        inherit (config.services.hermes-agent) group;
-        mode = "0440";
+        owner = lib.mkDefault config.services.hermes-agent.user;
+        group = lib.mkDefault config.services.hermes-agent.group;
+        mode = lib.mkDefault "0440";
       };
     };
     services.hermes-agent = {

@@ -12,7 +12,6 @@ in
 {
   imports = [
     inputs.hermes-agent.nixosModules.default
-    ./package
     ./runtime
     ./mcp
     ./secrets
@@ -22,19 +21,12 @@ in
   ];
 
   config = {
-    environment.systemPackages = [
-      # Patched desktop via local package/ integration (minimal token-flow
-      # compatibility patch applied to upstream derivation). Uses the managed
-      # HERMES_HOME via wrapper. Upstream service module + its CLI package
-      # and global HERMES_HOME export are preserved untouched.
-      config._module.args.hermesDesktop
-    ];
-
     services.hermes-agent = {
       enable = true;
-      user = "codyt";
-      group = "users";
-      createUser = false;
+      container = {
+        enable = true;
+        hostUsers = [ "codyt" ];
+      };
       addToSystemPackages = true;
       extraDependencyGroups = [
         "edge-tts"
@@ -130,7 +122,7 @@ in
           provider = "openai";
           openai = {
             api_key = "local-only";
-            base_url = "http://127.0.0.1:8081/v1";
+            base_url = "http://beast:8081/v1";
             model = "whisper-medium";
           };
         };
@@ -138,7 +130,7 @@ in
           provider = "openai";
           openai = {
             api_key = "local-only";
-            base_url = "http://127.0.0.1:8081/v1";
+            base_url = "http://beast:8081/v1";
             model = "kokoro-82m";
             voice = "af_heart";
           };

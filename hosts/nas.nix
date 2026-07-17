@@ -12,6 +12,7 @@
     ../modules/system/base.nix
     ../modules/desktop/hardware/nvidia.nix
     ../modules/server
+    ../modules/services/hermes-agent
     # VPN for media
     inputs.vpn-confinement.nixosModules.default
   ];
@@ -137,6 +138,9 @@
 
   # Docker package
   virtualisation.docker.package = pkgs.docker_29;
+  # Upstream hermes-agent container module hardcodes `pkgs.docker` (docker_28)
+  # for the CLI client path — permit it so evaluation passes.
+  nixpkgs.config.permittedInsecurePackages = [ "docker-28.5.2" ];
 
   # Networking
   networking = {
