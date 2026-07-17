@@ -136,6 +136,9 @@
   # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
   networking.firewall.allowedTCPPorts = [ 8384 ];
 
+  # Hermes API — reachable only over Tailscale (Beast→NAS voice pipeline)
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8642 ];
+
   # Docker package
   virtualisation.docker.package = pkgs.docker_29;
   # Upstream hermes-agent container module hardcodes `pkgs.docker` (docker_28)

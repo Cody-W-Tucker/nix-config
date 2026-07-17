@@ -10,7 +10,7 @@ let
     name = "karakeep-mcp";
     runtimeInputs = [ pkgs.nodejs ];
     text = ''
-      export KARAKEEP_API_ADDR="https://karakeep.homehub.tv"
+      export KARAKEEP_API_ADDR="http://127.0.0.1:3005"
       KARAKEEP_API_KEY="$(< ${config.sops.secrets.karakeep-api-key.path})"
       export KARAKEEP_API_KEY
 
