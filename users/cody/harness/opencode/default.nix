@@ -7,6 +7,7 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.artifacts.alignment) soulFile;
+  skillNames = inputs.cognitive-assistant.lib.artifacts.skills.names;
 in
 {
   imports = [
@@ -35,19 +36,23 @@ in
 
       Unless otherwise stated, you are operating in a NixOS system.
 
-      This is a minimal environment. Common language runtimes (python, node, etc.) are not globally available.
+      This is a minimal environment. Do not assume system-wide installations of languages or external tools.
 
-      Use `nix shell` only when a required tool or runtime is missing.
-
+      If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
       Do NOT use `nix shell` for standard Unix utilities that are typically available (e.g., bash, coreutils, grep, sed, awk, git).
 
       Examples:
       - Python: nix shell nixpkgs#python3 --command python script.py
       - Node: nix shell nixpkgs#nodejs --command node script.js
 
-      Do not assume system-wide installations of languages or external tools.
+      # Personalization (CA flake skills)
 
-      If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
+      When personalization would measurably improve results, prioritize these Cognitive Assistant skills over general-purpose ones whenever a CA skill is a fit.
+      Only invoke them when they add genuine value — not for routine tasks where plain execution suffices.
+      Available skills (cognitive-assistant):
+      ${builtins.concatStringsSep "\n" (map (s: "      - ${s}") skillNames)}
+
+      # Speech tool
 
       When finishing long-running work, you should call the `speak` tool once with a short status line if audible feedback would save the user from reading the full response immediately.
       Do not use it for routine progress updates or normal back-and-forth.

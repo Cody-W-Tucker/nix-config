@@ -9,6 +9,7 @@
   imports = [
     ./core.nix
     ./desktop
+    ./harness
     inputs.stylix.homeModules.stylix
   ];
 
