@@ -7,9 +7,7 @@
 {
   imports = [
     ./programs.nix
-    ./harness
     ./packages/scripts
-    ./editor/nixvim
     ./obsidian
     ./hyprland.nix
     ./rofi.nix

@@ -9,6 +9,8 @@
   imports = [
     ./core.nix
     ./desktop
+    ./harness
+    ./editor/nixvim
     inputs.stylix.homeModules.stylix
   ];
 
