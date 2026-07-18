@@ -26,7 +26,6 @@ in
 {
   imports = [
     ./skills/google-workspace
-    ./skills/crm
     ./skills/tasks
   ];
 

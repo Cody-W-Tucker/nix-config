@@ -6,7 +6,10 @@
 }:
 
 let
-  crmDatabasePath = "/home/codyt/.crm/crm.db";
+  # Container-visible persistent path.  Host /var/lib/hermes/crm/crm.db maps
+  # to /data/crm/crm.db inside the container; crm is installed via npm there.
+  crmDatabasePath = "/data/crm/crm.db";
+  inherit (config.services.hermes-agent) group stateDir user;
   ldLibraryPath = lib.concatStringsSep ":" [
     "/run/opengl-driver/lib"
     "/run/current-system/sw/lib"
@@ -16,6 +19,10 @@ in
 
 {
   config = {
+    systemd.tmpfiles.rules = [
+      "d ${stateDir}/crm 0750 ${user} ${group} -"
+    ];
+
     systemd.services.hermes-agent = {
       restartTriggers = [
         (pkgs.writeText "hermes-agent-config-trigger" (

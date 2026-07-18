@@ -5,18 +5,8 @@
   ...
 }:
 
-let
-  crmDatabasePath = "${config.home.homeDirectory}/.crm/crm.db";
-in
 {
   programs = {
-    "crm-cli" = {
-      enable = true;
-      autoMount = false; # Mount the crm to a virtual filesystem to view leads, contacts, etc. on "disk."
-      settings = {
-        database.path = crmDatabasePath;
-      };
-    };
     chromium = {
       enable = true;
       # Chromecast improvement

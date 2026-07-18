@@ -18,7 +18,6 @@
     ./notifications.nix
     ./speech-to-text.nix
     ./xdg.nix
-    inputs.crm-cli.homeManagerModules.default
   ];
 
   home.sessionVariables = {

@@ -1,12 +1,10 @@
 {
-  config,
   inputs,
   pkgs,
   ...
 }:
 
 let
-  crmCli = inputs.crm-cli.packages.${pkgs.stdenv.hostPlatform.system}.crm-cli;
   googleWorkspaceCli = inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.gws;
 in
 {
@@ -17,7 +15,6 @@ in
 
   services.hermes-agent = {
     extraPackages = [
-      crmCli
       googleWorkspaceCli
     ];
   };
