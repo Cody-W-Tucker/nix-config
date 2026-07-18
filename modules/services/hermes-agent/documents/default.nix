@@ -8,8 +8,15 @@
 
 let
   nixosConfigRoot = "/etc/nixos";
-  obsidianVault = "/home/codyt/Knowledge/Personal";
-  projectsRoot = "/home/codyt/Projects";
+  isContainer = config.services.hermes-agent.container.enable;
+  obsidianVault =
+    if isContainer
+    then "/data/knowledge/Personal"
+    else "/home/codyt/Knowledge/Personal";
+  projectsRoot =
+    if isContainer
+    then "/data/projects"
+    else "/home/codyt/Projects";
   artifacts = inputs.cognitive-assistant.lib.artifacts;
   inherit (artifacts) operational existential;
   inherit (config.services.hermes-agent)

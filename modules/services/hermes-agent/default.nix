@@ -6,7 +6,11 @@
 }:
 
 let
-  obsidianVault = "/home/codyt/Knowledge/Personal";
+  isContainer = config.services.hermes-agent.container.enable;
+  obsidianVault =
+    if isContainer
+    then "/data/knowledge/Personal"
+    else "/home/codyt/Knowledge/Personal";
   inherit (config.services.hermes-agent) workingDirectory;
 in
 {
@@ -23,9 +27,15 @@ in
   config = {
     services.hermes-agent = {
       enable = true;
+      user = "codyt";
+      group = "users";
+      createUser = false;
       container = {
         enable = true;
-        hostUsers = [ "codyt" ];
+        extraVolumes = [
+          "/mnt/projects:/data/projects:rw"
+          "/mnt/knowledge:/data/knowledge:rw"
+        ];
       };
       addToSystemPackages = true;
       extraDependencyGroups = [
