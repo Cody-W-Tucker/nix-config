@@ -6,7 +6,7 @@
       url = "github:NixOS/nixos-hardware/master";
     };
     # Stable packages (for the NAS).
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     sops-nix = {
       # Managing secrets.
       url = "github:Mic92/sops-nix";
