@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -11,6 +10,7 @@
       provision.enable = true;
       settings = {
         analytics.reporting_enabled = false;
+        security.secret_key = "SW2YcwTIb9zpOOhoPsMm"; # no secrets, but 26.05 needs a secret key to start.
         server = {
           # Listening Address
           http_addr = "127.0.0.1";
