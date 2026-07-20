@@ -38,6 +38,7 @@
     kernelParams = [ "zfs.zfs_arc_max=34359738368" ];
     supportedFilesystems = [ "zfs" ];
     zfs.extraPools = [ "backup" ];
+    zfs.forceImportRoot = false;
   };
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
@@ -143,9 +144,6 @@
 
   # Docker package
   virtualisation.docker.package = pkgs.docker_29;
-  # Upstream hermes-agent container module hardcodes `pkgs.docker` (docker_28)
-  # for the CLI client path — permit it so evaluation passes.
-  nixpkgs.config.permittedInsecurePackages = [ "docker-28.5.2" ];
 
   # Networking
   networking = {

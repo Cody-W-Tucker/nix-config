@@ -75,7 +75,7 @@
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
 
-    jellyseerr = {
+    seerr = {
       enable = true;
     };
 
