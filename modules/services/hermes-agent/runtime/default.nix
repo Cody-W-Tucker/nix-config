@@ -38,9 +38,6 @@ in
       serviceConfig = {
         TimeoutStopSec = lib.mkDefault 210;
         UMask = "0007";
-      }
-      // lib.optionalAttrs (!config.services.hermes-agent.container.enable) {
-        UnsetEnvironment = [ "MESSAGING_CWD" ];
       };
     };
   };

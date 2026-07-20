@@ -140,7 +140,11 @@
   networking.firewall.allowedTCPPorts = [ 8384 ];
 
   # Hermes API — reachable only over Tailscale (Beast→NAS voice pipeline)
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8642 ];
+  # Hermes Dashboard — remote web UI, authenticated via basic auth
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+    8642
+    9119
+  ];
 
   # Docker package
   virtualisation.docker.package = pkgs.docker_29;

@@ -6,9 +6,7 @@
 }:
 
 let
-  isContainer = config.services.hermes-agent.container.enable;
-  obsidianVault =
-    if isContainer then "/data/knowledge/Personal" else "/home/codyt/Knowledge/Personal";
+  obsidianVault = "/data/knowledge/Personal";
   inherit (config.services.hermes-agent) workingDirectory;
 in
 {
@@ -20,6 +18,7 @@ in
     ./documents
     ./toolsets
     ./skills
+    ./dashboard
   ];
 
   config = {
