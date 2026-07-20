@@ -15,6 +15,8 @@
     ../modules/services/hermes-agent
     # VPN for media
     inputs.vpn-confinement.nixosModules.default
+    # Keep track of these fixes and remove them when the upstream issues are resolved.
+    ./fixes.nix
   ];
 
   # Bootloader.
