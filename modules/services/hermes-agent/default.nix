@@ -32,6 +32,7 @@ in
         extraVolumes = [
           "/mnt/projects:/data/projects:rw"
           "/mnt/knowledge:/data/knowledge:rw"
+          "/etc/nixos:/etc/nixos:rw"
         ];
       };
       addToSystemPackages = true;
