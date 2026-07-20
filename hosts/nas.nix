@@ -137,7 +137,9 @@
   services.wake-beast.enable = true;
 
   # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
-  networking.firewall.allowedTCPPorts = [ 8384 ];
+  networking.firewall.allowedTCPPorts = [
+    8384
+  ];
 
   # Hermes API — reachable only over Tailscale (Beast→NAS voice pipeline)
   # Hermes Dashboard — remote web UI, authenticated via basic auth

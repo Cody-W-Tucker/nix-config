@@ -3,6 +3,7 @@
 {
   imports = [
     ./actual-budget.nix
+    ./open-webui.nix
     ./adguard.nix
     ./content.nix
     ./excalidraw.nix
@@ -88,7 +89,7 @@
         forceSSL = true;
         # HTTP API (REST API on port 6333)
         locations."/" = {
-          proxyPass = "http://192.168.1.20:6333"; # Forward REST traffic
+          proxyPass = "http://localhost:6333"; # Forward REST traffic
           proxyWebsockets = true; # Extra flexibility for WebSockets (not required for REST API)
           # Optional: Add headers to preserve proxy context
           extraConfig = ''
@@ -99,7 +100,7 @@
         };
         # gRPC API (on port 6334)
         locations."/grpc" = {
-          proxyPass = "http://192.168.1.20:6334"; # Forward gRPC traffic
+          proxyPass = "http://localhost:6334"; # Forward gRPC traffic
           extraConfig = ''
             grpc_set_header Host $host;
             grpc_set_header X-Real-IP $remote_addr;
@@ -113,7 +114,7 @@
         forceSSL = true;
         kTLS = true;
         locations."/" = {
-          proxyPass = "http://192.168.1.20:8080";
+          proxyPass = "http://localhost:8080";
           proxyWebsockets = true;
           extraConfig = ''
             proxy_buffering off;

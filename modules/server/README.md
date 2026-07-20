@@ -32,6 +32,7 @@ The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for servic
 | `karakeep.nix` | Bookmark/read-it-later service |
 | `actual-budget.nix` | Personal finance service |
 | `arm.nix` | Automatic Ripping Machine container/service integration |
+| `ai-services.nix` | Open WebUI, Qdrant vector search, AI firewall ports |
 | `excalidraw.nix` | Excalidraw whiteboard service |
 | `security.nix` | Fail2Ban and server hardening |
 
@@ -53,6 +54,8 @@ Common service mappings:
 | Tika | `tika.homehub.tv` | `9998` | `default.nix` |
 | Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `nginx-syncthing.nix` |
 | Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `nginx-syncthing.nix` |
+| Open WebUI | `ai.homehub.tv` | `8080` | `ai-services.nix` |
+| Qdrant REST | `qdrant.homehub.tv` | `6333` | `ai-services.nix` |
 
 `default.nix` also proxies selected `homehub.tv` subdomains to the `beast` workstation, including Open-WebUI and Qdrant. Keep that cross-host routing in the ingress layer, not inside unrelated service modules.
 
