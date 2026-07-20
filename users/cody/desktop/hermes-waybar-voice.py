@@ -18,13 +18,16 @@ from pathlib import Path
 
 from pysilero_vad import SileroVoiceActivityDetector
 
-
-HERMES_BASE_URL = os.environ.get("HERMES_BASE_URL", "http://127.0.0.1:8642").rstrip("/")
+HERMES_BASE_URL = os.environ.get("HERMES_BASE_URL", "http://nas:8642").rstrip("/")
 SPEECH_BASE_URL = os.environ.get(
     "HERMES_SPEECH_BASE_URL", "http://127.0.0.1:8081"
 ).rstrip("/")
-AUTH_TOKEN = os.environ.get("HERMES_API_TOKEN", "local-only")
-CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "local")
+GATEWAY_AUTH_TOKEN = os.environ.get(
+    "HERMES_GATEWAY_TOKEN",
+    os.environ.get("API_SERVER_KEY", os.environ.get("HERMES_API_TOKEN", "")),
+)
+SPEECH_AUTH_TOKEN = os.environ.get("HERMES_API_TOKEN", "local-only")
+CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "grok-4.5")
 TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "whisper-medium")
 SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "kokoro-82m")
 SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "af_heart")
@@ -333,7 +336,7 @@ def http_chat_stream(
         headers={
             "Content-Type": "application/json",
             "Accept": "text/event-stream",
-            "Authorization": f"Bearer {AUTH_TOKEN}",
+            "Authorization": f"Bearer {GATEWAY_AUTH_TOKEN}",
         },
         method="POST",
     )
@@ -546,7 +549,7 @@ def transcribe(path: Path) -> str | None:
             "POST",
             f"{SPEECH_BASE_URL}/v1/audio/transcriptions",
             "-H",
-            f"Authorization: Bearer {AUTH_TOKEN}",
+            f"Authorization: Bearer {SPEECH_AUTH_TOKEN}",
             "-F",
             f"model={TRANSCRIPTION_MODEL}",
             "-F",
@@ -586,7 +589,7 @@ def synthesize(text: str) -> Path | None:
                 "POST",
                 f"{SPEECH_BASE_URL}/v1/audio/speech",
                 "-H",
-                f"Authorization: Bearer {AUTH_TOKEN}",
+                f"Authorization: Bearer {SPEECH_AUTH_TOKEN}",
                 "-H",
                 "Content-Type: application/json",
                 "--data-binary",
