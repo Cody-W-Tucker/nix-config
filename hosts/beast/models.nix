@@ -72,7 +72,11 @@ let
   diarizationCache = "/var/cache/llama-swap/whisperx";
 in
 {
-  sops.secrets."huggingface-read" = { };
+  sops.secrets."huggingface-read" = {
+    owner = "codyt";
+    group = "users";
+    mode = "0400";
+  };
 
   systemd.tmpfiles.rules = [
     "d ${sharedFasterWhisperCache} 0755 codyt users - -"
