@@ -49,6 +49,9 @@
   "whisper-medium" = {
     ttl = 300;
   };
+  "whisper-diarization" = {
+    ttl = 0; # Keep resident for low-latency diarization requests.
+  };
   "kokoro-82m" = {
     ttl = 0; # Keep TTS warm (resident model load) until another group evicts it.
   };

@@ -10,12 +10,13 @@ The speech pipeline is built on three primary server-side components and two cli
 
 ### Speech Service Components
 
-| Component                | Implementation   | Role                          | API Endpoint               |
-| ------------------------ | ---------------- | ----------------------------- | -------------------------- |
-| **Transcription Server** | `faster-whisper` | STT using Whisper models      | `/v1/audio/transcriptions` |
-| **Kokoro TTS**           | `kokoro-82m`     | High-quality, fast TTS        | `/v1/audio/speech`         |
-| **llama-dictate**        | Shell Script     | Hold-to-talk global dictation | N/A (Client)               |
-| **hermes-waybar-voice**  | Python Script    | VAD-based voice assistant     | N/A (Client)               |
+| Component                | Implementation     | Role                          | API Endpoint               |
+| ------------------------ | ------------------ | ----------------------------- | -------------------------- |
+| **Transcription Server** | `faster-whisper`   | STT using Whisper models      | `/v1/audio/transcriptions` |
+| **Diarization Server**   | `whisperx`         | Speaker-aware STT             | `/v1/audio/transcriptions` |
+| **Kokoro TTS**           | `kokoro-82m`       | High-quality, fast TTS        | `/v1/audio/speech`         |
+| **llama-dictate**        | Shell Script       | Hold-to-talk global dictation | N/A (Client)               |
+| **hermes-waybar-voice**  | Python Script      | VAD-based voice assistant     | N/A (Client)               |
 
 ## Transcription Services
 
@@ -26,6 +27,113 @@ The primary transcription backend is an OpenAI-compatible FastAPI server wrappin
 - **Hardware Acceleration**: It attempts to initialize on `cuda` and falls back to `cpu` if CUDA initialization fails [modules/services/llama-swap/faster-whisper-openai-server.py40-60](../modules/services/llama-swap/faster-whisper-openai-server.py#L40-L60)
 - **VAD Filtering**: Supports an optional VAD filter to remove silence from audio before transcription [modules/services/llama-swap/faster-whisper-openai-server.py30-31](../modules/services/llama-swap/faster-whisper-openai-server.py#L30-L31)
 - **Endpoints**: Implements `/v1/audio/transcriptions` for standard file-based uploads [modules/services/llama-swap/faster-whisper-openai-server.py98-100](../modules/services/llama-swap/faster-whisper-openai-server.py#L98-L100)
+
+### WhisperX Diarization Server
+
+The diarization server provides speaker-aware transcription using WhisperX 3.8.6 for ASR + alignment and pyannote-audio 4.0.7 for speaker diarization. It is exposed as a separate `whisper-diarization` model in llama-swap.
+
+- **GPU Phase Loading**: Loads ASR model, transcribes, unloads ASR, loads alignment model, aligns, unloads alignment, loads diarization pipeline, diarizes. Only one model is resident on GPU at a time.
+- **Concurrency**: One-job limit enforced via threading lock. Returns **503 Service Unavailable** if another job is running.
+- **CUDA Guard**: Refuses to start if CUDA is requested but unavailable. No silent CPU fallback.
+- **Diarization Model**: Defaults to `pyannote/speaker-diarization-community-1` (no HF token required). Override with `--diarization-model` for gated models.
+- **Enrollment API**: The `/v1/identity/enroll`, `/v1/identity/samples`, and `/v1/identity/candidates` endpoints exist but enrollment is **disabled (501)** until a verified embedding matcher is implemented. No raw audio is retained on disk.
+
+#### Operator Prerequisites
+
+1. **CUDA-capable GPU** — the server will refuse to start without one.
+2. **HuggingFace token** — only required if using a gated diarization model (the default community model does not need one). Provide via `HF_TOKEN` environment variable or `--hf-token-path` flag.
+3. **SOPS secret** — if using a gated model, create the secret at the path expected by your NixOS configuration. The exact secret name and path is operator-specific and must be wired into `serviceEnvironment` or `--hf-token-path`.
+
+#### API Usage
+
+**Basic diarization request:**
+
+```bash
+curl -s http://localhost:8081/v1/audio/transcriptions \
+  -F file=@meeting.wav \
+  -F model=whisper-diarization \
+  -F response_format=diarized_json | jq .
+```
+
+**With speaker count hints:**
+
+```bash
+curl -s http://localhost:8081/v1/audio/transcriptions \
+  -F file=@interview.wav \
+  -F model=whisper-diarization \
+  -F response_format=diarized_json \
+  -F min_speakers=2 \
+  -F max_speakers=5 | jq .
+```
+
+**Exact speaker count:**
+
+```bash
+curl -s http://localhost:8081/v1/audio/transcriptions \
+  -F file=@duet.wav \
+  -F model=whisper-diarization \
+  -F response_format=diarized_json \
+  -F num_speakers=2 | jq .
+```
+
+#### Response Format
+
+```json
+{
+  "text": "Hello, how are you? I'm doing well, thanks.",
+  "language": "en",
+  "duration": 4.32,
+  "segments": [
+    {"start": 0.0, "end": 1.8, "text": "Hello, how are you?", "speaker": "SPEAKER_00"},
+    {"start": 2.1, "end": 4.3, "text": "I'm doing well, thanks.", "speaker": "SPEAKER_01"}
+  ],
+  "speakers": ["SPEAKER_00", "SPEAKER_01"],
+  "identity": {"mode": "off", "status": "not_requested"},
+  "warnings": []
+}
+```
+
+#### Speaker Enrollment
+
+Enrollment endpoints are **disabled** (HTTP 501) until a cross-session embedding matcher is verified. No raw audio is accepted or stored on disk. The endpoints are preserved as API contracts for future enablement.
+
+```bash
+# These return 501 until embedding matching is verified:
+curl -s -X POST http://localhost:8081/v1/identity/enroll \
+  -F consent=true \
+  -F person_id=cody \
+  -F display_name="Cody" | jq .
+
+curl -s http://localhost:8081/v1/identity/candidates | jq .
+# Returns: {"status": "matching_unavailable", ...}
+```
+
+#### Data Retention
+
+- **Transcription temp files**: Written to `/tmp` during processing, deleted in `finally` block after each request. No persistence.
+- **Enrollment audio**: Not accepted — enrollment endpoints return 501.
+- **Diarization model cache**: Stored under `/var/cache/llama-swap/whisperx` (persistent across restarts).
+- **No raw audio retention by default**.
+
+#### Verification Commands
+
+```bash
+# Check server health
+curl -s http://localhost:8081/v1/health | jq .
+
+# Verify model is registered
+curl -s http://localhost:8081/v1/models | jq .
+
+# Test busy response (send concurrent requests)
+# First request should process, second should return 503
+
+# Run smoke test with a short audio file
+curl -s http://localhost:8081/v1/audio/transcriptions \
+  -F file=@/path/to/test.wav \
+  -F model=whisper-diarization \
+  -F response_format=diarized_json | jq '.speakers | length'
+```
+```
 
 ### llama-dictate
 
