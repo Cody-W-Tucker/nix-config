@@ -454,7 +454,6 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                     temp_path,
                     batch_size=16,
                     language=language,
-                    vad_filter=True,
                 )
 
                 detected_language = result.get(
