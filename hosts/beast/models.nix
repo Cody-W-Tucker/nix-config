@@ -179,7 +179,10 @@ in
       "whisper-diarization" = {
         ttl = 0; # Keep resident for diarization requests.
         upstream = {
+          # Redirect pyannote's home-directory lookup (~/.pyannote/database.yml)
+          # away from /home (hidden by ProtectHome) to the writable whisperx cache.
           cmd = ''
+            env HOME=${diarizationCache} \
             ${whisperDiarizePython}/bin/python3 ${../../modules/services/llama-swap/diarization-server.py} \
               --host 127.0.0.1 \
               --port ''${PORT} \
