@@ -145,7 +145,7 @@ in
   swapDevices = [
     {
       device = "/swapfile";
-      size = 6144; # 6GB swap file to avoid OOM killer on low-memory workloads
+      size = 32768; # 32GB swap file to avoid OOM killer on low-memory workloads
     }
   ];
 
