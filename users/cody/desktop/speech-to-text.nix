@@ -228,11 +228,41 @@ let
 
           rm -f "$path"
           ;;
+        toggle)
+          # If already recording, stop and transcribe; otherwise start.
+          if [ -f "$pidfile" ]; then
+            pid="$(tr -d '[:space:]' < "$pidfile" 2>/dev/null || true)"
+            path=""
+            if [ -f "$pathfile" ]; then
+              path="$(tr -d '[:space:]' < "$pathfile" 2>/dev/null || true)"
+            fi
+            if is_recording_pid "$pid" "$path"; then
+              # Recording active — treat as stop.
+              cleanup_stale_recording stop || true
+              rm -f "$pidfile" "$pathfile"
+              [ -n "$path" ] || exit 0
+              if ! transcribe_and_type "$path"; then
+                rm -f "$path"
+                exit 1
+              fi
+              rm -f "$path"
+              exit 0
+            fi
+            # Stale pid — fall through to start.
+          fi
+          cleanup_stale_recording start || true
+          warm_model
+          recording_path="$runtime_dir/voice-recording-$(date +%s%N).wav"
+          pw-record --channels 1 --rate 16000 --format s16 --volume 1.5 "$recording_path" >/dev/null 2>&1 &
+          recording_pid="$!"
+          printf '%s\n' "$recording_pid" > "$pidfile"
+          printf '%s\n' "$recording_path" > "$pathfile"
+          ;;
         recover)
           recover_recording || true
           ;;
         *)
-          printf 'usage: llama-dictate <start|stop|recover>\n' >&2
+          printf 'usage: llama-dictate <start|stop|toggle|recover>\n' >&2
           exit 1
           ;;
       esac

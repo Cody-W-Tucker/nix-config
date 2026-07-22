@@ -79,8 +79,8 @@ let
     # Toggle waybar
     "${mainMod}, P, exec, pkill -SIGUSR1 waybar"
 
-    # Whisper dictation - hold to record
-    "${mainMod}, Escape, exec, llama-dictate start"
+    # Whisper dictation - toggle recording on/off
+    "${mainMod}, Escape, exec, llama-dictate toggle"
 
     # Whisper dictation - recover from orphaned recorder
     "${mainMod} SHIFT, Escape, exec, llama-dictate recover"
@@ -130,10 +130,6 @@ in
       ", XF86AudioPrev, exec, playerctl previous"
     ];
 
-    bindr = [
-      # Whisper dictation - release keybind to transcribe
-      "${mainMod}, Escape, exec, llama-dictate stop"
-    ];
     windowrule = [
       # Kitty
       "match:class ^(kitty)$, no_blur on"
