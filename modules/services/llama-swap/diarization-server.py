@@ -229,7 +229,12 @@ class ModelManager:
 
 
 class _ModelPhase:
-    """Context manager that holds the model lock and cleans up on exit."""
+    """Context manager that holds the model lock and cleans up on exit.
+
+    Delegates model lifecycle methods and attribute access to the
+    underlying :class:`ModelManager` so handler code can call
+    ``phase._ensure_asr()`` etc. uniformly.
+    """
 
     def __init__(self, manager: ModelManager, timeout: float):
         self._mgr = manager
@@ -240,6 +245,46 @@ class _ModelPhase:
                 "Retry after the current job completes."
             )
         self._acquired = True
+
+    # ── Lifecycle delegation ───────────────────────────────
+
+    def _ensure_asr(self):
+        self._mgr._ensure_asr()
+
+    def _unload_asr(self):
+        self._mgr._unload_asr()
+
+    def _ensure_align(self, language_code: str):
+        self._mgr._ensure_align(language_code)
+
+    def _unload_align(self):
+        self._mgr._unload_align()
+
+    def _ensure_diarize(self):
+        self._mgr._ensure_diarize()
+
+    def _unload_diarize(self):
+        self._mgr._unload_diarize()
+
+    # ── Model attribute proxies ────────────────────────────
+
+    @property
+    def _asr_model(self):
+        return self._mgr._asr_model
+
+    @property
+    def _align_model(self):
+        return self._mgr._align_model
+
+    @property
+    def _align_metadata(self):
+        return self._mgr._align_metadata
+
+    @property
+    def _diarize_pipeline(self):
+        return self._mgr._diarize_pipeline
+
+    # ── Context protocol ──────────────────────────────────
 
     def __enter__(self):
         return self
