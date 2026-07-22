@@ -40,10 +40,41 @@ let
         uvicorn
       ]
     );
+
+  # WhisperX diarization server: speech-to-text with speaker labels.
+  # Uses WhisperX for transcription + alignment and pyannote for diarization.
+  # Both require CUDA for acceptable latency on the RTX 3070.
+  #
+  # Override the entire Python 3.13 package set so torch carries CUDA by default.
+  # This avoids the collision where stock whisperx propagates CPU torch while an
+  # explicit CUDA torch is also present in withPackages.
+  whisperDiarizePython =
+    let
+      whisperDiarizeScope = pkgs.python313.override {
+        packageOverrides = final: prev: {
+          torch = prev.torch.override { cudaSupport = true; };
+        };
+      };
+    in
+    whisperDiarizeScope.withPackages (
+      ps: with ps; [
+        fastapi
+        python-multipart
+        ps.torch
+        uvicorn
+        whisperx
+      ]
+    );
+
+  # Persistent paths for diarization enrollment and model cache.
+  diarizationEnrollmentDir = "/var/lib/llama-swap/diarization/enrollment";
+  diarizationCache = "/var/cache/llama-swap/whisperx";
 in
 {
   systemd.tmpfiles.rules = [
     "d ${sharedFasterWhisperCache} 0755 codyt users - -"
+    "d ${diarizationCache} 0755 codyt users - -"
+    "d ${diarizationEnrollmentDir} 0750 codyt users - -"
   ];
 
   services.llama-swap = {
@@ -68,6 +99,7 @@ in
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
       "whisper-medium"
+      "whisper-diarization"
       "kokoro-82m"
     ];
     preloadModels = [ "whisper-medium" ];
@@ -78,6 +110,7 @@ in
         persistent = false;
         members = [
           "whisper-medium"
+          "whisper-diarization"
           "kokoro-82m"
         ];
       };
@@ -143,6 +176,21 @@ in
           '';
         };
       };
+      "whisper-diarization" = {
+        ttl = 0; # Keep resident for diarization requests.
+        upstream = {
+          cmd = ''
+            ${whisperDiarizePython}/bin/python3 ${../../modules/services/llama-swap/diarization-server.py} \
+              --host 127.0.0.1 \
+              --port ''${PORT} \
+              --model-id whisper-diarization \
+              --device cuda \
+              --compute-type float16 \
+              --download-root ${diarizationCache} \
+              --enrollment-dir ${diarizationEnrollmentDir}
+          '';
+        };
+      };
       "kokoro-82m" = {
         ttl = 0; # Keep resident for low-latency TTS.
         upstream = {
@@ -169,6 +217,10 @@ in
     DynamicUser = lib.mkForce false;
     User = "codyt";
     Group = "users";
-    ReadWritePaths = lib.mkAfter [ sharedFasterWhisperCache ];
+    ReadWritePaths = lib.mkAfter [
+      sharedFasterWhisperCache
+      diarizationCache
+      diarizationEnrollmentDir
+    ];
   };
 }
