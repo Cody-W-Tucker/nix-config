@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -71,6 +72,8 @@ let
   diarizationCache = "/var/cache/llama-swap/whisperx";
 in
 {
+  sops.secrets."huggingface-read" = { };
+
   systemd.tmpfiles.rules = [
     "d ${sharedFasterWhisperCache} 0755 codyt users - -"
     "d ${diarizationCache} 0755 codyt users - -"
@@ -190,7 +193,8 @@ in
               --device cuda \
               --compute-type float16 \
               --download-root ${diarizationCache} \
-              --enrollment-dir ${diarizationEnrollmentDir}
+              --enrollment-dir ${diarizationEnrollmentDir} \
+              --hf-token-path ${config.sops.secrets."huggingface-read".path}
           '';
         };
       };
