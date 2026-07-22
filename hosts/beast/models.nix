@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -68,13 +69,38 @@ let
 
   # Persistent paths for diarization enrollment and model cache.
   diarizationEnrollmentDir = "/var/lib/llama-swap/diarization/enrollment";
+  diarizationEmbeddingCache = "/var/lib/llama-swap/diarization/embedding-cache";
   diarizationCache = "/var/cache/llama-swap/whisperx";
 in
 {
+  assertions = [
+    {
+      # Guard: the diarization server hardcodes the embedding-cache path.
+      # If it disappears from tmpfiles or ReadWritePaths, startup fails with
+      # OSError: [Errno 30] Read-only file system.
+      assertion =
+        let
+          rules = config.systemd.tmpfiles.rules;
+          rwPaths = config.systemd.services.llama-swap.serviceConfig.ReadWritePaths or [ ];
+          hasTmpfile = builtins.any (r: builtins.match ".*${diarizationEmbeddingCache}.*" r != null) rules;
+          hasRwPath = builtins.elem diarizationEmbeddingCache rwPaths;
+        in
+        hasTmpfile && hasRwPath;
+      message = "diarization embedding-cache (${diarizationEmbeddingCache}) must be in systemd.tmpfiles.rules and llama-swap ReadWritePaths";
+    }
+  ];
+
+  sops.secrets."huggingface-read" = {
+    owner = "codyt";
+    group = "users";
+    mode = "0400";
+  };
+
   systemd.tmpfiles.rules = [
     "d ${sharedFasterWhisperCache} 0755 codyt users - -"
     "d ${diarizationCache} 0755 codyt users - -"
     "d ${diarizationEnrollmentDir} 0750 codyt users - -"
+    "d ${diarizationEmbeddingCache} 0750 codyt users - -"
   ];
 
   services.llama-swap = {
@@ -110,7 +136,6 @@ in
         persistent = false;
         members = [
           "whisper-medium"
-          "whisper-diarization"
           "kokoro-82m"
         ];
       };
@@ -179,7 +204,10 @@ in
       "whisper-diarization" = {
         ttl = 0; # Keep resident for diarization requests.
         upstream = {
+          # Redirect pyannote's home-directory lookup (~/.pyannote/database.yml)
+          # away from /home (hidden by ProtectHome) to the writable whisperx cache.
           cmd = ''
+            env HOME=${diarizationCache} \
             ${whisperDiarizePython}/bin/python3 ${../../modules/services/llama-swap/diarization-server.py} \
               --host 127.0.0.1 \
               --port ''${PORT} \
@@ -187,7 +215,8 @@ in
               --device cuda \
               --compute-type float16 \
               --download-root ${diarizationCache} \
-              --enrollment-dir ${diarizationEnrollmentDir}
+              --enrollment-dir ${diarizationEnrollmentDir} \
+              --hf-token-path ${config.sops.secrets."huggingface-read".path}
           '';
         };
       };
@@ -221,6 +250,7 @@ in
       sharedFasterWhisperCache
       diarizationCache
       diarizationEnrollmentDir
+      diarizationEmbeddingCache
     ];
   };
 }
