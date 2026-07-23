@@ -30,12 +30,11 @@ import uvicorn
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
-
 logger = logging.getLogger("diarization-server")
 
 # ── Limits ──────────────────────────────────────────────────────────
-MAX_UPLOAD_BYTES = 25 * 1024 * 1024  # 25 MB
-MAX_DURATION_SECONDS = 3600  # 1 hour (conservative bound)
+MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
+MAX_DURATION_SECONDS = 7200  # 2 hour (conservative bound)
 SUPPORTED_FORMATS = {".wav", ".mp3", ".m4a", ".ogg", ".flac", ".webm", ".mp4"}
 ENROLLMENT_DIR = Path("/var/lib/llama-swap/diarization/enrollment")
 MIN_ENROLLMENT_SAMPLES = 3
@@ -113,9 +112,7 @@ class ModelManager:
     def _load_hf_token(self, path: str | None) -> str | None:
         if path and os.path.exists(path):
             return Path(path).read_text().strip()
-        return os.environ.get("HF_TOKEN") or os.environ.get(
-            "HUGGING_FACE_HUB_TOKEN"
-        )
+        return os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
 
     # ── ASR ──────────────────────────────────────────────────
 
@@ -132,9 +129,7 @@ class ModelManager:
                 download_root=self.args.download_root,
                 language=self.args.language,
             )
-            logger.info(
-                "ASR model loaded in %.1fs", time.monotonic() - t0
-            )
+            logger.info("ASR model loaded in %.1fs", time.monotonic() - t0)
 
     def _unload_asr(self):
         if self._asr_model is not None:
@@ -151,15 +146,11 @@ class ModelManager:
 
             logger.info("Loading alignment model for %s", language_code)
             t0 = time.monotonic()
-            self._align_model, self._align_metadata = (
-                whisperx.load_align_model(
-                    language_code=language_code,
-                    device=self.device,
-                )
+            self._align_model, self._align_metadata = whisperx.load_align_model(
+                language_code=language_code,
+                device=self.device,
             )
-            logger.info(
-                "Alignment model loaded in %.1fs", time.monotonic() - t0
-            )
+            logger.info("Alignment model loaded in %.1fs", time.monotonic() - t0)
 
     def _unload_align(self):
         if self._align_model is not None:
@@ -358,9 +349,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         if model and model != app.state.model_id:
             raise HTTPException(
                 status_code=400,
-                detail=(
-                    f"Model must be '{app.state.model_id}', got '{model}'"
-                ),
+                detail=(f"Model must be '{app.state.model_id}', got '{model}'"),
             )
 
         if response_format and response_format != "diarized_json":
@@ -429,9 +418,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         # ── Write to temp file ───────────────────────────────
         temp_path = None
         try:
-            with tempfile.NamedTemporaryFile(
-                delete=False, suffix=suffix
-            ) as tmp:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
                 tmp.write(audio_bytes)
                 temp_path = tmp.name
 
@@ -456,9 +443,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                     language=language,
                 )
 
-                detected_language = result.get(
-                    "language", language or "unknown"
-                )
+                detected_language = result.get("language", language or "unknown")
                 logger.info(
                     "Transcription complete: %d segments, lang=%s",
                     len(result["segments"]),
@@ -503,9 +488,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
 
                 # ── Phase 4: Assign speakers ────────────
                 logger.info("Phase 4: Assigning speaker labels")
-                result = whisperx.assign_word_speakers(
-                    diarize_result, result
-                )
+                result = whisperx.assign_word_speakers(diarize_result, result)
 
                 # ── Build response ──────────────────────
                 segments = result.get("segments", [])
@@ -522,9 +505,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 # Duration from last segment end
                 duration = None
                 if segments:
-                    duration = max(
-                        seg.get("end", 0) for seg in segments
-                    )
+                    duration = max(seg.get("end", 0) for seg in segments)
 
                 # Build output segments
                 output_segments = []
@@ -538,9 +519,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                         }
                     )
 
-                full_text = " ".join(
-                    s["text"] for s in output_segments
-                ).strip()
+                full_text = " ".join(s["text"] for s in output_segments).strip()
 
                 # Identity mode handling
                 identity_status = "not_requested"
@@ -557,9 +536,9 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                     {
                         "text": full_text,
                         "language": detected_language,
-                        "duration": round(duration, 3)
-                        if duration is not None
-                        else None,
+                        "duration": (
+                            round(duration, 3) if duration is not None else None
+                        ),
                         "segments": output_segments,
                         "speakers": speaker_order,
                         "identity": {
