@@ -49,6 +49,15 @@ class BusyError(Exception):
     """Raised when the one-job concurrency lock cannot be acquired."""
 
 
+class ShortSegmentSkipped(Exception):
+    """Raised when a segment is too short for stable embedding extraction.
+    
+    This is an expected skip, not a failure. Callers distinguish this from
+    genuine CUDA/audio errors and count it separately. Never logged at
+    error level or wrapped as a RuntimeError.
+    """
+
+
 class EmbeddingExtractor:
     """Speaker embedding extractor using SpeechBrain ECAPA-TDNN.
     
@@ -192,7 +201,7 @@ class EmbeddingExtractor:
             # stable embeddings and must be excluded early.
             duration_sec = signal.shape[1] / sample_rate
             if duration_sec < self.MIN_SEGMENT_DURATION:
-                raise RuntimeError(
+                raise ShortSegmentSkipped(
                     f"Audio too short: {duration_sec:.2f}s < {self.MIN_SEGMENT_DURATION}s"
                 )
             
@@ -201,6 +210,9 @@ class EmbeddingExtractor:
             
             return self._encode_waveform(signal)
             
+        except ShortSegmentSkipped:
+            # Expected skip — propagate without wrapping or error-level log.
+            raise
         except RuntimeError:
             raise
         except Exception as e:
@@ -258,7 +270,7 @@ class EmbeddingExtractor:
             # cannot produce stable embeddings and must be excluded early.
             segment_duration = (end_sample - start_sample) / sample_rate
             if segment.shape[1] < int(self.MIN_SEGMENT_DURATION * sample_rate):
-                raise RuntimeError(
+                raise ShortSegmentSkipped(
                     f"Segment too short: {segment_duration:.2f}s < {self.MIN_SEGMENT_DURATION}s"
                 )
             
@@ -277,24 +289,22 @@ class EmbeddingExtractor:
             
             return self._encode_waveform(segment)
             
+        except ShortSegmentSkipped as e:
+            # Expected skip — log once at info level, propagate without wrapping.
+            logger.info(
+                "Skipping short segment %s [%.2f-%.2f]: %s",
+                audio_path, start_sec, end_sec, e,
+            )
+            raise
         except RuntimeError as e:
-            err_str = str(e).lower()
-            is_short_segment = "too short" in err_str or "segment too short" in err_str
-            if is_short_segment:
-                # Short segments are normal exclusions, not fatal errors
-                logger.warning(
-                    "Excluding short segment %s [%.2f-%.2f]: %s",
-                    audio_path, start_sec, end_sec, e,
-                )
-            else:
-                logger.exception(
-                    "DIAGNOSTIC: Full traceback for embedding extraction failure from %s [%.2f-%.2f]",
-                    audio_path, start_sec, end_sec,
-                )
-                logger.error(
-                    "Failed to extract embedding from %s [%.2f-%.2f]: %s",
-                    audio_path, start_sec, end_sec, e,
-                )
+            logger.exception(
+                "DIAGNOSTIC: Full traceback for embedding extraction failure from %s [%.2f-%.2f]",
+                audio_path, start_sec, end_sec,
+            )
+            logger.error(
+                "Failed to extract embedding from %s [%.2f-%.2f]: %s",
+                audio_path, start_sec, end_sec, e,
+            )
             raise RuntimeError(f"Segment embedding extraction failed: {e}") from e
         except Exception as e:
             logger.exception(
@@ -734,6 +744,7 @@ class EmbeddingCache:
             manifest["excluded_segment_count"] = exclusion_metadata.get("excluded_segment_count", 0)
             manifest["excluded_label_count"] = exclusion_metadata.get("excluded_label_count", 0)
             manifest["excluded_labels"] = exclusion_metadata.get("excluded_labels", [])
+            manifest["segments_skipped_short"] = exclusion_metadata.get("segments_skipped_short", 0)
         
         prototypes_doc = {
             "schema_version": self.SCHEMA_VERSION,
@@ -1728,13 +1739,15 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                     "recording_name": recording_name,
                     "label_count": lookup["manifest"].get("label_count", 0),
                     "segment_count": lookup["manifest"].get("segment_count", 0),
+                    "segments_skipped_short": lookup["manifest"].get("segments_skipped_short", 0),
                 }
             
             # Extract embeddings per segment
             segment_embeddings = []
             label_embeddings = {}  # label -> list of embeddings
-            excluded_segments = []  # track failures with reasons
+            excluded_segments = []  # track genuine failures with reasons
             label_failure_counts = {}  # label -> count of failed segments
+            segments_skipped_short = 0  # expected skips, not failures
             
             for seg in segments:
                 label = seg.get("speaker", "UNKNOWN")
@@ -1751,6 +1764,19 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                     label_failure_counts[label] = label_failure_counts.get(label, 0) + 1
                     continue
                 
+                # Pre-filter by duration BEFORE calling extractor — avoids
+                # temp audio processing and GPU path for segments that cannot
+                # produce stable embeddings.
+                segment_duration = end - start
+                if segment_duration < embedding_extractor.MIN_SEGMENT_DURATION:
+                    segments_skipped_short += 1
+                    logger.info(
+                        "Skipping short segment %s [%.2f-%.2f] (%.2fs < %.2fs)",
+                        recording_name, start, end,
+                        segment_duration, embedding_extractor.MIN_SEGMENT_DURATION,
+                    )
+                    continue
+                
                 try:
                     emb = embedding_extractor.extract_embedding_from_segment(
                         temp_audio, start, end
@@ -1765,22 +1791,21 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                     if label not in label_embeddings:
                         label_embeddings[label] = []
                     label_embeddings[label].append(emb)
+                except ShortSegmentSkipped:
+                    # Defense in depth — extractor's own guard caught it.
+                    # Count as skip, not failure. Extractor already logged it.
+                    segments_skipped_short += 1
                 except Exception as e:
-                    # Determine specific reason
-                    reason = "extraction_failed"
-                    err_str = str(e).lower()
-                    if "too short" in err_str or "segment too short" in err_str:
-                        reason = "segment_too_short"
-                    
+                    # Genuine extraction failure (CUDA/audio error)
                     excluded_segments.append({
                         "label": label,
                         "start": start,
                         "end": end,
-                        "reason": reason,
+                        "reason": "extraction_failed",
                         "error": str(e),
                     })
                     label_failure_counts[label] = label_failure_counts.get(label, 0) + 1
-                    logger.warning(
+                    logger.error(
                         "Failed to extract embedding for %s [%.2f-%.2f]: %s",
                         recording_name, start, end, e,
                     )
@@ -1850,6 +1875,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 "excluded_segments": excluded_segments,
                 "excluded_label_count": len(excluded_labels),
                 "excluded_labels": excluded_labels,
+                "segments_skipped_short": segments_skipped_short,
             }
             result = embedding_cache.store(
                 audio_sha=audio_sha,
@@ -1867,6 +1893,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 "recording_name": recording_name,
                 "label_count": len(prototypes),
                 "segment_count": len(segment_embeddings),
+                "segments_skipped_short": segments_skipped_short,
                 "excluded_segment_count": len(excluded_segments),
                 "excluded_label_count": len(excluded_labels),
                 "excluded_labels": excluded_labels,

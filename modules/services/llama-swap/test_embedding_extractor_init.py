@@ -430,7 +430,7 @@ def test_short_segment_does_not_trigger_cuda_fallback():
         "speechbrain.inference": MagicMock(),
         "speechbrain.inference.speaker": mock_sb,
     }):
-        with pytest.raises(RuntimeError, match="Segment too short"):
+        with pytest.raises(ds.ShortSegmentSkipped, match="Segment too short"):
             extractor.extract_embedding_from_segment("/fake/audio.wav", 0.0, 0.1)
 
     # Should NOT have fallen back — this is a data error, not device error
