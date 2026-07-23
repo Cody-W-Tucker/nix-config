@@ -54,13 +54,17 @@ class EmbeddingExtractor:
     
     Extracts 192-dim normalized embeddings from audio files or segments.
     Thread-safe via internal lock on model initialization.
+
+    The model ``speechbrain/spkrec-ecapa-voxceleb`` is public on Hugging
+    Face and does not require authentication.  No HF token is passed to
+    ``from_hparams`` — SpeechBrain 1.1's ``Pretrained.__init__`` does not
+    accept a ``token`` keyword argument.
     """
     
-    def __init__(self, hf_token: str | None = None):
+    def __init__(self):
         self._model = None
         self._lock = threading.Lock()
         self._model_id = "speechbrain/spkrec-ecapa-voxceleb"
-        self._hf_token = hf_token
     
     def _ensure_model(self):
         """Load the embedding model if not already loaded.
@@ -95,16 +99,13 @@ class EmbeddingExtractor:
                     "(mkldnn disabled for systemd MemoryDenyWriteExecute)"
                 )
                 t0 = time.monotonic()
-                model_kwargs = {
-                    "source": self._model_id,
-                    "run_opts": {"device": "cpu"},
-                }
-                # Pass HF token if available to suppress unauthenticated
-                # access warnings. The model is public but SpeechBrain
-                # still emits a warning without a token. Never log the token.
-                if self._hf_token:
-                    model_kwargs["token"] = self._hf_token
-                self._model = EncoderClassifier.from_hparams(**model_kwargs)
+                # The model is public; no token is needed.  SpeechBrain
+                # 1.1 does not accept ``token=`` at from_hparams, so we
+                # never pass one.
+                self._model = EncoderClassifier.from_hparams(
+                    source=self._model_id,
+                    run_opts={"device": "cpu"},
+                )
                 logger.info(
                     "Speaker embedding model loaded in %.1fs",
                     time.monotonic() - t0,
@@ -914,9 +915,8 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     manager = ModelManager(args)
     enrollment_dir = Path(args.enrollment_dir)
     enrollment_store = EnrollmentStore(enrollment_dir)
-    # Pass HF token to embedding extractor to suppress unauthenticated
-    # access warnings from SpeechBrain. Token is never logged.
-    embedding_extractor = EmbeddingExtractor(hf_token=manager._hf_token)
+    # The embedding model is public; no HF token is needed.
+    embedding_extractor = EmbeddingExtractor()
     # Embedding cache lives adjacent to enrollment, same owner-only protection.
     cache_dir = enrollment_dir.parent / "embedding-cache"
     embedding_cache = EmbeddingCache(cache_dir, embedding_extractor._model_id)

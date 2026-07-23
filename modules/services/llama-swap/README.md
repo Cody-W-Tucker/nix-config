@@ -29,6 +29,10 @@ The CPU speaker-embedding extractor (`EmbeddingExtractor`) disables `torch.backe
 
 If embedding extraction fails inside the service but works when run directly, this is not an audio or model failure — it is the W^X hardening doing its job. The extractor already disables MKLDNN before model construction. If you see a regression here, check that `torch.backends.mkldnn.enabled` is still set to `False` before `EncoderClassifier.from_hparams` is called.
 
+### Speaker embedding model: public, no authentication
+
+The speaker embedding model (`speechbrain/spkrec-ecapa-voxceleb`) is public on Hugging Face. No HF token is passed to `EncoderClassifier.from_hparams`. SpeechBrain 1.1's `Pretrained.__init__` does not accept a `token` keyword argument — passing one causes an immediate `TypeError` at load time. The HF token configured for the service is used only by the WhisperX `DiarizationPipeline` (which does accept `token=`), not by the SpeechBrain embedding extractor.
+
 ## Diarization embedding cache directory
 
 The diarization server writes speaker-embedding weights to `/var/lib/llama-swap/diarization/embedding-cache`. This directory is created by `systemd.tmpfiles.rules` in `hosts/beast/models.nix` with the same owner (`codyt:users`) and permissions (`0750`) as the enrollment directory, and is listed in the service's `ReadWritePaths`.
