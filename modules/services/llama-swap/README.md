@@ -28,3 +28,15 @@ The diarization service runs under `MemoryDenyWriteExecute=yes`. This is an inte
 The CPU speaker-embedding extractor (`EmbeddingExtractor`) disables `torch.backends.mkldnn.enabled` *before* constructing the SpeechBrain ECAPA model. This is required because oneDNN/MKLDNN JIT primitive creation allocates writable+executable memory pages, which the systemd hardening correctly rejects. The fix is scoped to the lazy CPU initialization path; GPU diarization uses CUDA and is unaffected.
 
 If embedding extraction fails inside the service but works when run directly, this is not an audio or model failure — it is the W^X hardening doing its job. The extractor already disables MKLDNN before model construction. If you see a regression here, check that `torch.backends.mkldnn.enabled` is still set to `False` before `EncoderClassifier.from_hparams` is called.
+
+## Diarization embedding cache directory
+
+The diarization server writes speaker-embedding weights to `/var/lib/llama-swap/diarization/embedding-cache`. This directory is created by `systemd.tmpfiles.rules` in `hosts/beast/models.nix` with the same owner (`codyt:users`) and permissions (`0750`) as the enrollment directory, and is listed in the service's `ReadWritePaths`.
+
+Deploy with:
+
+```console
+sudo nixos-rebuild switch
+```
+
+Do not create or `chmod` this path manually — the tmpfiles rule owns it. If the service fails with `OSError: [Errno 30] Read-only file system` on this path, the `ReadWritePaths` entry is missing or the tmpfiles rule has not been applied yet.

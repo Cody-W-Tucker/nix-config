@@ -69,9 +69,27 @@ let
 
   # Persistent paths for diarization enrollment and model cache.
   diarizationEnrollmentDir = "/var/lib/llama-swap/diarization/enrollment";
+  diarizationEmbeddingCache = "/var/lib/llama-swap/diarization/embedding-cache";
   diarizationCache = "/var/cache/llama-swap/whisperx";
 in
 {
+  assertions = [
+    {
+      # Guard: the diarization server hardcodes the embedding-cache path.
+      # If it disappears from tmpfiles or ReadWritePaths, startup fails with
+      # OSError: [Errno 30] Read-only file system.
+      assertion =
+        let
+          rules = config.systemd.tmpfiles.rules;
+          rwPaths = config.systemd.services.llama-swap.serviceConfig.ReadWritePaths or [ ];
+          hasTmpfile = builtins.any (r: builtins.match ".*${diarizationEmbeddingCache}.*" r != null) rules;
+          hasRwPath = builtins.elem diarizationEmbeddingCache rwPaths;
+        in
+        hasTmpfile && hasRwPath;
+      message = "diarization embedding-cache (${diarizationEmbeddingCache}) must be in systemd.tmpfiles.rules and llama-swap ReadWritePaths";
+    }
+  ];
+
   sops.secrets."huggingface-read" = {
     owner = "codyt";
     group = "users";
@@ -82,6 +100,7 @@ in
     "d ${sharedFasterWhisperCache} 0755 codyt users - -"
     "d ${diarizationCache} 0755 codyt users - -"
     "d ${diarizationEnrollmentDir} 0750 codyt users - -"
+    "d ${diarizationEmbeddingCache} 0750 codyt users - -"
   ];
 
   services.llama-swap = {
@@ -231,6 +250,7 @@ in
       sharedFasterWhisperCache
       diarizationCache
       diarizationEnrollmentDir
+      diarizationEmbeddingCache
     ];
   };
 }
