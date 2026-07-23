@@ -50,10 +50,15 @@ class BusyError(Exception):
 
 
 class EmbeddingExtractor:
-    """CPU-based speaker embedding extractor using SpeechBrain ECAPA-TDNN.
+    """Speaker embedding extractor using SpeechBrain ECAPA-TDNN.
     
     Extracts 192-dim normalized embeddings from audio files or segments.
     Thread-safe via internal lock on model initialization.
+
+    Device policy: auto-selects CUDA if available, otherwise CPU. Falls back
+    to CPU once if CUDA initialization or forward pass fails due to device/
+    runtime errors (not data errors). MKLDNN is disabled only on CPU path to
+    comply with systemd MemoryDenyWriteExecute=yes.
 
     The model ``speechbrain/spkrec-ecapa-voxceleb`` is public on Hugging
     Face and does not require authentication.  No HF token is passed to
@@ -65,16 +70,22 @@ class EmbeddingExtractor:
         self._model = None
         self._lock = threading.Lock()
         self._model_id = "speechbrain/spkrec-ecapa-voxceleb"
+        self._device = None  # Resolved at model load time
+        self._cuda_fallback_used = False  # Track if we've already fallen back
+    
+    def _resolve_device(self):
+        """Resolve device: CUDA if available, otherwise CPU."""
+        import torch
+        if torch.cuda.is_available():
+            return "cuda"
+        return "cpu"
     
     def _ensure_model(self):
         """Load the embedding model if not already loaded.
         
-        MKLDNN/oneDNN JIT primitive creation requires writable+executable
-        memory pages, which is blocked by the service's systemd
-        ``MemoryDenyWriteExecute=yes`` hardening. Disabling MKLDNN for
-        this CPU-only forward path avoids the W^X violation without
-        weakening the sandbox. GPU diarization paths are unaffected —
-        they use CUDA, not oneDNN.
+        Attempts CUDA first if available. On device/runtime errors during
+        initialization, falls back to CPU once. MKLDNN is disabled only
+        on CPU path to comply with systemd MemoryDenyWriteExecute=yes.
         """
         if self._model is not None:
             return
@@ -84,37 +95,75 @@ class EmbeddingExtractor:
             if self._model is not None:
                 return
             
-            try:
-                import torch
-                import torch.backends.mkldnn as _mkldnn
-                
-                # Disable MKLDNN before constructing the classifier so no
-                # JIT primitive is ever allocated under W^X restrictions.
-                _mkldnn.enabled = False
-                
-                from speechbrain.inference.speaker import EncoderClassifier
-                
-                logger.info(
-                    "Loading speaker embedding model on CPU "
-                    "(mkldnn disabled for systemd MemoryDenyWriteExecute)"
-                )
-                t0 = time.monotonic()
-                # The model is public; no token is needed.  SpeechBrain
-                # 1.1 does not accept ``token=`` at from_hparams, so we
-                # never pass one.
-                self._model = EncoderClassifier.from_hparams(
-                    source=self._model_id,
-                    run_opts={"device": "cpu"},
-                )
-                logger.info(
-                    "Speaker embedding model loaded in %.1fs",
-                    time.monotonic() - t0,
-                )
-            except Exception as e:
-                logger.error("Failed to load speaker embedding model: %s", e)
-                raise RuntimeError(
-                    f"Speaker embedding model initialization failed: {e}"
-                ) from e
+            import torch
+            # If we've already fallen back from CUDA, go straight to CPU
+            if self._cuda_fallback_used:
+                target_device = "cpu"
+            else:
+                target_device = self._resolve_device()
+            
+            # Try loading on target device, fallback to CPU on device errors
+            for attempt_device in [target_device, "cpu"] if target_device == "cuda" else ["cpu"]:
+                try:
+                    # Disable MKLDNN only on CPU path
+                    if attempt_device == "cpu":
+                        import torch.backends.mkldnn as _mkldnn
+                        _mkldnn.enabled = False
+                    
+                    from speechbrain.inference.speaker import EncoderClassifier
+                    
+                    logger.info(
+                        "Loading speaker embedding model on %s%s",
+                        attempt_device,
+                        " (mkldnn disabled for systemd MemoryDenyWriteExecute)" if attempt_device == "cpu" else "",
+                    )
+                    t0 = time.monotonic()
+                    # The model is public; no token is needed.  SpeechBrain
+                    # 1.1 does not accept ``token=`` at from_hparams, so we
+                    # never pass one.
+                    self._model = EncoderClassifier.from_hparams(
+                        source=self._model_id,
+                        run_opts={"device": attempt_device},
+                    )
+                    self._device = attempt_device
+                    logger.info(
+                        "Speaker embedding model loaded on %s in %.1fs",
+                        attempt_device,
+                        time.monotonic() - t0,
+                    )
+                    return  # Success
+                except (RuntimeError, AssertionError) as e:
+                    # Device/runtime errors: CUDA OOM, driver issues, etc.
+                    err_str = str(e).lower()
+                    is_device_error = any(kw in err_str for kw in [
+                        "cuda", "out of memory", "device", "driver", "runtime",
+                    ])
+                    
+                    if is_device_error and attempt_device == "cuda" and not self._cuda_fallback_used:
+                        logger.warning(
+                            "CUDA embedding model initialization failed: %s. "
+                            "Falling back to CPU.",
+                            e,
+                        )
+                        # Clean up CUDA allocation if any
+                        if torch.cuda.is_available():
+                            try:
+                                torch.cuda.empty_cache()
+                            except Exception:
+                                pass
+                        self._cuda_fallback_used = True
+                        continue  # Try CPU
+                    else:
+                        logger.error("Failed to load speaker embedding model on %s: %s", attempt_device, e)
+                        raise RuntimeError(
+                            f"Speaker embedding model initialization failed on {attempt_device}: {e}"
+                        ) from e
+                except Exception as e:
+                    # Non-device errors (e.g., network, model corruption) — don't fallback
+                    logger.error("Failed to load speaker embedding model on %s: %s", attempt_device, e)
+                    raise RuntimeError(
+                        f"Speaker embedding model initialization failed on {attempt_device}: {e}"
+                    ) from e
     
     def extract_embedding(self, audio_path: str) -> np.ndarray:
         """Extract a speaker embedding from an audio file.
@@ -207,6 +256,21 @@ class EmbeddingExtractor:
             
             return self._encode_waveform(segment)
             
+        except RuntimeError as e:
+            err_str = str(e).lower()
+            is_short_segment = "too short" in err_str or "segment too short" in err_str
+            if is_short_segment:
+                # Short segments are normal exclusions, not fatal errors
+                logger.warning(
+                    "Excluding short segment %s [%.2f-%.2f]: %s",
+                    audio_path, start_sec, end_sec, e,
+                )
+            else:
+                logger.error(
+                    "Failed to extract embedding from %s [%.2f-%.2f]: %s",
+                    audio_path, start_sec, end_sec, e,
+                )
+            raise RuntimeError(f"Segment embedding extraction failed: {e}") from e
         except Exception as e:
             logger.error(
                 "Failed to extract embedding from %s [%.2f-%.2f]: %s",
@@ -215,10 +279,50 @@ class EmbeddingExtractor:
             raise RuntimeError(f"Segment embedding extraction failed: {e}") from e
     
     def _encode_waveform(self, signal) -> np.ndarray:
-        """Encode a waveform tensor to a normalized embedding."""
+        """Encode a waveform tensor to a normalized embedding.
+        
+        If CUDA forward pass fails due to device/runtime error and we haven't
+        already fallen back, re-initialize on CPU and retry once. Data errors
+        (e.g., bad audio) are not retried.
+        """
         import torch
+        
         with threading.Lock():
-            embedding = self._model.encode_batch(signal)
+            try:
+                embedding = self._model.encode_batch(signal)
+            except (RuntimeError, AssertionError) as e:
+                err_str = str(e).lower()
+                is_device_error = any(kw in err_str for kw in [
+                    "cuda", "out of memory", "device", "driver", "runtime",
+                ])
+                
+                if (
+                    is_device_error
+                    and self._device == "cuda"
+                    and not self._cuda_fallback_used
+                ):
+                    logger.warning(
+                        "CUDA embedding forward failed: %s. "
+                        "Falling back to CPU and retrying.",
+                        e,
+                    )
+                    # Clean up CUDA allocation
+                    if torch.cuda.is_available():
+                        try:
+                            torch.cuda.empty_cache()
+                        except Exception:
+                            pass
+                    
+                    # Clear model and re-initialize on CPU
+                    self._model = None
+                    self._cuda_fallback_used = True
+                    self._ensure_model()  # Will load on CPU
+                    
+                    # Retry on CPU
+                    embedding = self._model.encode_batch(signal)
+                else:
+                    raise
+        
         embedding_np = embedding.squeeze().cpu().numpy()
         norm = np.linalg.norm(embedding_np)
         if norm > 0:
@@ -1422,7 +1526,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     ):
         """Upload an audio sample for an enrolled person.
         
-        Extracts speaker embedding (CPU-only) and stores it. Does not retain
+        Extracts speaker embedding (auto CUDA/CPU) and stores it. Does not retain
         raw audio. Requires enrollment to be initialized first.
         
         Returns 400 if audio invalid or extraction fails.
@@ -1477,7 +1581,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 tmp.write(audio_bytes)
                 temp_path = tmp.name
             
-            # Extract embedding (CPU-only, lazy-loaded)
+            # Extract embedding (auto CUDA/CPU, lazy-loaded)
             try:
                 embedding = embedding_extractor.extract_embedding(temp_path)
             except RuntimeError as e:
