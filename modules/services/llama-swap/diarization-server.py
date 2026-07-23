@@ -19,6 +19,7 @@ import argparse
 import json
 import logging
 import os
+import stat
 import tempfile
 import threading
 import time
@@ -26,6 +27,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
 import uvicorn
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
@@ -44,6 +46,284 @@ DEFAULT_DIARIZATION_MODEL = "pyannote/speaker-diarization-community-1"
 
 class BusyError(Exception):
     """Raised when the one-job concurrency lock cannot be acquired."""
+
+
+class EmbeddingExtractor:
+    """CPU-only speaker embedding extraction using speechbrain.
+    
+    Lazy-loads the model on first use. Thread-safe via internal lock.
+    Raises structured errors if model init or extraction fails.
+    """
+    
+    def __init__(self):
+        self._model = None
+        self._lock = threading.Lock()
+        self._model_id = "speechbrain/spkrec-ecapa-voxceleb"
+    
+    def _ensure_model(self):
+        """Load the embedding model if not already loaded."""
+        if self._model is not None:
+            return
+        
+        with self._lock:
+            # Double-check after acquiring lock
+            if self._model is not None:
+                return
+            
+            try:
+                from speechbrain.inference.speaker import EncoderClassifier
+                
+                logger.info("Loading speaker embedding model on CPU")
+                t0 = time.monotonic()
+                self._model = EncoderClassifier.from_hparams(
+                    source=self._model_id,
+                    run_opts={"device": "cpu"},
+                )
+                logger.info(
+                    "Speaker embedding model loaded in %.1fs",
+                    time.monotonic() - t0,
+                )
+            except Exception as e:
+                logger.error("Failed to load speaker embedding model: %s", e)
+                raise RuntimeError(
+                    f"Speaker embedding model initialization failed: {e}"
+                ) from e
+    
+    def extract_embedding(self, audio_path: str) -> np.ndarray:
+        """Extract a speaker embedding from an audio file.
+        
+        Args:
+            audio_path: Path to audio file (any format supported by torchaudio)
+            
+        Returns:
+            1D numpy array of shape (192,) containing the embedding
+            
+        Raises:
+            RuntimeError: If model not loaded or extraction fails
+        """
+        self._ensure_model()
+        
+        try:
+            import torchaudio
+            
+            # Load audio and resample to 16kHz mono
+            signal, sample_rate = torchaudio.load(audio_path)
+            
+            # Convert to mono if stereo
+            if signal.shape[0] > 1:
+                signal = signal.mean(dim=0, keepdim=True)
+            
+            # Resample to 16kHz if needed
+            if sample_rate != 16000:
+                resampler = torchaudio.transforms.Resample(
+                    orig_freq=sample_rate,
+                    new_freq=16000,
+                )
+                signal = resampler(signal)
+                sample_rate = 16000
+            
+            # Extract embedding
+            with threading.Lock():
+                embedding = self._model.encode_batch(signal)
+            
+            # Convert to numpy and flatten to 1D
+            embedding_np = embedding.squeeze().cpu().numpy()
+            
+            # Normalize to unit length for cosine similarity
+            norm = np.linalg.norm(embedding_np)
+            if norm > 0:
+                embedding_np = embedding_np / norm
+            
+            return embedding_np
+            
+        except Exception as e:
+            logger.error("Failed to extract embedding from %s: %s", audio_path, e)
+            raise RuntimeError(f"Embedding extraction failed: {e}") from e
+
+
+class EnrollmentStore:
+    """Persistent enrollment storage with atomic writes and owner-only permissions.
+    
+    Directory structure:
+        <enrollment_dir>/<person_id>/
+            metadata.json  - person metadata and sample count
+            embeddings.json - list of normalized speaker embeddings
+    """
+    
+    def __init__(self, enrollment_dir: Path):
+        self.enrollment_dir = enrollment_dir
+        self.enrollment_dir.mkdir(parents=True, exist_ok=True)
+        # Set directory permissions to owner-only
+        os.chmod(self.enrollment_dir, stat.S_IRWXU)
+    
+    def _person_dir(self, person_id: str) -> Path:
+        """Get the directory for a person, validating person_id format."""
+        # Validate person_id to prevent path traversal
+        if not person_id or "/" in person_id or ".." in person_id:
+            raise ValueError(f"Invalid person_id: {person_id}")
+        return self.enrollment_dir / person_id
+    
+    def _atomic_write(self, path: Path, data: dict):
+        """Write JSON data atomically with owner-only permissions."""
+        # Write to temp file in same directory
+        temp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w",
+                dir=path.parent,
+                delete=False,
+                suffix=".tmp",
+            ) as tmp:
+                json.dump(data, tmp, indent=2)
+                temp_path = tmp.name
+            
+            # Set owner-only permissions before moving
+            os.chmod(temp_path, stat.S_IRUSR | stat.S_IWUSR)
+            
+            # Atomic rename
+            os.replace(temp_path, path)
+        except Exception:
+            # Clean up temp file on failure
+            if temp_path and os.path.exists(temp_path):
+                os.unlink(temp_path)
+            raise
+    
+    def initialize_enrollment(
+        self,
+        person_id: str,
+        display_name: str,
+        consent_granted: bool,
+    ) -> dict:
+        """Initialize a new enrollment record.
+        
+        Args:
+            person_id: Unique person identifier
+            display_name: Human-readable name
+            consent_granted: Must be True to proceed
+            
+        Returns:
+            Metadata dict
+            
+        Raises:
+            ValueError: If consent not granted or person_id invalid
+            RuntimeError: If enrollment already exists
+        """
+        if not consent_granted:
+            raise ValueError("Consent must be granted to enroll")
+        
+        person_dir = self._person_dir(person_id)
+        if person_dir.exists():
+            raise RuntimeError(f"Enrollment already exists for {person_id}")
+        
+        person_dir.mkdir(parents=True, exist_ok=True)
+        os.chmod(person_dir, stat.S_IRWXU)
+        
+        metadata = {
+            "person_id": person_id,
+            "display_name": display_name,
+            "consent_granted": True,
+            "consent_timestamp": datetime.now(timezone.utc).isoformat(),
+            "samples_count": 0,
+            "candidate_eligible": False,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        
+        self._atomic_write(person_dir / "metadata.json", metadata)
+        self._atomic_write(person_dir / "embeddings.json", {"embeddings": []})
+        
+        return metadata
+    
+    def add_sample(self, person_id: str, embedding: np.ndarray) -> dict:
+        """Add a speaker embedding sample to an enrollment.
+        
+        Args:
+            person_id: Person identifier
+            embedding: Normalized speaker embedding (1D numpy array)
+            
+        Returns:
+            Updated metadata dict
+            
+        Raises:
+            RuntimeError: If enrollment doesn't exist
+        """
+        person_dir = self._person_dir(person_id)
+        if not person_dir.exists():
+            raise RuntimeError(f"Enrollment not found for {person_id}")
+        
+        # Load existing embeddings
+        embeddings_path = person_dir / "embeddings.json"
+        with open(embeddings_path) as f:
+            data = json.load(f)
+        
+        # Add new embedding as list
+        data["embeddings"].append(embedding.tolist())
+        
+        # Write back atomically
+        self._atomic_write(embeddings_path, data)
+        
+        # Update metadata
+        metadata_path = person_dir / "metadata.json"
+        with open(metadata_path) as f:
+            metadata = json.load(f)
+        
+        metadata["samples_count"] = len(data["embeddings"])
+        metadata["candidate_eligible"] = metadata["samples_count"] >= MIN_ENROLLMENT_SAMPLES
+        metadata["updated_at"] = datetime.now(timezone.utc).isoformat()
+        
+        self._atomic_write(metadata_path, metadata)
+        
+        return metadata
+    
+    def get_metadata(self, person_id: str) -> dict | None:
+        """Get metadata for a person, or None if not found."""
+        person_dir = self._person_dir(person_id)
+        metadata_path = person_dir / "metadata.json"
+        if not metadata_path.exists():
+            return None
+        with open(metadata_path) as f:
+            return json.load(f)
+    
+    def get_embeddings(self, person_id: str) -> list[np.ndarray] | None:
+        """Get all embeddings for a person, or None if not found."""
+        person_dir = self._person_dir(person_id)
+        embeddings_path = person_dir / "embeddings.json"
+        if not embeddings_path.exists():
+            return None
+        with open(embeddings_path) as f:
+            data = json.load(f)
+        return [np.array(e) for e in data["embeddings"]]
+    
+    def list_candidates(self) -> list[dict]:
+        """List all persons eligible for candidate matching."""
+        candidates = []
+        if not self.enrollment_dir.exists():
+            return candidates
+        
+        for person_dir in sorted(self.enrollment_dir.iterdir()):
+            if not person_dir.is_dir():
+                continue
+            metadata_path = person_dir / "metadata.json"
+            if metadata_path.exists():
+                with open(metadata_path) as f:
+                    metadata = json.load(f)
+                if metadata.get("candidate_eligible"):
+                    candidates.append({
+                        "person_id": metadata["person_id"],
+                        "display_name": metadata["display_name"],
+                        "samples_count": metadata["samples_count"],
+                    })
+        
+        return candidates
+
+
+def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
+    """Compute cosine similarity between two normalized vectors.
+    
+    Assumes inputs are already normalized to unit length.
+    Returns value in [-1, 1], where 1 means identical.
+    """
+    # For normalized vectors, cosine similarity is just dot product
+    return float(np.dot(a, b))
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -77,6 +357,25 @@ def build_parser() -> argparse.ArgumentParser:
         "--enrollment-dir",
         default=str(ENROLLMENT_DIR),
         help="Persistent directory for speaker enrollment metadata",
+    )
+    parser.add_argument(
+        "--similarity-threshold",
+        type=float,
+        default=0.75,
+        help=(
+            "Cosine similarity threshold for candidate matching (default: 0.75). "
+            "Higher = more conservative. Range [0.5, 0.95]."
+        ),
+    )
+    parser.add_argument(
+        "--ambiguity-margin",
+        type=float,
+        default=0.05,
+        help=(
+            "Margin below threshold at which candidates are flagged as ambiguous "
+            "(default: 0.05). E.g. with threshold=0.75 and margin=0.05, scores in "
+            "[0.70, 0.75) are flagged ambiguous."
+        ),
     )
     return parser
 
@@ -291,12 +590,28 @@ class _ModelPhase:
 def create_app(args: argparse.Namespace) -> FastAPI:
     manager = ModelManager(args)
     enrollment_dir = Path(args.enrollment_dir)
+    enrollment_store = EnrollmentStore(enrollment_dir)
+    embedding_extractor = EmbeddingExtractor()
+    
+    # Validate threshold parameters
+    if not (0.5 <= args.similarity_threshold <= 0.95):
+        raise ValueError(
+            f"similarity_threshold must be in [0.5, 0.95], got {args.similarity_threshold}"
+        )
+    if not (0.0 <= args.ambiguity_margin <= 0.2):
+        raise ValueError(
+            f"ambiguity_margin must be in [0.0, 0.2], got {args.ambiguity_margin}"
+        )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         app.state.manager = manager
         app.state.model_id = args.model_id
         app.state.device = args.device
+        app.state.enrollment_store = enrollment_store
+        app.state.embedding_extractor = embedding_extractor
+        app.state.similarity_threshold = args.similarity_threshold
+        app.state.ambiguity_margin = args.ambiguity_margin
         enrollment_dir.mkdir(parents=True, exist_ok=True)
         yield
 
@@ -522,15 +837,168 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 full_text = " ".join(s["text"] for s in output_segments).strip()
 
                 # Identity mode handling
-                identity_status = "not_requested"
+                identity_result = {
+                    "mode": identity_mode or "off",
+                    "status": "not_requested",
+                }
+                
                 if identity_mode == "candidates":
-                    identity_status = "matching_unavailable"
-                    warnings.append(
-                        "Identity matching is not available: "
-                        "cross-session speaker embedding verification "
-                        "is pending. Only anonymous speaker labels are "
-                        "returned."
-                    )
+                    # Perform candidate matching for each unique speaker
+                    speaker_candidates = {}
+                    matching_status = "ok"
+                    matching_warnings = []
+                    
+                    try:
+                        # Extract embeddings for each unique speaker
+                        for speaker_label in speaker_order:
+                            # Collect all segments for this speaker
+                            speaker_segments = [
+                                seg for seg in segments
+                                if seg.get("speaker") == speaker_label
+                            ]
+                            
+                            if not speaker_segments:
+                                continue
+                            
+                            # Extract audio spans for this speaker and compute embeddings
+                            # For simplicity, we'll use the first substantial segment
+                            # (ideally we'd concatenate, but that requires audio processing)
+                            sample_embedding = None
+                            
+                            for seg in speaker_segments:
+                                start = seg.get("start", 0)
+                                end = seg.get("end", 0)
+                                duration = end - start
+                                
+                                # Skip very short segments (< 1 second)
+                                if duration < 1.0:
+                                    continue
+                                
+                                # Extract embedding from this segment
+                                # Note: This requires the audio file to still be available
+                                # and we need to extract the specific time range
+                                try:
+                                    import torchaudio
+                                    
+                                    # Load full audio and extract segment
+                                    signal, sample_rate = torchaudio.load(temp_path)
+                                    
+                                    # Convert sample times to sample indices
+                                    start_sample = int(start * sample_rate)
+                                    end_sample = int(end * sample_rate)
+                                    
+                                    # Extract segment
+                                    if signal.shape[0] > 1:
+                                        signal = signal.mean(dim=0, keepdim=True)
+                                    
+                                    segment_signal = signal[:, start_sample:end_sample]
+                                    
+                                    # Save segment to temp file for embedding extraction
+                                    with tempfile.NamedTemporaryFile(
+                                        delete=False, suffix=".wav"
+                                    ) as seg_tmp:
+                                        seg_temp_path = seg_tmp.name
+                                        torchaudio.save(
+                                            seg_temp_path,
+                                            segment_signal,
+                                            sample_rate,
+                                        )
+                                    
+                                    try:
+                                        sample_embedding = embedding_extractor.extract_embedding(
+                                            seg_temp_path
+                                        )
+                                        break  # Use first valid embedding
+                                    finally:
+                                        if os.path.exists(seg_temp_path):
+                                            os.unlink(seg_temp_path)
+                                    
+                                except Exception as e:
+                                    logger.warning(
+                                        "Failed to extract embedding for speaker %s: %s",
+                                        speaker_label,
+                                        e,
+                                    )
+                                    continue
+                            
+                            if sample_embedding is None:
+                                speaker_candidates[speaker_label] = {
+                                    "status": "extraction_failed",
+                                    "candidates": [],
+                                    "reason": "Could not extract speaker embedding from audio segments",
+                                }
+                                continue
+                            
+                            # Compare against all enrolled candidates
+                            candidates_list = []
+                            threshold = app.state.similarity_threshold
+                            margin = app.state.ambiguity_margin
+                            
+                            for candidate in enrollment_store.list_candidates():
+                                candidate_id = candidate["person_id"]
+                                candidate_embeddings = enrollment_store.get_embeddings(candidate_id)
+                                
+                                if not candidate_embeddings:
+                                    continue
+                                
+                                # Compute similarity against each enrolled embedding
+                                # and use the maximum (best match)
+                                max_similarity = max(
+                                    cosine_similarity(sample_embedding, emb)
+                                    for emb in candidate_embeddings
+                                )
+                                
+                                # Determine match status
+                                if max_similarity >= threshold:
+                                    match_status = "match"
+                                elif max_similarity >= (threshold - margin):
+                                    match_status = "ambiguous"
+                                else:
+                                    match_status = "below_threshold"
+                                
+                                candidates_list.append({
+                                    "person_id": candidate_id,
+                                    "display_name": candidate["display_name"],
+                                    "similarity": round(max_similarity, 4),
+                                    "match_status": match_status,
+                                    "threshold": threshold,
+                                })
+                            
+                            # Sort by similarity descending
+                            candidates_list.sort(key=lambda c: c["similarity"], reverse=True)
+                            
+                            speaker_candidates[speaker_label] = {
+                                "status": "ok",
+                                "candidates": candidates_list,
+                            }
+                        
+                        identity_result = {
+                            "mode": "candidates",
+                            "status": matching_status,
+                            "speaker_candidates": speaker_candidates,
+                            "threshold": app.state.similarity_threshold,
+                            "ambiguity_margin": app.state.ambiguity_margin,
+                            "note": (
+                                "Candidates are advisory only and based on voice similarity. "
+                                "Do not treat as confirmed identity. Review manually before use."
+                            ),
+                        }
+                        
+                        if matching_warnings:
+                            warnings.extend(matching_warnings)
+                        
+                    except Exception as e:
+                        logger.error("Candidate matching failed: %s", e)
+                        identity_result = {
+                            "mode": "candidates",
+                            "status": "matching_failed",
+                            "error": str(e),
+                            "note": "Candidate matching failed. Only anonymous speaker labels are returned.",
+                        }
+                        warnings.append(
+                            f"Candidate matching failed: {e}. "
+                            "Only anonymous speaker labels are returned."
+                        )
 
                 return JSONResponse(
                     {
@@ -541,10 +1009,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                         ),
                         "segments": output_segments,
                         "speakers": speaker_order,
-                        "identity": {
-                            "mode": identity_mode or "off",
-                            "status": identity_status,
-                        },
+                        "identity": identity_result,
                         "warnings": warnings,
                     }
                 )
@@ -553,20 +1018,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
             if temp_path and os.path.exists(temp_path):
                 os.unlink(temp_path)
 
-    # ── Enrollment endpoints (disabled) ──────────────────────
-    #
-    # Enrollment and sample ingestion are disabled until a verified
-    # embedding matcher is implemented.  Storing raw audio without a
-    # matcher creates retention liability with no functional use.
-    # The endpoints return 501 to signal "not implemented" while
-    # preserving the API contract for future enablement.
-
-    _ENROLLMENT_DISABLED_DETAIL = (
-        "Speaker enrollment is not yet implemented. "
-        "Cross-session embedding matching must be verified against "
-        "the installed pyannote-audio/speechbrain versions before "
-        "raw audio can be accepted. See the docs for current status."
-    )
+    # ── Enrollment endpoints ───────────────────────────────────
 
     @app.post("/v1/identity/enroll")
     async def enroll_person(
@@ -574,55 +1026,193 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         person_id: str = Form(...),
         display_name: str = Form(...),
     ):
-        """Enrollment endpoint — returns 501 until embedding matcher exists."""
-        raise HTTPException(
-            status_code=501,
-            detail=_ENROLLMENT_DISABLED_DETAIL,
-        )
+        """Initialize enrollment for a person.
+        
+        Requires explicit consent flag. Creates metadata record but does not
+        add any samples yet. Use /v1/identity/samples to add audio.
+        
+        Returns 400 if consent not granted or person_id invalid.
+        Returns 409 if enrollment already exists.
+        """
+        # Validate person_id format
+        if not person_id or not person_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="person_id is required and cannot be empty",
+            )
+        
+        if "/" in person_id or ".." in person_id:
+            raise HTTPException(
+                status_code=400,
+                detail="person_id contains invalid characters",
+            )
+        
+        # Validate consent
+        if not consent:
+            raise HTTPException(
+                status_code=400,
+                detail="Consent must be granted to enroll. Set consent=true.",
+            )
+        
+        if not display_name or not display_name.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="display_name is required and cannot be empty",
+            )
+        
+        try:
+            metadata = enrollment_store.initialize_enrollment(
+                person_id=person_id,
+                display_name=display_name.strip(),
+                consent_granted=consent,
+            )
+            return {
+                "status": "initialized",
+                "person_id": metadata["person_id"],
+                "display_name": metadata["display_name"],
+                "consent_granted": metadata["consent_granted"],
+                "consent_timestamp": metadata["consent_timestamp"],
+                "samples_count": 0,
+                "candidate_eligible": False,
+                "message": (
+                    f"Enrollment initialized for {person_id}. "
+                    f"Add {MIN_ENROLLMENT_SAMPLES} or more audio samples via "
+                    f"/v1/identity/samples to become candidate-eligible."
+                ),
+            }
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        except RuntimeError as e:
+            raise HTTPException(status_code=409, detail=str(e))
 
     @app.post("/v1/identity/samples")
     async def upload_sample(
         person_id: str = Form(...),
         file: UploadFile = File(...),
     ):
-        """Sample upload endpoint — returns 501 until embedding matcher exists."""
-        raise HTTPException(
-            status_code=501,
-            detail=_ENROLLMENT_DISABLED_DETAIL,
-        )
+        """Upload an audio sample for an enrolled person.
+        
+        Extracts speaker embedding (CPU-only) and stores it. Does not retain
+        raw audio. Requires enrollment to be initialized first.
+        
+        Returns 400 if audio invalid or extraction fails.
+        Returns 404 if enrollment not found.
+        """
+        # Validate person_id exists
+        metadata = enrollment_store.get_metadata(person_id)
+        if metadata is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Enrollment not found for {person_id}. Initialize first via /v1/identity/enroll.",
+            )
+        
+        # Validate file
+        suffix = Path(file.filename or "audio.wav").suffix or ".wav"
+        if suffix.lower() not in SUPPORTED_FORMATS:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Unsupported audio format: {suffix}. "
+                    f"Supported: {sorted(SUPPORTED_FORMATS)}"
+                ),
+            )
+        
+        audio_bytes = await file.read()
+        if not audio_bytes:
+            raise HTTPException(status_code=400, detail="Empty audio file")
+        
+        if len(audio_bytes) > MAX_UPLOAD_BYTES:
+            raise HTTPException(
+                status_code=413,
+                detail=(
+                    f"Audio file too large: {len(audio_bytes)} bytes "
+                    f"(max {MAX_UPLOAD_BYTES})"
+                ),
+            )
+        
+        # Minimum size guard (reject very short/corrupt files)
+        if len(audio_bytes) < 1000:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Audio file too small: {len(audio_bytes)} bytes. "
+                    "Minimum ~1 second of audio required."
+                ),
+            )
+        
+        # Write to temp file for extraction
+        temp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                tmp.write(audio_bytes)
+                temp_path = tmp.name
+            
+            # Extract embedding (CPU-only, lazy-loaded)
+            try:
+                embedding = embedding_extractor.extract_embedding(temp_path)
+            except RuntimeError as e:
+                raise HTTPException(
+                    status_code=500,
+                    detail=(
+                        f"Embedding extraction failed: {e}. "
+                        "The audio file may be corrupt, too short, or contain no speech."
+                    ),
+                )
+            
+            # Store embedding (raw audio is NOT retained)
+            updated_metadata = enrollment_store.add_sample(person_id, embedding)
+            
+            return {
+                "status": "sample_added",
+                "person_id": person_id,
+                "samples_count": updated_metadata["samples_count"],
+                "candidate_eligible": updated_metadata["candidate_eligible"],
+                "embedding_shape": list(embedding.shape),
+                "message": (
+                    f"Sample added. {updated_metadata['samples_count']} total samples. "
+                    + (
+                        "Candidate-eligible!"
+                        if updated_metadata["candidate_eligible"]
+                        else f"Need {MIN_ENROLLMENT_SAMPLES - updated_metadata['samples_count']} more samples for candidate eligibility."
+                    )
+                ),
+            }
+        finally:
+            if temp_path and os.path.exists(temp_path):
+                os.unlink(temp_path)
 
     @app.get("/v1/identity/candidates")
     async def list_candidates():
         """List enrolled speakers who meet the sample threshold.
-
-        Returns matching_unavailable status because cross-session speaker
-        embedding matching has not been verified in the installed package
-        versions. The candidate list is provided for manual review only.
+        
+        Returns list of person_ids eligible for candidate matching.
+        Does not perform any matching - use /v1/audio/transcriptions with
+        identity_mode=candidates to get per-segment candidate suggestions.
         """
-        candidates = []
-        if enrollment_dir.exists():
-            for person_dir in sorted(enrollment_dir.iterdir()):
-                meta_path = person_dir / "metadata.json"
-                if meta_path.exists():
-                    meta = json.loads(meta_path.read_text())
-                    if meta.get("candidate_eligible"):
-                        candidates.append(
-                            {
-                                "person_id": meta["person_id"],
-                                "display_name": meta["display_name"],
-                                "samples_count": meta["samples_count"],
-                            }
-                        )
-
+        candidates = enrollment_store.list_candidates()
+        
         return {
-            "status": "matching_unavailable",
-            "reason": (
-                "Cross-session speaker embedding matching is not yet "
-                "verified in the installed pyannote-audio/speechbrain "
-                "versions. Candidate list is for manual review only."
-            ),
+            "status": "ok",
             "candidates": candidates,
+            "min_samples_required": MIN_ENROLLMENT_SAMPLES,
+            "total_enrolled": len(list(enrollment_dir.iterdir())) if enrollment_dir.exists() else 0,
         }
+    
+    @app.get("/v1/identity/status/{person_id}")
+    async def enrollment_status(person_id: str):
+        """Get enrollment status for a specific person.
+        
+        Returns metadata including sample count and candidate eligibility.
+        Returns 404 if not found.
+        """
+        metadata = enrollment_store.get_metadata(person_id)
+        if metadata is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Enrollment not found for {person_id}",
+            )
+        
+        return metadata
 
     return app
 
