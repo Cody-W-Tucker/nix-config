@@ -39,6 +39,7 @@ MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
 MAX_DURATION_SECONDS = 7200  # 2 hour (conservative bound)
 SUPPORTED_FORMATS = {".wav", ".mp3", ".m4a", ".ogg", ".flac", ".webm", ".mp4"}
 ENROLLMENT_DIR = Path("/var/lib/llama-swap/diarization/enrollment")
+EMBEDDING_CACHE_DIR = Path("/var/lib/llama-swap/diarization/embedding-cache")
 MIN_ENROLLMENT_SAMPLES = 3
 # Default diarization model (community edition, no HF gated access needed).
 DEFAULT_DIARIZATION_MODEL = "pyannote/speaker-diarization-community-1"
@@ -140,23 +141,81 @@ class EmbeddingExtractor:
                 signal = resampler(signal)
                 sample_rate = 16000
             
-            # Extract embedding
-            with threading.Lock():
-                embedding = self._model.encode_batch(signal)
-            
-            # Convert to numpy and flatten to 1D
-            embedding_np = embedding.squeeze().cpu().numpy()
-            
-            # Normalize to unit length for cosine similarity
-            norm = np.linalg.norm(embedding_np)
-            if norm > 0:
-                embedding_np = embedding_np / norm
-            
-            return embedding_np
+            return self._encode_waveform(signal)
             
         except Exception as e:
             logger.error("Failed to extract embedding from %s: %s", audio_path, e)
             raise RuntimeError(f"Embedding extraction failed: {e}") from e
+    
+    def extract_embedding_from_segment(
+        self,
+        audio_path: str,
+        start_sec: float,
+        end_sec: float,
+    ) -> np.ndarray:
+        """Extract a speaker embedding from a time slice of an audio file.
+        
+        Args:
+            audio_path: Path to audio file
+            start_sec: Start time in seconds
+            end_sec: End time in seconds
+            
+        Returns:
+            1D numpy array of shape (192,) containing the normalized embedding
+            
+        Raises:
+            RuntimeError: If extraction fails or segment is too short
+        """
+        self._ensure_model()
+        
+        try:
+            import torchaudio
+            
+            signal, sample_rate = torchaudio.load(audio_path)
+            
+            # Convert to mono
+            if signal.shape[0] > 1:
+                signal = signal.mean(dim=0, keepdim=True)
+            
+            # Resample to 16kHz
+            if sample_rate != 16000:
+                resampler = torchaudio.transforms.Resample(
+                    orig_freq=sample_rate,
+                    new_freq=16000,
+                )
+                signal = resampler(signal)
+                sample_rate = 16000
+            
+            # Slice segment
+            start_sample = int(start_sec * sample_rate)
+            end_sample = int(end_sec * sample_rate)
+            segment = signal[:, start_sample:end_sample]
+            
+            # Require minimum duration (0.3s) for stable embedding
+            if segment.shape[1] < int(0.3 * sample_rate):
+                raise RuntimeError(
+                    f"Segment too short: {end_sec - start_sec:.2f}s < 0.3s"
+                )
+            
+            return self._encode_waveform(segment)
+            
+        except Exception as e:
+            logger.error(
+                "Failed to extract embedding from %s [%.2f-%.2f]: %s",
+                audio_path, start_sec, end_sec, e,
+            )
+            raise RuntimeError(f"Segment embedding extraction failed: {e}") from e
+    
+    def _encode_waveform(self, signal) -> np.ndarray:
+        """Encode a waveform tensor to a normalized embedding."""
+        import torch
+        with threading.Lock():
+            embedding = self._model.encode_batch(signal)
+        embedding_np = embedding.squeeze().cpu().numpy()
+        norm = np.linalg.norm(embedding_np)
+        if norm > 0:
+            embedding_np = embedding_np / norm
+        return embedding_np
 
 
 class EnrollmentStore:
@@ -332,6 +391,238 @@ class EnrollmentStore:
                     })
         
         return candidates
+    
+    def list_persons(self) -> list[dict]:
+        """List all enrolled persons with full metadata for inventory."""
+        persons = []
+        if not self.enrollment_dir.exists():
+            return persons
+        
+        for person_dir in sorted(self.enrollment_dir.iterdir()):
+            if not person_dir.is_dir():
+                continue
+            metadata_path = person_dir / "metadata.json"
+            if metadata_path.exists():
+                try:
+                    with open(metadata_path) as f:
+                        metadata = json.load(f)
+                    persons.append(metadata)
+                except Exception as e:
+                    logger.warning("Failed to read metadata for %s: %s", person_dir.name, e)
+        
+        return persons
+
+
+class EmbeddingCache:
+    """Revisioned cache for per-recording speaker embeddings.
+    
+    Storage layout (adjacent to enrollment, owner-only):
+        <cache_dir>/<cache_id>/
+            manifest.json    - revision inputs (audio_sha, transcript_sha,
+                               model_id, segment_set_hash, built_at)
+            prototypes.json  - per-label prototype embeddings + supporting
+                               per-segment embeddings (no raw audio retained)
+    
+    Cache key = sha256(audio_sha + transcript_sha + model_id + segment_set_hash).
+    Any change to inputs invalidates the cache (stale detection).
+    
+    Biometric data: embeddings are protected (0600), never leave server storage,
+    never enter repo output, and no raw audio is retained.
+    """
+    
+    SCHEMA_VERSION = 1
+    
+    def __init__(self, cache_dir: Path, embedding_model_id: str):
+        self.cache_dir = cache_dir
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        os.chmod(self.cache_dir, stat.S_IRWXU)
+        self.embedding_model_id = embedding_model_id
+    
+    @staticmethod
+    def _sha256_bytes(data: bytes) -> str:
+        import hashlib
+        return hashlib.sha256(data).hexdigest()
+    
+    @staticmethod
+    def _sha256_file(path: Path) -> str:
+        import hashlib
+        h = hashlib.sha256()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    
+    @staticmethod
+    def _segment_set_hash(segments: list[dict]) -> str:
+        """Hash the canonical set of diarized segments (label, start, end).
+        
+        Sorted for order-independence. Precision truncated to 3 decimals
+        to avoid floating-point drift across JSON round-trips.
+        """
+        normalized = sorted(
+            (
+                s.get("speaker", ""),
+                round(float(s.get("start", 0)), 3),
+                round(float(s.get("end", 0)), 3),
+            )
+            for s in segments
+        )
+        import hashlib
+        return hashlib.sha256(json.dumps(normalized).encode("utf-8")).hexdigest()
+    
+    def compute_cache_id(
+        self,
+        audio_sha: str,
+        transcript_sha: str,
+        segment_set_hash: str,
+    ) -> str:
+        """Deterministic cache ID from revision inputs."""
+        import hashlib
+        blob = (
+            f"v{self.SCHEMA_VERSION}|"
+            f"{self.embedding_model_id}|"
+            f"{audio_sha}|{transcript_sha}|{segment_set_hash}"
+        )
+        return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+    
+    def _cache_dir_for(self, cache_id: str) -> Path:
+        # Validate cache_id format (hex only) to prevent traversal
+        if not cache_id or len(cache_id) != 64 or not all(c in "0123456789abcdef" for c in cache_id):
+            raise ValueError(f"Invalid cache_id: {cache_id}")
+        return self.cache_dir / cache_id
+    
+    def _atomic_write(self, path: Path, data: dict):
+        temp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", dir=path.parent, delete=False, suffix=".tmp",
+            ) as tmp:
+                json.dump(data, tmp, indent=2)
+                temp_path = tmp.name
+            os.chmod(temp_path, stat.S_IRUSR | stat.S_IWUSR)
+            os.replace(temp_path, path)
+        except Exception:
+            if temp_path and os.path.exists(temp_path):
+                os.unlink(temp_path)
+            raise
+    
+    def lookup(
+        self,
+        audio_sha: str,
+        transcript_sha: str,
+        segment_set_hash: str,
+    ) -> dict:
+        """Check cache status without building.
+        
+        Returns dict with 'status' in {hit, stale, missing} and metadata.
+        """
+        cache_id = self.compute_cache_id(audio_sha, transcript_sha, segment_set_hash)
+        cdir = self._cache_dir_for(cache_id)
+        manifest_path = cdir / "manifest.json"
+        
+        if not manifest_path.exists():
+            # Check if a different-revision cache exists for this recording
+            # by scanning for any manifest referencing these inputs
+            return {"status": "missing", "cache_id": cache_id}
+        
+        try:
+            with open(manifest_path) as f:
+                manifest = json.load(f)
+        except Exception:
+            return {"status": "missing", "cache_id": cache_id}
+        
+        # Verify revision inputs match
+        if (
+            manifest.get("audio_sha") == audio_sha
+            and manifest.get("transcript_sha") == transcript_sha
+            and manifest.get("segment_set_hash") == segment_set_hash
+            and manifest.get("embedding_model_id") == self.embedding_model_id
+            and manifest.get("schema_version") == self.SCHEMA_VERSION
+        ):
+            return {"status": "hit", "cache_id": cache_id, "manifest": manifest}
+        
+        return {"status": "stale", "cache_id": cache_id, "existing_manifest": manifest}
+    
+    def store(
+        self,
+        audio_sha: str,
+        transcript_sha: str,
+        segment_set_hash: str,
+        prototypes: dict,
+        segment_embeddings: list,
+        recording_name: str,
+    ) -> dict:
+        """Store a cache entry atomically.
+        
+        Args:
+            prototypes: {label: {"embedding": [...], "segment_count": N, "total_duration": S}}
+            segment_embeddings: list of {label, start, end, embedding, duration}
+            recording_name: for audit trail only
+        
+        Returns:
+            {"cache_id": ..., "status": "built"|"hit", ...}
+        """
+        cache_id = self.compute_cache_id(audio_sha, transcript_sha, segment_set_hash)
+        cdir = self._cache_dir_for(cache_id)
+        manifest_path = cdir / "manifest.json"
+        
+        # Idempotent: if already stored with matching revision, return hit
+        if manifest_path.exists():
+            try:
+                with open(manifest_path) as f:
+                    existing = json.load(f)
+                if (
+                    existing.get("audio_sha") == audio_sha
+                    and existing.get("transcript_sha") == transcript_sha
+                    and existing.get("segment_set_hash") == segment_set_hash
+                ):
+                    return {"status": "hit", "cache_id": cache_id, "manifest": existing}
+            except Exception:
+                pass
+        
+        cdir.mkdir(parents=True, exist_ok=True)
+        os.chmod(cdir, stat.S_IRWXU)
+        
+        manifest = {
+            "schema_version": self.SCHEMA_VERSION,
+            "cache_id": cache_id,
+            "embedding_model_id": self.embedding_model_id,
+            "audio_sha": audio_sha,
+            "transcript_sha": transcript_sha,
+            "segment_set_hash": segment_set_hash,
+            "recording_name": recording_name,
+            "built_at": datetime.now(timezone.utc).isoformat(),
+            "label_count": len(prototypes),
+            "segment_count": len(segment_embeddings),
+        }
+        
+        prototypes_doc = {
+            "schema_version": self.SCHEMA_VERSION,
+            "prototypes": prototypes,
+            "segments": segment_embeddings,
+        }
+        
+        self._atomic_write(manifest_path, manifest)
+        self._atomic_write(cdir / "prototypes.json", prototypes_doc)
+        
+        return {"status": "built", "cache_id": cache_id, "manifest": manifest}
+    
+    def load(self, cache_id: str) -> dict | None:
+        """Load prototypes and segments for a cache entry, or None if missing."""
+        cdir = self._cache_dir_for(cache_id)
+        manifest_path = cdir / "manifest.json"
+        prototypes_path = cdir / "prototypes.json"
+        if not manifest_path.exists() or not prototypes_path.exists():
+            return None
+        try:
+            with open(manifest_path) as f:
+                manifest = json.load(f)
+            with open(prototypes_path) as f:
+                prototypes = json.load(f)
+            return {"manifest": manifest, "prototypes": prototypes}
+        except Exception as e:
+            logger.warning("Failed to load cache %s: %s", cache_id, e)
+            return None
 
 
 def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
@@ -610,6 +901,9 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     enrollment_dir = Path(args.enrollment_dir)
     enrollment_store = EnrollmentStore(enrollment_dir)
     embedding_extractor = EmbeddingExtractor()
+    # Embedding cache lives adjacent to enrollment, same owner-only protection.
+    cache_dir = enrollment_dir.parent / "embedding-cache"
+    embedding_cache = EmbeddingCache(cache_dir, embedding_extractor._model_id)
     
     # Validate threshold parameters
     if not (0.5 <= args.similarity_threshold <= 0.95):
@@ -628,9 +922,11 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         app.state.device = args.device
         app.state.enrollment_store = enrollment_store
         app.state.embedding_extractor = embedding_extractor
+        app.state.embedding_cache = embedding_cache
         app.state.similarity_threshold = args.similarity_threshold
         app.state.ambiguity_margin = args.ambiguity_margin
         enrollment_dir.mkdir(parents=True, exist_ok=True)
+        cache_dir.mkdir(parents=True, exist_ok=True)
         yield
 
     app = FastAPI(lifespan=lifespan)
@@ -1231,6 +1527,266 @@ def create_app(args: argparse.Namespace) -> FastAPI:
             )
         
         return metadata
+    
+    # ── Embedding Cache Endpoints ─────────────────────────────
+    
+    @app.post("/v1/identity/cache/build")
+    async def build_embedding_cache(
+        audio: UploadFile = File(...),
+        transcript: UploadFile = File(...),
+        recording_name: str = Form(...),
+    ):
+        """Build or update embedding cache for a recording.
+        
+        Receives audio + canonical transcript JSON, extracts embeddings for
+        diarized segments, computes per-label prototypes, stores protected cache.
+        Never calls ASR/alignment/diarization.
+        
+        Returns status: built|hit|stale|failed, plus counts.
+        """
+        # Validate transcript is JSON
+        if not transcript.filename or not transcript.filename.endswith(".json"):
+            raise HTTPException(400, "transcript must be a .json file")
+        
+        # Read transcript JSON
+        try:
+            transcript_bytes = await transcript.read()
+            if len(transcript_bytes) > MAX_UPLOAD_BYTES:
+                raise HTTPException(413, "transcript too large")
+            transcript_data = json.loads(transcript_bytes)
+        except json.JSONDecodeError as e:
+            raise HTTPException(400, f"Invalid transcript JSON: {e}")
+        
+        # Extract segments
+        segments = transcript_data.get("segments", [])
+        if not segments:
+            raise HTTPException(400, "transcript has no segments")
+        
+        # Compute revision inputs
+        transcript_sha = embedding_cache._sha256_bytes(transcript_bytes)
+        segment_set_hash = embedding_cache._segment_set_hash(segments)
+        
+        # Write audio to temp file for embedding extraction
+        audio_sha = None
+        temp_audio = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".audio") as tmp:
+                audio_content = await audio.read()
+                if len(audio_content) > MAX_UPLOAD_BYTES:
+                    raise HTTPException(413, "audio too large")
+                tmp.write(audio_content)
+                temp_audio = tmp.name
+            
+            audio_sha = embedding_cache._sha256_file(Path(temp_audio))
+            
+            # Check cache status
+            lookup = embedding_cache.lookup(audio_sha, transcript_sha, segment_set_hash)
+            if lookup["status"] == "hit":
+                return {
+                    "status": "hit",
+                    "cache_id": lookup["cache_id"],
+                    "recording_name": recording_name,
+                    "label_count": lookup["manifest"].get("label_count", 0),
+                    "segment_count": lookup["manifest"].get("segment_count", 0),
+                }
+            
+            # Extract embeddings per segment
+            segment_embeddings = []
+            label_embeddings = {}  # label -> list of embeddings
+            
+            for seg in segments:
+                label = seg.get("speaker", "UNKNOWN")
+                start = float(seg.get("start", 0))
+                end = float(seg.get("end", 0))
+                
+                if end <= start:
+                    continue
+                
+                try:
+                    emb = embedding_extractor.extract_embedding_from_segment(
+                        temp_audio, start, end
+                    )
+                    segment_embeddings.append({
+                        "label": label,
+                        "start": start,
+                        "end": end,
+                        "duration": end - start,
+                        "embedding": emb.tolist(),
+                    })
+                    if label not in label_embeddings:
+                        label_embeddings[label] = []
+                    label_embeddings[label].append(emb)
+                except Exception as e:
+                    logger.warning(
+                        "Failed to extract embedding for %s [%.2f-%.2f]: %s",
+                        recording_name, start, end, e,
+                    )
+            
+            if not segment_embeddings:
+                raise HTTPException(500, "No embeddings extracted")
+            
+            # Compute per-label prototypes (mean of normalized embeddings, re-normalized)
+            prototypes = {}
+            for label, embs in label_embeddings.items():
+                if not embs:
+                    continue
+                mean_emb = np.mean(embs, axis=0)
+                norm = np.linalg.norm(mean_emb)
+                if norm > 0:
+                    mean_emb = mean_emb / norm
+                prototypes[label] = {
+                    "embedding": mean_emb.tolist(),
+                    "segment_count": len(embs),
+                    "total_duration": sum(
+                        s["duration"] for s in segment_embeddings if s["label"] == label
+                    ),
+                }
+            
+            # Store cache
+            result = embedding_cache.store(
+                audio_sha=audio_sha,
+                transcript_sha=transcript_sha,
+                segment_set_hash=segment_set_hash,
+                prototypes=prototypes,
+                segment_embeddings=segment_embeddings,
+                recording_name=recording_name,
+            )
+            
+            return {
+                "status": result["status"],
+                "cache_id": result["cache_id"],
+                "recording_name": recording_name,
+                "label_count": len(prototypes),
+                "segment_count": len(segment_embeddings),
+            }
+        
+        finally:
+            if temp_audio and os.path.exists(temp_audio):
+                os.unlink(temp_audio)
+    
+    @app.post("/v1/identity/cache/candidates")
+    async def get_candidates_from_cache(
+        person_id: str = Form(...),
+        cache_refs: str = Form(...),  # JSON list of {cache_id, recording_name}
+    ):
+        """Get candidate matches from cached embeddings.
+        
+        Compares person's enrolled centroid to recording label prototypes.
+        Returns review-only candidates with supporting evidence.
+        Never mutates mappings.
+        
+        Args:
+            person_id: Enrolled person ID
+            cache_refs: JSON list of {cache_id, recording_name}
+        
+        Returns:
+            List of candidates with scores, supporting segments, skipped states.
+        """
+        # Validate person exists and is eligible
+        metadata = enrollment_store.get_metadata(person_id)
+        if not metadata:
+            raise HTTPException(404, f"Person not found: {person_id}")
+        if not metadata.get("candidate_eligible"):
+            raise HTTPException(
+                400,
+                f"Person {person_id} not eligible (need {MIN_ENROLLMENT_SAMPLES}+ samples)",
+            )
+        
+        # Parse cache refs
+        try:
+            refs = json.loads(cache_refs)
+            if not isinstance(refs, list):
+                raise ValueError("cache_refs must be a list")
+        except Exception as e:
+            raise HTTPException(400, f"Invalid cache_refs JSON: {e}")
+        
+        # Compute person centroid
+        person_embeddings = enrollment_store.get_embeddings(person_id)
+        if not person_embeddings:
+            raise HTTPException(400, f"No embeddings for {person_id}")
+        centroid = np.mean(person_embeddings, axis=0)
+        norm = np.linalg.norm(centroid)
+        if norm > 0:
+            centroid = centroid / norm
+        
+        threshold = app.state.similarity_threshold
+        margin = app.state.ambiguity_margin
+        
+        candidates = []
+        skipped = []
+        
+        for ref in refs:
+            cache_id = ref.get("cache_id")
+            recording_name = ref.get("recording_name", "unknown")
+            
+            if not cache_id:
+                skipped.append({
+                    "recording_name": recording_name,
+                    "reason": "missing_cache_id",
+                })
+                continue
+            
+            cache_entry = embedding_cache.load(cache_id)
+            if not cache_entry:
+                skipped.append({
+                    "recording_name": recording_name,
+                    "cache_id": cache_id,
+                    "reason": "cache_missing",
+                })
+                continue
+            
+            prototypes = cache_entry["prototypes"].get("prototypes", {})
+            
+            # Compare each label prototype to person centroid
+            for label, proto in prototypes.items():
+                proto_emb = np.array(proto["embedding"])
+                score = cosine_similarity(centroid, proto_emb)
+                
+                if score >= threshold:
+                    # Find supporting segments
+                    supporting = [
+                        {
+                            "start": s["start"],
+                            "end": s["end"],
+                            "duration": s["duration"],
+                        }
+                        for s in cache_entry["prototypes"].get("segments", [])
+                        if s["label"] == label
+                    ]
+                    
+                    ambiguous = score < (threshold + margin)
+                    
+                    candidates.append({
+                        "recording_name": recording_name,
+                        "cache_id": cache_id,
+                        "speaker_label": label,
+                        "score": score,
+                        "ambiguous": ambiguous,
+                        "supporting_segments": supporting,
+                        "segment_count": proto.get("segment_count", 0),
+                        "total_duration": proto.get("total_duration", 0),
+                    })
+        
+        return {
+            "person_id": person_id,
+            "candidates": candidates,
+            "skipped": skipped,
+            "threshold": threshold,
+            "margin": margin,
+        }
+    
+    @app.get("/v1/identity/inventory")
+    async def enrollment_inventory():
+        """List all enrolled persons with sample counts, eligibility, updated time.
+        
+        For repo to reconcile wiki/person inventory status from authoritative server state.
+        """
+        persons = enrollment_store.list_persons()
+        return {
+            "persons": persons,
+            "min_samples_required": MIN_ENROLLMENT_SAMPLES,
+            "total": len(persons),
+        }
 
     return app
 
