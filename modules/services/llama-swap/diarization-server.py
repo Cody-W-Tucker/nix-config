@@ -50,16 +50,17 @@ class BusyError(Exception):
 
 
 class EmbeddingExtractor:
-    """CPU-only speaker embedding extraction using speechbrain.
+    """CPU-based speaker embedding extractor using SpeechBrain ECAPA-TDNN.
     
-    Lazy-loads the model on first use. Thread-safe via internal lock.
-    Raises structured errors if model init or extraction fails.
+    Extracts 192-dim normalized embeddings from audio files or segments.
+    Thread-safe via internal lock on model initialization.
     """
     
-    def __init__(self):
+    def __init__(self, hf_token: str | None = None):
         self._model = None
         self._lock = threading.Lock()
         self._model_id = "speechbrain/spkrec-ecapa-voxceleb"
+        self._hf_token = hf_token
     
     def _ensure_model(self):
         """Load the embedding model if not already loaded.
@@ -94,10 +95,16 @@ class EmbeddingExtractor:
                     "(mkldnn disabled for systemd MemoryDenyWriteExecute)"
                 )
                 t0 = time.monotonic()
-                self._model = EncoderClassifier.from_hparams(
-                    source=self._model_id,
-                    run_opts={"device": "cpu"},
-                )
+                model_kwargs = {
+                    "source": self._model_id,
+                    "run_opts": {"device": "cpu"},
+                }
+                # Pass HF token if available to suppress unauthenticated
+                # access warnings. The model is public but SpeechBrain
+                # still emits a warning without a token. Never log the token.
+                if self._hf_token:
+                    model_kwargs["token"] = self._hf_token
+                self._model = EncoderClassifier.from_hparams(**model_kwargs)
                 logger.info(
                     "Speaker embedding model loaded in %.1fs",
                     time.monotonic() - t0,
@@ -551,6 +558,7 @@ class EmbeddingCache:
         prototypes: dict,
         segment_embeddings: list,
         recording_name: str,
+        exclusion_metadata: dict | None = None,
     ) -> dict:
         """Store a cache entry atomically.
         
@@ -558,6 +566,8 @@ class EmbeddingCache:
             prototypes: {label: {"embedding": [...], "segment_count": N, "total_duration": S}}
             segment_embeddings: list of {label, start, end, embedding, duration}
             recording_name: for audit trail only
+            exclusion_metadata: optional {excluded_segment_count, excluded_segments,
+                excluded_label_count, excluded_labels} for audit trail
         
         Returns:
             {"cache_id": ..., "status": "built"|"hit", ...}
@@ -595,6 +605,10 @@ class EmbeddingCache:
             "label_count": len(prototypes),
             "segment_count": len(segment_embeddings),
         }
+        if exclusion_metadata:
+            manifest["excluded_segment_count"] = exclusion_metadata.get("excluded_segment_count", 0)
+            manifest["excluded_label_count"] = exclusion_metadata.get("excluded_label_count", 0)
+            manifest["excluded_labels"] = exclusion_metadata.get("excluded_labels", [])
         
         prototypes_doc = {
             "schema_version": self.SCHEMA_VERSION,
@@ -900,7 +914,9 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     manager = ModelManager(args)
     enrollment_dir = Path(args.enrollment_dir)
     enrollment_store = EnrollmentStore(enrollment_dir)
-    embedding_extractor = EmbeddingExtractor()
+    # Pass HF token to embedding extractor to suppress unauthenticated
+    # access warnings from SpeechBrain. Token is never logged.
+    embedding_extractor = EmbeddingExtractor(hf_token=manager._hf_token)
     # Embedding cache lives adjacent to enrollment, same owner-only protection.
     cache_dir = enrollment_dir.parent / "embedding-cache"
     embedding_cache = EmbeddingCache(cache_dir, embedding_extractor._model_id)
@@ -1593,6 +1609,8 @@ def create_app(args: argparse.Namespace) -> FastAPI:
             # Extract embeddings per segment
             segment_embeddings = []
             label_embeddings = {}  # label -> list of embeddings
+            excluded_segments = []  # track failures with reasons
+            label_failure_counts = {}  # label -> count of failed segments
             
             for seg in segments:
                 label = seg.get("speaker", "UNKNOWN")
@@ -1600,6 +1618,13 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 end = float(seg.get("end", 0))
                 
                 if end <= start:
+                    excluded_segments.append({
+                        "label": label,
+                        "start": start,
+                        "end": end,
+                        "reason": "invalid_time_range",
+                    })
+                    label_failure_counts[label] = label_failure_counts.get(label, 0) + 1
                     continue
                 
                 try:
@@ -1617,18 +1642,48 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                         label_embeddings[label] = []
                     label_embeddings[label].append(emb)
                 except Exception as e:
+                    # Determine specific reason
+                    reason = "extraction_failed"
+                    err_str = str(e).lower()
+                    if "too short" in err_str or "segment too short" in err_str:
+                        reason = "segment_too_short"
+                    
+                    excluded_segments.append({
+                        "label": label,
+                        "start": start,
+                        "end": end,
+                        "reason": reason,
+                        "error": str(e),
+                    })
+                    label_failure_counts[label] = label_failure_counts.get(label, 0) + 1
                     logger.warning(
                         "Failed to extract embedding for %s [%.2f-%.2f]: %s",
                         recording_name, start, end, e,
                     )
             
+            # Check if we have any usable embeddings at all
             if not segment_embeddings:
-                raise HTTPException(500, "No embeddings extracted")
+                raise HTTPException(
+                    500,
+                    {
+                        "error": "no_usable_embeddings",
+                        "message": "No embeddings extracted from any segment",
+                        "excluded_count": len(excluded_segments),
+                        "excluded_segments": excluded_segments[:20],  # cap for response size
+                    },
+                )
             
             # Compute per-label prototypes (mean of normalized embeddings, re-normalized)
             prototypes = {}
+            excluded_labels = []  # labels with no usable segments
             for label, embs in label_embeddings.items():
                 if not embs:
+                    # This shouldn't happen given the logic above, but handle defensively
+                    excluded_labels.append({
+                        "label": label,
+                        "reason": "no_valid_segments",
+                        "failed_count": label_failure_counts.get(label, 0),
+                    })
                     continue
                 mean_emb = np.mean(embs, axis=0)
                 norm = np.linalg.norm(mean_emb)
@@ -1642,7 +1697,36 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                     ),
                 }
             
-            # Store cache
+            # Identify labels that had only failures (no successful embeddings)
+            all_labels_in_segments = set(seg.get("speaker", "UNKNOWN") for seg in segments)
+            labels_with_prototypes = set(prototypes.keys())
+            labels_without_prototypes = all_labels_in_segments - labels_with_prototypes
+            for label in labels_without_prototypes:
+                excluded_labels.append({
+                    "label": label,
+                    "reason": "all_segments_failed",
+                    "failed_count": label_failure_counts.get(label, 0),
+                })
+            
+            # Fail if zero usable label prototypes remain
+            if not prototypes:
+                raise HTTPException(
+                    500,
+                    {
+                        "error": "no_usable_label_prototypes",
+                        "message": "All labels excluded; no usable prototypes remain",
+                        "excluded_labels": excluded_labels,
+                        "excluded_segment_count": len(excluded_segments),
+                    },
+                )
+            
+            # Store cache with exclusion metadata
+            exclusion_metadata = {
+                "excluded_segment_count": len(excluded_segments),
+                "excluded_segments": excluded_segments,
+                "excluded_label_count": len(excluded_labels),
+                "excluded_labels": excluded_labels,
+            }
             result = embedding_cache.store(
                 audio_sha=audio_sha,
                 transcript_sha=transcript_sha,
@@ -1650,6 +1734,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 prototypes=prototypes,
                 segment_embeddings=segment_embeddings,
                 recording_name=recording_name,
+                exclusion_metadata=exclusion_metadata,
             )
             
             return {
@@ -1658,6 +1743,9 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 "recording_name": recording_name,
                 "label_count": len(prototypes),
                 "segment_count": len(segment_embeddings),
+                "excluded_segment_count": len(excluded_segments),
+                "excluded_label_count": len(excluded_labels),
+                "excluded_labels": excluded_labels,
             }
         
         finally:
