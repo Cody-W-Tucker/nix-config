@@ -263,7 +263,17 @@ class EmbeddingExtractor:
         try:
             import torchaudio
             
+            logger.debug(
+                "DIAGNOSTIC: extract_embedding_from_segment start: audio=%s, range=[%.2f-%.2f], device=%s",
+                audio_path, start_sec, end_sec, self._device,
+            )
+            
             signal, sample_rate = torchaudio.load(audio_path)
+            
+            logger.debug(
+                "DIAGNOSTIC: torchaudio.load success: signal.shape=%s, sample_rate=%s",
+                signal.shape, sample_rate,
+            )
             
             # Convert to mono
             if signal.shape[0] > 1:
@@ -283,6 +293,11 @@ class EmbeddingExtractor:
             end_sample = int(end_sec * sample_rate)
             segment = signal[:, start_sample:end_sample]
             
+            logger.debug(
+                "DIAGNOSTIC: segment sliced: segment.shape=%s, duration=%.2fs",
+                segment.shape, (end_sample - start_sample) / sample_rate,
+            )
+            
             # Require minimum duration for stable embedding — check BEFORE
             # model forward so short segments never reach encode_batch.
             segment_duration = (end_sample - start_sample) / sample_rate
@@ -290,6 +305,11 @@ class EmbeddingExtractor:
                 raise RuntimeError(
                     f"Segment too short: {segment_duration:.2f}s < {self.MIN_SEGMENT_DURATION}s"
                 )
+            
+            logger.debug(
+                "DIAGNOSTIC: about to call _encode_waveform: segment.device=%s, model_device=%s",
+                segment.device, next(self._model.parameters()).device,
+            )
             
             return self._encode_waveform(segment)
             
@@ -303,12 +323,20 @@ class EmbeddingExtractor:
                     audio_path, start_sec, end_sec, e,
                 )
             else:
+                logger.exception(
+                    "DIAGNOSTIC: Full traceback for embedding extraction failure from %s [%.2f-%.2f]",
+                    audio_path, start_sec, end_sec,
+                )
                 logger.error(
                     "Failed to extract embedding from %s [%.2f-%.2f]: %s",
                     audio_path, start_sec, end_sec, e,
                 )
             raise RuntimeError(f"Segment embedding extraction failed: {e}") from e
         except Exception as e:
+            logger.exception(
+                "DIAGNOSTIC: Full traceback for non-RuntimeError embedding extraction failure from %s [%.2f-%.2f]",
+                audio_path, start_sec, end_sec,
+            )
             logger.error(
                 "Failed to extract embedding from %s [%.2f-%.2f]: %s",
                 audio_path, start_sec, end_sec, e,
@@ -335,17 +363,27 @@ class EmbeddingExtractor:
                 signal = signal.to(model_device)
             
             logger.debug(
-                "Encoding waveform: signal device=%s, model device=%s",
-                signal.device, model_device,
+                "DIAGNOSTIC _encode_waveform: signal.shape=%s, signal.device=%s, model.device=%s",
+                signal.shape, signal.device, model_device,
             )
             
             try:
+                logger.debug("DIAGNOSTIC: calling model.encode_batch...")
                 embedding = self._model.encode_batch(signal)
+                logger.debug(
+                    "DIAGNOSTIC: encode_batch success: embedding.shape=%s",
+                    embedding.shape if hasattr(embedding, 'shape') else type(embedding),
+                )
             except (RuntimeError, AssertionError) as e:
                 err_str = str(e).lower()
                 is_device_error = any(kw in err_str for kw in [
                     "cuda", "out of memory", "device", "driver", "runtime",
                 ])
+                
+                logger.exception(
+                    "DIAGNOSTIC: encode_batch failed: error=%s, is_device_error=%s, device=%s",
+                    e, is_device_error, self._device,
+                )
                 
                 if (
                     is_device_error
