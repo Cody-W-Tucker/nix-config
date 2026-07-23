@@ -117,7 +117,6 @@ in
         persistent = false;
         members = [
           "whisper-medium"
-          "whisper-diarization"
           "kokoro-82m"
         ];
       };
