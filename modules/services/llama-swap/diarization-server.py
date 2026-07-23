@@ -61,7 +61,15 @@ class EmbeddingExtractor:
         self._model_id = "speechbrain/spkrec-ecapa-voxceleb"
     
     def _ensure_model(self):
-        """Load the embedding model if not already loaded."""
+        """Load the embedding model if not already loaded.
+        
+        MKLDNN/oneDNN JIT primitive creation requires writable+executable
+        memory pages, which is blocked by the service's systemd
+        ``MemoryDenyWriteExecute=yes`` hardening. Disabling MKLDNN for
+        this CPU-only forward path avoids the W^X violation without
+        weakening the sandbox. GPU diarization paths are unaffected —
+        they use CUDA, not oneDNN.
+        """
         if self._model is not None:
             return
         
@@ -71,9 +79,19 @@ class EmbeddingExtractor:
                 return
             
             try:
+                import torch
+                import torch.backends.mkldnn as _mkldnn
+                
+                # Disable MKLDNN before constructing the classifier so no
+                # JIT primitive is ever allocated under W^X restrictions.
+                _mkldnn.enabled = False
+                
                 from speechbrain.inference.speaker import EncoderClassifier
                 
-                logger.info("Loading speaker embedding model on CPU")
+                logger.info(
+                    "Loading speaker embedding model on CPU "
+                    "(mkldnn disabled for systemd MemoryDenyWriteExecute)"
+                )
                 t0 = time.monotonic()
                 self._model = EncoderClassifier.from_hparams(
                     source=self._model_id,

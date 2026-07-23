@@ -20,3 +20,11 @@ Qwen3.5-35B-A3B-mmproj-F16.gguf
 ```
 
 If a model accepts image input but `llama-server` returns `image input is not supported`, the usual cause is a missing or mismatched projector file.
+
+## Diarization server: CPU embedding extractor and systemd hardening
+
+The diarization service runs under `MemoryDenyWriteExecute=yes`. This is an intentional sandbox setting — do not weaken it.
+
+The CPU speaker-embedding extractor (`EmbeddingExtractor`) disables `torch.backends.mkldnn.enabled` *before* constructing the SpeechBrain ECAPA model. This is required because oneDNN/MKLDNN JIT primitive creation allocates writable+executable memory pages, which the systemd hardening correctly rejects. The fix is scoped to the lazy CPU initialization path; GPU diarization uses CUDA and is unaffected.
+
+If embedding extraction fails inside the service but works when run directly, this is not an audio or model failure — it is the W^X hardening doing its job. The extractor already disables MKLDNN before model construction. If you see a regression here, check that `torch.backends.mkldnn.enabled` is still set to `False` before `EncoderClassifier.from_hparams` is called.
