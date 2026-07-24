@@ -79,6 +79,7 @@ in
     kdePackages.kpeople # Contact integration for KDE Connect SMS
     playerctl # MPRIS cli; also provides playerctld D-Bus activation
     twitch-tui # Read chats from terminal
+    mousam # Weather CLI tool
   ];
 
   services = {
