@@ -208,7 +208,8 @@ in
           # away from /home (hidden by ProtectHome) to the writable whisperx cache.
           cmd = ''
             env HOME=${diarizationCache} \
-            ${whisperDiarizePython}/bin/python3 ${../../modules/services/llama-swap/diarization-server.py} \
+            PYTHONPATH=${../../modules/services/llama-swap} \
+            ${whisperDiarizePython}/bin/python3 -m diarization.server \
               --host 127.0.0.1 \
               --port ''${PORT} \
               --model-id whisper-diarization \
