@@ -504,6 +504,7 @@ class EnrollmentStore:
             "consent_timestamp": datetime.now(timezone.utc).isoformat(),
             "samples_count": 0,
             "candidate_eligible": False,
+            "revision": 0,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
         
@@ -515,12 +516,27 @@ class EnrollmentStore:
     def add_sample(self, person_id: str, embedding: np.ndarray) -> dict:
         """Add a speaker embedding sample to an enrollment.
         
+        Atomically persists the new embedding and bumps the monotonic
+        ``revision`` counter.  Revision is the server-authoritative signal
+        that the voice profile changed; clients use it to detect stale
+        candidate-scan manifests.
+        
+        Atomicity invariant: if embeddings are persisted but metadata write
+        fails, the next get_metadata call reconciles by detecting the mismatch
+        between samples_count and actual embedding count, then bumps revision
+        to reflect the true state.  This ensures any embedding change is
+        observably revision-invalidating to clients.
+        
+        Migration: enrollments created before the revision field carry no
+        ``revision`` key.  ``metadata.get("revision", 0)`` treats those as
+        revision 0; the first successful add_sample writes revision 1.
+        
         Args:
             person_id: Person identifier
             embedding: Normalized speaker embedding (1D numpy array)
             
         Returns:
-            Updated metadata dict
+            Updated metadata dict (always includes ``revision``)
             
         Raises:
             RuntimeError: If enrollment doesn't exist
@@ -537,30 +553,89 @@ class EnrollmentStore:
         # Add new embedding as list
         data["embeddings"].append(embedding.tolist())
         
-        # Write back atomically
-        self._atomic_write(embeddings_path, data)
-        
-        # Update metadata
+        # Load metadata and bump revision (migrating legacy records with no revision)
         metadata_path = person_dir / "metadata.json"
         with open(metadata_path) as f:
             metadata = json.load(f)
         
+        current_revision = metadata.get("revision", 0)
+        new_revision = current_revision + 1
+        metadata["revision"] = new_revision
         metadata["samples_count"] = len(data["embeddings"])
         metadata["candidate_eligible"] = metadata["samples_count"] >= MIN_ENROLLMENT_SAMPLES
         metadata["updated_at"] = datetime.now(timezone.utc).isoformat()
         
-        self._atomic_write(metadata_path, metadata)
+        # Persist embeddings first, then metadata.  If the metadata write
+        # fails after embeddings succeed, reconciliation on next read will
+        # detect the mismatch and bump revision.  Both writes use atomic
+        # temp+rename.
+        try:
+            self._atomic_write(embeddings_path, data)
+        except Exception as e:
+            # Embeddings write failed — metadata is still consistent.
+            raise RuntimeError(f"Failed to persist embeddings: {e}") from e
+        
+        try:
+            self._atomic_write(metadata_path, metadata)
+        except Exception as e:
+            # Metadata write failed after embeddings persisted.
+            # The next get_metadata call will reconcile by detecting
+            # samples_count mismatch and bumping revision.
+            # Do NOT claim success — raise to caller.
+            raise RuntimeError(f"Failed to persist metadata after embeddings written: {e}") from e
         
         return metadata
     
     def get_metadata(self, person_id: str) -> dict | None:
-        """Get metadata for a person, or None if not found."""
+        """Get metadata for a person, or None if not found.
+        
+        Always returns a ``revision`` field.  Legacy enrollments created
+        before the revision contract are normalized to revision 0 on read
+        (not persisted — migration happens on next write via add_sample).
+        
+        Reconciliation: if samples_count in metadata doesn't match the actual
+        embedding count (e.g., from a partial write where embeddings persisted
+        but metadata write failed), the revision is bumped to reflect the true
+        state.  This ensures any embedding change is observably revision-
+        invalidating to clients.
+        """
         person_dir = self._person_dir(person_id)
         metadata_path = person_dir / "metadata.json"
+        embeddings_path = person_dir / "embeddings.json"
+        
         if not metadata_path.exists():
             return None
+        
         with open(metadata_path) as f:
-            return json.load(f)
+            metadata = json.load(f)
+        
+        # Normalize: legacy enrollments without revision default to 0.
+        metadata.setdefault("revision", 0)
+        
+        # Reconciliation: check if samples_count matches actual embedding count.
+        # If not, embeddings were written but metadata wasn't updated — bump revision.
+        if embeddings_path.exists():
+            with open(embeddings_path) as f:
+                embeddings_data = json.load(f)
+            actual_count = len(embeddings_data.get("embeddings", []))
+            stored_count = metadata.get("samples_count", 0)
+            
+            if actual_count != stored_count:
+                # Embeddings changed but metadata is stale — bump revision.
+                metadata["revision"] = metadata["revision"] + 1
+                metadata["samples_count"] = actual_count
+                metadata["candidate_eligible"] = actual_count >= MIN_ENROLLMENT_SAMPLES
+                metadata["updated_at"] = datetime.now(timezone.utc).isoformat()
+                
+                # Persist the reconciled metadata.
+                try:
+                    self._atomic_write(metadata_path, metadata)
+                except Exception:
+                    # If reconciliation write fails, return the corrected
+                    # metadata anyway — the next read will retry reconciliation.
+                    pass
+        
+        return metadata
     
     def get_embeddings(self, person_id: str) -> list[np.ndarray] | None:
         """Get all embeddings for a person, or None if not found."""
@@ -590,6 +665,7 @@ class EnrollmentStore:
                         "person_id": metadata["person_id"],
                         "display_name": metadata["display_name"],
                         "samples_count": metadata["samples_count"],
+                        "revision": metadata.get("revision", 0),
                     })
         
         return candidates
@@ -608,6 +684,8 @@ class EnrollmentStore:
                 try:
                     with open(metadata_path) as f:
                         metadata = json.load(f)
+                    # Normalize revision for legacy enrollments
+                    metadata.setdefault("revision", 0)
                     persons.append(metadata)
                 except Exception as e:
                     logger.warning("Failed to read metadata for %s: %s", person_dir.name, e)
