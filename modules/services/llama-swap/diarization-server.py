@@ -16,6 +16,7 @@ whisperx.diarize (not whisperx) and uses ``token=`` (not
 """
 
 import argparse
+import asyncio
 import json
 import logging
 import os
@@ -81,6 +82,10 @@ class EmbeddingExtractor:
     def __init__(self, device_index: int = 0):
         self._model = None
         self._lock = threading.Lock()
+        # Instance-level GPU critical section: serializes CUDA resample + forward
+        # across threads. CPU decode/slicing happens outside this lock so multiple
+        # recordings can overlap CPU work while GPU work is serialized.
+        self._gpu_lock = threading.Lock()
         self._model_id = "speechbrain/spkrec-ecapa-voxceleb"
         self._device = None  # Resolved at model load time (e.g. "cuda:0")
         self._device_index = device_index
@@ -156,6 +161,9 @@ class EmbeddingExtractor:
         
         Returns (signal, sample_rate) on the CUDA device.
         Resampling runs on CUDA — never on CPU.
+        
+        NOTE: Caller must hold self._gpu_lock when calling this method,
+        as it performs CUDA operations.
         """
         import torchaudio
         
@@ -171,6 +179,91 @@ class EmbeddingExtractor:
             sample_rate = target_rate
         
         return signal, sample_rate
+    
+    def _gpu_resample_and_encode(self, segment, sample_rate: int) -> np.ndarray:
+        """Resample on CUDA and encode to embedding. Holds GPU lock for entire operation.
+        
+        This is the GPU critical section: both resampling and the SpeechBrain
+        forward pass happen under self._gpu_lock. CPU work (decode, slicing,
+        duration checks) happens outside this lock so multiple recordings can
+        overlap their CPU-bound decode work.
+        
+        Args:
+            segment: CPU tensor, shape (1, N) or (N,)
+            sample_rate: Sample rate of the segment
+            
+        Returns:
+            1D numpy array of shape (192,) containing the normalized embedding
+        """
+        with self._gpu_lock:
+            segment, _ = self._move_and_resample(segment, sample_rate)
+            return self._encode_waveform(segment)
+    
+    def extract_embedding_from_waveform(
+        self,
+        signal,
+        sample_rate: int,
+        start_sec: float | None = None,
+        end_sec: float | None = None,
+    ) -> np.ndarray:
+        """Extract a speaker embedding from a pre-decoded waveform.
+        
+        This is the core embedding method used by cache build. Audio is decoded
+        ONCE by the caller, then segments are extracted by sample indices.
+        CPU work (mono conversion, slicing, duration check) happens on CPU.
+        GPU work (resample + forward) is serialized via self._gpu_lock.
+        
+        Args:
+            signal: CPU tensor from torchaudio.load, shape (channels, samples)
+            sample_rate: Sample rate of the signal
+            start_sec: Optional start time in seconds (None = from beginning)
+            end_sec: Optional end time in seconds (None = to end)
+            
+        Returns:
+            1D numpy array of shape (192,) containing the normalized embedding
+            
+        Raises:
+            ShortSegmentSkipped: If segment is too short (< MIN_SEGMENT_DURATION)
+            RuntimeError: If model not loaded, extraction fails, or CUDA unavailable
+        """
+        self._ensure_model()
+        
+        try:
+            import torch
+            
+            # Ensure mono on CPU
+            if signal.dim() == 1:
+                signal = signal.unsqueeze(0)
+            elif signal.shape[0] > 1:
+                signal = signal.mean(dim=0, keepdim=True)
+            
+            # Slice segment on CPU if time range provided
+            if start_sec is not None and end_sec is not None:
+                start_sample = int(start_sec * sample_rate)
+                end_sample = int(end_sec * sample_rate)
+                segment = signal[:, start_sample:end_sample]
+                segment_duration = (end_sample - start_sample) / sample_rate
+            else:
+                segment = signal
+                segment_duration = signal.shape[1] / sample_rate
+            
+            # Duration check BEFORE GPU work — short segments cannot produce
+            # stable embeddings and must be excluded early.
+            if segment_duration < self.MIN_SEGMENT_DURATION:
+                raise ShortSegmentSkipped(
+                    f"Segment too short: {segment_duration:.2f}s < {self.MIN_SEGMENT_DURATION}s"
+                )
+            
+            # GPU work: resample on CUDA + encode, serialized via _gpu_lock
+            return self._gpu_resample_and_encode(segment, sample_rate)
+            
+        except ShortSegmentSkipped:
+            raise
+        except RuntimeError:
+            raise
+        except Exception as e:
+            logger.error("Failed to extract embedding from waveform: %s", e)
+            raise RuntimeError(f"Waveform embedding extraction failed: {e}") from e
     
     def extract_embedding(self, audio_path: str) -> np.ndarray:
         """Extract a speaker embedding from an audio file.
@@ -197,18 +290,8 @@ class EmbeddingExtractor:
             if signal.shape[0] > 1:
                 signal = signal.mean(dim=0, keepdim=True)
             
-            # Duration check BEFORE GPU work — short audio cannot produce
-            # stable embeddings and must be excluded early.
-            duration_sec = signal.shape[1] / sample_rate
-            if duration_sec < self.MIN_SEGMENT_DURATION:
-                raise ShortSegmentSkipped(
-                    f"Audio too short: {duration_sec:.2f}s < {self.MIN_SEGMENT_DURATION}s"
-                )
-            
-            # Move to CUDA and resample on CUDA
-            signal, sample_rate = self._move_and_resample(signal, sample_rate)
-            
-            return self._encode_waveform(signal)
+            # Delegate to waveform method for duration check + GPU work
+            return self.extract_embedding_from_waveform(signal, sample_rate)
             
         except ShortSegmentSkipped:
             # Expected skip — propagate without wrapping or error-level log.
@@ -261,33 +344,8 @@ class EmbeddingExtractor:
             if signal.shape[0] > 1:
                 signal = signal.mean(dim=0, keepdim=True)
             
-            # Slice segment (on CPU, before GPU work)
-            start_sample = int(start_sec * sample_rate)
-            end_sample = int(end_sec * sample_rate)
-            segment = signal[:, start_sample:end_sample]
-            
-            # Require minimum duration BEFORE GPU work — short segments
-            # cannot produce stable embeddings and must be excluded early.
-            segment_duration = (end_sample - start_sample) / sample_rate
-            if segment.shape[1] < int(self.MIN_SEGMENT_DURATION * sample_rate):
-                raise ShortSegmentSkipped(
-                    f"Segment too short: {segment_duration:.2f}s < {self.MIN_SEGMENT_DURATION}s"
-                )
-            
-            logger.debug(
-                "DIAGNOSTIC: segment sliced: segment.shape=%s, duration=%.2fs",
-                segment.shape, segment_duration,
-            )
-            
-            # Move to CUDA and resample on CUDA
-            segment, _ = self._move_and_resample(segment, sample_rate)
-            
-            logger.debug(
-                "DIAGNOSTIC: about to call _encode_waveform: segment.device=%s, model_device=%s",
-                segment.device, next(self._model.parameters()).device,
-            )
-            
-            return self._encode_waveform(segment)
+            # Delegate to waveform method for slicing, duration check, and GPU work
+            return self.extract_embedding_from_waveform(signal, sample_rate, start_sec, end_sec)
             
         except ShortSegmentSkipped as e:
             # Expected skip — log once at info level, propagate without wrapping.
@@ -322,37 +380,39 @@ class EmbeddingExtractor:
         
         Signal must already be on the model's CUDA device. Raises on failure
         with no CPU fallback.
+        
+        NOTE: Caller must hold self._gpu_lock when calling this method,
+        as it performs CUDA operations.
         """
         import torch
         
-        with threading.Lock():
-            # Ensure signal is on the same device as the model.
-            model_device = next(self._model.parameters()).device
-            if signal.device != model_device:
-                signal = signal.to(model_device)
-            
+        # Ensure signal is on the same device as the model.
+        model_device = next(self._model.parameters()).device
+        if signal.device != model_device:
+            signal = signal.to(model_device)
+        
+        logger.debug(
+            "DIAGNOSTIC _encode_waveform: signal.shape=%s, signal.device=%s, model.device=%s",
+            signal.shape, signal.device, model_device,
+        )
+        
+        try:
+            logger.debug("DIAGNOSTIC: calling model.encode_batch...")
+            embedding = self._model.encode_batch(signal)
             logger.debug(
-                "DIAGNOSTIC _encode_waveform: signal.shape=%s, signal.device=%s, model.device=%s",
-                signal.shape, signal.device, model_device,
+                "DIAGNOSTIC: encode_batch success: embedding.shape=%s",
+                embedding.shape if hasattr(embedding, 'shape') else type(embedding),
             )
-            
-            try:
-                logger.debug("DIAGNOSTIC: calling model.encode_batch...")
-                embedding = self._model.encode_batch(signal)
-                logger.debug(
-                    "DIAGNOSTIC: encode_batch success: embedding.shape=%s",
-                    embedding.shape if hasattr(embedding, 'shape') else type(embedding),
-                )
-            except Exception as e:
-                logger.exception(
-                    "DIAGNOSTIC: encode_batch failed: error=%s, device=%s",
-                    e, self._device,
-                )
-                raise RuntimeError(
-                    f"CUDA embedding forward failed on {self._device}: {e}. "
-                    f"CUDA is required; CPU fallback is not supported."
-                ) from e
-    
+        except Exception as e:
+            logger.exception(
+                "DIAGNOSTIC: encode_batch failed: error=%s, device=%s",
+                e, self._device,
+            )
+            raise RuntimeError(
+                f"CUDA embedding forward failed on {self._device}: {e}. "
+                f"CUDA is required; CPU fallback is not supported."
+            ) from e
+        
         embedding_np = embedding.squeeze().cpu().numpy()
         norm = np.linalg.norm(embedding_np)
         if norm > 0:
@@ -1055,6 +1115,10 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     # Embedding cache lives adjacent to enrollment, same owner-only protection.
     cache_dir = enrollment_dir.parent / "embedding-cache"
     embedding_cache = EmbeddingCache(cache_dir, embedding_extractor._model_id)
+    # Per-recording locks to prevent duplicate simultaneous cache builds.
+    # Keyed by recording_name; asyncio.Lock ensures only one build per recording
+    # while allowing different recordings to proceed concurrently.
+    recording_locks: dict[str, asyncio.Lock] = {}
     
     # Validate threshold parameters
     if not (0.5 <= args.similarity_threshold <= 0.95):
@@ -1681,6 +1745,112 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     
     # ── Embedding Cache Endpoints ─────────────────────────────
     
+    def _build_cache_sync(
+        temp_audio: str,
+        segments: list[dict],
+        recording_name: str,
+        extractor: EmbeddingExtractor,
+    ) -> dict:
+        """Synchronous cache build: decode audio ONCE, then embed segments.
+        
+        Runs in a worker thread via asyncio.to_thread so the event loop is not
+        blocked. CPU decode happens once; per-segment GPU work is serialized
+        via extractor._gpu_lock, allowing different recordings to overlap their
+        CPU decode while CUDA use remains safe.
+        
+        Returns dict with segment_embeddings, label_embeddings, excluded info,
+        and segments_skipped_short count.
+        """
+        import torchaudio
+        
+        # Decode full audio exactly ONCE per cache request
+        signal, sample_rate = torchaudio.load(temp_audio)
+        if signal.shape[0] > 1:
+            signal = signal.mean(dim=0, keepdim=True)
+        
+        logger.info(
+            "Cache build %s: decoded audio once (%.1fs, sr=%d, %d segments to process)",
+            recording_name,
+            signal.shape[1] / sample_rate,
+            sample_rate,
+            len(segments),
+        )
+        
+        segment_embeddings = []
+        label_embeddings = {}  # label -> list of embeddings
+        excluded_segments = []  # track genuine failures with reasons
+        label_failure_counts = {}  # label -> count of failed segments
+        segments_skipped_short = 0  # expected skips, not failures
+        
+        for seg in segments:
+            label = seg.get("speaker", "UNKNOWN")
+            start = float(seg.get("start", 0))
+            end = float(seg.get("end", 0))
+            
+            if end <= start:
+                excluded_segments.append({
+                    "label": label,
+                    "start": start,
+                    "end": end,
+                    "reason": "invalid_time_range",
+                })
+                label_failure_counts[label] = label_failure_counts.get(label, 0) + 1
+                continue
+            
+            # Pre-filter by duration BEFORE calling extractor — avoids
+            # GPU path for segments that cannot produce stable embeddings.
+            segment_duration = end - start
+            if segment_duration < extractor.MIN_SEGMENT_DURATION:
+                segments_skipped_short += 1
+                logger.info(
+                    "Skipping short segment %s [%.2f-%.2f] (%.2fs < %.2fs)",
+                    recording_name, start, end,
+                    segment_duration, extractor.MIN_SEGMENT_DURATION,
+                )
+                continue
+            
+            try:
+                # Use waveform-based extraction: no re-decode, just slice + GPU
+                emb = extractor.extract_embedding_from_waveform(
+                    signal, sample_rate, start, end
+                )
+                segment_embeddings.append({
+                    "label": label,
+                    "start": start,
+                    "end": end,
+                    "duration": end - start,
+                    "embedding": emb.tolist(),
+                })
+                if label not in label_embeddings:
+                    label_embeddings[label] = []
+                label_embeddings[label].append(emb)
+            except ShortSegmentSkipped:
+                # Defense in depth — extractor's own guard caught it.
+                # Count as skip, not failure. Extractor already logged it.
+                segments_skipped_short += 1
+            except Exception as e:
+                # Genuine extraction failure (CUDA/audio error)
+                excluded_segments.append({
+                    "label": label,
+                    "start": start,
+                    "end": end,
+                    "reason": "extraction_failed",
+                    "error": str(e),
+                })
+                label_failure_counts[label] = label_failure_counts.get(label, 0) + 1
+                logger.error(
+                    "Failed to extract embedding for %s [%.2f-%.2f]: %s",
+                    recording_name, start, end, e,
+                )
+        
+        return {
+            "segment_embeddings": segment_embeddings,
+            "label_embeddings": label_embeddings,
+            "excluded_segments": excluded_segments,
+            "label_failure_counts": label_failure_counts,
+            "segments_skipped_short": segments_skipped_short,
+        }
+    
     @app.post("/v1/identity/cache/build")
     async def build_embedding_cache(
         audio: UploadFile = File(...),
@@ -1692,6 +1862,13 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         Receives audio + canonical transcript JSON, extracts embeddings for
         diarized segments, computes per-label prototypes, stores protected cache.
         Never calls ASR/alignment/diarization.
+        
+        Concurrency: audio is decoded exactly ONCE per request. CPU decode work
+        runs in a worker thread (asyncio.to_thread) so the event loop is not
+        blocked. GPU work (resample + SpeechBrain forward) is serialized via
+        the extractor's instance-level GPU lock. Per-recording asyncio locks
+        prevent duplicate simultaneous builds for the same recording while
+        allowing different recordings to proceed concurrently.
         
         Returns status: built|hit|stale|failed, plus counts.
         """
@@ -1730,174 +1907,123 @@ def create_app(args: argparse.Namespace) -> FastAPI:
             
             audio_sha = embedding_cache._sha256_file(Path(temp_audio))
             
-            # Check cache status
-            lookup = embedding_cache.lookup(audio_sha, transcript_sha, segment_set_hash)
-            if lookup["status"] == "hit":
-                return {
-                    "status": "hit",
-                    "cache_id": lookup["cache_id"],
-                    "recording_name": recording_name,
-                    "label_count": lookup["manifest"].get("label_count", 0),
-                    "segment_count": lookup["manifest"].get("segment_count", 0),
-                    "segments_skipped_short": lookup["manifest"].get("segments_skipped_short", 0),
-                }
-            
-            # Extract embeddings per segment
-            segment_embeddings = []
-            label_embeddings = {}  # label -> list of embeddings
-            excluded_segments = []  # track genuine failures with reasons
-            label_failure_counts = {}  # label -> count of failed segments
-            segments_skipped_short = 0  # expected skips, not failures
-            
-            for seg in segments:
-                label = seg.get("speaker", "UNKNOWN")
-                start = float(seg.get("start", 0))
-                end = float(seg.get("end", 0))
+            # Per-recording lock: prevents duplicate simultaneous builds for
+            # the same recording_name. Different recordings proceed concurrently.
+            lock = recording_locks.setdefault(recording_name, asyncio.Lock())
+            async with lock:
+                # Re-check cache after acquiring lock (another request may have
+                # built it while we were waiting)
+                lookup = embedding_cache.lookup(audio_sha, transcript_sha, segment_set_hash)
+                if lookup["status"] == "hit":
+                    return {
+                        "status": "hit",
+                        "cache_id": lookup["cache_id"],
+                        "recording_name": recording_name,
+                        "label_count": lookup["manifest"].get("label_count", 0),
+                        "segment_count": lookup["manifest"].get("segment_count", 0),
+                        "segments_skipped_short": lookup["manifest"].get("segments_skipped_short", 0),
+                    }
                 
-                if end <= start:
-                    excluded_segments.append({
-                        "label": label,
-                        "start": start,
-                        "end": end,
-                        "reason": "invalid_time_range",
-                    })
-                    label_failure_counts[label] = label_failure_counts.get(label, 0) + 1
-                    continue
-                
-                # Pre-filter by duration BEFORE calling extractor — avoids
-                # temp audio processing and GPU path for segments that cannot
-                # produce stable embeddings.
-                segment_duration = end - start
-                if segment_duration < embedding_extractor.MIN_SEGMENT_DURATION:
-                    segments_skipped_short += 1
-                    logger.info(
-                        "Skipping short segment %s [%.2f-%.2f] (%.2fs < %.2fs)",
-                        recording_name, start, end,
-                        segment_duration, embedding_extractor.MIN_SEGMENT_DURATION,
-                    )
-                    continue
-                
-                try:
-                    emb = embedding_extractor.extract_embedding_from_segment(
-                        temp_audio, start, end
-                    )
-                    segment_embeddings.append({
-                        "label": label,
-                        "start": start,
-                        "end": end,
-                        "duration": end - start,
-                        "embedding": emb.tolist(),
-                    })
-                    if label not in label_embeddings:
-                        label_embeddings[label] = []
-                    label_embeddings[label].append(emb)
-                except ShortSegmentSkipped:
-                    # Defense in depth — extractor's own guard caught it.
-                    # Count as skip, not failure. Extractor already logged it.
-                    segments_skipped_short += 1
-                except Exception as e:
-                    # Genuine extraction failure (CUDA/audio error)
-                    excluded_segments.append({
-                        "label": label,
-                        "start": start,
-                        "end": end,
-                        "reason": "extraction_failed",
-                        "error": str(e),
-                    })
-                    label_failure_counts[label] = label_failure_counts.get(label, 0) + 1
-                    logger.error(
-                        "Failed to extract embedding for %s [%.2f-%.2f]: %s",
-                        recording_name, start, end, e,
-                    )
-            
-            # Check if we have any usable embeddings at all
-            if not segment_embeddings:
-                raise HTTPException(
-                    500,
-                    {
-                        "error": "no_usable_embeddings",
-                        "message": "No embeddings extracted from any segment",
-                        "excluded_count": len(excluded_segments),
-                        "excluded_segments": excluded_segments[:20],  # cap for response size
-                    },
+                # Decode + embed in worker thread (CPU decode once, GPU serialized)
+                build_result = await asyncio.to_thread(
+                    _build_cache_sync,
+                    temp_audio, segments, recording_name, embedding_extractor,
                 )
-            
-            # Compute per-label prototypes (mean of normalized embeddings, re-normalized)
-            prototypes = {}
-            excluded_labels = []  # labels with no usable segments
-            for label, embs in label_embeddings.items():
-                if not embs:
-                    # This shouldn't happen given the logic above, but handle defensively
+                
+                segment_embeddings = build_result["segment_embeddings"]
+                label_embeddings = build_result["label_embeddings"]
+                excluded_segments = build_result["excluded_segments"]
+                label_failure_counts = build_result["label_failure_counts"]
+                segments_skipped_short = build_result["segments_skipped_short"]
+                
+                # Check if we have any usable embeddings at all
+                if not segment_embeddings:
+                    raise HTTPException(
+                        500,
+                        {
+                            "error": "no_usable_embeddings",
+                            "message": "No embeddings extracted from any segment",
+                            "excluded_count": len(excluded_segments),
+                            "excluded_segments": excluded_segments[:20],  # cap for response size
+                        },
+                    )
+                
+                # Compute per-label prototypes (mean of normalized embeddings, re-normalized)
+                prototypes = {}
+                excluded_labels = []  # labels with no usable segments
+                for label, embs in label_embeddings.items():
+                    if not embs:
+                        # This shouldn't happen given the logic above, but handle defensively
+                        excluded_labels.append({
+                            "label": label,
+                            "reason": "no_valid_segments",
+                            "failed_count": label_failure_counts.get(label, 0),
+                        })
+                        continue
+                    mean_emb = np.mean(embs, axis=0)
+                    norm = np.linalg.norm(mean_emb)
+                    if norm > 0:
+                        mean_emb = mean_emb / norm
+                    prototypes[label] = {
+                        "embedding": mean_emb.tolist(),
+                        "segment_count": len(embs),
+                        "total_duration": sum(
+                            s["duration"] for s in segment_embeddings if s["label"] == label
+                        ),
+                    }
+                
+                # Identify labels that had only failures (no successful embeddings)
+                all_labels_in_segments = set(seg.get("speaker", "UNKNOWN") for seg in segments)
+                labels_with_prototypes = set(prototypes.keys())
+                labels_without_prototypes = all_labels_in_segments - labels_with_prototypes
+                for label in labels_without_prototypes:
                     excluded_labels.append({
                         "label": label,
-                        "reason": "no_valid_segments",
+                        "reason": "all_segments_failed",
                         "failed_count": label_failure_counts.get(label, 0),
                     })
-                    continue
-                mean_emb = np.mean(embs, axis=0)
-                norm = np.linalg.norm(mean_emb)
-                if norm > 0:
-                    mean_emb = mean_emb / norm
-                prototypes[label] = {
-                    "embedding": mean_emb.tolist(),
-                    "segment_count": len(embs),
-                    "total_duration": sum(
-                        s["duration"] for s in segment_embeddings if s["label"] == label
-                    ),
+                
+                # Fail if zero usable label prototypes remain
+                if not prototypes:
+                    raise HTTPException(
+                        500,
+                        {
+                            "error": "no_usable_label_prototypes",
+                            "message": "All labels excluded; no usable prototypes remain",
+                            "excluded_labels": excluded_labels,
+                            "excluded_segment_count": len(excluded_segments),
+                        },
+                    )
+                
+                # Store cache with exclusion metadata
+                exclusion_metadata = {
+                    "excluded_segment_count": len(excluded_segments),
+                    "excluded_segments": excluded_segments,
+                    "excluded_label_count": len(excluded_labels),
+                    "excluded_labels": excluded_labels,
+                    "segments_skipped_short": segments_skipped_short,
                 }
-            
-            # Identify labels that had only failures (no successful embeddings)
-            all_labels_in_segments = set(seg.get("speaker", "UNKNOWN") for seg in segments)
-            labels_with_prototypes = set(prototypes.keys())
-            labels_without_prototypes = all_labels_in_segments - labels_with_prototypes
-            for label in labels_without_prototypes:
-                excluded_labels.append({
-                    "label": label,
-                    "reason": "all_segments_failed",
-                    "failed_count": label_failure_counts.get(label, 0),
-                })
-            
-            # Fail if zero usable label prototypes remain
-            if not prototypes:
-                raise HTTPException(
-                    500,
-                    {
-                        "error": "no_usable_label_prototypes",
-                        "message": "All labels excluded; no usable prototypes remain",
-                        "excluded_labels": excluded_labels,
-                        "excluded_segment_count": len(excluded_segments),
-                    },
+                result = embedding_cache.store(
+                    audio_sha=audio_sha,
+                    transcript_sha=transcript_sha,
+                    segment_set_hash=segment_set_hash,
+                    prototypes=prototypes,
+                    segment_embeddings=segment_embeddings,
+                    recording_name=recording_name,
+                    exclusion_metadata=exclusion_metadata,
                 )
-            
-            # Store cache with exclusion metadata
-            exclusion_metadata = {
-                "excluded_segment_count": len(excluded_segments),
-                "excluded_segments": excluded_segments,
-                "excluded_label_count": len(excluded_labels),
-                "excluded_labels": excluded_labels,
-                "segments_skipped_short": segments_skipped_short,
-            }
-            result = embedding_cache.store(
-                audio_sha=audio_sha,
-                transcript_sha=transcript_sha,
-                segment_set_hash=segment_set_hash,
-                prototypes=prototypes,
-                segment_embeddings=segment_embeddings,
-                recording_name=recording_name,
-                exclusion_metadata=exclusion_metadata,
-            )
-            
-            return {
-                "status": result["status"],
-                "cache_id": result["cache_id"],
-                "recording_name": recording_name,
-                "label_count": len(prototypes),
-                "segment_count": len(segment_embeddings),
-                "segments_skipped_short": segments_skipped_short,
-                "excluded_segment_count": len(excluded_segments),
-                "excluded_label_count": len(excluded_labels),
-                "excluded_labels": excluded_labels,
-            }
+                
+                return {
+                    "status": result["status"],
+                    "cache_id": result["cache_id"],
+                    "recording_name": recording_name,
+                    "label_count": len(prototypes),
+                    "segment_count": len(segment_embeddings),
+                    "segments_skipped_short": segments_skipped_short,
+                    "excluded_segment_count": len(excluded_segments),
+                    "excluded_label_count": len(excluded_labels),
+                    "excluded_labels": excluded_labels,
+                }
         
         finally:
             if temp_audio and os.path.exists(temp_audio):
