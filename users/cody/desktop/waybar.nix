@@ -176,7 +176,7 @@ in
                 fi
               '';
             in
-            builtins.toString nextmeetingWithClass;
+            toString nextmeetingWithClass;
           on-click = nextmeeting + " --open-meet-url";
           on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
           format = "{}";
@@ -209,6 +209,7 @@ in
           interval = 3600;
           exec = ''wttrbar --date-format "%m/%d" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions'';
           return-type = "json";
+          on-click = "mousam";
         };
         "custom/notification" = {
           tooltip = false;
