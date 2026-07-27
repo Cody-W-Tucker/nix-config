@@ -10,6 +10,7 @@
 {
   imports = [
     ./editor/nixvim
+    ./harness
   ];
   home = {
     # Keyboard

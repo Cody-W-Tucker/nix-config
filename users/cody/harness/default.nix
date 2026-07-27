@@ -13,7 +13,6 @@ in
   imports = [
     inputs.rlm.homeManagerModules.default
     ./opencode
-    ./herdr
     ./mcp.nix
   ];
 

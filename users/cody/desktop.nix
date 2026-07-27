@@ -9,7 +9,7 @@
   imports = [
     ./core.nix
     ./desktop
-    ./harness
+    ./harness/herdr
     ./editor/nixvim
     inputs.stylix.homeModules.stylix
   ];
