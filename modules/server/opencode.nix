@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
   passwordFile = config.sops.secrets."opencode-password".path;
@@ -9,6 +14,14 @@ let
   '';
 in
 {
+  # Pull opencode from nixpkgs-unstable so the NAS service tracks the same
+  # version Beast ships, without making the rest of NAS unstable.
+  nixpkgs.overlays = [
+    (final: prev: {
+      opencode = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system}.opencode;
+    })
+  ];
+
   sops.secrets."opencode-password" = {
     owner = "codyt";
   };
