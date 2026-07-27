@@ -11,7 +11,7 @@ The repository follows a functional decomposition strategy, ensuring that machin
 | `hosts/`      | Machine-specific entry points and hardware facts.                  | `beast/`, `nas.nix`                            |
 | `modules/`    | Reusable NixOS system-level modules and services.                  | `system/`, `services/`, `desktop/`, `server/` |
 | `users/`      | Home Manager configurations.                                       | `cody/core.nix`, `cody/desktop.nix`, `cody/desktop/` |
-| `packages/`   | Custom derivations and system scripts.                             | `system-scripts/`, `kokoro/`, `en-core-web-sm/`      |
+| `packages/`   | Custom derivations and system scripts.                             | `system-scripts/`, `kokoro/`                          |
 | `.agents/`    | Knowledge base and guidance for AI agents.                         | `skills/`, `AGENTS.md`                        |
 | `wallpapers/` | Wallpaper assets referenced by desktop configuration.              | Static image assets                           |
 

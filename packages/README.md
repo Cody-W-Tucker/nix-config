@@ -29,25 +29,16 @@ Maintenance commands installed into the system environment.
 
 Use `check-imports` when adding or moving Nix modules. Use `update` for the normal operator path after changes have settled.
 
-### `en-core-web-sm`
-
-spaCy small English model used by speech and language-processing flows.
-
-Local packaging details:
-
-- Fetches the upstream model wheel directly from the spaCy model release.
-- Builds it with `buildPythonPackage`.
-- Wires it to the matching `spacy` dependency.
-
 ### `kokoro`
 
-Kokoro TTS model bundle.
+Kokoro TTS model bundle and its supporting spaCy model.
 
 Local packaging details:
 
-- Uses a `runCommand` derivation to assemble model files into one store path.
+- `default.nix` uses a `runCommand` derivation to assemble model files into one store path.
 - Includes `kokoro-v1_0.pth`, model config, and selected voice profiles.
 - Fetches voice assets from HuggingFace so the runtime can consume a fixed, reproducible model directory.
+- `en-core-web-sm.nix` packages the spaCy small English model that Kokoro's G2P (via misaki) requires at runtime.
 
 ## Adding or changing a package
 

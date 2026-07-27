@@ -9,7 +9,7 @@ let
   # Keep the faster-whisper weights in the llama-swap service cache
   # so Open WebUI STT and whisp-away reuse one model download.
   sharedFasterWhisperCache = "/var/cache/llama-swap/faster-whisper";
-  kokoroAssets = pkgs.callPackage ../../packages/kokoro { };
+  kokoroAssets = (pkgs.callPackage ../../packages/kokoro { }).assets;
 
   whisperPython = pkgs.python313.withPackages (
     ps: with ps; [
@@ -33,7 +33,7 @@ let
         # Provide the spacy model that misaki's G2P (used by kokoro) requires.
         # Without it in the same env, misaki calls spacy.cli.download which fails
         # in the Nix python env (no pip/uv).
-        (pkgs.callPackage ../../packages/en-core-web-sm { pythonPkgs = ps; })
+        ((pkgs.callPackage ../../packages/kokoro { pythonPkgs = ps; }).en-core-web-sm)
         fastapi
         kokoro
         numpy
