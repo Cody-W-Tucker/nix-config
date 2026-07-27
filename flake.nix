@@ -43,6 +43,11 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    nixvim-stable = {
+      # Configures neovim and related plugins (stable, for NAS).
+      url = "github:nix-community/nixvim/nixos-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixvim = {
       # Configures neovim and related plugins.
       url = "github:nix-community/nixvim";

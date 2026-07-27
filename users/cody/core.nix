@@ -8,6 +8,9 @@
 # Shared user config safe for all machines
 
 {
+  imports = [
+    ./editor/nixvim
+  ];
   home = {
     # Keyboard
     keyboard = {

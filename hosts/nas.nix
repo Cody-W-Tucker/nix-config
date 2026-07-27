@@ -177,6 +177,7 @@
       imports = [
         ../users/cody/server.nix
         inputs.nixos-secrets.homeModules.default
+        inputs.nixvim-stable.homeModules.nixvim
       ];
     };
   };
