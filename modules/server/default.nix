@@ -18,6 +18,7 @@
     ./security.nix
     ../services/syncthing.nix
     ./nginx-syncthing.nix
+    ./opencode.nix
     ./wake-beast.nix
   ];
 
