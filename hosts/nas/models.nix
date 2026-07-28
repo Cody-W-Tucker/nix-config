@@ -2,10 +2,18 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
 let
+  # Import unstable nixpkgs with the same allowUnfreePredicate as the NAS config
+  # so that CUDA-only unfree deps (e.g. cuda_cccl) are permitted without blanket allowUnfree.
+  unstablePkgs = import inputs.nixpkgs-unstable {
+    system = pkgs.stdenv.hostPlatform.system;
+    config.allowUnfreePredicate = config.nixpkgs.config.allowUnfreePredicate or (_: false);
+  };
+
   # Keep the faster-whisper weights in the llama-swap service cache
   # so Open WebUI STT and whisp-away reuse one model download.
   sharedFasterWhisperCache = "/var/cache/llama-swap/faster-whisper";
@@ -147,6 +155,7 @@ in
   services.llama-swap = {
     enable = true;
     acceleration = "cuda";
+    serverPackage = unstablePkgs.llama-cpp.override { cudaSupport = true; };
     port = 8081;
     modelOwner = "codyt";
     modelGroup = "users";
