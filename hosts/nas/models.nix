@@ -155,7 +155,15 @@ in
   services.llama-swap = {
     enable = true;
     acceleration = "cuda";
-    serverPackage = unstablePkgs.llama-cpp.override { cudaSupport = true; };
+    # Blackwell RTX 5060 requires sm_120a for FP4 tensor-core instructions.
+    # Override per-package (not globally) to compile native sm_120a code.
+    serverPackage = (unstablePkgs.llama-cpp.override { cudaSupport = true; }).overrideAttrs (old: {
+      cmakeFlags =
+        builtins.filter (f: !(builtins.isString f && builtins.match ".*CUDA_ARCHITECTURES.*" f != null)) (
+          old.cmakeFlags or [ ]
+        )
+        ++ [ "-DCMAKE_CUDA_ARCHITECTURES=120a" ];
+    });
     port = 8081;
     modelOwner = "codyt";
     modelGroup = "users";
@@ -197,12 +205,20 @@ in
           "off"
           "--parallel"
           "2"
+          "--cache-type-k"
+          "q8_0"
+          "--cache-type-v"
+          "q8_0"
         ];
       };
       "qwen3.5-4b" = {
         extraArgs = [
           "--reasoning"
           "off"
+          "--cache-type-k"
+          "q8_0"
+          "--cache-type-v"
+          "q8_0"
         ];
       };
       # Embeddings traffic is short-form; use a smaller KV/cache footprint and
@@ -227,6 +243,10 @@ in
           "1"
           "--temp"
           "0"
+          "--cache-type-k"
+          "q8_0"
+          "--cache-type-v"
+          "q8_0"
         ];
       };
       "whisper-medium" = {
