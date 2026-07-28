@@ -9,14 +9,15 @@
 
 {
   imports = [
-    ../modules/system/base.nix
-    ../modules/desktop/hardware/nvidia.nix
-    ../modules/server
-    ../modules/services/hermes-agent
+    ../../modules/system/base.nix
+    ../../modules/desktop/hardware/nvidia.nix
+    ../../modules/server
+    ../../modules/services/hermes-agent
+    ./models.nix
     # VPN for media
     inputs.vpn-confinement.nixosModules.default
     # Keep track of these fixes and remove them when the upstream issues are resolved.
-    ./fixes.nix
+    ../fixes.nix
   ];
 
   # Bootloader.
@@ -159,7 +160,7 @@
     useDHCP = lib.mkDefault true;
   };
 
-  # NVIDIA GPU (GTX 1650) — shared module provides kernel driver, CUDA, GPU exporter, power mgmt
+  # NVIDIA GPU (RTX 5060) — shared module provides kernel driver, CUDA, GPU exporter, power mgmt
   # Headless: no display manager or desktop session, so X11 nvidia driver is installed but idle.
   # DO NOT force-empty videoDrivers — hardware.nvidia module requires "nvidia" in the list
   # to activate kernel modules, firmware, and nvidia-smi.
@@ -175,7 +176,7 @@
     users.codyt = {
       home.stateVersion = "25.11";
       imports = [
-        ../users/cody/server.nix
+        ../../users/cody/server.nix
         inputs.nixos-secrets.homeModules.default
         inputs.nixvim-stable.homeModules.nixvim
       ];

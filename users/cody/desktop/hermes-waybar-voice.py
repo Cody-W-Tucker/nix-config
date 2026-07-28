@@ -20,7 +20,7 @@ from pysilero_vad import SileroVoiceActivityDetector
 
 HERMES_BASE_URL = os.environ.get("HERMES_BASE_URL", "http://nas:8642").rstrip("/")
 SPEECH_BASE_URL = os.environ.get(
-    "HERMES_SPEECH_BASE_URL", "http://127.0.0.1:8081"
+    "HERMES_SPEECH_BASE_URL", "http://nas:8081"
 ).rstrip("/")
 GATEWAY_AUTH_TOKEN = os.environ.get(
     "HERMES_GATEWAY_TOKEN",

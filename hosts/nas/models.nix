@@ -44,7 +44,7 @@ let
 
   # WhisperX diarization server: speech-to-text with speaker labels.
   # Uses WhisperX for transcription + alignment and pyannote for diarization.
-  # Both require CUDA for acceptable latency on the RTX 3070.
+  # Both require CUDA for acceptable latency.
   #
   # Override the entire Python 3.13 package set so torch carries CUDA by default.
   # This avoids the collision where stock whisperx propagates CPU torch while an
@@ -73,6 +73,10 @@ let
   diarizationCache = "/var/cache/llama-swap/whisperx";
 in
 {
+  imports = [
+    ../../modules/services/llama-swap
+  ];
+
   assertions = [
     {
       # Guard: the diarization server hardcodes the embedding-cache path.
@@ -97,6 +101,10 @@ in
   };
 
   systemd.tmpfiles.rules = [
+    # CacheDirectory creates /var/cache/llama-swap as root:root; re-own for codyt so
+    # HF_HOME and XDG_CACHE_HOME subdirectories are writable at runtime.
+    "d /var/cache/llama-swap 0755 codyt users - -"
+    "d /var/cache/llama-swap/huggingface 0755 codyt users - -"
     "d ${sharedFasterWhisperCache} 0755 codyt users - -"
     "d ${diarizationCache} 0755 codyt users - -"
     "d ${diarizationEnrollmentDir} 0750 codyt users - -"
@@ -110,8 +118,6 @@ in
     modelOwner = "codyt";
     modelGroup = "users";
     serviceEnvironment = {
-      # Wrapper processes still need a writable private cache for other
-      # Hugging Face assets such as SpeechT5 TTS files.
       HF_HOME = "/var/cache/llama-swap/huggingface";
       XDG_CACHE_HOME = "/var/cache/llama-swap";
       LD_LIBRARY_PATH = lib.concatStringsSep ":" [
@@ -122,8 +128,10 @@ in
     enabledModels = [
       "qwen3.5-0.8b"
       "qwen3.5-4b"
+      # Shared catalog: embedding and OCR for Karakeep/Miniflux
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
+      # Audio stack: STT and TTS
       "whisper-medium"
       "whisper-diarization"
       "kokoro-82m"
@@ -141,16 +149,6 @@ in
       };
     };
     modelOverrides = {
-      # qwen3.5-4b is used by Karakeep for summarization. Disable reasoning so
-      # the <think> trace does not consume the context budget.
-      "qwen3.5-4b" = {
-        contextSize = 32768;
-        ttl = 60;
-        extraArgs = [
-          "--reasoning"
-          "off"
-        ];
-      };
       "qwen3.5-0.8b" = {
         extraArgs = [
           "--reasoning"
@@ -159,7 +157,13 @@ in
           "2"
         ];
       };
-      # Embeddings traffic here is short-form; use a smaller KV/cache footprint and
+      "qwen3.5-4b" = {
+        extraArgs = [
+          "--reasoning"
+          "off"
+        ];
+      };
+      # Embeddings traffic is short-form; use a smaller KV/cache footprint and
       # avoid flash-attn to reduce startup instability in llama-server.
       "qwen3-embedding-0.6b" = {
         contextSize = 8192;
@@ -168,8 +172,7 @@ in
         flashAttention = false;
       };
       # OCR prefers deterministic decoding. Allow a small amount of request
-      # parallelism, but keep batching modest on the 3070 now that this host
-      # uses the larger F16 weights.
+      # parallelism, but keep batching modest on the RTX 5060.
       "glm-ocr-f16" = {
         batchSize = 1024;
         ubatchSize = 512;

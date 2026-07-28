@@ -39,7 +39,7 @@ For models with vision capabilities, such as `glm-ocr-f16`, the catalog must spe
 
 `llama-swap` abstracts the underlying hardware through the `acceleration` option.
 
-- **CUDA**: Used on the `beast` host (NVIDIA 3070). It overrides `llama-cpp` with `cudaSupport = true`[modules/services/llama-swap/default.nix97-98](../modules/services/llama-swap/default.nix#L97-L98)
+- **CUDA**: Used on the `nas` host (NVIDIA RTX 5060). It overrides `llama-cpp` with `cudaSupport = true`[modules/services/llama-swap/default.nix97-98](../modules/services/llama-swap/default.nix#L97-L98)
 
 ## Specialized TTS Wrappers
 
@@ -59,8 +59,8 @@ Services within the NixOS configuration consume `llama-swap` by pointing their A
 **Example: Karakeep Integration**
 The Karakeep bookmark service is configured to use `llama-swap` for summarization, embedding, and OCR:
 
-- **Base URL**: `http://beast:8081/v1`[modules/server/karakeep.nix11](../modules/server/karakeep.nix#L11-L11)
-- **Chat Model**: `qwen3.5-4b`[modules/server/karakeep.nix12](../modules/server/karakeep.nix#L12-L12)
+- **Base URL**: `http://nas:8081/v1`[modules/server/karakeep.nix11](../modules/server/karakeep.nix#L11-L11)
+- **Chat Model**: `qwen3.5-4b Q8_0`[modules/server/karakeep.nix12](../modules/server/karakeep.nix#L12-L12)
 - **OCR Model**: `glm-ocr-f16`[modules/server/karakeep.nix16](../modules/server/karakeep.nix#L16-L16)
 - **Embedding Model**: `qwen3-embedding-0.6b`[modules/server/karakeep.nix17](../modules/server/karakeep.nix#L17-L17)
 

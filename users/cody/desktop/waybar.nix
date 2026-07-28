@@ -18,7 +18,7 @@ let
     ];
     text = ''
       export HERMES_BASE_URL="http://nas:8642"
-      export HERMES_SPEECH_BASE_URL="http://127.0.0.1:8081"
+      export HERMES_SPEECH_BASE_URL="http://nas:8081"
       HERMES_API_TOKEN="$(< ${config.sops.secrets.hermes-api-server-key.path})"
       export HERMES_API_TOKEN
       export HERMES_TRANSCRIPTION_MODEL="whisper-medium"

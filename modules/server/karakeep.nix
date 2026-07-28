@@ -8,7 +8,7 @@
       # DISABLE_SIGNUPS = "true";
       DISABLE_NEW_RELEASE_CHECK = "true";
       OPENAI_API_KEY = "opencode";
-      OPENAI_BASE_URL = "http://beast:8081/v1";
+      OPENAI_BASE_URL = "http://nas:8081/v1";
       INFERENCE_TEXT_MODEL = "qwen3.5-4b";
       INFERENCE_IMAGE_MODEL = "qwen3.5-4b";
       INFERENCE_CONTEXT_LENGTH = "16384";
@@ -18,7 +18,7 @@
       INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
       INFERENCE_FETCH_TIMEOUT_SEC = "300"; # Default 5 mins
       INFERENCE_JOB_TIMEOUT_SEC = "300"; # Default 30s, increased for slow local model
-      OCR_USE_LLM = "true"; # Use beast's multimodal OCR model for image text extraction.
+      OCR_USE_LLM = "true"; # Use NAS's multimodal OCR model for image text extraction.
       MAX_ASSET_SIZE_MB = "100";
     };
   };

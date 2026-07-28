@@ -12,17 +12,17 @@ The service is configured with a cleanup frequency of 48 hours and allows privat
 
 ## Karakeep Bookmark Manager
 
-Karakeep is the central repository for bookmarks and serves as the "reference set" for the AI curation logic. It is tightly integrated with the local AI infrastructure running on the `beast` host.
+Karakeep is the central repository for bookmarks and serves as the "reference set" for the AI curation logic. It is tightly integrated with the local AI infrastructure running on the `NAS` host.
 
 ### AI Integration
 
 Karakeep utilizes local models via `llama-swap` for several features:
 
-- **Summarization**: Uses `qwen3.5-4b` for text inference [modules/server/karakeep.nix12](../modules/server/karakeep.nix#L12-L12)
+- **Summarization**: Uses `qwen3.5-4b Q8_0` for text inference [modules/server/karakeep.nix12](../modules/server/karakeep.nix#L12-L12)
 - **Embeddings**: Uses `qwen3-embedding-0.6b` for semantic representation [modules/server/karakeep.nix17](../modules/server/karakeep.nix#L17-L17)
 - **OCR**: Uses the `glm-ocr-f16` multimodal model for extracting text from images [modules/server/karakeep.nix16](../modules/server/karakeep.nix#L16-L16)
 
-The service connects to the OpenAI-compatible API provided by `llama-swap` at `http://beast:8081/v1`[modules/server/karakeep.nix11](../modules/server/karakeep.nix#L11-L11)
+The service connects to the OpenAI-compatible API provided by `llama-swap` at `http://nas:8081/v1`[modules/server/karakeep.nix11](../modules/server/karakeep.nix#L11-L11)
 
 ## Miniflux Curator Automation
 

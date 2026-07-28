@@ -46,7 +46,7 @@
       apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
       karakeepUrl = "https://karakeep.homehub.tv";
       karakeepApiKeyFile = config.sops.secrets."karakeep-api-key".path;
-      openaiHost = "http://beast:8081";
+      openaiHost = "http://nas:8081";
       embedModel = "qwen3-embedding-0.6b";
       autoMarkReadBelow = 4.5;
       limitUnread = 400;
@@ -66,7 +66,4 @@
       kTLS = true;
     };
   };
-
-  # Ensure curator can reach Ollama on beast via the proxy
-  networking.hosts."192.168.1.20" = [ "beast" ];
 }

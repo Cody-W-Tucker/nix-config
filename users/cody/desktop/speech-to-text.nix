@@ -21,8 +21,8 @@ let
       pidfile="/tmp/llama-dictate-recording.pid"
       pathfile="/tmp/llama-dictate-recording.path"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-      api_url="http://127.0.0.1:8081/v1/audio/transcriptions"
-      warmup_url="http://127.0.0.1:8081/upstream/whisper-medium/health"
+      api_url="http://nas:8081/v1/audio/transcriptions"
+      warmup_url="http://nas:8081/upstream/whisper-medium/health"
       model="whisper-medium"
 
       warm_model() {

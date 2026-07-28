@@ -1,10 +1,10 @@
 # Local AI Infrastructure
 
-The CodyOS AI stack provides a unified, local-first interface for Large Language Models (LLMs), Speech-to-Text (STT), and Text-to-Speech (TTS) services. It is designed to run primarily on the **beast** workstation, utilizing NVIDIA hardware acceleration to serve low-latency inference to local agents, desktop tools, and remote services via an OpenAI-compatible API.
+The CodyOS AI stack provides a unified, local-first interface for Large Language Models (LLMs), Speech-to-Text (STT), and Text-to-Speech (TTS) services. It is designed to run primarily on the **NAS** server, utilizing NVIDIA hardware acceleration to serve low-latency inference to local agents, desktop tools, and remote services via an OpenAI-compatible API.
 
 ## High-Level Architecture
 
-The infrastructure is built around a "model swapping" pattern where large models are loaded into VRAM on-demand and evicted after a period of inactivity. This allows a single GPU (NVIDIA 3070 on beast) to serve multiple specialized models (chat, embedding, vision, OCR) without exceeding memory limits.
+The infrastructure is built around a "model swapping" pattern where large models are loaded into VRAM on-demand and evicted after a period of inactivity. This allows a single GPU (NVIDIA RTX 5060 on NAS) to serve multiple specialized models (chat, embedding, vision, OCR) without exceeding memory limits.
 
 ### AI Infrastructure Flow
 
@@ -13,7 +13,7 @@ This diagram illustrates how user input moves from desktop interactions through 
 ```mermaid
 flowchart LR
     subgraph subGraph2 ["Hardware Acceleration"]
-        CUDA["NVIDIA CUDA (beast)"]
+        CUDA["NVIDIA CUDA (NAS)"]
     end
     subgraph subGraph1 ["Code Entity Space (Orchestration)"]
         LSwap["llama-swap Service"]
@@ -43,7 +43,7 @@ flowchart LR
 
 - **Model Management:** Models are defined in a central catalog [modules/services/llama-swap/models.nix14-66](../modules/services/llama-swap/models.nix#L14-L66) Each entry specifies `gpuLayers`, `contextSize`, and `ttl` (Time-To-Live).
 - **TTL-Based Swapping:** The service keeps a model resident in VRAM for a specified `ttl` duration [modules/services/llama-swap/default.nix33-37](../modules/services/llama-swap/default.nix#L33-L37) Once the idle timer expires, the process is killed to free resources.
-- **Acceleration Backends:** Supports `cuda` (default for beast)
+- **Acceleration Backends:** Supports `cuda` (default for NAS)
 - **Vision/OCR Support:** Multimodal models like `glm-ocr-f16` utilize a `mmprojFile` to handle image inputs [modules/services/llama-swap/models.nix56-65](../modules/services/llama-swap/models.nix#L56-L65)
 
 For details, see [llama-swap: LLM Orchestration Service](/Cody-W-Tucker/nix-config/5.1-llama-swap:-llm-orchestration-service).
@@ -88,7 +88,7 @@ The following table maps conceptual infrastructure components to their implement
 
 ### Service Consumption Diagram
 
-This diagram shows how various system services consume the AI infrastructure via the `http://beast:8081/v1` API.
+This diagram shows how various system services consume the AI infrastructure via the `http://nas:8081/v1` API.
 
 ```mermaid
 flowchart LR

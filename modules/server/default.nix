@@ -67,7 +67,7 @@
       # Access log for Loki ingestion
       access_log /var/log/nginx/access.log;
     '';
-    # These services are on the beast machine
+    # These services run on the NAS
     virtualHosts = {
       # Internal status endpoint for metrics
       "localhost" = {
@@ -106,7 +106,7 @@
             grpc_set_header Host $host;
             grpc_set_header X-Real-IP $remote_addr;
             grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            grpc_pass grpc://192.168.1.20:6334;    # Ensure grpc_pass for gRPC-specific handling
+            grpc_pass grpc://localhost:6334;    # Ensure grpc_pass for gRPC-specific handling
           '';
         };
       };

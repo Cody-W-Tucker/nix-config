@@ -13,7 +13,7 @@
 
 {
   "qwen3.5-0.8b" = {
-    file = "Qwen3.5-0.8B-UD-Q8_K_XL.gguf";
+    file = "Qwen3.5-0.8B-Q8_0.gguf";
     gpuLayers = 999;
     contextSize = 16384;
     threads = 2;
@@ -44,7 +44,7 @@
       "last"
     ];
   };
-  # Wrapper-backed audio models can omit `file` because beast replaces the
+  # Wrapper-backed audio models can omit `file` because the host replaces the
   # generated llama-server command with an OpenAI-compatible helper process.
   "whisper-medium" = {
     ttl = 300;

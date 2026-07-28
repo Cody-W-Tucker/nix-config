@@ -1,7 +1,7 @@
 # Diarization server package
 
 WhisperX-based speaker diarization server for the llama-swap audio stack.
-Runs as a managed upstream behind llama-swap on `beast`.
+Runs as a managed upstream behind llama-swap on `nas`.
 
 ## Responsibilities
 
@@ -49,7 +49,7 @@ Only one model is resident on the GPU at a time. The transcription pipeline cycl
 
 ## Launch wiring
 
-Launched by `hosts/beast/models.nix` as a llama-swap upstream:
+Launched by `hosts/nas/models.nix` as a llama-swap upstream:
 
 ```
 PYTHONPATH=<repo>/modules/services/llama-swap \

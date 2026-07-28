@@ -130,7 +130,7 @@ in
           provider = "openai";
           openai = {
             api_key = "local-only";
-            base_url = "http://beast:8081/v1";
+            base_url = "http://nas:8081/v1";
             model = "whisper-medium";
           };
         };
@@ -138,7 +138,7 @@ in
           provider = "openai";
           openai = {
             api_key = "local-only";
-            base_url = "http://beast:8081/v1";
+            base_url = "http://nas:8081/v1";
             model = "kokoro-82m";
             voice = "af_heart";
           };

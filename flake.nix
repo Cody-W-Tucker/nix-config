@@ -116,7 +116,7 @@
           specialArgs = specialArgs // {
             home-manager-input = inputs.home-manager-stable;
           };
-          modules = [ ./hosts/nas.nix ];
+          modules = [ ./hosts/nas ];
         };
       };
     };

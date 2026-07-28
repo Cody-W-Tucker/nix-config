@@ -15,7 +15,7 @@ interface VoiceConfig {
 }
 
 const defaultConfig: VoiceConfig = {
-  apiUrl: "http://127.0.0.1:8081/v1/audio/speech",
+  apiUrl: "http://nas:8081/v1/audio/speech",
   model: "kokoro-82m",
   voice: "af_heart",
   responseFormat: "wav",
