@@ -20,7 +20,6 @@ in
     ./skills/cognitive
     ./tools/model-router
     ./tools/rtk
-    ./tools/voice
   ];
 
   home.packages = [
@@ -51,15 +50,6 @@ in
       Only invoke them when they add genuine value — not for routine tasks where plain execution suffices.
       Available skills (cognitive-assistant):
       ${builtins.concatStringsSep "\n" (map (s: "      - ${s}") skillNames)}
-
-      # Speech tool
-
-      When finishing long-running work, you should call the `speak` tool once with a short status line if audible feedback would save the user from reading the full response immediately.
-      Do not use it for routine progress updates or normal back-and-forth.
-      Good examples:
-      - Hey Cody...... Fixed the voice plugin, but I didn't know how you wanted to handle <situation>.
-      - Hey Cody...... The build passed, but you may want to review the <specific_choice> I made to accomplish <goal>.
-      Keep spoken lines short and avoid code paths.
     '';
     settings = {
       autoupdate = false;
