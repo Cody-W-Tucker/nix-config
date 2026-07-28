@@ -225,7 +225,6 @@ in
       type = lib.types.attrsOf modelType;
       default = resolvedModelCatalog;
       readOnly = true;
-      internal = true;
       description = "Resolved llama-swap model definitions after merging catalog and overrides.";
     };
 
