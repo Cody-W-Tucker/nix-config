@@ -221,13 +221,6 @@ in
       description = "Host-specific overrides merged onto `services.llama-swap.modelCatalog`.";
     };
 
-    models = lib.mkOption {
-      type = lib.types.attrsOf modelType;
-      default = resolvedModelCatalog;
-      readOnly = true;
-      description = "Resolved llama-swap model definitions after merging catalog and overrides.";
-    };
-
     enabledModels = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
