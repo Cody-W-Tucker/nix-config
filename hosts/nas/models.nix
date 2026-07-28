@@ -178,6 +178,7 @@ in
     enabledModels = [
       "qwen3.5-0.8b"
       "qwen3.5-4b"
+      "qwen3.5-9b-nvfp4"
       # Shared catalog: embedding and OCR for Karakeep/Miniflux
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
@@ -215,6 +216,18 @@ in
         extraArgs = [
           "--reasoning"
           "off"
+          "--cache-type-k"
+          "q8_0"
+          "--cache-type-v"
+          "q8_0"
+        ];
+      };
+      "qwen3.5-9b-nvfp4" = {
+        extraArgs = [
+          "--reasoning"
+          "off"
+          "--parallel"
+          "2"
           "--cache-type-k"
           "q8_0"
           "--cache-type-v"

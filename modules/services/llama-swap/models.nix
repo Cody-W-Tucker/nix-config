@@ -30,6 +30,17 @@
     ubatchSize = 512;
     ttl = 450;
   };
+  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — ~5.5 GB weights, fits comfortably
+  # alongside Q8 KV cache at 32K context on a 16 GB RTX 5060.
+  "qwen3.5-9b-nvfp4" = {
+    file = "qwen3.5-9b-nvfp4.gguf";
+    gpuLayers = 999;
+    contextSize = 32768;
+    threads = 4;
+    batchSize = 1024;
+    ubatchSize = 512;
+    ttl = 600;
+  };
   "qwen3-embedding-0.6b" = {
     file = "Qwen3-Embedding-0.6B-Q8_0.gguf";
     gpuLayers = 999;
