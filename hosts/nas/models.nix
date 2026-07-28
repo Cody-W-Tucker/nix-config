@@ -11,14 +11,47 @@ let
   sharedFasterWhisperCache = "/var/cache/llama-swap/faster-whisper";
   kokoroAssets = (pkgs.callPackage ../../packages/kokoro { }).assets;
 
-  whisperPython = pkgs.python313.withPackages (
-    ps: with ps; [
-      fastapi
-      faster-whisper
-      python-multipart
-      uvicorn
-    ]
-  );
+  # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
+  # The bundled FindCUDA parser is too stale to accept CUDA_ARCH_LIST=12.0 for Blackwell,
+  # so we strip any existing CUDA_ARCH_LIST flags and inject sm_120 directly via postPatch.
+  ctranslate2CppBlackwell =
+    let
+      ctranslate2Cpp = pkgs.ctranslate2.override {
+        withCUDA = true;
+        withCuDNN = true;
+      };
+    in
+    ctranslate2Cpp.overrideAttrs (old: {
+      cmakeFlags = builtins.filter (
+        f: !(builtins.isString f && builtins.match ".*CUDA_ARCH_LIST.*" f != null)
+      ) (old.cmakeFlags or [ ]);
+      postPatch = (old.postPatch or "") + ''
+        # Bypass stale FindCUDA parser for Blackwell (sm_120): inject explicit
+        # compute_120/sm_120 gencode after the existing ARCH_FLAGS expansion.
+        for f in $(grep -rl 'list(APPEND CUDA_NVCC_FLAGS .*ARCH_FLAGS' .); do
+          sed -i '/list(APPEND CUDA_NVCC_FLAGS .*ARCH_FLAGS/a\  list(APPEND CUDA_NVCC_FLAGS "-gencode" "arch=compute_120,code=sm_120")' "$f"
+        done
+      '';
+    });
+
+  whisperPython =
+    let
+      whisperScope = pkgs.python313.override {
+        packageOverrides = final: prev: {
+          ctranslate2 = prev.ctranslate2.override {
+            ctranslate2-cpp = ctranslate2CppBlackwell;
+          };
+        };
+      };
+    in
+    whisperScope.withPackages (
+      ps: with ps; [
+        fastapi
+        faster-whisper
+        python-multipart
+        uvicorn
+      ]
+    );
 
   kokoroPython =
     let
