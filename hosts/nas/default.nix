@@ -91,7 +91,12 @@
     };
   };
 
-  swapDevices = [ ];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 32768; # 32GB swap file to avoid OOM killer on low-memory workloads
+    }
+  ];
 
   # ── User bind mounts (after ZFS datasets) ────────────────────
   # Make NAS-local ZFS datasets available under codyt's home directory.
@@ -167,6 +172,8 @@
   # Enable the /run/opengl-driver symlink farm so non-X services (Jellyfin ffmpeg) can find
   # libcuda.so.1, libnvcuvid.so, etc. without a running display server.
   hardware.graphics.enable = true;
+  # Target native sm_120 CUDA code for the RTX 5060 (Blackwell); applies to NAS CUDA package builds only.
+  nixpkgs.config.cudaCapabilities = [ "12.0" ];
 
   # Home-manager configuration
   home-manager = {
