@@ -9,16 +9,12 @@
       DISABLE_NEW_RELEASE_CHECK = "true";
       OPENAI_API_KEY = "opencode";
       OPENAI_BASE_URL = "http://nas:8081/v1";
-      INFERENCE_TEXT_MODEL = "qwen3.5-4b";
-      INFERENCE_IMAGE_MODEL = "qwen3.5-4b";
+      INFERENCE_TEXT_MODEL = "qwen3.5-9b-nvfp4";
       INFERENCE_CONTEXT_LENGTH = "16384";
       INFERENCE_MAX_OUTPUT_TOKENS = "1024";
       INFERENCE_OUTPUT_SCHEMA = "structured";
       EMBEDDING_TEXT_MODEL = "qwen3-embedding-0.6b";
       INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
-      INFERENCE_FETCH_TIMEOUT_SEC = "300"; # Default 5 mins
-      INFERENCE_JOB_TIMEOUT_SEC = "300"; # Default 30s, increased for slow local model
-      OCR_USE_LLM = "true"; # Use NAS's multimodal OCR model for image text extraction.
       MAX_ASSET_SIZE_MB = "100";
     };
   };
