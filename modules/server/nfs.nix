@@ -12,7 +12,6 @@
   systemd.services."zfs-create-backup-projects" = {
     description = "Ensure ZFS dataset backup/projects exists and is mounted";
     wantedBy = [ "multi-user.target" ];
-    requiredBy = [ "nfs-server.service" ];
     before = [ "nfs-server.service" ];
     after = [ "zfs-import-backup.service" ];
     requires = [ "zfs-import-backup.service" ];
@@ -34,7 +33,6 @@
   systemd.services."zfs-create-backup-knowledge" = {
     description = "Ensure ZFS dataset backup/knowledge exists and is mounted";
     wantedBy = [ "multi-user.target" ];
-    requiredBy = [ "nfs-server.service" ];
     before = [ "nfs-server.service" ];
     after = [ "zfs-import-backup.service" ];
     requires = [ "zfs-import-backup.service" ];
