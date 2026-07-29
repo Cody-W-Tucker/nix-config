@@ -13,12 +13,15 @@
     ../../modules/desktop/hardware/nvidia.nix
     ../../modules/server
     ../../modules/services/hermes-agent
+    ../../modules/services/opencode
     ./models.nix
     # VPN for media
     inputs.vpn-confinement.nixosModules.default
     # Keep track of these fixes and remove them when the upstream issues are resolved.
     ../fixes.nix
   ];
+
+  services.opencode.enable = true;
 
   # Bootloader.
   boot = {
