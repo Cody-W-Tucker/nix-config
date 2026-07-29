@@ -18,7 +18,7 @@ let
         -e ACTUAL_PASSWORD \
         -e ACTUAL_SERVER_URL="https://budget.homehub.tv" \
         -e ACTUAL_BUDGET_SYNC_ID \
-        sstefanov/actual-mcp:latest \
+        sstefanov/actual-mcp:v1.12.0 \
         --enable-write
     '';
   };
@@ -46,10 +46,10 @@ in
 
   programs.opencode.agents.business = ''
     ---
-    description: Business operations agent for CRM, accounting, and Google Workspace workflows.
+    description: Business operations agent for accounting and Google Workspace workflows.
     tools:
       "actualBudget_*": true
     ---
-    Business mode for accounting, CRM, and Google Workspace tasks.
+    Business mode for accounting and Google Workspace tasks. Use the apprppriate mcp tools for your workflow. It is configured to use the actualBudget mcp tool for budget management and synchronization. Use the Google Workspace tools for managing your organization's Google Workspace tasks. 
   '';
 }
