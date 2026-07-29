@@ -29,6 +29,10 @@ in
       createUser = false;
       container = {
         enable = true;
+        extraOptions = [
+          "--gpus"
+          "all"
+        ];
         extraVolumes = [
           "/mnt/projects:/data/projects:rw"
           "/mnt/knowledge:/data/knowledge:rw"
