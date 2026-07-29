@@ -29,6 +29,10 @@ in
       createUser = false;
       container = {
         enable = true;
+        extraOptions = [
+          "--device"
+          "nvidia.com/gpu=all"
+        ];
         extraVolumes = [
           "/mnt/projects:/data/projects:rw"
           "/mnt/knowledge:/data/knowledge:rw"
