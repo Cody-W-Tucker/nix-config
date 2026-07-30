@@ -30,8 +30,7 @@
   # Reusable nginx reverse-proxy vhost builder.
   # Covers the common pattern across media services:
   #   forceSSL + useACMEHost "homehub.tv" + kTLS + single-location proxyPass
-  #   + recommendedProxySettings (on by default, since all reverse-proxied
-  #   media services benefit from standard proxy headers).
+  #   + recommendedProxySettings is set globally in modules/server/default.nix
   #
   # Accepts either:
   #   - `service`: a service name (e.g. "sonarr") — derives host as
@@ -49,7 +48,6 @@
       service ? null,
       proxyHost ? "127.0.0.1",
       extraConfig ? "",
-      recommendedProxySettings ? true,
     }:
     let
       # Derive host and port from service name if provided
@@ -67,7 +65,6 @@
         forceSSL = true;
         useACMEHost = "homehub.tv";
         kTLS = true;
-        inherit recommendedProxySettings;
         locations."/" = {
           proxyPass = "http://${proxyHost}:${toString resolvedPort}";
           proxyWebsockets = true;
