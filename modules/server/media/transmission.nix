@@ -4,14 +4,53 @@
   inputs,
   ...
 }:
+
 {
-  # Add systemd service to VPN network namespace
+  systemd.tmpfiles.rules = [
+    # Base directory must be owned by root to avoid unsafe path transitions
+    # when subdirectories are owned by different users
+    "d /mnt/media 0755 root root - -"
+    # Flat media category directories with setgid for group inheritance
+    "d /mnt/media/AudioBookShelf 2775 root media - -"
+    "d /mnt/media/Books 2775 root media - -"
+    "d /mnt/media/Channels 2775 root media - -"
+    "d /mnt/media/Downloads 2775 root media - -"
+    "d /mnt/media/Downloads/incomplete 2775 root media - -"
+    "d /mnt/media/Movies 2775 root media - -"
+    "d /mnt/media/Music 2775 root media - -"
+    "d /mnt/media/TV\\x20Shows 2775 root media - -"
+  ];
+
   systemd.services.transmission.vpnConfinement = {
     enable = true;
     vpnNamespace = "wg";
   };
 
-  # Media Management
+  # Get the encrypted file
+  sops.secrets."server-wg.conf" = {
+    sopsFile = inputs.nixos-secrets.paths.serverWireguardSopsFile;
+    mode = "0400"; # Only root can read
+  };
+
+  # Define VPN network namespace
+  vpnNamespaces.wg = {
+    enable = true;
+    wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
+    accessibleFrom = [ "192.168.0.0/24" ];
+    portMappings = [
+      {
+        from = 9091;
+        to = 9091;
+      }
+    ];
+    openVPNPorts = [
+      {
+        port = 60729;
+        protocol = "both";
+      }
+    ];
+  };
+
   services.transmission = {
     enable = true;
     package = pkgs.transmission_4;
@@ -65,30 +104,5 @@
       rpc-authentication-required = false;
       rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
     };
-  };
-
-  # Get the encrypted file
-  sops.secrets."server-wg.conf" = {
-    sopsFile = inputs.nixos-secrets.paths.serverWireguardSopsFile;
-    mode = "0400"; # Only root can read
-  };
-
-  # Define VPN network namespace
-  vpnNamespaces.wg = {
-    enable = true;
-    wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
-    accessibleFrom = [ "192.168.0.0/24" ];
-    portMappings = [
-      {
-        from = 9091;
-        to = 9091;
-      }
-    ];
-    openVPNPorts = [
-      {
-        port = 60729;
-        protocol = "both";
-      }
-    ];
   };
 }

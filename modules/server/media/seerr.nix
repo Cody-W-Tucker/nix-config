@@ -1,16 +1,11 @@
-{
-  services.seerr = {
-    enable = true;
-  };
+{ mkMediaVhost, ... }:
 
-  services.nginx.virtualHosts."request.homehub.tv" = {
-    forceSSL = true;
-    useACMEHost = "homehub.tv";
-    locations."/" = {
-      recommendedProxySettings = true;
-      proxyPass = "http://127.0.0.1:5055";
-      proxyWebsockets = true;
-    };
-    kTLS = true;
+{
+  services.seerr.enable = true;
+
+  services.nginx.virtualHosts = mkMediaVhost {
+    host = "request.homehub.tv";
+    port = 5055;
+    recommendedProxySettings = true;
   };
 }

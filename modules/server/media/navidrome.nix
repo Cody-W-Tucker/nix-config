@@ -1,3 +1,5 @@
+{ mkMediaVhost, ... }:
+
 {
   services.navidrome = {
     enable = true;
@@ -7,13 +9,8 @@
     };
   };
 
-  services.nginx.virtualHosts."music.homehub.tv" = {
-    forceSSL = true;
-    useACMEHost = "homehub.tv";
-    locations."/" = {
-      proxyPass = "http://127.0.0.1:4533";
-      proxyWebsockets = true;
-    };
-    kTLS = true;
+  services.nginx.virtualHosts = mkMediaVhost {
+    host = "music.homehub.tv";
+    port = 4533;
   };
 }
