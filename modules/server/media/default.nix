@@ -3,6 +3,7 @@
     ../media.nix
     ./bazarr.nix
     ./calibre-server.nix
+    ./calibre-web.nix
     ./jellyfin.nix
     ./lidarr.nix
     ./navidrome.nix
