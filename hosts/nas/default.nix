@@ -10,6 +10,7 @@
 {
   imports = [
     ../../modules/system/base.nix
+    ../../modules/hardware/baseline.nix
     ../../modules/desktop/hardware/nvidia.nix
     ../../modules/nas
     ../../modules/services/hermes-agent
@@ -25,8 +26,6 @@
 
   # Bootloader.
   boot = {
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
     initrd.availableKernelModules = [
       "xhci_pci"
       "ahci"
@@ -44,8 +43,6 @@
     zfs.extraPools = [ "backup" ];
     zfs.forceImportRoot = false;
   };
-
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   fileSystems = {
     "/" = {

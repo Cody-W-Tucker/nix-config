@@ -24,6 +24,7 @@ in
   imports = [
     # Shared modules
     ../../modules/system/base.nix
+    ../../modules/hardware/baseline.nix
     ../../modules/desktop
     ../../modules/desktop/gaming
     ../../modules/desktop/hardware/nvidia.nix
@@ -40,8 +41,6 @@ in
   # Bootloader.
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
     extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
     initrd.availableKernelModules = [
       "vmd"
@@ -168,9 +167,6 @@ in
       dates = "weekly";
     };
   };
-
-  # Ensure 14th Gen Intel CPU works correctly
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   services.fluent-bit.settings.pipeline.inputs = [
     {
