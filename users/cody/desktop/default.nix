@@ -51,6 +51,7 @@ in
 
   home.packages = with pkgs; [
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.tuicr.packages.${pkgs.stdenv.hostPlatform.system}.default
     hermesDesktopUpstream # Hermes Agent desktop app (upstream, no API key wrapper)
     hermesDesktopIcon # Icon for XDG desktop entry
     grim # Screenshot utility
@@ -81,6 +82,9 @@ in
     twitch-tui # Read chats from terminal
     mousam # Weather CLI tool
   ];
+
+  # tuicr: match stylix catppuccin-mocha palette
+  xdg.configFile."tuicr/config.toml".source = ./tuicr.toml;
 
   services = {
     tailscale-systray.enable = true;
