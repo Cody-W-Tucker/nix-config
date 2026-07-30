@@ -67,10 +67,6 @@
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
 
-    seerr = {
-      enable = true;
-    };
-
     sonarr = {
       enable = true;
       group = "media";
@@ -206,16 +202,6 @@
             proxy_buffer_size   1024k;
             proxy_set_header X-Scheme $scheme;
           '';
-        };
-        kTLS = true;
-      };
-      "request.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:5055";
-          proxyWebsockets = true;
         };
         kTLS = true;
       };
