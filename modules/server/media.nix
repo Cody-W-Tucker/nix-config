@@ -67,11 +67,6 @@
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
 
-    sonarr = {
-      enable = true;
-      group = "media";
-    };
-
     radarr = {
       enable = true;
       group = "media";
@@ -226,16 +221,6 @@
         locations."/" = {
           recommendedProxySettings = true;
           proxyPass = "http://127.0.0.1:6767";
-          proxyWebsockets = true;
-        };
-        kTLS = true;
-      };
-      "sonarr.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:8989";
           proxyWebsockets = true;
         };
         kTLS = true;
