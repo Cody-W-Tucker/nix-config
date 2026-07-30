@@ -88,6 +88,7 @@ let
   );
 
   defaultModelCatalog = import ./models.nix;
+  proxy = import ./proxy.nix { inherit pkgs; };
   settingsFormat = pkgs.formats.yaml { };
   llamaCppStrix = pkgs.callPackage ../../../packages/llama-cpp-strix { };
 
@@ -109,7 +110,64 @@ let
     else
       { };
 
-  resolvedModelCatalog = lib.recursiveUpdate cfg.modelCatalog cfg.modelOverrides;
+  # Build Python environments for audio wrapper services
+  whisperPython = proxy.mkWhisperPython cfg.ctranslate2Cpp;
+  kokoroPython = proxy.mkKokoroPython pkgs;
+  whisperDiarizePython = proxy.mkWhisperDiarizePython pkgs;
+
+  # Build wrapper commands for audio models
+  wrapperCommands = {
+    "whisper-medium" = {
+      file = null;
+      ttl = 0;
+      upstream.cmd = ''
+        ${whisperPython}/bin/python3 ${./faster-whisper-openai-server.py} \
+          --host 127.0.0.1 \
+          --port ''${PORT} \
+          --model medium.en \
+          --model-id whisper-medium \
+          --device cuda \
+          --compute-type int8 \
+          --download-root ${proxy.sharedFasterWhisperCache} \
+          --vad-filter \
+          --language en
+      '';
+    };
+    "whisper-diarization" = {
+      file = null;
+      ttl = 0;
+      upstream.cmd = ''
+        env HOME=${proxy.diarizationCache} \
+        PYTHONPATH=${./.} \
+        ${whisperDiarizePython}/bin/python3 -m diarization.server \
+          --host 127.0.0.1 \
+          --port ''${PORT} \
+          --model-id whisper-diarization \
+          --device cuda \
+          --compute-type float16 \
+          --download-root ${proxy.diarizationCache} \
+          --enrollment-dir ${proxy.diarizationEnrollmentDir} \
+          --hf-token-path ${cfg.hfTokenPath}
+      '';
+    };
+    "kokoro-82m" = {
+      file = null;
+      ttl = 0;
+      upstream.cmd = ''
+        ${kokoroPython}/bin/python3 ${./kokoro-openai-server.py} \
+          --host 127.0.0.1 \
+          --port ''${PORT} \
+          --model-id kokoro-82m \
+          --lang-code a \
+          --default-voice af_heart \
+          --voices-dir ${proxy.kokoroAssets} \
+          --model-path ${proxy.kokoroAssets}/kokoro-v1_0.pth \
+          --config-path ${proxy.kokoroAssets}/config.json
+      '';
+    };
+  };
+
+  resolvedModelCatalog = lib.recursiveUpdate (lib.recursiveUpdate cfg.modelCatalog wrapperCommands) cfg.modelOverrides;
 
   missingModels = lib.filter (name: !(builtins.hasAttr name resolvedModelCatalog)) cfg.enabledModels;
   unknownPreloads = lib.filter (name: !(builtins.elem name cfg.enabledModels)) cfg.preloadModels;
@@ -119,7 +177,7 @@ let
   ) resolvedModelCatalog;
 
   modelsMissingFileAndCmd = lib.mapAttrsToList (
-    name: model: lib.optional (model.file == null && !(model.upstream ? cmd)) name
+    name: model: lib.optional (model.file == null && !((model.upstream or { }) ? cmd)) name
   ) selectedModels;
   invalidGeneratedModels = lib.flatten modelsMissingFileAndCmd;
 
@@ -163,13 +221,13 @@ let
 
   renderedModels = lib.mapAttrs (
     _: model:
-    (lib.optionalAttrs (!(model.upstream ? cmd)) {
+    (lib.optionalAttrs (!(model.upstream or { } ? cmd)) {
       cmd = mkModelCommand model;
     })
     // {
       inherit (model) ttl;
     }
-    // model.upstream
+    // (model.upstream or { })
   ) selectedModels;
 in
 {
@@ -189,6 +247,19 @@ in
       default = defaultServerPackage;
       defaultText = lib.literalExpression "pkgs.llama-cpp";
       description = "llama.cpp package that provides the llama-server binary used by llama-swap.";
+    };
+
+    ctranslate2Cpp = lib.mkOption {
+      type = lib.types.package;
+      default = proxy.defaultCTranslate2Cpp;
+      defaultText = lib.literalExpression "pkgs.ctranslate2";
+      description = "ctranslate2 package used by the faster-whisper Python environment. Override for architecture-specific CUDA builds.";
+    };
+
+    hfTokenPath = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Path to Hugging Face token file for authenticated model downloads.";
     };
 
     modelDirectory = lib.mkOption {
@@ -254,6 +325,22 @@ in
         assertion = invalidGeneratedModels == [ ];
         message = "llama-swap models without `file` must provide `upstream.cmd`: ${lib.concatStringsSep ", " invalidGeneratedModels}";
       }
+      {
+        # Guard: the diarization server hardcodes the embedding-cache path.
+        # If it disappears from tmpfiles or ReadWritePaths, startup fails with
+        # OSError: [Errno 30] Read-only file system.
+        assertion =
+          let
+            rules = config.systemd.tmpfiles.rules;
+            rwPaths = config.systemd.services.llama-swap.serviceConfig.ReadWritePaths or [ ];
+            hasTmpfile = builtins.any (
+              r: builtins.match ".*${proxy.diarizationEmbeddingCache}.*" r != null
+            ) rules;
+            hasRwPath = builtins.elem proxy.diarizationEmbeddingCache rwPaths;
+          in
+          hasTmpfile && hasRwPath;
+        message = "diarization embedding-cache (${proxy.diarizationEmbeddingCache}) must be in systemd.tmpfiles.rules and llama-swap ReadWritePaths";
+      }
     ];
 
     environment.systemPackages = [ cfg.serverPackage ];
@@ -281,6 +368,21 @@ in
       "d /srv/llama-swap 0755 root root - -"
       "d ${cfg.modelDirectory} 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
       "d /srv/llama-swap/voices 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+      # CacheDirectory creates /var/cache/llama-swap as root:root; re-own for service user so
+      # HF_HOME and XDG_CACHE_HOME subdirectories are writable at runtime.
+      "d /var/cache/llama-swap 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+      "d /var/cache/llama-swap/huggingface 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+      "d ${proxy.sharedFasterWhisperCache} 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+      "d ${proxy.diarizationCache} 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+      "d ${proxy.diarizationEnrollmentDir} 0750 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+      "d ${proxy.diarizationEmbeddingCache} 0750 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+    ];
+
+    systemd.services.llama-swap.serviceConfig.ReadWritePaths = lib.mkAfter [
+      proxy.sharedFasterWhisperCache
+      proxy.diarizationCache
+      proxy.diarizationEnrollmentDir
+      proxy.diarizationEmbeddingCache
     ];
   };
 }
