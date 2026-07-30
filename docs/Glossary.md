@@ -8,7 +8,7 @@ This page provides definitions for codebase-specific terms, jargon, and domain c
 | ----------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Beast**   | The high-performance desktop workstation host (Intel i9-14900KF / NVIDIA 3070). | [flake.nix117-120](../flake.nix#L117-L120)                                               |
 | **NAS**     | The home lab / NAS host (Intel i5-14400F, NVIDIA GTX 1650) providing centralized services. | [flake.nix115-121](../flake.nix#L115-L121)                                              |
-| **HomeHub** | The primary domain (`homehub.tv`) used for internal web services.               | [modules/server/homepage-dashboard.nix2](../modules/server/homepage-dashboard.nix#L2-L2) |
+| **HomeHub** | The primary domain (`homehub.tv`) used for internal web services.               | [modules/nas/homepage-dashboard.nix2](../modules/nas/homepage-dashboard.nix#L2-L2) |
 | **Stylix**  | The system-wide theming engine used to unify colors across CLI and GUI.         | [flake.nix42-46](../flake.nix#L42-L46)                                                   |
 | **SOPS**    | Secrets Operations; used for encrypted secret management within the flake.      | [flake.nix11-15](../flake.nix#L11-L15)                                                   |
 
@@ -20,8 +20,8 @@ flowchart LR
     Nginx["services.nginx.virtualHosts"]
     subgraph subGraph1 ["Code Entity Space"]
         A_Code["./hosts/beast"]
-        B_Code["./hosts/nas.nix"]
-        C_Code["modules/server/default.nix"]
+        B_Code["./hosts/nas/default.nix"]
+        C_Code["modules/nas/default.nix"]
     end
     subgraph subGraph0 ["Natural Language Space"]
         A["The Beast (Workstation)"]
@@ -36,7 +36,7 @@ flowchart LR
     C_Code --> Nginx
 ```
 
-Sources: [flake.nix110-122](../flake.nix#L110-L122)[hosts/nas.nix11-17](../hosts/nas.nix#L11-L17)[modules/server/default.nix52-135](../modules/server/default.nix#L52-L135)
+Sources: [flake.nix110-122](../flake.nix#L110-L122)[hosts/nas/default.nix11-17](../hosts/nas/default.nix#L11-L17)[modules/nas/default.nix52-135](../modules/nas/default.nix#L52-L135)
 
 ## AI & Agent Domain Concepts
 
@@ -87,11 +87,11 @@ Sources: [modules/services/hermes-agent/default.nix129-133](../modules/services/
 
 ## Server & Media Jargon
 
-- **Arr Suite**: Refers to the collection of media management tools: `Sonarr` (TV), `Radarr` (Movies), `Readarr` (Books), `Lidarr` (Music), and `Prowlarr` (Indexers). [modules/server/media.nix69-97](../modules/server/media.nix#L69-L97)
-- **VPN Confinement**: A mechanism using network namespaces to force specific services (like `transmission`) to only communicate via a Wireguard interface. [modules/server/media.nix161-183](../modules/server/media.nix#L161-L183)
-- **Kobo Sync**: A specialized configuration for `calibre-web` to allow e-readers to synchronize libraries over the network. [modules/server/media.nix44-53](../modules/server/media.nix#L44-L53)
-- **Miniflux Curator**: A Python-based automation script that uses LLM embeddings to score RSS articles and auto-read low-relevance content. [modules/server/content.nix42-57](../modules/server/content.nix#L42-L57)
-- **ACME/Cloudflare**: The automated pipeline for generating wildcard SSL certificates for `*.homehub.tv` using DNS-01 challenges. [modules/server/default.nix27-43](../modules/server/default.nix#L27-L43)
+- **Arr Suite**: Refers to the collection of media management tools: `Sonarr` (TV), `Radarr` (Movies), `Readarr` (Books), `Lidarr` (Music), and `Prowlarr` (Indexers). [modules/nas/media/default.nix69-97](../modules/nas/media/default.nix#L69-L97)
+- **VPN Confinement**: A mechanism using network namespaces to force specific services (like `transmission`) to only communicate via a Wireguard interface. [modules/nas/media/default.nix161-183](../modules/nas/media/default.nix#L161-L183)
+- **Kobo Sync**: A specialized configuration for `calibre-web` to allow e-readers to synchronize libraries over the network. [modules/nas/media/default.nix44-53](../modules/nas/media/default.nix#L44-L53)
+- **Miniflux Curator**: A Python-based automation script that uses LLM embeddings to score RSS articles and auto-read low-score content. [modules/nas/content.nix42-57](../modules/nas/content.nix#L42-L57)
+- **ACME/Cloudflare**: The automated pipeline for generating wildcard SSL certificates for `*.homehub.tv` using DNS-01 challenges. [modules/nas/default.nix27-43](../modules/nas/default.nix#L27-L43)
 
 ## Desktop & Environment Terms
 

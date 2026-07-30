@@ -19,6 +19,7 @@
     ../services/syncthing.nix
     ./nginx-syncthing.nix
     ./wake-beast.nix
+    ../services/docker.nix
   ];
 
   # Create the acme secret in sops
@@ -148,15 +149,6 @@
     ];
   };
 
-  # Using Docker
-  virtualisation = {
-    docker = {
-      enable = true;
-      autoPrune = {
-        enable = true;
-        dates = "weekly";
-      };
-    };
-    oci-containers.backend = "docker";
-  };
+  # Using Docker as the oci-containers backend
+  virtualisation.oci-containers.backend = "docker";
 }

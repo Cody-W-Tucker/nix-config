@@ -16,7 +16,7 @@ The system employs `nftables` as the primary firewall backend [modules/system/ne
 
 ### Host-Specific Configuration
 
-Individual hosts manage their own interface logic. For example, the `nas` host uses `networkmanager` and enables DHCP by default [hosts/nas.nix97-98](../hosts/nas.nix#L97-L98).
+Individual hosts manage their own interface logic. For example, the `nas` host uses `networkmanager` and enables DHCP by default [hosts/nas/default.nix97-98](../hosts/nas/default.nix#L97-L98).
 
 ---
 
@@ -29,7 +29,7 @@ The repository supports multiple VPN technologies tailored for different use cas
 Tailscale is used for secure, zero-config point-to-point connectivity between hosts.
 
 - **Implementation**: Enabled via `services.tailscale.enable`[modules/desktop/vpn/tailscale.nix5](../modules/desktop/vpn/tailscale.nix#L5-L5)
-- **Usage**: Applied to both the `nas`[hosts/nas.nix84](../hosts/nas.nix#L84-L84) and desktop environments.
+- **Usage**: Applied to both the `nas`[hosts/nas/default.nix84](../hosts/nas/default.nix#L84-L84) and desktop environments.
 
 ### Mullvad VPN
 
@@ -46,7 +46,7 @@ The following diagram illustrates how different VPN modules are integrated into 
 ```mermaid
 flowchart LR
     subgraph HostConfigs
-        NAS["hosts/nas.nix"]
+        NAS["hosts/nas/default.nix"]
         BEAST["hosts/beast/default.nix"]
     end
     subgraph VPNModules
@@ -74,7 +74,7 @@ A critical feature of the `nas` host is the isolation of the `transmission` bitt
 
 ### Namespace Configuration
 
-The namespace, named `wg`, is configured with a Wireguard configuration file managed by SOPS [modules/server/media.nix161-163](../modules/server/media.nix#L161-L163)
+The namespace, named `wg`, is configured with a Wireguard configuration file managed by SOPS [modules/nas/media/default.nix161-163](../modules/nas/media/default.nix#L161-L163)
 
 | Attribute          | Configuration    | Purpose                                   |
 | ------------------ | ---------------- | ----------------------------------------- |
@@ -88,9 +88,9 @@ The namespace, named `wg`, is configured with a Wireguard configuration file man
 
 The `transmission` service is confined to the `wg` namespace, ensuring its traffic only exits via the Wireguard tunnel.
 
-1. **Namespace Assignment**: The `vpnConfinement` option is applied to the `transmission` systemd service [modules/server/media.nix180-183](../modules/server/media.nix#L180-L183)
-2. **RPC Binding**: Transmission is configured to bind its RPC/WebUI to `192.168.15.1`, which is the internal address within the namespace [modules/server/media.nix150](../modules/server/media.nix#L150-L150)
-3. **Local Whitelisting**: To allow other services (like Sonarr/Radarr) to communicate with Transmission, the RPC whitelist includes the namespace gateway [modules/server/media.nix148](../modules/server/media.nix#L148-L148)
+1. **Namespace Assignment**: The `vpnConfinement` option is applied to the `transmission` systemd service [modules/nas/media/default.nix180-183](../modules/nas/media/default.nix#L180-L183)
+2. **RPC Binding**: Transmission is configured to bind its RPC/WebUI to `192.168.15.1`, which is the internal address within the namespace [modules/nas/media/default.nix150](../modules/nas/media/default.nix#L150-L150)
+3. **Local Whitelisting**: To allow other services (like Sonarr/Radarr) to communicate with Transmission, the RPC whitelist includes the namespace gateway [modules/nas/media/default.nix148](../modules/nas/media/default.nix#L148-L148)
 
 ### Data Flow: Confined Service
 
@@ -127,12 +127,12 @@ The `nas` host acts as a gateway for various services, routing traffic via Nginx
 
 ### ACME and Cloudflare
 
-SSL certificates for `*.homehub.tv` are managed via the `homehub.tv` ACME host [modules/server/media.nix195](../modules/server/media.nix#L195-L195) Nginx is configured with `kTLS` (Kernel TLS) for performance [modules/server/media.nix200](../modules/server/media.nix#L200-L200)
+SSL certificates for `*.homehub.tv` are managed via the `homehub.tv` ACME host [modules/nas/media/default.nix195](../modules/nas/media/default.nix#L195-L195) Nginx is configured with `kTLS` (Kernel TLS) for performance [modules/nas/media/default.nix200](../modules/nas/media/default.nix#L200-L200)
 
 ### Proxy Configuration
 
 Services are exposed via subdomains. For example:
 
-- **Jellyfin**: `media.homehub.tv` proxies to `127.0.0.1:8096`[modules/server/media.nix193-197](../modules/server/media.nix#L193-L197)
-- **Calibre-Web**: `books.homehub.tv` proxies to `localhost:8083` with specific buffer tuning for Kobo synchronization [modules/server/media.nix211-223](../modules/server/media.nix#L211-L223)
-- **Prowlarr**: `prowlarr.homehub.tv` proxies to `127.0.0.1:9696`[modules/server/media.nix237-242](../modules/server/media.nix#L237-L242)
+- **Jellyfin**: `media.homehub.tv` proxies to `127.0.0.1:8096`[modules/nas/media/default.nix193-197](../modules/nas/media/default.nix#L193-L197)
+- **Calibre-Web**: `books.homehub.tv` proxies to `localhost:8083` with specific buffer tuning for Kobo synchronization [modules/nas/media/default.nix211-223](../modules/nas/media/default.nix#L211-L223)
+- **Prowlarr**: `prowlarr.homehub.tv` proxies to `127.0.0.1:9696`[modules/nas/media/default.nix237-242](../modules/nas/media/default.nix#L237-L242)

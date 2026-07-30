@@ -10,8 +10,9 @@
 {
   imports = [
     ../../modules/system/base.nix
-    ../../modules/desktop/hardware/nvidia.nix
-    ../../modules/server
+    ../../modules/hardware/baseline.nix
+    ../../modules/hardware/nvidia.nix
+    ../../modules/nas
     ../../modules/services/hermes-agent
     ../../modules/services/opencode
     ./models.nix
@@ -25,8 +26,6 @@
 
   # Bootloader.
   boot = {
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
     initrd.availableKernelModules = [
       "xhci_pci"
       "ahci"
@@ -44,8 +43,6 @@
     zfs.extraPools = [ "backup" ];
     zfs.forceImportRoot = false;
   };
-
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   fileSystems = {
     "/" = {
@@ -93,13 +90,6 @@
       ];
     };
   };
-
-  swapDevices = [
-    {
-      device = "/swapfile";
-      size = 32768; # 32GB swap file to avoid OOM killer on low-memory workloads
-    }
-  ];
 
   # ── User bind mounts (after ZFS datasets) ────────────────────
   # Make NAS-local ZFS datasets available under codyt's home directory.
@@ -168,13 +158,10 @@
     useDHCP = lib.mkDefault true;
   };
 
-  # NVIDIA GPU (RTX 5060) — shared module provides kernel driver, CUDA, GPU exporter, power mgmt
-  # Headless: no display manager or desktop session, so X11 nvidia driver is installed but idle.
-  # DO NOT force-empty videoDrivers — hardware.nvidia module requires "nvidia" in the list
-  # to activate kernel modules, firmware, and nvidia-smi.
-  # Enable the /run/opengl-driver symlink farm so non-X services (Jellyfin ffmpeg) can find
-  # libcuda.so.1, libnvcuvid.so, etc. without a running display server.
+  # NVIDIA GPU (RTX 5060) — headless CUDA infrastructure for Hermes
   hardware.graphics.enable = true;
+  # NVIDIA driver is provided by hardware.nvidia settings, not xserver.videoDrivers
+  hardware.nvidia-container-toolkit.suppressNvidiaDriverAssertion = true;
   # Target native sm_120 CUDA code for the RTX 5060 (Blackwell); applies to NAS CUDA package builds only.
   nixpkgs.config.cudaCapabilities = [ "12.0" ];
 
