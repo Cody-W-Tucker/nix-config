@@ -91,13 +91,6 @@
     };
   };
 
-  swapDevices = [
-    {
-      device = "/swapfile";
-      size = 32768; # 32GB swap file to avoid OOM killer on low-memory workloads
-    }
-  ];
-
   # ── User bind mounts (after ZFS datasets) ────────────────────
   # Make NAS-local ZFS datasets available under codyt's home directory.
   # Ordering ensures the ZFS oneshot services create the source mountpoints first.

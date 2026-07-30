@@ -1,6 +1,6 @@
-# Shared hardware baseline: boot loader policy and Intel microcode.
+# Shared hardware baseline: boot loader policy, Intel microcode, and swap policy.
 # Consumed by every Intel-based host; keep this module free of host-specific
-# disk, kernel, swap, or GPU settings.
+# disk, kernel, or GPU settings.
 {
   config,
   lib,
@@ -13,6 +13,13 @@
     efi.canTouchEfiVariables = true;
   };
 
-  hardware.cpu.intel.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  # 32GB swap file to avoid OOM killer on low-memory workloads.
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 32768;
+    }
+  ];
 }

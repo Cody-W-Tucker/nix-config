@@ -138,13 +138,6 @@ in
     };
 
   };
-  swapDevices = [
-    {
-      device = "/swapfile";
-      size = 32768; # 32GB swap file to avoid OOM killer on low-memory workloads
-    }
-  ];
-
   # Networking
   networking = {
     hostName = "beast";
