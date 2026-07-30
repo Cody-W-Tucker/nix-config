@@ -28,6 +28,7 @@ in
     ../../modules/desktop
     ../../modules/desktop/gaming
     ../../modules/desktop/hardware/nvidia.nix
+    ../../modules/services/docker.nix
 
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
@@ -156,15 +157,6 @@ in
     interfaces.eno1.wakeOnLan = {
       enable = true;
       policy = [ "magic" ];
-    };
-  };
-
-  # System Docker is required for the Actual Budget MCP wrapper.
-  virtualisation.docker = {
-    enable = true;
-    autoPrune = {
-      enable = true;
-      dates = "weekly";
     };
   };
 
