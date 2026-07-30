@@ -67,11 +67,6 @@
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
 
-    bazarr = {
-      enable = true;
-      group = "media";
-    };
-
     lidarr = {
       enable = true;
       group = "media";
@@ -182,16 +177,6 @@
             proxy_buffer_size   1024k;
             proxy_set_header X-Scheme $scheme;
           '';
-        };
-        kTLS = true;
-      };
-      "bazarr.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:6767";
-          proxyWebsockets = true;
         };
         kTLS = true;
       };
