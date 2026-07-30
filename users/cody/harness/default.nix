@@ -21,6 +21,7 @@ in
     llmPkgs.qmd
     llmPkgs.grok
     llmPkgs.gnhf
+    llmPkgs.pi
   ];
 
   sops.secrets."opencode-api-key" = { };
