@@ -1,11 +1,11 @@
-# Server modules
+# NAS modules
 
 This directory owns the shared service modules, currently deployed on the `nas` host. The NAS is the `homehub.tv` service hub: Nginx ingress, ACME certificates, media automation, photos, documents, file sharing, DNS filtering, Syncthing, and observability.
 
 ## Operating model
 
-- Host entry point: `hosts/nas.nix`
-- Module entry point: `modules/server/default.nix`
+- Host entry point: `hosts/nas/default.nix`
+- Module entry point: `modules/nas/default.nix`
 - Public interface: Nginx virtual hosts under `homehub.tv`
 - Certificate model: ACME DNS-01 through Cloudflare, with Nginx in the `acme` group
 - Remote access: Tailscale plus HTTPS subdomains
