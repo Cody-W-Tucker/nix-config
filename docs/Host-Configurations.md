@@ -17,7 +17,7 @@ Both hosts share foundational modules under [`modules/system/`](../modules/syste
 
 - **Composition root:** [`hosts/nas/default.nix`](../hosts/nas/default.nix), with host-local [`hosts/nas/models.nix`](../hosts/nas/models.nix).
 - **Channel:** stable `nixpkgs` (`nixos-26.05`), paired with `home-manager-stable` (`release-26.05`).
-- **Role:** Central services host for the `homehub.tv` infrastructure. Server modules live under [`modules/server/`](../modules/server).
+- **Role:** Central services host for the `homehub.tv` infrastructure. NAS service modules live under [`modules/nas/`](../modules/nas).
 
 ## Comparison Summary
 
@@ -26,4 +26,4 @@ Both hosts share foundational modules under [`modules/system/`](../modules/syste
 | **Nixpkgs channel** | `nixos-unstable`                                 | `nixos-26.05` (stable)                               |
 | **Home Manager**    | `home-manager` (unstable)                        | `home-manager-stable` (`release-26.05`)              |
 | **Composition root**| [`hosts/beast/default.nix`](../hosts/beast/default.nix) | [`hosts/nas/default.nix`](../hosts/nas/default.nix)  |
-| **Module scope**    | Desktop + AI modules under `modules/`            | Server modules under [`modules/server/`](../modules/server) |
+| **Module scope**    | Desktop + AI modules under `modules/`            | NAS service modules under [`modules/nas/`](../modules/nas) |

@@ -58,7 +58,7 @@ flowchart LR
     OUT_N["NAS Generation"]
     subgraph subGraph1 ["Host Definitions"]
         H_BEAST["hosts/beast/default.nix"]
-        H_NAS["hosts/nas.nix"]
+        H_NAS["hosts/nas/default.nix"]
     end
     subgraph subGraph0 ["Shared Modules"]
         M_NIX["nix.nix"]
