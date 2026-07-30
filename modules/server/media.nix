@@ -46,14 +46,6 @@
       group = "media";
     };
 
-    navidrome = {
-      enable = true;
-      group = "media";
-      settings = {
-        MusicFolder = "/mnt/media/Music";
-      };
-    };
-
     # Calibre web for reading Books (with Kobo sync support)
     calibre-web = {
       enable = true;
@@ -197,15 +189,6 @@
         useACMEHost = "homehub.tv";
         locations."/" = {
           proxyPass = "http://127.0.0.1:8096";
-          proxyWebsockets = true;
-        };
-        kTLS = true;
-      };
-      "music.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:4533";
           proxyWebsockets = true;
         };
         kTLS = true;
