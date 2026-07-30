@@ -8,15 +8,10 @@
     ../../hardware/nvidia.nix
   ];
 
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = [ "nvidia" ];
-
   environment = {
     # Use EGL for Wayland
     systemPackages = with pkgs; [
       egl-wayland
-      nvidia-vaapi-driver
-      cudaPackages.cudatoolkit
     ];
 
     # NVIDIA-specific environment variables

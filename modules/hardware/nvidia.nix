@@ -1,10 +1,19 @@
 {
   config,
+  pkgs,
   ...
 }:
 
 {
   boot.kernelModules = [ "nvidia-uvm" ];
+
+  environment.systemPackages = with pkgs; [
+    cudaPackages.cudatoolkit
+    nvidia-vaapi-driver
+  ];
+
+  # Load nvidia driver for Xorg and Wayland. Even on headless installs, this is vital to installing the nvidia drivers.
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
     open = true;
