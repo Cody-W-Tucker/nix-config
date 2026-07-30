@@ -1,0 +1,29 @@
+theme = "catppuccin-mocha"
+appearance = "dark"
+diff_view = "unified"
+mouse = true
+transparent_background = true
+comment_vim = true
+leader = ";"
+
+[[comment_types]]
+id = "issue"
+color = "#f38ba8"
+definition = "must fix before merge"
+
+[[comment_types]]
+id = "note"
+label = "question"
+color = "#f9e2af"
+definition = "ask for clarification"
+
+[[comment_types]]
+id = "nit"
+label = "nitpick"
+color = "#fab387"
+definition = "small optional tweaks"
+
+[[comment_types]]
+id = "praise"
+color = "#a6e3a1"
+definition = "positive feedback"

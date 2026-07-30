@@ -86,6 +86,11 @@
       # Local Recursive Language Model CLI under active development.
       url = "github:Cody-W-Tucker/rlm";
     };
+    tuicr = {
+      # Code review TUI with vim keybindings.
+      url = "github:agavra/tuicr";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
