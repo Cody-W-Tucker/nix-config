@@ -21,6 +21,7 @@
   services.calibre-server = {
     enable = true;
     group = "media";
+    port = 7007;
     libraries = [ "/mnt/media/Books" ];
     openFirewall = true;
     extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
