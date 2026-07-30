@@ -92,11 +92,6 @@
       group = "media";
     };
 
-    # Indexer Manager
-    prowlarr = {
-      enable = true;
-    };
-
     transmission = {
       enable = true;
       package = pkgs.transmission_4;
@@ -202,16 +197,6 @@
             proxy_buffer_size   1024k;
             proxy_set_header X-Scheme $scheme;
           '';
-        };
-        kTLS = true;
-      };
-      "prowlarr.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:9696";
-          proxyWebsockets = true;
         };
         kTLS = true;
       };
