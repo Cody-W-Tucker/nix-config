@@ -1,7 +1,5 @@
 # Network security services
 
-{ ... }:
-
 {
   # Enable the OpenSSH daemon with hardening
   services.openssh = {
@@ -9,8 +7,6 @@
     # Keep listening on all interfaces for local LAN access
     # Hardening settings
     settings = {
-      # Disable password authentication - keys only
-      PasswordAuthentication = false;
       # Disable root login entirely
       PermitRootLogin = "no";
       # Limit authentication attempts
