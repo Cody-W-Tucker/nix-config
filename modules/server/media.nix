@@ -26,26 +26,13 @@
       enable = true;
       vpnNamespace = "wg";
     };
-    # Jellyfin runs as a systemd service, not a login shell, so environment.sessionVariables
-    # from the nvidia module don't apply. Tell ffmpeg to use the nvidia VA-API backend.
-    services.jellyfin.environment.LIBVA_DRIVER_NAME = "nvidia";
   };
-
-  users.users.jellyfin.extraGroups = [
-    "render"
-    "video"
-  ];
 
   # Open Port for kobo sync
   networking.firewall.allowedTCPPorts = [ 8083 ];
 
   # Media Management
   services = {
-    jellyfin = {
-      enable = true;
-      group = "media";
-    };
-
     # Calibre web for reading Books (with Kobo sync support)
     calibre-web = {
       enable = true;
@@ -138,33 +125,20 @@
   };
 
   # NGINX
-  services.nginx = {
-    virtualHosts = {
-      "media.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8096";
-          proxyWebsockets = true;
-        };
-        kTLS = true;
-      };
-      "books.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          proxyPass = "http://localhost:8083";
-          proxyWebsockets = true;
-          extraConfig = ''
-            # Kobo sync requires large headers
-            proxy_busy_buffers_size   1024k;
-            proxy_buffers   4 512k;
-            proxy_buffer_size   1024k;
-            proxy_set_header X-Scheme $scheme;
-          '';
-        };
-        kTLS = true;
-      };
+  services.nginx.virtualHosts."books.homehub.tv" = {
+    forceSSL = true;
+    useACMEHost = "homehub.tv";
+    locations."/" = {
+      proxyPass = "http://localhost:8083";
+      proxyWebsockets = true;
+      extraConfig = ''
+        # Kobo sync requires large headers
+        proxy_busy_buffers_size   1024k;
+        proxy_buffers   4 512k;
+        proxy_buffer_size   1024k;
+        proxy_set_header X-Scheme $scheme;
+      '';
     };
+    kTLS = true;
   };
 }
