@@ -9,6 +9,6 @@
 
   services.nginx.virtualHosts = mkMediaVhost {
     host = "request.homehub.tv";
-    port = config.services.seerr.settings.port;
+    port = config.services.seerr.port;
   };
 }
