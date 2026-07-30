@@ -11,7 +11,7 @@
   imports = [
     ../../modules/system/base.nix
     ../../modules/desktop/hardware/nvidia.nix
-    ../../modules/server
+    ../../modules/nas
     ../../modules/services/hermes-agent
     ../../modules/services/opencode
     ./models.nix
