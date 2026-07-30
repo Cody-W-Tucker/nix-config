@@ -67,11 +67,6 @@
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
 
-    lidarr = {
-      enable = true;
-      group = "media";
-    };
-
     transmission = {
       enable = true;
       package = pkgs.transmission_4;
@@ -177,16 +172,6 @@
             proxy_buffer_size   1024k;
             proxy_set_header X-Scheme $scheme;
           '';
-        };
-        kTLS = true;
-      };
-      "lidarr.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:8686";
-          proxyWebsockets = true;
         };
         kTLS = true;
       };
