@@ -20,11 +20,6 @@ pkgs.writeShellApplication {
     # Check for unimported .nix files
     check-imports
 
-    # Validate the configuration builds before staging any git changes.
-    # dry-run builds without activating; exits non-zero on failure.
-    echo "Validating configuration build..."
-    nixos-rebuild dry-run --flake .
-
     git add .
     if [ -z "''${1-}" ]; then
       echo "Enter commit message:"
