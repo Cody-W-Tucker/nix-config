@@ -1,26 +1,35 @@
-{ mkMediaVhost, lib, ... }:
+{
+  mkMediaVhost,
+  config,
+  lib,
+  ...
+}:
 
 let
+  # Each entry maps a service to the NixOS option that holds its
+  # configured listen port, so vhost proxyPass values stay in sync
+  # with the service's own configuration rather than duplicating
+  # literal port numbers.
   arrs = [
     {
       name = "sonarr";
-      port = 8989;
+      port = config.services.sonarr.settings.port;
     }
     {
       name = "radarr";
-      port = 7878;
+      port = config.services.radarr.settings.port;
     }
     {
       name = "readarr";
-      port = 8787;
+      port = config.services.readarr.settings.port;
     }
     {
       name = "bazarr";
-      port = 6767;
+      port = config.services.bazarr.settings.port;
     }
     {
       name = "lidarr";
-      port = 8686;
+      port = config.services.lidarr.settings.port;
     }
   ];
 in
@@ -56,14 +65,12 @@ in
           acc
           // mkMediaVhost {
             host = "${arr.name}.homehub.tv";
-            port = arr.port;
-            recommendedProxySettings = true;
+            inherit (arr) port;
           }
         )
         (mkMediaVhost {
           host = "prowlarr.homehub.tv";
-          port = 9696;
-          recommendedProxySettings = true;
+          port = config.services.prowlarr.settings.port;
         })
         arrs;
   };
