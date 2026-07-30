@@ -1,4 +1,5 @@
 {
+  config,
   mkMediaVhost,
   ...
 }:
@@ -32,7 +33,10 @@
       mkMediaVhost { service = "sonarr"; }
       // mkMediaVhost { service = "radarr"; }
       // mkMediaVhost { service = "readarr"; }
-      // mkMediaVhost { service = "bazarr"; }
+      // mkMediaVhost {
+        host = "bazarr.homehub.tv";
+        port = config.services.bazarr.listenPort;
+      }
       // mkMediaVhost { service = "lidarr"; }
       // mkMediaVhost { service = "prowlarr"; };
   };

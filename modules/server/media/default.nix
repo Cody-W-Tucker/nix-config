@@ -35,9 +35,9 @@
   #
   # Accepts either:
   #   - `service`: a service name (e.g. "sonarr") — derives host as
-  #     "${service}.homehub.tv" and port from config.services.${service}.settings.port
+  #     "${service}.homehub.tv" and port from config.services.${service}.settings.server.port
   #   - `host` + `port`: explicit values for services without a standard
-  #     settings.port option or non-standard hostnames
+  #     settings.server.port option or non-standard hostnames
   #
   # `port` accepts an int or string; the helper applies `toString` internally.
   # Returns a singleton attrset { "<host>" = { ... }; } suitable for merging
@@ -54,7 +54,7 @@
     let
       # Derive host and port from service name if provided
       resolvedHost = if service != null then "${service}.homehub.tv" else host;
-      resolvedPort = if service != null then config.services.${service}.settings.port else port;
+      resolvedPort = if service != null then config.services.${service}.settings.server.port else port;
     in
     assert lib.assertMsg (
       resolvedHost != null
