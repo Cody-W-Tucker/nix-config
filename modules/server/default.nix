@@ -9,7 +9,7 @@
     ./excalidraw.nix
     ./homepage-dashboard.nix
     ./karakeep.nix
-    ./media.nix
+    ./media
     ./monitoring.nix
     ./nfs.nix
     ./paperless.nix
