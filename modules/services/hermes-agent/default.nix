@@ -30,8 +30,8 @@ in
       container = {
         enable = true;
         extraOptions = [
-          "--gpus"
-          "all"
+          "--device"
+          "nvidia.com/gpu=all"
         ];
         extraVolumes = [
           "/mnt/projects:/data/projects:rw"

@@ -18,6 +18,9 @@
     nvidiaSettings = false;
   };
 
+  # Enable NVIDIA container toolkit for Hermes CUDA container access.
+  hardware.nvidia-container-toolkit.enable = true;
+
   # NVIDIA GPU monitoring for Prometheus
   services.prometheus.exporters.nvidia-gpu = {
     enable = true;
