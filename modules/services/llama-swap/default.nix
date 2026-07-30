@@ -79,7 +79,7 @@ let
         };
 
         upstream = lib.mkOption {
-          type = settingsFormat.type;
+          inherit (settingsFormat) type;
           default = { };
           description = "Raw llama-swap model settings merged over the generated defaults. Use this to override `cmd` or add upstream-only fields such as `proxy`, `aliases`, or `concurrencyLimit`.";
         };
@@ -274,6 +274,7 @@ in
       };
     };
 
+    systemd.services.llama-swap.path = [ pkgs.lact ];
     systemd.services.llama-swap.environment = backendEnvironment // cfg.serviceEnvironment;
 
     systemd.tmpfiles.rules = [

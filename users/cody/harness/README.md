@@ -14,19 +14,17 @@ Central docs should point here for harness implementation detail.
 
 ## Stack
 
-| Component                         | Tool                                                        | Configuration Location                                                                                                     |
-| --------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Harness root                      | Desktop harness import                                      | `default.nix`                                                                                                              |
-| MCP wiring                        | User-session MCP servers and client exposure                | `mcp.nix`                                                                                                                  |
-| Terminal launcher and multiplexer | Herdr                                                       | `herdr/default.nix`, `herdr/module.nix`                                                                                    |
-| Agent runtime surface             | OpenCode                                                    | `opencode/default.nix`                                                                                                     |
-| Agent families                    | Business, Knowledge, Logging, Verify Alignment              | `opencode/agents/business/`, `opencode/agents/knowledge/`, `opencode/agents/logging/`, `opencode/agents/verify-alignment/` |
-| Agent-local skills                | Family-specific skills                                      | `opencode/agents/*/skills/`                                                                                                |
-| Shared skills                     | Agent Browser, Cognitive, Humanizer, shared OpenCode skills | `opencode/skills/`, `opencode/skills/agent-browser/`, `opencode/skills/cognitive/`, `opencode/skills/humanizer/`           |
-| Custom tool plugins               | Voice, Model Router, RTK, other OpenCode tools              | `opencode/tools/`, `opencode/tools/voice/`, `opencode/tools/model-router/`, `opencode/tools/rtk/`                          |
-| Voice/status output               | TTS and spoken status plugin                                | `opencode/tools/voice/`                                                                                                    |
-| Model routing                     | Router configuration and RLM-related tooling                | `opencode/tools/model-router/`, `opencode/default.nix`                                                                     |
-| Context trimming                  | RTK read/context reduction tool                             | `opencode/tools/rtk/`                                                                                                      |
+| Component                         | Tool                                           | Configuration Location                                                                                                     |
+| --------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Harness root                      | Desktop harness import                         | `default.nix`                                                                                                              |
+| MCP wiring                        | User-session MCP servers and client exposure   | `mcp.nix`                                                                                                                  |
+| Terminal launcher and multiplexer | Herdr                                          | `herdr/default.nix`, `herdr/module.nix`                                                                                    |
+| Agent runtime surface             | OpenCode                                       | `opencode/default.nix`                                                                                                     |
+| Agent families                    | Business, Knowledge, Logging, Verify Alignment | `opencode/agents/business/`, `opencode/agents/knowledge/`, `opencode/agents/logging/`, `opencode/agents/verify-alignment/` |
+| Agent-local skills                | Family-specific skills                         | `opencode/agents/*/skills/`                                                                                                |
+| Custom tool plugins               | Model Router, RTK, other OpenCode tools        | `opencode/tools/`, `opencode/tools/model-router/`, `opencode/tools/rtk/`                                                   |
+| Model routing                     | Router configuration and RLM-related tooling   | `opencode/tools/model-router/`, `opencode/default.nix`                                                                     |
+| Context trimming                  | RTK read/context reduction tool                | `opencode/tools/rtk/`                                                                                                      |
 
 ## Layout Notes
 

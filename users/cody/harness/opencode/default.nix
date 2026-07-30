@@ -15,7 +15,6 @@ in
     ./agents/knowledge
     ./agents/verify-alignment
     ./agents/business
-    ./skills/agent-browser
     ./skills/humanizer
     ./skills/cognitive
     ./tools/model-router
