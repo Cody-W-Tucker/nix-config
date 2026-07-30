@@ -12,5 +12,6 @@
     ./readarr.nix
     ./seerr.nix
     ./sonarr.nix
+    ./transmission.nix
   ];
 }
