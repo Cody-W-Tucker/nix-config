@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, ... }:
 
 {
   imports = [
@@ -32,27 +32,44 @@
   #   forceSSL + useACMEHost "homehub.tv" + kTLS + single-location proxyPass
   #   + recommendedProxySettings (on by default, since all reverse-proxied
   #   media services benefit from standard proxy headers).
-  # `port` accepts an int (e.g. a service's configured default port) or a
-  # string; the helper applies `toString` internally so callers can pass
-  # `config.services.<name>.settings.port` directly without wrapping.
+  #
+  # Accepts either:
+  #   - `service`: a service name (e.g. "sonarr") — derives host as
+  #     "${service}.homehub.tv" and port from config.services.${service}.settings.port
+  #   - `host` + `port`: explicit values for services without a standard
+  #     settings.port option or non-standard hostnames
+  #
+  # `port` accepts an int or string; the helper applies `toString` internally.
   # Returns a singleton attrset { "<host>" = { ... }; } suitable for merging
   # into services.nginx.virtualHosts via `//`.
   _module.args.mkMediaVhost =
     {
-      host,
-      port,
+      host ? null,
+      port ? null,
+      service ? null,
       proxyHost ? "127.0.0.1",
       extraConfig ? "",
       recommendedProxySettings ? true,
     }:
+    let
+      # Derive host and port from service name if provided
+      resolvedHost = if service != null then "${service}.homehub.tv" else host;
+      resolvedPort = if service != null then config.services.${service}.settings.port else port;
+    in
+    assert lib.assertMsg (
+      resolvedHost != null
+    ) "mkMediaVhost: either `host` or `service` must be provided";
+    assert lib.assertMsg (
+      resolvedPort != null
+    ) "mkMediaVhost: either `port` or `service` must be provided";
     {
-      ${host} = {
+      ${resolvedHost} = {
         forceSSL = true;
         useACMEHost = "homehub.tv";
         kTLS = true;
         inherit recommendedProxySettings;
         locations."/" = {
-          proxyPass = "http://${proxyHost}:${toString port}";
+          proxyPass = "http://${proxyHost}:${toString resolvedPort}";
           proxyWebsockets = true;
         }
         // lib.optionalAttrs (extraConfig != "") { inherit extraConfig; };
