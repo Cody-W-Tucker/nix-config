@@ -67,11 +67,6 @@
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
 
-    radarr = {
-      enable = true;
-      group = "media";
-    };
-
     readarr = {
       enable = true;
       group = "media";
@@ -192,16 +187,6 @@
             proxy_buffer_size   1024k;
             proxy_set_header X-Scheme $scheme;
           '';
-        };
-        kTLS = true;
-      };
-      "radarr.homehub.tv" = {
-        forceSSL = true;
-        useACMEHost = "homehub.tv";
-        locations."/" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://127.0.0.1:7878";
-          proxyWebsockets = true;
         };
         kTLS = true;
       };
