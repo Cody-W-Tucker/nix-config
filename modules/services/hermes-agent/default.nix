@@ -82,15 +82,15 @@ in
         auxiliary = {
           approval = {
             provider = "opencode-go";
-            model = "deepseek-v4-flash";
+            model = "mimo-v2.5";
           };
           compression = {
             provider = "opencode-go";
-            model = "deepseek-v4-flash";
+            model = "mimo-v2.5";
           };
           web_extract = {
             provider = "opencode-go";
-            model = "deepseek-v4-flash";
+            model = "mimo-v2.5";
           };
           curator = {
             provider = "opencode-go";
@@ -102,7 +102,7 @@ in
           };
           title_generation = {
             provider = "opencode-go";
-            model = "deepseek-v4-flash";
+            model = "mimo-v2.5";
           };
         };
         display.platforms = {

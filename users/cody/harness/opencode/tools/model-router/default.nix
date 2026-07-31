@@ -25,8 +25,8 @@ let
         tmp_json="$TMPDIR/tiers.json"
         jq '
           .activePreset = "openai"
-          | .presets.openai.fast.model = "opencode-go/deepseek-v4-flash"
-          | .presets.openai.fast.description = "Deepseek v4 flash for fast exploration and simple tasks"
+          | .presets.openai.fast.model = "opencode-go/mimo-v2.5"
+          | .presets.openai.fast.description = "MiMo-V2.5 for fast exploration and simple tasks"
           | .presets.openai.medium.model = "opencode-go/qwen3.7-plus"
           | .presets.openai.medium.variant = "high"
           | .presets.openai.medium.description = "Qwen3.7 Plus High — implementation, refactors, and standard coding work"

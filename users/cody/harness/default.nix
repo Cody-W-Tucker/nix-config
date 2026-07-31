@@ -30,7 +30,7 @@ in
     enable = true;
     apiKeyFile = config.sops.secrets."opencode-api-key".path;
     model = "deepseek-v4-pro";
-    subModel = "deepseek-v4-flash";
+    subModel = "mimo-v2.5";
     openaiBaseUrl = "https://opencode.ai/zen/go/v1";
   };
 }
