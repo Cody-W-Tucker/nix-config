@@ -22,7 +22,11 @@ in
     llmPkgs.grok
     llmPkgs.gnhf
     llmPkgs.pi
+    inputs.tuicr.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
+
+  # tuicr: match stylix catppuccin-mocha palette
+  xdg.configFile."tuicr/config.toml".source = ./tuicr.toml;
 
   sops.secrets."opencode-api-key" = { };
 
