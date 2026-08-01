@@ -1,4 +1,9 @@
-{ config, ... }:
+{
+  mkNginxVhost,
+  config,
+  ...
+}:
+
 let
   port = 28981;
 in
@@ -38,31 +43,20 @@ in
   #   startAt = "daily";
   # };
 
-  services.nginx = {
-    virtualHosts."paperless.homehub.tv" = {
-      useACMEHost = "homehub.tv";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://localhost:${toString port}";
-        proxyWebsockets = true;
-        # These configuration options are required for WebSockets to work.
-        # Without them Tika document conversion wouldn't work
+  services.nginx.virtualHosts = mkNginxVhost {
+    host = "paperless.homehub.tv";
+    inherit port;
+    # These configuration options are required for WebSockets to work.
+    # Without them Tika document conversion wouldn't work
+    # The default value 1M might be a little too small.
+    locationExtraConfig = ''
+      client_max_body_size 100M;
 
-        # The default value 1M might be a little too small.
-        extraConfig = ''
-          client_max_body_size 100M;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
 
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-
-          proxy_redirect off;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Host $server_name;
-          add_header Referrer-Policy "strict-origin-when-cross-origin";
-        '';
-      };
-      kTLS = true;
-    };
+      proxy_set_header X-Forwarded-Host $server_name;
+      add_header Referrer-Policy "strict-origin-when-cross-origin";
+    '';
   };
 }

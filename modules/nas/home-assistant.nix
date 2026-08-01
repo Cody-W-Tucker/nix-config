@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  mkNginxVhost,
+  pkgs,
+  ...
+}:
+
 {
   services.home-assistant = {
     enable = true;
@@ -62,19 +67,9 @@
     };
   };
 
-  services.nginx.virtualHosts."home-assistant.homehub.tv" = {
-    useACMEHost = "homehub.tv";
-    forceSSL = true;
-    kTLS = true;
-    locations."/" = {
-      proxyPass = "http://localhost:8123";
-      proxyWebsockets = true;
-      extraConfig = ''
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Host $host;
-        proxy_set_header X-Forwarded-Proto $scheme;
-      '';
-    };
+  services.nginx.virtualHosts = mkNginxVhost {
+    host = "home-assistant.homehub.tv";
+    port = 8123;
+    proxyWebsockets = true;
   };
 }

@@ -1,6 +1,6 @@
 {
   config,
-  mkMediaVhost,
+  mkNginxVhost,
   ...
 }:
 
@@ -30,14 +30,14 @@
     prowlarr.enable = true;
 
     nginx.virtualHosts =
-      mkMediaVhost { service = "sonarr"; }
-      // mkMediaVhost { service = "radarr"; }
-      // mkMediaVhost { service = "readarr"; }
-      // mkMediaVhost {
+      mkNginxVhost { service = "sonarr"; }
+      // mkNginxVhost { service = "radarr"; }
+      // mkNginxVhost { service = "readarr"; }
+      // mkNginxVhost {
         host = "bazarr.homehub.tv";
         port = config.services.bazarr.listenPort;
       }
-      // mkMediaVhost { service = "lidarr"; }
-      // mkMediaVhost { service = "prowlarr"; };
+      // mkNginxVhost { service = "lidarr"; }
+      // mkNginxVhost { service = "prowlarr"; };
   };
 }

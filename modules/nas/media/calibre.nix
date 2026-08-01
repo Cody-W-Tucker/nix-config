@@ -1,7 +1,7 @@
 {
   pkgs,
   config,
-  mkMediaVhost,
+  mkNginxVhost,
   ...
 }:
 
@@ -27,10 +27,10 @@
       openFirewall = true;
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
-    nginx.virtualHosts = mkMediaVhost {
+    nginx.virtualHosts = mkNginxVhost {
       host = "books.homehub.tv";
       port = config.services.calibre-web.listen.port;
-      extraConfig = ''
+      locationExtraConfig = ''
         # Kobo sync requires large headers
         proxy_busy_buffers_size   1024k;
         proxy_buffers   4 512k;

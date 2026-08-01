@@ -1,6 +1,6 @@
 {
   config,
-  mkMediaVhost,
+  mkNginxVhost,
   ...
 }:
 
@@ -13,7 +13,7 @@
     };
   };
 
-  services.nginx.virtualHosts = mkMediaVhost {
+  services.nginx.virtualHosts = mkNginxVhost {
     host = "music.homehub.tv";
     port = config.services.navidrome.settings.Port;
   };

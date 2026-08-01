@@ -1,12 +1,13 @@
 {
-  services.nginx.virtualHosts."budget.homehub.tv" = {
-    forceSSL = true;
-    useACMEHost = "homehub.tv";
-    locations."/" = {
-      proxyPass = "http://localhost:5006";
-      proxyWebsockets = true;
-    };
-    kTLS = true;
+  mkNginxVhost,
+  ...
+}:
+
+{
+  services.nginx.virtualHosts = mkNginxVhost {
+    host = "budget.homehub.tv";
+    port = 5006;
+    proxyWebsockets = true;
   };
 
   services.actual = {

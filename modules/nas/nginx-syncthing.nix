@@ -1,3 +1,5 @@
+{ mkNginxVhost, ... }:
+
 {
   services.nginx = {
     upstreams = {
@@ -12,24 +14,22 @@
         };
       };
     };
-  };
-
-  services.nginx.virtualHosts = {
-    "beast-syncthing.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://beast_syncthing/";
+    virtualHosts =
+      mkNginxVhost {
+        host = "beast-syncthing.homehub.tv";
+        locations = {
+          "/" = {
+            proxyPass = "http://beast_syncthing/";
+          };
+        };
+      }
+      // mkNginxVhost {
+        host = "nas-syncthing.homehub.tv";
+        locations = {
+          "/" = {
+            proxyPass = "http://nas_syncthing/";
+          };
+        };
       };
-      kTLS = true;
-    };
-    "nas-syncthing.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://nas_syncthing/";
-      };
-      kTLS = true;
-    };
   };
 }

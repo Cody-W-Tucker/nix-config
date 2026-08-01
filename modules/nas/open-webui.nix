@@ -1,5 +1,6 @@
 {
   inputs,
+  mkNginxVhost,
   pkgs,
   ...
 }:
@@ -58,5 +59,15 @@
       };
       telemetry_disabled = true;
     };
+  };
+
+  services.nginx.virtualHosts = mkNginxVhost {
+    host = "ai.homehub.tv";
+    port = 8080;
+    proxyWebsockets = true;
+    locationExtraConfig = ''
+      proxy_buffering off;
+      client_max_body_size 256m;
+    '';
   };
 }

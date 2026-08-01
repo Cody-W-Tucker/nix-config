@@ -1,4 +1,8 @@
-{ config, ... }:
+{
+  mkNginxVhost,
+  config,
+  ...
+}:
 
 {
   imports = [
@@ -57,13 +61,9 @@
       schedule = "*-*-* 07:15,23:15"; # 7:15am and 11:15pm
     };
 
-    nginx.virtualHosts."rss.homehub.tv" = {
-      forceSSL = true;
-      useACMEHost = "homehub.tv";
-      locations."/" = {
-        proxyPass = "http://localhost:7777";
-      };
-      kTLS = true;
+    nginx.virtualHosts = mkNginxVhost {
+      host = "content.homehub.tv";
+      port = 9000;
     };
   };
 }

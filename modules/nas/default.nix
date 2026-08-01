@@ -1,7 +1,13 @@
-{ config, pkgs, ... }:
+{
+  config,
+  mkNginxVhost,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
+    ../services/nginx
     ./actual-budget.nix
     ./home-assistant.nix
     ./open-webui.nix
@@ -19,6 +25,8 @@
     ./security.nix
     ../services/syncthing.nix
     ./nginx-syncthing.nix
+    ./qdrant.nix
+    ./tika.nix
     ./uptime-kuma.nix
     ./wake-beast.nix
     ../services/docker.nix
@@ -47,13 +55,6 @@
     };
   };
 
-  services.tika = {
-    enable = true;
-    port = 9998;
-    listenAddress = "0.0.0.0";
-    openFirewall = true;
-  };
-
   services.nginx = {
     enable = true;
     package = pkgs.nginxMainline;
@@ -70,74 +71,29 @@
       access_log /var/log/nginx/access.log;
     '';
     # These services run on the NAS
-    virtualHosts = {
+    virtualHosts =
       # Internal status endpoint for metrics
-      "localhost" = {
+      mkNginxVhost {
+        host = "localhost";
+        forceSSL = false;
+        kTLS = false;
+        useACMEHost = null;
         listen = [
           {
             addr = "127.0.0.1";
             port = 9114;
           }
         ];
-        locations."/nginx_status" = {
-          extraConfig = ''
-            stub_status on;
-            allow 127.0.0.1;
-            deny all;
-          '';
+        locations = {
+          "/nginx_status" = {
+            extraConfig = ''
+              stub_status on;
+              allow 127.0.0.1;
+              deny all;
+            '';
+          };
         };
       };
-      "qdrant.homehub.tv" = {
-        useACMEHost = "homehub.tv";
-        forceSSL = true;
-        # HTTP API (REST API on port 6333)
-        locations."/" = {
-          proxyPass = "http://localhost:6333"; # Forward REST traffic
-          proxyWebsockets = true; # Extra flexibility for WebSockets (not required for REST API)
-          # Optional: Add headers to preserve proxy context
-          extraConfig = ''
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          '';
-        };
-        # gRPC API (on port 6334)
-        locations."/grpc" = {
-          proxyPass = "http://localhost:6334"; # Forward gRPC traffic
-          extraConfig = ''
-            grpc_set_header Host $host;
-            grpc_set_header X-Real-IP $remote_addr;
-            grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            grpc_pass grpc://localhost:6334;    # Ensure grpc_pass for gRPC-specific handling
-          '';
-        };
-      };
-      "ai.homehub.tv" = {
-        useACMEHost = "homehub.tv";
-        forceSSL = true;
-        kTLS = true;
-        locations."/" = {
-          proxyPass = "http://localhost:8080";
-          proxyWebsockets = true;
-          extraConfig = ''
-            proxy_buffering off;
-            client_max_body_size 256m;
-          '';
-        };
-      };
-      "tika.homehub.tv" = {
-        useACMEHost = "homehub.tv";
-        forceSSL = true;
-        kTLS = true;
-        locations."/" = {
-          proxyPass = "http://localhost:9998";
-          proxyWebsockets = true;
-          extraConfig = ''
-            proxy_set_header X-Tika-OCRLanguage "chi_sim+eng";
-          '';
-        };
-      };
-    };
   };
 
   users.users.nginx.extraGroups = [ "acme" ];

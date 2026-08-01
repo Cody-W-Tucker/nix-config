@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  mkNginxVhost,
   pkgs,
   ...
 }:
@@ -35,19 +36,11 @@ in
     users.users.codyt.linger = true;
 
     # OpenCode nginx virtual host
-    services.nginx.virtualHosts."opencode.homehub.tv" = {
-      useACMEHost = "homehub.tv";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:4096";
-        proxyWebsockets = true;
-        extraConfig = ''
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-        '';
-      };
+    services.nginx.virtualHosts = mkNginxVhost {
+      host = "opencode.homehub.tv";
+      port = 4096;
+      proxyWebsockets = true;
+      proxyHost = "127.0.0.1";
     };
   };
 }

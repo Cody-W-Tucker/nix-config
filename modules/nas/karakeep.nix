@@ -1,4 +1,9 @@
 {
+  mkNginxVhost,
+  ...
+}:
+
+{
   services.karakeep = {
     enable = true;
     extraEnvironment = {
@@ -19,14 +24,9 @@
     };
   };
 
-  services.nginx.virtualHosts."karakeep.homehub.tv" = {
-    forceSSL = true;
-    useACMEHost = "homehub.tv";
-    locations."/" = {
-      proxyPass = "http://localhost:3005";
-      proxyWebsockets = true;
-      recommendedProxySettings = true;
-    };
-    kTLS = true;
+  services.nginx.virtualHosts = mkNginxVhost {
+    host = "karakeep.homehub.tv";
+    port = 3005;
+    proxyWebsockets = true;
   };
 }

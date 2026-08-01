@@ -1,4 +1,9 @@
 {
+  mkNginxVhost,
+  ...
+}:
+
+{
   services.adguardhome = {
     enable = true;
     openFirewall = false;
@@ -10,14 +15,9 @@
       };
     };
   };
-  services.nginx.virtualHosts."adguard.homehub.tv" = {
-    useACMEHost = "homehub.tv";
-    forceSSL = true;
-    locations."/" = {
-      proxyPass = "http://localhost:8000";
-      proxyWebsockets = true;
-    };
-    kTLS = true;
+  services.nginx.virtualHosts = mkNginxVhost {
+    host = "adguard.homehub.tv";
+    port = 8000;
   };
   services.unbound = {
     enable = true;

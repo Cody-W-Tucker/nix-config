@@ -1,16 +1,18 @@
+{
+  mkNginxVhost,
+  ...
+}:
+
 let
   domain = "homehub.tv";
 in
 {
 
   services = {
-    nginx.virtualHosts."homehub.tv" = {
-      useACMEHost = "homehub.tv";
-      forceSSL = true;
-      locations."/" = {
-        proxyPass = "http://localhost:8082";
-      };
-      kTLS = true;
+    nginx.virtualHosts = mkNginxVhost {
+      host = "homehub.tv";
+      port = 8082;
+      proxyWebsockets = true;
     };
 
     homepage-dashboard = {
