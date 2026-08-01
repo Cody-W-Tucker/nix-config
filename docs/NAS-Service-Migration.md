@@ -6,10 +6,16 @@ Once validated and production traffic is cut over, server is decommissioned — 
 ## Target (`nas`) — Current State
 
 - Boot: Btrfs on 1 TB NVMe (`0e0786ed-3740-4a19-83af-cf356e55393b`), subvolumes `@`, `@home`, `@nix`
-- Imports: `modules/system/base.nix`, `vpn-confinement` (via input); `modules/server` is **commented out**
-- CPU: Intel — `boot.kernelModules = ["kvm-intel"]`, `hardware.cpu.intel.updateMicrocode` already present (verify match with `cat /proc/cpuinfo | grep vendor`)
-- GPU: GTX 1650 (`10de:1f82`), NVIDIA proprietary driver 580.142 / CUDA 13.0; 64 GB DDR5-6000 RAM
-- No NFS, Tailscale, or Docker configured
+- Appdata: Btrfs on separate 1 TB NVMe (`17888441-14c2-465f-9786-b2eae0220553`), subvolumes `@appdata`, `@tmp`
+- Media: 8 TB ext4 (`27ddc2ef-8f21-401d-b9eb-3ed4541c16c9`) at `/mnt/media`
+- ZFS: `backup` pool — mirror of 2× 4 TB ST4000VN006, auto-scrub enabled, ARC capped at 32 GiB
+- CPU: Intel Core i5-14400F — `boot.kernelModules = ["kvm-intel"]`
+- GPU: RTX 5060 (Blackwell, sm_120a), NVIDIA driver 595.71.05, 8 GB VRAM; 64 GB DDR5-6000 RAM
+- Tailscale: enabled, subnet router advertising `192.168.1.0/24`
+- Docker: docker 29, active (Actual MCP, Hermes agent, Excalidraw)
+- Imports: `modules/system/base.nix`, `modules/nas`, `vpn-confinement` (via input); full service stack under `modules/nas/`
+
+> **Historical note:** Early migration phases (2026-07-14) were executed against a GTX 1650. The GPU was later upgraded to an RTX 5060 (Blackwell). The `models.nix` Blackwell overrides (sm_120a CUDA arch, CTranslate2 postPatch) reflect the current hardware.
 
 ## Source (`server`) — Key Config
 
@@ -794,7 +800,7 @@ Navidrome and Calibre (Web/Server) library paths are handled in Nix config (`med
 3. Jellyfin, Navidrome, Calibre index from flattened paths. Paperless consumes, Immich uploads/views. Immich ML (smart search, face detection) confirmed using CUDA on GPU 0 with no crash loop.
 4. Arr services move files; Transmission works in WireGuard namespace (`curl --interface 192.168.15.1 http://localhost:9091`).
 5. Samba shares accessible. Syncthing syncs NAS↔beast.
-6. `nvidia-smi` reports GTX 1650; `/dev/dri/renderD*` exists; hardware transcode works.
+6. `nvidia-smi` reports RTX 5060; `/dev/dri/renderD*` exists; hardware transcode works.
 7. Grafana, Prometheus scrape targets, AdGuard + Unbound DNS (test from LAN client), ACME renewal.
 8. Backup snapshot + restore test for `backup/backups`.
 

@@ -16,6 +16,7 @@ Both hosts share foundational modules under [`modules/system/`](../modules/syste
 ## NAS — Home Lab Server
 
 - **Composition root:** [`hosts/nas/default.nix`](../hosts/nas/default.nix), with host-local [`hosts/nas/models.nix`](../hosts/nas/models.nix).
+- **Host documentation:** [`hosts/nas/README.md`](../hosts/nas/README.md) — hardware profile, storage layout, networking, services, ZFS pool health.
 - **Channel:** stable `nixpkgs` (`nixos-26.05`), paired with `home-manager-stable` (`release-26.05`).
 - **Role:** Central services host for the `homehub.tv` infrastructure. NAS service modules live under [`modules/nas/`](../modules/nas).
 
