@@ -62,8 +62,8 @@
     };
 
     nginx.virtualHosts = mkNginxVhost {
-      host = "content.homehub.tv";
-      port = 9000;
+      host = "rss.homehub.tv";
+      port = 7777;
     };
   };
 }
