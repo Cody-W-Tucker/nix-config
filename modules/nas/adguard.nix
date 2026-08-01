@@ -3,6 +3,12 @@
     enable = true;
     openFirewall = false;
     port = 8000;
+    settings = {
+      dns = {
+        bind_host = "0.0.0.0";
+        port = 53;
+      };
+    };
   };
   services.nginx.virtualHosts."adguard.homehub.tv" = {
     useACMEHost = "homehub.tv";

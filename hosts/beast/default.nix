@@ -115,7 +115,7 @@ in
       ];
     };
 
-    # NFS mounts from NAS (192.168.1.108)
+    # NFS mounts from NAS
     "/home/codyt/Projects" = {
       device = "192.168.1.108:/mnt/projects";
       fsType = "nfs";

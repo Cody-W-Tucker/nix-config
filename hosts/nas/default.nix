@@ -131,7 +131,12 @@
 
   # Auto configure usb etc, when plugedin
   services.udisks2.enable = true;
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    # Enable IP forwarding so this host can act as a subnet router for the LAN.
+    useRoutingFeatures = "server";
+    extraSetFlags = [ "--advertise-routes=192.168.1.0/24" ];
+  };
   services.zfs.autoScrub.enable = true;
   services.wake-beast.enable = true;
 
