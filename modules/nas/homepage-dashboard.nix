@@ -135,6 +135,27 @@ in
                 description = "Bookmark Manager";
               };
             }
+            {
+              HomeAssistant = {
+                href = "https://home-assistant.${domain}";
+                icon = "home-assistant";
+                description = "Home Automation";
+              };
+            }
+            {
+              UptimeKuma = {
+                href = "https://uptime.${domain}";
+                icon = "uptime-kuma";
+                description = "Uptime Monitoring";
+              };
+            }
+            {
+              LlamaSwap = {
+                href = "http://nas:8081";
+                icon = "ollama";
+                description = "LLM Model Router";
+              };
+            }
           ];
         }
         {

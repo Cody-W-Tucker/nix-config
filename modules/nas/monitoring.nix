@@ -147,6 +147,18 @@
             }
           ];
         }
+        {
+          job_name = "home-assistant";
+          metrics_path = "/api/prometheus";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:8123" ];
+              labels = {
+                host = "${config.networking.hostName}";
+              };
+            }
+          ];
+        }
       ];
     };
     loki = {

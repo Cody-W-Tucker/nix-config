@@ -3,6 +3,7 @@
 {
   imports = [
     ./actual-budget.nix
+    ./home-assistant.nix
     ./open-webui.nix
     ./adguard.nix
     ./content.nix
@@ -18,6 +19,7 @@
     ./security.nix
     ../services/syncthing.nix
     ./nginx-syncthing.nix
+    ./uptime-kuma.nix
     ./wake-beast.nix
     ../services/docker.nix
   ];

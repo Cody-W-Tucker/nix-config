@@ -135,6 +135,12 @@
   services.zfs.autoScrub.enable = true;
   services.wake-beast.enable = true;
 
+  # Bluetooth support for Home Assistant (prepares for future controller)
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
   networking.firewall.allowedTCPPorts = [
     8384
