@@ -22,4 +22,9 @@
 
   # Enable nftables firewall
   networking.nftables.enable = true;
+
+  # Shared hostname mappings for Tailscale IPs
+  networking.hosts = {
+    "100.108.143.19" = [ "beast" ];
+  };
 }
