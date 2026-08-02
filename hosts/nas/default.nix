@@ -173,8 +173,6 @@
   hardware.graphics.enable = true;
   # NVIDIA driver is provided by hardware.nvidia settings, not xserver.videoDrivers
   hardware.nvidia-container-toolkit.suppressNvidiaDriverAssertion = true;
-  # Target native sm_120 CUDA code for the RTX 5060 (Blackwell); applies to NAS CUDA package builds only.
-  nixpkgs.config.cudaCapabilities = [ "12.0" ];
 
   # Home-manager configuration
   home-manager = {
