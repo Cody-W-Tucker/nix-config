@@ -81,16 +81,18 @@
           group = "git";
         }
       ];
-      initLua = lib.optionalString (config.lib ? stylix) ''
-        th.git = th.git or {}
-        th.git.modified = ui.Style():fg("#${config.lib.stylix.colors.base0A}")
-        th.git.added = ui.Style():fg("#${config.lib.stylix.colors.base0B}")
-        th.git.deleted = ui.Style():fg("#${config.lib.stylix.colors.base08}")
-        th.git.updated = ui.Style():fg("#${config.lib.stylix.colors.base0D}")
-        th.git.untracked = ui.Style():fg("#${config.lib.stylix.colors.base0C}")
-
-        require("git"):setup()
-      '';
+      initLua =
+        (lib.optionalString (config.lib ? stylix) ''
+          th.git = th.git or {}
+          th.git.modified = ui.Style():fg("#${config.lib.stylix.colors.base0A}")
+          th.git.added = ui.Style():fg("#${config.lib.stylix.colors.base0B}")
+          th.git.deleted = ui.Style():fg("#${config.lib.stylix.colors.base08}")
+          th.git.updated = ui.Style():fg("#${config.lib.stylix.colors.base0D}")
+          th.git.untracked = ui.Style():fg("#${config.lib.stylix.colors.base0C}")
+        '')
+        + ''
+          require("git"):setup()
+        '';
     };
     gh = {
       # Enable GitHub CLI
