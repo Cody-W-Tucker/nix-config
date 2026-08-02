@@ -19,6 +19,8 @@
     ubatchSize = 512;
     ttl = 60;
     extraArgs = [
+      "--reasoning"
+      "off"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
