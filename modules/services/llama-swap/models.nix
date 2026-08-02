@@ -33,8 +33,8 @@
     gpuLayers = 999;
     contextSize = 65536;
     threads = 6;
-    batchSize = 1024;
-    ubatchSize = 512;
+    batchSize = 2048;
+    ubatchSize = 1024;
     ttl = 60;
     extraArgs = [
       "--reasoning"
