@@ -46,8 +46,8 @@
 
         # Speed improvements
         num-threads = 4;
-        msg-cache-size = "512m";
-        rrset-cache-size = "1024m";
+        msg-cache-size = "32m";
+        rrset-cache-size = "64m";
         cache-max-ttl = 14400;
         cache-min-ttl = 300;
         prefetch = true;
