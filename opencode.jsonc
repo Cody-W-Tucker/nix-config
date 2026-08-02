@@ -1,0 +1,15 @@
+{
+  "mcp": {
+    "code-review-graph": {
+      "type": "local",
+      "command": [
+        "/nix/store/gxzhl7aaiid7zp3y47jqqiq7zg5mqpwp-python3-3.14.6/bin/python3.14",
+        "-m",
+        "code_review_graph",
+        "serve",
+        "--repo",
+        "/etc/nixos"
+      ]
+    }
+  }
+}
