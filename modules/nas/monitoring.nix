@@ -1,10 +1,24 @@
 {
   config,
   lib,
+  pkgs,
   mkNginxVhost,
   ...
 }:
 
+let
+  priorityToLevelScript = pkgs.writeText "fb-priority-to-level.lua" ''
+    function priority_to_level(tag, timestamp, record)
+      local map = {
+        ["0"] = "emerg",  ["1"] = "alert", ["2"] = "crit",
+        ["3"] = "err",    ["4"] = "warning", ["5"] = "notice",
+        ["6"] = "info",   ["7"] = "debug",
+      }
+      record["level"] = map[tostring(record["priority"])] or "info"
+      return 2, timestamp, record
+    end
+  '';
+in
 {
   services = {
     grafana = {
@@ -310,13 +324,21 @@
               read_from_head = false;
             }
           ];
+          filters = [
+            {
+              name = "lua";
+              match = "journal";
+              script = toString priorityToLevelScript;
+              call = "priority_to_level";
+            }
+          ];
           outputs = [
             {
               name = "loki";
               match = "journal";
               host = "127.0.0.1";
               port = config.services.loki.configuration.server.http_listen_port;
-              labels = "job=systemd-journal,host=$hostname,unit=$unit";
+              labels = "job=systemd-journal,host=$hostname,unit=$systemd_unit,level=$level";
               line_format = "json";
             }
             {
