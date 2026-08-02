@@ -14,15 +14,11 @@
     file = "Qwen3.5-0.8B-Q8_0.gguf";
     gpuLayers = 999;
     contextSize = 16384;
-    threads = 2;
+    threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
-    ttl = 300;
+    ttl = 60;
     extraArgs = [
-      "--reasoning"
-      "off"
-      "--parallel"
-      "2"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
@@ -33,33 +29,29 @@
   "qwen3.5-9b-nvfp4" = {
     file = "qwen3.5-9b-nvfp4.gguf";
     gpuLayers = 999;
-    contextSize = 32768;
-    threads = 4;
+    contextSize = 65536;
+    threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
-    ttl = 300;
+    ttl = 60;
     extraArgs = [
       "--reasoning"
       "off"
-      "--parallel"
-      "2"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
       "q8_0"
     ];
   };
-  # Embeddings traffic is short-form; use a smaller KV/cache footprint and
-  # avoid flash-attn to reduce startup instability in llama-server.
   "qwen3-embedding-0.6b" = {
     file = "Qwen3-Embedding-0.6B-Q8_0.gguf";
     gpuLayers = 999;
-    contextSize = 8192;
-    threads = 4;
-    batchSize = 1024;
-    ubatchSize = 512;
-    flashAttention = false;
-    ttl = 300;
+    contextSize = 32768;
+    threads = 6;
+    batchSize = 32768;
+    ubatchSize = 32768;
+    flashAttention = false; # avoid flash-attn to reduce startup instability in llama-server.
+    ttl = 60;
     extraArgs = [
       "--embeddings"
       "--pooling"
@@ -73,13 +65,11 @@
     mmprojFile = "mmproj-GLM-OCR-Q8_0.gguf";
     gpuLayers = 999;
     contextSize = 8192;
-    threads = 8;
+    threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
     ttl = 600;
     extraArgs = [
-      "--parallel"
-      "2"
       "--samplers"
       "top_k"
       "--top-k"
@@ -101,10 +91,10 @@
   };
   "whisper-diarization" = {
     file = null;
-    ttl = 0; # Keep resident for diarization requests.
+    ttl = 300; # Keep resident for diarization requests.
   };
   "kokoro-82m" = {
     file = null;
-    ttl = 0; # Keep resident for low-latency TTS.
+    ttl = 0; # Keep TTS warm until another group explicitly evicts it.
   };
 }
