@@ -1,11 +1,13 @@
 {
+  "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "code-review-graph": {
       "type": "local",
       "command": [
-        "/nix/store/gxzhl7aaiid7zp3y47jqqiq7zg5mqpwp-python3-3.14.6/bin/python3.14",
-        "-m",
-        "code_review_graph",
+        "nix",
+        "run",
+        "github:numtide/llm-agents.nix/90ab5cd4a6219ccbab83b4ede91b3fa63de3c6ee#code-review-graph",
+        "--",
         "serve",
         "--repo",
         "/etc/nixos"
