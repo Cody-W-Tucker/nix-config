@@ -32,12 +32,14 @@
     file = "qwen3.5-9b-nvfp4.gguf";
     mmprojFile = "mmproj-qwen3.5-9b-nvfp4-f16.gguf";
     gpuLayers = 999;
-    contextSize = 65536;
+    contextSize = 32768;
     threads = 6;
     batchSize = 2048;
     ubatchSize = 1024;
     ttl = 60;
     extraArgs = [
+      "--parallel"
+      "1"
       "--reasoning"
       "off"
       "--cache-type-k"

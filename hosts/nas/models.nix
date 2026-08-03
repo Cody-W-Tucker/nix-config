@@ -94,7 +94,10 @@ in
     preloadModels = [ "whisper-medium" ];
     # Override the shared catalog's relative mmproj filename with the
     # reproducible store path fetched above so llama-server receives --mmproj.
-    modelOverrides."qwen3.5-9b-nvfp4".mmprojFile = toString qwen35Mmproj;
+    modelOverrides."qwen3.5-9b-nvfp4" = {
+      mmprojFile = toString qwen35Mmproj;
+      upstream.concurrencyLimit = 1;
+    };
     settings.groups = {
       audio-stack = {
         swap = false;
