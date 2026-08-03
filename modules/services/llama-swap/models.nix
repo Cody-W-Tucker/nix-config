@@ -48,10 +48,10 @@
   "qwen3-embedding-0.6b" = {
     file = "Qwen3-Embedding-0.6B-Q8_0.gguf";
     gpuLayers = 999;
-    contextSize = 32768;
+    contextSize = 8192;
     threads = 6;
-    batchSize = 32768;
-    ubatchSize = 32768;
+    batchSize = 512;
+    ubatchSize = 512;
     flashAttention = false; # avoid flash-attn to reduce startup instability in llama-server.
     ttl = 60;
     extraArgs = [
