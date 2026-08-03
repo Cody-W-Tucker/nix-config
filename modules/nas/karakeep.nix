@@ -14,12 +14,16 @@
       DISABLE_NEW_RELEASE_CHECK = "true";
       OPENAI_API_KEY = "opencode";
       OPENAI_BASE_URL = "http://nas:8081/v1";
+
       INFERENCE_TEXT_MODEL = "qwen3.5-9b-nvfp4";
       INFERENCE_CONTEXT_LENGTH = "65536";
       INFERENCE_MAX_OUTPUT_TOKENS = "2048";
       INFERENCE_OUTPUT_SCHEMA = "structured";
-      EMBEDDING_TEXT_MODEL = "qwen3-embedding-0.6b";
       INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
+
+      EMBEDDING_TEXT_MODEL = "qwen3-embedding-0.6b";
+      EMBEDDING_DIMENSIONS = "1024";
+      EMBEDDING_CONTEXT_LENGTH = "8192";
       MAX_ASSET_SIZE_MB = "100";
     };
   };
