@@ -3,21 +3,33 @@
 let
   # Use unstable nixpkgs for the miniflux Python package
   unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  unstablePython = unstablePkgs.python3;
 
-  # Python package with required libraries
-  curatorPy = unstablePkgs.writers.writePython3Bin "miniflux-curator" {
-    libraries = with unstablePkgs.python3Packages; [
-      miniflux
-      numpy
+  # Build the curator package (curator/ directory in this tree)
+  curatorPackage = unstablePython.pkgs.buildPythonPackage {
+    pname = "miniflux-curator";
+    version = "0.1.0";
+    format = "pyproject";
+    src = ./.;
+    nativeBuildInputs = [ unstablePython.pkgs.setuptools ];
+    dependencies = [
+      unstablePython.pkgs.miniflux
+      unstablePython.pkgs.numpy
     ];
-  } (builtins.readFile ./curator.py);
+    doCheck = false;
+  };
+
+  # A thin bin wrapper that exposes the `miniflux-curator` command
+  curatorBin = unstablePkgs.writeShellApplication {
+    name = "miniflux-curator";
+    runtimeInputs = [ curatorPackage ];
+    text = "exec ${curatorPackage}/bin/miniflux-curator \"$@\"";
+  };
 in
 
 pkgs.writeShellApplication {
   name = "miniflux-curator";
-  runtimeInputs = [
-    curatorPy
-  ];
+  runtimeInputs = [ curatorBin ];
   text = ''
     set -euo pipefail
 
@@ -37,6 +49,6 @@ pkgs.writeShellApplication {
     export KARAKEEP_FETCH_LIMIT=''${KARAKEEP_FETCH_LIMIT:-100}
     export REFERENCE_LIMIT=''${REFERENCE_LIMIT:-50}
 
-    exec ${curatorPy}/bin/miniflux-curator
+    exec ${curatorBin}/bin/miniflux-curator
   '';
 }

@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miniflux-curator"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["miniflux", "numpy"]
+
+[project.scripts]
+miniflux-curator = "curator.main:main"
+
+[tool.setuptools.packages.find]
+include = ["curator*"]
