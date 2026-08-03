@@ -36,7 +36,7 @@
     threads = 6;
     batchSize = 2048;
     ubatchSize = 1024;
-    ttl = 60;
+    ttl = 5;
     extraArgs = [
       "--parallel"
       "1"
@@ -56,7 +56,7 @@
     batchSize = 512;
     ubatchSize = 512;
     flashAttention = false; # avoid flash-attn to reduce startup instability in llama-server.
-    ttl = 60;
+    ttl = 5;
     extraArgs = [
       "--embeddings"
       "--pooling"
@@ -73,7 +73,7 @@
     threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
-    ttl = 600;
+    ttl = 5;
     extraArgs = [
       "--samplers"
       "top_k"
