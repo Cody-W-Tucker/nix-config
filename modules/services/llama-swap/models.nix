@@ -39,7 +39,7 @@
     ttl = 5;
     extraArgs = [
       "--parallel"
-      "1"
+      "2"
       "--reasoning"
       "off"
       "--cache-type-k"

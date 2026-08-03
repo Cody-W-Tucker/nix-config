@@ -96,7 +96,7 @@ in
     # reproducible store path fetched above so llama-server receives --mmproj.
     modelOverrides."qwen3.5-9b-nvfp4" = {
       mmprojFile = toString qwen35Mmproj;
-      upstream.concurrencyLimit = 1;
+      upstream.concurrencyLimit = 2;
     };
     settings.groups = {
       audio-stack = {
