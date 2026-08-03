@@ -117,6 +117,13 @@ in
               };
             }
             {
+              OpenCode = {
+                href = "https://opencode.${domain}";
+                icon = "opencode";
+                description = "OpenCode Web";
+              };
+            }
+            {
               Grafana = {
                 href = "https://monitoring.${domain}";
                 icon = "grafana";
