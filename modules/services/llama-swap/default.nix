@@ -214,7 +214,12 @@ let
       ]
       ++ lib.optionals (model.mmprojFile != null) [
         "--mmproj"
-        "${cfg.modelDirectory}/${model.mmprojFile}"
+        (
+          if lib.hasPrefix "/" model.mmprojFile then
+            model.mmprojFile
+          else
+            "${cfg.modelDirectory}/${model.mmprojFile}"
+        )
       ]
       ++ model.extraArgs
     );
@@ -292,6 +297,12 @@ in
       description = "Host-specific overrides merged onto `services.llama-swap.modelCatalog`.";
     };
 
+    models = lib.mkOption {
+      type = lib.types.attrsOf modelType;
+      readOnly = true;
+      description = "Resolved model definitions after merging catalog, wrapper commands, and overrides. Read-only; populated by the module.";
+    };
+
     enabledModels = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
@@ -351,6 +362,7 @@ in
       port = lib.mkDefault 8080;
       listenAddress = lib.mkDefault "0.0.0.0";
       openFirewall = lib.mkDefault true;
+      models = selectedModels;
 
       settings = {
         healthCheckTimeout = lib.mkDefault 60;

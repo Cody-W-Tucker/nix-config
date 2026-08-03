@@ -16,6 +16,7 @@
       OPENAI_BASE_URL = "http://nas:8081/v1";
 
       INFERENCE_TEXT_MODEL = "qwen3.5-9b-nvfp4";
+      INFERENCE_IMAGE_MODEL = "qwen3.5-9b-nvfp4";
       INFERENCE_CONTEXT_LENGTH = "65536";
       INFERENCE_MAX_OUTPUT_TOKENS = "2048";
       INFERENCE_OUTPUT_SCHEMA = "structured";

@@ -14,6 +14,13 @@ let
     config.allowUnfreePredicate = config.nixpkgs.config.allowUnfreePredicate or (_: false);
   };
 
+  # Multimodal projector for qwen3.5-9b-nvfp4: extracted from the same
+  # FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF release as the base GGUF.
+  qwen35Mmproj = pkgs.fetchurl {
+    url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/main/mmproj-qwen3.5-9b-nvfp4-f16.gguf";
+    sha256 = "97f420245a85ce129bb764e86a5e21e27d782fe6d6056c6839b9c5fdb8f38289";
+  };
+
   # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
   # The bundled FindCUDA parser is too stale to accept CUDA_ARCH_LIST=12.0 for Blackwell,
   # so we strip any existing CUDA_ARCH_LIST flags and inject sm_120 directly via postPatch.
@@ -85,6 +92,9 @@ in
       "kokoro-82m"
     ];
     preloadModels = [ "whisper-medium" ];
+    # Override the shared catalog's relative mmproj filename with the
+    # reproducible store path fetched above so llama-server receives --mmproj.
+    modelOverrides."qwen3.5-9b-nvfp4".mmprojFile = toString qwen35Mmproj;
     settings.groups = {
       audio-stack = {
         swap = false;
