@@ -91,6 +91,11 @@
       url = "github:agavra/tuicr";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    buzz = {
+      # Buzz relay server and related tools.
+      url = "github:mulatta/buzz.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

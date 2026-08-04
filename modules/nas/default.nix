@@ -9,6 +9,7 @@
   imports = [
     ../services/nginx
     ./actual-budget.nix
+    ./buzz.nix
     ./home-assistant.nix
     ./open-webui.nix
     ./adguard.nix
