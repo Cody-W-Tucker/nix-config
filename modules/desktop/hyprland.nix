@@ -10,8 +10,6 @@
     hyprlock = { };
     # Enable a keyring service for storing secrets
     login.enableGnomeKeyring = true;
-    # Keyring auto-unlock on greetd login (this is the missing piece for most greetd users)
-    greetd.enableGnomeKeyring = true;
   };
 
   # Use Greetd to launch Hyprland from TTY2
