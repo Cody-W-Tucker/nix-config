@@ -7,11 +7,15 @@
 }:
 
 let
-  # Import unstable nixpkgs with the same allowUnfreePredicate as the NAS config
-  # so that CUDA-only unfree deps (e.g. cuda_cccl) are permitted without blanket allowUnfree.
   unstablePkgs = import inputs.nixpkgs-unstable {
-    system = pkgs.stdenv.hostPlatform.system;
-    config.allowUnfreePredicate = config.nixpkgs.config.allowUnfreePredicate or (_: false);
+    system = "x86_64-linux";
+    config = config.nixpkgs.config;
+  };
+
+  # llama.cpp selects Blackwell/NVFP4 architectures upstream; no local
+  # CMAKE_CUDA_ARCHITECTURES override is needed here.
+  unstableLlamaCpp = unstablePkgs.llama-cpp.override {
+    cudaSupport = true;
   };
 
   # Multimodal projector for qwen3.5-9b-nvfp4: extracted from the same
@@ -58,15 +62,7 @@ in
   services.llama-swap = {
     enable = true;
     acceleration = "cuda";
-    # Blackwell RTX 5060 requires sm_120a for FP4 tensor-core instructions.
-    # Override per-package (not globally) to compile native sm_120a code.
-    serverPackage = (unstablePkgs.llama-cpp.override { cudaSupport = true; }).overrideAttrs (old: {
-      cmakeFlags =
-        builtins.filter (f: !(builtins.isString f && builtins.match ".*CUDA_ARCHITECTURES.*" f != null)) (
-          old.cmakeFlags or [ ]
-        )
-        ++ [ "-DCMAKE_CUDA_ARCHITECTURES=120a" ];
-    });
+    serverPackage = unstableLlamaCpp;
     ctranslate2Cpp = ctranslate2CppBlackwell;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     port = 8081;
