@@ -31,7 +31,7 @@
   };
 
   services = {
-    # Miniflux RSS reader
+    # Miniflux RSS reader. Theme: https://github.com/andymason/miniflux-css-theme/tree/main
     miniflux = {
       enable = true;
       config = {
