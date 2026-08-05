@@ -8,6 +8,11 @@
 let
   obsidianVault = "/data/knowledge/Personal";
   inherit (config.services.hermes-agent) workingDirectory;
+  # Absolute path the container can exec (/nix/store is mounted ro).
+  # Container PATH does not include host profiles, so gateway.platforms.buzz
+  # must pin cli_path rather than relying on `buzz` on PATH.
+  buzzCli = inputs.buzz.packages.${pkgs.stdenv.hostPlatform.system}.buzz-cli;
+  buzzRelayUrl = "https://buzz.homehub.tv";
 in
 {
   imports = [
@@ -47,6 +52,7 @@ in
       ];
       extraPackages = with pkgs; [
         binutils
+        buzzCli
         curl
         ffmpeg
         glibc.bin
@@ -61,6 +67,9 @@ in
         API_SERVER_PORT = "8642";
         OBSIDIAN_VAULT = obsidianVault;
         VOICE_TOOLS_OPENAI_KEY = "local-only";
+        # Non-secret Buzz defaults (private key stays in hermes-env via SOPS).
+        BUZZ_RELAY_URL = buzzRelayUrl;
+        BUZZ_CLI_PATH = "${buzzCli}/bin/buzz";
       };
       environmentFiles = [ config.sops.templates."hermes-env".path ];
       configFile = pkgs.writeText "hermes-config.json" (
@@ -109,6 +118,11 @@ in
           discord = {
             tool_progress = "off";
           };
+          # Keep Buzz channels on final answers, not tool chatter.
+          buzz = {
+            interim_assistant_messages = false;
+            tool_progress = "off";
+          };
         };
         max_turns = 100;
         terminal = {
@@ -122,6 +136,21 @@ in
           reactions = true; # Emoji reactions for processing state
           free_response_channels = [ ]; # Channels that respond without @mention
           home_channel = "1502095470334578779"; # hermes-home (text)
+        };
+        # Native Buzz platform (bundled plugin). hermes gateway setup is a no-go
+        # here: configFile overwrites config.yaml on activation and .env is SOPS.
+        gateway.platforms.buzz = {
+          enabled = true;
+          extra = {
+            relay_url = buzzRelayUrl;
+            cli_path = "${buzzCli}/bin/buzz";
+            # Empty = all channels the agent identity has joined.
+            channels = [ ];
+            require_mention = true;
+            allow_all_users = true;
+            poll_interval = 4;
+            transport = "auto";
+          };
         };
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";

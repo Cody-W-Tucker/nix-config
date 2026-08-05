@@ -10,6 +10,9 @@
       "hermes-discord-allowed-users" = { };
       "hermes-telegram-bot-token" = { };
       "hermes-telegram-allowed-users" = { };
+      # Dedicated Nostr identity for the Hermes Buzz gateway adapter.
+      # nsec1... or 64-char hex. Do NOT reuse a human desktop key.
+      "hermes-buzz-private-key" = { };
     };
 
     templates."hermes-env" = {
@@ -22,6 +25,7 @@
         TELEGRAM_BOT_TOKEN=${config.sops.placeholder."hermes-telegram-bot-token"}
         TELEGRAM_ALLOWED_USERS=${config.sops.placeholder."hermes-telegram-allowed-users"}
         KARAKEEP_API_KEY=${config.sops.placeholder."karakeep-api-key"}
+        BUZZ_PRIVATE_KEY=${config.sops.placeholder."hermes-buzz-private-key"}
       '';
     };
   };
