@@ -82,6 +82,7 @@ in
     playerctl # MPRIS cli; also provides playerctld D-Bus activation
     twitch-tui # Read chats from terminal
     mousam # Weather CLI tool
+    witr # CLI tool that shows why processes are running
   ];
 
   services = {
