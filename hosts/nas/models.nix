@@ -18,7 +18,7 @@ let
     cudaSupport = true;
   };
 
-  # Multimodal projector for qwen3.5-9b-nvfp4: extracted from the same
+  # Multimodal projector for qwen-3.5-9b-task: extracted from the same
   # FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF release as the base GGUF.
   qwen35Mmproj = pkgs.fetchurl {
     url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/main/mmproj-qwen3.5-9b-nvfp4-f16.gguf";
@@ -78,7 +78,8 @@ in
     };
     enabledModels = [
       "qwen3.5-0.8b"
-      "qwen3.5-9b-nvfp4"
+      "qwen-3.5-9b-task"
+      "qwen-3.5-9b"
       # Shared catalog: embedding and OCR for Karakeep/Miniflux
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
@@ -90,7 +91,7 @@ in
     preloadModels = [ "whisper-medium" ];
     # Override the shared catalog's relative mmproj filename with the
     # reproducible store path fetched above so llama-server receives --mmproj.
-    modelOverrides."qwen3.5-9b-nvfp4" = {
+    modelOverrides."qwen-3.5-9b-task" = {
       mmprojFile = toString qwen35Mmproj;
       upstream.concurrencyLimit = 2;
     };
