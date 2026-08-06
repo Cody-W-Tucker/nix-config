@@ -21,6 +21,7 @@
     ./monitoring.nix
     ./nfs.nix
     ./paperless.nix
+    ./paperless-ai.nix
     ./photos.nix
     ./samba.nix
     ./security.nix

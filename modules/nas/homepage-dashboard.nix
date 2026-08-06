@@ -99,6 +99,13 @@ in
               };
             }
             {
+              PaperlessAI = {
+                href = "https://paperless-ai.${domain}";
+                icon = "mdi:robot";
+                description = "AI Document Assistant";
+              };
+            }
+            {
               ExcaliDraw = {
                 href = "https://draw.${domain}";
                 icon = "excalidraw";
