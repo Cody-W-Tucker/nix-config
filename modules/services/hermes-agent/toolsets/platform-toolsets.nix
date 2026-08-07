@@ -34,18 +34,6 @@ in
         "terminal"
       ];
 
-      # Buzz native gateway platform — same ambient trust as Discord.
-      buzz = [
-        "web"
-        "search"
-        "tts"
-        "vision"
-        "skills"
-        "file"
-        "memory"
-        "terminal"
-      ];
-
       # runs cli under hermes user
       cron = [
         "web"
