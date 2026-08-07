@@ -86,7 +86,7 @@ in
       # matching role, so `ensureUsers` and the runtime URI agree.
       services.postgresql = {
         enable = true;
-        package = pkgs.postgresql_16;
+        package = pkgs.postgresql_17;
         ensureDatabases = [ "buzz" ];
         ensureUsers = [
           {
