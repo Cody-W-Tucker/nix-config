@@ -23,7 +23,6 @@
   ];
 
   services.opencode.enable = true;
-  services.buzz-relay.enable = true;
 
   # Bootloader.
   boot = {

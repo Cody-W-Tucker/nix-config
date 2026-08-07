@@ -33,7 +33,6 @@ in
 
   home.sessionVariables = {
     TERMINAL = "kitty";
-    BUZZ_RELAY_URL = "wss://buzz.homehub.tv";
   };
 
   # Enable Stylix for theming
