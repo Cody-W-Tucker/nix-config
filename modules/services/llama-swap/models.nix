@@ -60,6 +60,8 @@
     ubatchSize = 1024;
     ttl = 600;
     extraArgs = [
+      "--reasoning"
+      "off"
       "--parallel"
       "1"
       "--cache-type-k"
