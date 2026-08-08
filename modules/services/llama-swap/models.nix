@@ -87,6 +87,23 @@
   };
   # OCR prefers deterministic decoding. Allow a small amount of request
   # parallelism, but keep batching modest on the RTX 5060.
+  #
+  # Repetition-loop protection: Paperless-GPT sends OCR requests to this model
+  # via the OpenAI-compatible API but does NOT send stop sequences or any
+  # repetition controls (verified in upstream ocr/llm_provider.go — the
+  # langchaingo OpenAI client is created with only WithModel/WithToken).
+  # llama-server also has no CLI flag for server-wide default stop sequences,
+  # so stop cannot be configured at this layer.
+  #
+  # The strongest config-only defence is a server-side repeat penalty:
+  #   --repeat-penalty 1.1   conservative; discourages pure loops without
+  #                           harming legitimately repeated tokens in OCR
+  #                           output (table lines, dashed borders, etc.)
+  #   --repeat-last-n  256   window over which repeated tokens are penalised;
+  #                           large enough to catch medium-range loops while
+  #                           leaving short repeated punctuation alone.
+  # The hard output cap (VISION_LLM_MAX_TOKENS=2048 on the Paperless-GPT
+  # side) remains the last-resort bound on runaway generation.
   "glm-ocr-f16" = {
     file = "GLM-OCR-f16.gguf";
     mmprojFile = "mmproj-GLM-OCR-Q8_0.gguf";
@@ -103,6 +120,10 @@
       "1"
       "--temp"
       "0"
+      "--repeat-penalty"
+      "1.1"
+      "--repeat-last-n"
+      "256"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
