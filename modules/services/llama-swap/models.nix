@@ -118,6 +118,12 @@
     batchSize = 1024;
     ubatchSize = 512;
     ttl = 5;
+    # Upstream GLM-OCR guidance (llama.cpp discussion #19721) requires flash
+    # attention disabled. Without this, the model's special token handling breaks
+    # (evidenced by "special_eot_id is not in special_eog_ids" warning), causing
+    # the model to not recognize its natural stopping point and generate until
+    # context limit (truncated=1 at 8191 tokens).
+    flashAttention = false;
     extraArgs = [
       "--samplers"
       "top_k"
@@ -133,6 +139,10 @@
       "q8_0"
       "--cache-type-v"
       "q8_0"
+      # Upstream GLM-OCR guidance requires --fit off to prevent memory auto-adjustment
+      # from interfering with model-specific parameters.
+      "--fit"
+      "off"
     ];
   };
   # Wrapper-backed audio models: file is null because the host replaces the
