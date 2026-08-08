@@ -57,6 +57,24 @@ nixos-rebuild dry-run --flake .#nas
 1. **Repeat penalty** (NEW): Server-side logit penalty discourages token repetition
 2. **Deterministic decoding**: `--top-k 1 --temp 0` keeps output predictable
 3. **Token limit**: `VISION_LLM_MAX_TOKENS=2048` caps maximum output length
-4. **Context window**: 8192 tokens limits input+output scope
+4. **Context window**: 12000 tokens (`-c 12000`) covers the largest observed OCR prompt (7044 prompt + 1148 completion = 8192 hit `truncated=1` at the previous 8192 limit); normal short OCR requests stop well below this. The repeat penalty and `VISION_LLM_MAX_TOKENS=2048` output cap still bound runaway generation.
 
 The repeat penalty is the strongest config-only defense available given that Paperless-GPT cannot be configured to send stop sequences.
+
+## Context Window Fix (8192 → 12000)
+
+The context window was raised from 8192 to 12000 after server logs showed a single OCR request consuming 7044 prompt tokens + 1148 completion tokens and reaching the 8192 ceiling with `truncated=1` (the OCR text was cut off mid-output). Shorter requests already completed well below the boundary and were unaffected.
+
+The value 12000 matches the upstream llama.cpp GLM-OCR example (`llama-server -c 12000`) and leaves enough headroom for large-page prompts without invalidating the existing anti-loop safeguards (repeat penalty + deterministic decoding + `VISION_LLM_MAX_TOKENS=2048` output cap).
+
+### Post-activation verification
+
+Re-run the same page that previously hit the ceiling, then check the llama-server log for that request:
+
+```
+# Expected:
+truncated=0                  # response was not cut off
+prompt_tokens + completion_tokens < 12000   # total fits inside the new window
+```
+
+If `truncated=1` reappears at or near 12000, the request genuinely exceeds the model's practical limit and the fix is invalidated — further action would need a smaller image or a different model, not another context bump.
