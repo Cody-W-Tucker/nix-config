@@ -20,7 +20,7 @@
     ./monitoring.nix
     ./nfs.nix
     ./paperless.nix
-    ./paperless-ai.nix
+    ./paperless-gpt.nix
     ./photos.nix
     ./samba.nix
     ./security.nix

@@ -99,9 +99,9 @@ in
               };
             }
             {
-              PaperlessAI = {
-                href = "https://paperless-ai.${domain}";
-                icon = "mdi:robot";
+              PaperlessGPT = {
+                href = "https://paperless-gpt.${domain}";
+                icon = "https://paperless-gpt.${domain}/favicon.ico";
                 description = "AI Document Assistant";
               };
             }
