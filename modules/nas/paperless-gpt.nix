@@ -37,6 +37,8 @@
       OCR_PROVIDER = "llm";
       VISION_LLM_PROVIDER = "openai";
       VISION_LLM_MODEL = "glm-ocr-f16";
+      # Cap OCR-generated output length; prevents runaway vision calls.
+      VISION_LLM_MAX_TOKENS = "2048";
       TZ = "America/Chicago";
       LOG_LEVEL = "info";
     };

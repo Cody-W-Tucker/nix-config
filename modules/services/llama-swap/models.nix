@@ -87,15 +87,43 @@
   };
   # OCR prefers deterministic decoding. Allow a small amount of request
   # parallelism, but keep batching modest on the RTX 5060.
+  #
+  # Repetition-loop protection: Paperless-GPT sends OCR requests to this model
+  # via the OpenAI-compatible API but does NOT send stop sequences or any
+  # repetition controls (verified in upstream ocr/llm_provider.go — the
+  # langchaingo OpenAI client is created with only WithModel/WithToken).
+  # llama-server also has no CLI flag for server-wide default stop sequences,
+  # so stop cannot be configured at this layer.
+  #
+  # The strongest config-only defence is a server-side repeat penalty:
+  #   --repeat-penalty 1.1   conservative; discourages pure loops without
+  #                           harming legitimately repeated tokens in OCR
+  #                           output (table lines, dashed borders, etc.)
+  #   --repeat-last-n  256   window over which repeated tokens are penalised;
+  #                           large enough to catch medium-range loops while
+  #                           leaving short repeated punctuation alone.
+  # The hard output cap (VISION_LLM_MAX_TOKENS=2048 on the Paperless-GPT
+  # side) remains the last-resort bound on runaway generation.
   "glm-ocr-f16" = {
     file = "GLM-OCR-f16.gguf";
     mmprojFile = "mmproj-GLM-OCR-Q8_0.gguf";
     gpuLayers = 999;
-    contextSize = 8192;
+    contextSize = 12000;
+    # Logs showed a real OCR request used 7044 prompt + 1148 completion = 8192
+    # tokens and hit `truncated=1`; normal short OCR stops well below the boundary.
+    # Upstream llama.cpp GLM-OCR example uses `-c 12000`. 12000 leaves headroom
+    # for large-image prompts without masking runaway generation (the repeat
+    # penalty and VISION_LLM_MAX_TOKENS=2048 still bound output).
     threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
     ttl = 5;
+    # Upstream GLM-OCR guidance (llama.cpp discussion #19721) requires flash
+    # attention disabled. Without this, the model's special token handling breaks
+    # (evidenced by "special_eot_id is not in special_eog_ids" warning), causing
+    # the model to not recognize its natural stopping point and generate until
+    # context limit (truncated=1 at 8191 tokens).
+    flashAttention = false;
     extraArgs = [
       "--samplers"
       "top_k"
@@ -103,10 +131,18 @@
       "1"
       "--temp"
       "0"
+      "--repeat-penalty"
+      "1.1"
+      "--repeat-last-n"
+      "256"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
       "q8_0"
+      # Upstream GLM-OCR guidance requires --fit off to prevent memory auto-adjustment
+      # from interfering with model-specific parameters.
+      "--fit"
+      "off"
     ];
   };
   # Wrapper-backed audio models: file is null because the host replaces the
