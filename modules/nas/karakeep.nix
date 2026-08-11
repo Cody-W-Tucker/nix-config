@@ -15,10 +15,10 @@
       OPENAI_API_KEY = "opencode";
       OPENAI_BASE_URL = "http://nas:8081/v1";
 
-      INFERENCE_TEXT_MODEL = "qwen-3.5-9b-task";
+      INFERENCE_TEXT_MODEL = "qwen-3.5-9b";
       OCR_USE_LLM = "true";
       INFERENCE_IMAGE_MODEL = "qwen-3.5-9b-task";
-      INFERENCE_CONTEXT_LENGTH = "32768";
+      INFERENCE_CONTEXT_LENGTH = "65536";
       INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
 
       EMBEDDING_ENABLE_AUTO_INDEXING = "true";
