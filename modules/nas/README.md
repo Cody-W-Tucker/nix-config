@@ -54,10 +54,11 @@ Common service mappings:
 | Tika | `tika.homehub.tv` | `9998` | `default.nix` |
 | Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `nginx-syncthing.nix` |
 | Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `nginx-syncthing.nix` |
-| Open WebUI | `ai.homehub.tv` | `8080` | `ai-services.nix` |
+| LiteLLM | `ai.homehub.tv` | `8090` | `litellm.nix` |
+| Open WebUI | `chat.homehub.tv` | `8080` | `open-webui.nix` |
 | Qdrant REST | `qdrant.homehub.tv` | `6333` | `ai-services.nix` |
 
-`default.nix` also proxies selected `homehub.tv` subdomains to the `beast` workstation, including Open-WebUI and Qdrant. Keep that cross-host routing in the ingress layer, not inside unrelated service modules.
+`default.nix` also proxies selected `homehub.tv` subdomains to the `beast` workstation, including Qdrant. Keep that cross-host routing in the ingress layer, not inside unrelated service modules.
 
 ## Media stack
 

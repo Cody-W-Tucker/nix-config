@@ -21,7 +21,7 @@
 
       # TODO: make all this declarative instead of having to configure in the admin panel.
       # ENABLE_PERSISTENT_CONFIG = "False"
-      WEBUI_URL = "https://ai.homehub.tv";
+      WEBUI_URL = "https://chat.homehub.tv";
       WEBUI_SECRET_KEY = "local-only";
       USE_CUDA_DOCKER = "true";
 
@@ -62,7 +62,7 @@
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "ai.homehub.tv";
+    host = "chat.homehub.tv";
     port = 8080;
     proxyWebsockets = true;
     locationExtraConfig = ''

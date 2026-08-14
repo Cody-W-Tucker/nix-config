@@ -86,7 +86,7 @@ in
           Business = [
             {
               Open-WebUI = {
-                href = "https://ai.${domain}";
+                href = "https://chat.${domain}";
                 icon = "open-webui";
                 description = "AI Chat Interface";
               };
