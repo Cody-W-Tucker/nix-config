@@ -222,6 +222,13 @@ in
                 description = "Photo Management";
               };
             }
+            {
+              Dawarich = {
+                href = "https://tracker.${domain}";
+                icon = "dawarich";
+                description = "Location Tracking";
+              };
+            }
           ];
         }
         {
