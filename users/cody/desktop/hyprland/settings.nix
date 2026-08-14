@@ -36,7 +36,7 @@ let
 
     # Web applications
     "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
-    "${mainMod}, A, exec, ${webApp}=https://ai.homehub.tv/"
+    "${mainMod}, A, exec, ${webApp}=https://chat.homehub.tv/"
 
     # Quick launch
     "${mainMod}, Tab, exec, rofi-launcher"

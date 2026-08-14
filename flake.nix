@@ -68,6 +68,12 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    litellm-nix = {
+      # LiteLLM proxy package and NixOS module (database-backed UI,
+      # Prisma migrations, durable prompt/response capture). Pinned
+      # against the fork's own nixpkgs per its README.
+      url = "github:adeci/litellm-nix";
+    };
     googleworkspace-cli = {
       # Google Workspace CLI for Drive, Gmail, Calendar, and related APIs.
       url = "github:googleworkspace/cli";

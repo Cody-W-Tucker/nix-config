@@ -17,6 +17,7 @@
     ./excalidraw.nix
     ./homepage-dashboard.nix
     ./karakeep.nix
+    ./litellm.nix
     ./media
     ./monitoring.nix
     ./nfs.nix
