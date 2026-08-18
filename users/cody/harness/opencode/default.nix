@@ -6,29 +6,27 @@
 }:
 
 let
-  inherit (inputs.cognitive-assistant.lib.artifacts.alignment) soulFile;
+  inherit (inputs.cognitive-assistant.lib.artifacts.alignment) translationLayer;
   skillNames = inputs.cognitive-assistant.lib.artifacts.skills.names;
 in
 {
   imports = [
     ./agents/logging
     ./agents/knowledge
-    ./agents/verify-alignment
     ./agents/business
+    ./agents/challenger
+    ./agents/scaffolder
+    ./agents/verifier
     ./skills/humanizer
     ./skills/cognitive
     ./tools/model-router
     ./tools/rtk
   ];
 
-  home.packages = [
-    inputs.cognitive-assistant.packages.${pkgs.stdenv.hostPlatform.system}.verify-alignment
-  ];
-
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
-    context = builtins.readFile soulFile + ''
+    context = builtins.readFile translationLayer + ''
 
       # Environment
 

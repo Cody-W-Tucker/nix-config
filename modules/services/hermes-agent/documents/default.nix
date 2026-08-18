@@ -18,7 +18,7 @@ let
     user
     workingDirectory
     ;
-  inherit (artifacts.alignment) soulFile;
+  inherit (artifacts.alignment) translationLayer;
   humanProfilesDir = "${workingDirectory}/human-profiles";
   existentialProfileFile = pkgs.writeText "hermes-existential-human-profile.md" (
     builtins.readFile existential.humanProfile
@@ -64,7 +64,7 @@ let
     Do not default to "I don't know" when the answer is likely in the knowledge base but has not been searched yet.
   '';
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" ''
-    ${builtins.readFile soulFile}
+    ${builtins.readFile translationLayer}
 
     # Hermes Environment
 
