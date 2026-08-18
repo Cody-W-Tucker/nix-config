@@ -13,31 +13,14 @@ let
   # No provider keys, no master key, no database URL land in the
   # Nix store; those are loaded at runtime from SOPS env files.
   litellmConfig = yaml.generate "litellm-config.yaml" {
-    model_list = {
-      "gpt-5.5" = {
-        displayName = "GPT-5.5";
-        backend = {
-          type = "litellm";
+    model_list = [
+      {
+        model_name = "gpt-5.5";
+        litellm_params = {
           model = "chatgpt/gpt-5.5";
         };
-        mode = "responses";
-        pricing = {
-          source = "litellm";
-          model = "gpt-5.5";
-          fields = [
-            "max_input_tokens"
-            "max_output_tokens"
-            "max_tokens"
-            "input_cost_per_token"
-            "input_cost_per_token_above_272k_tokens"
-            "output_cost_per_token"
-            "output_cost_per_token_above_272k_tokens"
-            "cache_read_input_token_cost"
-            "cache_read_input_token_cost_above_272k_tokens"
-          ];
-        };
-      };
-    };
+      }
+    ];
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
       database_url = "os.environ/DATABASE_URL";
