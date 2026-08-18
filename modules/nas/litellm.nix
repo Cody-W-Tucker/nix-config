@@ -28,6 +28,7 @@ let
     litellm_settings = {
       # Drop unrecognized provider params rather than failing.
       drop_params = true;
+      additional_drop_params = [ "previous_response_id" ]; # litellm doesn't handle this.
     };
   };
 in
