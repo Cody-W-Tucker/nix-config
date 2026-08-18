@@ -57,7 +57,7 @@ A custom orchestration service that manages LLM (Large Language Model) lifecycle
 
 ### OpenCode
 
-The AI coding harness integrated into Neovim and the desktop environment. It provides specialized agents (e.g., `verify-alignment`, `business`) and sub-agents for development tasks.
+The AI coding harness integrated into Neovim and the desktop environment. It provides specialized agents (e.g., `verifier`, `business`) and sub-agents for development tasks.
 
 **Logic Flow: AI Service Interaction**
 

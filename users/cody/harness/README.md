@@ -20,7 +20,7 @@ Central docs should point here for harness implementation detail.
 | MCP wiring                        | User-session MCP servers and client exposure   | `mcp.nix`                                                                                                                  |
 | Terminal launcher and multiplexer | Herdr                                          | `herdr/default.nix`, `herdr/module.nix`                                                                                    |
 | Agent runtime surface             | OpenCode                                       | `opencode/default.nix`                                                                                                     |
-| Agent families                    | Business, Knowledge, Logging, Verify Alignment | `opencode/agents/business/`, `opencode/agents/knowledge/`, `opencode/agents/logging/`, `opencode/agents/verify-alignment/` |
+| Agent families                    | Business, Knowledge, Logging, Verifier         | `opencode/agents/business/`, `opencode/agents/knowledge/`, `opencode/agents/logging/`, `opencode/agents/verifier/`         |
 | Agent-local skills                | Family-specific skills                         | `opencode/agents/*/skills/`                                                                                                |
 | Custom tool plugins               | Model Router, RTK, other OpenCode tools        | `opencode/tools/`, `opencode/tools/model-router/`, `opencode/tools/rtk/`                                                   |
 | Model routing                     | Router configuration and RLM-related tooling   | `opencode/tools/model-router/`, `opencode/default.nix`                                                                     |
