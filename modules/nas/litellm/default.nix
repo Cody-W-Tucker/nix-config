@@ -10,17 +10,51 @@ let
   yaml = pkgs.formats.yaml { };
   litellmModels = import ./models.nix;
 
+  # OpenCode Go upstream models. LiteLLM routes these to the hosted
+  # opencode.ai/zen/go API instead of ChatGPT. The upstream API shape
+  # selects the provider adapter, which appends its own request path:
+  #   - anthropic → /v1/messages
+  #   - openai    → /v1/chat/completions
+  # Auth is supplied at runtime via OPENCODE_GO_API_KEY in litellm-env.
+  opencodeGoModels = {
+    "hy3" = {
+      provider = "openai";
+      api_base = "https://opencode.ai/zen/go/v1";
+      mode = "chat";
+    };
+  };
+
+  mkModelEntry =
+    id:
+    if builtins.hasAttr id opencodeGoModels then
+      let
+        cfg = opencodeGoModels.${id};
+      in
+      {
+        model_name = id;
+        litellm_params = {
+          model = "${cfg.provider}/${id}";
+          api_base = cfg.api_base;
+          api_key = "os.environ/OPENCODE_GO_API_KEY";
+        };
+        model_info = {
+          mode = cfg.mode;
+        };
+      }
+    else
+      {
+        model_name = id;
+        litellm_params = {
+          model = "chatgpt/${id}";
+        };
+        model_info = {
+          mode = "responses";
+        };
+      };
+
   # LiteLLM proxy configuration — generated into the store.
   litellmConfig = yaml.generate "litellm-config.yaml" {
-    model_list = map (id: {
-      model_name = id;
-      litellm_params = {
-        model = "chatgpt/${id}";
-      };
-      model_info = {
-        mode = "responses";
-      };
-    }) litellmModels;
+    model_list = map mkModelEntry litellmModels;
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
       database_url = "os.environ/DATABASE_URL";

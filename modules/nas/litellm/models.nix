@@ -6,4 +6,7 @@
   "gpt-5.6-luna"
   "gpt-5.6-terra"
   "gpt-5.6-sol"
+  # OpenCode Go provider model — routed by LiteLLM to the
+  # opencode.ai/zen/go upstream (see modules/nas/litellm/default.nix).
+  "hy3"
 ]
