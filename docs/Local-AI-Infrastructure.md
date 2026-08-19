@@ -74,6 +74,17 @@ For details, see [Beast AI Stack: Open-WebUI and Qdrant](/Cody-W-Tucker/nix-conf
 
 ---
 
+## LiteLLM Proxy and Local Model Routing
+
+The NAS runs **LiteLLM** (`modules/nas/litellm`) as the unified inference gateway at `http://ai.homehub.tv` (reverse-proxied from `127.0.0.1:8090`). It already routes hosted upstreams (`gpt-5.6-*`, `hy3`) and now also proxies the **local llama-swap models**, so every consumer hits one endpoint with one auth model.
+
+- **Local routes:** Every enabled `services.llama-swap.enabledModels` entry is exposed through LiteLLM as an OpenAI-compatible model using the `openai/<id>` provider, with `api_base = http://127.0.0.1:8081/v1` (llama-swap's OpenAI endpoint on the same host).
+- **Aliases:** The LiteLLM `model_name` equals the llama-swap model key — the same id llama-swap serves and the `--alias` the backend registers. Current enabled aliases: `qwen3.5-0.8b`, `qwen-3.5-9b-task`, `qwen-3.5-9b`, `qwen3-embedding-0.6b`, `glm-ocr-f16`, `whisper-medium`, `whisper-diarization`, `kokoro-82m`.
+- **Client auth:** Clients authenticate to LiteLLM with the `LITELLM_MASTER_KEY` (from the `litellm-env` SOPS secret) as a Bearer token. The local llama-swap upstream needs no key (`api_key = sk-none`); LiteLLM terminates client auth and forwards unauthenticated requests to localhost.
+- **Existing routes preserved:** Hosted ChatGPT (`gpt-5.6-*`) and the OpenCode Go `hy3` model are generated exactly as before; the llama-swap entries are appended to `model_list`, not merged into the existing generators.
+
+---
+
 ## Code Entity Mapping
 
 The following table maps conceptual infrastructure components to their implementation in the codebase.

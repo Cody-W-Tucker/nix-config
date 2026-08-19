@@ -24,6 +24,28 @@ let
     };
   };
 
+  # Local llama-swap models (host-managed). When llama-swap is enabled on
+  # the same host, expose its enabled model IDs through LiteLLM as
+  # OpenAI-compatible routes to the llama-swap OpenAI endpoint on localhost.
+  # Model aliases equal the llama-swap model keys (the id llama-swap serves
+  # and the --alias the backend registers).
+  llamaSwapState = builtins.tryEval config.services.llama-swap.enable;
+  llamaSwapEnabled = llamaSwapState.success && llamaSwapState.value;
+  llamaSwapPort = if llamaSwapEnabled then config.services.llama-swap.port else 8081;
+
+  mkLlamaSwapEntry = id: {
+    model_name = id;
+    litellm_params = {
+      model = "openai/${id}";
+      api_base = "http://127.0.0.1:${toString llamaSwapPort}/v1";
+      api_key = "sk-none";
+    };
+  };
+
+  llamaSwapModelList = map mkLlamaSwapEntry (
+    if llamaSwapEnabled then config.services.llama-swap.enabledModels else [ ]
+  );
+
   mkModelEntry =
     id:
     if builtins.hasAttr id opencodeGoModels then
@@ -54,7 +76,7 @@ let
 
   # LiteLLM proxy configuration — generated into the store.
   litellmConfig = yaml.generate "litellm-config.yaml" {
-    model_list = map mkModelEntry litellmModels;
+    model_list = (map mkModelEntry litellmModels) ++ llamaSwapModelList;
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
       database_url = "os.environ/DATABASE_URL";
