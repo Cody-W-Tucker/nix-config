@@ -17,6 +17,9 @@ let
       litellm_params = {
         model = "chatgpt/${id}";
       };
+      model_info = {
+        mode = "responses";
+      };
     }) litellmModels;
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
