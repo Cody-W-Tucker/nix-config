@@ -17,7 +17,7 @@
     ./excalidraw.nix
     ./homepage-dashboard.nix
     ./karakeep.nix
-    ./litellm.nix
+    ./litellm
     ./mealie.nix
     ./media
     ./monitoring.nix

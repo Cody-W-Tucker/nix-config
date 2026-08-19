@@ -8,19 +8,16 @@
 
 let
   yaml = pkgs.formats.yaml { };
+  litellmModels = import ./models.nix;
 
   # LiteLLM proxy configuration — generated into the store.
-  # No provider keys, no master key, no database URL land in the
-  # Nix store; those are loaded at runtime from SOPS env files.
   litellmConfig = yaml.generate "litellm-config.yaml" {
-    model_list = [
-      {
-        model_name = "gpt-5.5";
-        litellm_params = {
-          model = "chatgpt/gpt-5.5";
-        };
-      }
-    ];
+    model_list = map (id: {
+      model_name = id;
+      litellm_params = {
+        model = "chatgpt/${id}";
+      };
+    }) litellmModels;
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
       database_url = "os.environ/DATABASE_URL";

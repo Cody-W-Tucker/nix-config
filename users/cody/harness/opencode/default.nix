@@ -8,6 +8,7 @@
 let
   inherit (inputs.cognitive-assistant.lib.artifacts.alignment) translationLayer;
   skillNames = inputs.cognitive-assistant.lib.artifacts.skills.names;
+  litellmModels = import ../../../../modules/nas/litellm/models.nix;
 in
 {
   imports = [
@@ -66,6 +67,18 @@ in
               command = [ "${lib.getExe pkgs.nixfmt}" ];
             };
           };
+        };
+      };
+      # ── Self-hosted LiteLLM proxy ─────────────────────────────
+      # OpenAI-compatible endpoint (modules/nas/litellm) at
+      # ai.homehub.tv/v1. Model IDs come from the shared source of
+      # truth; OpenCode manages the LiteLLM virtual key client-side
+      # (no api-key declared here).
+      provider = {
+        litellm = {
+          type = "openai-compatible";
+          "base-url" = "https://ai.homehub.tv/v1";
+          models = map (id: { id = id; }) litellmModels;
         };
       };
     };
