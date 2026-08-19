@@ -8,19 +8,53 @@
 
 let
   yaml = pkgs.formats.yaml { };
+  litellmModels = import ./models.nix;
 
-  # LiteLLM proxy configuration — generated into the store.
-  # No provider keys, no master key, no database URL land in the
-  # Nix store; those are loaded at runtime from SOPS env files.
-  litellmConfig = yaml.generate "litellm-config.yaml" {
-    model_list = [
+  # OpenCode Go upstream models. LiteLLM routes these to the hosted
+  # opencode.ai/zen/go API instead of ChatGPT. The upstream API shape
+  # selects the provider adapter, which appends its own request path:
+  #   - anthropic → /v1/messages
+  #   - openai    → /v1/chat/completions
+  # Auth is supplied at runtime via OPENCODE_GO_API_KEY in litellm-env.
+  opencodeGoModels = {
+    "hy3" = {
+      provider = "openai";
+      api_base = "https://opencode.ai/zen/go/v1";
+      mode = "chat";
+    };
+  };
+
+  mkModelEntry =
+    id:
+    if builtins.hasAttr id opencodeGoModels then
+      let
+        cfg = opencodeGoModels.${id};
+      in
       {
-        model_name = "gpt-5.5";
+        model_name = id;
         litellm_params = {
-          model = "chatgpt/gpt-5.5";
+          model = "${cfg.provider}/${id}";
+          api_base = cfg.api_base;
+          api_key = "os.environ/OPENCODE_GO_API_KEY";
+        };
+        model_info = {
+          mode = cfg.mode;
         };
       }
-    ];
+    else
+      {
+        model_name = id;
+        litellm_params = {
+          model = "chatgpt/${id}";
+        };
+        model_info = {
+          mode = "responses";
+        };
+      };
+
+  # LiteLLM proxy configuration — generated into the store.
+  litellmConfig = yaml.generate "litellm-config.yaml" {
+    model_list = map mkModelEntry litellmModels;
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
       database_url = "os.environ/DATABASE_URL";
@@ -124,8 +158,13 @@ in
     # from databaseEnvFile to the local `litellm` role.
     manageLocalPostgresql = true;
     databaseEnvFile = config.sops.secrets."litellm-database-env".path;
+    # OPENCODE_GO_API_KEY is sourced from the canonical `opencode-api-key`
+    # secret (same source Hermes uses) so the hy3 model actually receives
+    # an auth token. `litellm-env` stays the general env file; this is
+    # additive and does not touch whatever else `litellm-env` provides.
     envFiles = [
       config.sops.secrets."litellm-env".path
+      config.sops.templates."opencode-go-api-key-env".path
     ];
     extraEnvironment = {
       STORE_PROMPTS_IN_SPEND_LOGS = "true";
@@ -135,6 +174,15 @@ in
   # ── SOPS secrets ──────────────────────────────────────────────
   sops.secrets."litellm-env" = { };
   sops.secrets."litellm-database-env" = { };
+
+  # Auth for the opencode.ai/zen/go upstream (hy3). Derived from the
+  # same `opencode-api-key` secret Hermes uses, rendered into its own
+  # env file so LiteLLM receives OPENCODE_GO_API_KEY by name.
+  sops.templates."opencode-go-api-key-env" = {
+    content = ''
+      OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
+    '';
+  };
 
   # ── Reverse proxy ─────────────────────────────────────────────
   # ai.homehub.tv → LiteLLM upstream on 127.0.0.1:8090.
