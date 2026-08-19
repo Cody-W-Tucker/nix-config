@@ -76,9 +76,20 @@ in
       # (no api-key declared here).
       provider = {
         litellm = {
-          type = "openai-compatible";
-          "base-url" = "https://ai.homehub.tv/v1";
-          models = map (id: { id = id; }) litellmModels;
+          npm = "@ai-sdk/openai-compatible";
+          name = "litellm";
+          options = {
+            baseURL = "https://ai.homehub.tv/v1";
+          };
+          # Model IDs sourced once from the shared catalog.
+          models = builtins.listToAttrs (
+            map (id: {
+              name = id;
+              value = {
+                name = id;
+              };
+            }) litellmModels
+          );
         };
       };
     };
