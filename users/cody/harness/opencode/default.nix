@@ -21,7 +21,7 @@ in
     ./skills/cognitive
     ./tools/model-router
     ./tools/rtk
-    ./mcp/mealie
+    # ./mcp/mealie
   ];
 
   programs.opencode = {
