@@ -18,6 +18,7 @@
     ./homepage-dashboard.nix
     ./karakeep.nix
     ./litellm.nix
+    ./mealie.nix
     ./media
     ./monitoring.nix
     ./nfs.nix
