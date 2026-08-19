@@ -172,6 +172,13 @@ in
                 description = "LLM Model Router";
               };
             }
+            {
+              LiteLLM = {
+                href = "https://ai.${domain}/ui";
+                icon = "litellm";
+                description = "LLM Gateway";
+              };
+            }
           ];
         }
         {
