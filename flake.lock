@@ -881,6 +881,23 @@
         "type": "github"
       }
     },
+    "pythia": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784286398,
+        "narHash": "sha256-9Phne1lwcqPmmaGGAd+p3j2QsvkeKMigc1Y4d7qg4r8=",
+        "owner": "jangles-byte",
+        "repo": "Pythia",
+        "rev": "ab81a7dfb0840de3bea97e5f6032702db0b1aa45",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jangles-byte",
+        "repo": "Pythia",
+        "rev": "ab81a7dfb0840de3bea97e5f6032702db0b1aa45",
+        "type": "github"
+      }
+    },
     "rlm": {
       "inputs": {
         "nixpkgs": "nixpkgs_2"
@@ -935,6 +952,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nixvim-stable": "nixvim-stable",
+        "pythia": "pythia",
         "rlm": "rlm_2",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
