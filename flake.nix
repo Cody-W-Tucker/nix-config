@@ -102,6 +102,19 @@
       url = "github:mulatta/buzz.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pythia = {
+      # PYTHIA oracle engine source (backend only; pinned to the requested commit).
+      url = "github:jangles-byte/Pythia?rev=ab81a7dfb0840de3bea97e5f6032702db0b1aa45";
+      flake = false;
+    };
+
+    osiris = {
+      # Osiris dashboard source — the base frontend + API routes that the
+      # Pythia integrations/osiris overlay extends. Pinned to the requested
+      # commit (deterministic overlay application at build time).
+      url = "github:simplifaisoul/osiris?rev=330efa187fa2e4843a8d5d100e16833d89fd7b4b";
+      flake = false;
+    };
   };
 
   outputs =
@@ -134,6 +147,14 @@
           };
           modules = [ ./hosts/nas ];
         };
+      };
+
+      # Standalone build target for the Osiris dashboard package (so the
+      # package can be built/verified without rebuilding the whole system).
+      packages.x86_64-linux.osiris-dashboard = import ./modules/nas/osiris/package.nix {
+        inherit (inputs.nixpkgs) lib;
+        pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+        inherit inputs;
       };
     };
 }

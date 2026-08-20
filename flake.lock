@@ -831,6 +831,23 @@
         "type": "github"
       }
     },
+    "osiris": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787158375,
+        "narHash": "sha256-OO/74MffhlovnuEFGT2dqfuaCW30WwSY0wF17dOn1gQ=",
+        "owner": "simplifaisoul",
+        "repo": "osiris",
+        "rev": "330efa187fa2e4843a8d5d100e16833d89fd7b4b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "simplifaisoul",
+        "repo": "osiris",
+        "rev": "330efa187fa2e4843a8d5d100e16833d89fd7b4b",
+        "type": "github"
+      }
+    },
     "pyproject-build-systems": {
       "inputs": {
         "nixpkgs": [
@@ -878,6 +895,23 @@
       "original": {
         "owner": "pyproject-nix",
         "repo": "pyproject.nix",
+        "type": "github"
+      }
+    },
+    "pythia": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784286398,
+        "narHash": "sha256-9Phne1lwcqPmmaGGAd+p3j2QsvkeKMigc1Y4d7qg4r8=",
+        "owner": "jangles-byte",
+        "repo": "Pythia",
+        "rev": "ab81a7dfb0840de3bea97e5f6032702db0b1aa45",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jangles-byte",
+        "repo": "Pythia",
+        "rev": "ab81a7dfb0840de3bea97e5f6032702db0b1aa45",
         "type": "github"
       }
     },
@@ -935,6 +969,8 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nixvim-stable": "nixvim-stable",
+        "osiris": "osiris",
+        "pythia": "pythia",
         "rlm": "rlm_2",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
