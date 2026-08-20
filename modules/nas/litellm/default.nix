@@ -9,6 +9,13 @@
 let
   yaml = pkgs.formats.yaml { };
   litellmModels = import ./models.nix;
+  openTelemetryPython = config.services.litellm-nix.package.python.withPackages (
+    pythonPackages: with pythonPackages; [
+      opentelemetry-api
+      opentelemetry-sdk
+      opentelemetry-exporter-otlp-proto-http
+    ]
+  );
 
   # OpenCode Go upstream models. LiteLLM routes these to the hosted
   # opencode.ai/zen/go API instead of ChatGPT. The upstream API shape
@@ -85,11 +92,10 @@ let
       # Drop unrecognized provider params rather than failing.
       drop_params = true;
       additional_drop_params = [ "previous_response_id" ]; # litellm doesn't handle this.
-      # Langfuse tracing (self-hosted). Credentials come from the
-      # `litellm-langfuse-env` SOPS secret; the host is set non-secret
-      # below because it is internal infrastructure, not a credential.
-      success_callback = [ "langfuse" ];
-      failure_callback = [ "langfuse" ];
+      # OpenTelemetry is Langfuse's current ingestion path. The legacy
+      # `langfuse` callback uses an obsolete event API rejected by Langfuse v4.
+      success_callback = [ "langfuse_otel" ];
+      failure_callback = [ "langfuse_otel" ];
     };
   };
 in
@@ -196,10 +202,15 @@ in
     ];
     extraEnvironment = {
       STORE_PROMPTS_IN_SPEND_LOGS = "true";
+      # `langfuse_otel` is an optional LiteLLM integration, so include its
+      # OpenTelemetry runtime alongside LiteLLM's packaged interpreter.
+      PYTHONPATH = "${openTelemetryPython}/${openTelemetryPython.sitePackages}";
       # Internal Langfuse endpoint. LiteLLM runs on the host; the Langfuse
       # web container publishes to the host loopback at 127.0.0.1:3000, so
       # this is the directly routable internal URL (no DNS/TLS dependency).
       LANGFUSE_HOST = "http://127.0.0.1:3000";
+      LANGFUSE_OTEL_HOST = "http://127.0.0.1:3000";
+      LANGFUSE_TRACING_ENVIRONMENT = "production";
     };
   };
 
