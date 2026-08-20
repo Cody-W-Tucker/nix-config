@@ -192,21 +192,31 @@ rep(
 
       <CreditsModal open={showCredits} onClose={() => setShowCredits(false)} />
 
-      <FloatingWindow kind="filings" open={win === 'filings'} onClose={() => setWin(null)}>
-        <FilingsWindow />
-      </FloatingWindow>
-      <FloatingWindow kind="contracts" open={win === 'contracts'} onClose={() => setWin(null)}>
-        <ContractsWindow />
-      </FloatingWindow>
-      <FloatingWindow kind="feeds" open={win === 'feeds'} onClose={() => setWin(null)}>
-        <FeedsWindow />
-      </FloatingWindow>
-      <FloatingWindow kind="ticker" open={win === 'ticker'} onClose={() => setWin(null)}>
-        <TickerWindow />
-      </FloatingWindow>
-      <FloatingWindow kind="satellite" open={win === 'satellite'} onClose={() => setWin(null)}>
-        <SatelliteView />
-      </FloatingWindow>
+      {win === 'filings' && (
+        <FloatingWindow kind="filings" onClose={() => setWin(null)}>
+          <FilingsWindow />
+        </FloatingWindow>
+      )}
+      {win === 'contracts' && (
+        <FloatingWindow kind="contracts" onClose={() => setWin(null)}>
+          <ContractsWindow />
+        </FloatingWindow>
+      )}
+      {win === 'feeds' && (
+        <FloatingWindow kind="feeds" onClose={() => setWin(null)}>
+          <FeedsWindow />
+        </FloatingWindow>
+      )}
+      {win === 'ticker' && (
+        <FloatingWindow kind="ticker" onClose={() => setWin(null)}>
+          <TickerWindow />
+        </FloatingWindow>
+      )}
+      {win === 'satellite' && (
+        <FloatingWindow kind="satellite" onClose={() => setWin(null)}>
+          <SatelliteView />
+        </FloatingWindow>
+      )}
 
       {/* ── OVERLAYS ── */}""",
 )
