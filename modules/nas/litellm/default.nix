@@ -9,8 +9,40 @@
 let
   yaml = pkgs.formats.yaml { };
   litellmModels = import ./models.nix;
+  # LiteLLM's `langfuse` callback uses the Langfuse v2 API, including the
+  # `sdk_integration` constructor argument removed in v3.
+  langfuseV2 =
+    pythonPackages:
+    let
+      pname = "langfuse";
+      version = "2.59.7";
+    in
+    pythonPackages.buildPythonPackage {
+      inherit pname version;
+      pyproject = true;
+      src = pythonPackages.fetchPypi {
+        inherit pname version;
+        hash = "sha256-9jGYFwUXe/U9Aw0ZE5fam4ZLmXKacnNEiv7RDXb3jiM=";
+      };
+      # The v2 release predates packaging 26; its declared <25 upper bound
+      # rejects the compatible packaging 26.2 in LiteLLM's Python package set.
+      postPatch = ''
+        substituteInPlace pyproject.toml --replace-fail '<25.0' '<27.0'
+      '';
+      build-system = [ pythonPackages."poetry-core" ];
+      dependencies = with pythonPackages; [
+        anyio
+        backoff
+        httpx
+        idna
+        packaging
+        pydantic
+        requests
+        wrapt
+      ];
+    };
   langfusePython = config.services.litellm-nix.package.python.withPackages (pythonPackages: [
-    pythonPackages.langfuse
+    (langfuseV2 pythonPackages)
   ]);
 
   # OpenCode Go upstream models. LiteLLM routes these to the hosted
