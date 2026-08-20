@@ -831,6 +831,23 @@
         "type": "github"
       }
     },
+    "osiris": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787158375,
+        "narHash": "sha256-OO/74MffhlovnuEFGT2dqfuaCW30WwSY0wF17dOn1gQ=",
+        "owner": "simplifaisoul",
+        "repo": "osiris",
+        "rev": "330efa187fa2e4843a8d5d100e16833d89fd7b4b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "simplifaisoul",
+        "repo": "osiris",
+        "rev": "330efa187fa2e4843a8d5d100e16833d89fd7b4b",
+        "type": "github"
+      }
+    },
     "pyproject-build-systems": {
       "inputs": {
         "nixpkgs": [
@@ -952,6 +969,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nixvim-stable": "nixvim-stable",
+        "osiris": "osiris",
         "pythia": "pythia",
         "rlm": "rlm_2",
         "sops-nix": "sops-nix",

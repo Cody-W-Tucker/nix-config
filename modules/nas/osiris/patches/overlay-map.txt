@@ -1,0 +1,79 @@
+# Pythia integrations/osiris overlay → Osiris source mapping.
+# Format: <path relative to integrations/osiris> <path relative to Osiris src root>
+# Consumed by modules/nas/osiris/package.nix prePatch copy loop.
+
+# ── Components (→ src/components) ──
+PanelModal.tsx src/components/PanelModal.tsx
+PythiaPanel.tsx src/components/PythiaPanel.tsx
+DeliberationModal.tsx src/components/DeliberationModal.tsx
+PythiaStatus.tsx src/components/PythiaStatus.tsx
+SwarmConfig.tsx src/components/SwarmConfig.tsx
+WhatIfPanel.tsx src/components/WhatIfPanel.tsx
+CouncilChamber.tsx src/components/CouncilChamber.tsx
+ForecastCalendar.tsx src/components/ForecastCalendar.tsx
+ScorecardPanel.tsx src/components/ScorecardPanel.tsx
+LiveAlerts.tsx src/components/LiveAlerts.tsx
+CreditsModal.tsx src/components/CreditsModal.tsx
+FloatingWindow.tsx src/components/FloatingWindow.tsx
+ChatBox.tsx src/components/ChatBox.tsx
+SplashScreen.tsx src/components/SplashScreen.tsx
+SignalRules.tsx src/components/SignalRules.tsx
+SignalNotifier.tsx src/components/SignalNotifier.tsx
+BriefPanel.tsx src/components/BriefPanel.tsx
+TickerWindow.tsx src/components/TickerWindow.tsx
+PatchPanel.tsx src/components/PatchPanel.tsx
+RadarStrip.tsx src/components/RadarStrip.tsx
+HeadlineTicker.tsx src/components/HeadlineTicker.tsx
+MarketTicker.tsx src/components/MarketTicker.tsx
+MarketsPanel.tsx src/components/MarketsPanel.tsx
+GlobalHealthScore.tsx src/components/GlobalHealthScore.tsx
+CamsNearby.tsx src/components/CamsNearby.tsx
+SatelliteView.tsx src/components/SatelliteView.tsx
+FilingsWindow.tsx src/components/FilingsWindow.tsx
+FeedsWindow.tsx src/components/FeedsWindow.tsx
+ContractsWindow.tsx src/components/ContractsWindow.tsx
+
+# ── lib (→ src/lib) ──
+lib/shareCard.ts src/lib/shareCard.ts
+lib/countryCentroids.ts src/lib/countryCentroids.ts
+
+# ── API routes (→ src/app/api/<dest>/route.ts) ──
+routes/kev-route.ts src/app/api/kev/route.ts
+routes/faa-route.ts src/app/api/faa-status/route.ts
+routes/engine-proxy-route.ts src/app/api/engine/[...path]/route.ts
+routes/cams-route.ts src/app/api/cams/route.ts
+routes/edgar-route.ts src/app/api/edgar/route.ts
+routes/usaspending-route.ts src/app/api/usaspending/route.ts
+routes/kalshi-route.ts src/app/api/kalshi/route.ts
+routes/grid-route.ts src/app/api/grid/route.ts
+routes/wastewater-route.ts src/app/api/wastewater/route.ts
+routes/climate-route.ts src/app/api/climate/route.ts
+routes/geohazards-route.ts src/app/api/geohazards/route.ts
+routes/ofac-route.ts src/app/api/ofac/route.ts
+routes/hackernews-route.ts src/app/api/hackernews/route.ts
+routes/balloons-route.ts src/app/api/balloons/route.ts
+routes/radiation-route.ts src/app/api/radiation/route.ts
+routes/planet-vitals-route.ts src/app/api/planet-vitals/route.ts
+routes/quotes-route.ts src/app/api/quotes/route.ts
+routes/polymarket-route.ts src/app/api/polymarket/route.ts
+routes/futures-route.ts src/app/api/futures/route.ts
+routes/gdacs-alerts-route.ts src/app/api/gdacs-alerts/route.ts
+routes/hurricanes-route.ts src/app/api/hurricanes/route.ts
+routes/flood-outlook-route.ts src/app/api/flood-outlook/route.ts
+routes/wiki-attention-route.ts src/app/api/wiki-attention/route.ts
+routes/manifold-route.ts src/app/api/manifold/route.ts
+routes/ioda-route.ts src/app/api/ioda/route.ts
+routes/nws-alerts-route.ts src/app/api/nws-alerts/route.ts
+routes/frontlines-route.ts src/app/api/frontlines/route.ts
+routes/displacement-route.ts src/app/api/displacement/route.ts
+routes/economy-route.ts src/app/api/economy/route.ts
+routes/censorship-route.ts src/app/api/censorship/route.ts
+routes/health-outbreaks-route.ts src/app/api/health-outbreaks/route.ts
+routes/unrest-route.ts src/app/api/unrest/route.ts
+routes/food-security-route.ts src/app/api/food-security/route.ts
+routes/unemployment-route.ts src/app/api/unemployment/route.ts
+routes/gdp-growth-route.ts src/app/api/gdp-growth/route.ts
+routes/poverty-route.ts src/app/api/poverty/route.ts
+
+# ── TV display mode (→ src/app/tv/page.tsx) ──
+tv-page.tsx src/app/tv/page.tsx

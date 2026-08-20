@@ -26,6 +26,7 @@
     ./paperless.nix
     ./paperless-gpt.nix
     ./pythia
+    ./osiris
     ./photos.nix
     ./samba.nix
     ./security.nix

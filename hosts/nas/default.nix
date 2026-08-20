@@ -24,6 +24,10 @@
 
   services.opencode.enable = true;
 
+  # Osiris dashboard (Pythia oracle overlay). Enabling it also flips
+  # services.pythia.osirisUrl so the engine fuses world feeds from Osiris.
+  services.osiris.enable = true;
+
   # Bootloader.
   boot = {
     initrd.availableKernelModules = [
