@@ -17,6 +17,7 @@
     ./excalidraw.nix
     ./homepage-dashboard.nix
     ./karakeep.nix
+    ./langfuse
     ./litellm
     ./mealie.nix
     ./media

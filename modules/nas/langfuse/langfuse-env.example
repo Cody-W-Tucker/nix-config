@@ -1,0 +1,46 @@
+# Langfuse shared environment file (SOPS secret: langfuse-env)
+#
+# This is a TEMPLATE only. Fill real values with your sops workflow, e.g.:
+#   sops edit <secrets-repo>/langfuse-env.env
+# then ensure the secret is registered for the `nas` host in the private
+# secrets repo's .sops.yaml recipients. The decrypted file is injected as
+# --env-file into all six Langfuse containers by modules/nas/langfuse/default.nix.
+#
+# EVERY value below is a SECRET and must NOT be committed. The tracked copy is
+# this .example file with placeholders.
+#
+# NOTE: NEXTAUTH_URL is intentionally NOT here — it is non-secret and lives
+# declaratively in modules/nas/langfuse/default.nix (commonEnv) so web and
+# worker always agree and no key is shared between `environment` and the
+# env file.
+#
+# Generation helpers:
+#   SALT / ENCRYPTION_KEY / NEXTAUTH_SECRET : openssl rand -hex 32
+#   (ENCRYPTION_KEY must be exactly 64 hex characters)
+#   POSTGRES_PASSWORD / CLICKHOUSE_PASSWORD / MINIO_ROOT_PASSWORD / REDIS_AUTH :
+#   use a long random string; the three MinIO S3 secret keys are typically the
+#   same value as MINIO_ROOT_PASSWORD.
+
+# Postgres
+POSTGRES_PASSWORD=CHANGEME_strong_postgres_password
+DATABASE_URL=postgresql://postgres:CHANGEME_strong_postgres_password@postgres:5432/postgres
+
+# Langfuse application secrets
+SALT=CHANGEME_openssl_rand_hex_32
+ENCRYPTION_KEY=CHANGEME_64_hex_chars_from_openssl_rand_hex_32
+NEXTAUTH_SECRET=CHANGEME_openssl_rand_hex_32
+
+# ClickHouse
+CLICKHOUSE_PASSWORD=CHANGEME_strong_clickhouse_password
+
+# MinIO (object storage)
+MINIO_ROOT_USER=minio
+MINIO_ROOT_PASSWORD=CHANGEME_strong_minio_password
+
+# MinIO secret access keys (referenced by Langfuse S3 configuration)
+LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY=CHANGEME_same_as_minio_password
+LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY=CHANGEME_same_as_minio_password
+LANGFUSE_S3_BATCH_EXPORT_SECRET_ACCESS_KEY=CHANGEME_same_as_minio_password
+
+# Redis
+REDIS_AUTH=CHANGEME_strong_redis_password
