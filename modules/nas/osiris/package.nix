@@ -135,6 +135,15 @@ pkgs.buildNpmPackage {
         substituteInPlace src/app/page.tsx \
           --replace 'className="desktop-only absolute bottom-8 z-[200] pointer-events-auto"' \
                     'className="desktop-only absolute md:bottom-[88px] z-[200] pointer-events-auto"'
+
+        # 6) Global Health panel (top-left overlay copied from Pythia,
+        #    GlobalHealthScore.tsx) is `fixed ... left-3`, which overlaps the
+        #    48px desktop sidebar. Desktop-only override pushes it clear of the
+        #    sidebar (md:left-[60px]) while keeping mobile left-3 and the
+        #    existing top/z/width styles untouched.
+        substituteInPlace src/components/GlobalHealthScore.tsx \
+          --replace 'className="fixed z-[300] top-[104px] left-3 w-[172px] font-mono"' \
+                    'className="fixed z-[300] top-[104px] left-3 md:left-[60px] w-[172px] font-mono"'
   '';
 
   # Next.js build must not phone home for telemetry.
