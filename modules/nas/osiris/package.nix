@@ -85,7 +85,17 @@ pkgs.buildNpmPackage {
           patch -p1 --no-backup-if-mismatch < ${patchDir}/$p.patch
         done
 
-        # 3) page.tsx wiring (imports, state, theme persistence, engine fetch,
+        # 3) Entity graph intelligence-layer fix (root cause): the base Osiris
+        #    route proxies to a standalone `osiris-intel` service that is not
+        #    part of this Nix/Pythia deployment, so the Graph panel returned
+        #    502 "Intelligence layer unavailable". Replace it with a version
+        #    that resolves through the local Pythia engine (PYTHIA_ENGINE_URL)
+        #    by default and only uses a standalone INTEL_URL when one is set.
+        echo "  patch: entity-expand route"
+        cp -f --no-preserve=mode ${patchDir}/entity-expand.route.ts \
+          src/app/api/entity/expand/route.ts
+
+        # 3b) page.tsx wiring (imports, state, theme persistence, engine fetch,
         #    deck/tickers/floating-window mounts) — applied via a script so a
         #    missed anchor fails the build loudly instead of silently.
         echo "  patch: page"
