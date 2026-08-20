@@ -114,6 +114,27 @@ pkgs.buildNpmPackage {
         body.theme-light .glass-panel, body.theme-light .glass-panel-sm { background: rgba(255,255,255,0.7); color: #0b1020; }
         .pythia-ticker-bg { background: linear-gradient(90deg, rgba(212,175,55,0.08), transparent); }
     CSS
+
+        # ── Osiris desktop layout fix (source of truth: durable, pre-build) ──
+        # Root cause: the Pythia overlay tickers (HeadlineTicker/MarketTicker) are
+        # full-width `left-0`, but the base Osiris sidebar reserves 48px at left, so
+        # the tickers underlap the sidebar on desktop. The base page control
+        # (`desktop-only absolute bottom-8 z-[200]`) sits at 32px, colliding with the
+        # 56px stacked ticker band (headline bottom-0/h-30px + market bottom-30px/h-26px).
+        # Both fixes are desktop-only so mobile (where tickers/control are hidden) is
+        # untouched, and neither changes the control's z-index.
+        substituteInPlace src/components/HeadlineTicker.tsx \
+          --replace 'className="hidden md:block absolute bottom-0 left-0 right-0 z-[199] pointer-events-none"' \
+                    'className="hidden md:block absolute bottom-0 left-0 md:left-[48px] right-0 z-[199] pointer-events-none"'
+        substituteInPlace src/components/MarketTicker.tsx \
+          --replace 'className="hidden md:block absolute bottom-[30px] left-0 right-0 z-[199] pointer-events-none"' \
+                    'className="hidden md:block absolute bottom-[30px] left-0 md:left-[48px] right-0 z-[199] pointer-events-none"'
+
+        # Raise the base control by the full stacked-ticker height (56px): 32px + 56px
+        # = 88px, preserving its original 32px clearance above the stack on desktop.
+        substituteInPlace src/app/page.tsx \
+          --replace 'className="desktop-only absolute bottom-8 z-[200] pointer-events-auto"' \
+                    'className="desktop-only absolute md:bottom-[88px] z-[200] pointer-events-auto"'
   '';
 
   # Next.js build must not phone home for telemetry.
