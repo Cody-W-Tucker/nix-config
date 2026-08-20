@@ -9,6 +9,9 @@
 let
   yaml = pkgs.formats.yaml { };
   litellmModels = import ./models.nix;
+  langfusePython = config.services.litellm-nix.package.python.withPackages (pythonPackages: [
+    pythonPackages.langfuse
+  ]);
 
   # OpenCode Go upstream models. LiteLLM routes these to the hosted
   # opencode.ai/zen/go API instead of ChatGPT. The upstream API shape
@@ -196,6 +199,9 @@ in
     ];
     extraEnvironment = {
       STORE_PROMPTS_IN_SPEND_LOGS = "true";
+      # The upstream LiteLLM package omits optional callback integrations.
+      # Add Langfuse and its propagated dependencies to the service interpreter.
+      PYTHONPATH = "${langfusePython}/${langfusePython.sitePackages}";
       # Internal Langfuse endpoint. LiteLLM runs on the host; the Langfuse
       # web container publishes to the host loopback at 127.0.0.1:3000, so
       # this is the directly routable internal URL (no DNS/TLS dependency).
