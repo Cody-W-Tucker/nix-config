@@ -9,41 +9,6 @@
 let
   yaml = pkgs.formats.yaml { };
   litellmModels = import ./models.nix;
-  # LiteLLM's `langfuse` callback uses the Langfuse v2 API, including the
-  # `sdk_integration` constructor argument removed in v3.
-  langfuseV2 =
-    pythonPackages:
-    let
-      pname = "langfuse";
-      version = "2.59.7";
-    in
-    pythonPackages.buildPythonPackage {
-      inherit pname version;
-      pyproject = true;
-      src = pythonPackages.fetchPypi {
-        inherit pname version;
-        hash = "sha256-9jGYFwUXe/U9Aw0ZE5fam4ZLmXKacnNEiv7RDXb3jiM=";
-      };
-      # The v2 release predates packaging 26; its declared <25 upper bound
-      # rejects the compatible packaging 26.2 in LiteLLM's Python package set.
-      postPatch = ''
-        substituteInPlace pyproject.toml --replace-fail '<25.0' '<27.0'
-      '';
-      build-system = [ pythonPackages."poetry-core" ];
-      dependencies = with pythonPackages; [
-        anyio
-        backoff
-        httpx
-        idna
-        packaging
-        pydantic
-        requests
-        wrapt
-      ];
-    };
-  langfusePython = config.services.litellm-nix.package.python.withPackages (pythonPackages: [
-    (langfuseV2 pythonPackages)
-  ]);
 
   # OpenCode Go upstream models. LiteLLM routes these to the hosted
   # opencode.ai/zen/go API instead of ChatGPT. The upstream API shape
@@ -120,11 +85,10 @@ let
       # Drop unrecognized provider params rather than failing.
       drop_params = true;
       additional_drop_params = [ "previous_response_id" ]; # litellm doesn't handle this.
-      # Langfuse tracing (self-hosted). Credentials come from the
-      # `litellm-langfuse-env` SOPS secret; the host is set non-secret
-      # below because it is internal infrastructure, not a credential.
-      success_callback = [ "langfuse" ];
-      failure_callback = [ "langfuse" ];
+      # OpenTelemetry is Langfuse's current ingestion path. The legacy
+      # `langfuse` callback uses an obsolete event API rejected by Langfuse v4.
+      success_callback = [ "langfuse_otel" ];
+      failure_callback = [ "langfuse_otel" ];
     };
   };
 in
@@ -231,13 +195,12 @@ in
     ];
     extraEnvironment = {
       STORE_PROMPTS_IN_SPEND_LOGS = "true";
-      # The upstream LiteLLM package omits optional callback integrations.
-      # Add Langfuse and its propagated dependencies to the service interpreter.
-      PYTHONPATH = "${langfusePython}/${langfusePython.sitePackages}";
       # Internal Langfuse endpoint. LiteLLM runs on the host; the Langfuse
       # web container publishes to the host loopback at 127.0.0.1:3000, so
       # this is the directly routable internal URL (no DNS/TLS dependency).
       LANGFUSE_HOST = "http://127.0.0.1:3000";
+      LANGFUSE_OTEL_HOST = "http://127.0.0.1:3000";
+      LANGFUSE_TRACING_ENVIRONMENT = "production";
     };
   };
 
