@@ -53,6 +53,11 @@ in
         User = "osiris";
         Group = "osiris";
         StateDirectory = "osiris";
+        # Writable cache dir for Next's runtime cache (.next/cache). Created on
+        # service start, owned by the osiris user; the built server symlinks
+        # .next/cache -> /var/cache/osiris so the read-only store is never written.
+        CacheDirectory = "osiris";
+        CacheDirectoryMode = "0750";
         WorkingDirectory = "/var/lib/osiris";
         ExecStart = "${pkgs.nodejs_22}/bin/node ${pkg}/server.js";
         Restart = "on-failure";
@@ -87,7 +92,10 @@ in
         LockPersonality = true;
         # Node needs to exec + map; it writes only under StateDirectory.
         MemoryDenyWriteExecute = false;
-        ReadWritePaths = [ "/var/lib/osiris" ];
+        ReadWritePaths = [
+          "/var/lib/osiris"
+          "/var/cache/osiris"
+        ];
       };
     };
 

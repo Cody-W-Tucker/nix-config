@@ -44,7 +44,9 @@ pkgs.buildNpmPackage {
             \#*) continue ;;
           esac
           mkdir -p "$(dirname "$dest")"
-          cp -f "${pythiaOverlay}/$rel" "$dest"
+          # Copy without preserving the (read-only) Nix store source mode so the
+          # overlay files can be patched/edited later in prePatch (FloatingWindow).
+          cp -f --no-preserve=mode "${pythiaOverlay}/$rel" "$dest"
         done < ${overlayMap}
 
         # 1b) Osiris ships CRLF source; normalize to LF so the LF patches and the
@@ -89,6 +91,12 @@ pkgs.buildNpmPackage {
         echo "  patch: page"
         ${pkgs.python3}/bin/python3 ${patchDir}/apply-page.py
 
+        # 3b) FloatingWindow: make its geometry (`initial`) optional with a
+        #     component-level default so the five dashboard mounts that omit it
+        #     never crash on initial.x / initial.y / initial.w / initial.h.
+        echo "  patch: floatingwindow"
+        ${pkgs.python3}/bin/python3 ${patchDir}/floatingwindow.py
+
         # 4) markets route: drop the fake browser User-Agent (Yahoo 429s it).
         substituteInPlace src/app/api/markets/route.ts \
           --replace "const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';" \
@@ -114,10 +122,18 @@ pkgs.buildNpmPackage {
   # ── Install the Next standalone server + assets ──
   installPhase = ''
     mkdir -p $out
-    cp -r .next/standalone/. $out/
     mkdir -p $out/.next
+    cp -r .next/standalone/. $out/
     cp -r .next/static $out/.next/static
     cp -r public $out/public
+
+    # Route Next's runtime cache (.next/cache) to a writable systemd cache dir.
+    # The standalone server computes its cache dir as <distDir>/cache, i.e.
+    # .next/cache, which would otherwise land in the read-only Nix store and
+    # fail at runtime (ENOTDIR/ENOENT on every fetch-cache write). Symlink it to
+    # /var/cache/osiris (created writable by systemd CacheDirectory below) so
+    # store immutability is preserved.
+    ln -sfn /var/cache/osiris "$out/.next/cache"
 
     if [ ! -e "$out/server.js" ]; then
       echo "ERROR: expected $out/server.js from next standalone build" >&2
