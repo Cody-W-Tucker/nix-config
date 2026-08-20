@@ -85,6 +85,11 @@ let
       # Drop unrecognized provider params rather than failing.
       drop_params = true;
       additional_drop_params = [ "previous_response_id" ]; # litellm doesn't handle this.
+      # Langfuse tracing (self-hosted). Credentials come from the
+      # `litellm-langfuse-env` SOPS secret; the host is set non-secret
+      # below because it is internal infrastructure, not a credential.
+      success_callback = [ "langfuse" ];
+      failure_callback = [ "langfuse" ];
     };
   };
 in
@@ -186,16 +191,30 @@ in
     # additive and does not touch whatever else `litellm-env` provides.
     envFiles = [
       config.sops.secrets."litellm-env".path
+      config.sops.secrets."litellm-langfuse-env".path
       config.sops.templates."opencode-go-api-key-env".path
     ];
     extraEnvironment = {
       STORE_PROMPTS_IN_SPEND_LOGS = "true";
+      # Internal Langfuse endpoint. LiteLLM runs on the host; the Langfuse
+      # web container publishes to the host loopback at 127.0.0.1:3000, so
+      # this is the directly routable internal URL (no DNS/TLS dependency).
+      LANGFUSE_HOST = "http://127.0.0.1:3000";
     };
   };
 
   # ── SOPS secrets ──────────────────────────────────────────────
   sops.secrets."litellm-env" = { };
   sops.secrets."litellm-database-env" = { };
+
+  # Langfuse project credentials for LiteLLM tracing. Raw env-file secret
+  # (same shape as `litellm-env`); the decrypted file must contain the
+  # project-scoped keys generated in the Langfuse UI (Settings → Projects):
+  #   LANGFUSE_PUBLIC_KEY=pk-lf-...
+  #   LANGFUSE_SECRET_KEY=sk-lf-...
+  # Add the secret for the `nas` host in the private secrets repo's
+  # .sops.yaml recipients, then populate it with `sops edit`.
+  sops.secrets."litellm-langfuse-env" = { };
 
   # Auth for the opencode.ai/zen/go upstream (hy3). Derived from the
   # same `opencode-api-key` secret Hermes uses, rendered into its own

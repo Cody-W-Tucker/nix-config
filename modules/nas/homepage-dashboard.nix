@@ -175,8 +175,15 @@ in
             {
               LiteLLM = {
                 href = "https://ai.${domain}/ui";
-                icon = "litellm";
+                icon = "https://ai.${domain}/ui/favicon.ico";
                 description = "LLM Gateway";
+              };
+            }
+            {
+              Langfuse = {
+                href = "https://langfuse.homehub.tv";
+                icon = "https://langfuse.${domain}/favicon.ico";
+                description = "LLM Observability";
               };
             }
           ];
