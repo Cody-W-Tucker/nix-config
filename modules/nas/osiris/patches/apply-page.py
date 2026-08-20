@@ -25,7 +25,7 @@ def rep(old, new, count=1):
 #    add exactly the icons the inserted JSX uses into the real import line.
 rep(
     "import { Layers, BarChart3, Newspaper, Search, X, Globe, MapPinned, Route, Radar, Satellite, Moon, ExternalLink, AlertTriangle, Activity, Database, Wifi, Play, Network, Crosshair, Bluetooth, Pentagon, Radio } from 'lucide-react';\n",
-    "import { Layers, BarChart3, Newspaper, Search, X, Globe, MapPinned, Route, Radar, Satellite, Moon, ExternalLink, AlertTriangle, Activity, Database, Wifi, Play, Network, Crosshair, Bluetooth, Pentagon, Radio, Eye, Landmark, Coins, MonitorPlay, Rss } from 'lucide-react';\n",
+    "import { Layers, BarChart3, Newspaper, Search, X, Globe, MapPinned, Route, Radar, Satellite, Moon, ExternalLink, AlertTriangle, Activity, Database, Wifi, Play, Network, Crosshair, Bluetooth, Pentagon, Radio, Eye, Landmark, Coins, MonitorPlay, Rss, HeartPulse } from 'lucide-react';\n",
 )
 
 # 2) Import the new Pythia components.
@@ -57,6 +57,7 @@ rep(
   const [showCredits, setShowCredits] = useState(false);
   const [win, setWin] = useState<null | 'filings' | 'contracts' | 'feeds' | 'ticker' | 'satellite'>(null);
   const [pythiaPredictions, setPythiaPredictions] = useState<any>(null);
+  const [showHealthScore, setShowHealthScore] = useState(true);
 """,
 )
 
@@ -122,10 +123,12 @@ rep(
     "      </motion.div>\n\n      <PythiaStatus />\n\n      {/* ── MOBILE: Compact top status ── */}",
 )
 
-# 8) Render the always-on Global Health Score (top-left) over the map.
+# 8) Render the dismissible Global Health Score (top-left) over the map.
+#    Default-on (showHealthScore=true) to preserve the always-mounted behavior,
+#    but closable via the panel's X and reopenable from the tool strip.
 rep(
     "      </ErrorBoundary>\n\n      {/* ── DIRECTIONS",
-    "      </ErrorBoundary>\n\n      {!isMobile && <GlobalHealthScore />}\n\n      {/* ── DIRECTIONS",
+    "      </ErrorBoundary>\n\n      {!isMobile && showHealthScore && <GlobalHealthScore onClose={() => setShowHealthScore(false)} />}\n\n      {/* ── DIRECTIONS",
 )
 
 # 9) Bottom tickers + the invisible SignalNotifier poller.
@@ -176,6 +179,15 @@ rep(
           </button>
           <span className="absolute right-11 top-1/2 -translate-y-1/2 px-2 py-1 text-[10px] font-mono tracking-wider text-white/80 bg-black/80 backdrop-blur-sm rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">DISPLAY</span>
         </div>
+
+        {!isMobile && (
+        <div className="relative group">
+          <button onClick={() => setShowHealthScore((v) => !v)} className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${showHealthScore ? 'bg-[var(--gold-primary)]/20' : 'hover:bg-white/10'}`} title="Global Health Score">
+            <HeartPulse className={`w-4 h-4 ${showHealthScore ? 'text-[var(--gold-primary)]' : 'text-white/60'}`} />
+          </button>
+          <span className="absolute right-11 top-1/2 -translate-y-1/2 px-2 py-1 text-[10px] font-mono tracking-wider text-white/80 bg-black/80 backdrop-blur-sm rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">HEALTH</span>
+        </div>
+        )}
 
         {/* Separator */}
         <div className="w-4 h-px bg-white/10 mx-auto" />

@@ -97,6 +97,14 @@ pkgs.buildNpmPackage {
         echo "  patch: floatingwindow"
         ${pkgs.python3}/bin/python3 ${patchDir}/floatingwindow.py
 
+        # 3c) GlobalHealthScore: accept an optional onClose prop and render a
+        #     small accessible dismiss (X) button, so the always-on panel can be
+        #     closed and later reopened from the tool strip without coupling to
+        #     the PYTHIA state. The desktop md:left-[60px] offset is applied
+        #     further below (step 6) and is left untouched here.
+        echo "  patch: healthscore"
+        ${pkgs.python3}/bin/python3 ${patchDir}/healthscore.py
+
         # 4) markets route: drop the fake browser User-Agent (Yahoo 429s it).
         substituteInPlace src/app/api/markets/route.ts \
           --replace "const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';" \
