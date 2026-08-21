@@ -117,7 +117,7 @@ in
 
     # NFS mounts from NAS
     "/home/codyt/Projects" = {
-      device = "192.168.1.108:/mnt/projects";
+      device = "192.168.1.2:/mnt/projects";
       fsType = "nfs";
       options = [
         "noatime"
@@ -127,7 +127,7 @@ in
       ];
     };
     "/home/codyt/Knowledge" = {
-      device = "192.168.1.108:/mnt/knowledge";
+      device = "192.168.1.2:/mnt/knowledge";
       fsType = "nfs";
       options = [
         "noatime"
