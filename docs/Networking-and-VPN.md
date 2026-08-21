@@ -16,7 +16,7 @@ The system employs `nftables` as the primary firewall backend [modules/system/ne
 
 ### Host-Specific Configuration
 
-Individual hosts manage their own interface logic. For example, the `nas` host uses `networkmanager` and enables DHCP by default [hosts/nas/default.nix97-98](../hosts/nas/default.nix#L97-L98).
+Individual hosts manage their own interface logic. For example, the `nas` host uses `networkmanager` with a declarative static LAN profile (`Wired connection 1` on `enp6s0` → `192.168.1.2/24`, gateway `192.168.1.1`) instead of DHCP [hosts/nas/default.nix172-205](../hosts/nas/default.nix#L172-L205).
 
 ---
 

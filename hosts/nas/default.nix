@@ -174,7 +174,30 @@
     hostName = "nas";
     hostId = "60f0861b";
     networkmanager.enable = true;
-    useDHCP = lib.mkDefault true;
+    # Static LAN address for the NAS so it keeps a predictable IP across router
+    # resets. Starlink does not publish a reserved DHCP pool, so we pin the
+    # active physical connection instead of relying on a lease.
+    useDHCP = false;
+    networkmanager.ensureProfiles.profiles."Wired connection 1" = {
+      connection = {
+        id = "Wired connection 1";
+        uuid = "faa5cfb6-2e8f-34f2-981e-194fbc74a105";
+        type = "802-3-ethernet";
+        interface-name = "enp6s0";
+        autoconnect = true;
+        autoconnect-priority = 100;
+      };
+      ipv4 = {
+        method = "manual";
+        addresses = "192.168.1.2/24";
+        gateway = "192.168.1.1";
+        may-fail = false;
+      };
+      ipv6 = {
+        # Leave IPv6 dynamic (SLAAC/RA) as before; only IPv4 is pinned static.
+        method = "auto";
+      };
+    };
   };
 
   # NVIDIA GPU (RTX 5060) — headless CUDA infrastructure for Hermes
