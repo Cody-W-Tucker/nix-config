@@ -25,7 +25,7 @@ Host-local files are split into two Nix files. Machine identity, drives, network
 | Media HDD    | Seagate ST8000VN004 8 TB (`sda`) — ext4 at `/mnt/media`.                                           |
 | ZFS pool     | `backup` — mirror of 2× Seagate ST4000VN006 4 TB (`sdb`, `sdd`), 3.62 TiB raw, auto-scrub enabled. |
 | Kernel       | Linux 6.18 (NixOS 26.05 stable).                                                                   |
-| NIC          | `enp6s0` — 192.168.1.108/24, IPv6 ULA `fd43:fa14:b975:8::/64`.                                     |
+| NIC          | `enp6s0` — 192.168.1.2/24 (static), IPv6 ULA `fd43:fa14:b975:8::/64`.                              |
 
 ## Storage layout
 
@@ -48,7 +48,7 @@ Host-local files are split into two Nix files. Machine identity, drives, network
 
 | Interface    | Address                     | Role                                              |
 | ------------ | --------------------------- | ------------------------------------------------- |
-| `enp6s0`     | 192.168.1.108/24 + IPv6 ULA | Primary LAN.                                      |
+| `enp6s0`     | 192.168.1.2/24 static + IPv6 ULA | Primary LAN, DNS server for router.              |
 | `tailscale0` | 100.81.249.65/32            | Tailscale mesh; subnet router for 192.168.1.0/24. |
 | `wg-br`      | 192.168.15.5/24             | WireGuard namespace bridge (Transmission VPN).    |
 | `docker0`    | 172.17.0.1/16               | Docker bridge.                                    |
