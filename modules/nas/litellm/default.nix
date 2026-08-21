@@ -211,6 +211,9 @@ in
       LANGFUSE_HOST = "http://127.0.0.1:3000";
       LANGFUSE_OTEL_HOST = "http://127.0.0.1:3000";
       LANGFUSE_TRACING_ENVIRONMENT = "production";
+      # Capture full message content (prompt/completion) in OTel spans
+      # and events rather than truncated summaries.
+      OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT = "span_and_event";
     };
   };
 
