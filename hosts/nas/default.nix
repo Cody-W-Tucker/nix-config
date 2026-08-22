@@ -189,9 +189,7 @@
       };
       ipv4 = {
         method = "manual";
-        # Keep the previous address briefly so beast can mount NFS, pull this
-        # configuration, and switch to the new address without booting blind.
-        addresses = "192.168.1.2/24, 192.168.1.108/24";
+        addresses = "192.168.1.2/24";
         gateway = "192.168.1.1";
         may-fail = false;
       };

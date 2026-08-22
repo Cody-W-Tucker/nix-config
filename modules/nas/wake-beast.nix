@@ -7,7 +7,7 @@
 
 let
   cfg = config.services.wake-beast;
-  beastHost = "192.168.1.238";
+  beastHost = "192.168.1.3";
   beastMac = "60:cf:84:7a:a3:4a";
   broadcastAddr = "192.168.1.255";
   maxRetries = 30;
