@@ -53,7 +53,6 @@ in
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     hermesDesktopUpstream # Hermes Agent desktop app (upstream, no API key wrapper)
     hermesDesktopIcon # Icon for XDG desktop entry
-    inputs.buzz.packages.${system}.buzz-desktop # Buzz desktop client
     grim # Screenshot utility
     slurp # Selection tool for screenshots
     wl-clipboard # Clipboard utility for Wayland

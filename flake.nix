@@ -97,11 +97,6 @@
       url = "github:agavra/tuicr";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    buzz = {
-      # Buzz relay server and related tools.
-      url = "github:mulatta/buzz.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     pythia = {
       # PYTHIA oracle engine source (backend only; pinned to the requested commit).
       url = "github:jangles-byte/Pythia?rev=ab81a7dfb0840de3bea97e5f6032702db0b1aa45";
