@@ -67,8 +67,8 @@
     enable = true;
     exports = ''
       # /mnt/projects sees high-write dev workloads (pnpm installs, node_modules churn). the trade-off is that a NAS crash or power loss can lose recent acknowledged writes.
-      /mnt/projects  192.168.1.20(rw,async,no_subtree_check) # async keeps small writes from blocking on NAS disk I/O;
-      /mnt/knowledge 192.168.1.20(rw,sync,no_subtree_check)
+      /mnt/projects  192.168.1.238(rw,async,no_subtree_check) # async keeps small writes from blocking on NAS disk I/O;
+      /mnt/knowledge 192.168.1.238(rw,sync,no_subtree_check)
     '';
   };
 
