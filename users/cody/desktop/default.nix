@@ -4,14 +4,6 @@
   ...
 }:
 
-let
-  system = pkgs.stdenv.hostPlatform.system;
-
-  # Upstream desktop package — no wrapper needed; the remote gateway is the
-  # authenticated dashboard at :9119 so the desktop app talks to it directly.
-  # The upstream package ships its own .desktop entry and icon.
-  hermesDesktopUpstream = inputs.hermes-agent.packages.${system}.desktop;
-in
 {
   imports = [
     ./programs.nix
@@ -46,7 +38,7 @@ in
 
   home.packages = with pkgs; [
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    hermesDesktopUpstream # Hermes Agent desktop app (upstream, no API key wrapper)
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hermes-desktop
     grim # Screenshot utility
     slurp # Selection tool for screenshots
     wl-clipboard # Clipboard utility for Wayland
