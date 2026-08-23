@@ -23,7 +23,7 @@ in
     llmPkgs.gnhf
     llmPkgs.pi
     llmPkgs.code-review-graph
-    inputs.tuicr.packages.${pkgs.stdenv.hostPlatform.system}.default
+    llmPkgs.tuicr
   ];
 
   # tuicr: match stylix catppuccin-mocha palette
