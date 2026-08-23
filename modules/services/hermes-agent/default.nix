@@ -24,6 +24,7 @@ in
   config = {
     services.hermes-agent = {
       enable = true;
+      workingDirectory = "/var/lib/hermes-agent";
       user = "codyt";
       group = "users";
       createUser = false;
