@@ -8,9 +8,13 @@
 # not the dev launcher (run-all.sh) or the Osiris UI overlay. Source is the
 # pinned upstream flake input `inputs.pythia`.
 #
-# One source patch: config.py hardcodes the runs dir to <repo>/runs, which is
-# read-only in the Nix store. We make it honor PYTHIA_RUNS_DIR so the systemd
-# service can persist ledger/swarm/watchlist state under /var/lib/pythia.
+# Two source patches:
+#   - config.py hardcodes the runs dir to <repo>/runs, which is read-only in the
+#     Nix store. We make it honor PYTHIA_RUNS_DIR so the systemd service can
+#     persist ledger/swarm/watchlist state under /var/lib/pythia.
+#   - oracle.py caps the free-form chat (`_chat`) response at max_tokens=1400.
+#     The oracle runs against a reasoning model (qwen-3.6-35b-a3b) via llama-swap,
+#     so we raise the budget to 4096 to leave room for the answer after CoT.
 let
   python = pkgs.python3;
 in
@@ -27,7 +31,7 @@ python.pkgs.buildPythonPackage rec {
   # Make an unset OSIRIS_URL mean "Osiris disabled" (not localhost:3000), and let
   # an empty/disabled URL short-circuit the intake so the engine never attempts a
   # connection. See osiris-disable.patch + the osirisUrl module option docs.
-  patches = [ ./osiris-disable.patch ];
+  patches = [ ./osiris-disable.patch ./chat-budget.patch ];
 
   propagatedBuildInputs =
     with python.pkgs;
