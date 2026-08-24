@@ -81,7 +81,7 @@
   "qwen-3.6-35b-a3b" = {
     file = "qwen3.6-35b-a3b-nvfp4.gguf";
     gpuLayers = 999;
-    contextSize = 16384;
+    contextSize = 262144;
     threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
@@ -94,6 +94,8 @@
       "q8_0"
       "--cache-type-v"
       "q8_0"
+      "--no-mmap"
+      "--reasoning-preserve"
     ];
   };
   "qwen3-embedding-0.6b" = {
