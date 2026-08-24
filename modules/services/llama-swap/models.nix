@@ -88,13 +88,11 @@
     ttl = 600;
     extraArgs = [
       "--n-cpu-moe"
-      "42"
-      "--parallel"
-      "1"
+      "36"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
-      "q8_0"
+      "q4_0"
       "--no-mmap"
       "--reasoning-preserve"
     ];
