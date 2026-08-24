@@ -32,7 +32,7 @@
       LLM_PROVIDER = "openai";
       OPENAI_BASE_URL = "http://127.0.0.1:8081/v1";
       OPENAI_API_KEY = "localonly";
-      LLM_MODEL = "qwen-3.5-9b";
+      LLM_MODEL = "qwen-3.5-4b";
       # LLM-based OCR using the dedicated GLM-OCR vision model.
       OCR_PROVIDER = "llm";
       VISION_LLM_PROVIDER = "openai";

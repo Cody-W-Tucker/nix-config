@@ -18,7 +18,7 @@ Karakeep is the central repository for bookmarks and serves as the "reference se
 
 Karakeep utilizes local models via `llama-swap` for several features:
 
-- **Summarization**: Uses `qwen-3.5-9b-task` for text inference [modules/nas/karakeep.nix18](../modules/nas/karakeep.nix#L18-L18)
+- **Summarization**: Uses `qwen-3.5-4b` for text inference [modules/nas/karakeep.nix18](../modules/nas/karakeep.nix#L18-L18)
 - **Embeddings**: Uses `qwen3-embedding-0.6b` for semantic representation [modules/nas/karakeep.nix17](../modules/nas/karakeep.nix#L17-L17)
 - **OCR**: Uses the `glm-ocr-f16` multimodal model for extracting text from images [modules/nas/karakeep.nix16](../modules/nas/karakeep.nix#L16-L16)
 

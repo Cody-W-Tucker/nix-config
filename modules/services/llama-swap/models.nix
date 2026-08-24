@@ -27,13 +27,16 @@
       "q8_0"
     ];
   };
-  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — multimodal, non-reasoning task endpoint.
-  # ~5.5 GB weights, fits alongside Q8 KV cache at 32K context on a 8 GB RTX 5060: 6GB total.
-  "qwen-3.5-9b-task" = {
-    file = "qwen3.5-9b-nvfp4.gguf";
-    mmprojFile = "mmproj-qwen3.5-9b-nvfp4-f16.gguf";
+  # Qwen3.5-4B in NVIDIA FP4 (NVFP4) — multimodal, non-reasoning task endpoint.
+  # ~2.4 GB weights. On the RTX 5060 (8 GB) at 64K context with Q8 KV cache the
+  # footprint is ~3 GB, leaving >5 GB for the embedding + OCR/whisper co-resident
+  # models. Shares the `inference-stack` group with qwen3-embedding-0.6b so both
+  # stay loadable concurrently (group is non-exclusive, non-swapping).
+  "qwen-3.5-4b" = {
+    file = "qwen3.5-4b-nvfp4.gguf";
+    mmprojFile = "mmproj-qwen3.5-4b-nvfp4-f16.gguf";
     gpuLayers = 999;
-    contextSize = 32768;
+    contextSize = 65536;
     threads = 6;
     batchSize = 2048;
     ubatchSize = 1024;
@@ -43,27 +46,6 @@
       "1"
       "--reasoning"
       "off"
-      "--cache-type-k"
-      "q8_0"
-      "--cache-type-v"
-      "q8_0"
-    ];
-  };
-  # Qwen3.5-9B reasoning-only endpoint. Same base weights as the task model,
-  # no multimodal projector, 64K context for long-form reasoning.
-  "qwen-3.5-9b" = {
-    file = "qwen3.5-9b-nvfp4.gguf";
-    gpuLayers = 999;
-    contextSize = 65536;
-    threads = 6;
-    batchSize = 2048;
-    ubatchSize = 1024;
-    ttl = 600;
-    extraArgs = [
-      "--reasoning"
-      "off"
-      "--parallel"
-      "1"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"

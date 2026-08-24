@@ -45,7 +45,7 @@ in
 
     llmModel = lib.mkOption {
       type = lib.types.str;
-      default = "qwen-3.5-9b-task";
+      default = "qwen-3.5-4b";
       description = "Model id the oracle requests from llama-swap (must be an enabled llama-swap model).";
     };
 

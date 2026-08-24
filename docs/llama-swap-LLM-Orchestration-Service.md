@@ -24,7 +24,7 @@ The model catalog is centralized in `modules/services/llama-swap/models.nix`. Th
 
 | Type           | Example Model          | Key Configuration                | Purpose                                |
 | -------------- | ---------------------- | -------------------------------- | -------------------------------------- |
-| **Chat**       | `qwen-3.5-9b`          | `gpuLayers = 999`                | General reasoning and conversation.    |
+| **Chat**       | `qwen-3.5-4b`          | `gpuLayers = 999`                | General reasoning and conversation.    |
 | **Embedding**  | `qwen3-embedding-0.6b` | `--embeddings`, `--pooling last` | Vector generation for RAG (Qdrant).    |
 | **Vision/OCR** | `glm-ocr-f16`          | `mmprojFile`                     | Extracting text from images/documents. |
 | **TTS**        | `kokoro-82m`           | `ttl = 0`                        | Text-to-Speech generation.             |
@@ -60,7 +60,7 @@ Services within the NixOS configuration consume `llama-swap` by pointing their A
 The Karakeep bookmark service is configured to use `llama-swap` for summarization, embedding, and OCR:
 
 - **Base URL**: `http://nas:8081/v1`[modules/nas/karakeep.nix11](../modules/nas/karakeep.nix#L11-L11)
-- **Chat Model**: `qwen-3.5-9b-task`[modules/nas/karakeep.nix18](../modules/nas/karakeep.nix#L18-L18)
+- **Chat Model**: `qwen-3.5-4b`[modules/nas/karakeep.nix18](../modules/nas/karakeep.nix#L18-L18)
 - **OCR Model**: `glm-ocr-f16`[modules/nas/karakeep.nix16](../modules/nas/karakeep.nix#L16-L16)
 - **Embedding Model**: `qwen3-embedding-0.6b`[modules/nas/karakeep.nix17](../modules/nas/karakeep.nix#L17-L17)
 
@@ -81,7 +81,7 @@ classDiagram
     class ModelCatalog {
         <<Nix File>>
         models.nix
-        qwen-3.5-9b
+        qwen-3.5-4b
         glm-ocr-f16
         kokoro-82m
     }

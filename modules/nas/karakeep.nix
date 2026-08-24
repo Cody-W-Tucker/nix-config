@@ -44,9 +44,9 @@ in
       OPENAI_API_KEY = "blank";
       OPENAI_BASE_URL = "http://nas:8081/v1";
 
-      INFERENCE_TEXT_MODEL = "qwen-3.5-9b-task";
+      INFERENCE_TEXT_MODEL = "qwen-3.5-4b";
       OCR_USE_LLM = "true";
-      INFERENCE_IMAGE_MODEL = "qwen-3.5-9b-task";
+      INFERENCE_IMAGE_MODEL = "qwen-3.5-4b";
       INFERENCE_CONTEXT_LENGTH = "8192";
       INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
 

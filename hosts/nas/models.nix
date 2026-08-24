@@ -18,21 +18,6 @@ let
     cudaSupport = true;
   };
 
-  # Multimodal projector for qwen-3.5-9b-task: extracted from the same
-  # FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF release as the base GGUF.
-  #
-  # RESIDUAL RISK (intentional): pinned by content hash only, NOT by an
-  # immutable commit reference. The URL still points at the mutable
-  # `resolve/main/` HEAD, so a future upstream force-push could move the
-  # artifact the hash is verified against. The sha256 still guarantees
-  # byte-identity at fetch time. Recorded so the mutable `main` reference is
-  # not mistaken for a verified immutable source. Convert to a
-  # `resolve/<commit>/` URL once the artifact is confirmed present at a commit.
-  qwen35Mmproj = pkgs.fetchurl {
-    url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/main/mmproj-qwen3.5-9b-nvfp4-f16.gguf";
-    sha256 = "97f420245a85ce129bb764e86a5e21e27d782fe6d6056c6839b9c5fdb8f38289";
-  };
-
   # Qwen3 embedding GGUF (karakeep/miniflux shared catalog). Pinned to an
   # immutable release commit; content hash guards byte-identity.
   qwen3Embedding = pkgs.fetchurl {
@@ -51,21 +36,30 @@ let
     sha256 = "9c4b58e33e316ed142eb5dcb41abec3844d3e6e5dc361ffb782c3fa9d175141f";
   };
 
-  # Base NVFP4 GGUF for both qwen-3.5-9b endpoints. Pinned to an immutable
-  # release commit (3db49b5e...) so the resolved source is reproducible; the
-  # sha256 still guards byte-identity. The artifact is byte-identical to the
-  # runtime-cached file it replaces at /srv/llama-swap/models/qwen3.5-9b-nvfp4.gguf.
-  qwen35Base = pkgs.fetchurl {
-    url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/3db49b5e08fb84a2ead8d6407f38f6638c79d08a/qwen3.5-9b-nvfp4.gguf";
-    sha256 = "0db703913b6a1b057d423e9815095e9dc16499596a986446918314a48c4d9bad";
-  };
-
   # Qwen3.5-0.8B base GGUF for the qwen3.5-0.8b endpoint. Pinned to an immutable
   # release commit (6ab461498e...) so the resolved source is reproducible; the
   # sha256 guards byte-identity. Public/not-gated upstream artifact.
   qwen35_08b = pkgs.fetchurl {
     url = "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/6ab461498e2023f6e3c1baea90a8f0fe38ab64d0/Qwen3.5-0.8B-Q8_0.gguf";
     sha256 = "0ad885ffd4bb022fc4f0d33a3308fa108ef8613159d3b3a67e23abca056b7a6c";
+  };
+
+  # Qwen3.5-4B NVFP4 base GGUF for the qwen-3.5-4b endpoint. Pinned to an
+  # immutable release commit (fb9f8b9e...) so the resolved source is
+  # reproducible; the sha256 guards byte-identity. Multimodal: the matching
+  # projector below is extracted from the same FreedomAISVR/Qwen3.5-4B-NVFP4-GGUF
+  # release. ~2.4 GB weights; fits alongside the embedding + OCR/whisper on the
+  # 8 GB RTX 5060 (see models.nix qwen-3.5-4b footprint comment).
+  qwen35_4b = pkgs.fetchurl {
+    url = "https://huggingface.co/FreedomAISVR/Qwen3.5-4B-NVFP4-GGUF/resolve/fb9f8b9ec432e38872ec9d9707183642cf885ad6/qwen3.5-4b-nvfp4.gguf";
+    sha256 = "317ef79785a9380ac72d23ab33af9376afd926b4c0781fae246f033daf91a05f";
+  };
+  # Multimodal projector for qwen-3.5-4b: extracted from the same
+  # FreedomAISVR/Qwen3.5-4B-NVFP4-GGUF release as the base GGUF. Pinned to the
+  # same immutable release commit; the sha256 guards byte-identity.
+  qwen35_4bMmproj = pkgs.fetchurl {
+    url = "https://huggingface.co/FreedomAISVR/Qwen3.5-4B-NVFP4-GGUF/resolve/fb9f8b9ec432e38872ec9d9707183642cf885ad6/mmproj-qwen3.5-4b-nvfp4-f16.gguf";
+    sha256 = "659b59dd44b73b1cd34af6cc424669484b06dc80f4340adf8ea84ad776eef813";
   };
 
   # Qwen3.6-35B-A3B NVFP4 base GGUF for the qwen-3.6-35b-a3b text endpoint.
@@ -132,8 +126,7 @@ in
     };
     enabledModels = [
       "qwen3.5-0.8b"
-      "qwen-3.5-9b-task"
-      "qwen-3.5-9b"
+      "qwen-3.5-4b"
       # Qwen3.6-35B-A3B NVFP4: large text MoE, experts in CPU RAM via --cpu-moe.
       "qwen-3.6-35b-a3b"
       # Shared catalog: embedding and OCR for Karakeep/Miniflux
@@ -145,17 +138,14 @@ in
       "kokoro-82m"
     ];
     preloadModels = [ "whisper-medium" ];
-    # Override the shared catalog's relative filenames with reproducible store
-    # paths fetched above so llama-server receives --model / --mmproj directly
-    # from the Nix store instead of the runtime-cached model directory.
-    modelOverrides."qwen-3.5-9b-task" = {
-      file = toString qwen35Base;
-      mmprojFile = toString qwen35Mmproj;
+    # qwen-3.5-4b overrides the shared catalog's relative filenames with
+    # reproducible store paths (base + matching multimodal projector) fetched
+    # above, so llama-server receives --model / --mmproj directly from the Nix
+    # store instead of the runtime-cached model directory.
+    modelOverrides."qwen-3.5-4b" = {
+      file = toString qwen35_4b;
+      mmprojFile = toString qwen35_4bMmproj;
       upstream.concurrencyLimit = 1;
-    };
-    # Reasoning endpoint shares the same base weights as the task model.
-    modelOverrides."qwen-3.5-9b" = {
-      file = toString qwen35Base;
     };
     # Embedding + OCR are fetched reproducibly into the store; override the
     # catalog's relative filenames with absolute store paths so llama-server
@@ -188,6 +178,21 @@ in
         members = [
           "whisper-medium"
           "kokoro-82m"
+        ];
+      };
+      # inference-stack: keeps the primary 4B LLM and the 0.6B embedding
+      # loadable at the same time. Non-exclusive + non-swapping means neither
+      # evicts the other; both can be resident concurrently on the 8 GB RTX 5060
+      # (see models.nix qwen-3.5-4b footprint comment). This is what permits the
+      # 4B and the embedding to coexist for Karakeep / Miniflux / Pythia /
+      # Paperless-GPT.
+      inference-stack = {
+        swap = false;
+        exclusive = false;
+        persistent = false;
+        members = [
+          "qwen-3.5-4b"
+          "qwen3-embedding-0.6b"
         ];
       };
     };
