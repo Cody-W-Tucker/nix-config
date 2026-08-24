@@ -82,15 +82,15 @@
     file = "qwen3.6-35b-a3b-nvfp4.gguf";
     gpuLayers = 999;
     contextSize = 262144;
-    threads = 6;
+    threads = 10;
     batchSize = 1024;
     ubatchSize = 512;
     ttl = 600;
     extraArgs = [
       "--n-cpu-moe"
-      "36"
+      "34"
       "--cache-type-k"
-      "q8_0"
+      "q4_0"
       "--cache-type-v"
       "q4_0"
       "--no-mmap"
