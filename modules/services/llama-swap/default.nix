@@ -191,7 +191,12 @@ let
         "--port"
         "\${PORT}"
         "-m"
-        "${cfg.modelDirectory}/${model.file}"
+        (
+          if model.file != null && lib.hasPrefix "/" model.file then
+            model.file
+          else
+            "${cfg.modelDirectory}/${model.file}"
+        )
         "--alias"
         model.alias
         "--no-webui"
