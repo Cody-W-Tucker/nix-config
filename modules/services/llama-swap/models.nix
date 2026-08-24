@@ -88,7 +88,7 @@
     ttl = 600;
     extraArgs = [
       "--n-cpu-moe"
-      "34"
+      "35"
       "--cache-type-k"
       "q4_0"
       "--cache-type-v"
