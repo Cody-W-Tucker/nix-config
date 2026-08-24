@@ -68,6 +68,17 @@ let
     sha256 = "0ad885ffd4bb022fc4f0d33a3308fa108ef8613159d3b3a67e23abca056b7a6c";
   };
 
+  # Qwen3.6-35B-A3B NVFP4 base GGUF for the qwen-3.6-35b-a3b text endpoint.
+  # Pinned to an immutable release commit (95ba642c...) so the resolved source
+  # is reproducible; the sha256 guards byte-identity. Public/not-gated upstream
+  # artifact. ~19.7 GB; routed MoE experts are placed in CPU RAM at runtime via
+  # --cpu-moe (see the shared catalog entry), so the Nix store holds the full
+  # weights and llama-server streams expert tensors from here into system RAM.
+  qwen36Base = pkgs.fetchurl {
+    url = "https://huggingface.co/FreedomAISVR/Qwen3.6-35B-A3B-NVFP4-GGUF/resolve/95ba642c5138d24c01a2a52ca3372ba55762fd5d/qwen3.6-35b-a3b-nvfp4.gguf";
+    sha256 = "6f2187c933978f7a45bc30cd6052fe2279d22ac5f6a98dd294166407079c889f";
+  };
+
   # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
   # The bundled FindCUDA parser is too stale to accept CUDA_ARCH_LIST=12.0 for Blackwell,
   # so we strip any existing CUDA_ARCH_LIST flags and inject sm_120 directly via postPatch.
@@ -123,6 +134,8 @@ in
       "qwen3.5-0.8b"
       "qwen-3.5-9b-task"
       "qwen-3.5-9b"
+      # Qwen3.6-35B-A3B NVFP4: large text MoE, experts in CPU RAM via --cpu-moe.
+      "qwen-3.6-35b-a3b"
       # Shared catalog: embedding and OCR for Karakeep/Miniflux
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
@@ -153,6 +166,13 @@ in
     modelOverrides."glm-ocr-f16" = {
       file = toString glmOcrF16;
       mmprojFile = toString glmOcrMmproj;
+    };
+    # Qwen3.6-35B-A3B NVFP4 is fetched reproducibly into the store; override the
+    # catalog's relative filename with the absolute store path so llama-server
+    # receives --model directly from the Nix store. MoE expert tensors are
+    # offloaded to CPU RAM at runtime by the catalog's --cpu-moe flag.
+    modelOverrides."qwen-3.6-35b-a3b" = {
+      file = toString qwen36Base;
     };
     # qwen3.5-0.8b is now store-backed through an immutable Unsloth artifact
     # URL with a verified hash (see qwen35_08b above). Replaces the prior
