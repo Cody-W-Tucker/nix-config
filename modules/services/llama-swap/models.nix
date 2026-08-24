@@ -87,7 +87,8 @@
     ubatchSize = 512;
     ttl = 600;
     extraArgs = [
-      "--cpu-moe"
+      "--n-cpu-moe"
+      "36"
       "--parallel"
       "1"
       "--cache-type-k"
