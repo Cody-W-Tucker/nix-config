@@ -10,28 +10,9 @@
 # merged in default.nix.
 
 {
-  "qwen3.5-0.8b" = {
-    file = "Qwen3.5-0.8B-Q8_0.gguf";
-    gpuLayers = 999;
-    contextSize = 16384;
-    threads = 6;
-    batchSize = 1024;
-    ubatchSize = 512;
-    ttl = 60;
-    extraArgs = [
-      "--reasoning"
-      "off"
-      "--cache-type-k"
-      "q8_0"
-      "--cache-type-v"
-      "q8_0"
-    ];
-  };
   # Qwen3.5-4B in NVIDIA FP4 (NVFP4) — multimodal, non-reasoning task endpoint.
   # ~2.4 GB weights. On the RTX 5060 (8 GB) at 64K context with Q8 KV cache the
-  # footprint is ~3 GB, leaving >5 GB for the embedding + OCR/whisper co-resident
-  # models. Shares the `inference-stack` group with qwen3-embedding-0.6b so both
-  # stay loadable concurrently (group is non-exclusive, non-swapping).
+  # footprint is ~3 GB, leaving >5 GB for the embedding model.
   "qwen-3.5-4b" = {
     file = "qwen3.5-4b-nvfp4.gguf";
     mmprojFile = "mmproj-qwen3.5-4b-nvfp4-f16.gguf";
@@ -40,10 +21,8 @@
     threads = 6;
     batchSize = 2048;
     ubatchSize = 1024;
-    ttl = 5;
+    ttl = 300;
     extraArgs = [
-      "--parallel"
-      "1"
       "--reasoning"
       "off"
       "--cache-type-k"
@@ -53,13 +32,7 @@
     ];
   };
   # Qwen3.6-35B-A3B in NVIDIA FP4 (NVFP4) — text-only MoE. 40 layers,
-  # 35B total / ~3B active, 256 routed experts (8 selected/token) + a shared
-  # expert. Hybrid placement: gpuLayers = 999 offloads all eligible tensors to
-  # the RTX 5060, but --cpu-moe forces every routed expert FFN into system RAM
-  # (42 GiB available). This is deliberate expert placement on the CPU, NOT
-  # oversubscribed CUDA unified memory — unified memory is intentionally off.
-  # Conservative 16K context to start; larger context windows must be
-  # benchmarked against real VRAM/RAM headroom, not presumed safe.
+  # 35B total / ~3B active, 256 routed experts (8 selected/token)
   "qwen-3.6-35b-a3b" = {
     file = "qwen3.6-35b-a3b-nvfp4.gguf";
     gpuLayers = 999;
@@ -69,6 +42,8 @@
     ubatchSize = 512;
     ttl = 600;
     extraArgs = [
+      "--parallel"
+      "1"
       "--n-cpu-moe"
       "35"
       "--cache-type-k"
@@ -87,7 +62,7 @@
     batchSize = 512;
     ubatchSize = 512;
     flashAttention = false; # avoid flash-attn to reduce startup instability in llama-server.
-    ttl = 5;
+    ttl = 300;
     extraArgs = [
       "--embeddings"
       "--pooling"

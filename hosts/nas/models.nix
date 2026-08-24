@@ -125,7 +125,6 @@ in
       ];
     };
     enabledModels = [
-      "qwen3.5-0.8b"
       "qwen-3.5-4b"
       # Qwen3.6-35B-A3B NVFP4: large text MoE, experts in CPU RAM via --cpu-moe.
       "qwen-3.6-35b-a3b"
@@ -164,12 +163,6 @@ in
     modelOverrides."qwen-3.6-35b-a3b" = {
       file = toString qwen36Base;
     };
-    # qwen3.5-0.8b is now store-backed through an immutable Unsloth artifact
-    # URL with a verified hash (see qwen35_08b above). Replaces the prior
-    # runtime-managed exception now that upstream provenance is confirmed.
-    modelOverrides."qwen3.5-0.8b" = {
-      file = toString qwen35_08b;
-    };
     settings.groups = {
       audio-stack = {
         swap = false;
@@ -184,7 +177,7 @@ in
       # loadable at the same time. Non-exclusive + non-swapping means neither
       # evicts the other; both can be resident concurrently on the 8 GB RTX 5060
       # (see models.nix qwen-3.5-4b footprint comment). This is what permits the
-      # 4B and the embedding to coexist for Karakeep / Miniflux / Pythia /
+      # 4B and the embedding to coexist for Karakeep / Miniflux
       # Paperless-GPT.
       inference-stack = {
         swap = false;
