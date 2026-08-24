@@ -50,8 +50,10 @@
       "q4_0"
       "--cache-type-v"
       "q4_0"
-      "--no-mmap"
-      "--reasoning-preserve"
+      "--load-mode"
+      "none"
+      "--reasoning"
+      "off"
     ];
   };
   "qwen3-embedding-0.6b" = {
