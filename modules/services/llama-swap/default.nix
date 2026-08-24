@@ -325,6 +325,12 @@ in
       default = { };
       description = "Extra environment variables added to the llama-swap systemd service.";
     };
+
+    groups = lib.mkOption {
+      type = lib.types.attrs;
+      default = { };
+      description = "llama-swap group definitions controlling co-load/eviction among served models. Passed straight through to the upstream `groups` config: `swap` (false = members may run together), `exclusive` (true = loading a member unloads every other group), `persistent` (true = other groups cannot unload it).";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -375,6 +381,7 @@ in
         logToStdout = lib.mkDefault "both";
         hooks.on_startup.preload = lib.mkDefault cfg.preloadModels;
         models = lib.mkDefault renderedModels;
+        groups = cfg.groups;
       };
     };
 

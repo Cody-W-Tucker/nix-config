@@ -163,29 +163,71 @@ in
     modelOverrides."qwen-3.6-35b-a3b" = {
       file = toString qwen36Base;
     };
-    settings.groups = {
+    # llama-swap loading policy (see llama-swap groups semantics:
+    # `swap` = members may run together when false; `exclusive` = loading a
+    # member unloads EVERY other group; `persistent` = other groups cannot
+    # unload it). A model may belong to exactly one group. All four groups are
+    # mutually exclusive; every group is `exclusive=true` so any member load
+    # evicts all other groups. Within-group co-residency is governed by `swap`:
+    # only audio-stack and inference-stack set swap:false, so their members may
+    # run together; OCR and 35B are single-member groups and therefore fully
+    # standalone. All groups are persistent:false so any group can be evicted by
+    # another's exclusive load.
+    #
+    # Permitted co-load sets:
+    #   - audio-stack: all three audio models resident together (swap:false)
+    #   - inference-stack: 4B LLM + 0.6B embedding resident together (swap:false)
+    #   - ocr: standalone GLM-OCR (loading it evicts every other group)
+    #   - 35b-exclusive: standalone MoE; loading it evicts every other group
+    groups = {
+      # audio-stack: whisper + diarization + kokoro stay resident as a unit.
+      # swap:false lets all three run concurrently; exclusive:true means loading
+      # any audio model evicts inference-stack, ocr and 35b-exclusive.
       audio-stack = {
         swap = false;
-        exclusive = false;
+        exclusive = true;
         persistent = false;
         members = [
           "whisper-medium"
+          "whisper-diarization"
           "kokoro-82m"
         ];
       };
-      # inference-stack: keeps the primary 4B LLM and the 0.6B embedding
-      # loadable at the same time. Non-exclusive + non-swapping means neither
-      # evicts the other; both can be resident concurrently on the 8 GB RTX 5060
-      # (see models.nix qwen-3.5-4b footprint comment). This is what permits the
-      # 4B and the embedding to coexist for Karakeep / Miniflux
-      # Paperless-GPT.
+      # inference-stack: the primary 4B LLM and the 0.6B embedding coexist for
+      # Karakeep / Miniflux / Paperless-GPT. swap:false (both resident),
+      # exclusive:true (loading either evicts audio-stack, ocr and 35b-exclusive).
       inference-stack = {
         swap = false;
-        exclusive = false;
+        exclusive = true;
         persistent = false;
         members = [
           "qwen-3.5-4b"
           "qwen3-embedding-0.6b"
+        ];
+      };
+      # 35b-exclusive: the large MoE owns the GPU. exclusive:true means loading
+      # qwen-3.6-35b-a3b unloads EVERY other group (audio-stack, inference-stack,
+      # ocr) — i.e. all other served models, including audio, 4B, embeddings and
+      # OCR, are evicted. Single-member group, so `swap` is moot (kept true to
+      # preserve the prior 35B swap behavior).
+      "35b-exclusive" = {
+        swap = true;
+        exclusive = true;
+        persistent = false;
+        members = [
+          "qwen-3.6-35b-a3b"
+        ];
+      };
+      # ocr: standalone GLM-OCR. exclusive:true means loading OCR evicts every
+      # other group (audio-stack, inference-stack, 35b-exclusive). Single-member
+      # group, so `swap` is moot (kept false to preserve the prior OCR swap
+      # behavior); non-persistent so any other group's exclusive load evicts it.
+      ocr = {
+        swap = false;
+        exclusive = true;
+        persistent = false;
+        members = [
+          "glm-ocr-f16"
         ];
       };
     };
