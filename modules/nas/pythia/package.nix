@@ -31,7 +31,10 @@ python.pkgs.buildPythonPackage rec {
   # Make an unset OSIRIS_URL mean "Osiris disabled" (not localhost:3000), and let
   # an empty/disabled URL short-circuit the intake so the engine never attempts a
   # connection. See osiris-disable.patch + the osirisUrl module option docs.
-  patches = [ ./osiris-disable.patch ./chat-budget.patch ];
+  patches = [
+    ./osiris-disable.patch
+    ./chat-budget.patch
+  ];
 
   propagatedBuildInputs =
     with python.pkgs;
