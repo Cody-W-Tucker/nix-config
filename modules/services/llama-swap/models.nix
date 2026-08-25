@@ -33,6 +33,28 @@
       "q8_0"
     ];
   };
+  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — non-task reasoning endpoint. Same base
+  # weights as the (removed) task model; no multimodal projector, 64K context
+  # for long-form reasoning. ~5.5 GB weights, fits alongside Q8 KV cache.
+  "qwen-3.5-9b" = {
+    file = "qwen3.5-9b-nvfp4.gguf";
+    gpuLayers = 999;
+    contextSize = 65536;
+    threads = 6;
+    batchSize = 2048;
+    ubatchSize = 1024;
+    ttl = 600;
+    extraArgs = [
+      "--reasoning"
+      "off"
+      "--parallel"
+      "1"
+      "--cache-type-k"
+      "q8_0"
+      "--cache-type-v"
+      "q8_0"
+    ];
+  };
   # Qwen3.6-35B-A3B in NVIDIA FP4 (NVFP4) — text-only MoE. 40 layers,
   # 35B total / ~3B active, 256 routed experts (8 selected/token)
   "qwen-3.6-35b-a3b" = {

@@ -73,6 +73,15 @@ let
     sha256 = "6f2187c933978f7a45bc30cd6052fe2279d22ac5f6a98dd294166407079c889f";
   };
 
+  # Qwen3.5-9B NVFP4 base GGUF for the qwen-3.5-9b non-task reasoning endpoint.
+  # Pinned to an immutable release commit (3db49b5e...) so the resolved source
+  # is reproducible; the sha256 guards byte-identity. Mirrors the historical
+  # qwen35Base fetch that backed this endpoint before it was removed.
+  qwen35_9bBase = pkgs.fetchurl {
+    url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/3db49b5e08fb84a2ead8d6407f38f6638c79d08a/qwen3.5-9b-nvfp4.gguf";
+    sha256 = "0db703913b6a1b057d423e9815095e9dc16499596a986446918314a48c4d9bad";
+  };
+
   # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
   # The bundled FindCUDA parser is too stale to accept CUDA_ARCH_LIST=12.0 for Blackwell,
   # so we strip any existing CUDA_ARCH_LIST flags and inject sm_120 directly via postPatch.
@@ -126,6 +135,8 @@ in
     };
     enabledModels = [
       "qwen-3.5-4b"
+      # Qwen3.5-9B NVFP4: non-task reasoning endpoint, 64K context.
+      "qwen-3.5-9b"
       # Qwen3.6-35B-A3B NVFP4: large text MoE, experts in CPU RAM via --cpu-moe.
       "qwen-3.6-35b-a3b"
       # Shared catalog: embedding and OCR for Karakeep/Miniflux
@@ -145,6 +156,11 @@ in
       file = toString qwen35_4b;
       mmprojFile = toString qwen35_4bMmproj;
       upstream.concurrencyLimit = 1;
+    };
+    # Qwen3.5-9B NVFP4 non-task reasoning endpoint: store-backed base GGUF
+    # (no multimodal projector). Mirrors the historical non-task override.
+    modelOverrides."qwen-3.5-9b" = {
+      file = toString qwen35_9bBase;
     };
     # Embedding + OCR are fetched reproducibly into the store; override the
     # catalog's relative filenames with absolute store paths so llama-server
