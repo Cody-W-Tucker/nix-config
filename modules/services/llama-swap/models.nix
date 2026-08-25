@@ -52,8 +52,11 @@
       "q4_0"
       "--load-mode"
       "none"
-      "--reasoning"
-      "off"
+      "--reasoning-preserve"
+      "--reasoning-budget"
+      "256" # Forces the model to stop thinking after 256 tokens maximum
+      "--chat-template-kwargs"
+      "{\\\"reasoning_effort\\\":\\\"medium\\\"}"
     ];
   };
   "qwen3-embedding-0.6b" = {
