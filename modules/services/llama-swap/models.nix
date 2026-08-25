@@ -69,7 +69,7 @@
       "--parallel"
       "1"
       "--n-cpu-moe"
-      "35"
+      "37"
       "--cache-type-k"
       "q4_0"
       "--cache-type-v"
@@ -77,10 +77,11 @@
       "--load-mode"
       "none"
       "--reasoning-preserve"
-      "--reasoning-budget"
-      "256" # Forces the model to stop thinking after 256 tokens maximum
-      "--chat-template-kwargs"
-      "{\\\"reasoning_effort\\\":\\\"medium\\\"}"
+      "--spec-type"
+      "draft-mtp"
+      "--spec-draft-n-max"
+      "2"
+      "--kv-unified"
     ];
   };
   "qwen3-embedding-0.6b" = {

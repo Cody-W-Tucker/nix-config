@@ -62,15 +62,15 @@ let
     sha256 = "659b59dd44b73b1cd34af6cc424669484b06dc80f4340adf8ea84ad776eef813";
   };
 
-  # Qwen3.6-35B-A3B NVFP4 base GGUF for the qwen-3.6-35b-a3b text endpoint.
-  # Pinned to an immutable release commit (95ba642c...) so the resolved source
+  # Qwen3.6-35B-A3B NVFP4 MTP base GGUF for the qwen-3.6-35b-a3b text endpoint.
+  # Pinned to an immutable release commit (df112dd5...) so the resolved source
   # is reproducible; the sha256 guards byte-identity. Public/not-gated upstream
   # artifact. ~19.7 GB; routed MoE experts are placed in CPU RAM at runtime via
   # --cpu-moe (see the shared catalog entry), so the Nix store holds the full
   # weights and llama-server streams expert tensors from here into system RAM.
   qwen36Base = pkgs.fetchurl {
-    url = "https://huggingface.co/FreedomAISVR/Qwen3.6-35B-A3B-NVFP4-GGUF/resolve/95ba642c5138d24c01a2a52ca3372ba55762fd5d/qwen3.6-35b-a3b-nvfp4.gguf";
-    sha256 = "6f2187c933978f7a45bc30cd6052fe2279d22ac5f6a98dd294166407079c889f";
+    url = "https://huggingface.co/michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF/resolve/df112dd576e55b1daa1331a7831b64ec9c03dbae/Qwen3.6-35B-A3B-NVFP4-MTP-TURBO.gguf";
+    sha256 = "f3d2fdc74e3ef19925ccbf794b04d7f6f11fb12eba7722b7749219d0cc5c36ed";
   };
 
   # Qwen3.5-9B NVFP4 base GGUF for the qwen-3.5-9b non-task reasoning endpoint.
