@@ -25,6 +25,7 @@
     extraArgs = [
       "--parallel"
       "2"
+      "--kv-unified"
       "--reasoning"
       "off"
       "--cache-type-k"
@@ -69,11 +70,11 @@
       "--parallel"
       "1"
       "--n-cpu-moe"
-      "37"
+      "36"
       "--cache-type-k"
       "q4_0"
       "--cache-type-v"
-      "q4_0"
+      "q8_0"
       "--load-mode"
       "none"
       "--reasoning-preserve"
@@ -81,7 +82,7 @@
       "draft-mtp"
       "--spec-draft-n-max"
       "2"
-      "--kv-unified"
+      "--kv-unified" # not sure if this shares the mtp vram
     ];
   };
   "qwen3-embedding-0.6b" = {
