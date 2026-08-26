@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   inputs,
   pkgs,
   self,
@@ -18,8 +16,6 @@
     ./models.nix
     # VPN for media
     inputs.vpn-confinement.nixosModules.default
-    # Keep track of these fixes and remove them when the upstream issues are resolved.
-    ../fixes.nix
   ];
 
   services.opencode.enable = true;
