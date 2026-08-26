@@ -67,10 +67,8 @@
     enable = true;
     exports = ''
       # /mnt/projects sees high-write dev workloads (pnpm installs, node_modules churn). the trade-off is that a NAS crash or power loss can lose recent acknowledged writes.
-      # Keep Beast's current DHCP address during its migration to the static
-      # address. Remove the .238 entries after Beast is running on .3.
-      /mnt/projects  192.168.1.3(rw,async,no_subtree_check) 192.168.1.238(rw,async,no_subtree_check)
-      /mnt/knowledge 192.168.1.3(rw,sync,no_subtree_check) 192.168.1.238(rw,sync,no_subtree_check)
+      /mnt/projects  192.168.1.0/24(rw,async,no_subtree_check)
+      /mnt/knowledge 192.168.1.0/24(rw,sync,no_subtree_check)
     '';
   };
 

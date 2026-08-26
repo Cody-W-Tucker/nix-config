@@ -134,7 +134,7 @@
     extraSetFlags = [ "--advertise-routes=192.168.1.0/24" ];
   };
   services.zfs.autoScrub.enable = true;
-  services.wake-beast.enable = true;
+  services.wake-beast.enable = false;
 
   # Bluetooth support for Home Assistant (prepares for future controller)
   hardware.bluetooth = {
