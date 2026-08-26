@@ -72,7 +72,7 @@
       "--n-cpu-moe"
       "37"
       "--cache-type-k"
-      "q4_0"
+      "q8_0"
       "--cache-type-v"
       "q4_0"
       "--load-mode"
