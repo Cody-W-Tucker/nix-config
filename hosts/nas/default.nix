@@ -20,14 +20,6 @@
 
   services.opencode.enable = true;
 
-  # Osiris dashboard (Pythia oracle overlay). Enabling it also flips
-  # services.pythia.osirisUrl so the engine fuses world feeds from Osiris.
-  services.osiris.enable = true;
-  # Bind to an explicit port: the generic default (3000) collides live with
-  # another listener on the NAS (EADDRINUSE). 3006 is free; the module threads
-  # this through to the systemd PORT env, Pythia OSIRIS_URL, and nginx upstream.
-  services.osiris.port = 3006;
-
   # Bootloader.
   boot = {
     initrd.availableKernelModules = [
