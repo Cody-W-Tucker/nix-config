@@ -62,7 +62,7 @@
     file = "qwen3.6-35b-a3b-nvfp4.gguf";
     gpuLayers = 999;
     contextSize = 262144;
-    threads = 10;
+    threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
     ttl = 600;
@@ -78,6 +78,10 @@
       "--load-mode"
       "none"
       "--reasoning-preserve"
+      "--reasoning-budget"
+      "2048"
+      "--reasoning-budget-message"
+      "Wait._I_am_overthinking._I_should_answer_now."
       "--spec-type"
       "draft-mtp"
       "--spec-draft-n-max"
