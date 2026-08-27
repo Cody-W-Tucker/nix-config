@@ -104,8 +104,17 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         prompt: str | None = Form(default=None),
         response_format: str | None = Form(default=None),
         temperature: str | None = Form(default=None),
+        task: str | None = Form(default=None),
     ):
         del model, prompt, response_format, temperature
+
+        if task is None:
+            task = "transcribe"
+        elif task not in ("transcribe", "translate"):
+            raise HTTPException(
+                status_code=422,
+                detail="task must be one of 'transcribe' or 'translate'",
+            )
 
         suffix = Path(file.filename or "audio.wav").suffix or ".wav"
         audio_bytes = await file.read()
@@ -123,6 +132,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 beam_size=app.state.beam_size,
                 vad_filter=app.state.vad_filter,
                 language=language or app.state.default_language,
+                task=task,
             )
 
             text = "".join(segment.text for segment in segments).strip()
