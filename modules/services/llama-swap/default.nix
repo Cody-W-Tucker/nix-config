@@ -124,13 +124,12 @@ let
         ${whisperPython}/bin/python3 ${./faster-whisper-openai-server.py} \
           --host 127.0.0.1 \
           --port ''${PORT} \
-          --model medium.en \
+          --model medium \
           --model-id whisper-medium \
           --device cuda \
           --compute-type int8 \
           --download-root ${proxy.sharedFasterWhisperCache} \
-          --vad-filter \
-          --language en
+          --vad-filter
       '';
     };
     "whisper-diarization" = {
