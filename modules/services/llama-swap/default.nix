@@ -184,49 +184,59 @@ let
 
   mkModelCommand =
     model:
-    lib.concatStringsSep " " (
-      [
-        llamaServer
-        "--port"
-        "\${PORT}"
-        "-m"
-        (
-          if model.file != null && lib.hasPrefix "/" model.file then
-            model.file
-          else
-            "${cfg.modelDirectory}/${model.file}"
-        )
-        "--alias"
-        model.alias
-        "--no-webui"
-      ]
-      ++ lib.optionals model.flashAttention [
-        "--flash-attn"
-        "on"
-      ]
-      ++ [
-        "--n-gpu-layers"
-        (toString model.gpuLayers)
-        "-c"
-        (toString model.contextSize)
-        "-b"
-        (toString model.batchSize)
-        "-ub"
-        (toString model.ubatchSize)
-        "-t"
-        (toString model.threads)
-      ]
-      ++ lib.optionals (model.mmprojFile != null) [
-        "--mmproj"
-        (
+    let
+      # Every rendered argument is shell-escaped so values containing shell
+      # metacharacters (notably the JSON --chat-template-kwargs value) pass
+      # through to llama-server literally. ${PORT} keeps its literal form for
+      # llama-swap's own template substitution, which still matches the
+      # `${PORT}` substring inside the single quotes.
+      escape = lib.strings.escapeShellArg;
+      modelPath =
+        if model.file != null && lib.hasPrefix "/" model.file then
+          model.file
+        else
+          "${cfg.modelDirectory}/${model.file}";
+      mmprojPath =
+        if model.mmprojFile != null then
           if lib.hasPrefix "/" model.mmprojFile then
             model.mmprojFile
           else
             "${cfg.modelDirectory}/${model.mmprojFile}"
-        )
+        else
+          null;
+      args = [
+        (escape llamaServer)
+        "--port"
+        (escape "\${PORT}")
+        "-m"
+        (escape modelPath)
+        "--alias"
+        (escape model.alias)
+        "--no-webui"
       ]
-      ++ model.extraArgs
-    );
+      ++ lib.optionals model.flashAttention [
+        "--flash-attn"
+        (escape "on")
+      ]
+      ++ [
+        "--n-gpu-layers"
+        (escape (toString model.gpuLayers))
+        "-c"
+        (escape (toString model.contextSize))
+        "-b"
+        (escape (toString model.batchSize))
+        "-ub"
+        (escape (toString model.ubatchSize))
+        "-t"
+        (escape (toString model.threads))
+      ]
+      ++ lib.optionals (model.mmprojFile != null) [
+        "--mmproj"
+        (escape mmprojPath)
+      ]
+      ++ map escape model.extraArgs;
+    in
+    lib.concatStringsSep " " args;
 
   renderedModels = lib.mapAttrs (
     _: model:

@@ -178,4 +178,24 @@
     file = null;
     ttl = 0; # Keep TTS warm until another group explicitly evicts it.
   };
+  # s1-mini Q4_K_M (superwhisper) — text-only LLM used as a speech-to-text
+  # transcript normalizer. Thinking is disabled via the Jinja chat template
+  # (`enable_thinking: false`) so the model returns only cleaned text;
+  # `--temp 0` keeps normalization deterministic. No reasoning budget is set.
+  "s1-mini" = {
+    file = "s1-mini-q4_k_m.gguf";
+    gpuLayers = 999;
+    contextSize = 32768;
+    threads = 6;
+    batchSize = 2048;
+    ubatchSize = 1024;
+    ttl = 300;
+    extraArgs = [
+      "--jinja"
+      "--chat-template-kwargs"
+      "{\"enable_thinking\":false}"
+      "--temp"
+      "0"
+    ];
+  };
 }

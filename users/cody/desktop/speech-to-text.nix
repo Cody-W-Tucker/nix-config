@@ -16,21 +16,26 @@ let
       pkgs.wtype
     ];
     text = ''
-      set -eu
+      set -euo pipefail
 
       pidfile="/tmp/llama-dictate-recording.pid"
       pathfile="/tmp/llama-dictate-recording.path"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-      api_url="http://nas:8081/v1/audio/transcriptions"
-      warmup_url="http://nas:8081/upstream/whisper-medium/health"
-      model="whisper-medium"
+       api_url="http://nas:8081/v1/audio/transcriptions"
+       warmup_url="http://nas:8081/upstream/whisper-medium/health"
+       normalizer_warmup_url="http://nas:8081/upstream/s1-mini/health"
+       model="whisper-medium"
+      norm_url="http://nas:8081/v1/chat/completions"
 
-      warm_model() {
-        # Ask llama-swap to bring up the STT backend without sending fake audio.
-        ${pkgs.curl}/bin/curl --silent --show-error --fail \
-          --max-time 60 \
-          "$warmup_url" >/dev/null 2>&1 &
-      }
+       warm_model() {
+         # Ask llama-swap to bring up both backends without sending fake requests.
+         ${pkgs.curl}/bin/curl --silent --show-error --fail \
+           --max-time 60 \
+           "$warmup_url" >/dev/null 2>&1 &
+         ${pkgs.curl}/bin/curl --silent --show-error --fail \
+           --max-time 60 \
+           "$normalizer_warmup_url" >/dev/null 2>&1 &
+       }
 
       is_recording_pid() {
         pid="$1"
@@ -165,6 +170,75 @@ let
         [ "$recovered" -eq 1 ]
       }
 
+      normalize_text() {
+        # Normalize raw Whisper output through the s1-mini chat-completions
+        # endpoint. On any failure (network error, timeout, malformed/empty
+        # response) this prints nothing, so the caller can fall back to the raw
+        # transcript.
+        text="$1"
+        system_prompt="You are a text normalizer for speech-to-text transcripts. The input begins with a control line specifying the styling, structure, and context settings; clean the transcript to match those settings and output only the cleaned text."
+
+        payload="$(printf '%s' "$text" | ${pkgs.jq}/bin/jq -R -s --arg sys "$system_prompt" '
+          {
+            model: "s1-mini",
+            messages: [
+              { role: "system", content: $sys },
+              { role: "user", content: "[Styling: semi-formal] [Structure: lists] [Context: email]\n" + . }
+            ]
+          }')"
+
+        ${pkgs.curl}/bin/curl --silent --show-error --fail \
+          --max-time 60 \
+          -X POST "$norm_url" \
+          -H "Content-Type: application/json" \
+          -d "$payload" \
+          | ${pkgs.jq}/bin/jq -r '.choices[0].message.content? // empty'
+      }
+
+      finish_recording() {
+        # Shared stop-and-transcribe path used by both `stop` and `toggle` so the
+        # duplicate transcribe/cleanup logic lives in one place.
+        cleanup_stale_recording stop || true
+
+        path=""
+        if [ -f "$pathfile" ]; then
+          path="$(tr -d '[:space:]' < "$pathfile" 2>/dev/null || true)"
+        fi
+
+        rm -f "$pidfile" "$pathfile"
+
+        [ -n "$path" ] || return 0
+
+        if ! transcribe_and_type "$path"; then
+          rm -f "$path"
+          return 1
+        fi
+
+        rm -f "$path"
+      }
+
+      type_text_once() {
+        # Type $1 as a single wtype process. Preserves full text segments and
+        # maps every internal newline to Shift+Return in source order. Internal
+        # blank lines are preserved; a terminal newline is NOT mapped to a
+        # trailing Shift+Return. Text is passed through the argv array so it is
+        # never re-split or shell-reinterpreted (no eval, no per-line loops).
+        text="$1"
+        args=()
+        first=1
+        while IFS= read -r segment || [ -n "$segment" ]; do
+          if [ "$first" -eq 1 ]; then
+            first=0
+          else
+            args+=(-M shift -k Return -m shift)
+          fi
+          args+=("$segment")
+        done < <(printf '%s' "$text")
+
+        [ "''${#args[@]}" -gt 0 ] || return 0
+        ${pkgs.wtype}/bin/wtype "''${args[@]}"
+      }
+
       transcribe_and_type() {
         path="$1"
 
@@ -185,14 +259,28 @@ let
           -F "model=$model" \
           -F "language=en")"
 
-        text="$(printf '%s' "$response" | ${pkgs.jq}/bin/jq -r '.text // empty' | tr '\n' ' ' | tr -s ' ')"
+        raw_text="$(printf '%s' "$response" | ${pkgs.jq}/bin/jq -r '.text // empty' | tr -s ' ')"
+        raw_text="$(printf '%s' "$raw_text" | sed 's/^ *//;s/ *$//')"
 
-        if [ -z "$text" ]; then
+        if [ -z "$raw_text" ]; then
           notify-send "Voice Input" "Transcription returned no text" -t 2000
           return 1
         fi
 
-        ${pkgs.wtype}/bin/wtype "$text"
+        # Normalize the raw transcript through s1-mini; fall back to the raw text
+        # when normalization fails, times out, or returns nothing.
+        cleaned="$(normalize_text "$raw_text" || true)"
+
+        if [ -z "$cleaned" ]; then
+          cleaned="$raw_text"
+        fi
+
+        # Type the cleaned transcript with one wtype process. Every internal
+        # newline becomes Shift+Return (so target UIs insert a line break
+        # instead of submitting), in source order, with full segments and blank
+        # lines preserved. A single process avoids the per-line width/dropped
+        # text bugs of the old per-line loop.
+        type_text_once "$cleaned"
       }
 
       command="''${1:-}"
@@ -210,23 +298,7 @@ let
           printf '%s\n' "$recording_path" > "$pathfile"
           ;;
         stop)
-          cleanup_stale_recording stop || true
-
-          path=""
-          if [ -f "$pathfile" ]; then
-            path="$(tr -d '[:space:]' < "$pathfile" 2>/dev/null || true)"
-          fi
-
-          rm -f "$pidfile" "$pathfile"
-
-          [ -n "$path" ] || exit 0
-
-          if ! transcribe_and_type "$path"; then
-            rm -f "$path"
-            exit 1
-          fi
-
-          rm -f "$path"
+          finish_recording || exit 1
           ;;
         toggle)
           # If already recording, stop and transcribe; otherwise start.
@@ -238,14 +310,7 @@ let
             fi
             if is_recording_pid "$pid" "$path"; then
               # Recording active — treat as stop.
-              cleanup_stale_recording stop || true
-              rm -f "$pidfile" "$pathfile"
-              [ -n "$path" ] || exit 0
-              if ! transcribe_and_type "$path"; then
-                rm -f "$path"
-                exit 1
-              fi
-              rm -f "$path"
+              finish_recording || exit 1
               exit 0
             fi
             # Stale pid — fall through to start.

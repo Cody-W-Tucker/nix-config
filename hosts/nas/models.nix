@@ -36,14 +36,6 @@ let
     sha256 = "9c4b58e33e316ed142eb5dcb41abec3844d3e6e5dc361ffb782c3fa9d175141f";
   };
 
-  # Qwen3.5-0.8B base GGUF for the qwen3.5-0.8b endpoint. Pinned to an immutable
-  # release commit (6ab461498e...) so the resolved source is reproducible; the
-  # sha256 guards byte-identity. Public/not-gated upstream artifact.
-  qwen35_08b = pkgs.fetchurl {
-    url = "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/6ab461498e2023f6e3c1baea90a8f0fe38ab64d0/Qwen3.5-0.8B-Q8_0.gguf";
-    sha256 = "0ad885ffd4bb022fc4f0d33a3308fa108ef8613159d3b3a67e23abca056b7a6c";
-  };
-
   # Qwen3.5-4B NVFP4 base GGUF for the qwen-3.5-4b endpoint. Pinned to an
   # immutable release commit (fb9f8b9e...) so the resolved source is
   # reproducible; the sha256 guards byte-identity. Multimodal: the matching
@@ -80,6 +72,15 @@ let
   qwen35_9bBase = pkgs.fetchurl {
     url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/3db49b5e08fb84a2ead8d6407f38f6638c79d08a/qwen3.5-9b-nvfp4.gguf";
     sha256 = "0db703913b6a1b057d423e9815095e9dc16499596a986446918314a48c4d9bad";
+  };
+
+  # s1-mini Q4_K_M GGUF (superwhisper) used as the speech-to-text transcript
+  # normalizer (llama-dictate posts raw Whisper output to it). Pinned to an
+  # immutable release commit (34add00a...) so the resolved source is
+  # reproducible; the sha256 guards byte-identity.
+  s1Mini = pkgs.fetchurl {
+    url = "https://huggingface.co/superwhisper/s1-mini-GGUF/resolve/34add00a48a2e5d24e5a4ee5405a99620a3a240c/s1-mini-q4_k_m.gguf";
+    sha256 = "3b41ebe2502cbd03e811d5d16b022f5ab551eda58d62597d152f89535003c634";
   };
 
   # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
@@ -146,8 +147,14 @@ in
       "whisper-medium"
       "whisper-diarization"
       "kokoro-82m"
+      # s1-mini: speech-to-text transcript normalizer (chat-completions),
+      # used by the desktop llama-dictate pipeline.
+      "s1-mini"
     ];
-    preloadModels = [ "whisper-medium" ];
+    preloadModels = [
+      "whisper-medium"
+      "s1-mini"
+    ];
     # qwen-3.5-4b overrides the shared catalog's relative filenames with
     # reproducible store paths (base + matching multimodal projector) fetched
     # above, so llama-server receives --model / --mmproj directly from the Nix
@@ -171,6 +178,11 @@ in
     modelOverrides."glm-ocr-f16" = {
       file = toString glmOcrF16;
       mmprojFile = toString glmOcrMmproj;
+    };
+    # s1-mini Q4_K_M: speech-to-text transcript normalizer. Store-backed GGUF
+    # so llama-server receives --model directly from the Nix store.
+    modelOverrides."s1-mini" = {
+      file = toString s1Mini;
     };
     # Qwen3.6-35B-A3B NVFP4 is fetched reproducibly into the store; override the
     # catalog's relative filename with the absolute store path so llama-server
@@ -207,6 +219,9 @@ in
           "whisper-medium"
           "whisper-diarization"
           "kokoro-82m"
+          # s1-mini normalizer co-resides with whisper-medium so the desktop
+          # speech pipeline can run STT + normalization together.
+          "s1-mini"
         ];
       };
       # inference-stack: the primary 4B LLM and the 0.6B embedding coexist for
