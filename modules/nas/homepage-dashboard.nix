@@ -186,6 +186,13 @@ in
                 description = "LLM Observability";
               };
             }
+            {
+              Watch = {
+                href = "https://watch.${domain}";
+                icon = "mdi-map-search";
+                description = "Maps and Live Cameras";
+              };
+            }
           ];
         }
         {
