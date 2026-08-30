@@ -7,18 +7,13 @@
 let
   enabledUpstreamSkills = [
     "arxiv"
-    "github-auth"
-    "github-code-review"
-    "github-issues"
-    "github-pr-workflow"
-    "github-repo-management"
+    "github" # Upstream consolidated the former github-{auth,code-review,issues,pr-workflow,repo-management} skills.
     "hermes-agent"
     "hermes-agent-skill-authoring"
     "humanizer"
     "opencode"
     "youtube-content"
     "xurl" # X/Twitter via xurl CLI: post, search, DM, media, v2 API.
-    "plan"
     "spike" # Throwaway experiments to validate an idea before build.
     "llm-wiki"
   ];
