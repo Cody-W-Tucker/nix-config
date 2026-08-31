@@ -185,10 +185,10 @@
   "s1-mini" = {
     file = "s1-mini-q4_k_m.gguf";
     gpuLayers = 999;
-    contextSize = 32768;
+    contextSize = 8192;
     threads = 6;
-    batchSize = 2048;
-    ubatchSize = 1024;
+    batchSize = 512;
+    ubatchSize = 512;
     ttl = 300;
     extraArgs = [
       "--jinja"
