@@ -95,10 +95,6 @@
       # Upstream Hermes Agent flake with package and NixOS module.
       url = "github:NousResearch/hermes-agent";
     };
-    rlm = {
-      # Local Recursive Language Model CLI under active development.
-      url = "github:Cody-W-Tucker/rlm";
-    };
   };
 
   outputs =

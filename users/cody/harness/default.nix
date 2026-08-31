@@ -1,5 +1,4 @@
 {
-  config,
   inputs,
   pkgs,
   ...
@@ -11,7 +10,6 @@ in
 
 {
   imports = [
-    inputs.rlm.homeManagerModules.default
     ./opencode
     ./mcp.nix
   ];
@@ -28,14 +26,4 @@ in
 
   # tuicr: match stylix catppuccin-mocha palette
   xdg.configFile."tuicr/config.toml".source = ./tuicr.toml;
-
-  sops.secrets."opencode-api-key" = { };
-
-  programs.rlm = {
-    enable = true;
-    apiKeyFile = config.sops.secrets."opencode-api-key".path;
-    model = "deepseek-v4-pro";
-    subModel = "mimo-v2.5";
-    openaiBaseUrl = "https://opencode.ai/zen/go/v1";
-  };
 }
