@@ -189,7 +189,7 @@
     threads = 6;
     batchSize = 512;
     ubatchSize = 512;
-    ttl = 300;
+    ttl = 0;
     extraArgs = [
       "--jinja"
       "--chat-template-kwargs"
