@@ -24,7 +24,7 @@ in
   config = {
     services.hermes-agent = {
       enable = true;
-      workingDirectory = "/var/lib/hermes-agent";
+      workingDirectory = "/data/workspace";
       user = "codyt";
       group = "users";
       createUser = false;
@@ -83,15 +83,15 @@ in
         auxiliary = {
           approval = {
             provider = "opencode-go";
-            model = "mimo-v2.5";
+            model = "hy3";
           };
           compression = {
             provider = "opencode-go";
-            model = "mimo-v2.5";
+            model = "hy3";
           };
           web_extract = {
             provider = "opencode-go";
-            model = "mimo-v2.5";
+            model = "hy3";
           };
           curator = {
             provider = "opencode-go";
@@ -103,7 +103,7 @@ in
           };
           title_generation = {
             provider = "opencode-go";
-            model = "mimo-v2.5";
+            model = "hy3";
           };
         };
         display.platforms = {
