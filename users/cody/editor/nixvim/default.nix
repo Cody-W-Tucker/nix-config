@@ -47,6 +47,25 @@
       number = true;
       relativenumber = true;
       shiftwidth = 2;
+      wrap = false;
+      showmode = false;
+      tabstop = 2;
+      scrolloff = 10;
+      ignorecase = true;
+      smartindent = true;
+      autoindent = true;
+      backup = false;
+      swapfile = false;
+      undofile = true;
+      autowrite = false;
+      updatetime = 300;
+      timeoutlen = 500;
+      ttimeoutlen = 0;
+      autoread = true;
+      hidden = true;
+      backspace = "indent,eol,start";
+      autochdir = false;
+      selection = "inclusive";
     };
     autoCmd = [
       {
@@ -73,6 +92,7 @@
       yazi.enable = true;
       web-devicons.enable = true;
       direnv.enable = true;
+      trouble.enable = true;
       zig.enable = true;
     };
     # Set the leader key to <Space>
