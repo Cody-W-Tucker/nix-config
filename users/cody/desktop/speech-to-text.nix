@@ -5,6 +5,20 @@
 }:
 
 let
+  # WORKAROUND: wtype 0.4 assigns generated text to control-range keycodes, which Chromium/Electron can misinterpret.
+  # https://github.com/atx/wtype/issues/71
+  # https://github.com/atx/wtype/pull/74
+  # https://github.com/atx/wtype/commit/4b4c4cbd22e57fa2dc03bc8a69f1f9e2fc7f220d
+  # REVIEW-BY: 2026-11-30
+  wtypeFixedKeycodes = pkgs.wtype.overrideAttrs (oa: {
+    patches = (oa.patches or [ ]) ++ [
+      (pkgs.fetchpatch {
+        url = "https://github.com/atx/wtype/commit/4b4c4cbd22e57fa2dc03bc8a69f1f9e2fc7f220d.patch";
+        hash = "sha256-Ds1/PJ6wKuBQu1kgbHnIA7SXlKWMNbvoT+jfowFaMA8=";
+      })
+    ];
+  });
+
   llamaDictate = pkgs.writeShellApplication {
     name = "llama-dictate";
     runtimeInputs = [
@@ -13,7 +27,7 @@ let
       pkgs.jq
       pkgs.libnotify
       pkgs.pipewire
-      pkgs.wtype
+      wtypeFixedKeycodes
     ];
     text = ''
       set -euo pipefail
@@ -236,7 +250,7 @@ let
         done < <(printf '%s' "$text")
 
         [ "''${#args[@]}" -gt 0 ] || return 0
-        ${pkgs.wtype}/bin/wtype "''${args[@]}"
+        ${wtypeFixedKeycodes}/bin/wtype "''${args[@]}"
       }
 
       transcribe_and_type() {
