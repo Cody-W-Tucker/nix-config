@@ -63,13 +63,17 @@
         "dmask=0077"
       ];
     };
-    # "/mnt/media" (8TB ext4, UUID 27ddc2ef-8f21-401d-b9eb-3ed4541c16c9) — commented out:
-    # the filesystem is currently failing and was holding up local-fs.target on boot.
-    # Re-enable once the disk/fs is repaired.
-    # "/mnt/media" = {
-    #   device = "/dev/disk/by-uuid/27ddc2ef-8f21-401d-b9eb-3ed4541c16c9";
-    #   fsType = "ext4";
-    # };
+    "/mnt/media" = {
+      device = "/dev/disk/by-uuid/27ddc2ef-8f21-401d-b9eb-3ed4541c16c9";
+      fsType = "ext4";
+      options = [
+        "defaults"
+        "noatime"
+        "nofail"
+        "x-systemd.device-timeout=30s"
+        "errors=remount-ro"
+      ];
+    };
     "/mnt/appdata" = {
       device = "/dev/disk/by-uuid/17888441-14c2-465f-9786-b2eae0220553";
       fsType = "btrfs";
