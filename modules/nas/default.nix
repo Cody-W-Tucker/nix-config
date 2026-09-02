@@ -12,7 +12,7 @@
     ./dawarich.nix
     ./home-assistant.nix
     ./open-webui.nix
-    ./adguard.nix
+    ./dns.nix
     ./content.nix
     ./excalidraw.nix
     ./gods-eye-view.nix
