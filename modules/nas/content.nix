@@ -50,7 +50,11 @@
       apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
       karakeepUrl = "https://karakeep.homehub.tv";
       karakeepApiKeyFile = config.sops.secrets."karakeep-api-key".path;
-      openaiHost = "http://nas:8081";
+      openaiHost = "https://ai.homehub.tv/v1";
+      # OPENAI_API_KEY for the LiteLLM gateway, derived at activation from
+      # LITELLM_MASTER_KEY inside litellm-env (modules/nas/litellm). No literal
+      # key in Nix; root-owned 0400 (see litellm-openai-api-key-env.service).
+      openaiApiKeyEnvFile = "/run/litellm-openai-api-key/openai-api-key-env";
       embedModel = "qwen3-embedding-0.6b";
       autoMarkReadBelow = 4.5;
       limitUnread = 400;

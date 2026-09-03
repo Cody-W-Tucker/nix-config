@@ -76,11 +76,13 @@ For details, see [Beast AI Stack: Open-WebUI and Qdrant](/Cody-W-Tucker/nix-conf
 
 ## LiteLLM Proxy and Local Model Routing
 
-The NAS runs **LiteLLM** (`modules/nas/litellm`) as the unified inference gateway at `http://ai.homehub.tv` (reverse-proxied from `127.0.0.1:8090`). It already routes hosted upstreams (`gpt-5.6-*`, `hy3`) and now also proxies the **local llama-swap models**, so every consumer hits one endpoint with one auth model.
+The NAS runs **LiteLLM** via the upstream `services.litellm` module (`modules/nas/litellm`, pinned to nixpkgs-unstable 1.97.0) as the unified inference gateway at `http://ai.homehub.tv` (reverse-proxied from `127.0.0.1:8090`). It routes hosted upstreams (`gpt-5.6-*`, `hy3`) and proxies the **local llama-swap models**, so every consumer hits one endpoint with one auth model. See `docs/LiteLLM-Stateless-Migration.md` for the fork→upstream migration and the remaining manual steps.
 
 - **Local routes:** Every enabled `services.llama-swap.enabledModels` entry is exposed through LiteLLM as an OpenAI-compatible model using the `openai/<id>` provider, with `api_base = http://127.0.0.1:8081/v1` (llama-swap's OpenAI endpoint on the same host).
 - **Aliases:** The LiteLLM `model_name` equals the llama-swap model key — the same id llama-swap serves and the `--alias` the backend registers. Current enabled aliases: `qwen3.5-0.8b`, `qwen-3.5-4b`, `qwen3-embedding-0.6b`, `glm-ocr-f16`, `whisper-medium`, `whisper-diarization`, `kokoro-82m`.
-- **Client auth:** Clients authenticate to LiteLLM with the `LITELLM_MASTER_KEY` (from the `litellm-env` SOPS secret) as a Bearer token. The local llama-swap upstream needs no key (`api_key = sk-none`); LiteLLM terminates client auth and forwards unauthenticated requests to localhost.
+- **Client auth:** All clients authenticate to LiteLLM with the `LITELLM_MASTER_KEY` (from the `litellm-env` SOPS secret) as a Bearer token — master-key-only, no per-user virtual keys (stateless migration, see `docs/LiteLLM-Stateless-Migration.md`). The local llama-swap upstream needs no key (`api_key = sk-none`); LiteLLM terminates client auth and forwards unauthenticated requests to localhost.
+  - **Gateway clients (§12.4):** Karakeep, Paperless-GPT, and the Miniflux curator now point at `https://ai.homehub.tv/v1` and read `OPENAI_API_KEY` from `/run/litellm-openai-api-key/openai-api-key-env` — a root-only `0400` env file rendered at activation by `litellm-openai-api-key-env.service`. That unit reads the `litellm-env` SOPS secret (the sole LiteLLM credential secret) and extracts its `LITELLM_MASTER_KEY`, so the gateway and every client share one authoritative master key with no duplicated secret and nothing written to the Nix store. All three consumers read it through root (systemd's service manager, or root podman for the OCI container), so no service user needs access to it. OpenCode's `litellm` provider reads `LITELLM_API_KEY` from the session environment.
+  - **Direct llama-swap (§12.5, by design):** Hermes STT/TTS, desktop speech-to-text, and the Waybar helper still reach llama-swap (`:8081`) directly and are not re-pointed at the gateway.
 - **Existing routes preserved:** Hosted ChatGPT (`gpt-5.6-*`) and the OpenCode Go `hy3` model are generated exactly as before; the llama-swap entries are appended to `model_list`, not merged into the existing generators.
 
 ---
@@ -104,15 +106,22 @@ This diagram shows how various system services consume the AI infrastructure via
 ```mermaid
 flowchart LR
     subgraph Consumers
-        Hermes["hermes-agent"]
+        Hermes["hermes-agent (STT/TTS, direct)"]
         Karakeep["karakeep service"]
-        OWebUI["Open-WebUI"]
+        Paperless["paperless-gpt"]
+        Curator["miniflux-curator"]
+        OWebUI["Open-WebUI (runtime-config)"]
+        OpenCode["OpenCode hy3"]
     end
     subgraph Infrastructure
+        LiteLLM["LiteLLM gateway (:8090)"]
         LSwap["llama-swap (Port 8081)"]
     end
     Hermes --> LSwap
-    Karakeep --> LSwap
-    OWebUI --> LSwap
+    Karakeep --> LiteLLM
+    Paperless --> LiteLLM
+    Curator --> LiteLLM
+    OWebUI --> LiteLLM
+    OpenCode --> LiteLLM
 ```
 

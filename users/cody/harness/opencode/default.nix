@@ -72,8 +72,11 @@ in
       # ── Self-hosted LiteLLM proxy ─────────────────────────────
       # OpenAI-compatible endpoint (modules/nas/litellm) at
       # ai.homehub.tv/v1. Model IDs come from the shared source of
-      # truth; OpenCode manages the LiteLLM virtual key client-side
-      # (no api-key declared here).
+      # truth. Per plans/litellm-stateless-migration.md §12.2, the gateway
+      # is now master-key-only: the provider authenticates with the
+      # LITELLM_API_KEY env var (no literal key in Nix or the generated config).
+      # NOTE: how LITELLM_API_KEY reaches this session from SOPS is the owner
+      # decision (§13 #5) and is intentionally NOT implemented here.
       provider = {
         litellm = {
           npm = "@ai-sdk/openai-compatible";

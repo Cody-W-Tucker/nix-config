@@ -43,6 +43,17 @@ in
       description = "Embedding API host (OpenAI-compatible)";
     };
 
+    openaiApiKeyEnvFile = lib.mkOption {
+      type = lib.types.path;
+      description = ''
+        Path to a systemd EnvironmentFile that defines `OPENAI_API_KEY=<key>` for the
+        embedding/gateway host. This is an env file, not a bare key file — supply a
+        rendered SOPS template rather than a raw secret, so the KEY=VALUE shape is
+        guaranteed. May be root-owned 0400: systemd reads EnvironmentFile= as the
+        service manager before dropping to User=.
+      '';
+    };
+
     embedModel = lib.mkOption {
       type = lib.types.str;
       default = "qwen3-embedding-8b";
@@ -101,6 +112,10 @@ in
         Group = "miniflux-curator";
         WorkingDirectory = "/var/lib/miniflux-curator";
       };
+      # OPENAI_API_KEY for the LiteLLM gateway. systemd reads the file as the service
+      # manager (root) and injects it before dropping to User=miniflux-curator, so the
+      # env file needs no group/other read access.
+      serviceConfig.EnvironmentFile = [ cfg.openaiApiKeyEnvFile ];
       path = [ curatorScript ];
       environment = {
         MINIFLUX_URL = cfg.minifluxUrl;

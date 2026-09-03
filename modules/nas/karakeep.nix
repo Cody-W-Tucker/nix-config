@@ -36,13 +36,16 @@ in
   services.karakeep = {
     enable = true;
     package = prior.karakeep;
+    # OPENAI_API_KEY for the LiteLLM gateway, derived at activation from
+    # LITELLM_MASTER_KEY inside litellm-env (modules/nas/litellm). No literal
+    # key in Nix; root-owned 0400 (see litellm-openai-api-key-env.service).
+    environmentFile = "/run/litellm-openai-api-key/openai-api-key-env";
     extraEnvironment = {
       PORT = "3005";
       DB_WAL_MODE = "true"; # This should improve the performance of the database.
       DISABLE_SIGNUPS = "true";
       DISABLE_NEW_RELEASE_CHECK = "true";
-      OPENAI_API_KEY = "blank";
-      OPENAI_BASE_URL = "http://nas:8081/v1";
+      OPENAI_BASE_URL = "https://ai.homehub.tv/v1";
 
       INFERENCE_TEXT_MODEL = "qwen-3.5-4b";
       OCR_USE_LLM = "true";

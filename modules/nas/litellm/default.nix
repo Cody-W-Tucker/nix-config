@@ -1,41 +1,89 @@
 {
   config,
   inputs,
+  lib,
   mkNginxVhost,
   pkgs,
   ...
 }:
 
 let
-  yaml = pkgs.formats.yaml { };
-  litellmModels = import ./models.nix;
-  openTelemetryPython = config.services.litellm-nix.package.python.withPackages (
-    pythonPackages: with pythonPackages; [
-      opentelemetry-api
-      opentelemetry-sdk
-      opentelemetry-exporter-otlp-proto-http
-    ]
-  );
+  # Go routes derive directly from ./go-catalog.nix. The explicit ChatGPT routes
+  # below use the gpt-5.6-* subset of the OpenCode catalog so visible IDs and
+  # proxy aliases remain aligned.
+  chatgptModelIds = lib.filter (id: lib.hasPrefix "gpt-5.6-" id) (import ./models.nix);
 
-  # OpenCode Go upstream models. LiteLLM routes these to the hosted
-  # opencode.ai/zen/go API instead of ChatGPT. The upstream API shape
-  # selects the provider adapter, which appends its own request path:
-  #   - anthropic → /v1/messages
-  #   - openai    → /v1/chat/completions
-  # Auth is supplied at runtime via OPENCODE_GO_API_KEY in litellm-env.
-  opencodeGoModels = {
-    "hy3" = {
-      provider = "openai";
-      api_base = "https://opencode.ai/zen/go/v1";
-      mode = "chat";
+  # sops-nix owns sops-install-secrets.service only when useSystemdActivation is
+  # on; there is no sops-nix.service, so the dependency is conditional.
+  sopsUnits = lib.optional config.sops.useSystemdActivation "sops-install-secrets.service";
+
+  # Upstream services.litellm ships only on nixpkgs-unstable (1.97.0).
+  litellmPkg = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm;
+
+  # Build the langfuse_otel runtime from the same unstable python3 litellm is built
+  # against (litellmPkg has no .python attr).
+  openTelemetryPython =
+    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.python3.withPackages
+      (
+        pythonPackages: with pythonPackages; [
+          opentelemetry-api
+          opentelemetry-sdk
+          opentelemetry-exporter-otlp-proto-http
+        ]
+      );
+
+  # OpenCode Go model catalog — the SINGLE SOURCE OF TRUTH for Go endpoint model
+  # IDs, their LiteLLM provider adapter, and protocol mode. Imported (not
+  # duplicated) by ./models.nix so the OpenCode client sees the same IDs. Every
+  # entry is a live Go model; provider + mode come from the official OpenCode Go
+  # Endpoints table (see ./go-catalog.nix for the evidence and for the documented
+  # exclusion of gpt-5.6-luna, the sole Go id still routed by the ChatGPT
+  # wildcard). The api_base
+  # (the hosted /zen/go upstream) and auth (OPENCODE_GO_API_KEY) are constant for
+  # all Go models and are applied by the router below.
+  goCatalog = import ./go-catalog.nix;
+
+  # One explicit, protocol-correct route per catalog id. The provider adapter
+  # appends its own request path (anthropic → /v1/messages, openai →
+  # /v1/chat/completions or /v1/responses). This is a set of distinct routes —
+  # NOT a wildcard — so they cannot mix credentials/upstreams with the ChatGPT
+  # or llama-swap routes.
+  mkOpencodeGoEntry =
+    id:
+    let
+      cfg = goCatalog.${id};
+    in
+    {
+      model_name = id;
+      litellm_params = {
+        model = "${cfg.provider}/${id}";
+        api_base = "https://opencode.ai/zen/go/v1";
+        api_key = "os.environ/OPENCODE_GO_API_KEY";
+      };
+      model_info = {
+        inherit (cfg) mode;
+      };
+    };
+
+  opencodeGoEntries = map mkOpencodeGoEntry (builtins.attrNames goCatalog);
+
+  # ChatGPT-backed aliases deliberately use explicit routes. This restores the
+  # pre-e51f4680 behavior and avoids LiteLLM's wildcard segment substitution.
+  mkChatgptEntry = id: {
+    model_name = id;
+    litellm_params = {
+      model = "chatgpt/${id}";
+    };
+    model_info = {
+      mode = "responses";
     };
   };
 
-  # Local llama-swap models (host-managed). When llama-swap is enabled on
-  # the same host, expose its enabled model IDs through LiteLLM as
-  # OpenAI-compatible routes to the llama-swap OpenAI endpoint on localhost.
-  # Model aliases equal the llama-swap model keys (the id llama-swap serves
-  # and the --alias the backend registers).
+  chatgptEntries = map mkChatgptEntry chatgptModelIds;
+
+  # When llama-swap is enabled on the same host, expose its enabled model IDs as
+  # OpenAI-compatible routes to llama-swap's local endpoint. Model aliases equal
+  # the llama-swap model keys.
   llamaSwapState = builtins.tryEval config.services.llama-swap.enable;
   llamaSwapEnabled = llamaSwapState.success && llamaSwapState.value;
   llamaSwapPort = if llamaSwapEnabled then config.services.llama-swap.port else 8081;
@@ -53,197 +101,175 @@ let
     if llamaSwapEnabled then config.services.llama-swap.enabledModels else [ ]
   );
 
-  mkModelEntry =
-    id:
-    if builtins.hasAttr id opencodeGoModels then
-      let
-        cfg = opencodeGoModels.${id};
-      in
-      {
-        model_name = id;
-        litellm_params = {
-          model = "${cfg.provider}/${id}";
-          api_base = cfg.api_base;
-          api_key = "os.environ/OPENCODE_GO_API_KEY";
-        };
-        model_info = {
-          mode = cfg.mode;
-        };
-      }
-    else
-      {
-        model_name = id;
-        litellm_params = {
-          model = "chatgpt/${id}";
-        };
-        model_info = {
-          mode = "responses";
-        };
-      };
-
-  # LiteLLM proxy configuration — generated into the store.
-  litellmConfig = yaml.generate "litellm-config.yaml" {
-    model_list = (map mkModelEntry litellmModels) ++ llamaSwapModelList;
+  # LiteLLM proxy config as the upstream services.litellm.settings attrset
+  # (rendered to YAML by the module). DB-free: master_key reads from litellm-env;
+  # there is no database_url — LiteLLM runs stateless w.r.t. persistence.
+  #
+  # ChatGPT aliases use the prior explicit routes; Go routes generate from the
+  # shared catalog; locally generated llama-swap entries append last.
+  litellmSettings = {
+    model_list = chatgptEntries ++ opencodeGoEntries ++ llamaSwapModelList;
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
-      database_url = "os.environ/DATABASE_URL";
     };
     litellm_settings = {
       # Drop unrecognized provider params rather than failing.
       drop_params = true;
-      additional_drop_params = [ "previous_response_id" ]; # litellm doesn't handle this.
-      # OpenTelemetry is Langfuse's current ingestion path. The legacy
-      # `langfuse` callback uses an obsolete event API rejected by Langfuse v4.
+      # Conservative no-op; verify on 1.97.0 whether previous_response_id is
+      # handled natively and drop this if so.
+      additional_drop_params = [ "previous_response_id" ];
+      # OpenTelemetry is Langfuse's current ingestion path; the legacy langfuse
+      # callback uses an event API rejected by Langfuse v4.
       success_callback = [ "langfuse_otel" ];
       failure_callback = [ "langfuse_otel" ];
     };
   };
+
+  # OPENAI_API_KEY env file for Karakeep, Paperless-GPT, and the Miniflux curator,
+  # rendered at activation by litellm-openai-api-key-env from the single
+  # LITELLM_MASTER_KEY inside litellm-env. The render enforces one simple
+  # LITELLM_MASTER_KEY=sk-<ASCII token> assignment (fails closed on duplicates,
+  # quotes, escapes, whitespace, CRLF, or multiline); the key is never in the
+  # Nix store and is not duplicated across secrets.
+  openaiApiKeyEnvFile = "/run/litellm-openai-api-key/openai-api-key-env";
+
+  # Long-running units that read the rendered OPENAI_API_KEY file and must restart
+  # when it changes. The Miniflux curator is absent: it is a timer oneshot that
+  # re-reads its EnvironmentFile on every start, so a restart would fire an
+  # off-schedule run. The paperless-gpt unit name is derived from the configured
+  # OCI backend so switching podman/docker leaves no dangling target.
+  keyConsumerUnits = [
+    "karakeep-web.service"
+    "karakeep-workers.service"
+    "${config.virtualisation.oci-containers.backend}-paperless-gpt.service"
+  ];
 in
 {
-  imports = [
-    inputs.litellm-nix.nixosModules.default
-  ];
-
-  # ── PostgreSQL (host-managed) ─────────────────────────────────
-  # LiteLLM's Prisma-backed persistence needs a durable database
-  # and role. The fork's `manageLocalPostgresql = true` (default)
-  # handles ordering and applies LITELLM_DATABASE_PASSWORD to the
-  # local `litellm` role — it does NOT bootstrap postgres itself.
-  services.postgresql = {
-    enable = true;
-    ensureDatabases = [ "litellm" ];
-    ensureUsers = [
-      {
-        name = "litellm";
-        ensureDBOwnership = true;
-      }
-    ];
-  };
-
-  # ── Compressed nightly backup of the LiteLLM database only ───
-  # Scoped to the litellm DB to keep other host databases out of
-  # this rotation. Output goes to a dedicated ZFS dataset on the
-  # backup pool (mounted at /mnt/litellm-backups) so dumps are
-  # isolated from general appdata and written only when the pool
-  # is actually mounted.
-  services.postgresqlBackup = {
-    enable = true;
-    databases = [ "litellm" ];
-    location = "/mnt/litellm-backups";
-    compression = "zstd";
-  };
-
-  # ── ZFS dataset for LiteLLM backups ──────────────────────────
-  # backup/litellm → /mnt/litellm-backups. Owned by postgres:postgres
-  # with 0700 so only the database superuser can read/write dumps.
-  # Follows the same idempotent-create-if-missing convention used
-  # for the NFS workspace datasets in modules/nas/nfs.nix.
-  systemd.services."zfs-create-backup-litellm" = {
-    description = "Ensure ZFS dataset backup/litellm exists and is mounted at /mnt/litellm-backups";
-    wantedBy = [ "multi-user.target" ];
-    before = [
-      "postgresqlBackup-litellm.service"
-      "shutdown.target"
-    ];
-    after = [ "zfs-import-backup.service" ];
-    requires = [ "zfs-import-backup.service" ];
-    conflicts = [ "shutdown.target" ];
-    unitConfig.DefaultDependencies = false;
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      if ! ${pkgs.zfs}/bin/zfs list -H -o name backup/litellm &>/dev/null; then
-        ${pkgs.zfs}/bin/zfs create -o mountpoint=/mnt/litellm-backups backup/litellm
-      else
-        ${pkgs.zfs}/bin/zfs set mountpoint=/mnt/litellm-backups backup/litellm
-      fi
-      ${pkgs.zfs}/bin/zfs mount backup/litellm 2>/dev/null || true
-      # postgres owns the dump directory; no group/other access.
-      ${pkgs.coreutils}/bin/chown postgres:postgres /mnt/litellm-backups
-      ${pkgs.coreutils}/bin/chmod 0700 /mnt/litellm-backups
-    '';
-  };
-
-  # The backup unit is generated by the postgresqlBackup module;
-  # bind it to the ZFS dataset service so a failed mount cannot
-  # silently write dumps into the unmounted parent directory.
-  systemd.services."postgresqlBackup-litellm" = {
-    requires = [ "zfs-create-backup-litellm.service" ];
-    after = [ "zfs-create-backup-litellm.service" ];
-  };
-
-  # ── LiteLLM (database-backed proxy + admin UI) ──────────────
-  # The fork package builds LiteLLM with Prisma 6, a generated
-  # Prisma client, migrations, and UI assets; migrations run in
-  # litellm-migrations.service and the main service starts after.
-  # State lives in /var/lib/litellm (stateDir).
-  services.litellm-nix = {
+  # Upstream services.litellm, DB-free, master-key-only auth (single
+  # LITELLM_MASTER_KEY). No database_url; no Postgres/ZFS dependency.
+  services.litellm = {
     enable = true;
     host = "127.0.0.1";
     port = 8090;
-    requireChatgptAuth = true;
-    enableChatgptLogin = true;
-    enableCodexUsage = true;
-    configFile = litellmConfig;
-    # Orders after postgresql.service and applies the password
-    # from databaseEnvFile to the local `litellm` role.
-    manageLocalPostgresql = true;
-    databaseEnvFile = config.sops.secrets."litellm-database-env".path;
-    # OPENCODE_GO_API_KEY is sourced from the canonical `opencode-api-key`
-    # secret (same source Hermes uses) so the hy3 model actually receives
-    # an auth token. `litellm-env` stays the general env file; this is
-    # additive and does not touch whatever else `litellm-env` provides.
-    envFiles = [
-      config.sops.secrets."litellm-env".path
-      config.sops.secrets."litellm-langfuse-env".path
-      config.sops.templates."opencode-go-api-key-env".path
-    ];
-    extraEnvironment = {
+    openFirewall = false;
+    package = litellmPkg;
+    stateDir = "/var/lib/litellm";
+
+    # Non-secret vars only. PYTHONPATH carries the langfuse_otel runtime.
+    environment = {
       STORE_PROMPTS_IN_SPEND_LOGS = "true";
-      # `langfuse_otel` is an optional LiteLLM integration, so include its
-      # OpenTelemetry runtime alongside LiteLLM's packaged interpreter.
+      # The ChatGPT authenticator otherwise resolves its default ~/.config path
+      # to /.config, which the hardened DynamicUser service cannot create.
+      CHATGPT_TOKEN_DIR = "${config.services.litellm.stateDir}/chatgpt";
       PYTHONPATH = "${openTelemetryPython}/${openTelemetryPython.sitePackages}";
-      # Internal Langfuse endpoint. LiteLLM runs on the host; the Langfuse
-      # web container publishes to the host loopback at 127.0.0.1:3000, so
-      # this is the directly routable internal URL (no DNS/TLS dependency).
       LANGFUSE_HOST = "http://127.0.0.1:3000";
       LANGFUSE_OTEL_HOST = "http://127.0.0.1:3000";
       LANGFUSE_TRACING_ENVIRONMENT = "production";
-      # Capture full message content (prompt/completion) in OTel spans
-      # and events rather than truncated summaries.
       OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT = "span_and_event";
     };
+
+    # litellm-env is the sole LiteLLM credential secret (master key, salt/UI,
+    # provider, Langfuse); used directly as the service EnvironmentFile
+    # (root-only read at activation, injected before dropping to DynamicUser).
+    environmentFile = config.sops.secrets."litellm-env".path;
+
+    settings = litellmSettings;
   };
 
-  # ── SOPS secrets ──────────────────────────────────────────────
-  sops.secrets."litellm-env" = { };
-  sops.secrets."litellm-database-env" = { };
+  systemd.services =
+    let
+      # Consumers must not start before the OPENAI_API_KEY file exists. Rotation
+      # is propagated via sops.secrets."litellm-env".restartUnits.
+      consumerOrdering = lib.foldl' (
+        acc: u:
+        acc
+        // {
+          "${lib.removeSuffix ".service" u}" = {
+            after = [ "litellm-openai-api-key-env.service" ];
+            requires = [ "litellm-openai-api-key-env.service" ];
+          };
+        }
+      ) { } keyConsumerUnits;
+    in
+    consumerOrdering
+    // {
+      # Reads litellm-env (the sole credential secret), validates exactly one
+      # LITELLM_MASTER_KEY=sk-<ASCII token> assignment, and writes a root 0400
+      # OPENAI_API_KEY env file. Fails closed on malformed input; the key is
+      # neither duplicated across secrets nor written to the Nix store.
+      "litellm-openai-api-key-env" = {
+        description = "Render OPENAI_API_KEY env file from litellm-env master key";
+        wantedBy = [ "multi-user.target" ];
+        after = sopsUnits;
+        requires = sopsUnits;
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          RuntimeDirectory = "litellm-openai-api-key";
+          RuntimeDirectoryMode = "0700";
+          UMask = "0077";
+        };
+        script = ''
+          set -eu
+          src="${config.sops.secrets."litellm-env".path}"
+          tmp="$(mktemp /run/litellm-openai-api-key/.openai-api-key-env.XXXXXX)"
+          trap 'rm -f "$tmp"' EXIT
 
-  # Langfuse project credentials for LiteLLM tracing. Raw env-file secret
-  # (same shape as `litellm-env`); the decrypted file must contain the
-  # project-scoped keys generated in the Langfuse UI (Settings → Projects):
-  #   LANGFUSE_PUBLIC_KEY=pk-lf-...
-  #   LANGFUSE_SECRET_KEY=sk-lf-...
-  # Add the secret for the `nas` host in the private secrets repo's
-  # .sops.yaml recipients, then populate it with `sops edit`.
-  sops.secrets."litellm-langfuse-env" = { };
+          # Strip CR so CRLF cannot smuggle a hidden character past the validator.
+          # Count every assignment and well-formed simple tokens; reject if not
+          # exactly one of each (duplicates, quoted/escaped/multiline forms fail closed).
+          raw="$(${pkgs.coreutils}/bin/tr -d '\r' < "$src" \
+            | ${pkgs.gnugrep}/bin/grep -cE '^LITELLM_MASTER_KEY=' || true)"
+          good="$(${pkgs.coreutils}/bin/tr -d '\r' < "$src" \
+            | ${pkgs.gnugrep}/bin/grep -cxE 'LITELLM_MASTER_KEY=sk-[A-Za-z0-9._~+/=-]+$' || true)"
+          raw="''${raw:-0}"
+          good="''${good:-0}"
 
-  # Auth for the opencode.ai/zen/go upstream (hy3). Derived from the
-  # same `opencode-api-key` secret Hermes uses, rendered into its own
-  # env file so LiteLLM receives OPENCODE_GO_API_KEY by name.
-  sops.templates."opencode-go-api-key-env" = {
-    content = ''
-      OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
-    '';
-  };
+          if [ "''$good" -ne 1 ] || [ "''$raw" -ne 1 ]; then
+            echo "litellm-env must contain exactly one simple LITELLM_MASTER_KEY=sk-... assignment (no duplicates, quotes, escapes, whitespace, CRLF, or multiline); found raw=''$raw good=''$good" >&2
+            exit 1
+          fi
 
-  # ── Reverse proxy ─────────────────────────────────────────────
-  # ai.homehub.tv → LiteLLM upstream on 127.0.0.1:8090.
-  # HTTP/SSE: buffering off, long upstream read/send timeouts.
-  # No websocket proxy. No Tailscale allowlist — matches prior
-  # reverse-proxy behavior exactly.
+          val="$(${pkgs.coreutils}/bin/tr -d '\r' < "$src" \
+            | ${pkgs.gnugrep}/bin/grep -Ex 'LITELLM_MASTER_KEY=sk-[A-Za-z0-9._~+/=-]+' \
+            | ${pkgs.gnugrep}/bin/grep -Eo 'sk-[A-Za-z0-9._~+/=-]+$')"
+
+          printf 'OPENAI_API_KEY=%s\n' "''$val" > "$tmp"
+          chmod 0400 "$tmp"
+          # Same filesystem rename: consumers see old or complete new file, never truncated.
+          mv -f "$tmp" ${openaiApiKeyEnvFile}
+          trap - EXIT
+        '';
+      };
+    };
+
+  # litellm-env is the sole LiteLLM credential secret; the gateway OPENAI_API_KEY
+  # is derived from its LITELLM_MASTER_KEY (no second copy, no separate master-key
+  # secret). restartUnits re-renders and restarts on real content changes only.
+  sops.secrets."litellm-env".restartUnits = [
+    "litellm-openai-api-key-env.service"
+    "litellm.service"
+  ]
+  ++ keyConsumerUnits;
+
+  # Guard against a dangling restart target: a restartUnits entry naming a unit
+  # that no longer exists only fails at switch time. Catch it at evaluation.
+  assertions =
+    map
+      (unit: {
+        assertion = config.systemd.services ? ${lib.removeSuffix ".service" unit};
+        message = "modules/nas/litellm: references ${unit}, but no such systemd service is defined on this host.";
+      })
+      (
+        keyConsumerUnits
+        ++ [
+          "litellm-openai-api-key-env.service"
+          "litellm.service"
+        ]
+      );
+
+  # ai.homehub.tv → LiteLLM (127.0.0.1:8090); buffering off, long timeouts, no
+  # websockets.
   services.nginx.virtualHosts = mkNginxVhost {
     host = "ai.homehub.tv";
     port = 8090;

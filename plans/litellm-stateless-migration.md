@@ -183,12 +183,17 @@ and the DB must remain attached.
 **Keep unchanged:** `services.postgresql` `ensureDatabases`/`ensureUsers`,
 `services.postgresqlBackup`, the `zfs-create-backup-litellm` unit, the
 `postgresqlBackup-litellm` binding unit, the `sops.secrets` declarations, the
-nginx `ai.homehub.tv` vhost (still `port = 8090`), and `models.nix`.
+nginx `ai.homehub.tv` vhost (still `port = 8090`), and `models.nix` (now
+OpenCode-only; see §5.2).
 
 ### 5.2 `modules/nas/litellm/models.nix`
 
-No change. The model ID list (`gpt-5.6-luna/-terra/-sol`, `hy3`) and the
-llama-swap append logic in `default.nix` are preserved.
+Role changed after this plan: `models.nix` is now the **OpenCode-only** static
+catalog (consumed by `users/cody/harness/opencode`). LiteLLM no longer derives
+its upstream `model_list` from it; instead `default.nix` serves ChatGPT-backed
+`gpt-5.6-*` via explicit `chatgpt/gpt-5.6-*` routes and `hy3` via its
+distinct OpenCode Go route, with llama-swap entries appended last. The model ID
+list (`gpt-5.6-luna/-terra/-sol`, `hy3`) is preserved.
 
 ### 5.3 Secret / env injection consolidation
 

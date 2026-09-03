@@ -39,6 +39,7 @@ pkgs.writeShellApplication {
     : "''${KARAKEEP_URL:?KARAKEEP_URL environment variable not set}"
     : "''${KARAKEEP_API_KEY:?KARAKEEP_API_KEY environment variable not set}"
     : "''${OPENAI_HOST:?OPENAI_HOST environment variable not set}"
+    : "''${OPENAI_API_KEY:?OPENAI_API_KEY environment variable not set}"
 
     # Optional config with defaults
     export AUTO_MARK_READ_BELOW=''${AUTO_MARK_READ_BELOW:-3.5}

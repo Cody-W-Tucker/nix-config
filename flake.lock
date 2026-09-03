@@ -548,11 +548,11 @@
     },
     "nixos-secrets": {
       "locked": {
-        "lastModified": 1788054332,
-        "narHash": "sha256-zTAd9020QDmIE0RD/SD8A1gM3ylUxTo23CJ39TTBYvU=",
+        "lastModified": 1788461921,
+        "narHash": "sha256-BiDKA7/XTs79hzPjeHAjWh4c3wbuBPnDSQh/VmucDLM=",
         "owner": "Cody-W-Tucker",
         "repo": "nixos-secrets",
-        "rev": "671faf6987b7436d9b2f7ed887a6f71d8bbdbfb7",
+        "rev": "487350f21e22fb8f4bd02658db592c24e5273a72",
         "type": "github"
       },
       "original": {
@@ -593,11 +593,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1787900134,
-        "narHash": "sha256-VYXO0XZlgj06dxJZRhrD3WoSsvq/c7+/Akyoa22pefw=",
+        "lastModified": 1788316716,
+        "narHash": "sha256-bc7rSpXIdn9QWGNqfWcPZWOhEVF8NoeAZkWq0XWnf/k=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "83199d0d373dd3ac2b9a1996b1d0263f76ab7a4c",
+        "rev": "3ed67ec0a4d3c7ab4ae1f04f8ee8df07bfa506a2",
         "type": "github"
       },
       "original": {
