@@ -31,7 +31,6 @@
     ./security.nix
     ../services/syncthing.nix
     ./nginx-syncthing.nix
-    ./qdrant.nix
     ./tika.nix
     ./uptime-kuma.nix
     ./wake-beast.nix

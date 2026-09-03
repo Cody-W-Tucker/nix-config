@@ -26,7 +26,7 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 3;
+            columns = 4;
           };
           Tools = {
             style = "row";
@@ -92,37 +92,30 @@ in
               };
             }
             {
-              Paperless = {
-                href = "https://paperless.${domain}";
-                icon = "paperless";
-                description = "Document Management";
+              LiteLLM = {
+                href = "https://ai.${domain}/ui";
+                icon = "https://ai.${domain}/ui/favicon.ico";
+                description = "LLM Gateway";
               };
             }
             {
-              PaperlessGPT = {
-                href = "https://paperless-gpt.${domain}";
-                icon = "https://paperless-gpt.${domain}/favicon.ico";
-                description = "AI Document Assistant";
+              Langfuse = {
+                href = "https://langfuse.homehub.tv";
+                icon = "https://langfuse.${domain}/favicon.ico";
+                description = "LLM Observability";
               };
             }
             {
-              ExcaliDraw = {
-                href = "https://draw.${domain}";
-                icon = "excalidraw";
-                description = "Whiteboard";
+              LlamaSwap = {
+                href = "http://nas:8081";
+                icon = "ollama";
+                description = "LLM Model Router";
               };
             }
           ];
         }
         {
           Tools = [
-            {
-              Qdrant = {
-                href = "https://qdrant.${domain}/dashboard";
-                icon = "https://qdrant.${domain}/dashboard/favicon.ico";
-                description = "Vector DB";
-              };
-            }
             {
               OpenCode = {
                 href = "https://opencode.${domain}";
@@ -131,10 +124,17 @@ in
               };
             }
             {
-              Grafana = {
-                href = "https://monitoring.${domain}";
-                icon = "grafana";
-                description = "Logging & Dashboard";
+              Qdrant = {
+                href = "https://qdrant.${domain}/dashboard";
+                icon = "https://qdrant.${domain}/dashboard/favicon.ico";
+                description = "Vector DB";
+              };
+            }
+            {
+              ExcaliDraw = {
+                href = "https://draw.${domain}";
+                icon = "excalidraw";
+                description = "Whiteboard";
               };
             }
             {
@@ -152,38 +152,10 @@ in
               };
             }
             {
-              HomeAssistant = {
-                href = "https://home-assistant.${domain}";
-                icon = "home-assistant";
-                description = "Home Automation";
-              };
-            }
-            {
               UptimeKuma = {
                 href = "https://uptime.${domain}";
                 icon = "uptime-kuma";
                 description = "Uptime Monitoring";
-              };
-            }
-            {
-              LlamaSwap = {
-                href = "http://nas:8081";
-                icon = "ollama";
-                description = "LLM Model Router";
-              };
-            }
-            {
-              LiteLLM = {
-                href = "https://ai.${domain}/ui";
-                icon = "https://ai.${domain}/ui/favicon.ico";
-                description = "LLM Gateway";
-              };
-            }
-            {
-              Langfuse = {
-                href = "https://langfuse.homehub.tv";
-                icon = "https://langfuse.${domain}/favicon.ico";
-                description = "LLM Observability";
               };
             }
             {
@@ -250,6 +222,20 @@ in
                 description = "Location Tracking";
               };
             }
+            {
+              Paperless = {
+                href = "https://paperless.${domain}";
+                icon = "paperless";
+                description = "Document Management";
+              };
+            }
+            {
+              PaperlessGPT = {
+                href = "https://paperless-gpt.${domain}";
+                icon = "https://paperless-gpt.${domain}/favicon.ico";
+                description = "AI Document Assistant";
+              };
+            }
           ];
         }
         {
@@ -295,10 +281,10 @@ in
         {
           Network = [
             {
-              AdGuard = {
-                href = "https://adguard.${domain}";
-                icon = "adguard-home";
-                description = "Network Wide Adblocking";
+              Grafana = {
+                href = "https://monitoring.${domain}";
+                icon = "grafana";
+                description = "Logging & Dashboard";
               };
             }
             {
@@ -313,6 +299,13 @@ in
                 href = "https://beast-syncthing.${domain}";
                 icon = "syncthing";
                 description = "File Synchronization - Beast";
+              };
+            }
+            {
+              HomeAssistant = {
+                href = "https://home-assistant.${domain}";
+                icon = "home-assistant";
+                description = "Home Automation";
               };
             }
           ];
