@@ -44,6 +44,9 @@
       ];
     };
     config = {
+      # https://www.home-assistant.io/integrations/default_config/
+      default_config = { };
+
       # Allow editing from the web UI
       homeassistant = {
         name = "HomeHub";
