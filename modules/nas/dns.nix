@@ -1,48 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ inputs, pkgs, ... }:
 
-let
-  stevenblackCategories = [
-    "ads"
-    "fakenews"
-    "gambling"
-    "porn"
-    "social"
-  ];
-  stevenblackHosts = lib.concatMapStringsSep " " (
-    category: "${lib.getOutput category config.networking.stevenblack.package}/hosts"
-  ) stevenblackCategories;
-  stevenblackWhitelist = lib.concatStringsSep " " config.networking.stevenblack.whitelist;
-  unboundBlocklist = pkgs.runCommand "unbound-stevenblack-blocklist.conf" { } ''
-    printf 'server:\n' > "$out"
-    ${pkgs.gawk}/bin/awk -v whitelist=${lib.escapeShellArg stevenblackWhitelist} '
-      BEGIN {
-        split(whitelist, allowed, " ")
-        for (i in allowed) {
-          whitelistDomain[allowed[i]] = 1
-        }
-      }
-      /^(0\.0\.0\.0|127\.0\.0\.1)[[:space:]]+/ && !whitelistDomain[$2] && !seen[$2]++ {
-        printf "  local-zone: \"%s.\" always_nxdomain\n", $2
-      }
-    ' ${stevenblackHosts} >> "$out"
-  '';
-in
 {
   networking = {
-    stevenblack = {
-      enable = true;
-      block = [
-        "fakenews"
-        "gambling"
-        "porn"
-        "social"
-      ];
-    };
     firewall = {
       allowedUDPPorts = [ 53 ];
       allowedTCPPorts = [ 53 ];
@@ -57,7 +16,6 @@ in
   services.unbound = {
     enable = true;
     settings = {
-      include = [ "${unboundBlocklist}" ];
       server = {
         # Serve LAN, Tailscale, containers, and local processes directly.
         interface = [
@@ -73,6 +31,10 @@ in
         # All homehub.tv names resolve to the NAS on the local network.
         local-zone = [ ''"homehub.tv." redirect'' ];
         local-data = [ ''"homehub.tv. A 192.168.1.2"'' ];
+
+        # StevenBlack ads/malware blocklist, generated upstream as a
+        # local-zone always_nxdomain fragment and included directly.
+        include = [ "${inputs.stevenblack.packages.${pkgs.system}.unbound}/hosts" ];
 
         harden-glue = true;
         harden-dnssec-stripped = true;

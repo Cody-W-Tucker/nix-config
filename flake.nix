@@ -95,6 +95,13 @@
       # Upstream Hermes Agent flake with package and NixOS module.
       url = "github:NousResearch/hermes-agent";
     };
+    stevenblack = {
+      # StevenBlack ads/malware blocklist, consumed directly as the upstream
+      # Unbound include via packages.<system>.unbound (a generated local-zone
+      # always_nxdomain fragment). No wrapper module.
+      url = "github:StevenBlack/hosts";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =

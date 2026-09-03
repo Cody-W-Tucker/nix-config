@@ -874,6 +874,7 @@
         "nixvim": "nixvim",
         "nixvim-stable": "nixvim-stable",
         "sops-nix": "sops-nix",
+        "stevenblack": "stevenblack",
         "stylix": "stylix",
         "vpn-confinement": "vpn-confinement",
         "zen-browser": "zen-browser"
@@ -896,6 +897,26 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "stevenblack": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788212782,
+        "narHash": "sha256-AtJFXcw1c5OgvC2fwJxKrYIZ1ECprbdwmVS8jxAQMgg=",
+        "owner": "StevenBlack",
+        "repo": "hosts",
+        "rev": "70f9d76ae51416e064ca4e44433e156dff2902e9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "StevenBlack",
+        "repo": "hosts",
         "type": "github"
       }
     },
