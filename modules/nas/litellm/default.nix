@@ -38,14 +38,13 @@ let
   # entry is a live Go model; provider + mode come from the official OpenCode Go
   # Endpoints table (see ./go-catalog.nix for the evidence and for the documented
   # exclusion of gpt-5.6-luna, the sole Go id still routed by the ChatGPT
-  # wildcard). The api_base
-  # (the hosted /zen/go upstream) and auth (OPENCODE_GO_API_KEY) are constant for
-  # all Go models and are applied by the router below.
+  # wildcard). The provider determines the required Go api_base; auth
+  # (OPENCODE_GO_API_KEY) is shared by all Go models and is applied below.
   goCatalog = import ./go-catalog.nix;
 
   # One explicit, protocol-correct route per catalog id. The provider adapter
-  # appends its own request path (anthropic → /v1/messages, openai →
-  # /v1/chat/completions or /v1/responses). This is a set of distinct routes —
+  # appends its own request path. Anthropic includes /v1/messages, while OpenAI
+  # appends chat/completions or responses to its versioned base. This is a set of distinct routes —
   # NOT a wildcard — so they cannot mix credentials/upstreams with the ChatGPT
   # or llama-swap routes.
   mkOpencodeGoEntry =
@@ -57,7 +56,12 @@ let
       model_name = id;
       litellm_params = {
         model = "${cfg.provider}/${id}";
-        api_base = "https://opencode.ai/zen/go";
+        # OpenAI's client does not add /v1; Anthropic's client does.
+        api_base =
+          if cfg.provider == "anthropic" then
+            "https://opencode.ai/zen/go"
+          else
+            "https://opencode.ai/zen/go/v1";
         api_key = "os.environ/OPENCODE_GO_API_KEY";
       };
       model_info = {

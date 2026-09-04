@@ -10,9 +10,10 @@
 #   /v1/chat/completions -> provider "openai",    mode "chat"
 #   /v1/messages         -> provider "anthropic", mode "chat"
 #
-# The api_base (https://opencode.ai/zen/go/v1) and auth
-# (os.environ/OPENCODE_GO_API_KEY) are constant for all Go models and are applied
-# by the router in default.nix — they are intentionally NOT stored per-entry here.
+# LiteLLM uses https://opencode.ai/zen/go/v1 for OpenAI routes and
+# https://opencode.ai/zen/go for Anthropic routes; the provider determines the
+# required base in default.nix. Auth (os.environ/OPENCODE_GO_API_KEY) is shared
+# by all Go models and is intentionally not stored per-entry here.
 #
 # Go models are mixed-protocol, so this is one EXPLICIT route per id — never a
 # wildcard. Both derivations consume this file and must not duplicate it:
