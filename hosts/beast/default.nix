@@ -10,10 +10,24 @@
 let
   hardwareConfig = {
     # Controls the monitor layout for hyprland
-    workspace = [ "1, monitor:DP-1, default:true" ];
+    workspace = [
+      {
+        workspace = "1";
+        monitor = "DP-1";
+        default = true;
+      }
+    ];
     monitor = [
       # Samsung Odyssey G65B exposes 2560x1440@239.97; keep SDR desktop output in sRGB and leave HDR to fullscreen-capable clients.
-      "DP-1,2560x1440@239.97,0x0,1,vrr,2,bitdepth,10,cm,srgb"
+      {
+        output = "DP-1";
+        mode = "2560x1440@239.97";
+        position = "0x0";
+        scale = 1;
+        vrr = 2;
+        bitdepth = 10;
+        cm = "srgb";
+      }
     ];
     # Suspend after 1 hour of idle
     hypridle.suspendTimeout = 3600;

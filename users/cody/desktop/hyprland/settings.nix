@@ -11,209 +11,412 @@ let
   webApp = "chromium --new-window --app";
   terminal = "kitty";
 
-  # Helper to focus or run applications
-  focusOrRun = appClass: cmd: "exec, focus-or-run '${appClass}' '${cmd}'";
+  lua = lib.generators.mkLuaInline;
 
-  mousebinds = [
+  # Dispatcher calls rendered as raw Lua expressions for bind actions
+  exec = cmd: lua "hl.dsp.exec_cmd(${builtins.toJSON cmd})";
+
+  # Helper to focus or run applications (renders a single hl.dsp.exec_cmd call)
+  focusOrRun = appClass: cmd: lua ''hl.dsp.exec_cmd("focus-or-run '${appClass}' '${cmd}'")'';
+
+  # One bind: { _args = [ key action (options)? ] } renders hl.bind(key, action[, options])
+  mkBind = key: action: options: {
+    _args = [
+      key
+      action
+    ]
+    ++ lib.optionals (options != null) [ options ];
+  };
+
+  execBind = key: cmd: mkBind key (exec cmd) null;
+  actionBind = key: action: mkBind key action null;
+
+  # Drag/resize binds need the mouse option flag (replaces hyprlang bindm)
+  mouseBind = key: action: mkBind key action { mouse = true; };
+
+  specialWorkspaceRules = [
+    {
+      workspace = "special:ai";
+      on_created_empty = "${webApp}=https://www.perplexity.ai/";
+    }
+    {
+      workspace = "special:dev";
+      on_created_empty = terminal;
+    }
+    {
+      workspace = "special:media";
+      on_created_empty = "${webApp}=https://www.youtube.com/";
+    }
+    {
+      workspace = "special:think";
+      on_created_empty = "${webApp}=https://draw.homehub.tv/";
+    }
+    {
+      workspace = "special:chat";
+      on_created_empty = "${terminal} -e twt";
+    }
+    {
+      workspace = "special:stream-manager";
+      on_created_empty = "${webApp}=https://dashboard.twitch.tv/u/cody_tmv/stream-manager";
+    }
+  ];
+
+  binds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
-    "${mainMod}, mouse:272, movewindow"
-    "${mainMod}, mouse:273, resizewindow"
-  ];
+    (mouseBind "${mainMod} + mouse:272" (lua "hl.dsp.window.drag()"))
+    (mouseBind "${mainMod} + mouse:273" (lua "hl.dsp.window.resize()"))
 
-  specialWorkspaces = [
-    "special:ai, on-created-empty: ${webApp}=https://www.perplexity.ai/"
-    "special:dev, on-created-empty: ${terminal}"
-    "special:media, on-created-empty: ${webApp}=https://www.youtube.com/"
-    "special:think, on-created-empty: ${webApp}=https://draw.homehub.tv/"
-    "special:chat, on-created-empty: ${terminal} -e twt"
-    "special:stream-manager, on-created-empty: ${webApp}=https://dashboard.twitch.tv/u/cody_tmv/stream-manager"
-  ];
-
-  keybinds = [
     # Application launchers (focus existing window or run new)
-    "${mainMod}, Q, exec, ${terminal}"
-    "${mainMod}, 0, ${focusOrRun "^(zen)$" browser}"
+    (execBind "${mainMod} + Q" terminal)
+    (actionBind "${mainMod} + 0" (focusOrRun "^(zen)$" browser))
 
     # Web applications
-    "${mainMod} SHIFT, Return, exec, [workspace special:ai] ${webApp}=https://grok.com/"
-    "${mainMod}, A, exec, ${webApp}=https://chat.homehub.tv/"
+    (execBind "${mainMod} + SHIFT + Return" "[workspace special:ai] ${webApp}=https://grok.com/")
+    (execBind "${mainMod} + A" "${webApp}=https://chat.homehub.tv/")
 
     # Quick launch
-    "${mainMod}, Tab, exec, rofi-launcher"
-    "${mainMod}, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-    "${mainMod} SHIFT, Tab, exec, web-search"
-    "${mainMod}, BackSpace, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n \"{result}\" | wl-copy'"
+    (execBind "${mainMod} + Tab" "rofi-launcher")
+    (execBind "${mainMod} + V" "cliphist list | rofi -dmenu | cliphist decode | wl-copy")
+    (execBind "${mainMod} + SHIFT + Tab" "web-search")
+    (execBind "${mainMod} + BackSpace" "rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n \"{result}\" | wl-copy'")
 
     # Screenshots
-    "${mainMod}, S, exec, screenshot-ocr"
-    ''${mainMod} SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
+    (execBind "${mainMod} + S" "screenshot-ocr")
+    (execBind "${mainMod} + SHIFT + S" ''grim -g "$(slurp)" - | wl-copy'')
 
     # Color picker
-    "${mainMod}, mouse:274, exec, hyprpicker -a"
+    (execBind "${mainMod} + mouse:274" "hyprpicker -a")
 
     # Window management
-    "${mainMod}, C, killactive"
-    "${mainMod}, F, fullscreen"
+    (actionBind "${mainMod} + C" (lua "hl.dsp.window.close()"))
+    (actionBind "${mainMod} + F" (
+      lua ''hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" })''
+    ))
 
     # Workspace navigation
-    "${mainMod}, H, movefocus, l"
-    "${mainMod} SHIFT, H, exec, hyprnome --previous --move"
-    "${mainMod}, L, movefocus, r"
-    "${mainMod} SHIFT, L, exec, hyprnome --move"
+    (actionBind "${mainMod} + H" (lua ''hl.dsp.focus({ direction = "l" })''))
+    (execBind "${mainMod} + SHIFT + H" "hyprnome --previous --move")
+    (actionBind "${mainMod} + L" (lua ''hl.dsp.focus({ direction = "r" })''))
+    (execBind "${mainMod} + SHIFT + L" "hyprnome --move")
 
-    "${mainMod}, mouse_down, exec, hyprnome --previous"
-    "${mainMod}, mouse_up, exec, hyprnome"
-    "${mainMod} SHIFT, mouse_down, exec, hyprnome --previous --move"
-    "${mainMod} SHIFT, mouse_up, exec, hyprnome --move"
+    (execBind "${mainMod} + mouse_down" "hyprnome --previous")
+    (execBind "${mainMod} + mouse_up" "hyprnome")
+    (execBind "${mainMod} + SHIFT + mouse_down" "hyprnome --previous --move")
+    (execBind "${mainMod} + SHIFT + mouse_up" "hyprnome --move")
 
     # Special workspaces
-    "${mainMod}, RETURN, togglespecialworkspace, ai"
-    "${mainMod}, T, togglespecialworkspace, chat"
-    "${mainMod} Shift, T, togglespecialworkspace, stream-manager"
-    "${mainMod}, D, togglespecialworkspace, dev"
-    "${mainMod} Shift, D, exec, [workspace special:dev] ${terminal} -e herdr" # agent runner
-    "${mainMod}, E, togglespecialworkspace, think"
-    "${mainMod}, Y, togglespecialworkspace, media"
-    "${mainMod} SHIFT, Y, exec, [workspace special:media] ${webApp}=https://www.twitch.tv/"
+    (actionBind "${mainMod} + Return" (lua ''hl.dsp.workspace.toggle_special("ai")''))
+    (actionBind "${mainMod} + T" (lua ''hl.dsp.workspace.toggle_special("chat")''))
+    (actionBind "${mainMod} + SHIFT + T" (lua ''hl.dsp.workspace.toggle_special("stream-manager")''))
+    (actionBind "${mainMod} + D" (lua ''hl.dsp.workspace.toggle_special("dev")''))
+    # agent runner
+    (execBind "${mainMod} + SHIFT + D" "[workspace special:dev] ${terminal} -e herdr")
+    (actionBind "${mainMod} + E" (lua ''hl.dsp.workspace.toggle_special("think")''))
+    (actionBind "${mainMod} + Y" (lua ''hl.dsp.workspace.toggle_special("media")''))
+    (execBind "${mainMod} + SHIFT + Y" "[workspace special:media] ${webApp}=https://www.twitch.tv/")
 
     # Toggle waybar
-    "${mainMod}, P, exec, pkill -SIGUSR1 waybar"
+    (execBind "${mainMod} + P" "pkill -SIGUSR1 waybar")
 
     # Whisper dictation - toggle recording on/off
-    "${mainMod}, Escape, exec, llama-dictate toggle"
+    (execBind "${mainMod} + Escape" "llama-dictate toggle")
 
     # Whisper dictation - recover from orphaned recorder
-    "${mainMod} SHIFT, Escape, exec, llama-dictate recover"
+    (execBind "${mainMod} + SHIFT + Escape" "llama-dictate recover")
   ];
+
+  # Multimedia keys for volume, mic, and LCD brightness (bindel: locked + repeating)
+  repeatingExecBinds =
+    builtins.map
+      (
+        spec:
+        mkBind spec.key (exec spec.command) {
+          locked = true;
+          repeating = true;
+        }
+      )
+      [
+        {
+          key = "XF86AudioRaiseVolume";
+          command = "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+";
+        }
+        {
+          key = "XF86AudioLowerVolume";
+          command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+        }
+        {
+          key = "XF86AudioMute";
+          command = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+        }
+        {
+          key = "XF86AudioMicMute";
+          command = "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+        }
+        {
+          key = "XF86MonBrightnessUp";
+          command = "brightnessctl -e4 -n2 set 5%+";
+        }
+        {
+          key = "XF86MonBrightnessDown";
+          command = "brightnessctl -e4 -n2 set 5%-";
+        }
+      ];
+
+  # Locking binds that don't repeat (bindl)
+  lockedExecBinds = builtins.map (spec: mkBind spec.key (exec spec.command) { locked = true; }) [
+    # Requires playerctl
+    {
+      key = "XF86AudioNext";
+      command = "playerctl next";
+    }
+    {
+      key = "XF86AudioPause";
+      command = "playerctl play-pause";
+    }
+    {
+      key = "XF86AudioPlay";
+      command = "playerctl play-pause";
+    }
+    {
+      key = "XF86AudioPrev";
+      command = "playerctl previous";
+    }
+  ];
+
+  # workspaces
+  # binds $mainMod + [shift +] {1..9} to [move to] workspace {1..9}
+  workspaceBinds = builtins.concatLists (
+    builtins.genList (
+      i:
+      let
+        ws = toString (i + 1);
+      in
+      [
+        (actionBind "${mainMod} + code:1${toString i}" (lua ''hl.dsp.focus({ workspace = "${ws}" })''))
+        (actionBind "${mainMod} + SHIFT + code:1${toString i}" (
+          lua ''hl.dsp.window.move({ workspace = "${ws}" })''
+        ))
+      ]
+    ) 9
+  );
 in
 {
   wayland.windowManager.hyprland.settings = {
-    ecosystem = {
-      no_update_news = true;
-      no_donation_nag = true;
+    # Exposes the old `$mainMod` hyprlang variable as a Lua local
+    mainMod = {
+      _var = mainMod;
     };
-    "$mainMod" = mainMod;
-    bindm = mousebinds;
-    bind =
-      keybinds
-      ++ (
-        # workspaces
-        # binds $mainMod + [shift +] {1..9} to [move to] workspace {1..9}
-        builtins.concatLists (
-          builtins.genList (
-            i:
-            let
-              ws = i + 1;
-            in
-            [
-              "${mainMod}, code:1${toString i}, workspace, ${toString ws}"
-              "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-            ]
-          ) 9
-        )
-      );
-    bindel = [
-      # Multimedia keys for volume and LCD brightness
-      ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
-      ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-      ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-      ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-      ",XF86MonBrightnessUp, exec, brightnessctl -e4 -n2 set 5%+"
-      ",XF86MonBrightnessDown, exec, brightnessctl -e4 -n2 set 5%-"
-    ];
 
-    bindl = [
-      # Requires playerctl
-      ", XF86AudioNext, exec, playerctl next"
-      ", XF86AudioPause, exec, playerctl play-pause"
-      ", XF86AudioPlay, exec, playerctl play-pause"
-      ", XF86AudioPrev, exec, playerctl previous"
-    ];
+    config = {
+      ecosystem = {
+        no_update_news = true;
+        no_donation_nag = true;
+      };
 
-    windowrule = [
+      animations.enabled = true;
+
+      input = {
+        numlock_by_default = true;
+        follow_mouse = 1;
+        sensitivity = -0.1;
+        force_no_accel = 0;
+        kb_layout = "us";
+      };
+
+      render = {
+        direct_scanout = 0;
+      };
+
+      general = {
+        allow_tearing = false;
+        border_size = 2;
+        gaps_in = 2;
+        gaps_out = 2;
+        layout = "master";
+        "col.active_border" = lib.mkForce {
+          colors = [
+            "rgba(${config.lib.stylix.colors.base0C}aa)"
+            "rgba(${config.lib.stylix.colors.base0D}aa)"
+            "rgba(${config.lib.stylix.colors.base0B}aa)"
+            "rgba(${config.lib.stylix.colors.base0E}aa)"
+          ];
+          angle = 45;
+        };
+        "col.inactive_border" = lib.mkForce {
+          colors = [
+            "rgba(${config.lib.stylix.colors.base00}99)"
+            "rgba(${config.lib.stylix.colors.base01}99)"
+          ];
+          angle = 45;
+        };
+      };
+
+      cursor = {
+        hide_on_key_press = true;
+      };
+
+      decoration = {
+        rounding = 10;
+        active_opacity = 1;
+        inactive_opacity = 1;
+        blur = {
+          enabled = false;
+        };
+        shadow = {
+          enabled = true;
+          render_power = 3;
+          range = 4;
+          color = lib.mkForce "rgba(1a1a1aee)";
+        };
+      };
+
+      dwindle = {
+        preserve_split = true;
+      };
+
+      master = {
+        new_status = "master";
+      };
+
+      misc = {
+        mouse_move_enables_dpms = true;
+        key_press_enables_dpms = true;
+        force_default_wallpaper = 0;
+        disable_hyprland_logo = lib.mkForce true;
+        focus_on_activate = true;
+      };
+    };
+
+    bind = binds ++ repeatingExecBinds ++ lockedExecBinds ++ workspaceBinds;
+
+    window_rule = [
       # Kitty
-      "match:class ^(kitty)$, no_blur on"
-      "match:class ^(kitty)$, opacity 1.0 1.0 1.0 override"
+      {
+        match.class = "^(kitty)$";
+        no_blur = true;
+      }
+      {
+        match.class = "^(kitty)$";
+        opacity = "1.0 1.0 1.0 override";
+      }
 
       # Ensure all web apps don't float
-      "match:initial_class ^(Chromium-browser)$, tile on"
-
-      "match:title ^(Picture-in-Picture)$, float on"
-      "match:title ^(Picture-in-Picture)$, pin on"
+      {
+        match.initial_class = "^(Chromium-browser)$";
+        tile = true;
+      }
+      {
+        match.title = "^(Picture-in-Picture)$";
+        float = true;
+      }
+      {
+        match.title = "^(Picture-in-Picture)$";
+        pin = true;
+      }
 
       # Throw sharing indicators away
-      "match:title ^(Firefox — Sharing Indicator)$, workspace special silent"
-      "match:title ^(Zen — Sharing Indicator)$, workspace special silent"
-      "match:title ^(.*is sharing (your screen|a window).)$, workspace special silent"
+      {
+        match.title = "^(Firefox — Sharing Indicator)$";
+        workspace = "special silent";
+      }
+      {
+        match.title = "^(Zen — Sharing Indicator)$";
+        workspace = "special silent";
+      }
+      {
+        match.title = "^(.*is sharing (your screen|a window).)$";
+        workspace = "special silent";
+      }
     ];
 
     # Workspace and monitor set in flake.nix
-    workspace = hardwareConfig.workspace ++ specialWorkspaces;
-    inherit (hardwareConfig) monitor;
-    animations = {
-      enabled = true;
-      bezier = [
-        "easeInExpo, 0.7, 0, 0.84, 0"
-        "easeOutExpo, 0.16, 1, 0.3, 1"
-      ];
-      animation = [
-        "windows, 1, 1, easeInExpo, slide"
-        "windowsIn, 1, 1, easeInExpo, slide 80%"
-        "windowsOut, 1, 1, easeOutExpo, slide 80%"
-        "border, 1, 10, default"
-        "borderangle, 1, 8, default"
-        "fade, 1, 2, default"
-        "workspaces, 0"
-      ];
-    };
-    input = {
-      numlock_by_default = "true";
-      follow_mouse = "1";
-      sensitivity = "-.1";
-      force_no_accel = 0;
-      kb_layout = "us";
-    };
-    render = {
-      direct_scanout = "0";
-    };
-    general = {
-      allow_tearing = false;
-      border_size = "2";
-      gaps_in = "2";
-      gaps_out = "2";
-      layout = "master";
-      "col.active_border" =
-        lib.mkForce "rgba(${config.lib.stylix.colors.base0C}aa) rgba(${config.lib.stylix.colors.base0D}aa) rgba(${config.lib.stylix.colors.base0B}aa) rgba(${config.lib.stylix.colors.base0E}aa) 45deg";
-      "col.inactive_border" =
-        lib.mkForce "rgba(${config.lib.stylix.colors.base00}99) rgba(${config.lib.stylix.colors.base01}99) 45deg";
-    };
-    cursor.hide_on_key_press = true;
-    decoration = {
-      rounding = "10";
-      active_opacity = "1";
-      inactive_opacity = "1";
-      blur = {
-        enabled = "false";
-      };
-      shadow = {
+    workspace_rule = hardwareConfig.workspace ++ specialWorkspaceRules;
+    monitor = hardwareConfig.monitor;
+
+    # Custom curves used by the animation entries below
+    curve = [
+      {
+        _args = [
+          "easeInExpo"
+          {
+            type = "bezier";
+            points = [
+              [
+                0.7
+                0
+              ]
+              [
+                0.84
+                0
+              ]
+            ];
+          }
+        ];
+      }
+      {
+        _args = [
+          "easeOutExpo"
+          {
+            type = "bezier";
+            points = [
+              [
+                0.16
+                1
+              ]
+              [
+                0.3
+                1
+              ]
+            ];
+          }
+        ];
+      }
+    ];
+
+    animation = [
+      {
+        leaf = "windows";
         enabled = true;
-        render_power = "3";
-        range = "4";
-        color = lib.mkForce "rgba(1a1a1aee)";
-      };
-    };
-    dwindle = {
-      preserve_split = "yes";
-    };
-    master = {
-      new_status = "master";
-    };
-    misc = {
-      mouse_move_enables_dpms = "true";
-      key_press_enables_dpms = "true";
-      force_default_wallpaper = "0";
-      disable_hyprland_logo = lib.mkForce "true";
-      focus_on_activate = "true";
-    };
+        speed = 1;
+        bezier = "easeInExpo";
+        style = "slide";
+      }
+      {
+        leaf = "windowsIn";
+        enabled = true;
+        speed = 1;
+        bezier = "easeInExpo";
+        style = "slide 80%";
+      }
+      {
+        leaf = "windowsOut";
+        enabled = true;
+        speed = 1;
+        bezier = "easeOutExpo";
+        style = "slide 80%";
+      }
+      {
+        leaf = "border";
+        enabled = true;
+        speed = 10;
+        bezier = "default";
+      }
+      {
+        leaf = "borderangle";
+        enabled = true;
+        speed = 8;
+        bezier = "default";
+      }
+      {
+        leaf = "fade";
+        enabled = true;
+        speed = 2;
+        bezier = "default";
+      }
+      {
+        leaf = "workspaces";
+        enabled = false;
+      }
+    ];
   };
 }
