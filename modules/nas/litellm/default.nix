@@ -57,7 +57,7 @@ let
       model_name = id;
       litellm_params = {
         model = "${cfg.provider}/${id}";
-        api_base = "https://opencode.ai/zen/go/v1";
+        api_base = "https://opencode.ai/zen/go";
         api_key = "os.environ/OPENCODE_GO_API_KEY";
       };
       model_info = {
