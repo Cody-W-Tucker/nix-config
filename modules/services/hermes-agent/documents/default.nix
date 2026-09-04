@@ -42,26 +42,6 @@ let
     - **Default workspace**: `${workingDirectory}`
     - **Projects root**: `${projectsRoot}` for user projects
     - **Obsidian vault**: `${obsidianVault}` as a shared read/write space
-
-    ## Tool Notes
-
-    - **Memory and Tasks**: the full tool specs at `${workingDirectory}/MEMORY-SPEC.md` and `${workingDirectory}/TASK-SPEC.md`. Consult when managing memory and structuring tasks respectively.
-    - **CRM**: Use the CRM cli tool for all people operations. (keeping track of deals, contacts, companies, email addresses, etc.)
-
-    ### Internal Context Sources
-
-    `qmd` is the primary source for internal knowledge (people/project context, thoughts, ideas and journals) stored in Obsidian-backed collections.
-
-    If the user asks a factual or direct question that could plausibly be answered from internal knowledge, search qmd before saying you do not know.
-
-    For internal knowledge questions:
-    1. Search the most relevant qmd collections first.
-    2. Run additional searches with adjacent terms, synonyms, project names, or likely note titles if the first search is thin.
-    3. Synthesize the answer from the retrieved material when the evidence is sufficient, even if no single note states it verbatim.
-
-    When the user asks for your persective on a subject and user-specific context would materially improve the result use `qmd` and synthesize an answer.
-
-    Do not default to "I don't know" when the answer is likely in the knowledge base but has not been searched yet.
   '';
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" ''
     ${builtins.readFile translationLayer}
