@@ -34,7 +34,7 @@
 
         # StevenBlack ads/malware blocklist, generated upstream as a
         # local-zone always_nxdomain fragment and included directly.
-        include = [ "${inputs.stevenblack.packages.${pkgs.system}.unbound}/hosts" ];
+        include = [ "${inputs.stevenblack.packages.${pkgs.stdenv.hostPlatform.system}.unbound}/hosts" ];
 
         harden-glue = true;
         harden-dnssec-stripped = true;
