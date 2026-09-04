@@ -26,13 +26,13 @@ let
         jq '
           .activePreset = "openai"
           | .presets.openai.fast.model = "litellm/gpt-5.6-luna"
-          | .presets.openai.fast.description = "GPT-5.6 Luna for fast exploration and simple tasks"
-          | .presets.openai.medium.model = "litellm/qwen3.8-flash"
+          | .presets.openai.fast.description = "fast exploration and simple tasks"
+          | .presets.openai.medium.model = "litellm/glm-5.3-flash"
           | .presets.openai.medium.variant = "high"
-          | .presets.openai.medium.description = "Qwen — implementation, refactors, and standard coding work"
+          | .presets.openai.medium.description = "implementation, refactors, and standard coding work"
           | .presets.openai.heavy.model = "litellm/gpt-5.6-sol"
           | .presets.openai.heavy.variant = "high"
-          | .presets.openai.heavy.description = "GPT-5.6 Sol for architecture and complex tasks"
+          | .presets.openai.heavy.description = "architecture and complex tasks"
         ' "$out/tiers.json" > "$tmp_json"
         mv "$tmp_json" "$out/tiers.json"
       '';
