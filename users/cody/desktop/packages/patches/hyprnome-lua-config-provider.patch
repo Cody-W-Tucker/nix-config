@@ -1,0 +1,60 @@
+--- a/src/hyprland.rs	2026-09-04 18:03:20.588280065 -0500
++++ b/src/hyprland.rs	2026-09-04 18:03:20.589300634 -0500
+@@ -2,10 +2,28 @@
+ use hyprland::data::Monitors;
+ use hyprland::data::Workspace;
+ use hyprland::data::Workspaces;
+-use hyprland::dispatch::{Dispatch, DispatchType, WorkspaceIdentifierWithSpecial};
+ use hyprland::prelude::*;
++use hyprland::shared::HyprError;
+ use hyprnome::WorkspaceState;
+ 
++/// Executes a Lua dispatcher through `hyprctl eval`.
++///
++/// Hyprland's Lua config provider rejects the legacy `hyprctl dispatch` IPC
++/// syntax that hyprland-rs emits, so dispatchers are expressed with the
++/// `hl.dsp.*` Lua bindings instead. Both the exit status and the `ok` reply
++/// are checked, since `hyprctl eval` returns 0 even when a dispatcher fails.
++fn lua_dispatch(lua: &str) -> hyprland::Result<()> {
++    let output = std::process::Command::new("hyprctl").arg("eval").arg(lua).output()?;
++
++    let stdout = String::from_utf8_lossy(&output.stdout);
++
++    if output.status.success() && stdout.trim() == "ok" {
++        Ok(())
++    } else {
++        Err(HyprError::other(format!("hyprctl eval failed: {}", String::from_utf8_lossy(&output.stderr).trim())))
++    }
++}
++
+ pub fn get_state() -> hyprland::Result<WorkspaceState> {
+     let monitors = Monitors::get()?;
+     let workspaces = Workspaces::get()?.into_iter().filter(|workspace| workspace.id > 0);
+@@ -45,23 +63,21 @@
+ }
+ 
+ pub fn change_workspace(id: i32, _move: bool, keep_special: bool) -> hyprland::Result<()> {
+-    let id = WorkspaceIdentifierWithSpecial::Id(id);
+-
+     if _move {
+         let was_special = is_special()?;
+ 
+-        hyprland::dispatch!(MoveToWorkspace, id, None)?;
++        lua_dispatch(&format!("hl.dispatch(hl.dsp.window.move({{ workspace = \"{id}\", follow = true }}))"))?;
+ 
+         if !keep_special && was_special {
+-            hyprland::dispatch!(ToggleSpecialWorkspace, None)
++            lua_dispatch("hl.dispatch(hl.dsp.workspace.toggle_special(\"\"))")
+         } else {
+             Ok(())
+         }
+     } else {
+         if !keep_special && is_special()? {
+-            hyprland::dispatch!(ToggleSpecialWorkspace, None)?;
++            lua_dispatch("hl.dispatch(hl.dsp.workspace.toggle_special(\"\"))")?;
+         }
+ 
+-        hyprland::dispatch!(Workspace, id)
++        lua_dispatch(&format!("hl.dispatch(hl.dsp.focus({{ workspace = \"{id}\" }}))"))
+     }
+ }

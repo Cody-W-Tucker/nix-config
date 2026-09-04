@@ -57,7 +57,9 @@ pkgs.writeShellApplication {
     WINDOW_ADDRESS=$(hyprctl clients -j | jq -r --arg a "$APP_CLASS" --arg key "$APP_KEY" 'first(.[] | select((try (.class | test("^(?:" + $a + ")$"; "i")) catch false) or (.class | ascii_downcase == ($key | ascii_downcase))) | .address) // empty')
 
     if [ -n "$WINDOW_ADDRESS" ]; then
-      hyprctl dispatch focuswindow "address:$WINDOW_ADDRESS"
+      # Hyprland's Lua config provider rejects the legacy `hyprctl dispatch`
+      # IPC syntax, so focus via an executed Lua dispatcher instead.
+      hyprctl eval "hl.dispatch(hl.dsp.focus({ window = \"address:$WINDOW_ADDRESS\" }))"
     elif activate_tray_item; then
       :
     else

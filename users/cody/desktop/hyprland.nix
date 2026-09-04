@@ -16,7 +16,13 @@ in
   ];
 
   home.packages = with pkgs; [
-    hyprnome
+    # Workaround for Hyprland's Lua config provider rejecting the legacy
+    # `hyprctl dispatch` IPC syntax that hyprnome's vendored hyprland-rs
+    # emits. Patches workspace/move/special dispatching to run `hyprctl eval`
+    # with Lua dispatchers instead.
+    (hyprnome.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ [ ./packages/patches/hyprnome-lua-config-provider.patch ];
+    }))
   ];
 
   # Bring in env session variables from ../ui.nix
