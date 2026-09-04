@@ -51,14 +51,6 @@ let
       workspace = "special:think";
       on_created_empty = "${webApp}=https://draw.homehub.tv/";
     }
-    {
-      workspace = "special:chat";
-      on_created_empty = "${terminal} -e twt";
-    }
-    {
-      workspace = "special:stream-manager";
-      on_created_empty = "${webApp}=https://dashboard.twitch.tv/u/cody_tmv/stream-manager";
-    }
   ];
 
   binds = [
@@ -72,7 +64,7 @@ let
 
     # Web applications
     (execBind "${mainMod} + SHIFT + Return" "[workspace special:ai] ${webApp}=https://grok.com/")
-    (execBind "${mainMod} + A" "${webApp}=https://chat.homehub.tv/")
+    (execBind "${mainMod} + A" "${webApp}=https://chat.homehub.tv")
 
     # Quick launch
     (execBind "${mainMod} + Tab" "rofi-launcher")
@@ -106,14 +98,11 @@ let
 
     # Special workspaces
     (actionBind "${mainMod} + Return" (lua ''hl.dsp.workspace.toggle_special("ai")''))
-    (actionBind "${mainMod} + T" (lua ''hl.dsp.workspace.toggle_special("chat")''))
-    (actionBind "${mainMod} + SHIFT + T" (lua ''hl.dsp.workspace.toggle_special("stream-manager")''))
     (actionBind "${mainMod} + D" (lua ''hl.dsp.workspace.toggle_special("dev")''))
     # agent runner
     (execBind "${mainMod} + SHIFT + D" "[workspace special:dev] ${terminal} -e herdr")
     (actionBind "${mainMod} + E" (lua ''hl.dsp.workspace.toggle_special("think")''))
     (actionBind "${mainMod} + Y" (lua ''hl.dsp.workspace.toggle_special("media")''))
-    (execBind "${mainMod} + SHIFT + Y" "[workspace special:media] ${webApp}=https://www.twitch.tv/")
 
     # Toggle waybar
     (execBind "${mainMod} + P" "pkill -SIGUSR1 waybar")
@@ -127,7 +116,7 @@ let
 
   # Multimedia keys for volume, mic, and LCD brightness (bindel: locked + repeating)
   repeatingExecBinds =
-    builtins.map
+    map
       (
         spec:
         mkBind spec.key (exec spec.command) {
@@ -163,7 +152,7 @@ let
       ];
 
   # Locking binds that don't repeat (bindl)
-  lockedExecBinds = builtins.map (spec: mkBind spec.key (exec spec.command) { locked = true; }) [
+  lockedExecBinds = map (spec: mkBind spec.key (exec spec.command) { locked = true; }) [
     # Requires playerctl
     {
       key = "XF86AudioNext";
@@ -331,7 +320,7 @@ in
 
     # Workspace and monitor set in flake.nix
     workspace_rule = hardwareConfig.workspace ++ specialWorkspaceRules;
-    monitor = hardwareConfig.monitor;
+    inherit (hardwareConfig) monitor;
 
     # Custom curves used by the animation entries below
     curve = [
