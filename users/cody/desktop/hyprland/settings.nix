@@ -80,7 +80,7 @@ let
     (execBind "${mainMod} + mouse:274" "hyprpicker -a")
 
     # Window management
-    (actionBind "${mainMod} + C" (lua "hl.dsp.window.close()"))
+    (actionBind "${mainMod} + W" (lua "hl.dsp.window.close()"))
     (actionBind "${mainMod} + F" (
       lua ''hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" })''
     ))
