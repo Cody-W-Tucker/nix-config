@@ -26,7 +26,7 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 4;
+            columns = 3;
           };
           Tools = {
             style = "row";
@@ -89,13 +89,6 @@ in
                 href = "https://chat.${domain}";
                 icon = "open-webui";
                 description = "AI Chat Interface";
-              };
-            }
-            {
-              LiteLLM = {
-                href = "https://ai.${domain}/ui";
-                icon = "https://ai.${domain}/ui/favicon.ico";
-                description = "LLM Gateway";
               };
             }
             {
