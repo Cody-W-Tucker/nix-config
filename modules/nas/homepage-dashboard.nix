@@ -26,7 +26,7 @@ in
         layout = {
           Business = {
             style = "row";
-            columns = 4;
+            columns = 3;
           };
           Tools = {
             style = "row";
