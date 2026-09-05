@@ -52,6 +52,7 @@ in
     '';
     settings = {
       autoupdate = false;
+      formatter = true;
       default_agent = "build";
       permission.external_directory = {
         "/nix/store" = "allow";
