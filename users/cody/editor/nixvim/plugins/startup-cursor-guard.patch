@@ -1,0 +1,39 @@
+startup.nvim: guard the deferred cursor restore against buffer switches
+
+The display() function defers an unconditional
+`vim.api.nvim_win_set_cursor(0, { 2, 2 })` by 1ms (init.lua:565-571).
+Window/buffer 0 means "whatever is current when the timer fires". A
+keypress in that window can open a picker (e.g. Telescope find_files)
+first, and the deferred set then lands in a 1-line prompt buffer and
+fails with "Invalid cursor line: out of range".
+
+Guard the callback: only restore the cursor while the startup buffer is
+still current and the target line exists. This mirrors the guard
+upstream already applies to the CursorMoved path in
+startup.utils.reposition_cursor (utils.lua:469), which uses
+`vim.o.filetype ~= "startup"`. Also capture startup.buffer_nr before the
+defer, so a fast keypress cannot poison it with the picker's buffer id.
+--- a/lua/startup/init.lua
++++ b/lua/startup/init.lua
+@@ -562,12 +562,16 @@
+         autocmd BufHidden * lua require"startup".remove_buffer(vim.fn.getbufinfo()[1])
+         autocmd BufLeave * lua require"startup".remove_buffer(vim.fn.getbufinfo()[1])
+     ]])
++    startup.buffer_nr = vim.api.nvim_get_current_buf()
+     vim.defer_fn(function()
+-        vim.api.nvim_win_set_cursor(0, {
+-            2,
+-            2,
+-        })
+-        startup.buffer_nr = vim.api.nvim_get_current_buf()
++        -- A keypress may open a picker (e.g. Telescope) in the 1ms before
++        -- this callback runs; only restore the cursor while still on the
++        -- startup buffer, and only when the target line exists. Mirrors the
++        -- filetype guard upstream uses in reposition_cursor (utils.lua:469).
++        if vim.o.filetype ~= "startup" or vim.api.nvim_buf_line_count(0) < 2 then
++            return
++        end
++        vim.api.nvim_win_set_cursor(0, { 2, 2 })
+     end, 1)
+     if force then
+         startup.buffer_nr = vim.api.nvim_get_current_buf()
