@@ -8,8 +8,20 @@
     ./jellyfin.nix
     ./navidrome.nix
     ./seerr.nix
+    ./shelfmark.nix
     ./transmission.nix
   ];
+
+  # Pin the media group GID so container PUID/PGID environment strings can
+  # reference it at eval time: auto-assigned GIDs are not visible to the
+  # module system (config.users.groups.<name>.gid stays null), which is
+  # what previously forced hardcoded literals like PGID = "983". Scoped
+  # to the NAS media stack rather than modules/system/users.nix because
+  # that users module is shared with hosts whose group-id space cannot be
+  # verified here; a static GID forced on all of them could collide. On
+  # this host 983 matches the GID already assigned at runtime (verified
+  # via getent), so activation is a no-op.
+  users.groups.media.gid = 983;
 
   # Base media directory tree. Shared by Transmission (downloads),
   # the *arr stack (library consumption), and related media services.

@@ -40,6 +40,15 @@
     ];
   };
 
+  systemd.services.transmission = {
+    # Forces systemd to wait for /mnt/media to be mounted first
+    after = [
+      "mnt-media.device"
+      "mnt-media.mount"
+    ];
+    requires = [ "mnt-media.mount" ];
+  };
+
   services.transmission = {
     enable = true;
     package = pkgs.transmission_4;

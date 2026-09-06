@@ -244,35 +244,42 @@ in
               Sonarr = {
                 href = "https://sonarr.${domain}";
                 icon = "sonarr";
-                description = "Media Management";
+                description = "Tv Show Search";
               };
             }
             {
               Radarr = {
                 href = "https://radarr.${domain}";
                 icon = "radarr";
-                description = "Media Management";
+                description = "Movie Search";
               };
             }
             {
               Readarr = {
                 href = "https://readarr.${domain}";
                 icon = "readarr";
-                description = "Media Management";
+                description = "Book Search";
+              };
+            }
+            {
+              Shelfmark = {
+                href = "https://shelfmark.${domain}";
+                icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/shelfmark.png";
+                description = "Audiobook Search";
               };
             }
             {
               Lidarr = {
                 href = "https://lidarr.${domain}";
                 icon = "lidarr";
-                description = "Media Management";
+                description = "Music Search";
               };
             }
             {
               Bazarr = {
                 href = "https://bazarr.${domain}";
                 icon = "bazarr";
-                description = "Media Management";
+                description = "Subtitle Search";
               };
             }
 
