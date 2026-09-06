@@ -151,13 +151,6 @@ in
                 description = "Uptime Monitoring";
               };
             }
-            {
-              Watch = {
-                href = "https://watch.${domain}";
-                icon = "mdi-map-search";
-                description = "Maps and Live Cameras";
-              };
-            }
           ];
         }
         {

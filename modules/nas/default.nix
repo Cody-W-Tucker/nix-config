@@ -15,7 +15,6 @@
     ./dns.nix
     ./content.nix
     ./excalidraw.nix
-    ./gods-eye-view.nix
     ./homepage-dashboard.nix
     ./karakeep.nix
     ./langfuse
