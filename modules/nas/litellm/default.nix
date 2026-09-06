@@ -47,6 +47,13 @@ let
   # appends chat/completions or responses to its versioned base. This is a set of distinct routes —
   # NOT a wildcard — so they cannot mix credentials/upstreams with the ChatGPT
   # or llama-swap routes.
+
+  # Stable session identity sent as x-opencode-session on OpenCode Go upstream
+  # requests only. Names the proxy (server), not a per-request session, so
+  # OpenCode can attribute this gateway's Go traffic. Not applied to ChatGPT
+  # or llama-swap routes.
+  opencodeGoSession = "litellm-homehub";
+
   mkOpencodeGoEntry =
     id:
     let
@@ -63,6 +70,10 @@ let
           else
             "https://opencode.ai/zen/go/v1";
         api_key = "os.environ/OPENCODE_GO_API_KEY";
+        # OpenCode Go session attribution — Go routes only.
+        extra_headers = {
+          "x-opencode-session" = opencodeGoSession;
+        };
       };
       model_info = {
         inherit (cfg) mode;
