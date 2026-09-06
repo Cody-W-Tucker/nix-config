@@ -28,6 +28,7 @@
     };
     # Indexer Manager (no group override — matches original)
     prowlarr.enable = true;
+    flaresolverr.enable = true;
 
     nginx.virtualHosts =
       mkNginxVhost { service = "sonarr"; }

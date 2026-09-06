@@ -1,5 +1,3 @@
-{ lib, config, ... }:
-
 {
   imports = [
     ./arr-stack.nix
