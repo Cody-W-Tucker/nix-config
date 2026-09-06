@@ -177,6 +177,13 @@ in
               };
             }
             {
+              Audiobookshelf = {
+                href = "https://audiobooks.${domain}";
+                icon = "audiobookshelf";
+                description = "Audiobook and Podcast Server";
+              };
+            }
+            {
               CalibreWeb = {
                 href = "https://books.${domain}";
                 icon = "calibre";

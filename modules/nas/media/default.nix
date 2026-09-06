@@ -3,6 +3,7 @@
 {
   imports = [
     ./arr-stack.nix
+    ./audiobookshelf.nix
     ./calibre.nix
     ./jellyfin.nix
     ./navidrome.nix
