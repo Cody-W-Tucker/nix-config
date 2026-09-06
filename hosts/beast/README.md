@@ -11,7 +11,6 @@ Host-local files were collapsed into two Nix files. Machine identity, drives, ne
 | Path          | Role                                                                                                                                       |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | `default.nix` | Full host definition: boot/kernel, filesystems, networking (incl. Wake-on-LAN), Docker, `hardwareConfig` for Hyprland, Home Manager entry. |
-| `models.nix`  | Local `llama-swap` enablement, CUDA acceleration, model catalog, Whisper/Kokoro wrappers.                                                  |
 
 ## Hardware profile
 
