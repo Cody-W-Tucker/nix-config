@@ -74,7 +74,7 @@ A critical feature of the `nas` host is the isolation of the `transmission` bitt
 
 ### Namespace Configuration
 
-The namespace, named `wg`, is configured with a Wireguard configuration file managed by SOPS [modules/nas/media/default.nix161-163](../modules/nas/media/default.nix#L161-L163)
+The namespace, named `wg`, is configured with a Wireguard configuration file managed by SOPS [modules/nas/media/transmission.nix](../modules/nas/media/transmission.nix)
 
 | Attribute          | Configuration    | Purpose                                   |
 | ------------------ | ---------------- | ----------------------------------------- |
@@ -82,15 +82,37 @@ The namespace, named `wg`, is configured with a Wireguard configuration file man
 | **Config File**    | `server-wg.conf` | Wireguard keys and peer info (from SOPS)  |
 | **Accessibility**  | `192.168.0.0/24` | LAN range allowed to access the namespace |
 | **Port Mapping**   | `9091 -> 9091`   | Maps Transmission Web UI to the host      |
+| **Port Mapping**   | `9696 -> 9696`   | Maps Prowlarr to the host (LAN clients)   |
+| **Port Mapping**   | `8989 -> 8989`   | Maps Sonarr to the host (LAN clients)     |
+| **Port Mapping**   | `7878 -> 7878`   | Maps Radarr to the host (LAN clients)     |
+| **Port Mapping**   | `8787 -> 8787`   | Maps Readarr to the host (LAN clients)    |
+| **Port Mapping**   | `6767 -> 6767`   | Maps Bazarr to the host (LAN clients)     |
+| **Port Mapping**   | `8686 -> 8686`   | Maps Lidarr to the host (LAN clients)     |
 | **Wireguard Port** | `60729`          | Port used for peer-to-peer traffic        |
 
 ### Service Isolation: Transmission
 
 The `transmission` service is confined to the `wg` namespace, ensuring its traffic only exits via the Wireguard tunnel.
 
-1. **Namespace Assignment**: The `vpnConfinement` option is applied to the `transmission` systemd service [modules/nas/media/default.nix180-183](../modules/nas/media/default.nix#L180-L183)
-2. **RPC Binding**: Transmission is configured to bind its RPC/WebUI to `192.168.15.1`, which is the internal address within the namespace [modules/nas/media/default.nix150](../modules/nas/media/default.nix#L150-L150)
-3. **Local Whitelisting**: To allow other services (like Sonarr/Radarr) to communicate with Transmission, the RPC whitelist includes the namespace gateway [modules/nas/media/default.nix148](../modules/nas/media/default.nix#L148-L148)
+1. **Namespace Assignment**: The `vpnConfinement` option is applied to the `transmission` systemd service [modules/nas/media/transmission.nix](../modules/nas/media/transmission.nix)
+2. **RPC Binding**: Transmission is configured to bind its RPC/WebUI to `192.168.15.1`, which is the internal address within the namespace [modules/nas/media/transmission.nix](../modules/nas/media/transmission.nix)
+3. **Local Whitelisting**: To allow other services (like Sonarr/Radarr) to communicate with Transmission, the RPC whitelist includes the namespace gateway [modules/nas/media/transmission.nix](../modules/nas/media/transmission.nix)
+
+### Service Isolation: Prowlarr and FlareSolverr
+
+The whole Arr stack — Prowlarr, FlareSolverr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is confined to the `wg` namespace [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix), so indexer, Cloudflare-bypass, and download-automation traffic exits through the VPN tunnel.
+
+- **Host-side access**: Services on the host reach a confined app at the namespace address `192.168.15.1:<port>` — the access path VPN-Confinement provides from the default namespace. Every Arr nginx vhost sets `proxyHost` to this address; ports are derived from each service's NixOS module option (`settings.server.port`, or `services.bazarr.listenPort` for Bazarr; Prowlarr's module has no dedicated `port` option and uses the servarr settings default).
+- **LAN access**: The mapped host ports (see table above) forward LAN clients into the namespace.
+- **FlareSolverr**: Prowlarr reaches it inside the namespace at `http://localhost:8191` (`services.flaresolverr.port`); it needs no port mapping or vhost.
+- **Inter-app traffic**: With Prowlarr and the Arr apps in the same namespace, indexer sync (Prowlarr → Arr apps) and download handoff (Arr apps → Transmission) resolve over the namespace network without extra routing.
+
+### Service Isolation: Sonarr, Radarr, Readarr, Bazarr, Lidarr
+
+The five Arr applications are confined the same way as Prowlarr, with two consequences for host-side consumers:
+
+- **Host-side consumers** that talk to an Arr app directly (e.g. Jellyseerr → Sonarr/Radarr, Readarr → Calibre content server) must target the namespace address `192.168.15.1:<port>` instead of `127.0.0.1`. Where these addresses are runtime settings stored in the app's database, they must be updated through each app's web UI — they are not managed in this repo.
+- **Nginx vhosts** (`sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, `lidarr.homehub.tv`) keep working because each sets `proxyHost = "192.168.15.1"` [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix).
 
 ### Data Flow: Confined Service
 
@@ -106,17 +128,30 @@ flowchart LR
     end
     subgraph subGraph1 ["NetworkNamespace: wg"]
         TRANS["transmission.service"]
+        PROWL["prowlarr.service"]
+        FLARE["flaresolverr.service"]
+        ARR["sonarr/radarr/readarr/bazarr/lidarr.service"]
         WG0["Interface: wg0"]
     end
     subgraph HostNetwork
         LAN["LAN (192.168.0.0/24)"]
         NGINX["Nginx Proxy"]
+        SEERR["Jellyseerr (host)"]
     end
     SOPS_WG -.-> WG0
-    NGINX --> TRANS
+    NGINX -->|"192.168.15.1:9696"| PROWL
+    NGINX -->|"192.168.15.1:8989+ (mapped ports)"| ARR
+    SEERR -->|"192.168.15.1:8989+"| ARR
+    ARR -->|"192.168.15.1:9696"| PROWL
+    ARR -->|"192.168.15.1:9091"| TRANS
+    PROWL --> FLARE
     TRANS --> WG0
+    PROWL --> WG0
+    ARR --> WG0
     WG0 --> INTERNET
-    LAN --> TRANS
+    LAN -->|"mapped ports"| TRANS
+    LAN -->|"mapped ports"| PROWL
+    LAN -->|"mapped ports"| ARR
 ```
 
 ---
@@ -135,4 +170,5 @@ Services are exposed via subdomains. For example:
 
 - **Jellyfin**: `media.homehub.tv` proxies to `127.0.0.1:8096`[modules/nas/media/default.nix193-197](../modules/nas/media/default.nix#L193-L197)
 - **Calibre-Web**: `books.homehub.tv` proxies to `localhost:8083` with specific buffer tuning for Kobo synchronization [modules/nas/media/default.nix211-223](../modules/nas/media/default.nix#L211-L223)
-- **Prowlarr**: `prowlarr.homehub.tv` proxies to `127.0.0.1:9696`[modules/nas/media/default.nix237-242](../modules/nas/media/default.nix#L237-L242)
+- **Prowlarr**: `prowlarr.homehub.tv` proxies to `192.168.15.1:9696` (Prowlarr runs in the wg namespace) [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix)
+- **Arr apps**: `sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, and `lidarr.homehub.tv` likewise proxy to `192.168.15.1:<port>` — the whole Arr stack is VPN-confined [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix)

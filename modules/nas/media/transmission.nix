@@ -31,6 +31,38 @@
         from = 9091;
         to = 9091;
       }
+      # Prowlarr (confined to this namespace by arr-stack.nix): mapped on the
+      # host for LAN clients. Host-side consumers (nginx, Sonarr, Radarr, ...)
+      # reach it at the namespace address instead. Prowlarr's NixOS module has
+      # no dedicated port option; the servarr settings default is 9696.
+      {
+        from = 9696;
+        to = config.services.prowlarr.settings.server.port;
+      }
+      # Arr apps (confined to this namespace by arr-stack.nix): mapped on the
+      # host so nginx vhosts and LAN clients reach them at the namespace
+      # address. `from` is each module's default port; `to` reads the actual
+      # port from the module option.
+      {
+        from = 8989; # Sonarr
+        to = config.services.sonarr.settings.server.port;
+      }
+      {
+        from = 7878; # Radarr
+        to = config.services.radarr.settings.server.port;
+      }
+      {
+        from = 8787; # Readarr
+        to = config.services.readarr.settings.server.port;
+      }
+      {
+        from = 6767; # Bazarr
+        to = config.services.bazarr.listenPort;
+      }
+      {
+        from = 8686; # Lidarr
+        to = config.services.lidarr.settings.server.port;
+      }
     ];
     openVPNPorts = [
       {
@@ -98,7 +130,7 @@
 
       # VPN
       rpc-whitelist-enabled = true;
-      rpc-whitelist = "192.168.15.5";
+      rpc-whitelist = "192.168.15.1,192.168.15.5";
       rpc-authentication-required = false;
       rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
     };
