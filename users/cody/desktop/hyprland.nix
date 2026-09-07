@@ -56,7 +56,9 @@ in
         general = {
           lock_cmd = lockCommand;
           before_sleep_cmd = lockCommand;
-          after_sleep_cmd = "hyprctl dispatch dpms on";
+          # Hyprland's Lua config provider rejects the legacy `hyprctl dispatch`
+          # IPC syntax, so dpms goes through the Lua dispatcher via `hyprctl eval`.
+          after_sleep_cmd = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"on\" }))'";
         };
 
         listener = [
@@ -66,8 +68,8 @@ in
           }
           {
             timeout = 1800; # 30min.
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on";
+            on-timeout = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"off\" }))'";
+            on-resume = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"on\" }))'";
           }
         ]
         ++ lib.optional (hardwareConfig.hypridle.suspendTimeout != null) {
