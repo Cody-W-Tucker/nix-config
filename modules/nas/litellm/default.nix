@@ -16,21 +16,11 @@ let
   # sops-nix owns sops-install-secrets.service only when useSystemdActivation is
   # on; there is no sops-nix.service, so the dependency is conditional.
   sopsUnits = lib.optional config.sops.useSystemdActivation "sops-install-secrets.service";
-
-  # Upstream services.litellm ships only on nixpkgs-unstable (1.97.0).
   litellmPkg = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm;
 
-  # Build the langfuse_otel runtime from the same unstable python3 litellm is built
-  # against (litellmPkg has no .python attr).
-  openTelemetryPython =
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.python3.withPackages
-      (
-        pythonPackages: with pythonPackages; [
-          opentelemetry-api
-          opentelemetry-sdk
-          opentelemetry-exporter-otlp-proto-http
-        ]
-      );
+  # Langfuse OTel v2 logging: the OTel python runtime, non-secret logging env,
+  # and the litellm_settings callback wiring live in ./logging.nix.
+  logging = import ./logging.nix { inherit inputs pkgs; };
 
   # OpenCode Go model catalog — the SINGLE SOURCE OF TRUTH for Go endpoint model
   # IDs, their LiteLLM provider adapter, and protocol mode. Imported (not
@@ -133,11 +123,8 @@ let
       # Conservative no-op; verify on 1.97.0 whether previous_response_id is
       # handled natively and drop this if so.
       additional_drop_params = [ "previous_response_id" ];
-      # OpenTelemetry is Langfuse's current ingestion path; the legacy langfuse
-      # callback uses an event API rejected by Langfuse v4.
-      success_callback = [ "langfuse_otel" ];
-      failure_callback = [ "langfuse_otel" ];
-    };
+    }
+    // logging.litellmSettings;
   };
 
   # OPENAI_API_KEY env file for Karakeep, Paperless-GPT, and the Miniflux curator,
@@ -170,18 +157,16 @@ in
     package = litellmPkg;
     stateDir = "/var/lib/litellm";
 
-    # Non-secret vars only. PYTHONPATH carries the langfuse_otel runtime.
+    # Non-secret vars only. PYTHONPATH carries the langfuse_otel runtime
+    # (built in ./logging.nix).
     environment = {
       STORE_PROMPTS_IN_SPEND_LOGS = "true";
       # The ChatGPT authenticator otherwise resolves its default ~/.config path
       # to /.config, which the hardened DynamicUser service cannot create.
       CHATGPT_TOKEN_DIR = "${config.services.litellm.stateDir}/chatgpt";
-      PYTHONPATH = "${openTelemetryPython}/${openTelemetryPython.sitePackages}";
-      LANGFUSE_HOST = "http://127.0.0.1:3000";
-      LANGFUSE_OTEL_HOST = "http://127.0.0.1:3000";
-      LANGFUSE_TRACING_ENVIRONMENT = "production";
-      OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT = "span_and_event";
-    };
+      PYTHONPATH = "${logging.pythonEnv}/${logging.pythonEnv.sitePackages}";
+    }
+    // logging.environment;
 
     # litellm-env is the sole LiteLLM credential secret (master key, salt/UI,
     # provider, Langfuse); used directly as the service EnvironmentFile
