@@ -23,6 +23,7 @@ in
     ./skills/cognitive
     ./tools/model-router
     ./tools/rtk
+    ./tools/session-headers
     # ./mcp/mealie
   ];
 

@@ -19,7 +19,8 @@ let
   litellmPkg = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm;
 
   # Langfuse OTel v2 logging: the OTel python runtime, non-secret logging env,
-  # and the litellm_settings callback wiring live in ./logging.nix.
+  # and the litellm_settings callback + request_correlation_in_logs wiring
+  # live in ./logging.nix.
   logging = import ./logging.nix { inherit inputs pkgs; };
 
   # OpenCode Go model catalog — the SINGLE SOURCE OF TRUTH for Go endpoint model
@@ -37,12 +38,15 @@ let
   # appends chat/completions or responses to its versioned base. This is a set of distinct routes —
   # NOT a wildcard — so they cannot mix credentials/upstreams with the ChatGPT
   # or llama-swap routes.
-
-  # Stable session identity sent as x-opencode-session on OpenCode Go upstream
-  # requests only. Names the proxy (server), not a per-request session, so
-  # OpenCode can attribute this gateway's Go traffic. Not applied to ChatGPT
-  # or llama-swap routes.
-  opencodeGoSession = "litellm-homehub";
+  #
+  # Session identity (two hops, one client header):
+  #   OpenCode harness plugin emits per-conversation x-opencode-session.
+  #   nginx copies it to x-litellm-session-id for LiteLLM/Langfuse correlation
+  #   (./logging.nix). general_settings.forward_client_headers_to_llm_api
+  #   forwards the real x-opencode-session upstream so OpenCode Go can pin
+  #   prompt-cache affinity. Do NOT stamp a static x-opencode-session on Go
+  #   routes — model extra_headers overwrite forwarded headers and collapse
+  #   every conversation onto one cache key (formerly litellm-homehub).
 
   mkOpencodeGoEntry =
     id:
@@ -60,10 +64,6 @@ let
           else
             "https://opencode.ai/zen/go/v1";
         api_key = "os.environ/OPENCODE_GO_API_KEY";
-        # OpenCode Go session attribution — Go routes only.
-        extra_headers = {
-          "x-opencode-session" = opencodeGoSession;
-        };
       };
       model_info = {
         inherit (cfg) mode;
@@ -116,6 +116,11 @@ let
     model_list = chatgptEntries ++ opencodeGoEntries ++ llamaSwapModelList;
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
+      # Forward client x-* headers (incl. x-opencode-session) to upstream LLM
+      # APIs so OpenCode Go receives the real per-conversation session id for
+      # prompt-cache routing. Without this, only model_list extra_headers reach
+      # Go — and those must not set x-opencode-session statically.
+      forward_client_headers_to_llm_api = true;
     };
     litellm_settings = {
       # Drop unrecognized provider params rather than failing.
@@ -269,7 +274,11 @@ in
       );
 
   # ai.homehub.tv → LiteLLM (127.0.0.1:8090); buffering off, long timeouts, no
-  # websockets.
+  # websockets. Client x-opencode-session (OpenCode session-headers plugin) is
+  # copied to x-litellm-session-id for native LiteLLM/Langfuse session
+  # correlation (./logging.nix). The original header is left intact so
+  # forward_client_headers_to_llm_api can pass it through to OpenCode Go.
+  # When the client header is absent nginx sets an empty rewrite target.
   services.nginx.virtualHosts = mkNginxVhost {
     host = "ai.homehub.tv";
     port = 8090;
@@ -278,6 +287,7 @@ in
       proxy_buffering off;
       proxy_read_timeout 600s;
       proxy_send_timeout 600s;
+      proxy_set_header x-litellm-session-id $http_x_opencode_session;
     '';
   };
 }
