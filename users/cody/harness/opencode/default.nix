@@ -2,6 +2,7 @@
   lib,
   pkgs,
   inputs,
+  config,
   ...
 }:
 
@@ -24,6 +25,12 @@ in
     ./tools/rtk
     # ./mcp/mealie
   ];
+
+  # The 99 nixvim integration brings its own OpenCode-backed model routing,
+  # so the model-router plugin file is dropped when 99 is enabled.
+  xdg.configFile."opencode/plugins/model-router.ts".enable = lib.mkIf config.cody.editor."99".enable (
+    lib.mkForce false
+  );
 
   programs.opencode = {
     enable = true;
