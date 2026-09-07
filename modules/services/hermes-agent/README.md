@@ -48,7 +48,8 @@ The package exposes two operator entry points:
 Secrets are SOPS-owned for the Hermes service.
 
 - `secrets/default.nix` declares core agent secrets such as OpenCode, Firecrawl, Discord, and Telegram credentials.
-- `sops.templates."hermes-env"` aggregates service environment variables into the format Hermes expects.
+- `sops.templates."hermes-env"` aggregates single-value service environment variables into the format Hermes expects.
+- The multiline `hermes` secret carries env-named `KEY=value` lines and is rendered verbatim into the agent env file via `sops.templates."hermes-agent-env"`; dashboard credentials travel separately as `hermes-dashboard` → `hermes-dashboard-env`.
 - MCP-specific credentials stay near their bridge. For Karakeep, `mcp/default.nix` reads the SOPS secret at runtime and exports it before starting the MCP server.
 
 ## MCP bridges

@@ -28,7 +28,7 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 - `runtime/default.nix`: main Hermes service runtime wiring
 - `runtime/filesystem-access.nix`: writable roots, ACLs, state repair
 - `mcp/default.nix`: MCP server wiring and MCP-specific secret-backed wrappers
-- `secrets/default.nix`: Hermes-owned SOPS secrets and `hermes-env`
+- `secrets/default.nix`: Hermes-owned SOPS secrets and the `hermes-env`/`hermes-agent-env`/`hermes-dashboard-env` templates
 - `documents/default.nix`: workspace docs plus SOUL installation/restart trigger
 - `toolsets/`: platform tool exposure and trust boundaries
 - `skills/`: managed vs mutable skill packaging

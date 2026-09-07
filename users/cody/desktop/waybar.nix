@@ -13,13 +13,15 @@ let
     name = "hermes-waybar-voice";
     runtimeInputs = [
       pkgs.curl
+      pkgs.gnused
       pkgs.mpv
       pkgs.pipewire
     ];
     text = ''
       export HERMES_BASE_URL="http://nas:8642"
       export HERMES_SPEECH_BASE_URL="http://nas:8081"
-      HERMES_API_TOKEN="$(< ${config.sops.secrets.hermes-api-server-key.path})"
+      # The hermes secret is env-named KEY=value lines; extract API_SERVER_KEY.
+      HERMES_API_TOKEN="$(sed -n 's/^API_SERVER_KEY=//p' ${config.sops.secrets."hermes".path})"
       export HERMES_API_TOKEN
       export HERMES_TRANSCRIPTION_MODEL="whisper-medium"
       export HERMES_SPEECH_MODEL="kokoro-82m"
@@ -48,7 +50,7 @@ let
   };
 in
 {
-  sops.secrets.hermes-api-server-key = { };
+  sops.secrets."hermes" = { };
 
   home.packages = [ hermesVoiceRepair ];
 

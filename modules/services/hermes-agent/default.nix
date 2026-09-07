@@ -7,7 +7,7 @@
 
 let
   obsidianVault = "/data/knowledge/Personal";
-  inherit (config.services.hermes-agent) workingDirectory;
+  inherit (config.services.hermes-agent) stateDir workingDirectory;
 in
 {
   imports = [
@@ -63,7 +63,10 @@ in
         OBSIDIAN_VAULT = obsidianVault;
         VOICE_TOOLS_OPENAI_KEY = "local-only";
       };
-      environmentFiles = [ config.sops.templates."hermes-env".path ];
+      environmentFiles = [
+        config.sops.templates."hermes-env".path
+        "${stateDir}/hermes.env"
+      ];
       configFile = pkgs.writeText "hermes-config.json" (
         # Make config.yaml fully declarative. Upstream merges generated settings
         # into any existing config when configFile is null, which preserves stale

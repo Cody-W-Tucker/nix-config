@@ -53,7 +53,7 @@ Secrets are declared within the specific service module that requires them. This
 | Service          | Secret File Source              | Consumer                                                                                                                                                                            |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Wireguard**    | `serverWireguardSopsFile`       | `transmission` VPN namespace [modules/nas/media/default.nix155-158](../modules/nas/media/default.nix#L155-L158)                        |
-| **Hermes Agent** | `hermes-env` template           | `hermes-agent.service`[modules/services/hermes-agent/default.nix55-56](../modules/services/hermes-agent/default.nix#L55-L56) |
+| **Hermes Agent** | `hermes` + `hermes-dashboard` secrets, `hermes-agent-env`/`hermes-dashboard-env`/`hermes-env` templates | `hermes-agent.service`, `hermes-dashboard.service`[modules/services/hermes-agent/secrets/default.nix](../modules/services/hermes-agent/secrets/default.nix) |
 | **Miniflux**     | `miniflux-credentials` template | `miniflux.service`[modules/nas/content.nix38-39](../modules/nas/content.nix#L38-L39)                                   |
 
 ### 2. Dynamic Config via `sops.templates`
@@ -70,32 +70,48 @@ sops.templates."miniflux-credentials".content = ''
 
 ### 3. Environment File Pattern
 
-For complex services like the `hermes-agent`, multiple secrets are aggregated into a single environment file. This file is then passed to the systemd service via `environmentFiles`.
+For complex services like the `hermes-agent`, related secrets travel as multiline SOPS secrets whose plaintext is plain `KEY=value` env lines. sops-nix renders them verbatim into the per-service environment files via `sops.templates` — nothing parses or renames at activation. Because rendering is a verbatim substitution, the plaintext keys must already be the env var names the services consume (`TELEGRAM_BOT_TOKEN`, `API_SERVER_KEY`, `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD`, ...), with one trailing newline. Values stay out of the Nix store and out of eval-time substitution.
+
+- `hermes` → `sops.templates."hermes-agent-env"` → `${stateDir}/hermes.env` (agent variables, root 0600)
+- `hermes-dashboard` → `sops.templates."hermes-dashboard-env"` → `${stateDir}/hermes-dashboard.env` (dashboard basic-auth variables, root 0600)
+
+Keeping dashboard credentials in their own secret keeps them out of the agent process environment and vice versa.
 
 **Hermes Secret Aggregation**
 
 ```mermaid
 flowchart LR
-    subgraph hermes_agent_service ["hermes-agent.service"]
-        V1["OPENCODE_GO_API_KEY"]
-        V2["FIRECRAWL_API_KEY"]
-        V3["DISCORD_BOT_TOKEN"]
-    end
-    subgraph sops_templates_hermes_env_ ["sops.templates.'hermes-env'"]
-        T["Injected Variables"]
-    end
-    subgraph subGraph0 ["SOPS Secrets"]
+    subgraph sops_secrets ["SOPS Secrets"]
+        S0["hermes (multiline KEY=value)"]
+        S3["hermes-dashboard (multiline KEY=value)"]
         S1["opencode-api-key"]
-        S2["firecrawl-api-key"]
-        S3["discord-bot-token"]
+        S2["karakeep-api-key"]
     end
+    subgraph templates ["sops.templates"]
+        T0["hermes-agent-env"]
+        T3["hermes-dashboard-env"]
+        T["hermes-env"]
+    end
+    subgraph env_files ["stateDir env files (0600, root)"]
+        E1["hermes.env"]
+        E2["hermes-dashboard.env"]
+    end
+    subgraph services ["systemd Services"]
+        V1["hermes-agent.service"]
+        V2["hermes-dashboard.service"]
+    end
+    S0 --> T0
+    S3 --> T3
     S1 --> T
     S2 --> T
-    S3 --> T
+    T0 --> E1
+    T3 --> E2
     T --> V1
-    T --> V2
-    T --> V3
+    E1 --> V1
+    E2 --> V2
 ```
+
+Single-value secrets that are only consumed as env vars (`opencode-api-key`, `karakeep-api-key`) still use the `sops.templates` placeholder pattern above. The multiline pattern applies when several values travel together, e.g. the waybar voice widget extracts `API_SERVER_KEY` from the raw decrypted `hermes` secret [users/cody/desktop/waybar.nix22](../../users/cody/desktop/waybar.nix#L22-L22)
 
 ## Integration with Private Flake
 

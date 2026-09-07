@@ -24,20 +24,6 @@ let
 in
 {
   config = {
-    sops.secrets = {
-      "hermes-dashboard-username" = { };
-      "hermes-dashboard-password" = { };
-      "hermes-dashboard-secret" = { };
-    };
-
-    sops.templates."hermes-dashboard-env" = {
-      content = ''
-        HERMES_DASHBOARD_BASIC_AUTH_USERNAME=${config.sops.placeholder."hermes-dashboard-username"}
-        HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=${config.sops.placeholder."hermes-dashboard-password"}
-        HERMES_DASHBOARD_BASIC_AUTH_SECRET=${config.sops.placeholder."hermes-dashboard-secret"}
-      '';
-    };
-
     systemd.services.hermes-dashboard = {
       description = "Hermes Dashboard Web UI";
       wantedBy = [ "multi-user.target" ];
@@ -54,7 +40,7 @@ in
         User = user;
         Group = group;
         WorkingDirectory = "${stateDir}/workspace";
-        EnvironmentFile = [ config.sops.templates."hermes-dashboard-env".path ];
+        EnvironmentFile = [ "${stateDir}/hermes-dashboard.env" ];
         ExecStart = lib.concatStringsSep " " [
           "${effectivePackage}/bin/hermes"
           "dashboard"
