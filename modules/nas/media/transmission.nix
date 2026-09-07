@@ -133,6 +133,11 @@
       rpc-whitelist = "192.168.15.1,192.168.15.5";
       rpc-authentication-required = false;
       rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
+
+      # Peer port matches the provider-forwarded port opened via
+      # vpnNamespaces.wg.openVPNPorts above. Randomization stays disabled
+      # (module default `peer-port-random-on-start = false`).
+      peer-port = 60729;
     };
   };
 }
