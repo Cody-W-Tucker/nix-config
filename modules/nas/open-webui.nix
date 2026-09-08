@@ -38,6 +38,9 @@
 
         # RAG
         ENABLE_RAG_HYBRID_SEARCH = "True";
+
+        # Enable sessions for litellm/langfuse
+        ENABLE_FORWARD_USER_INFO_HEADERS = "True";
       };
     };
     qdrant = {
