@@ -8,7 +8,6 @@
 
 let
   inherit (inputs.cognitive-assistant.lib.artifacts.alignment) translationLayer;
-  skillNames = inputs.cognitive-assistant.lib.artifacts.skills.names;
   litellmModels = import ../../../../modules/nas/litellm/models.nix;
 in
 {
@@ -23,7 +22,7 @@ in
     ./skills/cognitive
     ./tools/model-router
     ./tools/rtk
-    # ./tools/session-headers
+    ./tools/session-headers
   ];
 
   # The 99 nixvim integration brings its own OpenCode-backed model routing,
