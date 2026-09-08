@@ -60,6 +60,7 @@ in
     '';
     settings = {
       autoupdate = false;
+      small_model = "litellm/deepseek-v4-flash";
       formatter = true;
       default_agent = "build";
       permission.external_directory = {

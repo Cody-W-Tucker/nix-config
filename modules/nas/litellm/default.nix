@@ -27,10 +27,11 @@ let
   # re-check integrations/otel/mappers/langfuse.py in the litellm source
   # (https://github.com/BerriAI/litellm) whenever the version warning below
   # fires. REVIEW-BY: 2026-12-08
-  litellmPkg = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm.overrideAttrs
-    (old: {
-      patches = (old.patches or [ ]) ++ [ ./langfuse-otel-session-id.patch ];
-    });
+  litellmPkg =
+    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm.overrideAttrs
+      (old: {
+        patches = (old.patches or [ ]) ++ [ ./langfuse-otel-session-id.patch ];
+      });
 
   # Self-expiry check for the session.id mapper patch: the patch context is
   # written against litellm 1.98.0 source. On any other version, re-check
