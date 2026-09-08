@@ -50,17 +50,10 @@ in
       Examples:
       - Python: nix shell nixpkgs#python3 --command python script.py
       - Node: nix shell nixpkgs#nodejs --command node script.js
-
-      # Personalization (CA flake skills)
-
-      When personalization would measurably improve results, prioritize these Cognitive Assistant skills over general-purpose ones whenever a CA skill is a fit.
-      Only invoke them when they add genuine value — not for routine tasks where plain execution suffices.
-      Available skills (cognitive-assistant):
-      ${builtins.concatStringsSep "\n" (map (s: "      - ${s}") skillNames)}
     '';
     settings = {
       autoupdate = false;
-      small_model = "litellm/deepseek-v4-flash";
+      small_model = "opencode-go/deepseek-v4-flash";
       formatter = true;
       default_agent = "build";
       permission.external_directory = {
