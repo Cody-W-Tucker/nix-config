@@ -53,7 +53,7 @@
           lock_cmd = "pidof hyprlock || hyprlock";
           # Spawn hyprlock directly; `loginctl lock-session` could miss the lock signal and sleep unlocked.
           before_sleep_cmd = "pidof hyprlock || hyprlock";
-          after_sleep_cmd = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"enable\" }))'";
+          after_sleep_cmd = "hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\" })'";
         };
 
         listener = [
@@ -63,8 +63,8 @@
           }
           {
             timeout = 1800; # 30min.
-            on-timeout = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"disable\" }))'";
-            on-resume = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"enable\" }))'";
+            on-timeout = "hyprctl dispatch 'hl.dsp.dpms({ action = \"disable\" })'";
+            on-resume = "hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\" })'";
           }
         ]
         ++ lib.optional (hardwareConfig.hypridle.suspendTimeout != null) {
