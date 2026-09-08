@@ -17,12 +17,14 @@
 # Session identity (client → proxy → Langfuse; separate from Go upstream hop):
 # LiteLLM's native session inputs are client-supplied — body
 # `litellm_session_id`, header `x-litellm-session-id`, or any `x-*-session-id`
-# (litellm 1.98.0 get_chain_id_from_headers). OpenCode's real id is
-# `x-opencode-session` (no -id suffix), emitted by the harness session-headers
-# plugin when talking to ai.homehub.tv (OpenCode does not auto-send it to a
-# custom LiteLLM baseURL). nginx copies that header to `x-litellm-session-id`
+# (litellm 1.98.0 get_chain_id_from_headers). The harness session-headers
+# plugin emits `x-litellm-session-id` directly when talking to ai.homehub.tv
+# (OpenCode does not auto-send session headers to a custom LiteLLM baseURL),
 # so chain-id extraction fills litellm_session_id + metadata.session_id →
-# langfuse_otel `session.id`. Go prompt-cache affinity is a different hop:
+# langfuse_otel `session.id`. On litellm 1.98.0 that last hop is not native:
+# the v2 Langfuse mapper omits session_id, so the package is patched
+# (./langfuse-otel-session-id.patch, wired in default.nix). Go prompt-cache
+# affinity is a different hop:
 # general_settings.forward_client_headers_to_llm_api forwards the original
 # `x-opencode-session` upstream (see default.nix) — never a static gateway
 # label on model extra_headers.

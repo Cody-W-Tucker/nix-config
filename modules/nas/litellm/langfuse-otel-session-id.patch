@@ -1,0 +1,35 @@
+--- a/litellm/integrations/otel/mappers/langfuse.py	2026-09-08 08:22:49.678987639 -0500
++++ b/litellm/integrations/otel/mappers/langfuse.py	2026-09-08 08:23:56.978167339 -0500
+@@ -34,6 +34,9 @@
+         "langfuse.observation.id": lambda d: d.identity.call_id or None,
+         "langfuse.trace.metadata.team_id": lambda d: d.identity.team_id or None,
+         "langfuse.trace.metadata.team_alias": lambda d: d.identity.team_alias or None,
++        # Canonical Langfuse v4 session attribute, from the conversation id
++        # litellm resolved out of x-litellm-session-id (dropped when absent).
++        "session.id": lambda d: d.session_id or None,
+     }
+ 
+     # Sub-tables folded into their respective JSON blobs.
+--- a/litellm/integrations/otel/model/payloads.py	2026-09-08 08:22:49.677688179 -0500
++++ b/litellm/integrations/otel/model/payloads.py	2026-09-08 08:23:56.978294024 -0500
+@@ -310,6 +310,12 @@
+     choices_out: tuple[Mapping[str, object], ...] = ()
+     system_fingerprint: str | None = None
+     time_to_first_chunk_seconds: float | None = None
++    # End-user/conversation session id from the standard logging payload
++    # (``StandardLoggingPayload.session_id``, resolved by litellm from
++    # ``litellm_session_id`` / ``metadata.session_id``; empty string when the
++    # caller supplied none — normalized to ``None`` so vendor mappers emit
++    # nothing rather than a fallback id).
++    session_id: str | None = None
+ 
+     @classmethod
+     def from_standard_logging_payload(
+@@ -347,6 +353,7 @@
+                 total_tokens=as_int(payload.get("total_tokens")),
+             ),
+             finish_reasons=finish_reasons,
++            session_id=as_str(payload.get("session_id")) or None,
+             error=_parse_error(payload),
+             response_cost=as_float(payload.get("response_cost")),
+             cost=LLMCost.from_breakdown(cast("Mapping[str, object] | None", payload.get("cost_breakdown"))),

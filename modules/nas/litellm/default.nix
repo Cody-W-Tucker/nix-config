@@ -16,7 +16,27 @@ let
   # sops-nix owns sops-install-secrets.service only when useSystemdActivation is
   # on; there is no sops-nix.service, so the dependency is conditional.
   sopsUnits = lib.optional config.sops.useSystemdActivation "sops-install-secrets.service";
-  litellmPkg = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm;
+  # WORKAROUND: litellm 1.98.0's OTel v2 Langfuse mapper
+  # (integrations/otel/mappers/langfuse.py) never reads the request's resolved
+  # session id, so LLM observation spans carry no Langfuse session — even though
+  # x-litellm-session-id is already extracted into
+  # StandardLoggingPayload.session_id. ./langfuse-otel-session-id.patch threads
+  # payload.session_id onto LLMCallSpanData and emits the canonical `session.id`
+  # attribute. Removal: drop the patch and this warning once the litellm OTel v2
+  # Langfuse mapper emits session.id (or langfuse.session.id) natively —
+  # re-check integrations/otel/mappers/langfuse.py in the litellm source
+  # (https://github.com/BerriAI/litellm) whenever the version warning below
+  # fires. REVIEW-BY: 2026-12-08
+  litellmPkg = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm.overrideAttrs
+    (old: {
+      patches = (old.patches or [ ]) ++ [ ./langfuse-otel-session-id.patch ];
+    });
+
+  # Self-expiry check for the session.id mapper patch: the patch context is
+  # written against litellm 1.98.0 source. On any other version, re-check
+  # whether the v2 Langfuse mapper now emits session.id natively and remove the
+  # patch (a stale patch would also fail the build loudly).
+  litellmSessionPatchStale = config.services.litellm.enable && litellmPkg.version != "1.98.0";
 
   # Langfuse OTel v2 logging: the OTel python runtime, non-secret logging env,
   # and the litellm_settings callback + request_correlation_in_logs wiring
@@ -39,14 +59,15 @@ let
   # NOT a wildcard — so they cannot mix credentials/upstreams with the ChatGPT
   # or llama-swap routes.
   #
-  # Session identity (two hops, one client header):
-  #   OpenCode harness plugin emits per-conversation x-opencode-session.
-  #   nginx copies it to x-litellm-session-id for LiteLLM/Langfuse correlation
-  #   (./logging.nix). general_settings.forward_client_headers_to_llm_api
-  #   forwards the real x-opencode-session upstream so OpenCode Go can pin
-  #   prompt-cache affinity. Do NOT stamp a static x-opencode-session on Go
-  #   routes — model extra_headers overwrite forwarded headers and collapse
-  #   every conversation onto one cache key (formerly litellm-homehub).
+  # Session identity (one header per hop, both emitted by the harness plugin
+  # from the same OpenCode sessionID):
+  #   x-opencode-session — general_settings.forward_client_headers_to_llm_api
+  #   forwards it upstream so OpenCode Go can pin prompt-cache affinity.
+  #   x-litellm-session-id — extracted natively by LiteLLM into
+  #   metadata.session_id for Langfuse correlation (./logging.nix). Do NOT
+  #   stamp a static x-opencode-session on Go routes — model extra_headers
+  #   overwrite forwarded headers and collapse every conversation onto one
+  #   cache key (formerly litellm-homehub).
 
   mkOpencodeGoEntry =
     id:
@@ -116,10 +137,11 @@ let
     model_list = chatgptEntries ++ opencodeGoEntries ++ llamaSwapModelList;
     general_settings = {
       master_key = "os.environ/LITELLM_MASTER_KEY";
-      # Forward client x-* headers (incl. x-opencode-session) to upstream LLM
-      # APIs so OpenCode Go receives the real per-conversation session id for
-      # prompt-cache routing. Without this, only model_list extra_headers reach
-      # Go — and those must not set x-opencode-session statically.
+      # Forward client x-* headers (incl. x-opencode-session and
+      # x-litellm-session-id) to upstream LLM APIs so OpenCode Go receives the
+      # real per-conversation session id for prompt-cache routing. Without
+      # this, only model_list extra_headers reach Go — and those must not set
+      # x-opencode-session statically.
       forward_client_headers_to_llm_api = true;
     };
     litellm_settings = {
@@ -273,12 +295,21 @@ in
         ]
       );
 
+  # Fire the workaround self-expiry warning when the patched litellm version
+  # drifts from the version the session.id mapper patch was written against.
+  warnings = lib.optional litellmSessionPatchStale ''
+    modules/nas/litellm: litellm is now ${litellmPkg.version}; the
+    langfuse-otel-session-id.patch was written against 1.98.0. Re-check whether
+    the OTel v2 Langfuse mapper (integrations/otel/mappers/langfuse.py) emits
+    session.id natively and remove the patch if so.
+  '';
+
   # ai.homehub.tv → LiteLLM (127.0.0.1:8090); buffering off, long timeouts, no
-  # websockets. Client x-opencode-session (OpenCode session-headers plugin) is
-  # copied to x-litellm-session-id for native LiteLLM/Langfuse session
-  # correlation (./logging.nix). The original header is left intact so
-  # forward_client_headers_to_llm_api can pass it through to OpenCode Go.
-  # When the client header is absent nginx sets an empty rewrite target.
+  # websockets. Client x-* headers pass through untouched: the OpenCode
+  # session-headers plugin emits x-opencode-session and x-litellm-session-id
+  # directly, forward_client_headers_to_llm_api forwards them to OpenCode Go,
+  # and LiteLLM extracts x-litellm-session-id for Langfuse correlation
+  # (./logging.nix).
   services.nginx.virtualHosts = mkNginxVhost {
     host = "ai.homehub.tv";
     port = 8090;
@@ -287,7 +318,6 @@ in
       proxy_buffering off;
       proxy_read_timeout 600s;
       proxy_send_timeout 600s;
-      proxy_set_header x-litellm-session-id $http_x_opencode_session;
     '';
   };
 }
