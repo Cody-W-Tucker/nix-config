@@ -5,10 +5,6 @@
   hardwareConfig,
   ...
 }:
-
-let
-  lockCommand = "pidof hyprlock || hyprlock";
-in
 {
   imports = [
     ./hyprland/settings.nix
@@ -54,22 +50,20 @@ in
       enable = true;
       settings = {
         general = {
-          lock_cmd = lockCommand;
-          before_sleep_cmd = lockCommand;
-          # Hyprland's Lua config provider rejects the legacy `hyprctl dispatch`
-          # IPC syntax, so dpms goes through the Lua dispatcher via `hyprctl eval`.
-          after_sleep_cmd = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"on\" }))'";
+          lock_cmd = "pidof hyprlock || hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
+          after_sleep_cmd = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"enable\" }))'";
         };
 
         listener = [
           {
             timeout = 900; # 15min.
-            on-timeout = lockCommand;
+            on-timeout = "loginctl lock-session";
           }
           {
             timeout = 1800; # 30min.
-            on-timeout = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"off\" }))'";
-            on-resume = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"on\" }))'";
+            on-timeout = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"disable\" }))'";
+            on-resume = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"enable\" }))'";
           }
         ]
         ++ lib.optional (hardwareConfig.hypridle.suspendTimeout != null) {
