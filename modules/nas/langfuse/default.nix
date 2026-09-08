@@ -94,6 +94,9 @@
   virtualisation.oci-containers.containers =
     let
       commonEnv = {
+        # allow local ip address endpoint for local models.
+        LANGFUSE_UNSAFE_TRUSTED_PRIVATE_IPS = "true";
+
         NEXTAUTH_URL = "https://langfuse.homehub.tv";
         TELEMETRY_ENABLED = "true";
         LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES = "false";
