@@ -23,8 +23,7 @@ in
     ./skills/cognitive
     ./tools/model-router
     ./tools/rtk
-    ./tools/session-headers
-    # ./mcp/mealie
+    # ./tools/session-headers
   ];
 
   # The 99 nixvim integration brings its own OpenCode-backed model routing,
@@ -53,6 +52,7 @@ in
     '';
     settings = {
       autoupdate = false;
+      experimental.openTelemetry = true;
       small_model = "opencode-go/deepseek-v4-flash";
       formatter = true;
       default_agent = "build";
