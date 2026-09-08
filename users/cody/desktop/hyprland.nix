@@ -51,14 +51,15 @@
       settings = {
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
-          before_sleep_cmd = "loginctl lock-session";
+          # Spawn hyprlock directly; `loginctl lock-session` could miss the lock signal and sleep unlocked.
+          before_sleep_cmd = "pidof hyprlock || hyprlock";
           after_sleep_cmd = "hyprctl eval 'hl.dispatch(hl.dsp.dpms({ action = \"enable\" }))'";
         };
 
         listener = [
           {
             timeout = 900; # 15min.
-            on-timeout = "loginctl lock-session";
+            on-timeout = "pidof hyprlock || hyprlock";
           }
           {
             timeout = 1800; # 30min.
