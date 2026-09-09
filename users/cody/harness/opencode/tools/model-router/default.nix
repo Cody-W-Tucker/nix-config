@@ -9,8 +9,8 @@ let
   upstreamSrc = pkgs.fetchFromGitHub {
     owner = "marco-jardim";
     repo = "opencode-model-router";
-    rev = "v1.3.0";
-    hash = "sha256-nqdVWDzBD8zv/OsvAVrxA71ox8l0uacQqt4pf1PSJ1U=";
+    rev = "v1.11.1";
+    hash = "sha256-B+sJAxzn0ZtHKeQ3kMAKtHmI5M/orfuOLyAvWCNSy+I=";
   };
 
   modelRouterSrc =
