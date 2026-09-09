@@ -76,7 +76,7 @@ in
       );
       settings = {
         model = {
-          default = "grok-4.5";
+          default = "grok-4.6";
           provider = "xai-oauth";
         };
         fallback_model = {
@@ -98,7 +98,7 @@ in
           };
           curator = {
             provider = "opencode-go";
-            model = "deepseek-v4-pro";
+            model = "hy3";
             extra_body = {
               thinking.type = "enabled";
               reasoning_effort = "medium";
@@ -153,7 +153,7 @@ in
         };
         agent = {
           max_turns = 60;
-          reasoning_effort = "medium";
+          reasoning_effort = "low";
         };
         curator = {
           enabled = true;
