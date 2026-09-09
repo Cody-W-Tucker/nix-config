@@ -14,10 +14,6 @@ in
   imports = [
     ./agents/logging
     ./agents/knowledge
-    ./agents/business
-    ./agents/challenger
-    ./agents/scaffolder
-    ./agents/verifier
     ./skills/humanizer
     ./skills/cognitive
     ./tools/model-router
