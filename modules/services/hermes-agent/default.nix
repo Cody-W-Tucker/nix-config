@@ -140,6 +140,7 @@ in
         agent = {
           max_turns = 60;
           reasoning_effort = "low";
+          service_tier = "fast";
         };
         curator = {
           enabled = true;
