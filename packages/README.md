@@ -29,6 +29,13 @@ Maintenance commands installed into the system environment.
 
 Use `check-imports` when adding or moving Nix modules. Use `update` for the normal operator path after changes have settled.
 
+### `crm-cli`
+
+Pinned [crm.cli](https://github.com/dzhng/crm.cli) `v0.3.10`. No upstream flake. The GitHub `bun build --compile` binaries omit `@libsql/linux-x64-gnu`, so this wraps `bun run src/cli.ts` with a fixed-output `bun install`.
+
+- Wired into Hermes via `modules/services/hermes-agent/skills/business` `extraPackages`.
+- Database path is `CRM_DB` (Hermes unit: `$HERMES_HOME/crm/crm.db`), not this derivation.
+
 ### `kokoro`
 
 Kokoro TTS model bundle and its supporting spaCy model.
