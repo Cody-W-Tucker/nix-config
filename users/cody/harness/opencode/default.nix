@@ -1,13 +1,11 @@
 {
   lib,
   pkgs,
-  inputs,
   config,
   ...
 }:
 
 let
-  inherit (inputs.cognitive-assistant.lib.artifacts.alignment) translationLayer;
   litellmModels = import ../../../../modules/nas/litellm/models.nix;
 in
 {
@@ -30,7 +28,7 @@ in
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
-    context = builtins.readFile translationLayer + ''
+    context = ''
 
       # Environment
 
