@@ -8,7 +8,7 @@
 }:
 
 let
-  inherit (config.services.hermes-agent) group stateDir user;
+  inherit (config.services.hermes-agent) hermesHome;
 
   upstreamBundledSkillsRoot = "${inputs.hermes-agent}/skills";
 
@@ -79,14 +79,16 @@ in
       }
     );
 
-    system.activationScripts.hermes-agent-enabled-upstream-skills = lib.stringAfter [ "users" ] ''
-      hermes_home="${stateDir}/.hermes"
+    # User-scoped Home Manager activation; runs as codyt after upstream's
+    # hermes-agent-setup, so HERMES_HOME already exists and no chown is
+    # needed.
+    home.activation.hermesAgentEnabledUpstreamSkills = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
+      hermes_home="${hermesHome}"
       local_skills_root="$hermes_home/skills"
 
       mkdir -p "$hermes_home" "$local_skills_root"
       touch "$hermes_home/.no-bundled-skills"
-      chown ${user}:${group} "$hermes_home/.no-bundled-skills"
-      chmod u+rw,g+rw "$hermes_home/.no-bundled-skills"
+      chmod u+rw "$hermes_home/.no-bundled-skills"
 
       for rel_dir in ${lib.concatMapStringsSep " " lib.escapeShellArg disabledUpstreamSkillRelDirs}; do
         rm -rf "$local_skills_root/$rel_dir"

@@ -6,12 +6,11 @@
 }:
 
 let
-  obsidianVault = "/data/knowledge/Personal";
-  inherit (config.services.hermes-agent) stateDir workingDirectory;
+  inherit (config.services.hermes-agent) hermesHome workingDirectory;
 in
 {
   imports = [
-    inputs.hermes-agent.nixosModules.default
+    inputs.hermes-agent.homeManagerModules.default
     ./runtime
     ./mcp
     ./secrets
@@ -24,23 +23,12 @@ in
   config = {
     services.hermes-agent = {
       enable = true;
-      workingDirectory = "/data/workspace";
-      user = "codyt";
-      group = "users";
-      createUser = false;
-      container = {
-        enable = true;
-        extraOptions = [
-          "--device"
-          "nvidia.com/gpu=all"
-        ];
-        extraVolumes = [
-          "/mnt/projects:/data/projects:rw"
-          "/mnt/knowledge:/data/knowledge:rw"
-          "/etc/nixos:/etc/nixos:rw"
-        ];
-      };
-      addToSystemPackages = true;
+      gateway.enable = true;
+      # User-scoped persistent state: HERMES_HOME and the agent workspace both
+      # live under the user's XDG data directory. Upstream's HM activation
+      # creates both directories and merges config/secrets/documents into them.
+      hermesHome = "${config.xdg.dataHome}/hermes";
+      workingDirectory = "${config.xdg.dataHome}/hermes/workspace";
       extraDependencyGroups = [
         "edge-tts"
         "firecrawl"
@@ -60,12 +48,11 @@ in
         API_SERVER_ENABLED = "true";
         API_SERVER_HOST = "0.0.0.0";
         API_SERVER_PORT = "8642";
-        OBSIDIAN_VAULT = obsidianVault;
         VOICE_TOOLS_OPENAI_KEY = "local-only";
       };
       environmentFiles = [
         config.sops.templates."hermes-env".path
-        "${stateDir}/hermes.env"
+        config.sops.templates."hermes-agent-env".path
       ];
       configFile = pkgs.writeText "hermes-config.json" (
         # Make config.yaml fully declarative. Upstream merges generated settings

@@ -6,7 +6,7 @@ Does not own Hermes service wiring, MCP servers, package patches, or mutable ski
 
 ## Placement Rules
 
-- Keep skills as normal files that can be copied into `${stateDir}/.hermes/skills`.
+- Keep skills as normal files that can be copied into `${hermesHome}/skills`.
 - Make each skill directory self-contained and named for the behavior it owns.
 - Do not put service options, secrets, or runtime ACL changes here.
 - Keep generated or experimental local skill state out of this packaged tree.

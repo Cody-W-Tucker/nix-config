@@ -6,7 +6,7 @@
 }:
 
 let
-  inherit (config.services.hermes-agent) group stateDir user;
+  inherit (config.services.hermes-agent) hermesHome;
   cfg = config.codyos.hermes-agent.skills;
 
   legacySeedPacks = map (dir: {
@@ -23,8 +23,10 @@ let
 
 in
 {
-  config.system.activationScripts.hermes-agent-seeded-skills = lib.stringAfter [ "users" ] ''
-    hermes_home="${stateDir}/.hermes"
+  # Home Manager activation runs as the user (no chown needed), ordered after
+  # upstream's hermes-agent-setup so HERMES_HOME already exists.
+  config.home.activation.hermesAgentSeededSkills = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
+    hermes_home="${hermesHome}"
     local_skills_root="$hermes_home/skills"
 
     mkdir -p "$local_skills_root"
@@ -78,8 +80,7 @@ in
           cp -rL "$skill_dir" "$dest_dir"
         fi
 
-        chown -R ${user}:${group} "$dest_dir"
-        chmod -R u+rwX,g+rwX "$dest_dir"
+        chmod -R u+rwX "$dest_dir"
       done
     }
 

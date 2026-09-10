@@ -11,7 +11,6 @@
     ../../modules/hardware/baseline.nix
     ../../modules/hardware/nvidia.nix
     ../../modules/nas
-    ../../modules/services/hermes-agent
     ../../modules/services/opencode
     ./models.nix
     # VPN for media
@@ -209,6 +208,7 @@
       home.stateVersion = "25.11";
       imports = [
         ../../users/cody/server.nix
+        ../../modules/services/hermes-agent
         inputs.nixos-secrets.homeModules.default
         inputs.nixvim-stable.homeModules.nixvim
       ];
@@ -222,5 +222,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "26.05"; # Did you read the comment?
-
 }

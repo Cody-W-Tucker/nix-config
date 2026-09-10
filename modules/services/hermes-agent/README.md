@@ -1,17 +1,15 @@
 # Hermes Agent
 
-Hermes is the local AI agent service for CodyOS. This directory owns the implementation detail: package wrapping, systemd runtime, SOPS secrets, MCP bridges, document provisioning, skills, and platform toolsets.
+Hermes is the local AI agent service for CodyOS. This directory owns the implementation detail: Home Manager service wiring, SOPS secrets, MCP bridges, document provisioning, skills, and platform toolsets. The service is configured exclusively through `inputs.hermes-agent.homeManagerModules.default` and runs as the login user (codyt).
 
 ## Layout
 
 | Path | Role |
 | --- | --- |
 | `default.nix` | Main service integration and high-level `services.hermes-agent` settings. |
-| `package/default.nix` | Upstream package build, local patches, and CLI/desktop wrappers. |
-| `runtime/default.nix` | `hermes-agent` systemd service, environment, restart triggers, and runtime paths. |
-
-| `secrets/default.nix` | SOPS secret ownership and the aggregated `hermes-env` template. |
-| `mcp/default.nix` | Secret-wrapped MCP server commands, currently including Karakeep. |
+| `runtime/default.nix` | `hermes-agent` systemd **user** service wiring and user-scoped tmpfiles. |
+| `secrets/default.nix` | SOPS secret ownership, templates, and agent/dashboard env wiring. |
+| `mcp/default.nix` | MCP server registration, currently including Karakeep. |
 | `documents/default.nix` | SOUL, human profiles, memory spec, and task spec provisioning. |
 | `skills/` | Declarative seeded skill packs and business/knowledge skills. |
 | `toolsets/` | Platform toolset access by interface and web-search backend settings. |
@@ -19,52 +17,42 @@ Hermes is the local AI agent service for CodyOS. This directory owns the impleme
 
 ## Runtime model
 
-The Nix module turns declarative service settings into a running `hermes-agent` systemd service.
+The Home Manager module turns declarative service settings into a running
+`systemd.user.services.hermes-agent` unit.
 
-- The service runs as the Hermes service user/group and uses a managed state directory.
-- `HERMES_HOME` is under the service state directory so identity, auth, logs, and mutable runtime state do not drift into an operator shell by accident.
-- Runtime variables include the local CRM database path and library paths needed for voice/media support.
-- The service restarts when serialized settings or provisioned identity documents change.
-- `UMask = "0007"` keeps service-created state group-accessible.
-- Shutdown has an extended grace period so the agent can persist state cleanly.
-
-
-## Package and wrappers
-
-`package/default.nix` wraps the upstream `inputs.hermes-agent` flake for this system.
-
-Local patches are intentional:
-
-- Hermes-created auth/home state is group-readable and group-writable where needed.
-- The Electron desktop build gets Linux titlebar behavior expected by this desktop.
-
-The package exposes two operator entry points:
-
-- `hermes-desktop` starts the Electron UI with the managed `HERMES_HOME`.
-- `hermes` is the normal CLI wrapper; `hermes desktop` and `hermes gui` delegate to the desktop wrapper.
+- The service runs as the login user; there is no system hermes user or group.
+- `HERMES_HOME` is user-scoped persistent state at
+  `${config.xdg.dataHome}/hermes` (`~/.local/share/hermes`); the agent
+  workspace is `${config.xdg.dataHome}/hermes/workspace`. Upstream's
+  `hermes-agent-setup` activation creates both and merges configuration,
+  secrets, documents, and plugins into them.
+- Runtime variables include the local CRM database path
+  (`${hermesHome}/crm/crm.db`) and library paths needed for voice/media
+  support.
+- The dashboard is upstream's `systemd.user.services.hermes-backend` unit in
+  `backend.mode = "dashboard"` (host 0.0.0.0, port 9119, `--skip-build`).
+- Logout survival is provided by `users.users.codyt.linger = true` in
+  `modules/services/opencode/default.nix`.
+- Shutdown has an extended grace period (`TimeoutStopSec`) so the agent can
+  persist state cleanly.
+- State is single-user: upstream applies `UMask = 0077` and user-only modes
+  (0600) instead of the group-sharing modes the old system-level install used.
 
 ## Secrets
 
-Secrets are SOPS-owned for the Hermes service.
+Secrets are SOPS-owned for Hermes inside the Home Manager configuration.
 
-- `secrets/default.nix` declares core agent secrets such as OpenCode, Firecrawl, Discord, and Telegram credentials.
+- `secrets/default.nix` declares core agent secrets such as OpenCode, Discord, and Telegram credentials.
 - `sops.templates."hermes-env"` aggregates single-value service environment variables into the format Hermes expects.
-- The multiline `hermes` secret carries env-named `KEY=value` lines and is rendered verbatim into the agent env file via `sops.templates."hermes-agent-env"`; dashboard credentials travel separately as `hermes-dashboard` → `hermes-dashboard-env`.
-- MCP-specific credentials stay near their bridge. For Karakeep, `mcp/default.nix` reads the SOPS secret at runtime and exports it before starting the MCP server.
+- The multiline `hermes` secret carries env-named `KEY=value` lines and is rendered verbatim by `sops.templates."hermes-agent-env"`; both templates are listed in `environmentFiles` and merged into `.env` by upstream activation.
+- Dashboard credentials travel separately (`hermes-dashboard` → `hermes-dashboard-env`) and are injected into the backend user unit via `EnvironmentFile` so they never land in the agent process environment.
+- MCP-specific credentials are referenced by `mcp/default.nix` through the shared env values.
 
 ## MCP bridges
 
 MCP servers are registered through `services.hermes-agent.mcpServers`.
 
-The current pattern is:
-
-1. Declare the SOPS secret for the external service.
-2. Create a small wrapper command with `writeShellApplication`.
-3. Read the secret from the SOPS path at execution time.
-4. Export the provider-specific environment variables.
-5. Register the wrapper command as the MCP server command.
-
-Karakeep is the reference implementation for this pattern.
+Karakeep is the reference implementation, running `@karakeep/mcp` via npx with the shared `KARAKEEP_API_KEY` env value.
 
 ## Documents and identity
 
@@ -74,17 +62,21 @@ Provisioned artifacts include:
 
 | Artifact | Target | Purpose |
 | --- | --- | --- |
-| `SOUL.md` | `${stateDir}/.hermes/SOUL.md` | Core identity and CodyOS-specific operating rules. |
-| `MEMORY-SPEC.md` | Working directory | Long-term memory protocol. |
-| `TASK-SPEC.md` | Working directory | Task decomposition protocol. |
-| `EXISTENTIAL-HUMAN-PROFILE.md` | `human-profiles/` | High-level user values and goals. |
-| `OPERATIONAL-HUMAN-PROFILE.md` | `human-profiles/` | Practical user preferences and habits. |
+| `SOUL.md` | `${hermesHome}/SOUL.md` via `services.hermes-agent.hermesHomeFiles` | Core identity and CodyOS-specific operating rules. |
+| `MEMORY-SPEC.md` | Working directory via `documents` | Long-term memory protocol. |
+| `TASK-SPEC.md` | Working directory via `documents` | Task decomposition protocol. |
+| `human-profiles/EXISTENTIAL-HUMAN-PROFILE.md` | Working directory | High-level user values and goals. |
+| `human-profiles/OPERATIONAL-HUMAN-PROFILE.md` | Working directory | Practical user preferences and habits. |
 
-Activation scripts install these files before the service starts, and restart triggers keep the running agent aligned with changes.
+Upstream's `hermes-agent-setup` activation installs these files
+(user-owned, 0600) before the user services start. There are no
+`system.activationScripts` and no restart triggers under Home Manager; a
+changed document or setting applies on the next process restart
+(`systemctl --user restart hermes-agent`).
 
 ## Skills
 
-Skills are Markdown-based capability packs copied into `HERMES_HOME/skills` during activation.
+Skills are Markdown-based capability packs copied into `${hermesHome}/skills` by Home Manager activation scripts (`home.activation.*`, running as the user).
 
 Two sync modes are supported:
 

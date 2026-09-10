@@ -6,10 +6,11 @@
 }:
 
 let
-  # Container-visible persistent path.  Host /var/lib/hermes/crm/crm.db maps
-  # to /data/crm/crm.db inside the container; crm is installed via npm there.
-  crmDatabasePath = "/data/crm/crm.db";
-  inherit (config.services.hermes-agent) group stateDir user;
+  # Persistent user-scoped CRM database. Under the NixOS scope this lived in
+  # /var/lib/hermes/crm and was mapped into a container; the Home Manager
+  # service runs natively as the user, so the DB lives under HERMES_HOME.
+  crmDatabasePath = "${hermesHome}/crm/crm.db";
+  inherit (config.services.hermes-agent) hermesHome;
   ldLibraryPath = lib.concatStringsSep ":" [
     "/run/opengl-driver/lib"
     "/run/current-system/sw/lib"
@@ -19,26 +20,23 @@ in
 
 {
   config = {
-    systemd.tmpfiles.rules = [
-      "d ${stateDir}/crm 0750 ${user} ${group} -"
+    # User-scoped runtime dirs. Upstream's hermes-agent-setup activation
+    # creates HERMES_HOME, the workspace and the standard state subdirs; this
+    # rule adds the CRM directory that nothing else provisions.
+    systemd.user.tmpfiles.rules = [
+      "d ${hermesHome}/crm 0700 - - -"
     ];
 
-    systemd.services.hermes-agent = {
-      restartTriggers = [
-        (pkgs.writeText "hermes-agent-config-trigger" (
-          builtins.toJSON config.services.hermes-agent.settings
-        ))
+    # Home Manager user units have no NixOS-style restartTriggers; changes to
+    # settings or provisioned documents apply on the next
+    # `systemctl --user restart hermes-agent`.
+    systemd.user.services.hermes-agent.Service = {
+      Environment = [
+        "CRM_DB=${crmDatabasePath}"
+        "LD_LIBRARY_PATH=${ldLibraryPath}"
       ];
 
-      environment = {
-        CRM_DB = crmDatabasePath;
-        LD_LIBRARY_PATH = ldLibraryPath;
-      };
-
-      serviceConfig = {
-        TimeoutStopSec = lib.mkDefault 210;
-        UMask = "0007";
-      };
+      TimeoutStopSec = lib.mkDefault 210;
     };
   };
 }

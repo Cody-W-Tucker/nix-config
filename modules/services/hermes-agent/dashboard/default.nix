@@ -2,76 +2,24 @@
 #
 # Separate process from hermes-agent.service (the messaging gateway).
 # Shares HERMES_HOME for config/sessions. Requires basic auth when
-# binding to a non-loopback address.
+# binding to a non-loopback address. Under Home Manager the dashboard is
+# upstream's `hermes-backend` systemd user unit in `backend.mode =
+# "dashboard"`, not a bespoke system service.
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
-let
-  cfg = config.services.hermes-agent;
-  inherit (cfg) user group stateDir;
-
-  # Mirror upstream effectivePackage so the dashboard gets the same
-  # Python environment (extraDependencyGroups, extraPythonPackages).
-  effectivePackage =
-    if cfg.extraPythonPackages == [ ] && cfg.extraDependencyGroups == [ ] then
-      cfg.package
-    else
-      cfg.package.override { inherit (cfg) extraPythonPackages extraDependencyGroups; };
-in
 {
   config = {
-    systemd.services.hermes-dashboard = {
-      description = "Hermes Dashboard Web UI";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "hermes-agent.service" ];
-      wants = [ "hermes-agent.service" ];
-
-      environment = {
-        HOME = stateDir;
-        HERMES_HOME = "${stateDir}/.hermes";
-        HERMES_MANAGED = "true";
-      };
-
-      serviceConfig = {
-        User = user;
-        Group = group;
-        WorkingDirectory = "${stateDir}/workspace";
-        EnvironmentFile = [ "${stateDir}/hermes-dashboard.env" ];
-        ExecStart = lib.concatStringsSep " " [
-          "${effectivePackage}/bin/hermes"
-          "dashboard"
-          "--no-open"
-          "--host"
-          "0.0.0.0"
-          "--port"
-          "9119"
-          "--skip-build"
-        ];
-        Restart = "always";
-        RestartSec = 5;
-        UMask = "0007";
-
-        # Hardening (matches hermes-agent.service)
-        NoNewPrivileges = true;
-        ProtectSystem = "strict";
-        ProtectHome = false;
-        ReadWritePaths = [
-          stateDir
-          "${stateDir}/workspace"
-        ];
-        PrivateTmp = true;
-      };
-
-      path = [
-        effectivePackage
-        pkgs.bash
-        pkgs.coreutils
-      ]
-      ++ cfg.extraPackages;
+    services.hermes-agent.backend = {
+      mode = "dashboard";
+      host = "0.0.0.0";
+      port = 9119;
+      # Keep the CLI-supplied build step off this path (matches the old
+      # system unit's --skip-build).
+      extraArgs = [ "--skip-build" ];
     };
   };
 }
