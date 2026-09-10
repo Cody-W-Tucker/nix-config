@@ -60,13 +60,6 @@ in
         config.sops.templates."hermes-env".path
         config.sops.templates."hermes-agent-env".path
       ];
-      configFile = pkgs.writeText "hermes-config.json" (
-        # Make config.yaml fully declarative. Upstream merges generated settings
-        # into any existing config when configFile is null, which preserves stale
-        # runtime keys like old skills.external_dirs entries. Writing the final
-        # settings JSON here forces activation to overwrite config.yaml instead.
-        builtins.toJSON config.services.hermes-agent.settings
-      );
       settings = {
         model = {
           default = "grok-4.6";
