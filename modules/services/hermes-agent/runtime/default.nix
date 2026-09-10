@@ -6,9 +6,7 @@
 }:
 
 let
-  # Persistent user-scoped CRM database. Under the NixOS scope this lived in
-  # /var/lib/hermes/crm and was mapped into a container; the Home Manager
-  # service runs natively as the user, so the DB lives under HERMES_HOME.
+  # Persistent user-scoped CRM database under HERMES_HOME.
   crmDatabasePath = "${hermesHome}/crm/crm.db";
   inherit (config.services.hermes-agent) hermesHome;
   ldLibraryPath = lib.concatStringsSep ":" [

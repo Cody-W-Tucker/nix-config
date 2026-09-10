@@ -17,8 +17,8 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 ## Scope
 
 - Hermes is configured only in Home Manager. There is no NixOS system-scope
-  instance: no `systemd.services.hermes-*`, no `/var/lib/hermes`, no system
-  user, no `systemd.tmpfiles.rules` at system level.
+  instance: no `systemd.services.hermes-*`, no system user, no
+  `systemd.tmpfiles.rules` at system level.
 - Upstream HM surfaces: `services.hermes-agent.{hermesHome, workingDirectory,
   settings, environment, environmentFiles, documents, hermesHomeFiles,
   mcpServers, gateway.enable, backend.*}`, `systemd.user.services.{hermes-agent,
@@ -29,6 +29,7 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 - State: `hermesHome = ${config.xdg.dataHome}/hermes` (~/.local/share/hermes)
   and `workingDirectory = ${config.xdg.dataHome}/hermes/workspace`. Both are
   created and populated by upstream's `hermes-agent-setup` activation.
+  Login shells get the same path via `home.sessionVariables.HERMES_HOME`.
 
 ## High-Salience Heuristics
 

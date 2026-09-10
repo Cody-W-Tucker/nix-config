@@ -25,7 +25,8 @@ The Home Manager module turns declarative service settings into a running
   `${config.xdg.dataHome}/hermes` (`~/.local/share/hermes`); the agent
   workspace is `${config.xdg.dataHome}/hermes/workspace`. Upstream's
   `hermes-agent-setup` activation creates both and merges configuration,
-  secrets, documents, and plugins into them.
+  secrets, documents, and plugins into them. Login shells inherit it from
+  `home.sessionVariables.HERMES_HOME` (same value as `services.hermes-agent.hermesHome`).
 - Runtime variables include the local CRM database path
   (`${hermesHome}/crm/crm.db`) and library paths needed for voice/media
   support.

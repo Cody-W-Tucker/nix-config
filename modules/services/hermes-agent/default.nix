@@ -6,7 +6,7 @@
 }:
 
 let
-  inherit (config.services.hermes-agent) hermesHome workingDirectory;
+  inherit (config.services.hermes-agent) workingDirectory;
 in
 {
   imports = [
@@ -21,6 +21,12 @@ in
   ];
 
   config = {
+    # Upstream renamed this option: puts the `hermes` CLI into user packages
+    # (was `addToSystemPackages`).
+    programs.hermes-agent.enable = true;
+    # Login shells inherit the same home the user units use.
+    # Without this, an unwrapped `hermes` CLI writes ~/.hermes instead.
+    home.sessionVariables.HERMES_HOME = config.services.hermes-agent.hermesHome;
     services.hermes-agent = {
       enable = true;
       gateway.enable = true;
@@ -118,7 +124,7 @@ in
           DISCORD_HOME_CHANNEL = "1502095470334578779";
         };
         voice = {
-          auto_tts = true;
+          auto_tts = false;
         };
         stt = {
           enabled = true;

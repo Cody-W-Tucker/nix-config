@@ -16,7 +16,6 @@ in
 
   home.packages = [
     llmPkgs.openspec
-    llmPkgs.qmd
     llmPkgs.grok
     llmPkgs.gnhf
     llmPkgs.pi
