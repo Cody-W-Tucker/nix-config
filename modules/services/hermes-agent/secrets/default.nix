@@ -15,6 +15,12 @@ in
     sops.secrets."hermes" = { };
     sops.secrets."opencode-api-key" = { };
 
+    # Actual Budget MCP credentials, consumed by the Actual Budget MCP
+    # wrapper (npx) in ../mcp/default.nix via direct secret paths (not env
+    # templates).
+    sops.secrets."actual-budget-mcp-password" = { };
+    sops.secrets."actual-budget-mcp-sync-id" = { };
+
     # Dashboard credentials live in their own secret so they never land
     # in the agent process environment (and vice versa).
     sops.secrets."hermes-dashboard" = { };
