@@ -1,6 +1,5 @@
 {
   config,
-  enabledUpstreamSkills,
   inputs,
   lib,
   pkgs,
@@ -39,49 +38,27 @@ let
   upstreamBundledSkillEntries =
     topLevelUpstreamBundledSkillEntries ++ categorizedUpstreamBundledSkillEntries;
 
-  upstreamBundledSkillNames = map (entry: entry.name) upstreamBundledSkillEntries;
-  unknownEnabledUpstreamSkillNames = lib.filter (
-    name: !(lib.elem name upstreamBundledSkillNames)
-  ) enabledUpstreamSkills;
-  enabledUpstreamSkillEntries = lib.filter (
-    entry: lib.elem entry.name enabledUpstreamSkills
-  ) upstreamBundledSkillEntries;
-  disabledUpstreamSkillNames = lib.filter (
-    name: !(lib.elem name enabledUpstreamSkills)
-  ) upstreamBundledSkillNames;
-  disabledUpstreamSkillEntries = lib.filter (
-    entry: !(lib.elem entry.name enabledUpstreamSkills)
-  ) upstreamBundledSkillEntries;
-  disabledUpstreamSkillRelDirs = map (entry: entry.relDir) disabledUpstreamSkillEntries;
   bundledSkillPackRoot = pkgs.linkFarm "hermes-agent-enabled-upstream-skills" (
     map (entry: {
       name = entry.relDir;
       path = entry.source;
-    }) enabledUpstreamSkillEntries
+    }) upstreamBundledSkillEntries
   );
 in
 {
   config = {
-    assertions = [
+    codyos.hermes-agent.skills.skillPacks = lib.mkBefore [
       {
-        assertion = unknownEnabledUpstreamSkillNames == [ ];
-        message = ''
-          Unknown enabled upstream Hermes bundled skills: ${lib.concatStringsSep ", " unknownEnabledUpstreamSkillNames}
-        '';
-      }
-    ];
-
-    codyos.hermes-agent.skills.skillPacks = lib.mkBefore (
-      lib.optional (enabledUpstreamSkills != [ ]) {
         name = "upstream-bundled";
         root = bundledSkillPackRoot;
         mode = "managed";
       }
-    );
+    ];
 
     # User-scoped Home Manager activation; runs as codyt after upstream's
     # hermes-agent-setup, so HERMES_HOME already exists and no chown is
-    # needed.
+    # needed. .no-bundled-skills still prevents Hermes from double-copying
+    # its own bundle; the managed pack is the source of truth.
     home.activation.hermesAgentEnabledUpstreamSkills = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
       hermes_home="${hermesHome}"
       local_skills_root="$hermes_home/skills"
@@ -89,12 +66,10 @@ in
       mkdir -p "$hermes_home" "$local_skills_root"
       touch "$hermes_home/.no-bundled-skills"
       chmod u+rw "$hermes_home/.no-bundled-skills"
-
-      for rel_dir in ${lib.concatMapStringsSep " " lib.escapeShellArg disabledUpstreamSkillRelDirs}; do
-        rm -rf "$local_skills_root/$rel_dir"
-      done
     '';
 
-    services.hermes-agent.settings.skills.disabled = disabledUpstreamSkillNames;
+    # Do not pin services.hermes-agent.settings.skills.disabled. The previous
+    # allowlist wrote every non-listed upstream skill into that disable list.
+    services.hermes-agent.settings.skills.disabled = lib.mkDefault [ ];
   };
 }
