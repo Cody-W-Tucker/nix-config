@@ -55,6 +55,7 @@ in
         API_SERVER_HOST = "0.0.0.0";
         API_SERVER_PORT = "8642";
         VOICE_TOOLS_OPENAI_KEY = "local-only";
+        MEALIE_BASE_URL = "https://mealie.homehub.tv";
       };
       environmentFiles = [
         config.sops.templates."hermes-env".path

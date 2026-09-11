@@ -21,8 +21,8 @@ in
     sops.secrets."actual-budget-mcp-password" = { };
     sops.secrets."actual-budget-mcp-sync-id" = { };
 
-    # Mealie MCP credentials, consumed by the Mealie MCP wrapper (uvx) in
-    # ../mcp/mealie.nix via a direct secret path (not an env template).
+    # Mealie API token. Rendered into hermes-env as MEALIE_API_KEY so the
+    # agent can call https://mealie.homehub.tv OpenAPI directly.
     sops.secrets."mealie-api-key" = { };
 
     # Dashboard credentials live in their own secret so they never land
@@ -34,6 +34,7 @@ in
       content = ''
         OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
         KARAKEEP_API_KEY=${config.sops.placeholder."karakeep-api-key"}
+        MEALIE_API_KEY=${config.sops.placeholder."mealie-api-key"}
       '';
     };
 

@@ -22,10 +22,6 @@ let
   };
 in
 {
-  imports = [
-    ./mealie.nix
-  ];
-
   config = {
     services.hermes-agent = {
       mcpServers.karakeep = {
