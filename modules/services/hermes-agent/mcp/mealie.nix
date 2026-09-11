@@ -1,6 +1,7 @@
 {
-  pkgs,
   config,
+  lib,
+  pkgs,
   ...
 }:
 
@@ -15,24 +16,22 @@ let
     runtimeInputs = [
       pkgs.uv
       pkgs.git
+      # Full interpreter on PATH so uvx discovers a Nix Python with
+      # built-in zlib support.
+      pkgs.python3
     ];
     text = ''
       export MEALIE_BASE_URL="https://mealie.homehub.tv"
-      export MEALIE_API_KEY="$(< ${config.sops.secrets."mealie-api-key".path})"
+      MEALIE_API_KEY="$(< ${config.sops.secrets."mealie-api-key".path})"
+      export MEALIE_API_KEY
       exec ${pkgs.uv}/bin/uvx git+https://github.com/rldiao/mealie-mcp-server
     '';
   };
 in
 {
-  # SOPS secret consumed by the wrapper above. Resolved from the private
-  # nixos-secrets flake's home sops file (same source as opencode-api-key).
-  sops.secrets."mealie-api-key" = { };
-
-  programs.opencode.settings = {
-    mcp.mealie = {
-      type = "local";
-      command = [ "${mealieMcp}/bin/mealie-mcp" ];
-      enabled = true;
+  config = {
+    services.hermes-agent.mcpServers.mealie = {
+      command = lib.getExe mealieMcp;
     };
   };
 }

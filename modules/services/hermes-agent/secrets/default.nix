@@ -21,6 +21,10 @@ in
     sops.secrets."actual-budget-mcp-password" = { };
     sops.secrets."actual-budget-mcp-sync-id" = { };
 
+    # Mealie MCP credentials, consumed by the Mealie MCP wrapper (uvx) in
+    # ../mcp/mealie.nix via a direct secret path (not an env template).
+    sops.secrets."mealie-api-key" = { };
+
     # Dashboard credentials live in their own secret so they never land
     # in the agent process environment (and vice versa).
     sops.secrets."hermes-dashboard" = { };
