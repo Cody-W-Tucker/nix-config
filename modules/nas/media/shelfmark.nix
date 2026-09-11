@@ -111,6 +111,14 @@ in
     };
     volumes = [
       "/var/lib/shelfmark:/config"
+      # The /books staging mount is where Shelfmark delivers files, but
+      # Shelfmark also inspects Transmission's reported completed paths.
+      # Transmission reports the *host* path (e.g.
+      # /mnt/media/Downloads/Shelfmark/...), and Shelfmark opens that
+      # path inside the container — so the container must see the
+      # identical source path, not a differently-named mount. Hence the
+      # whole Downloads tree is bind-mounted at the same path.
+      "/mnt/media/Downloads:/mnt/media/Downloads"
       "/mnt/media/Downloads/Shelfmark:/books"
       "/mnt/media/AudioBookShelf:/audiobooks"
     ];
