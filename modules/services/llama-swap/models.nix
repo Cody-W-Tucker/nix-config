@@ -34,13 +34,15 @@
       "q8_0"
     ];
   };
-  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — non-task reasoning endpoint. Same base
-  # weights as the (removed) task model; no multimodal projector, 64K context
-  # for long-form reasoning. ~5.5 GB weights, fits alongside Q8 KV cache.
+  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — multimodal reasoning endpoint. Same base
+  # weights as the (removed) task model, plus the matching projector; 32K
+  # context to keep the vision stack + Q8 KV cache within the RTX 5060 budget.
+  # ~5.5 GB weights.
   "qwen-3.5-9b" = {
     file = "qwen3.5-9b-nvfp4.gguf";
+    mmprojFile = "mmproj-qwen3.5-9b-nvfp4-f16.gguf";
     gpuLayers = 999;
-    contextSize = 65536;
+    contextSize = 32768;
     threads = 6;
     batchSize = 2048;
     ubatchSize = 1024;

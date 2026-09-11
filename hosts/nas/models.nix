@@ -65,13 +65,22 @@ let
     sha256 = "f3d2fdc74e3ef19925ccbf794b04d7f6f11fb12eba7722b7749219d0cc5c36ed";
   };
 
-  # Qwen3.5-9B NVFP4 base GGUF for the qwen-3.5-9b non-task reasoning endpoint.
-  # Pinned to an immutable release commit (3db49b5e...) so the resolved source
-  # is reproducible; the sha256 guards byte-identity. Mirrors the historical
-  # qwen35Base fetch that backed this endpoint before it was removed.
+  # Qwen3.5-9B NVFP4 multimodal pair for the qwen-3.5-9b reasoning endpoint.
+  # Both pinned to the same immutable release commit (3db49b5e...) so the
+  # resolved source is reproducible; the sha256 guards byte-identity. Mirrors
+  # the historical qwen35Base fetch that backed this endpoint. Store-backed
+  # base + matching projector so llama-server receives --model/--mmproj
+  # directly from the Nix store.
   qwen35_9bBase = pkgs.fetchurl {
     url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/3db49b5e08fb84a2ead8d6407f38f6638c79d08a/qwen3.5-9b-nvfp4.gguf";
     sha256 = "0db703913b6a1b057d423e9815095e9dc16499596a986446918314a48c4d9bad";
+  };
+  # Multimodal projector for qwen-3.5-9b: extracted from the same
+  # FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF release as the base GGUF. Pinned to the
+  # same immutable release commit; the sha256 guards byte-identity.
+  qwen35_9bMmproj = pkgs.fetchurl {
+    url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/3db49b5e08fb84a2ead8d6407f38f6638c79d08a/mmproj-qwen3.5-9b-nvfp4-f16.gguf";
+    sha256 = "97f420245a85ce129bb764e86a5e21e27d782fe6d6056c6839b9c5fdb8f38289";
   };
 
   # s1-mini Q4_K_M GGUF (superwhisper) used as the speech-to-text transcript
@@ -164,10 +173,12 @@ in
       mmprojFile = toString qwen35_4bMmproj;
       upstream.concurrencyLimit = 1;
     };
-    # Qwen3.5-9B NVFP4 non-task reasoning endpoint: store-backed base GGUF
-    # (no multimodal projector). Mirrors the historical non-task override.
+    # Qwen3.5-9B NVFP4 reasoning endpoint: store-backed base GGUF + matching
+    # multimodal projector so llama-server receives --model/--mmproj directly
+    # from the Nix store.
     modelOverrides."qwen-3.5-9b" = {
       file = toString qwen35_9bBase;
+      mmprojFile = toString qwen35_9bMmproj;
     };
     # Embedding + OCR are fetched reproducibly into the store; override the
     # catalog's relative filenames with absolute store paths so llama-server
