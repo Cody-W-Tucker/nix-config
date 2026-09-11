@@ -13,6 +13,12 @@ import type { Plugin } from "@opencode-ai/plugin"
 
 const HEADER = "x-opencode-session"
 const LITELLM_HEADER = "x-litellm-session-id"
+// Non-generic, client-identifying UA forwarded upstream to LiteLLM/OpenCode
+// Go (nginx passes it through untouched). Without this, the OpenAI SDK's
+// generic stainless User-Agent reaches the upstream. Deliberately excludes the
+// sessionID: it lives in x-opencode-session and must not leak into UA-keyed
+// logs/traces.
+const USER_AGENT = "opencode-homehub/1.0 (OpenCode harness session-headers plugin)"
 
 export const SessionHeadersPlugin: Plugin = async () => {
   return {
@@ -24,6 +30,7 @@ export const SessionHeadersPlugin: Plugin = async () => {
       }
       output.headers[HEADER] = sessionID
       output.headers[LITELLM_HEADER] = sessionID
+      output.headers["user-agent"] = USER_AGENT
     },
   }
 }
