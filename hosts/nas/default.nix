@@ -137,7 +137,10 @@
     enable = true;
     # Enable IP forwarding so this host can act as a subnet router for the LAN.
     useRoutingFeatures = "server";
-    extraSetFlags = [ "--advertise-routes=192.168.1.0/24" ];
+    extraSetFlags = [
+      "--advertise-routes=192.168.1.0/24"
+      "--accept-dns=false"
+    ];
   };
   services.zfs.autoScrub.enable = true;
   services.wake-beast.enable = false;
