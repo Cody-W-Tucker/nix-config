@@ -19,6 +19,12 @@
 
   services.opencode.enable = true;
 
+  # RTX 5060 LP: card min PL is 123 W (cannot go to 115). Persist via nvidia-smi oneshot.
+  services.nvidia-power-limit = {
+    enable = true;
+    watts = 123;
+  };
+
   # Bootloader.
   boot = {
     initrd.availableKernelModules = [
