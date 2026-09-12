@@ -61,6 +61,9 @@ in
         AGENT_BROWSER_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";
         VOICE_TOOLS_OPENAI_KEY = "local-only";
         MEALIE_BASE_URL = "https://mealie.homehub.tv";
+        # Token is HASS_TOKEN in the multiline `hermes` sops secret (not a
+        # sibling like mealie-api-key). Built-in ha_* tools enable when set.
+        HASS_URL = "http://127.0.0.1:8123";
       };
       environmentFiles = [
         config.sops.templates."hermes-env".path
