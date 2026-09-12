@@ -26,6 +26,12 @@
     enable = true;
     wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
     accessibleFrom = [ "192.168.0.0/24" ];
+    # Host-side wg-br bridge address of FlareSolverr (running on the host
+    # network, see arr-stack.nix). The namespace OUTPUT kill switch drops
+    # new connections out the veth unless the destination is explicitly
+    # allowed here, so Prowlarr could not otherwise reach it at
+    # http://192.168.15.5:8191. Single /32 only — no subnet-wide egress.
+    allowedEgress = [ "192.168.15.5/32" ];
     portMappings = [
       {
         from = 9091;

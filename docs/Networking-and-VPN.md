@@ -100,11 +100,11 @@ The `transmission` service is confined to the `wg` namespace, ensuring its traff
 
 ### Service Isolation: Prowlarr and FlareSolverr
 
-The whole Arr stack — Prowlarr, FlareSolverr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is confined to the `wg` namespace [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix), so indexer, Cloudflare-bypass, and download-automation traffic exits through the VPN tunnel.
+The Arr stack — Prowlarr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is confined to the `wg` namespace [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix), so indexer and download-automation traffic exits through the VPN tunnel. FlareSolverr is the exception: it runs on the host network (see below).
 
 - **Host-side access**: Services on the host reach a confined app at the namespace address `192.168.15.1:<port>` — the access path VPN-Confinement provides from the default namespace. Every Arr nginx vhost sets `proxyHost` to this address; ports are derived from each service's NixOS module option (`settings.server.port`, or `services.bazarr.listenPort` for Bazarr; Prowlarr's module has no dedicated `port` option and uses the servarr settings default).
 - **LAN access**: The mapped host ports (see table above) forward LAN clients into the namespace.
-- **FlareSolverr**: Prowlarr reaches it inside the namespace at `http://localhost:8191` (`services.flaresolverr.port`); it needs no port mapping or vhost.
+- **FlareSolverr**: Runs on the host network, not in the `wg` namespace. Prowlarr (confined) reaches it at `http://192.168.15.5:8191` — the host-side `wg-br` bridge address plus `services.flaresolverr.port` (the host LAN IP `192.168.1.2` is not routed into the namespace). The host firewall allows TCP 8191 only on `wg-br` (`networking.firewall.interfaces.wg-br.allowedTCPPorts`), so it stays private to the host and the namespace — it is not opened globally. The namespace OUTPUT kill switch drops new connections out the veth, so `192.168.15.5/32` is explicitly listed in `vpnNamespaces.wg.allowedEgress` (in `transmission.nix`) as the single egress exception permitting Prowlarr → FlareSolverr; no subnet-wide egress is granted.
 - **Inter-app traffic**: With Prowlarr and the Arr apps in the same namespace, indexer sync (Prowlarr → Arr apps) and download handoff (Arr apps → Transmission) resolve over the namespace network without extra routing.
 
 ### Service Isolation: Sonarr, Radarr, Readarr, Bazarr, Lidarr
@@ -129,7 +129,6 @@ flowchart LR
     subgraph subGraph1 ["NetworkNamespace: wg"]
         TRANS["transmission.service"]
         PROWL["prowlarr.service"]
-        FLARE["flaresolverr.service"]
         ARR["sonarr/radarr/readarr/bazarr/lidarr.service"]
         WG0["Interface: wg0"]
     end
@@ -137,6 +136,7 @@ flowchart LR
         LAN["LAN (192.168.0.0/24)"]
         NGINX["Nginx Proxy"]
         SEERR["Jellyseerr (host)"]
+        FLARE["flaresolverr.service (host)"]
     end
     SOPS_WG -.-> WG0
     NGINX -->|"192.168.15.1:9696"| PROWL
@@ -144,7 +144,7 @@ flowchart LR
     SEERR -->|"192.168.15.1:8989+"| ARR
     ARR -->|"192.168.15.1:9696"| PROWL
     ARR -->|"192.168.15.1:9091"| TRANS
-    PROWL --> FLARE
+    PROWL -->|"192.168.15.5:8191 (wg-br)"| FLARE
     TRANS --> WG0
     PROWL --> WG0
     ARR --> WG0
