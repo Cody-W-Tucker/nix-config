@@ -2,6 +2,7 @@ let
   apiToolsets = [
     "web"
     "search"
+    "browser"
     "skills"
     "cronjob"
     "messaging"
@@ -26,6 +27,7 @@ in
       discord = [
         "web"
         "search"
+        "browser"
         "tts"
         "vision"
         "skills"
