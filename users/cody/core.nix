@@ -180,8 +180,15 @@
       syntaxHighlighting.enable = true;
       autosuggestion.enable = true;
       enableCompletion = true;
-      history.path = "$HOME/.local/share/zsh/zsh_history";
-      history.size = 10000;
+      history = {
+        path = "$HOME/.local/share/zsh/zsh_history";
+        size = 10000;
+        share = false; # Prevents concurrent sessions from stepping on each other
+      };
+      setOptions = [
+        "INC_APPEND_HISTORY" # Writes to history immediately, not at session close
+        "HIST_IGNORE_ALL_DUPS" # Cleans up duplicates to keep the file smaller
+      ];
       plugins = [
         {
           name = "vi-mode";
