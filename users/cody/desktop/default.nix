@@ -67,6 +67,7 @@
     twitch-tui # Read chats from terminal
     mousam # Weather CLI tool
     witr # CLI tool that shows why processes are running
+    (pkgs.callPackage ../../../packages/px0 { })
   ];
 
   services = {
