@@ -37,6 +37,7 @@
   };
 
   home.packages = with pkgs; [
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hermes-desktop
     grim # Screenshot utility

@@ -186,6 +186,7 @@
         share = false; # Prevents concurrent sessions from stepping on each other
       };
       setOptions = [
+        "EXTENDED_HISTORY" # Preserves timestamps and safely escapes multiline commands
         "INC_APPEND_HISTORY" # Writes to history immediately, not at session close
         "HIST_IGNORE_ALL_DUPS" # Cleans up duplicates to keep the file smaller
       ];
