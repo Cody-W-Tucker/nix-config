@@ -20,6 +20,7 @@
     ./langfuse
     ./litellm
     ./mealie.nix
+    ./n8n.nix
     ./media
     ./monitoring.nix
     ./nfs.nix
