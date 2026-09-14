@@ -40,9 +40,6 @@ in
       nvidiaSettings = false;
     };
 
-    # NVIDIA container toolkit for CUDA container access
-    hardware.nvidia-container-toolkit.enable = true;
-
     # NVIDIA GPU monitoring for Prometheus
     services.prometheus.exporters.nvidia-gpu = {
       enable = true;

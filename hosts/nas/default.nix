@@ -17,14 +17,6 @@
     inputs.vpn-confinement.nixosModules.default
   ];
 
-  services.opencode.enable = true;
-
-  # RTX 5060 LP: card min PL is 123 W (cannot go to 115). Persist via nvidia-smi oneshot.
-  services.nvidia-power-limit = {
-    enable = true;
-    watts = 123;
-  };
-
   # Bootloader.
   boot = {
     initrd.availableKernelModules = [
@@ -137,40 +129,26 @@
     }
   ];
 
-  # Auto configure usb etc, when plugedin
-  services.udisks2.enable = true;
-  services.tailscale = {
-    enable = true;
-    # Enable IP forwarding so this host can act as a subnet router for the LAN.
-    useRoutingFeatures = "server";
-    extraSetFlags = [
-      "--advertise-routes=192.168.1.0/24"
-      "--accept-dns=false"
-    ];
+  services = {
+    # Auto configure usb etc, when plugedin
+    udisks2.enable = true;
+    tailscale = {
+      enable = true;
+      # Enable IP forwarding so this host can act as a subnet router for the LAN.
+      useRoutingFeatures = "server";
+      extraSetFlags = [
+        "--advertise-routes=192.168.1.0/24"
+        "--accept-dns=false"
+      ];
+    };
+    zfs.autoScrub.enable = true;
+    wake-beast.enable = false;
+    opencode.enable = true; # web server for opencode
+    nvidia-power-limit = {
+      enable = true;
+      watts = 123;
+    };
   };
-  services.zfs.autoScrub.enable = true;
-  services.wake-beast.enable = false;
-
-  # Bluetooth support for Home Assistant (prepares for future controller)
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
-
-  # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
-  networking.firewall.allowedTCPPorts = [
-    8384
-  ];
-
-  # Hermes API — reachable only over Tailscale (Beast→NAS voice pipeline)
-  # Hermes Dashboard — remote web UI, authenticated via basic auth
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
-    8642
-    9119
-  ];
-
-  # Docker package
-  virtualisation.docker.package = pkgs.docker_29;
 
   # Networking
   networking = {
@@ -201,12 +179,38 @@
         method = "auto";
       };
     };
+    firewall = {
+      interfaces.tailscale0.allowedTCPPorts = [
+        # Hermes API — reachable only over Tailscale (Beast→NAS voice pipeline)
+        # Hermes Dashboard — remote web UI, authenticated via basic auth
+        8642
+        9119
+      ];
+      allowedTCPPorts = [
+        # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
+        8384
+      ];
+    };
   };
 
-  # NVIDIA GPU (RTX 5060) — headless CUDA infrastructure for Hermes
-  hardware.graphics.enable = true;
-  # NVIDIA driver is provided by hardware.nvidia settings, not xserver.videoDrivers
-  hardware.nvidia-container-toolkit.suppressNvidiaDriverAssertion = true;
+  # Docker package
+  virtualisation.docker.package = pkgs.docker_29;
+
+  hardware = {
+    # NVIDIA GPU (RTX 5060)
+    # NVIDIA driver is provided by hardware.nvidia settings, not xserver.videoDrivers
+    graphics.enable = true;
+    # NVIDIA container toolkit for CUDA container access
+    nvidia-container-toolkit = {
+      enable = true;
+      suppressNvidiaDriverAssertion = true;
+    };
+    bluetooth = {
+      # Bluetooth support for Home Assistant (prepares for future controller)
+      enable = true;
+      powerOnBoot = true;
+    };
+  };
 
   # Home-manager configuration
   home-manager = {
