@@ -17,7 +17,7 @@ let
       ACTUAL_SERVER_URL="https://budget.homehub.tv"
       export ACTUAL_SERVER_URL
 
-      exec npx --yes actual-mcp@1.12.1 --enable-write
+      exec npx --yes actual-mcp@1.14.0 --enable-write
     '';
   };
 in
