@@ -21,7 +21,7 @@ Host-local files are split into two Nix files. Machine identity, drives, network
 | GPU          | NVIDIA GeForce RTX 5060, 8 GB VRAM, driver 595.71.05 (Blackwell, sm_120a).                         |
 | RAM          | 64 GB DDR5-6000 (ZFS ARC capped at 32 GiB).                                                        |
 | Boot NVMe    | WD Blue SN580 1 TB (`nvme0n1`) — Btrfs root (`/`, `/home`, `/nix`), vfat `/boot`.                  |
-| Appdata NVMe | WD Blue SN580 1 TB (`nvme1n1`) — Btrfs with `@appdata` and `@tmp` subvolumes, zstd compression.    |
+| Appdata NVMe | WD Blue SN580 1 TB (`nvme1n1`) — Btrfs with `@appdata`, `@tmp`, `@projects`, and `@knowledge` subvolumes, zstd compression (`@projects` mounted at `/mnt/projects`, `@knowledge` at `/mnt/knowledge`). |
 | Media HDD    | Seagate ST8000VN004 8 TB (`sda`) — ext4 at `/mnt/media`.                                           |
 | ZFS pool     | `backup` — mirror of 2× Seagate ST4000VN006 4 TB (`sdb`, `sdd`), 3.62 TiB raw, auto-scrub enabled. |
 | Kernel       | Linux 6.18 (NixOS 26.05 stable).                                                                   |
@@ -40,9 +40,11 @@ Host-local files are split into two Nix files. Machine identity, drives, network
 | `/mnt/backup/Share`     | `backup/Share`       | ZFS        | Samba share (Syncthing with beast).             |
 | `/mnt/backup/photos`    | `backup/photos`      | ZFS        | Immich media library.                           |
 | `/mnt/backup/documents` | `backup/documents`   | ZFS        | Paperless-ngx storage.                          |
-| `/mnt/backup/backups`   | `backup/backups`     | ZFS        | General backup target.                          |
-| `/mnt/knowledge`        | `backup/knowledge`   | ZFS        | Knowledge base (bind-mounted to `~/Knowledge`). |
-| `/mnt/projects`         | `backup/projects`    | ZFS        | Project files (bind-mounted to `~/Projects`).   |
+| `/mnt/backup/backups`   | `backup/backups`      | ZFS        | General backup target.                          |
+| `/mnt/projects`         | `nvme1n1[@projects]`  | Btrfs      | Project files (bind-mounted to `~/Projects`, NFS-exported to beast). |
+| `/mnt/projects-hdd`     | `backup/projects`     | ZFS        | Legacy HDD migration source for Projects — retained dataset, not NFS-exported. |
+| `/mnt/knowledge`        | `nvme1n1[@knowledge]` | Btrfs      | Knowledge base (bind-mounted to `~/Knowledge`, NFS-exported to beast). |
+| `/mnt/knowledge-hdd`    | `backup/knowledge`    | ZFS        | Legacy HDD migration source for Knowledge — retained dataset, not NFS-exported. |
 
 ## Networking
 

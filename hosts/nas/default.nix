@@ -89,11 +89,30 @@
         "noatime"
       ];
     };
+    "/mnt/projects" = {
+      device = "/dev/disk/by-uuid/17888441-14c2-465f-9786-b2eae0220553";
+      fsType = "btrfs";
+      options = [
+        "subvol=@projects"
+        "compress=zstd"
+        "noatime"
+      ];
+    };
+    "/mnt/knowledge" = {
+      device = "/dev/disk/by-uuid/17888441-14c2-465f-9786-b2eae0220553";
+      fsType = "btrfs";
+      options = [
+        "subvol=@knowledge"
+        "compress=zstd"
+        "noatime"
+      ];
+    };
   };
 
-  # ── User bind mounts (after ZFS datasets) ────────────────────
-  # Make NAS-local ZFS datasets available under codyt's home directory.
-  # Ordering ensures the ZFS oneshot services create the source mountpoints first.
+  # ── User bind mounts ─────────────────────────────────────────
+  # Bind NAS-local storage into codyt's home directory:
+  # Projects and Knowledge from independent Btrfs subvolumes,
+  # declared directly via fileSystems above.
 
   fileSystems."/home/codyt/Projects" = {
     device = "/mnt/projects";
@@ -106,28 +125,6 @@
     fsType = "none";
     options = [ "bind" ];
   };
-
-  # Bind mounts must wait for the ZFS dataset services to create their source paths.
-  systemd.mounts = [
-    {
-      what = "/mnt/projects";
-      where = "/home/codyt/Projects";
-      type = "none";
-      options = "bind";
-      wantedBy = [ "local-fs.target" ];
-      after = [ "zfs-create-backup-projects.service" ];
-      requires = [ "zfs-create-backup-projects.service" ];
-    }
-    {
-      what = "/mnt/knowledge";
-      where = "/home/codyt/Knowledge";
-      type = "none";
-      options = "bind";
-      wantedBy = [ "local-fs.target" ];
-      after = [ "zfs-create-backup-knowledge.service" ];
-      requires = [ "zfs-create-backup-knowledge.service" ];
-    }
-  ];
 
   services = {
     # Auto configure usb etc, when plugedin
