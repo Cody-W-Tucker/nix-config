@@ -4,10 +4,6 @@
   config,
   ...
 }:
-
-let
-  litellmModels = import ../../../../modules/nas/litellm/models.nix;
-in
 {
   imports = [
     ./agents/logging
@@ -16,7 +12,6 @@ in
     ./skills/cognitive
     ./tools/model-router
     ./tools/rtk
-    ./tools/session-headers
   ];
 
   # The 99 nixvim integration brings its own OpenCode-backed model routing,
@@ -65,32 +60,9 @@ in
           };
         };
       };
-      # ── Self-hosted LiteLLM proxy ─────────────────────────────
-      # OpenAI-compatible endpoint (modules/nas/litellm) at
-      # ai.homehub.tv/v1. Model IDs come from the shared source of
-      # truth. Per plans/litellm-stateless-migration.md §12.2, the gateway
-      # is now master-key-only: the provider authenticates with the
-      # LITELLM_API_KEY env var (no literal key in Nix or the generated config).
-      # NOTE: how LITELLM_API_KEY reaches this session from SOPS is the owner
-      # decision (§13 #5) and is intentionally NOT implemented here.
-      provider = {
-        litellm = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "litellm";
-          options = {
-            baseURL = "https://ai.homehub.tv/v1";
-          };
-          # Model IDs sourced once from the shared catalog.
-          models = builtins.listToAttrs (
-            map (id: {
-              name = id;
-              value = {
-                name = id;
-              };
-            }) litellmModels
-          );
-        };
-      };
+      # Langfuse observability plugin (@langfuse/…), configured via the
+      # LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY / LANGFUSE_BASEURL env vars.
+      plugin = [ "@langfuse/opencode-observability-plugin@latest" ];
     };
   };
 }

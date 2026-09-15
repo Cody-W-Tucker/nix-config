@@ -55,7 +55,6 @@ Common service mappings:
 | Tika | `tika.homehub.tv` | `9998` | `default.nix` |
 | Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `nginx-syncthing.nix` |
 | Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `nginx-syncthing.nix` |
-| LiteLLM | `ai.homehub.tv` | `8090` | `litellm.nix` |
 | Open WebUI | `chat.homehub.tv` | `8080` | `open-webui.nix` |
 | Qdrant REST | `qdrant.homehub.tv` | `6333` | `ai-services.nix` |
 | Langfuse | `langfuse.homehub.tv` | `3000` | `langfuse/` |
@@ -187,7 +186,7 @@ Three independent stores must be backed up:
 2. **ClickHouse** — `/mnt/appdata/langfuse/clickhouse` (event/observability store).
 3. **MinIO** — `/mnt/appdata/langfuse/minio` (S3 media + event export bucket).
 
-Follow the repo's existing ZFS-snapshot/backup pattern (see the `litellm` backup dataset) and include the `/mnt/appdata/langfuse` tree. Do not invent a new backup script; the three bind paths above are the backup surface. For transactionally consistent Postgres/ClickHouse snapshots, snapshot while the service is quiesced or rely on the engines' crash-recovery on restore.
+Follow the repo's existing ZFS-snapshot/backup pattern and include the `/mnt/appdata/langfuse` tree. Do not invent a new backup script; the three bind paths above are the backup surface. For transactionally consistent Postgres/ClickHouse snapshots, snapshot while the service is quiesced or rely on the engines' crash-recovery on restore.
 
 ### Update boundary
 
