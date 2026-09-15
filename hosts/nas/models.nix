@@ -120,6 +120,28 @@ in
     ../../modules/services/llama-swap
   ];
 
+  # OpenCode Langfuse observability plugin credentials: the `opencode-langfuse-env`
+  # SOPS secret holds the complete env-file payload (LANGFUSE_SECRET_KEY and
+  # LANGFUSE_PUBLIC_KEY). The SOPS template below inserts that payload plus a
+  # declarative LANGFUSE_BASEURL and is consumed directly as an EnvironmentFile
+  # by the user-level opencode-web service
+  # (modules/services/opencode/web-service.nix).
+  sops.secrets."opencode-langfuse-env" = {
+    owner = "codyt";
+    group = "users";
+    mode = "0400";
+  };
+
+  sops.templates."opencode-langfuse-env" = {
+    owner = "codyt";
+    group = "users";
+    mode = "0400";
+    content = ''
+      ${config.sops.placeholder."opencode-langfuse-env"}
+      LANGFUSE_BASEURL=https://langfuse.homehub.tv
+    '';
+  };
+
   sops.secrets."huggingface-read" = {
     owner = "codyt";
     group = "users";

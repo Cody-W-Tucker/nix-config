@@ -39,7 +39,8 @@
         # RAG
         ENABLE_RAG_HYBRID_SEARCH = "True";
 
-        # Enable sessions for litellm/langfuse
+        # Forward user info headers to the backend inference endpoint
+        # (direct llama-swap on 127.0.0.1:8081).
         ENABLE_FORWARD_USER_INFO_HEADERS = "True";
       };
     };

@@ -30,7 +30,10 @@
       LISTEN_INTERFACE = ":28983";
       # Use OpenAI-compatible provider
       LLM_PROVIDER = "openai";
-      OPENAI_BASE_URL = "https://ai.homehub.tv/v1";
+      OPENAI_BASE_URL = "http://127.0.0.1:8081/v1";
+      # llama-swap requires no API key, but the OpenAI client still wants a
+      # token string — declarative dummy, not a secret.
+      OPENAI_API_KEY = "sk-llama-swap";
       LLM_MODEL = "qwen-3.5-4b";
       # LLM-based OCR using the dedicated GLM-OCR vision model.
       OCR_PROVIDER = "llm";
@@ -43,11 +46,6 @@
     };
     environmentFiles = [
       config.sops.secrets.paperless-ai-env.path
-      # OPENAI_API_KEY for the LiteLLM gateway, derived at activation from
-      # LITELLM_MASTER_KEY inside litellm-env (modules/nas/litellm). No literal
-      # key in Nix; root-owned 0400: the oci-container unit runs podman as root,
-      # which reads --env-file itself (see litellm-openai-api-key-env.service).
-      "/run/litellm-openai-api-key/openai-api-key-env"
     ];
     volumes = [
       # Persistent prompts directory (user customizations saved here)

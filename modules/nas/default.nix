@@ -18,7 +18,6 @@
     ./homepage-dashboard.nix
     ./karakeep.nix
     ./langfuse
-    ./litellm
     ./mealie.nix
     ./n8n.nix
     ./media

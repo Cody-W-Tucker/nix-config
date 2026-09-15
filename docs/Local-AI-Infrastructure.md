@@ -74,16 +74,15 @@ For details, see [Beast AI Stack: Open-WebUI and Qdrant](/Cody-W-Tucker/nix-conf
 
 ---
 
-## LiteLLM Proxy and Local Model Routing
+## llama-swap Gateway: Direct OpenAI-Compatible Access
 
-The NAS runs **LiteLLM** via the upstream `services.litellm` module (`modules/nas/litellm`, pinned to nixpkgs-unstable 1.97.0) as the unified inference gateway at `http://ai.homehub.tv` (reverse-proxied from `127.0.0.1:8090`). It routes hosted upstreams (`gpt-5.6-*`, `hy3`) and proxies the **local llama-swap models**, so every consumer hits one endpoint with one auth model. See `docs/LiteLLM-Stateless-Migration.md` for the fork→upstream migration and the remaining manual steps.
+The NAS exposes **llama-swap directly** at `127.0.0.1:8081` (see `hosts/nas/models.nix`); every consumer hits llama-swap's OpenAI-compatible `/v1` API on the internal loopback endpoint.
 
-- **Local routes:** Every enabled `services.llama-swap.enabledModels` entry is exposed through LiteLLM as an OpenAI-compatible model using the `openai/<id>` provider, with `api_base = http://127.0.0.1:8081/v1` (llama-swap's OpenAI endpoint on the same host).
-- **Aliases:** The LiteLLM `model_name` equals the llama-swap model key — the same id llama-swap serves and the `--alias` the backend registers. Current enabled aliases: `qwen3.5-0.8b`, `qwen-3.5-4b`, `qwen3-embedding-0.6b`, `glm-ocr-f16`, `whisper-medium`, `whisper-diarization`, `kokoro-82m`.
-- **Client auth:** All clients authenticate to LiteLLM with the `LITELLM_MASTER_KEY` (from the `litellm-env` SOPS secret) as a Bearer token — master-key-only, no per-user virtual keys (stateless migration, see `docs/LiteLLM-Stateless-Migration.md`). The local llama-swap upstream needs no key (`api_key = sk-none`); LiteLLM terminates client auth and forwards unauthenticated requests to localhost.
-  - **Gateway clients (§12.4):** Karakeep, Paperless-GPT, and the Miniflux curator now point at `https://ai.homehub.tv/v1` and read `OPENAI_API_KEY` from `/run/litellm-openai-api-key/openai-api-key-env` — a root-only `0400` env file rendered at activation by `litellm-openai-api-key-env.service`. That unit reads the `litellm-env` SOPS secret (the sole LiteLLM credential secret) and extracts its `LITELLM_MASTER_KEY`, so the gateway and every client share one authoritative master key with no duplicated secret and nothing written to the Nix store. All three consumers read it through root (systemd's service manager, or root podman for the OCI container), so no service user needs access to it. OpenCode's `litellm` provider reads `LITELLM_API_KEY` from the session environment.
-  - **Direct llama-swap (§12.5, by design):** Hermes STT/TTS, desktop speech-to-text, and the Waybar helper still reach llama-swap (`:8081`) directly and are not re-pointed at the gateway.
-- **Existing routes preserved:** Hosted ChatGPT (`gpt-5.6-*`) and the OpenCode Go `hy3` model are generated exactly as before; the llama-swap entries are appended to `model_list`, not merged into the existing generators.
+- **Local routes:** Every enabled `services.llama-swap.enabledModels` entry is served directly under its llama-swap model id (`qwen3.5-0.8b`, `qwen-3.5-4b`, `qwen3-embedding-0.6b`, `glm-ocr-f16`, `whisper-medium`, `whisper-diarization`, `kokoro-82m`).
+- **No gateway auth:** llama-swap requires no API key. Gateway clients (Karakeep, Paperless-GPT, the Miniflux curator) use a declarative dummy `OPENAI_API_KEY` to satisfy OpenAI-client env plumbing — no secret material is involved.
+- **Direct internal clients (`127.0.0.1:8081/v1`):** Hermes STT/TTS, desktop speech-to-text, the Waybar helper, the Miniflux curator, Karakeep, and Paperless-GPT reach llama-swap directly on the NAS host.
+- **OpenCode observability:** OpenCode (including the web service) loads the `@langfuse/opencode-observability-plugin` for LLM tracing. Its `LANGFUSE_*` credentials come from the `opencode-langfuse-env` SOPS template (hosts/nas/models.nix): the secret's env-file payload plus a declarative `LANGFUSE_BASEURL`, exposed as a codyt-owned `0400` EnvironmentFile.
+- **Hosted models:** OpenCode sessions use the `opencode-go` provider (e.g. `opencode-go/hy3` in the nixvim 99 plugin and Hermes agent config), not a shared gateway catalogue.
 
 ---
 
@@ -106,22 +105,25 @@ This diagram shows how various system services consume the AI infrastructure via
 ```mermaid
 flowchart LR
     subgraph Consumers
-        Hermes["hermes-agent (STT/TTS, direct)"]
-        Karakeep["karakeep service"]
-        Paperless["paperless-gpt"]
-        Curator["miniflux-curator"]
+        Hermes["hermes-agent (direct internal)"]
+        Speech["desktop STT/TTS (direct internal)"]
+        Karakeep["karakeep service (direct internal)"]
+        Paperless["paperless-gpt (direct internal)"]
+        Curator["miniflux-curator (direct internal)"]
         OWebUI["Open-WebUI (runtime-config)"]
-        OpenCode["OpenCode hy3"]
+        OpenCode["OpenCode (auth.go + Langfuse plugin)"]
     end
     subgraph Infrastructure
-        LiteLLM["LiteLLM gateway (:8090)"]
-        LSwap["llama-swap (Port 8081)"]
+        LSwap["llama-swap (127.0.0.1:8081)"]
+        Langfuse["langfuse (traces)"]
     end
     Hermes --> LSwap
-    Karakeep --> LiteLLM
-    Paperless --> LiteLLM
-    Curator --> LiteLLM
-    OWebUI --> LiteLLM
-    OpenCode --> LiteLLM
+    Speech --> LSwap
+    Curator --> LSwap
+    OWebUI --> LSwap
+    Karakeep --> LSwap
+    Paperless --> LSwap
+    OpenCode --> LSwap
+    OpenCode -.traces.-> Langfuse
 ```
 

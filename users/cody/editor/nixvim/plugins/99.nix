@@ -28,7 +28,7 @@ in
 
         _99.setup({
           provider = _99.Providers.OpenCodeProvider,
-          model = "litellm/hy3",
+          model = "opencode-go/hy3",
           completion = {
             source = "cmp",
             custom_rules = {
