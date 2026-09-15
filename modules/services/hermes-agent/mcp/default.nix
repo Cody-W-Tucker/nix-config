@@ -37,6 +37,17 @@ in
       mcpServers.actualBudget = {
         command = lib.getExe actualBudgetMcp;
       };
+
+      # Same server OpenCode uses as nixos-option-search (utensils/mcp-nixos).
+      # Packages, NixOS/HM/nix-darwin options. Lives in Nix so it survives
+      # hermes-agent-setup config merges.
+      mcpServers.nixos = {
+        command = "${pkgs.nix}/bin/nix";
+        args = [
+          "run"
+          "github:utensils/mcp-nixos"
+        ];
+      };
     };
   };
 }
