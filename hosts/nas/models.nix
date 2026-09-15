@@ -121,57 +121,24 @@ in
   ];
 
   # OpenCode Langfuse observability plugin credentials: the `opencode-langfuse-env`
-  # SOPS secret is root-owned 0400 and consumed by the renderer below into a
-  # codyt-owned 0400 EnvironmentFile for the user-level opencode-web service.
+  # SOPS secret holds the complete env-file payload (LANGFUSE_SECRET_KEY and
+  # LANGFUSE_PUBLIC_KEY). The SOPS template below inserts that payload plus a
+  # declarative LANGFUSE_BASEURL and is consumed directly as an EnvironmentFile
+  # by the user-level opencode-web service
+  # (modules/services/opencode/web-service.nix).
   sops.secrets."opencode-langfuse-env" = {
+    owner = "codyt";
+    group = "users";
     mode = "0400";
-    restartUnits = [ "opencode-langfuse-env.service" ];
   };
 
-  systemd.services.opencode-langfuse-env = {
-    description = "Render OpenCode Langfuse plugin env file from opencode-langfuse-env";
-    wantedBy = [ "multi-user.target" ];
-    after = lib.optional config.sops.useSystemdActivation "sops-install-secrets.service";
-    requires = lib.optional config.sops.useSystemdActivation "sops-install-secrets.service";
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      RuntimeDirectory = "opencode-langfuse";
-      RuntimeDirectoryMode = "0700";
-      UMask = "0077";
-    };
-    script = ''
-      set -eu
-      src="${config.sops.secrets."opencode-langfuse-env".path}"
-      tmp="$(mktemp /run/opencode-langfuse/.opencode-langfuse-env.XXXXXX)"
-      trap 'rm -f "$tmp"' EXIT
-
-      # Extract the Langfuse credential lines. Fail closed unless exactly one
-      # simple assignment of each required key is present (CR, quotes,
-      # whitespace and multiline forms are rejected).
-      pub="$(${pkgs.coreutils}/bin/tr -d '\r' < "$src" \
-        | ${pkgs.gnugrep}/bin/grep -cxE 'LANGFUSE_PUBLIC_KEY=[A-Za-z0-9_-]+' || true)"
-      sec="$(${pkgs.coreutils}/bin/tr -d '\r' < "$src" \
-        | ${pkgs.gnugrep}/bin/grep -cxE 'LANGFUSE_SECRET_KEY=[A-Za-z0-9_-]+' || true)"
-      pub="''${pub:-0}"
-      sec="''${sec:-0}"
-
-      if [ "''$pub" -ne 1 ] || [ "''$sec" -ne 1 ]; then
-        echo "opencode-langfuse-env: opencode-langfuse-env secret must contain exactly one simple LANGFUSE_PUBLIC_KEY=… and one LANGFUSE_SECRET_KEY=… assignment (found pub=''$pub sec=''$sec)" >&2
-        exit 1
-      fi
-
-      {
-        ${pkgs.coreutils}/bin/tr -d '\r' < "$src" \
-          | ${pkgs.coreutils}/bin/grep -xE 'LANGFUSE_(PUBLIC|SECRET)_KEY=[A-Za-z0-9_-]+' > "$tmp"
-      }
-      printf 'LANGFUSE_BASEURL=https://langfuse.homehub.tv\n' >> "$tmp"
-
-      ${pkgs.coreutils}/bin/chown codyt:users "$tmp"
-      ${pkgs.coreutils}/bin/chmod 0400 "$tmp"
-      # Same-filesystem rename so consumers see old or complete new file, never truncated.
-      ${pkgs.coreutils}/bin/mv -f "$tmp" /run/opencode-langfuse/opencode-langfuse-env
-      trap - EXIT
+  sops.templates."opencode-langfuse-env" = {
+    owner = "codyt";
+    group = "users";
+    mode = "0400";
+    content = ''
+      ${config.sops.placeholder."opencode-langfuse-env"}
+      LANGFUSE_BASEURL=https://langfuse.homehub.tv
     '';
   };
 

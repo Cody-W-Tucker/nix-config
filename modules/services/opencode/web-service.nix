@@ -26,12 +26,12 @@ in
 
       # EnvironmentFiles for the user-level opencode-web service:
       #   - opencode-env SOPS template (OPENCODE_SERVER_PASSWORD)
-      #   - Langfuse plugin credentials rendered by opencode-langfuse-env
-      #     (hosts/nas/models.nix) from the `opencode-langfuse-env` SOPS
-      #     secret; codyt-owned 0400.
+      #   - opencode-langfuse-env SOPS template: the `opencode-langfuse-env`
+      #     secret payload (hosts/nas/models.nix) plus LANGFUSE_BASEURL;
+      #     codyt-owned 0400.
       systemd.user.services.opencode-web.Service.EnvironmentFile = [
         config.sops.templates."opencode-env".path
-        "/run/opencode-langfuse/opencode-langfuse-env"
+        config.sops.templates."opencode-langfuse-env".path
       ];
     };
   };

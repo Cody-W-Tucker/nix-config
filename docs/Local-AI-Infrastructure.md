@@ -81,7 +81,7 @@ The NAS exposes **llama-swap directly** at `127.0.0.1:8081` (see `hosts/nas/mode
 - **Local routes:** Every enabled `services.llama-swap.enabledModels` entry is served directly under its llama-swap model id (`qwen3.5-0.8b`, `qwen-3.5-4b`, `qwen3-embedding-0.6b`, `glm-ocr-f16`, `whisper-medium`, `whisper-diarization`, `kokoro-82m`).
 - **No gateway auth:** llama-swap requires no API key. Gateway clients (Karakeep, Paperless-GPT, the Miniflux curator) use a declarative dummy `OPENAI_API_KEY` to satisfy OpenAI-client env plumbing — no secret material is involved.
 - **Direct internal clients (`127.0.0.1:8081/v1`):** Hermes STT/TTS, desktop speech-to-text, the Waybar helper, the Miniflux curator, Karakeep, and Paperless-GPT reach llama-swap directly on the NAS host.
-- **OpenCode observability:** OpenCode (including the web service) loads the `@langfuse/opencode-observability-plugin` for LLM tracing. Its `LANGFUSE_*` credentials are rendered by `opencode-langfuse-env.service` (hosts/nas/models.nix) into a codyt-owned `0400` EnvironmentFile from the `opencode-langfuse-env` SOPS secret.
+- **OpenCode observability:** OpenCode (including the web service) loads the `@langfuse/opencode-observability-plugin` for LLM tracing. Its `LANGFUSE_*` credentials come from the `opencode-langfuse-env` SOPS template (hosts/nas/models.nix): the secret's env-file payload plus a declarative `LANGFUSE_BASEURL`, exposed as a codyt-owned `0400` EnvironmentFile.
 - **Hosted models:** OpenCode sessions use the `opencode-go` provider (e.g. `opencode-go/hy3` in the nixvim 99 plugin and Hermes agent config), not a shared gateway catalogue.
 
 ---
