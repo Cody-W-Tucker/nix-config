@@ -53,6 +53,9 @@ MAX_UTTERANCE_SECONDS = float(
 MAX_AUDIO_QUEUE_SECONDS = float(
     os.environ.get("HERMES_VOICE_MAX_AUDIO_QUEUE_SECONDS", "5")
 )
+POST_PLAYBACK_SETTLE_SECONDS = float(
+    os.environ.get("HERMES_VOICE_POST_PLAYBACK_SETTLE_SECONDS", "0.6")
+)
 
 RUNTIME_DIR = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "hermes-waybar-voice"
 PID_FILE = RUNTIME_DIR / "worker.pid"
@@ -665,6 +668,10 @@ def worker_loop() -> None:
                             utterance_path.unlink()
                         except OSError:
                             pass
+                # The stream context above closes pw-record before this
+                # point, so the microphone is off while the TTS reply plays
+                # and cannot capture the assistant's own speech into the
+                # next turn.
                 if STOP:
                     break
                 if turn_canceled() or not transcript:
@@ -695,6 +702,10 @@ def worker_loop() -> None:
                 if turn_canceled():
                     return_to_listening(remove_messages=2)
                     continue
+                # Let the tail of the TTS playback settle before the next
+                # iteration reopens the microphone, so echo of the assistant's
+                # own speech does not trigger the next recording.
+                time.sleep(POST_PLAYBACK_SETTLE_SECONDS)
                 save_messages(messages)
         except (
             OSError,

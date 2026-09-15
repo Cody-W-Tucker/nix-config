@@ -185,27 +185,47 @@ let
 
       normalize_text() {
         # Normalize raw Whisper output through the s1-mini chat-completions
-        # endpoint. On any failure (network error, timeout, malformed/empty
-        # response) this prints nothing, so the caller can fall back to the raw
-        # transcript.
+        # endpoint. s1-mini is a reasoning model, so the completion is
+        # bounded with max_tokens and a deterministic temperature, and the
+        # result is sanity-checked before use. On any failure (network
+        # error, timeout, malformed/empty response, leaked or runaway
+        # reasoning output) this prints nothing, so the caller can fall
+        # back to the raw transcript.
         text="$1"
         system_prompt="You are a text normalizer for speech-to-text transcripts. The input begins with a control line specifying the styling, structure, and context settings; clean the transcript to match those settings and output only the cleaned text."
 
         payload="$(printf '%s' "$text" | ${pkgs.jq}/bin/jq -R -s --arg sys "$system_prompt" '
           {
             model: "s1-mini",
+            max_tokens: 2048,
+            temperature: 0,
             messages: [
               { role: "system", content: $sys },
               { role: "user", content: "[Styling: semi-formal] [Structure: lists] [Context: email]\n" + . }
             ]
           }')"
 
-        ${pkgs.curl}/bin/curl --silent --show-error --fail \
+        response="$(${pkgs.curl}/bin/curl --silent --show-error --fail \
           --max-time 60 \
           -X POST "$norm_url" \
           -H "Content-Type: application/json" \
           -d "$payload" \
-          | ${pkgs.jq}/bin/jq -r '.choices[0].message.content? // empty'
+          | ${pkgs.jq}/bin/jq -r '.choices[0].message.content? // empty')" || return 1
+
+        [ -n "$response" ] || return 1
+
+        # Reject unreasonable output before typing: a reasoning model that
+        # leaks or truncates its <think> scratch, or returns far more text
+        # than was dictated, is not a usable normalization.
+        case "$response" in
+          *"<think>"*|*"</think>"*) return 1 ;;
+        esac
+
+        raw_bytes="$(printf '%s' "$text" | wc -c)"
+        response_bytes="$(printf '%s' "$response" | wc -c)"
+        [ "$response_bytes" -le $((raw_bytes * 3 + 200)) ] || return 1
+
+        printf '%s' "$response"
       }
 
       finish_recording() {
