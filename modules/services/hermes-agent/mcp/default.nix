@@ -48,6 +48,16 @@ in
           "github:utensils/mcp-nixos"
         ];
       };
+
+      # Official Stripe remote MCP (OAuth). After HM switch:
+      #   hermes mcp login stripe
+      # Tokens land in $HERMES_HOME/mcp-tokens/. Do not put API keys here.
+      # stripe_api_write exists — leave it unconfigured until a restricted
+      # live-mode grant is intentional. New chat after switch to see tools.
+      mcpServers.stripe = {
+        url = "https://mcp.stripe.com";
+        auth = "oauth";
+      };
     };
   };
 }
