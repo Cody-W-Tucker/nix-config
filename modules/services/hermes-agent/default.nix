@@ -64,6 +64,8 @@ in
         # Token is HASS_TOKEN in the multiline `hermes` sops secret (not a
         # sibling like mealie-api-key). Built-in ha_* tools enable when set.
         HASS_URL = "http://127.0.0.1:8123";
+        # Bundled observability/langfuse plugin (also accepts LANGFUSE_*).
+        HERMES_LANGFUSE_BASE_URL = "https://langfuse.homehub.tv";
       };
       environmentFiles = [
         config.sops.templates."hermes-env".path
@@ -168,6 +170,7 @@ in
           user_profile_enabled = true;
         };
         plugins = {
+          enabled = [ "observability/langfuse" ];
           "hermes-memory-store" = {
             auto_extract = true;
             default_trust = 0.5;

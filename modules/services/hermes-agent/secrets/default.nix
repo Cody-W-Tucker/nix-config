@@ -25,6 +25,10 @@ in
     # agent can call https://mealie.homehub.tv OpenAPI directly.
     sops.secrets."mealie-api-key" = { };
 
+    # OpenCode web basic-auth. Same sops key as modules/services/opencode
+    # (opencode-env). Hermes CLI attach reads OPENCODE_SERVER_PASSWORD.
+    sops.secrets."opencode-password" = { };
+
     # Home Assistant long-lived access token. Rendered into hermes-env as
     # HASS_TOKEN so the agent can call http://127.0.0.1:8123 directly.
     sops.secrets."hass-token" = { };
@@ -37,6 +41,7 @@ in
     sops.templates."hermes-env" = {
       content = ''
         OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
+        OPENCODE_SERVER_PASSWORD=${config.sops.placeholder."opencode-password"}
         KARAKEEP_API_KEY=${config.sops.placeholder."karakeep-api-key"}
         MEALIE_API_KEY=${config.sops.placeholder."mealie-api-key"}
         HASS_TOKEN=${config.sops.placeholder."hass-token"}

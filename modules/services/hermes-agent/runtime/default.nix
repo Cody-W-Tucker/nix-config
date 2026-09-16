@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
@@ -14,6 +15,27 @@ let
     "/run/current-system/sw/lib"
     (lib.makeLibraryPath [ pkgs.libopus ])
   ];
+
+  # Match the Python 3.12 interpreter used by Hermes' sealed uv2nix venv.
+  hermesPythonPackages =
+    inputs.hermes-agent.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.python312Packages;
+  # PYTHONPATH only — do not wrap extraPythonPackages (httpx collision).
+  # Langfuse 4 needs the OTLP HTTP exporter closure, not the meta
+  # opentelemetry-exporter-otlp package (that pulls gRPC).
+  hermesPythonPath = lib.makeSearchPath "lib/python3.12/site-packages" (
+    with hermesPythonPackages;
+    [
+      backoff
+      langfuse
+      wrapt
+      opentelemetry-api
+      opentelemetry-sdk
+      opentelemetry-semantic-conventions
+      opentelemetry-exporter-otlp-proto-http
+      opentelemetry-exporter-otlp-proto-common
+      opentelemetry-proto
+    ]
+  );
 in
 
 {
@@ -32,9 +54,14 @@ in
       Environment = [
         "CRM_DB=${crmDatabasePath}"
         "LD_LIBRARY_PATH=${ldLibraryPath}"
+        "PYTHONPATH=${hermesPythonPath}"
       ];
 
       TimeoutStopSec = lib.mkDefault 210;
+    };
+
+    systemd.user.services.hermes-backend.Service = {
+      Environment = [ "PYTHONPATH=${hermesPythonPath}" ];
     };
   };
 }
