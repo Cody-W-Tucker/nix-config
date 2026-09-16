@@ -1,11 +1,4 @@
 {
-  config,
-  inputs,
-  pkgs,
-  ...
-}:
-
-{
   programs = {
     chromium = {
       enable = true;

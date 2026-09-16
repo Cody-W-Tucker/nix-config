@@ -198,6 +198,9 @@
         }
       ];
       initContent = ''
+        # Vim-style navigation for fzf: ctrl j/k move down/up instead of arrow keys
+        export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --bind 'ctrl-j:down,ctrl-k:up'"
+
         # Fix fzf key bindings compatibility with zsh-vi-mode
         function zvm_after_init() {
           # Re-initialize fzf key bindings after zsh-vi-mode loads
