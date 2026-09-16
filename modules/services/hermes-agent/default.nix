@@ -78,7 +78,7 @@ in
         };
         fallback_model = {
           provider = "opencode-go";
-          model = "deepseek-v4-pro";
+          model = "hy3";
         };
         auxiliary = {
           approval = {
@@ -150,8 +150,6 @@ in
         };
         agent = {
           max_turns = 60;
-          reasoning_effort = "low";
-          service_tier = "fast";
         };
         curator = {
           enabled = true;
