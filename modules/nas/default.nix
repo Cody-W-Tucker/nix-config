@@ -19,7 +19,6 @@
     ./karakeep.nix
     ./langfuse
     ./mealie.nix
-    ./n8n.nix
     ./media
     ./monitoring.nix
     ./nfs.nix
