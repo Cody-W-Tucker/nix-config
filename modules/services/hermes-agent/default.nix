@@ -126,6 +126,7 @@ in
         };
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";
+          TELEGRAM_HOME_CHANNEL = "8369015005"; # Cody Tucker DM
         };
         voice = {
           auto_tts = false;
