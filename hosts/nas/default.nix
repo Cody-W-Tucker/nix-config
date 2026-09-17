@@ -30,8 +30,7 @@
     initrd.kernelModules = [ ];
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
-    # Cap ZFS ARC at 32 GiB (half of 64 GB DDR5-6000 physical RAM)
-    kernelParams = [ "zfs.zfs_arc_max=34359738368" ];
+    kernelParams = [ "zfs.zfs_arc_max=8589934592" ]; # 8 GiB
     supportedFilesystems = [ "zfs" ];
     zfs.extraPools = [ "backup" ];
     zfs.forceImportRoot = false;
