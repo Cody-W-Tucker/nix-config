@@ -1,11 +1,13 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
 }:
 
 let
+  crg = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.code-review-graph;
   actualBudgetMcp = pkgs.writeShellApplication {
     name = "actual-budget-mcp";
     runtimeInputs = [ pkgs.nodejs ];
@@ -24,6 +26,8 @@ in
 {
   config = {
     services.hermes-agent = {
+      extraPackages = [ crg ];
+
       mcpServers.karakeep = {
         command = lib.getExe' pkgs.nodejs "npx";
         args = [
@@ -38,9 +42,7 @@ in
         command = lib.getExe actualBudgetMcp;
       };
 
-      # Same server OpenCode uses as nixos-option-search (utensils/mcp-nixos).
-      # Packages, NixOS/HM/nix-darwin options. Lives in Nix so it survives
-      # hermes-agent-setup config merges.
+      # nixos-option-search (utensils/mcp-nixos).
       mcpServers.nixos = {
         command = "${pkgs.nix}/bin/nix";
         args = [
@@ -49,14 +51,29 @@ in
         ];
       };
 
-      # Official Stripe remote MCP (OAuth). After HM switch:
-      #   hermes mcp login stripe
-      # Tokens land in $HERMES_HOME/mcp-tokens/. Do not put API keys here.
-      # stripe_api_write exists — leave it unconfigured until a restricted
-      # live-mode grant is intentional. New chat after switch to see tools.
+      # Official Stripe remote MCP (OAuth).
       mcpServers.stripe = {
         url = "https://mcp.stripe.com";
         auth = "oauth";
+      };
+
+      # Per-session stdio. ${workspaceFolder} is the
+      # session cwd (TUI/CLI in a repo); gateway default is hermes/workspace.
+      # HM mcpServers schema has no lazy / idle_timeout_seconds (YAML-only).
+      mcpServers.code-review-graph = {
+        command = lib.getExe crg;
+        args = [
+          "serve"
+          "--repo"
+          "\${workspaceFolder}"
+        ];
+        # llama-swap OpenAI embeddings (qwen3-embedding-0.6b).
+        # nas:8081 so Tailscale clients resolve the same host.
+        env.CRG_OPENAI_BASE_URL = "http://nas:8081/v1";
+        env.CRG_OPENAI_API_KEY = "llama-swap";
+        env.CRG_OPENAI_MODEL = "qwen3-embedding-0.6b";
+        env.CRG_OPENAI_BATCH_SIZE = "16";
+        env.CRG_ACCEPT_CLOUD_EMBEDDINGS = "1";
       };
     };
   };

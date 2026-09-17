@@ -4,14 +4,18 @@
     "code-review-graph": {
       "type": "local",
       "command": [
-        "nix",
-        "run",
-        "github:numtide/llm-agents.nix/90ab5cd4a6219ccbab83b4ede91b3fa63de3c6ee#code-review-graph",
-        "--",
+        "code-review-graph",
         "serve",
         "--repo",
         "/etc/nixos"
-      ]
+      ],
+      "environment": {
+        "CRG_OPENAI_BASE_URL": "http://nas:8081/v1",
+        "CRG_OPENAI_API_KEY": "llama-swap",
+        "CRG_OPENAI_MODEL": "qwen3-embedding-0.6b",
+        "CRG_OPENAI_BATCH_SIZE": "16",
+        "CRG_ACCEPT_CLOUD_EMBEDDINGS": "1"
+      }
     }
   }
 }
