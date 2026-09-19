@@ -5,18 +5,59 @@
 }:
 
 {
+  networking.firewall.allowedTCPPorts = [ 8095 ];
+  services.music-assistant = {
+    enable = true;
+    openFirewall = true;
+    providers = [
+      "alexa"
+      "audible"
+      "audiobookshelf"
+      "builtin"
+      "chromecast"
+      "hass"
+      "hass_players"
+      "lastfm_scrobble"
+      "listenbrainz_scrobble"
+      "musicbrainz"
+      "musiccast"
+      "opensubsonic"
+      "pandora"
+      "roku_media_assistant"
+      "sendspin"
+      "sonos"
+      "sonos_s1"
+      "soundcloud"
+      "spotify"
+      "spotify_connect"
+      "squeezelite"
+      "subsonic_scrobble"
+      "sync_group"
+      "tunein"
+      "ytmusic"
+    ];
+  };
+
   services.home-assistant = {
     enable = true;
+    extraComponents = [
+      "music_assistant"
+      # Google TV / Chromecast built-in: power, apps, remote (PIN pair in HA UI)
+      "androidtv_remote"
+      "cast"
+    ];
     package = pkgs.home-assistant.override {
       extraPackages = ps: [
         # Existing integrations
         ps.aiohue
         ps."starlink-grpc-core"
         ps."ha-philipsjs"
+        ps.androidtvremote2
+        ps.pychromecast
 
         # NAS service integrations (runtime deps for UI-paired integrations)
         ps."jellyfin-apiclient-python"
-        ps.aiopyarr # Shared by sonarr, radarr, lidarr
+        ps.aiopyarr # Shared by sonar rradarr lidarr
         ps."transmission-rpc"
         ps.aioimmich
         ps.adguardhome
@@ -70,9 +111,15 @@
     };
   };
 
-  services.nginx.virtualHosts = mkNginxVhost {
-    host = "home-assistant.homehub.tv";
-    port = 8123;
-    proxyWebsockets = true;
-  };
+  services.nginx.virtualHosts =
+    mkNginxVhost {
+      host = "home-assistant.homehub.tv";
+      port = 8123;
+      proxyWebsockets = true;
+    }
+    // mkNginxVhost {
+      host = "music-assistant.homehub.tv";
+      port = 8095;
+      proxyWebsockets = true;
+    };
 }
