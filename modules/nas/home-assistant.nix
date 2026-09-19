@@ -40,13 +40,20 @@
 
   services.home-assistant = {
     enable = true;
-    extraComponents = [ "music_assistant" ];
+    extraComponents = [
+      "music_assistant"
+      # Google TV / Chromecast built-in: power, apps, remote (PIN pair in HA UI)
+      "androidtv_remote"
+      "cast"
+    ];
     package = pkgs.home-assistant.override {
       extraPackages = ps: [
         # Existing integrations
         ps.aiohue
         ps."starlink-grpc-core"
         ps."ha-philipsjs"
+        ps.androidtvremote2
+        ps.pychromecast
 
         # NAS service integrations (runtime deps for UI-paired integrations)
         ps."jellyfin-apiclient-python"
