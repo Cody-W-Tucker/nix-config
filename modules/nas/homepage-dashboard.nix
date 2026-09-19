@@ -170,6 +170,13 @@ in
               };
             }
             {
+              MusicAssistant = {
+                href = "https://music-assistant.${domain}";
+                icon = "music-assistant";
+                description = "Music Management";
+              };
+            }
+            {
               Audiobookshelf = {
                 href = "https://audiobooks.${domain}";
                 icon = "audiobookshelf";

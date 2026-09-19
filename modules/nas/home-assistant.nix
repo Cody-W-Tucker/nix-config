@@ -7,6 +7,8 @@
 {
   services.music-assistant.enable = true;
 
+  networking.firewall.allowedTCPPorts = [ 8095 ];
+
   services.home-assistant = {
     enable = true;
     extraComponents = [ "music_assistant" ];
