@@ -5,6 +5,7 @@
 }:
 
 {
+  networking.firewall.allowedTCPPorts = [ 8095 ];
   services.music-assistant = {
     enable = true;
     openFirewall = true;
