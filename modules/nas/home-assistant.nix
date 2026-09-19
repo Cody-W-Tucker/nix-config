@@ -5,8 +5,11 @@
 }:
 
 {
+  services.music-assistant.enable = true;
+
   services.home-assistant = {
     enable = true;
+    extraComponents = [ "music_assistant" ];
     package = pkgs.home-assistant.override {
       extraPackages = ps: [
         # Existing integrations
