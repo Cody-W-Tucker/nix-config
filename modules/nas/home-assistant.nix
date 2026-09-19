@@ -5,9 +5,45 @@
 }:
 
 {
-  services.music-assistant.enable = true;
-
-  networking.firewall.allowedTCPPorts = [ 8095 ];
+  services.music-assistant = {
+    enable = true;
+    openFirewall = true;
+    providers = [
+      "acoustid_lookup"
+      "alexa"
+      "audible"
+      "audiobookshelf"
+      "builtin"
+      "chromecast"
+      "hass"
+      "hass_players"
+      "hue_entertainment"
+      "lastfm_recommendations"
+      "lastfm_scrobble"
+      "listenbrainz_scrobble"
+      "loudness_analysis"
+      "mpd"
+      "musicbrainz"
+      "musiccast"
+      "opensubsonic"
+      "pandora"
+      "roku_media_assistant"
+      "samsung_wam"
+      "sendspin"
+      "smart_fades"
+      "smart_playlist"
+      "sonos"
+      "sonos_s1"
+      "soundcloud"
+      "spotify"
+      "spotify_connect"
+      "squeezelite"
+      "subsonic_scrobble"
+      "sync_group"
+      "tunein"
+      "ytmusic"
+    ];
+  };
 
   services.home-assistant = {
     enable = true;
@@ -21,7 +57,7 @@
 
         # NAS service integrations (runtime deps for UI-paired integrations)
         ps."jellyfin-apiclient-python"
-        ps.aiopyarr # Shared by sonarr, radarr, lidarr
+        ps.aiopyarr # Shared by sonar rradarr lidarr
         ps."transmission-rpc"
         ps.aioimmich
         ps.adguardhome
