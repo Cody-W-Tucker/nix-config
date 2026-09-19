@@ -73,9 +73,15 @@
     };
   };
 
-  services.nginx.virtualHosts = mkNginxVhost {
-    host = "home-assistant.homehub.tv";
-    port = 8123;
-    proxyWebsockets = true;
-  };
+  services.nginx.virtualHosts =
+    mkNginxVhost {
+      host = "home-assistant.homehub.tv";
+      port = 8123;
+      proxyWebsockets = true;
+    }
+    // mkNginxVhost {
+      host = "music-assistant.homehub.tv";
+      port = 8095;
+      proxyWebsockets = true;
+    };
 }
