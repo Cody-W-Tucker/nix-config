@@ -51,9 +51,11 @@
       settings = {
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
-          # Spawn hyprlock directly; `loginctl lock-session` could miss the lock signal and sleep unlocked.
-          before_sleep_cmd = "pidof hyprlock || hyprlock";
-          after_sleep_cmd = "hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\" })'";
+          # Follow the official hypridle sleep flow; avoids a foreground
+          # hyprlock blocking the suspend pre-sleep hook.
+          before_sleep_cmd = "loginctl lock-session";
+          # Wait for the G65B DisplayPort link to return before enabling DPMS.
+          after_sleep_cmd = "sleep 3 && hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\", monitor = \"DP-1\" })'";
         };
 
         listener = [
@@ -64,7 +66,7 @@
           {
             timeout = 1800; # 30min.
             on-timeout = "hyprctl dispatch 'hl.dsp.dpms({ action = \"disable\" })'";
-            on-resume = "hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\" })'";
+            on-resume = "sleep 3 && hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\", monitor = \"DP-1\" })'";
           }
         ]
         ++ lib.optional (hardwareConfig.hypridle.suspendTimeout != null) {
