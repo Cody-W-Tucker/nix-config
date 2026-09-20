@@ -24,14 +24,13 @@ in
         ];
       };
 
-      # EnvironmentFiles for the user-level opencode-web service:
+      # EnvironmentFile for the user-level opencode-web service:
       #   - opencode-env SOPS template (OPENCODE_SERVER_PASSWORD)
-      #   - opencode-langfuse-env SOPS template: the `opencode-langfuse-env`
-      #     secret payload (hosts/nas/models.nix) plus LANGFUSE_BASEURL;
-      #     codyt-owned 0400.
+      # The Langfuse env file is merged in by the shared Home Manager harness
+      # (users/cody/harness/opencode/default.nix), which owns the
+      # opencode-langfuse-env SOPS template.
       systemd.user.services.opencode-web.Service.EnvironmentFile = [
         config.sops.templates."opencode-env".path
-        config.sops.templates."opencode-langfuse-env".path
       ];
     };
   };

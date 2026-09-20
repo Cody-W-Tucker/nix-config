@@ -14,6 +14,43 @@
     ./tools/rtk
   ];
 
+  # OpenCode Langfuse observability credentials (shared Home Manager scope):
+  # the nixos-secrets `opencode-langfuse-env` secret is rendered by a SOPS
+  # template (codyt-owned, 0400) plus a declarative LANGFUSE_BASEURL. Values
+  # stay out of the Nix store and out of eval-time substitution.
+  sops.secrets."opencode-langfuse-env" = {
+    mode = "0400";
+  };
+
+  sops.templates."opencode-langfuse-env" = {
+    mode = "0400";
+    content = ''
+      ${config.sops.placeholder."opencode-langfuse-env"}
+      LANGFUSE_BASEURL=https://langfuse.homehub.tv
+    '';
+  };
+
+  # Langfuse env for interactive OpenCode sessions: source the SOPS-rendered
+  # template (set -a exports the payload keys) so OpenCode (and its Langfuse
+  # observability plugin) inherits the vars from any interactive zsh.
+  programs.zsh.initContent = ''
+    # Langfuse credentials for OpenCode (@langfuse/opencode-observability-plugin)
+    if [ -f "${config.sops.templates."opencode-langfuse-env".path}" ]; then
+      set -a
+      . "${config.sops.templates."opencode-langfuse-env".path}"
+      set +a
+    fi
+  '';
+
+  # Langfuse env for the opencode-web user service: systemd services don't run
+  # interactive shells, so the zsh sourcing above doesn't cover it; merge the
+  # SOPS template as an EnvironmentFile (listOf merges by concatenation with
+  # modules/services/opencode/web-service.nix). Harmless where the service is
+  # not enabled.
+  systemd.user.services.opencode-web.Service.EnvironmentFile = [
+    config.sops.templates."opencode-langfuse-env".path
+  ];
+
   # The 99 nixvim integration brings its own OpenCode-backed model routing,
   # so the model-router plugin file is dropped when 99 is enabled.
   xdg.configFile."opencode/plugins/model-router.ts".enable = lib.mkIf config.cody.editor."99".enable (
