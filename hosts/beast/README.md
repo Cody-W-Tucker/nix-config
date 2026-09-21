@@ -22,5 +22,6 @@ Host-local files were collapsed into two Nix files. Machine identity, drives, ne
 | Storage   | 2TB NVMe root (`ext4`); EFI system partition on vfat.          |
 | Kernel    | Latest Linux kernel via `pkgs.linuxPackages_latest`.           |
 | NIC       | `eno1` with magic-packet Wake-on-LAN (NAS can wake this host). |
+| Razer     | OpenRazer + Polychromatic (`modules/desktop/hardware/openrazer`). Effects synced across devices; daemon restores last lighting on login. |
 
 The host is tuned for CUDA inference on demand, software development, 4K/high-refresh desktop use, and gaming. Always-on AI chat/RAG and agent runtime live on the NAS; beast supplies heavier GPU-backed models when awake.

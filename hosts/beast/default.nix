@@ -42,6 +42,7 @@ in
     ../../modules/desktop
     ../../modules/desktop/gaming
     ../../modules/desktop/hardware/nvidia.nix
+    ../../modules/desktop/hardware/openrazer
     ../../modules/services/docker.nix
 
     # Using community hardware configurations
