@@ -53,9 +53,6 @@ in
   # ── Machine ─────────────────────────────────────────────────
   # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | Storage: 2TB NVMe
 
-  # Observe all suspend attempts and diagnose the ~60s user.slice freeze timeout.
-  services.suspend-delay-catcher.enable = true;
-
   # Bootloader.
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;

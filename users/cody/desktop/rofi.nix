@@ -7,7 +7,7 @@
     plugins = [
       pkgs.rofi-calc
     ];
-    extraConfig = {
+    settings = {
       modi = "drun";
       show-icons = true;
       icon-theme = "Papirus";

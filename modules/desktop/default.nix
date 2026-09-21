@@ -6,7 +6,6 @@
     ./hyprland.nix
     ./logging.nix
     ./printing.nix
-    ./suspend-delay-catcher.nix
     ../services/syncthing.nix
     ./hardware/wifi.nix
     ./vpn

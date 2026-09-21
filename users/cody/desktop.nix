@@ -19,6 +19,7 @@
   # Styling and themes
   stylix = {
     enable = true;
+    overlays.enable = false; # stop stylix from overriding nixpkgs
     polarity = "dark";
     targets = {
       nixvim.enable = false;
