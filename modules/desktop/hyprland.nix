@@ -1,3 +1,10 @@
+{ config, lib, ... }:
+let
+  session = {
+    command = "${lib.getExe config.programs.uwsm.package} start hyprland.desktop";
+    user = "codyt";
+  };
+in
 {
   # Enable the Hyprland Desktop Environment.
   programs.hyprland = {
@@ -16,11 +23,12 @@
   services = {
     greetd = {
       enable = true;
+      # do not restart on session exit (useful on autologin)
+      restart = false;
       settings = {
-        default_session = {
-          command = "uwsm start hyprland-uwsm.desktop";
-          user = "codyt";
-        };
+        terminal.vt = 1;
+        initial_session = session;
+        default_session = session;
       };
     };
   };
