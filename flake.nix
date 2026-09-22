@@ -73,7 +73,7 @@
     llm-agents = {
       # Repo that packages various AI tools.
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # LLM Agents tests against their nixpkgs version and we shouldn't follow our own if we want the benefit.
     };
     googleworkspace-cli = {
       # Google Workspace CLI for Drive, Gmail, Calendar, and related APIs.
