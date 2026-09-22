@@ -74,8 +74,7 @@
   services = {
     tailscale-systray.enable = true;
 
-    # Control media via cli and waybar. Let D-Bus activation start playerctld
-    # on demand so it does not race with the package's own activation file.
+    # Bluetooth AVRCP bridge for MPRIS media controls
     mpris-proxy.enable = true;
 
     kdeconnect = {

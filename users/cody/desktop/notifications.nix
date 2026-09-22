@@ -1,4 +1,3 @@
-{ config, ... }:
 {
   services.swaync = {
     enable = true;
@@ -65,6 +64,9 @@
         mpris = {
           image-size = 96;
           image-radius = 7;
+          # playerctld wraps other player buses for playerctl; ignore the shim
+          # so the real players (e.g. Chrome/Feishin) are shown instead.
+          blacklist = [ "playerctld" ];
         };
         volume = {
           label = "󰕾";
