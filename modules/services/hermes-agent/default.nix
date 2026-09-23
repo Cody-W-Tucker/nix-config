@@ -73,7 +73,7 @@ in
       ];
       settings = {
         model = {
-          default = "grok-4.6";
+          default = "grok-4.7";
           provider = "xai-oauth";
         };
         fallback_model = {
