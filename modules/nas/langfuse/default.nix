@@ -94,8 +94,13 @@
   virtualisation.oci-containers.containers =
     let
       commonEnv = {
-        # allow local ip address endpoint for local models.
-        LANGFUSE_UNSAFE_TRUSTED_PRIVATE_IPS = "true";
+        # LLM connection base URLs are SSRF-checked separately.
+        # LANGFUSE_UNSAFE_TRUSTED_PRIVATE_IPS does not open them (upstream
+        # #13097; live 4.15 still returns "Blocked IP address detected").
+        # Host allowlist short-circuits the IP check. Containers reach
+        # llama-swap via host.docker.internal, never 127.0.0.1.
+        LANGFUSE_LLM_CONNECTION_WHITELISTED_HOST = "host.docker.internal";
+        LANGFUSE_LLM_CONNECTION_WHITELISTED_IPS = "172.18.0.1,172.17.0.1,192.168.1.2";
 
         NEXTAUTH_URL = "https://langfuse.homehub.tv";
         TELEMETRY_ENABLED = "true";
@@ -147,6 +152,7 @@
         extraOptions = [
           "--network=langfuse"
           "--network-alias=langfuse-web"
+          "--add-host=host.docker.internal:host-gateway"
         ];
         log-driver = "journald";
       };
@@ -165,6 +171,7 @@
         extraOptions = [
           "--network=langfuse"
           "--network-alias=langfuse-worker"
+          "--add-host=host.docker.internal:host-gateway"
         ];
         log-driver = "journald";
       };
