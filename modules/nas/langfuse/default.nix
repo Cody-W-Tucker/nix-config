@@ -7,31 +7,6 @@
 }:
 
 {
-  # Langfuse: LLM observability (upstream Docker Compose paradigm, OCI/Docker)
-  #
-  # Provenance: a baseline was generated with compose2nix 0.3.3 from the upstream
-  #   Langfuse `main` docker-compose.yml
-  #   (https://raw.githubusercontent.com/langfuse/langfuse/main/docker-compose.yml),
-  #   then folded into this hand-maintained module. The raw compose2nix output was
-  #   NOT committed (meaningless large output); the mapping below mirrors it but
-  #   uses explicit /mnt/appdata bind mounts, an isolated docker network, and a
-  #   SOPS env file instead of hardcoded secrets.
-  #
-  # Pinned image versions (at inspection, upstream main):
-  #   langfuse / langfuse-worker : 4.15.0   (upstream compose used floating :4)
-  #   clickhouse                 : 25.12
-  #   redis                      : 7
-  #   postgres                   : 17
-  #   minio (chainguard)         : rolling  (cgr.dev/chainguard/minio has no fixed tag)
-  #
-  # Update boundary: bump the tags below for a release. Do NOT rely on floating
-  #   :4 / :7 / :17 or chainguard-latest in production; pin a concrete tag/digest
-  #   (see README "Langfuse" section).
-
-  # SOPS-backed shared environment file. Carries every secret the upstream
-  # compose marks # CHANGEME. Non-secret config stays declarative below so the
-  # two never share a key (docker applies `-e` after `--env-file`, so the env
-  # file wins only where it alone defines a key).
   sops.secrets."langfuse-env" = { };
 
   # Persistent data — explicit bind mounts under /mnt/appdata/langfuse, not
@@ -139,7 +114,7 @@
     {
       "langfuse-web" = {
         autoStart = true;
-        image = "docker.langfuse.com/langfuse/langfuse:4.15.0";
+        image = "docker.langfuse.com/langfuse/langfuse:4";
         environment = commonEnv;
         environmentFiles = [ langfuseEnvFile ];
         ports = [ "127.0.0.1:3000:3000" ];
@@ -159,7 +134,7 @@
 
       "langfuse-worker" = {
         autoStart = true;
-        image = "docker.langfuse.com/langfuse/langfuse-worker:4.15.0";
+        image = "docker.langfuse.com/langfuse/langfuse-worker:4";
         environment = commonEnv;
         environmentFiles = [ langfuseEnvFile ];
         dependsOn = [
