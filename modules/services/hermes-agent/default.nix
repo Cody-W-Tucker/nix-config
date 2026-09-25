@@ -170,10 +170,7 @@ in
         };
         plugins = {
           enabled = [ "observability/langfuse" ];
-          "hermes-memory-store" = {
-            auto_extract = true;
-            default_trust = 0.5;
-          };
+          "hermes-memory-store".auto_extract = false;
         };
         compression = {
           enabled = true;
