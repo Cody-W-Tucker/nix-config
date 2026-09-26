@@ -67,4 +67,16 @@ in
     port = 3005;
     proxyWebsockets = true;
   };
+
+  # Keep the catalog and captured assets together for a local restore without
+  # recrawling or rerunning inference. The transient queue is intentionally skipped.
+  # The catalog SQLite file is consistently exported by Restic's pre-backup step;
+  # assets and settings are Restic inputs read live.
+  nas.backups.sqlite = [
+    { name = "karakeep"; source = "/var/lib/karakeep/db.db"; filename = "db.db"; }
+  ];
+  nas.backups.dataDirectories = [
+    "/var/lib/karakeep/assets"
+    "/var/lib/karakeep/settings.env"
+  ];
 }

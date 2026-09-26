@@ -12,4 +12,8 @@
     port = config.services.seerr.port;
     proxyWebsockets = true;
   };
+
+  nas.backups.sqlite = [
+    { name = "seerr"; source = "/var/lib/seerr/db/db.sqlite3"; }
+  ];
 }

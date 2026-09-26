@@ -17,4 +17,8 @@
     host = "music.homehub.tv";
     port = config.services.navidrome.settings.Port;
   };
+
+  nas.backups.sqlite = [
+    { name = "navidrome"; source = "/var/lib/navidrome/navidrome.db"; }
+  ];
 }

@@ -23,4 +23,8 @@
       client_max_body_size 10240M;
     '';
   };
+
+  nas.backups.sqlite = [
+    { name = "audiobookshelf"; source = "/var/lib/audiobookshelf/absdatabase.sqlite"; }
+  ];
 }

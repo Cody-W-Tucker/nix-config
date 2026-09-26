@@ -17,4 +17,8 @@
     port = 3002;
     proxyWebsockets = true;
   };
+
+  nas.backups.sqlite = [
+    { name = "uptime-kuma"; source = "/var/lib/uptime-kuma/kuma.db"; }
+  ];
 }

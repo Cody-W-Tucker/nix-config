@@ -7,7 +7,7 @@
 }:
 
 {
-  imports = [ ./review-queue.nix ];
+  imports = [ ./review-queue.nix ./backups.nix ];
 
   sops.secrets."langfuse-env" = { };
 

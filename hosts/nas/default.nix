@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   pkgs,
   self,
@@ -11,6 +12,7 @@
     ../../modules/hardware/baseline.nix
     ../../modules/hardware/nvidia.nix
     ../../modules/nas
+    ../../modules/nas/backups.nix
     ../../modules/services/opencode
     ./models.nix
     # VPN for media
@@ -138,6 +140,15 @@
       ];
     };
     zfs.autoScrub.enable = true;
+    zfs.autoSnapshot = {
+      enable = true;
+      frequent = 0;
+      hourly = 0;
+      daily = 7;
+      weekly = 4;
+      monthly = 3;
+      flags = "-k -p --utc";
+    };
     wake-beast.enable = false;
     opencode.enable = true; # web server for opencode
     nvidia-power-limit = {
@@ -223,6 +234,18 @@
       ];
     };
   };
+
+  # Hermes runs as a Home Manager user service, so its backup wiring lives at
+  # the NixOS level here: the state and CRM SQLite files are consistently
+  # exported by Restic's pre-backup step, while remaining Hermes state is a
+  # direct Restic input (live *.db* files stay excluded centrally).
+  nas.backups.sqlite = [
+    { name = "hermes"; source = "/home/codyt/.local/share/hermes/state.db"; filename = "state.db"; }
+    { name = "hermes"; source = "/home/codyt/.local/share/hermes/crm/crm.db"; filename = "crm.db"; }
+  ];
+  nas.backups.dataDirectories = [
+    "/home/codyt/.local/share/hermes"
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

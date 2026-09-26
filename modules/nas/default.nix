@@ -13,6 +13,7 @@
     ./home-assistant.nix
     ./open-webui.nix
     ./dns.nix
+    ./sqlite-backup.nix
     ./content.nix
     ./excalidraw.nix
     ./homepage-dashboard.nix

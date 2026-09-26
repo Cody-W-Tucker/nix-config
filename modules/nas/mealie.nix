@@ -24,4 +24,8 @@
     host = "mealie.homehub.tv";
     port = 9000;
   };
+
+  nas.backups.sqlite = [
+    { name = "mealie"; source = "/var/lib/mealie/mealie.db"; }
+  ];
 }

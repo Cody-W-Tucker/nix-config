@@ -17,4 +17,8 @@
     # settings.hostname = "budget.homehub.tv";
   };
 
+
+  nas.backups.sqlite = [
+    { name = "actual"; source = "/var/lib/actual/server-files/account.sqlite"; }
+  ];
 }

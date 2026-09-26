@@ -122,4 +122,9 @@
       port = 8095;
       proxyWebsockets = true;
     };
+
+  nas.backups.sqlite = [
+    { name = "home-assistant"; source = "/var/lib/hass/home-assistant_v2.db"; }
+    { name = "music-assistant"; source = "/var/lib/music-assistant/library.db"; }
+  ];
 }

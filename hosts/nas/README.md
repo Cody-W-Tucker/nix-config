@@ -60,7 +60,8 @@ Host-local files are split into two Nix files. Machine identity, drives, network
 - **Docker** (docker 29): Actual Budget MCP, Hermes agent, Excalidraw.
 - **llama-swap**: CUDA-accelerated inference on RTX 5060 — chat (Qwen 3.5), embedding, OCR, Whisper STT, Kokoro TTS.
 - **Tailscale**: Subnet router advertising `192.168.1.0/24`; Hermes API (8642) and Dashboard (9119) exposed over Tailscale only.
-- **ZFS**: Auto-scrub enabled; ARC capped at 32 GiB via `zfs.zfs_arc_max`.
+- **ZFS**: Auto-scrub enabled; ARC capped at 32 GiB via `zfs.zfs_arc_max`. Daily, weekly, and monthly snapshots cover `backup/photos`, `backup/documents`, `backup/Share`, and `backup/backups`.
+- **Backups**: service-owned SQLite exports (plus Karakeep's catalog, captured assets and settings) stage on `backup/backups`; Restic includes those exports, Projects, Knowledge, Hermes, and Langfuse's MinIO objects. The shared module owns the Restic repository, PostgreSQL/ClickHouse dumps, and ZFS snapshot policy. Paperless originals live on the snapshotted `backup/documents` dataset, not the 8 TB media disk. Add `restic-nas-password` with `sops` before activation. No off-box copy or restore drill is configured; ZFS originals and the 8 TB media disk remain vulnerable to whole-NAS loss.
 - **Syncthing**: NAS↔beast share sync; GUI on LAN port 8384.
 - **Bluetooth**: Enabled for Home Assistant (future controller).
 - **Wake-on-LAN**: `wake-beast` service can wake the desktop.
