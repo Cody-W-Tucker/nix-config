@@ -28,7 +28,7 @@ let
           | .presets.openai.fast.model = "openai/gpt-6-luna"
           | .presets.openai.fast.description = "fast exploration and simple tasks"
           | .presets.openai.medium.model = "opencode-go/glm-5.3-flash"
-          | .presets.openai.medium.variant = null
+          | .presets.openai.medium.variant = "low"
           | .presets.openai.medium.description = "implementation, refactors, and standard coding work"
           | .presets.openai.heavy.model = "openai/gpt-6-sol"
           | .presets.openai.heavy.variant = "high"
