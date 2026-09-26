@@ -7,6 +7,8 @@
 }:
 
 {
+  imports = [ ./review-queue.nix ];
+
   sops.secrets."langfuse-env" = { };
 
   # Persistent data — explicit bind mounts under /mnt/appdata/langfuse, not
