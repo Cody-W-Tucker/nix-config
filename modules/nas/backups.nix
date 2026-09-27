@@ -74,7 +74,11 @@ in
     ];
     backupPrepareCommand = "${sqlitePrepare}";
     timerConfig.OnCalendar = "*-*-* 05:00:00";
-    pruneOpts = [ "--keep-daily 7" "--keep-weekly 4" "--keep-monthly 6" ];
+    pruneOpts = [
+      "--keep-daily 7"
+      "--keep-weekly 4"
+      "--keep-monthly 6"
+    ];
   };
 
   systemd.services.restic-backups-nas-files.unitConfig = {
@@ -88,8 +92,18 @@ in
       "langfuse-postgres-backup.service"
       "langfuse-clickhouse-backup.service"
     ];
-    ConditionPathIsMountPoint = [ "/mnt/projects" "/mnt/knowledge" "/mnt/appdata" "/mnt/backup/backups" ];
-    RequiresMountsFor = [ "/mnt/projects" "/mnt/knowledge" "/mnt/appdata" repository ];
+    ConditionPathIsMountPoint = [
+      "/mnt/projects"
+      "/mnt/knowledge"
+      "/mnt/appdata"
+      "/mnt/backup/backups"
+    ];
+    RequiresMountsFor = [
+      "/mnt/projects"
+      "/mnt/knowledge"
+      "/mnt/appdata"
+      repository
+    ];
   };
 
   services.postgresqlBackup = {
@@ -106,7 +120,9 @@ in
       ConditionPathIsMountPoint = "/mnt/backup/backups";
     };
     serviceConfig = {
-      ExecStartPre = [ "+${pkgs.coreutils}/bin/install -d -o postgres -g postgres -m 0700 /mnt/backup/backups/postgresql" ];
+      ExecStartPre = [
+        "+${pkgs.coreutils}/bin/install -d -o postgres -g postgres -m 0700 /mnt/backup/backups/postgresql"
+      ];
       UMask = "0077";
     };
   };

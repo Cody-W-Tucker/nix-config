@@ -14,6 +14,9 @@
   };
 
   nas.backups.sqlite = [
-    { name = "seerr"; source = "/var/lib/seerr/db/db.sqlite3"; }
+    {
+      name = "seerr";
+      source = "/var/lib/seerr/db/db.sqlite3";
+    }
   ];
 }

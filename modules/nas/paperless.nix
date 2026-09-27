@@ -52,7 +52,10 @@ in
   };
 
   nas.backups.sqlite = [
-    { name = "paperless"; source = "/var/lib/paperless/db.sqlite3"; }
+    {
+      name = "paperless";
+      source = "/var/lib/paperless/db.sqlite3";
+    }
   ];
 
 }

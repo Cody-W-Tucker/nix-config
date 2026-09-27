@@ -9,6 +9,7 @@
   imports = [
     ../services/nginx
     ./actual-budget.nix
+    ./backups.nix
     ./dawarich.nix
     ./home-assistant.nix
     ./open-webui.nix

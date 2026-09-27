@@ -120,11 +120,29 @@
   };
 
   nas.backups.sqlite = [
-    { name = "radarr"; source = "/var/lib/radarr/.config/Radarr/radarr.db"; }
-    { name = "sonarr"; source = "/var/lib/sonarr/.config/NzbDrone/sonarr.db"; }
-    { name = "lidarr"; source = "/var/lib/lidarr/.config/Lidarr/lidarr.db"; }
-    { name = "readarr"; source = "/var/lib/readarr/readarr.db"; }
-    { name = "bazarr"; source = "/var/lib/bazarr/db/bazarr.db"; }
-    { name = "prowlarr"; source = "/var/lib/prowlarr/prowlarr.db"; }
+    {
+      name = "radarr";
+      source = "/var/lib/radarr/.config/Radarr/radarr.db";
+    }
+    {
+      name = "sonarr";
+      source = "/var/lib/sonarr/.config/NzbDrone/sonarr.db";
+    }
+    {
+      name = "lidarr";
+      source = "/var/lib/lidarr/.config/Lidarr/lidarr.db";
+    }
+    {
+      name = "readarr";
+      source = "/var/lib/readarr/readarr.db";
+    }
+    {
+      name = "bazarr";
+      source = "/var/lib/bazarr/db/bazarr.db";
+    }
+    {
+      name = "prowlarr";
+      source = "/var/lib/prowlarr/prowlarr.db";
+    }
   ];
 }

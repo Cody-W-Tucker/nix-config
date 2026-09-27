@@ -25,6 +25,9 @@
   };
 
   nas.backups.sqlite = [
-    { name = "jellyfin"; source = "/var/lib/jellyfin/data/jellyfin.db"; }
+    {
+      name = "jellyfin";
+      source = "/var/lib/jellyfin/data/jellyfin.db";
+    }
   ];
 }

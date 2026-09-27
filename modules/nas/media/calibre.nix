@@ -44,7 +44,13 @@
   networking.firewall.allowedTCPPorts = [ 8083 ];
 
   nas.backups.sqlite = [
-    { name = "calibre-web"; source = "/var/lib/calibre-web/app.db"; }
-    { name = "calibre-library"; source = "/mnt/media/Books/metadata.db"; }
+    {
+      name = "calibre-web";
+      source = "/var/lib/calibre-web/app.db";
+    }
+    {
+      name = "calibre-library";
+      source = "/mnt/media/Books/metadata.db";
+    }
   ];
 }

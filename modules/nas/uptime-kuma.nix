@@ -19,6 +19,9 @@
   };
 
   nas.backups.sqlite = [
-    { name = "uptime-kuma"; source = "/var/lib/uptime-kuma/kuma.db"; }
+    {
+      name = "uptime-kuma";
+      source = "/var/lib/uptime-kuma/kuma.db";
+    }
   ];
 }

@@ -25,6 +25,9 @@
   };
 
   nas.backups.sqlite = [
-    { name = "audiobookshelf"; source = "/var/lib/audiobookshelf/absdatabase.sqlite"; }
+    {
+      name = "audiobookshelf";
+      source = "/var/lib/audiobookshelf/config/absdatabase.sqlite";
+    }
   ];
 }

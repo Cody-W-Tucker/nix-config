@@ -73,7 +73,11 @@ in
   # The catalog SQLite file is consistently exported by Restic's pre-backup step;
   # assets and settings are Restic inputs read live.
   nas.backups.sqlite = [
-    { name = "karakeep"; source = "/var/lib/karakeep/db.db"; filename = "db.db"; }
+    {
+      name = "karakeep";
+      source = "/var/lib/karakeep/db.db";
+      filename = "db.db";
+    }
   ];
   nas.backups.dataDirectories = [
     "/var/lib/karakeep/assets"

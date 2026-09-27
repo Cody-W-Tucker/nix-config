@@ -161,7 +161,4 @@ in
     proxyWebsockets = true;
   };
 
-  nas.backups.sqlite = [
-    { name = "shelfmark"; source = "/var/lib/shelfmark/shelfmark.db"; }
-  ];
 }

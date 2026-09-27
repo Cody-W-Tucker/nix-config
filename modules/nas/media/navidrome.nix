@@ -19,6 +19,9 @@
   };
 
   nas.backups.sqlite = [
-    { name = "navidrome"; source = "/var/lib/navidrome/navidrome.db"; }
+    {
+      name = "navidrome";
+      source = "/var/lib/navidrome/navidrome.db";
+    }
   ];
 }

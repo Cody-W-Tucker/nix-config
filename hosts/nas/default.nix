@@ -12,7 +12,6 @@
     ../../modules/hardware/baseline.nix
     ../../modules/hardware/nvidia.nix
     ../../modules/nas
-    ../../modules/nas/backups.nix
     ../../modules/services/opencode
     ./models.nix
     # VPN for media
@@ -240,8 +239,16 @@
   # exported by Restic's pre-backup step, while remaining Hermes state is a
   # direct Restic input (live *.db* files stay excluded centrally).
   nas.backups.sqlite = [
-    { name = "hermes"; source = "/home/codyt/.local/share/hermes/state.db"; filename = "state.db"; }
-    { name = "hermes"; source = "/home/codyt/.local/share/hermes/crm/crm.db"; filename = "crm.db"; }
+    {
+      name = "hermes";
+      source = "/home/codyt/.local/share/hermes/state.db";
+      filename = "state.db";
+    }
+    {
+      name = "hermes";
+      source = "/home/codyt/.local/share/hermes/crm/crm.db";
+      filename = "crm.db";
+    }
   ];
   nas.backups.dataDirectories = [
     "/home/codyt/.local/share/hermes"

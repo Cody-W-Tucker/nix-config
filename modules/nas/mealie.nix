@@ -26,6 +26,9 @@
   };
 
   nas.backups.sqlite = [
-    { name = "mealie"; source = "/var/lib/mealie/mealie.db"; }
+    {
+      name = "mealie";
+      source = "/var/lib/mealie/mealie.db";
+    }
   ];
 }
