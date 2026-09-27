@@ -1,20 +1,16 @@
 {
-  config,
-  lib,
   inputs,
   mkNginxVhost,
   pkgs,
   ...
 }:
-let
-  karakeepStillUsesPnpm9159 =
-    config.services.karakeep.enable
-    && builtins.any (dep: (dep.name or "") == "pnpm-9.15.9")
-      (config.services.karakeep.package.nativeBuildInputs or []);
-in
 {
   services.karakeep = {
     enable = true;
+    # Stable 26.05 karakeep is 0.32.0 built on nodejs 24.21, which aborts workers
+    # in better-sqlite3 during GC (karakeep#2989). Unstable builds 0.33.1 against
+    # nodejs_22. Same cross-input pattern as immich.
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.karakeep;
     extraEnvironment = {
       PORT = "3005";
       DB_WAL_MODE = "true"; # This should improve the performance of the database.
@@ -36,15 +32,6 @@ in
       MAX_ASSET_SIZE_MB = "100";
     };
   };
-
-  # WORKAROUND: Karakeep needs pnpm-9.15.9 but nixpkgs marks it insecure and blocks the build.
-  # https://github.com/NixOS/nixpkgs/issues/539235
-  # REVIEW-BY: 2026-12-27
-  nixpkgs.config.permittedInsecurePackages = [ "pnpm-9.15.9" ];
-
-  warnings = lib.optional
-    (config.services.karakeep.enable && !karakeepStillUsesPnpm9159)
-    "Karakeep no longer uses pnpm-9.15.9; remove the exception from permittedInsecurePackages.";
 
   services.nginx.virtualHosts = mkNginxVhost {
     host = "karakeep.homehub.tv";
