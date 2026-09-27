@@ -6,7 +6,12 @@
   pkgs,
   ...
 }:
-
+let
+  karakeepStillUsesPnpm9159 =
+    config.services.karakeep.enable
+    && builtins.any (dep: (dep.name or "") == "pnpm-9.15.9")
+      (config.services.karakeep.package.nativeBuildInputs or []);
+in
 {
   services.karakeep = {
     enable = true;
@@ -31,6 +36,15 @@
       MAX_ASSET_SIZE_MB = "100";
     };
   };
+
+  # WORKAROUND: Karakeep needs pnpm-9.15.9 but nixpkgs marks it insecure and blocks the build.
+  # https://github.com/NixOS/nixpkgs/issues/539235
+  # REVIEW-BY: 2026-12-27
+  nixpkgs.config.permittedInsecurePackages = [ "pnpm-9.15.9" ];
+
+  warnings = lib.optional
+    (config.services.karakeep.enable && !karakeepStillUsesPnpm9159)
+    "Karakeep no longer uses pnpm-9.15.9; remove the exception from permittedInsecurePackages.";
 
   services.nginx.virtualHosts = mkNginxVhost {
     host = "karakeep.homehub.tv";
