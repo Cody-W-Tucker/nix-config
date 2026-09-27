@@ -16,7 +16,6 @@ in
 
   home.packages = [
     llmPkgs.openspec
-    llmPkgs.grok
     llmPkgs.gnhf
     llmPkgs.pi
     llmPkgs.code-review-graph
