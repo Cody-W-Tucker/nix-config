@@ -253,26 +253,6 @@ Loki is configured as a single-binary filesystem-backed deployment with short re
 
 If adding a service, add the exporter and scrape target in the same module that owns the monitoring integration, then expose it in Grafana only when it is useful to operate.
 
-### Backup health (textfile)
-
-`backup-health.nix` reports daily backup outcomes through the NAS node exporter textfile collector
-(`/var/lib/node-exporter-textfile/nas_backup_<unit>.prom`, scraped by the existing `server` job):
-
-- `nas_backup_last_run_timestamp_seconds{backup="<unit>"}` — always written.
-- `nas_backup_last_success_timestamp_seconds{backup="<unit>"}` — absent until first success, preserved across failures.
-- `nas_backup_status{backup="<unit>"}` — `1` on `SERVICE_RESULT=success`, else `0`.
-- `nas_backup_duration_seconds{backup="<unit>"}` — absent when the start stamp is unavailable.
-
-Units: `restic-backups-nas-files` (05:00, includes SQLite staged exports), `postgresqlBackup`,
-`langfuse-postgres-backup`, `langfuse-clickhouse-backup`.
-
-Alert on staleness (`time() - nas_backup_last_run_timestamp_seconds > 26*3600`) and on
-`nas_backup_status != 1`; a missing success series means never succeeded. Skipped timers
-(unmet mount conditions, failed `Requires` deps) intentionally leave stale files rather than
-writing false success. Act on stale/missing by checking `systemctl status <unit>`,
-`journalctl -u <unit>`, the `/mnt/backup/backups` mounts, and the `.prom` mtime, then
-`systemctl start <unit>` and confirm fresh timestamps.
-
 ## Security notes
 
 - Keep the public attack surface behind Nginx unless a protocol requires direct LAN access.

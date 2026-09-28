@@ -83,6 +83,31 @@ in
             ];
           };
         };
+        restic = {
+          enable = true;
+          repository = "/mnt/backup/backups/restic";
+          passwordFile = config.sops.secrets."restic-nas-password".path;
+          listenAddress = "127.0.0.1";
+          refreshInterval = 3600;
+          user = "root";
+          group = "root";
+        };
+        zfs = {
+          enable = true;
+          pools = [ "backup" ];
+          listenAddress = "127.0.0.1";
+          port = 9134;
+          user = "root";
+          group = "root";
+          extraFlags = [
+            "--collector.dataset-snapshot"
+            "--properties.dataset-snapshot=creation"
+            "--collector.pool"
+            "--properties.pool=health,allocated,free,size"
+            "--no-collector.dataset-filesystem"
+            "--no-collector.dataset-volume"
+          ];
+        };
       };
       scrapeConfigs = [
         {
@@ -159,6 +184,28 @@ in
               targets = [ "127.0.0.1:9117" ];
               labels = {
                 host = "${config.networking.hostName}";
+              };
+            }
+          ];
+        }
+        {
+          job_name = "restic";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.restic.port}" ];
+              labels = {
+                host = "${config.networking.hostName}";
+              };
+            }
+          ];
+        }
+        {
+          job_name = "zfs-backup";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}" ];
+              labels = {
+                host = "nas";
               };
             }
           ];
@@ -366,6 +413,19 @@ in
     "systemd-journal"
     "nginx"
   ];
+
+  # Restic exporter reads /mnt/backup/backups/restic as root; fail closed when storage is absent.
+  systemd.services.prometheus-restic-exporter = {
+    unitConfig = {
+      ConditionPathIsMountPoint = [ "/mnt/backup/backups" ];
+      RequiresMountsFor = [ "/mnt/backup/backups/restic" ];
+    };
+    serviceConfig = {
+      DynamicUser = lib.mkForce false;
+    };
+  };
+
+  systemd.services.prometheus-zfs-exporter.serviceConfig.DynamicUser = lib.mkForce false;
 
   # Open port 3090 for Loki
   networking.firewall.allowedTCPPorts = [

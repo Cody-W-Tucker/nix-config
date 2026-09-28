@@ -5,39 +5,6 @@
   ...
 }:
 
-# NAS backup health metrics for Prometheus node-exporter textfile collector.
-#
-# Covered systemd units (all daily on nas):
-#   - restic-backups-nas-files.service (05:00, includes SQLite staged exports)
-#   - postgresqlBackup.service (daily, native pg dumps consumed by restic)
-#   - langfuse-postgres-backup.service (daily)
-#   - langfuse-clickhouse-backup.service (daily)
-#
-# Metric semantics (scraped via the existing nas node-exporter job `server`):
-#   nas_backup_last_run_timestamp_seconds{backup="<unit>"}     — unixtime of most recent run, any outcome. Always written.
-#   nas_backup_last_success_timestamp_seconds{backup="<unit>"} — unixtime of most recent SUCCESS. Absent until the
-#     first success; preserved across later failures (parsed back from the previous .prom file).
-#   nas_backup_status{backup="<unit>"}                         — 1 if SERVICE_RESULT=success on the most recent run, else 0.
-#   nas_backup_duration_seconds{backup="<unit>"}                — wall-clock seconds between ExecStartPre timestamp and
-#     ExecStopPost report. Absent when the start stamp is unavailable (e.g. manual `systemctl start` races or /run loss).
-#
-# Freshness / alerting guidance:
-#   - A skipped timer (ConditionPathIsMountPoint unmet, Requires dep failed to start, timer disabled) does NOT write a
-#     fresh file, so staleness is the skip signal. Alert when `time() - nas_backup_last_run_timestamp_seconds > 26*3600`
-#     for any expected backup="<unit>" (daily + catch-up margin), and when `nas_backup_status != 1`.
-#   - A missing nas_backup_last_success_timestamp_seconds series means "never succeeded since exporter state was
-#     (re)created" — page, do not assume success. A stale-but-present success timestamp after a recent failed run
-#     means "last success was at <timestamp>, latest run failed" — the run metric moves, the success metric does not.
-#   - On-call: 1) `systemctl status <unit>` + `journalctl -u <unit>` for the failure, 2) check mounts under
-#     /mnt/backup/backups (conditions skip silently), 3) verify /var/lib/node-exporter-textfile/nas_backup_<unit>.prom
-#     mtime/content matches the journal, 4) re-run with `systemctl start <unit>` and confirm fresh timestamps.
-#
-# Implementation notes:
-#   - ExecStopPost runs on both success and failure and observes $SERVICE_RESULT; ExecStartPre stamps /run for duration.
-#     The "+" prefix forces root so the postgres-owned postgresqlBackup unit can still write the root-owned textfile dir.
-#     StopPost uses "-+" so a reporting failure (full disk, lost /run) is logged but never flips a backup to failed.
-#   - Writes are atomic (mktemp in the same dir + chmod 0644 + rename) so the collector never reads a partial file.
-
 let
   textfileDir = "/var/lib/node-exporter-textfile";
   runDir = "/run/backup-health";
@@ -94,13 +61,12 @@ let
   '';
 
   mkHealthHooks = job: {
-    # mkBefore: stamp the start time before any other ExecStartPre (e.g. the
-    # restic backupPrepareCommand wrapper) so duration covers the whole run.
+    # mkBefore so duration covers the whole run; + runs as root; %%s avoids systemd specifier expansion.
     ExecStartPre = lib.mkBefore [
       "+${pkgs.coreutils}/bin/mkdir -p ${runDir} ${textfileDir}"
       "+${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/date +%%s > ${runDir}/${job}.start'"
     ];
-    # "-+": run as root (+) and never fail the backup unit if reporting fails (-).
+    # -+: run as root (+) without failing the backup unit on reporting errors (-).
     ExecStopPost = [ "-+${reporter} ${job}" ];
   };
 in
@@ -110,15 +76,18 @@ in
     "d ${runDir} 0755 root root -"
   ];
 
-  # Merge with monitoring.nix: enabledCollectors ["systemd"] ++ ["textfile"],
-  # and expose the explicit textfile directory to the nas node exporter (job `server`).
   services.prometheus.exporters.node.enabledCollectors = [ "textfile" ];
   services.prometheus.exporters.node.extraFlags = [
     "--collector.textfile.directory=${textfileDir}"
   ];
 
-  systemd.services."restic-backups-nas-files".serviceConfig =
-    mkHealthHooks "restic-backups-nas-files";
+  # Retired Restic textfile after migration to prometheus-restic-exporter,
+  # plus retired ZFS snapshot inventory after migration to zfs_exporter.
+  # Targeted to these single paths only; safe to run on every activation.
+  system.activationScripts.cleanup-retired-restic-prom.text = ''
+    ${pkgs.coreutils}/bin/rm -f ${textfileDir}/nas_backup_restic-backups-nas-files.prom ${textfileDir}/nas_zfs_snapshots.prom
+  '';
+
   systemd.services."postgresqlBackup".serviceConfig = mkHealthHooks "postgresqlBackup";
   systemd.services."langfuse-postgres-backup".serviceConfig =
     mkHealthHooks "langfuse-postgres-backup";
