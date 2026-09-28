@@ -50,7 +50,7 @@
       apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
       karakeepUrl = "https://karakeep.homehub.tv";
       karakeepApiKeyFile = config.sops.secrets."karakeep-api-key".path;
-      openaiHost = "http://127.0.0.1:8081/v1";
+      openaiHost = "http://127.0.0.1:8081";
       embedModel = "qwen3-embedding-0.6b";
       autoMarkReadBelow = 4.5;
       limitUnread = 400;
