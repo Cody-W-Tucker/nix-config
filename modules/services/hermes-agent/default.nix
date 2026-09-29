@@ -73,13 +73,13 @@ in
       ];
       settings = {
         model = {
-          default = "gpt-6-sol";
+          default = "gpt-5.6-terra";
           provider = "openai-codex";
         };
-        fallback_model = {
-          provider = "xai-oauth";
-          model = "grok-4.7";
-        };
+        # fallback_model = {
+        #   provider = "xai-oauth";
+        #   model = "grok-4.7";
+        # };
         auxiliary = {
           approval = {
             provider = "opencode-go";
