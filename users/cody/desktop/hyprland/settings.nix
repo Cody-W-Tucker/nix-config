@@ -259,14 +259,6 @@ in
         };
       };
 
-      dwindle = {
-        preserve_split = true;
-      };
-
-      master = {
-        new_status = "master";
-      };
-
       misc = {
         mouse_move_enables_dpms = true;
         key_press_enables_dpms = true;
