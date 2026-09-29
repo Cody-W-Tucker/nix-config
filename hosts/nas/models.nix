@@ -228,7 +228,6 @@ in
         persistent = false;
         members = [
           "whisper-medium"
-          "whisper-diarization"
           "kokoro-82m"
           # s1-mini normalizer co-resides with whisper-medium so the desktop
           # speech pipeline can run STT + normalization together.
