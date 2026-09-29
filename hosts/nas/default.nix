@@ -126,6 +126,43 @@
     options = [ "bind" ];
   };
 
+  # Syncthing-safe individual mappings for media dirs (Beast-style).
+  fileSystems."/home/codyt/Documents" = {
+    device = "/mnt/backup/Share/Documents";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/home/codyt/Music" = {
+    device = "/mnt/backup/Share/Music";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/home/codyt/Pictures" = {
+    device = "/mnt/backup/Share/Pictures";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
+  fileSystems."/home/codyt/Videos" = {
+    device = "/mnt/backup/Share/Videos";
+    fsType = "none";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
   services = {
     # Auto configure usb etc, when plugedin
     udisks2.enable = true;
