@@ -216,6 +216,10 @@ in
         direct_scanout = 0;
       };
 
+      master = {
+        new_status = "master";
+      };
+
       general = {
         allow_tearing = false;
         border_size = 2;
