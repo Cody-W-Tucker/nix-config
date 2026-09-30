@@ -1,0 +1,36 @@
+{
+  "memoryFiles": ["AGENTS.md"],
+  "nestedMemoryFiles": [
+    "hosts/AGENTS.md",
+    "modules/AGENTS.md",
+    "modules/desktop/AGENTS.md",
+    "modules/services/automations/AGENTS.md",
+    "modules/services/hermes-agent/AGENTS.md",
+    "modules/services/llama-swap/AGENTS.md",
+    "users/AGENTS.md",
+    "users/cody/AGENTS.md",
+    "users/cody/desktop/AGENTS.md",
+    "users/cody/desktop/obsidian/AGENTS.md",
+    "users/cody/harness/AGENTS.md"
+  ],
+  "nestedBudgetTokens": 2000,
+  "budgetTokens": 5000,
+  "skillsDir": ".agents/skills",
+  "minGapEvidence": 2,
+  "maxTranscripts": 100,
+  "discovery": {
+    "harnesses": [
+      "claude",
+      "codex",
+      "pi",
+      "opencode",
+      "grok",
+      "cursor",
+      "hermes"
+    ],
+    "since": "30d",
+    "worktreeGlobs": [],
+    "minUserTurns": 2
+  },
+  "jobs": 4
+}

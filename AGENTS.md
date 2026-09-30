@@ -2,9 +2,16 @@
 
 You are assisting a user working on a NixOS system config using flakes. Full documentation is available at `docs/`.
 
+## Evidence Discipline
+
+- Before declaring an audit or evidence report complete, verify every acceptance criterion with direct source or evaluated evidence; explicitly mark anything unverified.
+- Before citing a file, open and read it in the current session; grep/search output does not count. For exhaustive inventories, inspect every search hit and referenced file.
+- Verify claims about upstream options, NixOS behavior, and override/build semantics in authoritative documentation, source, or tests; search snippets are not evidence.
+- Count reads and checks as successful only when their status and output demonstrate success; correct and rerun failures before concluding.
+
 ## Build Testing
 
-Only test builds when making risky changes: new services, complex module refactors, or unfamiliar Nix patterns. Simple edits like updating package lists, changing existing values, or minor configuration tweaks rarely need pre-testing—the user will catch issues during their `update` run.
+Build-test risky changes such as new services, complex module refactors, unfamiliar Nix patterns, flake-input swaps, and Home Manager module wiring. For each risky change, run both `nix flake check` and a relevant host build or dry-run. Simple package-list updates, existing-value changes, and minor configuration tweaks rarely need pre-testing; the user will catch issues during their `update` run.
 
 If the system doesn't build, check the logs and solve the issues.
 
@@ -48,11 +55,10 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ## MCP Tools: code-review-graph
 
-**IMPORTANT: This project has a knowledge graph. ALWAYS use the
-code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
-the codebase.** The graph is faster, cheaper (fewer tokens), and gives
-you structural context (callers, dependents, test coverage) that file
-scanning cannot.
+Use code-review-graph tools before filesystem scanning for broad exploration,
+impact analysis, relationship tracing, and reviews. For targeted verification of
+already-named files, inspect those files directly. The graph is faster and gives
+structural context (callers, dependents, test coverage) that file scanning cannot.
 
 ### When to use graph tools FIRST
 
@@ -62,7 +68,7 @@ scanning cannot.
 - **Finding relationships**: `query_graph_tool` with callers_of/callees_of/imports_of/tests_for
 - **Architecture questions**: `get_architecture_overview_tool` + `list_communities_tool`
 
-Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
+Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need. If the graph reports stale/not ready, update it and retry before using filesystem tools. This fallback rule applies to exploration, not targeted inspection of already-identified paths.
 
 ### Key Tools
 

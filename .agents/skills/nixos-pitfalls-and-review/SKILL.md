@@ -1,6 +1,6 @@
 ---
 name: nixos-pitfalls-and-review
-description: Common mistakes in NixOS code and standards for reviewing and refactoring NixOS repositories.
+description: NixOS module or configuration changes, diagnostics, recommendations, audits, and reviews; includes module semantics, source verification, wiring, validation, and network reachability.
 ---
 
 # NixOS Pitfalls And Review
@@ -113,6 +113,14 @@ Each module should answer one question clearly:
 - how is this hardware handled?
 - how is this user environment defined?
 
+## Verify recommendations and merged values
+
+- Before recommending a Nix option, verify it against the local module or package source and give its complete enclosing attribute path.
+- When merge semantics determine a value, evaluate the resulting configuration when feasible; clearly distinguish evaluated output from an expected merge.
+- When auditing NixOS policy, evaluate the resulting configuration when feasible and distinguish evaluated values from source-level expectations.
+- When verifying module arguments, inspect the complete NixOS and Home Manager wiring and demonstrate that required arguments are passed through `specialArgs` or `extraSpecialArgs`.
+- When auditing a packaged integration or dependency version, inspect flake inputs, lock data, and the package-resolution path; report the exact locked revision and timestamp when available.
+
 ## Review checklist
 
 When reviewing a NixOS change, ask:
@@ -135,6 +143,10 @@ Run at least:
 - `nixos-rebuild build --flake .#<host>`
 
 If using Home Manager through NixOS, also validate the relevant host build rather than only checking formatting.
+
+## Network reachability diagnosis
+
+Verify the failing path from the affected client. If that is not possible, explicitly mark client-side reachability as unverified.
 
 ## Anti-patterns to avoid
 
