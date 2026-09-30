@@ -6,6 +6,7 @@
 
 {
   imports = [
+    inputs.zen-browser.homeModules.beta
     ./programs.nix
     ./packages/scripts
     ./obsidian
@@ -25,6 +26,11 @@
   # Enable Stylix for theming
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
+  programs.zen-browser = {
+    enable = true;
+    setAsDefaultBrowser = true;
+  };
+
   # Keep these enabled without settings letting stylix manage
   dconf.enable = true;
 
@@ -37,7 +43,6 @@
   };
 
   home.packages = with pkgs; [
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hermes-desktop
     grim # Screenshot utility

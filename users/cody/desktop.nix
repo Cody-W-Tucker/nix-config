@@ -24,6 +24,7 @@
     targets = {
       nixvim.enable = false;
       firefox.profileNames = [ "default" ];
+      zen-browser.profileNames = [ "Default Profile" ];
       kitty.fonts.override = {
         size = 16;
       };

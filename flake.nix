@@ -62,8 +62,9 @@
     };
     zen-browser = {
       # Modern web browser based on firefox.
-      url = "github:youwen5/zen-browser-flake";
+      url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.home-manager.follows = "home-manager";
     };
     nextmeeting = {
       # Used to display calendar events and meetings in waybar.

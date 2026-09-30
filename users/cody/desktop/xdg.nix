@@ -78,14 +78,14 @@
 
         # Text: HTML, CSS, JS, Markdown, JSON, plain text
         "text/*" = "nvim.desktop";
-        "text/html" = "zen.desktop";
+        "text/html" = "zen-beta.desktop";
         "application/json" = "nvim.desktop"; # JSON is technically not text/*
         "application/javascript" = "nvim.desktop"; # For explicit JS files
         "application/x-subrip" = "nvim.desktop"; # For .srt subtitle files
 
         # Web URLs
-        "x-scheme-handler/http" = "zen.desktop";
-        "x-scheme-handler/https" = "zen.desktop";
+        "x-scheme-handler/http" = "zen-beta.desktop";
+        "x-scheme-handler/https" = "zen-beta.desktop";
       };
     };
   };

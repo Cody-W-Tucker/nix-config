@@ -7,7 +7,7 @@
 
 let
   mainMod = "SUPER";
-  browser = "uwsm app -- zen --new-tab";
+  browser = "uwsm app -- zen-beta";
   webApp = "chromium --new-window --app";
   terminal = "kitty";
 
@@ -60,7 +60,7 @@ let
 
     # Application launchers (focus existing window or run new)
     (execBind "${mainMod} + Q" terminal)
-    (actionBind "${mainMod} + 0" (focusOrRun "^(zen)$" browser))
+    (actionBind "${mainMod} + 0" (focusOrRun "zen-beta" browser))
 
     # Web applications
     (execBind "${mainMod} + SHIFT + Return" "[workspace special:ai] ${webApp}=https://grok.com/")
