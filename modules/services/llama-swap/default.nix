@@ -56,7 +56,7 @@ let
 
         threads = lib.mkOption {
           type = lib.types.int;
-          default = 16;
+          default = 6;
           description = "CPU thread count passed to llama-server with `-t`.";
         };
 
@@ -394,7 +394,6 @@ in
       };
     };
 
-    systemd.services.llama-swap.path = [ pkgs.lact ];
     systemd.services.llama-swap.environment = backendEnvironment // cfg.serviceEnvironment;
 
     systemd.tmpfiles.rules = [

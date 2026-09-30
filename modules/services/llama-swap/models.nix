@@ -16,11 +16,6 @@
   "qwen-3.5-4b" = {
     file = "qwen3.5-4b-nvfp4.gguf";
     mmprojFile = "mmproj-qwen3.5-4b-nvfp4-f16.gguf";
-    gpuLayers = 999;
-    contextSize = 65536;
-    threads = 6;
-    batchSize = 2048;
-    ubatchSize = 1024;
     ttl = 300;
     extraArgs = [
       "--parallel"
@@ -41,12 +36,7 @@
   "qwen-3.5-9b" = {
     file = "qwen3.5-9b-nvfp4.gguf";
     mmprojFile = "mmproj-qwen3.5-9b-nvfp4-f16.gguf";
-    gpuLayers = 999;
     contextSize = 32768;
-    threads = 6;
-    batchSize = 2048;
-    ubatchSize = 1024;
-    ttl = 600;
     extraArgs = [
       "--reasoning"
       "off"
@@ -62,12 +52,9 @@
   # 35B total / ~3B active, 256 routed experts (8 selected/token)
   "qwen-3.6-35b-a3b" = {
     file = "qwen3.6-35b-a3b-nvfp4.gguf";
-    gpuLayers = 999;
     contextSize = 262144;
-    threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
-    ttl = 600;
     extraArgs = [
       "--parallel"
       "1"
@@ -92,9 +79,7 @@
   };
   "qwen3-embedding-0.6b" = {
     file = "Qwen3-Embedding-0.6B-Q8_0.gguf";
-    gpuLayers = 999;
     contextSize = 8192;
-    threads = 6;
     batchSize = 512;
     ubatchSize = 512;
     flashAttention = false; # avoid flash-attn to reduce startup instability in llama-server.
@@ -127,14 +112,12 @@
   "glm-ocr-f16" = {
     file = "GLM-OCR-f16.gguf";
     mmprojFile = "mmproj-GLM-OCR-Q8_0.gguf";
-    gpuLayers = 999;
     contextSize = 12000;
     # Logs showed a real OCR request used 7044 prompt + 1148 completion = 8192
     # tokens and hit `truncated=1`; normal short OCR stops well below the boundary.
     # Upstream llama.cpp GLM-OCR example uses `-c 12000`. 12000 leaves headroom
     # for large-image prompts without masking runaway generation (the repeat
     # penalty and VISION_LLM_MAX_TOKENS=2048 still bound output).
-    threads = 6;
     batchSize = 1024;
     ubatchSize = 512;
     ttl = 5;
@@ -186,9 +169,7 @@
   # `--temp 0` keeps normalization deterministic. No reasoning budget is set.
   "s1-mini" = {
     file = "s1-mini-q4_k_m.gguf";
-    gpuLayers = 999;
     contextSize = 8192;
-    threads = 6;
     batchSize = 512;
     ubatchSize = 512;
     ttl = 0;
