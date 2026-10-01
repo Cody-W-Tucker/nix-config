@@ -4,14 +4,14 @@ You are assisting a user working on a NixOS system config using flakes. Full doc
 
 ## Evidence Discipline
 
-- Before declaring an audit or evidence report complete, verify every acceptance criterion with direct source or evaluated evidence; explicitly mark anything unverified.
-- Before citing a file, open and read it in the current session; grep/search output does not count. For exhaustive inventories, inspect every search hit and referenced file.
+- Before declaring an audit or evidence report complete, verify every acceptance criterion with direct source or evaluated evidence; explicitly mark anything unverified. When a criterion requires behavioral confirmation, run a focused runtime test; source inspection alone is insufficient.
+- Before citing a file, open and read it in the current session; grep/search output does not count. For exhaustive inventories, enumerate every relevant exact path and inspect every search hit and referenced file.
 - Verify claims about upstream options, NixOS behavior, and override/build semantics in authoritative documentation, source, or tests; search snippets are not evidence.
-- Count reads and checks as successful only when their status and output demonstrate success; correct and rerun failures before concluding.
+- Count reads and checks as successful only when their status and output demonstrate success; on failure, inspect the error, correct the invocation, and rerun before concluding.
 
 ## Build Testing
 
-Build-test risky changes such as new services, complex module refactors, unfamiliar Nix patterns, flake-input swaps, and Home Manager module wiring. For each risky change, run both `nix flake check` and a relevant host build or dry-run. Simple package-list updates, existing-value changes, and minor configuration tweaks rarely need pre-testing; the user will catch issues during their `update` run.
+Build-test risky changes such as new services, complex module refactors, unfamiliar Nix patterns, flake-input swaps, and Home Manager module wiring. For each risky change, run both `nix flake check` and a relevant host build or dry-run. Do not call a risky change validated unless both succeed; report either missing check as unverified. Simple package-list updates, existing-value changes, and minor configuration tweaks rarely need pre-testing; the user will catch issues during their `update` run.
 
 If the system doesn't build, check the logs and solve the issues.
 
@@ -29,6 +29,10 @@ nix flake check
 Once the changes have settled, the user will run the `update` script to build and activate the system.
 
 ## High-value repo rules
+
+### Editing
+
+- Keep narrowly scoped edits minimal: preserve unrelated lines and comments, and avoid repository-wide formatting.
 
 ### Naming & Files
 
