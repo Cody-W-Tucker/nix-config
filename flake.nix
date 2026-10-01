@@ -90,6 +90,11 @@
       # Upstream Hermes Agent flake with package and NixOS module.
       url = "github:NousResearch/hermes-agent";
     };
+    treehouse = {
+      # Git worktree pool manager for parallel agent workflows.
+      url = "github:kunchenguid/treehouse";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     stevenblack = {
       # StevenBlack ads/malware blocklist, consumed directly as the upstream
       # Unbound include via packages.<system>.unbound (a generated local-zone
@@ -121,6 +126,7 @@
         acpx = pkgs.callPackage ./packages/acpx { };
         backpass = pkgs.callPackage ./packages/backpass { };
         lavish-axi = pkgs.callPackage ./packages/lavish-axi { };
+        no-mistakes = pkgs.callPackage ./packages/no-mistakes { };
       };
 
       # Builds the different systems

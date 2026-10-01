@@ -196,6 +196,22 @@
         "type": "github"
       }
     },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767039857,
+        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -920,6 +936,7 @@
         "sops-nix": "sops-nix",
         "stevenblack": "stevenblack",
         "stylix": "stylix",
+        "treehouse": "treehouse",
         "vpn-confinement": "vpn-confinement",
         "zen-browser": "zen-browser"
       }
@@ -1209,6 +1226,27 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treehouse": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790860774,
+        "narHash": "sha256-HXD/f5B0w2h5/GmGddhI3/71UHtr6TLNyF60sp1fmIg=",
+        "owner": "kunchenguid",
+        "repo": "treehouse",
+        "rev": "476002d1a7eb381574c3345299e6bfcc66ecbb1a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kunchenguid",
+        "repo": "treehouse",
         "type": "github"
       }
     },
