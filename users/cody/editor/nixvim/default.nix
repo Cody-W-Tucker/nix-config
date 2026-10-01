@@ -13,6 +13,7 @@
 
   imports = [
     ./keymaps.nix
+    ./plugins/gitsigns.nix
     ./plugins/lsp.nix
     ./plugins/none-ls.nix
     ./plugins/conform.nix
@@ -83,7 +84,6 @@
       csvview.enable = true;
       nix.enable = true;
       lazygit.enable = true;
-      gitsigns.enable = true;
       markdown-preview.enable = true;
       render-markdown.enable = true;
       commentary.enable = true;
