@@ -85,6 +85,7 @@
       lazygit.enable = true;
       gitsigns.enable = true;
       markdown-preview.enable = true;
+      render-markdown.enable = true;
       commentary.enable = true;
       which-key.enable = true;
       rainbow-delimiters.enable = true;
