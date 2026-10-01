@@ -4,6 +4,9 @@
   ...
 }:
 
+let
+  backpass = pkgs.callPackage ../../../packages/backpass { };
+in
 {
   imports = [
     inputs.zen-browser.homeModules.beta
@@ -45,6 +48,9 @@
   home.packages = with pkgs; [
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hermes-desktop
+    # Agent memory loop: backpass bundles `acpx` and `lavish-axi` as private
+    # runtime dependencies on its own wrapper PATH.
+    backpass
     grim # Screenshot utility
     slurp # Selection tool for screenshots
     wl-clipboard # Clipboard utility for Wayland

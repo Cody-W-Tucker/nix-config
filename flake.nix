@@ -107,6 +107,7 @@
     }:
     let
       system = "x86_64-linux";
+      pkgs = nixpkgs-unstable.legacyPackages.${system};
       specialArgs = {
         inherit inputs self;
         home-manager-input = inputs.home-manager;
@@ -114,7 +115,13 @@
     in
     {
       # Official NixOS formatter with directory support
-      formatter.x86_64-linux = nixpkgs-unstable.legacyPackages.${system}.nixfmt-tree;
+      formatter.x86_64-linux = pkgs.nixfmt-tree;
+
+      packages.x86_64-linux = {
+        acpx = pkgs.callPackage ./packages/acpx { };
+        backpass = pkgs.callPackage ./packages/backpass { };
+        lavish-axi = pkgs.callPackage ./packages/lavish-axi { };
+      };
 
       # Builds the different systems
       nixosConfigurations = {

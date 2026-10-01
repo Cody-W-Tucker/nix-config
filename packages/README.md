@@ -39,13 +39,28 @@ Pinned [crm.cli](https://github.com/dzhng/crm.cli) `v0.3.10`. No upstream flake.
 ### `kokoro`
 
 Kokoro TTS model bundle and its supporting spaCy model.
-
 Local packaging details:
 
 - `default.nix` uses a `runCommand` derivation to assemble model files into one store path.
 - Includes `kokoro-v1_0.pth`, model config, and selected voice profiles.
 - Fetches voice assets from HuggingFace so the runtime can consume a fixed, reproducible model directory.
 - `en-core-web-sm.nix` packages the spaCy small English model that Kokoro's G2P (via misaki) requires at runtime.
+
+### `backpass`
+
+Pinned [Backpass](https://github.com/kunchenguid/backpass) `v0.1.31` (Node >=22.5) from the npm registry via `buildNpmPackage` with a vendored `package-lock.json`. The wrapper prefixes the nix-built `acpx` and `lavish-axi` onto `PATH` because Backpass shells out to both helpers resolved from `PATH`.
+
+- Only `backpass` is wired into the desktop user environment in `users/cody/desktop/default.nix`; `acpx` and `lavish-axi` are private runtime dependencies on the wrapper `PATH`, so `backpass` resolves both without `nix shell` and without installing either helper directly.
+
+### `lavish-axi`
+
+Pinned [lavish-axi](https://github.com/kunchenguid/lavish-axi) `v0.1.31` (Node >=22) from the npm registry via `buildNpmPackage` with a vendored `package-lock.json`. This is the optional Backpass review UI (`lavish-axi` binary, `dist/` ships prebuilt so `dontNpmBuild` is set with `npmPackFlags = [ "--ignore-scripts" ]`).
+
+- Exposed as `packages.x86_64-linux.lavish-axi` for direct builds, but not installed directly; the desktop installs only `backpass`, which bundles this UI on its wrapper `PATH`.
+
+### `acpx`
+
+Pinned [acpx](https://github.com/openclaw/acpx) `v0.19.4` (Node >=22.13) from the npm registry via `buildNpmPackage` with a vendored `package-lock.json`. No pre-existing package in any pinned flake input, so it is packaged here. `dist/` ships prebuilt, so `dontNpmBuild` is set and `npmPackFlags = [ "--ignore-scripts" ]` keeps the install hook from running the upstream `prepack` tsdown rebuild.
 
 ## Adding or changing a package
 

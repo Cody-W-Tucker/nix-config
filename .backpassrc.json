@@ -17,18 +17,10 @@
   "budgetTokens": 5000,
   "skillsDir": ".agents/skills",
   "minGapEvidence": 2,
-  "maxTranscripts": 100,
+  "maxTranscripts": 300,
   "discovery": {
-    "harnesses": [
-      "claude",
-      "codex",
-      "pi",
-      "opencode",
-      "grok",
-      "cursor",
-      "hermes"
-    ],
-    "since": "30d",
+    "harnesses": ["pi", "opencode", "cursor", "hermes"],
+    "since": "90d",
     "worktreeGlobs": [],
     "minUserTurns": 2
   },
