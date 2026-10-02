@@ -6,6 +6,7 @@
 let
   scriptNames = [
     ./check-imports.nix
+    ./research-state.nix
     ./update.nix
   ];
 

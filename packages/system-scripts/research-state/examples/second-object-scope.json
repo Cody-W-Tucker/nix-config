@@ -1,0 +1,74 @@
+{
+  "schema": "research-state-scope/v1",
+  "working_object": {
+    "id": "package-deployment-inquiry",
+    "description": "Second working object (example alternate scope): system-script package deployment inquiry joining the scripts checkout, system service state, and an explicit interface. Example only, not live evidence."
+  },
+  "repositories": [
+    {
+      "id": "nixos",
+      "path": "/etc/nixos"
+    },
+    {
+      "id": "scripts",
+      "path": "/etc/nixos/packages/system-scripts"
+    }
+  ],
+  "pins": {
+    "repository": "nixos",
+    "file": "flake.lock",
+    "inputs": [
+      "cognitive-assistant"
+    ],
+    "comparisons": [
+      {
+        "input": "cognitive-assistant",
+        "repository": "nixos"
+      }
+    ]
+  },
+  "deployment": {
+    "system": "/run/current-system",
+    "user_candidates": [
+      "/home/codyt/.local/state/nix/profiles/home-manager"
+    ]
+  },
+  "notes": [
+    {
+      "id": "second-object-direction",
+      "path": "/etc/nixos/docs/research-state.md",
+      "line_ranges": [[1, 10]],
+      "role": "orientation",
+      "superseded_by": []
+    }
+  ],
+  "services": [
+    {
+      "id": "second-object-system-service",
+      "unit": "example-second-object.service",
+      "manager": "system"
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "package-cli",
+      "inputs": ["packet JSON"],
+      "outputs": ["markdown"],
+      "constraint": "read-only"
+    }
+  ],
+  "outcome_readers": [
+    {
+      "id": "second-object-outcomes",
+      "enabled": false,
+      "reason": "no verified schema for second object yet"
+    }
+  ],
+  "qmd": {
+    "enabled": false
+  },
+  "limits": {
+    "timeout_seconds": 5,
+    "max_bytes": 16384
+  }
+}

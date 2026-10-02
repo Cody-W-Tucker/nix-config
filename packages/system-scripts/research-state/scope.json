@@ -1,0 +1,161 @@
+{
+  "schema": "research-state-scope/v1",
+  "working_object": {
+    "id": "nas-research-continuity",
+    "description": "NAS research continuity: join authored direction, Cognitive-Assistant and NixOS revisions, deployment evidence, named services, interfaces and outcome records."
+  },
+  "repositories": [
+    {
+      "id": "nixos",
+      "path": "/etc/nixos"
+    },
+    {
+      "id": "ca",
+      "path": "/home/codyt/Projects/Cognitive-Assistant"
+    }
+  ],
+  "pins": {
+    "repository": "nixos",
+    "file": "flake.lock",
+    "inputs": [
+      "cognitive-assistant"
+    ],
+    "comparisons": [
+      {
+        "input": "cognitive-assistant",
+        "repository": "ca"
+      }
+    ]
+  },
+  "deployment": {
+    "system": "/run/current-system",
+    "user_candidates": [
+      "/home/codyt/.local/state/nix/profiles/home-manager",
+      "/nix/var/nix/profiles/per-user/codyt/home-manager"
+    ]
+  },
+  "notes": [
+    {
+      "id": "thesis-architecture",
+      "path": "/home/codyt/Knowledge/Personal/Ideas/_Self Improving OS/Thesis and Architecture.md",
+      "line_ranges": [[15, 55]],
+      "role": "authored_direction",
+      "superseded_by": []
+    },
+    {
+      "id": "problem-landscape",
+      "path": "/home/codyt/Knowledge/Personal/Ideas/_Self Improving OS/Problem Landscape.md",
+      "line_ranges": [[15, 35]],
+      "role": "authored_direction",
+      "superseded_by": []
+    },
+    {
+      "id": "solution-value",
+      "path": "/home/codyt/Knowledge/Personal/Ideas/_Self Improving OS/Solution Model and Business Value.md",
+      "line_ranges": [[15, 34]],
+      "role": "authored_direction",
+      "superseded_by": []
+    },
+    {
+      "id": "market-strategy",
+      "path": "/home/codyt/Knowledge/Personal/Ideas/_Self Improving OS/02-Market/Market and Adoption Strategy.md",
+      "line_ranges": [[15, 32]],
+      "role": "authored_direction",
+      "superseded_by": []
+    },
+    {
+      "id": "what-enables",
+      "path": "/home/codyt/Knowledge/Personal/Ideas/_Self Improving OS/01-Core-Vision/What This System Enables.md",
+      "line_ranges": [[34, 68], [122, 122]],
+      "role": "authored_direction",
+      "superseded_by": ["problem-landscape", "market-strategy", "solution-value"]
+    },
+    {
+      "id": "ca-architecture",
+      "path": "/home/codyt/Knowledge/Personal/Ideas/_Cognitive Assistant/Cognitive Assistant Architecture.md",
+      "line_ranges": [[24, 43], [92, 105], [118, 141]],
+      "role": "authored_direction",
+      "superseded_by": []
+    },
+    {
+      "id": "ca-crystallization",
+      "path": "/home/codyt/Knowledge/Personal/Ideas/_Cognitive Assistant/Cognitive Assistant Crystallization Loop Project Spec.md",
+      "line_ranges": [[129, 145]],
+      "role": "authored_direction",
+      "superseded_by": []
+    },
+    {
+      "id": "recursive-self-improvement",
+      "path": "/home/codyt/Knowledge/wiki/concepts/recursive-self-improvement.md",
+      "line_ranges": [[33, 50], [79, 87]],
+      "role": "orientation",
+      "superseded_by": []
+    },
+    {
+      "id": "stanza-graph",
+      "path": "/home/codyt/Knowledge/wiki/concepts/stanza-graph.md",
+      "line_ranges": [[19, 40], [54, 68]],
+      "role": "orientation",
+      "superseded_by": []
+    },
+    {
+      "id": "capability-actualization",
+      "path": "/home/codyt/Knowledge/wiki/concepts/capability-actualization.md",
+      "line_ranges": [[18, 26], [44, 66]],
+      "role": "orientation",
+      "superseded_by": []
+    },
+    {
+      "id": "ca-readme",
+      "path": "/home/codyt/Projects/Cognitive-Assistant/README.md",
+      "line_ranges": [[14, 27], [81, 103]],
+      "role": "project_interface",
+      "superseded_by": []
+    },
+    {
+      "id": "ca-projection-experiments",
+      "path": "/home/codyt/Projects/Cognitive-Assistant/docs/Projection-Experiments.md",
+      "line_ranges": [[3, 28]],
+      "role": "outcome_interface",
+      "superseded_by": []
+    }
+  ],
+  "services": [
+    {
+      "id": "hermes-agent",
+      "unit": "hermes-agent.service",
+      "manager": "user"
+    },
+    {
+      "id": "hermes-backend",
+      "unit": "hermes-backend.service",
+      "manager": "user"
+    },
+    {
+      "id": "opencode-web",
+      "unit": "opencode-web.service",
+      "manager": "user"
+    }
+  ],
+  "interfaces": [],
+  "outcome_readers": [
+    {
+      "id": "ca-decisions",
+      "enabled": false,
+      "reason": "no verified schema"
+    }
+  ],
+  "qmd": {
+    "enabled": true,
+    "queries": [
+      {
+        "terms": "Thesis and Architecture",
+        "collection": "Personal"
+      }
+    ]
+  },
+  "limits": {
+    "timeout_seconds": 5,
+    "max_bytes": 16384
+  }
+}

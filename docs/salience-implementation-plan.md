@@ -1,6 +1,13 @@
 # Salience implementation plan
 
-Status: proposed implementation, not a deployed capability.
+Status (2026-10-02): slices A–D mechanics implemented in `2c7d92e2`, with
+151 passing tests and a successful package build. Real NAS collection is
+verified; an authorized first experiment, fresh use, and second-object
+transfer remain pending. Full host build/activation are not verified by this
+work. Implemented mechanics are not demonstrated usefulness.
+
+Operator guidance, consumption/rendering paths, a concrete proposed first
+experiment, and current evidence: [research-state guide](research-state.md).
 
 ## Aim
 
@@ -92,13 +99,22 @@ No new MCP, graph database, daemon, or dashboard is required.
 
 ### A. Collector
 
-- [ ] Inspect existing system-script packaging and applicable local instructions.
-- [ ] Define the research scope and evidence schema.
-- [ ] Implement bounded read-only collectors with explicit errors.
-- [ ] Test undeployed changes, failed probes, missing permissions, and agreeing state with fixtures.
-- [ ] Exercise the real NAS environment and retain its packet.
+- [x] Inspect existing system-script packaging and applicable local instructions.
+- [x] Define the research scope and evidence schema.
+- [x] Implement bounded read-only collectors with explicit errors.
+- [x] Test undeployed changes, failed probes, missing permissions, and agreeing state with fixtures.
+- [x] Exercise the real NAS environment and retain its packet.
+
+Retained packet: `c00dc4cf15dd4b409338e54861aa13bd`, collected on `nas` at
+`2026-10-02T01:12:37.604212Z`, 24 observations, zero recorded probe errors,
+CA checkout/pin `agree`; selected user-generation links and CA outcome reader
+remain unknown. See the guide for JSON/Markdown paths. Refresh this evidence
+for new work; it is not a standing claim about the live host.
 
 ### B. Salience pass
+
+The skill and salience/contract validators/storage are implemented. The
+unchecked items below are live judgment/acceptance work, not missing code.
 
 - [ ] Ground direction in selected authored passages.
 - [ ] Produce one evidence-backed possibility or an honest no-candidate result.
@@ -107,12 +123,19 @@ No new MCP, graph database, daemon, or dashboard is required.
 
 ### C. First complete loop
 
+The manual start/import-result/decide/followup lifecycle is implemented;
+fixture success does not complete the following live steps.
+
 - [ ] Preserve baseline, protected behavior, and counterexample.
 - [ ] Run an authorized reversible experiment.
 - [ ] Assess actual outputs against the contract.
 - [ ] Record the decision and any justified reusable procedure.
 
 ### D. Transfer before scheduling
+
+Transfer/surprise records and second-object fixtures are implemented. Real
+transfer is pending; scheduling is optional deferred work, not an unbuilt
+requirement for completing the manual loop.
 
 - [ ] Exercise a second working object and assess appropriate transfer.
 - [ ] Add optional scheduling only after manual usefulness is demonstrated.
@@ -135,6 +158,16 @@ A packet completes collection, not the learning loop. Acceptance of a proposal a
 ## Ownership and activation
 
 NixOS owns packaging, wiring, permissions, and reproducible arrangements. Authored knowledge owns direction. CA owns upstream identity compilation. Hermes owns bounded judgment and authorized action; existing coding-agent tooling can implement scoped changes. Langfuse remains the response-review surface, not a required sink for all computer facts.
+
+The implemented consumption path is manual: Hermes reads relevant retained
+JSON and their Markdown siblings, performs authorized work, presents the
+result in the existing chat, and explicitly reloads prior records on resume.
+`collect` and record-store commands write both formats under
+`${XDG_STATE_HOME:-$HOME/.local/state}/research-state`; `render` accepts
+packets only. The disabled CA reader is a future input adapter, not a missing
+renderer. Nothing here watches that directory or automatically feeds results
+to CA, Langfuse, a dashboard, QMD, SOUL, or memory. The guide describes a
+concrete first experiment, later-use test, second-object transfer, and handoff.
 
 Repository edits are not live until activated. The operator runs system/Home Manager activation. The agent does not rebuild, switch, or restart its gateway. Test package behavior and relevant Nix evaluation before activation handoff.
 
