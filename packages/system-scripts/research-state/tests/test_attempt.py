@@ -717,11 +717,46 @@ class CrossRefTests(unittest.TestCase):
             any("acceptance" in e.lower() for e in errors), errors
         )
 
+    def test_prior_freezes_result_payload(self):
+        prior = to_result(
+            make_start(self.packet, self.contract),
+            make_artifact(self.root, body=b"ok"),
+            "after-packet",
+        )
+        record = to_decided(prior)
+        record["result"]["checks"][0]["after"] = "fail"
+        errors = rs.check_attempt_refs(record, prior=prior)
+        self.assertTrue(any("result changed" in e for e in errors), errors)
+
+    def test_prior_freezes_decision_payload(self):
+        prior = to_decided(
+            to_result(
+                make_start(self.packet, self.contract),
+                make_artifact(self.root, body=b"ok"),
+                "after-packet",
+            )
+        )
+        record = to_followed_up(prior, "fresh-packet")
+        record["decision"]["rationale"] = "A different decision basis."
+        errors = rs.check_attempt_refs(record, prior=prior)
+        self.assertTrue(any("decision changed" in e for e in errors), errors)
+
     def test_prior_valid_progression_preserved(self):
         prior = make_start(self.packet, self.contract)
         record = make_start(self.packet, self.contract)
         record["stage"] = "result"
         self.assertEqual(rs.check_attempt_refs(record, prior=prior), [])
+        result = to_result(
+            prior,
+            make_artifact(self.root, name="evidence/result.txt", body=b"ok"),
+            "after-packet",
+        )
+        self.assertEqual(rs.check_attempt_refs(to_decided(result), prior=result), [])
+        decided = to_decided(result)
+        self.assertEqual(
+            rs.check_attempt_refs(to_followed_up(decided, "fresh-packet"), prior=decided),
+            [],
+        )
 
     def test_dangling_evidence_ref_rejected(self):
         record = to_decided(

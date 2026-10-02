@@ -3585,6 +3585,17 @@ def check_attempt_refs(
                         "baseline (packet, refs, conditions) is frozen — "
                         "re-baseline only as a new attempt"
                     )
+                frozen_sections = {
+                    "result": ("result",),
+                    "decided": ("result", "decision"),
+                }.get(str(prior.get("stage")), ())
+                for section in frozen_sections:
+                    if record.get(section) != prior.get(section):
+                        errors.append(
+                            f"{section} changed since the prior record: prior "
+                            f"stage payloads are frozen — advance lifecycle by "
+                            f"adding the next section only"
+                        )
                 order = ("started", "result", "decided", "followed_up")
                 if order.index(str(record.get("stage"))) < order.index(
                     str(prior.get("stage"))
