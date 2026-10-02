@@ -142,12 +142,14 @@ the repo. A draft contract never authorizes execution.
     ambiguity to the operator. NEVER execute merely because shape validates.
 8. **Run the attempt lifecycle manually.** `attempt-start` freezes the
     hypothesis, contract hash, baseline refs, and condition IDs before
-    results. Run the authorized experiment outside this tool, then
+    results; later stages preserve prior result/decision payloads unchanged.
+    Run the authorized experiment outside this tool, then
     `attempt-import-result` with bounded real artifacts (allowlisted formats,
     provenance, hashes — never full private logs; obvious secret/env,
     private-key, process-dump, and trace-dump bytes are rejected, so keep
     such bytes out entirely and use references+hashes when bytes fall
-    outside the allowed capture scope — no general redaction is promised). `attempt-decide` records
+    outside the allowed capture scope — no general redaction is promised).
+    `attempt-decide` records
     keep/revise/discard/inconclusive with reviewer provenance; keep needs
     reviewed evidence for every unknown/human-required check, a passing
     protected behavior, and the preserved counterexample. `attempt-followup`
@@ -225,8 +227,8 @@ restrictions as a description of Hermes's runtime permissions.
    behavior intact, no unknowns, and no changed inputs — otherwise revise,
    discard, or inconclusive. Reference flags (`--packet`, `--after-packet`,
    `--fresh-packet`, `--contract`, `--prior`, `--artifact-root`) reject
-    dangling refs, changed contracts/conditions, lineage breaks, backdating,
-    and fabricated bytes.
+    dangling refs, changed contracts/conditions, changed prior stage payloads,
+    lineage breaks, backdating, and fabricated bytes.
  - Transfer record `research-transfer/v1`: `transfer_id`, `created_at`,
    `status` (`adapted` | `declined` | `insufficient_evidence` |
    `no_change`), `source` (attempt id/packet/decision, working object,

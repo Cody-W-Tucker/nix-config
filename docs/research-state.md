@@ -206,7 +206,7 @@ research-state transfer-store ./transfer.json --state-dir "${XDG_STATE_HOME:-$HO
 research-state surprise-validate ./surprise.json [--packet ./packet.json]
 research-state surprise-store ./surprise.json --state-dir "${XDG_STATE_HOME:-$HOME/.local/state}/research-state" --packet ./packet.json
 
-# Full unit/integration suite (151 tests: Slices A+B+C+D)
+# Full unit/integration suite (155 tests: Slices A+B+C+D)
 python3 -m unittest discover -s packages/system-scripts/research-state/tests -p '*.py' -v
 
 # Focused package-only build (wrapper derivation; no host build, no lock change)
@@ -359,7 +359,7 @@ performed**, separately from those tests:
 
 This proves collection and the agreeing-state path at its timestamp, **not**
 current state, an authorized experiment, later usefulness, or transfer.
-Collect a fresh packet for new work. The 151-test suite and package build also
+Collect a fresh packet for new work. The 155-test suite and package build also
 passed on `2026-10-02`. Full host build/activation remain unverified by this
 work; the earlier Nix-wide check was blocked by Beast's unrelated invalid
 `base16-schemes` derivation, reproduced on pre-work commit `bdf0d4e0`.
@@ -373,7 +373,7 @@ research-state collect --state-dir "${XDG_STATE_HOME:-$HOME/.local/state}/resear
 ## Gates and activation handoff (updated for Slice D)
 
 - Collector + salience/contract/attempt/transfer/surprise mechanics
-  implemented + full suite green (151 tests; see Tests above).
+  implemented + full suite green (155 tests; see Tests above).
 - Live NAS collection and agreeing-state validation demonstrated at the
   timestamp above; refresh evidence before a new experiment.
 - Second real working-object live gate (pending): Hermes/operator collects
@@ -427,8 +427,9 @@ existence rejected as usefulness proof, input snapshots keeping provenance
 and historical/superseded status, salience/contract JSON+Markdown store
 round-trips, and skill packaging (linkFarm member + workflow docs) — plus
 Slice C: staged attempt start/import/decide/followup with baseline-first
-ordering, frozen contract hash + condition IDs, real-byte artifacts with
-provenance, keep/decide gates, retained failures, dropped-idea reopen
+ordering, frozen contract hash + condition IDs, frozen prior result/decision
+payloads, real-byte artifacts with provenance, keep/decide gates, retained
+failures, dropped-idea reopen
 links, fresh-use packets, and never-executed check commands — plus Slice D:
 distinct second-object packet via an alternate scope, valid adaptation and
 intentional decline on unknown prerequisites/unverified interfaces,
@@ -525,13 +526,14 @@ overwritten, backdated, or edited in place):
    from the baseline packet and first post-test contact). A discarded idea
    stays dropped unless the followup carries an explicit `reopens` link plus
    `new_evidence`. A changed hypothesis or contract/condition set starts a
-   new attempt; `--prior` enforces same-lineage, same-hypothesis, forward
-   time.
+   new attempt; `--prior` enforces same-lineage, same-hypothesis, unchanged
+   prior stage payloads, and forward time.
 
 Reference flags (`--packet` baseline, `--after-packet`, `--fresh-packet`,
 `--contract`, `--prior`, `--artifact-root`) reject dangling files, changed
-baselines/contracts, packet-ID mismatches, lineage breaks, manufactured
-timestamps, and hash mismatches. Attempt metadata must exclude secrets
+baselines/contracts, changed prior stage payloads, packet-ID mismatches,
+lineage breaks, manufactured timestamps, and hash mismatches. Attempt
+metadata must exclude secrets
 (redaction of arbitrary free text is not guaranteed, so never put it here).
 
 Mechanics/integration proof lives in
