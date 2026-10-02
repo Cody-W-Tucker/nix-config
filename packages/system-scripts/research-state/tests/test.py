@@ -591,6 +591,18 @@ class ScopeValidationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             rs.load_scope(self.write_scope(root, scope))
 
+    def test_accepts_empty_pin_comparisons(self):
+        root = make_temp_root(self)
+        nix_repo, _ = init_repo(root, "nixos")
+        ca_repo, _ = init_repo(root, "ca")
+        note = write_note(root)
+        scope = make_scope(nix_repo, ca_repo, note)
+        scope["pins"]["comparisons"] = []
+        loaded = rs.load_scope(self.write_scope(root, scope))
+        packet = rs.collect_packet(loaded)
+        self.assertEqual(packet["comparisons"], [])
+        self.assertEqual(rs.validate_packet(packet), [])
+
     def test_rejects_bad_limits(self):
         root = make_temp_root(self)
         nix_repo, _ = init_repo(root, "nixos")
@@ -633,6 +645,11 @@ class PacketValidationTests(unittest.TestCase):
         _, _, _, _, _, _, packet = collect_fixture(self)
         packet["comparisons"][0]["left"] = "missing-observation"
         self.assertTrue(rs.validate_packet(packet))
+
+    def test_validate_accepts_empty_comparisons(self):
+        _, _, _, _, _, _, packet = collect_fixture(self)
+        packet["comparisons"] = []
+        self.assertEqual(rs.validate_packet(packet), [])
 
     def test_validate_rejects_non_utc_timestamp(self):
         _, _, _, _, _, _, packet = collect_fixture(self)
@@ -801,8 +818,6 @@ class OverrideMismatchTests(unittest.TestCase):
         ]
         scope["pins"]["repository"] = "custom"
         scope["pins"]["comparisons"] = []
-        # Need at least one comparison for load_scope, so keep valid shape:
-        # instead drop to a scope dict that still validates for overrides.
         with self.assertRaises(ValueError):
             rs.apply_overrides(scope, nixos_repo="/tmp/nixos-override")
 

@@ -249,8 +249,8 @@ def load_scope(scope_path: str | os.PathLike | None) -> dict:
     ):
         raise _fail(f"scope file {path}: pins.inputs must be a non-empty string list")
     comparisons = pins.get("comparisons")
-    if not isinstance(comparisons, list) or not comparisons:
-        raise _fail(f"scope file {path}: pins.comparisons must be a non-empty list")
+    if not isinstance(comparisons, list):
+        raise _fail(f"scope file {path}: pins.comparisons must be a list")
     for comp in comparisons:
         if not isinstance(comp, dict):
             raise _fail(f"scope file {path}: each pins comparison must be an object")
@@ -1406,8 +1406,8 @@ def validate_packet(packet: object) -> list[str]:
             if not isinstance(err, dict) or not err.get("operation"):
                 errors.append("each error needs an object with 'operation'")
     comparisons = packet.get("comparisons")
-    if not isinstance(comparisons, list) or not comparisons:
-        errors.append("'comparisons' must be a non-empty list")
+    if not isinstance(comparisons, list):
+        errors.append("'comparisons' must be a list")
     else:
         for comp in comparisons:
             if not isinstance(comp, dict):
