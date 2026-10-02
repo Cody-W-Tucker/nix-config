@@ -7,6 +7,7 @@
 
 let
   inherit (config.services.hermes-agent) workingDirectory;
+  workflowPackage = inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.workflowCli;
 in
 {
   imports = [
@@ -51,6 +52,7 @@ in
         libopus
         nix
         python3Minimal
+        workflowPackage
       ];
       environment = {
         API_SERVER_ENABLED = "true";

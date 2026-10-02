@@ -938,6 +938,7 @@
         "stylix": "stylix",
         "treehouse": "treehouse",
         "vpn-confinement": "vpn-confinement",
+        "workflow": "workflow",
         "zen-browser": "zen-browser"
       }
     },
@@ -1288,6 +1289,27 @@
         "owner": "Maroka-chan",
         "repo": "VPN-Confinement",
         "type": "github"
+      }
+    },
+    "workflow": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790960587,
+        "narHash": "sha256-yuC8FSiRO1RYaFRdJpwNk4xketWoFSVCgH41iB6RrgY=",
+        "ref": "main",
+        "rev": "0b66ade2cf4e2905c29bff480c782151be51aa7a",
+        "revCount": 4,
+        "type": "git",
+        "url": "https://github.com/Cody-W-Tucker/runtime.git"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "https://github.com/Cody-W-Tucker/runtime.git"
       }
     },
     "zen-browser": {
