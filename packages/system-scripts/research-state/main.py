@@ -3515,13 +3515,22 @@ def check_attempt_refs(
                         "contract hypothesis differs from the attempt "
                         "hypothesis: a changed hypothesis starts a new attempt"
                     )
+    prior_valid = False
     if prior is not None:
         if not isinstance(prior, dict):
             errors.append("--prior file is not a JSON object")
         else:
-            if prior.get("schema") != ATTEMPT_SCHEMA:
-                errors.append("--prior is not a research-attempt record")
+            prior_expect = {
+                "started": "started",
+                "result": "started",
+                "decided": "result",
+                "followed_up": "decided",
+            }.get(str(record.get("stage")))
+            prior_errors = validate_attempt(prior, expect_stage=prior_expect)
+            if prior_errors:
+                errors.append(f"--prior is not a valid prior attempt: {prior_errors[0]}")
             else:
+                prior_valid = True
                 if prior.get("attempt_id") != record.get("attempt_id"):
                     errors.append(
                         f"--prior attempt {prior.get('attempt_id')!r} is a "
@@ -3595,7 +3604,7 @@ def check_attempt_refs(
         parsed = [p for p in parsed if p is not None]
         return max(parsed) if parsed else None
 
-    if prior is not None and isinstance(prior, dict) and prior.get("schema") == ATTEMPT_SCHEMA:
+    if prior_valid:
         old, new = _latest_ts(prior), _latest_ts(record)
         if old is not None and new is not None and new < old:
             errors.append(

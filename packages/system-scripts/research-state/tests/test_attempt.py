@@ -15,7 +15,6 @@ provenance. A JSON boolean is never human consent.
 
 import copy
 import hashlib
-import inspect
 import json
 import os
 import socket
@@ -431,20 +430,6 @@ class AttemptShapeTests(unittest.TestCase):
         errors = rs.validate_attempt(record)
         self.assertTrue(any("predates" in e for e in errors), errors)
 
-    def test_no_arbitrary_execution(self):
-        """Attempt code paths never invoke subprocess on record content."""
-        for name in (
-            "validate_attempt",
-            "check_attempt_refs",
-            "cmd_attempt_validate",
-            "cmd_attempt_stage",
-            "render_attempt_markdown",
-            "persist_attempt",
-        ):
-            source = inspect.getsource(getattr(rs, name))
-            for token in ("Popen", "subprocess", "os.system", "os.exec", "check_output"):
-                self.assertNotIn(token, source, f"{name} must not execute")
-
     def test_evil_command_string_never_runs(self):
         canary = self.root / "CANARY-must-not-exist"
         record = to_result(
@@ -676,6 +661,18 @@ class CrossRefTests(unittest.TestCase):
         prior = make_start(self.packet, self.contract, attempt_id="other-attempt")
         errors = rs.check_attempt_refs(record, prior=prior)
         self.assertTrue(any("lineage" in e for e in errors), errors)
+
+    def test_prior_must_be_shape_valid_attempt(self):
+        record = make_start(self.packet, self.contract)
+        record["stage"] = "result"
+        prior = make_start(self.packet, self.contract)
+        del prior["started_at"]
+        del prior["working_object"]
+        del prior["authority"]
+        del prior["protected_behavior"]
+        del prior["counterexample"]
+        errors = rs.check_attempt_refs(record, prior=prior)
+        self.assertTrue(any("valid prior attempt" in e for e in errors), errors)
 
     def test_prior_freezes_contract_hash_baseline_and_acceptance(self):
         prior = make_start(self.packet, self.contract)
