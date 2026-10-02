@@ -1,7 +1,6 @@
 {
   config,
   inputs,
-  lib,
   pkgs,
   ...
 }:
@@ -10,7 +9,7 @@ let
   nixosConfigRoot = "/etc/nixos";
   artifacts = inputs.cognitive-assistant.lib.artifacts;
   inherit (artifacts) operational existential;
-  inherit (config.services.hermes-agent) hermesHome workingDirectory;
+  inherit (config.services.hermes-agent) hermesHome;
   inherit (artifacts.alignment) translationLayer;
   existentialProfileFile = pkgs.writeText "hermes-existential-human-profile.md" (
     builtins.readFile existential.humanProfile

@@ -180,6 +180,10 @@ in
           enabled = true;
           max_snapshots = 50;
         };
+        capabilities.file_modifier = {
+          enabled = true;
+          allowed_paths = [ "/etc/nixos/*" ];
+        };
       };
     };
   };
