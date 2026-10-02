@@ -1,0 +1,113 @@
+{
+  "acceptance": [
+    {
+      "check": {
+        "command": "research-state validate <fresh-packet.json>",
+        "kind": "executable"
+      },
+      "description": "A fresh packet collected from the live default NAS scope validates cleanly (shape/references).",
+      "id": "fresh-packet-validates"
+    },
+    {
+      "check": {
+        "command": "research-state contract-validate <this-contract.json> --packet <fresh-packet.json>",
+        "kind": "executable"
+      },
+      "description": "This draft's refs re-link against the fresh packet with no dangling source/observation IDs.",
+      "id": "refs-relink-clean"
+    },
+    {
+      "check": {
+        "kind": "human_review",
+        "review": "Operator confirms the joined intended→deployed→available rows actually answer whether the evidence can be joined, or records why not."
+      },
+      "description": "Operator judges whether the rendered join reads as a genuine intended/deployed/available comparison.",
+      "id": "join-reads-true"
+    }
+  ],
+  "authority": {
+    "reads": [
+      "research-state packet JSON/Markdown retained under the operator's XDG research-state dir",
+      "selected Thesis/Architecture note passages already cited in the packet"
+    ],
+    "targets": [
+      "${XDG_STATE_HOME:-$HOME/.local/state}/research-state (read-only)"
+    ],
+    "writes": []
+  },
+  "baseline_plan": "Capture the fresh packet ID, its checkout_vs_pin comparison status, the deployed system-generation target, and the hermes-agent availability observation BEFORE any joining, so the later read can be compared against the same acceptance conditions.",
+  "candidate_id": "join-readiness-probe",
+  "capability_claim": "unsupported",
+  "computer_evidence": [
+    {
+      "description": "Example snapshot: CA checkout HEAD equals the flake.lock cognitive-assistant rev (agree). Replay of the 2026-10-01 agreeing snapshot pattern, NOT a live claim.",
+      "observation_id": "git-ca"
+    },
+    {
+      "description": "Example snapshot: locked flake input rev matching the checkout (agree). Same replay caveat as above.",
+      "observation_id": "flake-input-cognitive-assistant"
+    },
+    {
+      "description": "Example snapshot: user Home Manager generation candidates absent at the checked paths, recorded as unknown deployment observations rather than proof HM is absent.",
+      "observation_id": "deployment-user-0"
+    }
+  ],
+  "contract_id": "example-discovery-join-001",
+  "cost_limits": {
+    "cost": "no spend; read-only joins of already-retained packets",
+    "time": "under 30 minutes of operator/Hermes review"
+  },
+  "counterexample": "A GOOD counterexample: the join renders cleanly (every row has intended, deployed, and available evidence) yet the operator finds it answers nothing they would act on — availability joined without usefulness. That kills the 'joinable therefore worthwhile' reading and keeps the result honest.",
+  "created_at": "2026-10-01T23:30:00Z",
+  "direction_refs": [
+    {
+      "description": "System loop: capture context, retrieve or research what is missing, execute, evaluate outcomes, reconcile successful patterns, feed improved knowledge back (Thesis line 32).",
+      "ref": "thesis-architecture:32 (20261001T230813Z snapshot, sha256 a48148…)"
+    },
+    {
+      "description": "Design bias: start with narrow, measurable, local-first capabilities, expand autonomy only where proven (Thesis line 34).",
+      "ref": "thesis-architecture:34 (20261001T230813Z snapshot, sha256 a48148…)"
+    },
+    {
+      "description": "Architectural requirements: modular, telemetry-rich, sandboxed, reversible by default; feedback loops and rollback are core (Thesis line 36).",
+      "ref": "thesis-architecture:36 (20261001T230813Z snapshot, sha256 a48148…)"
+    },
+    {
+      "description": "Automation boundary: automate only where the goal is clear, the environment observable, success verifiable; otherwise surface evidence for human judgment (Thesis line 38).",
+      "ref": "thesis-architecture:38 (20261001T230813Z snapshot, sha256 a48148…)"
+    }
+  ],
+  "experiment_type": "discovery",
+  "falsifying_evidence": "A fresh packet whose checkout_vs_pin comparison is unknown (missing CA checkout or lock), or whose Thesis excerpts fail to re-read, falsifies the premise that this join is currently performable — the result becomes insufficient_evidence, not a weaker join.",
+  "human_gate": {
+    "reason": "Draft example: needs a fresh live packet, ref re-link, and operator review of the meaning boundary before any contact beyond reading.",
+    "required": true
+  },
+  "hypothesis": "Recorded before results: the intended (Thesis direction), deployed (system generation), and available (service/outcome) evidence rows in a fresh packet can be joined into one readable comparison that shows whether the join itself is possible — without claiming any drift exists.",
+  "intended_capability": "Join intended→deployed→available evidence rows from a single research-state packet into one readable comparison.",
+  "mechanism": "Read-only: render the fresh packet to Markdown, align its checkout_vs_pin comparison, deployment observations, and named-service availability observations side by side, and record which cells are unknown vs evidenced. No commands run against live services; no configuration changes.",
+  "packet_id": "example-packet-relink-required",
+  "prerequisites": [
+    {
+      "description": "Fresh packet collected from the live default NAS scope (replaces this example snapshot).",
+      "id": "fresh-packet",
+      "status": "missing"
+    },
+    {
+      "description": "CA checkout HEAD and flake.lock cognitive-assistant rev both present so checkout_vs_pin yields agree/different rather than unknown.",
+      "id": "agreeing-checkout-pin-snapshot",
+      "status": "verified"
+    },
+    {
+      "description": "Whether the intended direction rows correspond to anything actually deployed: user generation paths were unknown in the snapshot, so deployed correspondence is still unknown.",
+      "id": "deployed-correspondence",
+      "status": "unknown"
+    }
+  ],
+  "protected_behavior": "Nix-first declarative layer: every trace carries human intent; no automatic mutation; sandbox plus explicit approval. The join must not propose, stage, or perform any configuration change.",
+  "reversal": "Nothing to reverse: the experiment only reads retained packets. Discard the rendered join if the operator judges it unhelpful; the packet itself is immutable history.",
+  "salience_id": "example-salience-join-001",
+  "schema": "research-contract/v1",
+  "status": "draft",
+  "uncertainty": "It is genuinely uncertain whether the three evidence layers share enough common keys (working object, revisions, generation targets) to join at all, and whether a successful join would be useful rather than merely available. This discovery resolves that uncertainty; it claims no existing drift and no supported capability."
+}

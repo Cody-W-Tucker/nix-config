@@ -18,6 +18,10 @@ let
       name = "tools/qmd/SKILL.md";
       path = ./research/qmd/SKILL.md;
     }
+    {
+      name = "research/research-state/SKILL.md";
+      path = ./research/research-state/SKILL.md;
+    }
   ];
 
   # Apply the llm-agents overlay to host pkgs so QMD is built with host pkgs
