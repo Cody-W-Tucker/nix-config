@@ -18,6 +18,7 @@ in
     ./upstream-bundled.nix
     ./business
     ./knowledge
+    ./workflow
   ];
 
   config = {
