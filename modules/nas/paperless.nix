@@ -1,4 +1,6 @@
 {
+  pkgs,
+  lib,
   mkNginxVhost,
   config,
   ...
@@ -16,6 +18,15 @@ in
     mediaDir = "/mnt/backup/documents";
     consumptionDirIsPublic = true;
     passwordFile = config.sops.secrets.paperless-password.path;
+    # WORKAROUND (2026-10-04): paperless-ngx 2.20.15 flaky test
+    # `test_error_skip_rule` fails during package build, so disable just that
+    # test locally.
+    # Upstream issue: https://github.com/paperless-ngx/paperless-ngx/issues/9921
+    # REVIEW-BY: 2027-01-04 — drop `package` once nixpkgs paperless-ngx is no
+    # longer 2.20.15 or the flaky test is fixed upstream.
+    package = pkgs.paperless-ngx.overrideAttrs (oldAttrs: {
+      disabledTests = oldAttrs.disabledTests ++ [ "test_error_skip_rule" ];
+    });
     settings = {
       PAPERLESS_ADMIN_USER = "codyt";
       PAPERLESS_TIKA_ENABLED = "true";
@@ -50,6 +61,10 @@ in
       add_header Referrer-Policy "strict-origin-when-cross-origin";
     '';
   };
+
+  warnings = lib.optional
+    (config.services.paperless.enable && pkgs.paperless-ngx.version != "2.20.15")
+    "paperless-ngx is now ${pkgs.paperless-ngx.version}; remove the test_error_skip_rule disabledTests workaround if the flaky test is fixed.";
 
   nas.backups.sqlite = [
     {
