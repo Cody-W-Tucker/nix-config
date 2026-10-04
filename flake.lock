@@ -1300,16 +1300,15 @@
       "locked": {
         "lastModified": 1791042270,
         "narHash": "sha256-8IeMwZDzoRKDcG6azDKdFUuDyCORf36fDy5jx5gqEZ0=",
-        "ref": "main",
+        "owner": "Cody-W-Tucker",
+        "repo": "runtime",
         "rev": "baa3eb2d9539dae40541fb932cd6bc2a50d78d5c",
-        "revCount": 7,
-        "type": "git",
-        "url": "https://github.com/Cody-W-Tucker/runtime.git"
+        "type": "github"
       },
       "original": {
-        "ref": "main",
-        "type": "git",
-        "url": "https://github.com/Cody-W-Tucker/runtime.git"
+        "owner": "Cody-W-Tucker",
+        "repo": "runtime",
+        "type": "github"
       }
     },
     "zen-browser": {

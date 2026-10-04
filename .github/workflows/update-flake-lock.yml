@@ -36,7 +36,11 @@ jobs:
         if: env.HAS_NIXOS_SECRETS_TOKEN != 'true'
         run: |
           printf '%s\n' 'Skipping private flake check because NIX_SECRETS_READ is not available for this PR run.'
-      - name: Configure GitHub access for private flakes
+      - name: Configure GitHub access for private flakes (nixos-secrets + runtime/workflow)
+        # Single github.com host token covers both private flake inputs:
+        # Cody-W-Tucker/nixos-secrets and Cody-W-Tucker/runtime (input `workflow`).
+        # NIX_SECRETS_READ must have read access to both repos. Token is written
+        # to nix.conf only, never echoed to logs.
         if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
         run: |
           mkdir -p ~/.config/nix
@@ -61,9 +65,11 @@ jobs:
       - name: Require token for private flake updates
         if: env.HAS_NIXOS_SECRETS_TOKEN != 'true'
         run: |
-          printf '%s\n' 'Set the NIX_SECRETS_READ secret with read access to Cody-W-Tucker/nixos-secrets.' >&2
+          printf '%s\n' 'Set the NIX_SECRETS_READ secret with read access to Cody-W-Tucker/nixos-secrets and Cody-W-Tucker/runtime (input `workflow`).' >&2
           exit 1
-      - name: Configure GitHub access for private flakes
+      - name: Configure GitHub access for private flakes (nixos-secrets + runtime/workflow)
+        # Single github.com host token covers both private flake inputs (see above).
+        # Token is written to nix.conf only, never echoed to logs.
         if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
         run: |
           mkdir -p ~/.config/nix

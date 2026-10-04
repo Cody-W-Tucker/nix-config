@@ -87,9 +87,8 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     workflow = {
-      # Published workflow core spine. Git fetch uses the local credential
-      # helper for this private repository; the lock pins the exact revision.
-      url = "git+https://github.com/Cody-W-Tucker/runtime.git?ref=main";
+      # Context and state management for a personalized cognitive assistant.
+      url = "github:Cody-W-Tucker/runtime";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hermes-agent = {
