@@ -28,6 +28,12 @@ let
       profile_dir="$hermes_home/profiles/${name}"
       mkdir -p "$profile_dir/memories" "$profile_dir/sessions" "$profile_dir/skills" "$profile_dir/skins" "$profile_dir/logs" "$profile_dir/plans" "$profile_dir/workspace" "$profile_dir/cron" "$profile_dir/home"
 
+      # Upstream bundled catalog opt-out: declarative marker, retained never deleted, user-owned 0600.
+      if [ ! -e "$profile_dir/.no-bundled-skills" ]; then
+        : > "$profile_dir/.no-bundled-skills"
+      fi
+      chmod 0600 "$profile_dir/.no-bundled-skills"
+
       # Parked credentials file: placeholder only when absent, never overwrite.
       if [ ! -e "$profile_dir/.env" ]; then
         printf '%s' ${lib.escapeShellArg placeholderEnv} > "$profile_dir/.env"

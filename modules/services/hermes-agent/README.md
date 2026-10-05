@@ -80,20 +80,24 @@ changed document or setting applies on the next process restart
 
 Skills are Markdown-based capability packs copied into `${hermesHome}/skills` by Home Manager activation scripts (`home.activation.*`, running as the user).
 
-Two sync modes are supported:
+Upstream's bundled skill catalog is opted out with `.no-bundled-skills` markers in the default Hermes home and each profile. Home Manager creates these markers when absent and sets their mode to `0600`; it does not add upstream-bundled skills to `codyos.hermes-agent.skills.skillPacks`.
+
+Declared skill packs are seeded by Home Manager activation:
 
 | Mode | Ownership | Use it for |
 | --- | --- | --- |
-| `managed` | Nix store is the source of truth; the runtime copy is replaced on activation. | Core tools, bundled skills, stable CLI integrations. |
+| `managed` | Nix store is the source of truth; the runtime copy is replaced on activation. | Stable, Nix-owned skill packs. |
 | `mutable` | Runtime copy is created only when missing or malformed. | Agent-local learning and user-pattern skills. |
 
 The seeding script also removes malformed shadow directories that would block proper skill loading.
 
 Current skill groups include:
 
-- Upstream bundled skills such as GitHub workflow/review, planning, arXiv, YouTube content, xurl, and spike.
+- Cognitive-assistant user-pattern skills.
 - Business skills for CRM and Google Workspace; Gmail triage is patched to default to `in:inbox`.
 - Knowledge skills for Obsidian Bases, Obsidian CLI, Obsidian Markdown, and `qmd` research workflows.
+
+Existing local skills remain until a separate evidence-based skill-catalog review determines an explicit retained default set. Declared packs remain seeded.
 
 ## Toolsets
 

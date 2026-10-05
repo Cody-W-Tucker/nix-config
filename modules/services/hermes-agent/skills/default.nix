@@ -15,7 +15,7 @@ in
   imports = [
     ./module.nix
     ./seeded-skills.nix
-    ./upstream-bundled.nix
+    ./bundled-skill-policy.nix
     ./business
     ./knowledge
     ./workflow
