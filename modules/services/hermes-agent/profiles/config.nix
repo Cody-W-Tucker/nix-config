@@ -5,6 +5,7 @@
   lib,
   pkgs,
   profileDefinitions,
+  hermesMcpRegistry,
   ...
 }:
 let
@@ -25,6 +26,25 @@ let
     }) config.codyos.hermes-agent.skills.skillPacks
   );
 
+  # Profile configs use an independent MCP registry rather than the default
+  # profile's intentionally small services.hermes-agent.mcpServers set.
+  normalizeMcp =
+    srv:
+    {
+      command = null;
+      args = [ ];
+      env = { };
+      url = null;
+      headers = { };
+      auth = null;
+      enabled = true;
+      timeout = null;
+      connect_timeout = null;
+      tools = null;
+      sampling = null;
+    }
+    // srv;
+
   # Nix overwrites SOUL.md every activation.
   mkSoul =
     overlay:
@@ -44,9 +64,9 @@ let
     # Inherit backend selection only; credentials remain in environment files.
     web = hermesDefaults.web;
     mcp_servers = common.mcpServersToConfig (
-      lib.filterAttrs (
-        serverName: _: lib.elem serverName profile.mcpAllow
-      ) config.services.hermes-agent.mcpServers
+      lib.mapAttrs (_: normalizeMcp) (
+        lib.filterAttrs (serverName: _: lib.elem serverName profile.mcpAllow) hermesMcpRegistry
+      )
     );
     platform_toolsets = profile.platformToolsets;
     compression = {

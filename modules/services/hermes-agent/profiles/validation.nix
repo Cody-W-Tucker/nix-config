@@ -7,6 +7,7 @@
   skillPacksByName,
   profileSettings,
   mkProfileSettings,
+  hermesMcpRegistry,
   ...
 }:
 let
@@ -25,10 +26,10 @@ in
       message = "hermes-agent/profiles: exactly tmv-sales, builder, research must be defined.";
     }
     {
-      assertion = lib.all (name: lib.hasAttr name config.services.hermes-agent.mcpServers) (
+      assertion = lib.all (name: lib.hasAttr name hermesMcpRegistry) (
         lib.concatMap (profile: profile.mcpAllow) (lib.attrValues profiles)
       );
-      message = "hermes-agent/profiles: every mcpAllow entry must name a server from services.hermes-agent.mcpServers (mcp/default.nix).";
+      message = "hermes-agent/profiles: every mcpAllow entry must name a server from the Hermes MCP registry (mcp/default.nix).";
     }
     {
       assertion = profiles.tmv-sales.mcpAllow == [ "karakeep" ];

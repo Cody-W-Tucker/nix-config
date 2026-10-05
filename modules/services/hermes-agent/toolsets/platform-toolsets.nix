@@ -1,13 +1,12 @@
 let
-  apiToolsets = [
+  # Default is the general operator, not the universal control plane.
+  # Scheduled runs and outgoing messaging remain deliberate profile-specific work.
+  defaultToolsets = [
     "web"
     "search"
     "browser"
     "skills"
-    "cronjob"
-    "messaging"
     "file"
-    "todo"
     "memory"
     "session_search"
     "terminal"
@@ -15,28 +14,16 @@ let
 in
 {
   config.services.hermes-agent.settings = {
-    # Hermes gateway/CLI resolves active tools from platform_toolsets, not the top-level toolsets key. Keep the high-trust interfaces broad and the ambient/background ones narrow.
+    # Gateway/CLI resolves active tools from platform_toolsets. Keep all
+    # interactive default surfaces on the same bounded, general-purpose set.
     platform_toolsets = {
-      api_server = apiToolsets;
-      telegram = apiToolsets;
+      api_server = defaultToolsets;
+      telegram = defaultToolsets;
+      cli = defaultToolsets;
+      discord = defaultToolsets;
 
-      # desktop and cli tool under the user that launches it.
-      cli = "all";
-
-      # runs via gateway under hermes user.
-      discord = [
-        "web"
-        "search"
-        "browser"
-        "tts"
-        "vision"
-        "skills"
-        "file"
-        "memory"
-        "terminal"
-      ];
-
-      # runs cli under hermes user
+      # Execution surface for already-created scheduled work; cronjob management
+      # is intentionally not exposed in the ordinary default conversation.
       cron = [
         "web"
         "search"
