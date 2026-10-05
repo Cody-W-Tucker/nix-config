@@ -62,9 +62,9 @@ in
     '';
   };
 
-  warnings = lib.optional
-    (config.services.paperless.enable && pkgs.paperless-ngx.version != "2.20.15")
-    "paperless-ngx is now ${pkgs.paperless-ngx.version}; remove the test_error_skip_rule disabledTests workaround if the flaky test is fixed.";
+  warnings =
+    lib.optional (config.services.paperless.enable && pkgs.paperless-ngx.version != "2.20.15")
+      "paperless-ngx is now ${pkgs.paperless-ngx.version}; remove the test_error_skip_rule disabledTests workaround if the flaky test is fixed.";
 
   nas.backups.sqlite = [
     {
