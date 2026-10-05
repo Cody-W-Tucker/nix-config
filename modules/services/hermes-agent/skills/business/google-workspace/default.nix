@@ -2,18 +2,15 @@
   inputs,
   lib,
   pkgs,
+  defaultRetainedGwsSkillNames,
   ...
 }:
 
 let
-  googleWorkspaceSkillsRoot = "${inputs.googleworkspace-cli}/skills";
-  googleWorkspaceSkill = name: "${googleWorkspaceSkillsRoot}/${name}/SKILL.md";
+  googleWorkspaceSkillsRoot = inputs.googleworkspace-cli + "/skills";
+  googleWorkspaceSkill = name: googleWorkspaceSkillsRoot + "/${name}/SKILL.md";
 
-  gwsSkillNames = lib.pipe (builtins.readDir googleWorkspaceSkillsRoot) [
-    (lib.filterAttrs (name: type: type == "directory" && lib.hasPrefix "gws-" name))
-    lib.attrNames
-    (lib.sort (a: b: a < b))
-  ];
+  gwsSkillNames = defaultRetainedGwsSkillNames;
 
   gmailTriageSkill = pkgs.writeText "gws-gmail-triage-SKILL.md" (
     builtins.replaceStrings
@@ -58,11 +55,19 @@ let
   googleWorkspaceSkills = pkgs.linkFarm "hermes-agent-google-workspace-skills" (
     map (name: {
       name = "tools/${name}";
-      path = lib.attrByPath [ name ] "${googleWorkspaceSkillsRoot}/${name}" customSkillDirs;
+      path = lib.attrByPath [ name ] (googleWorkspaceSkillsRoot + "/${name}") customSkillDirs;
     }) gwsSkillNames
   );
 in
 {
+  _module.args.allGwsSkillNames = lib.pipe (builtins.readDir googleWorkspaceSkillsRoot) [
+    (lib.filterAttrs (name: type: type == "directory" && lib.hasPrefix "gws-" name))
+    lib.attrNames
+    (lib.sort (a: b: a < b))
+  ];
+  _module.args.filteredGwsSkillNames = gwsSkillNames;
+  _module.args.filteredGwsRoot = googleWorkspaceSkills;
+
   codyos.hermes-agent.skills.skillPacks = [
     {
       name = "google-workspace-tools";

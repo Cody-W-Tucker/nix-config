@@ -1,37 +1,16 @@
+{ ... }:
 {
-  inputs,
-  lib,
-  ...
-}:
-
-let
-  cognitiveAssistantSkills = inputs.cognitive-assistant.lib.artifacts.skills;
-
-  cognitiveAssistantSkillList = lib.concatMapStringsSep "\n" (
-    name: "- ${name}"
-  ) cognitiveAssistantSkills.names;
-in
-{
+  # Composition only: catalog plus filtered packs, activation, and validation siblings.
   imports = [
     ./module.nix
+    ./default-exclusions.nix
+    ./cognitive-assistant.nix
     ./seeded-skills.nix
     ./bundled-skill-policy.nix
+    ./default-cleanup.nix
+    ./default-validation.nix
     ./business
     ./knowledge
     ./workflow
   ];
-
-  config = {
-    codyos.hermes-agent.skills = {
-      skillPacks = lib.mkAfter [
-        {
-          name = "cognitive-assistant";
-          root = cognitiveAssistantSkills.categorized;
-          mode = "mutable";
-        }
-      ];
-
-      userPatternSkillList = cognitiveAssistantSkillList;
-    };
-  };
 }
