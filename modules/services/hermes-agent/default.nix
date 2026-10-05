@@ -96,17 +96,26 @@ in
             provider = "opencode-go";
             model = "hy3";
           };
+          # Metadata and archival work stay local. Keep approval, web extraction,
+          # and compression on hy3: they carry authorization, source-quality, or
+          # long-session continuity risk respectively.
           curator = {
-            provider = "opencode-go";
-            model = "hy3";
-            extra_body = {
-              thinking.type = "enabled";
-              reasoning_effort = "medium";
-            };
+            provider = "custom";
+            model = "qwen-3.5-9b";
+            base_url = "http://127.0.0.1:8081/v1";
+            api_key = "local-only";
           };
           title_generation = {
-            provider = "opencode-go";
-            model = "hy3";
+            provider = "custom";
+            model = "qwen-3.5-4b";
+            base_url = "http://127.0.0.1:8081/v1";
+            api_key = "local-only";
+          };
+          profile_describer = {
+            provider = "custom";
+            model = "qwen-3.5-4b";
+            base_url = "http://127.0.0.1:8081/v1";
+            api_key = "local-only";
           };
         };
         display.platforms = {
