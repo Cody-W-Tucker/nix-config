@@ -350,15 +350,21 @@ in
     # b11361 (e.g. 9190) must not trigger this.
     # Upstream: https://github.com/ggml-org/llama.cpp/pull/29818
     # REVIEW-BY: 2026-12-05
-    warnings = lib.optional
-      (
-        builtins.elem "laya" cfg.enabledModels
-        && (
-          (builtins.match "^[0-9]+$" cfg.serverPackage.version != null && lib.versionAtLeast cfg.serverPackage.version "11361")
-          || (lib.hasPrefix "0." cfg.serverPackage.version && lib.versionAtLeast cfg.serverPackage.version "0.6.0")
+    warnings =
+      lib.optional
+        (
+          builtins.elem "laya" cfg.enabledModels
+          && (
+            (
+              builtins.match "^[0-9]+$" cfg.serverPackage.version != null
+              && lib.versionAtLeast cfg.serverPackage.version "11361"
+            )
+            || (
+              lib.hasPrefix "0." cfg.serverPackage.version && lib.versionAtLeast cfg.serverPackage.version "0.6.0"
+            )
+          )
         )
-      )
-      "llama.cpp serverPackage is now ${cfg.serverPackage.version}; native SystemOne support is established — remove the now-obsolete nativeSystemOneSupported version gate in hosts/nas/models.nix.";
+        "llama.cpp serverPackage is now ${cfg.serverPackage.version}; native SystemOne support is established — remove the now-obsolete nativeSystemOneSupported version gate in hosts/nas/models.nix.";
 
     assertions = [
       {

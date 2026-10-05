@@ -72,6 +72,28 @@ let
     } $out/versions.json
   '';
 
+  obsidianGitPlugin = pkgs.runCommand "obsidian-git-2.41.1" { } ''
+    mkdir -p $out
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.41.1/main.js";
+        hash = "sha256-KKGK/KsdLxUqDTyJr/OOKpetC+GuqvmWMGEyM7vsbBs=";
+      }
+    } $out/main.js
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.41.1/manifest.json";
+        hash = "sha256-XU0PQRUYY2wdKkgxQlqONIe5JbW9QTvgyiLm3jilk/c=";
+      }
+    } $out/manifest.json
+    cp ${
+      pkgs.fetchurl {
+        url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.41.1/styles.css";
+        hash = "sha256-v6j71F/kn/NA/bGWuEut1jGu3l1vlnQPM26nec1EEAU=";
+      }
+    } $out/styles.css
+  '';
+
   sharedCommunityPlugins = [
     {
       pkg = obsidianLinterPlugin;
@@ -149,6 +171,10 @@ in
             {
               pkg = obsidianRolloverDailyTodosPlugin;
               settings = builtins.fromJSON (builtins.readFile ./plugin-data/rollover-daily-todos-data.json);
+            }
+            {
+              pkg = obsidianGitPlugin;
+              settings = builtins.fromJSON (builtins.readFile ./plugin-data/obsidian-git-data.json);
             }
           ];
 

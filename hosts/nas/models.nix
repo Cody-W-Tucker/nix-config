@@ -153,7 +153,8 @@ in
       "whisper-diarization"
       "kokoro-82m"
       "s1-mini"
-    ] ++ lib.optionals nativeSystemOneSupported [ "laya" ];
+    ]
+    ++ lib.optionals nativeSystemOneSupported [ "laya" ];
     # laya stays on-demand (not preloaded): existing policy only keeps the
     # whisper/s1-mini audio path warm; nothing here calls for laya at boot.
     preloadModels = [
@@ -183,7 +184,8 @@ in
       "qwen-3.6-35b-a3b" = {
         file = toString qwen36Base;
       };
-    } // lib.optionalAttrs nativeSystemOneSupported {
+    }
+    // lib.optionalAttrs nativeSystemOneSupported {
       "laya" = {
         file = toString laya;
       };
