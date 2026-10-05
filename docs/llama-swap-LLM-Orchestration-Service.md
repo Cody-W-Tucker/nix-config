@@ -28,8 +28,23 @@ The model catalog is centralized in `modules/services/llama-swap/models.nix`. Th
 | **Embedding**  | `qwen3-embedding-0.6b` | `--embeddings`, `--pooling last` | Vector generation for RAG (Qdrant).    |
 | **Vision/OCR** | `glm-ocr-f16`          | `mmprojFile`                     | Extracting text from images/documents. |
 | **TTS**        | `kokoro-82m`           | `ttl = 0`                        | Text-to-Speech generation.             |
+| **SystemOne**  | `laya`                 | passthrough only                 | Speech via `POST /upstream/laya/v1/systemone`. |
 
-Sources: [modules/services/llama-swap/models.nix15-66](../modules/services/llama-swap/models.nix#L15-L66)
+Sources: [modules/services/llama-swap/models.nix15-191](../modules/services/llama-swap/models.nix#L15-L191)
+
+### Laya SystemOne (passthrough, not chat completions)
+
+Laya becomes available after native `llama.cpp >= b11361` (numeric build,
+verified first b-tag containing upstream SystemOne support via
+[ggml-org/llama.cpp#29818](https://github.com/ggml-org/llama.cpp/pull/29818),
+which registers `/v1/systemone`) or semantic `>= 0.6.0`.
+Until the locked nixpkgs `llama-cpp` reaches b11361, the NAS config keeps Laya
+disabled (no fetch artifact, no enabled model, no override) via a temporary
+`nativeSystemOneSupported` gate in `hosts/nas/models.nix`.
+
+When enabled, clients must use `POST /upstream/laya/v1/systemone` (llama-swap v249
+passthrough selects Laya and forwards `/v1/systemone` unchanged). This
+differs from chat completions: do not send it OpenAI chat payloads.
 
 ### Multimodal and Projector Support
 

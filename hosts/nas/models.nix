@@ -7,16 +7,25 @@
 }:
 
 let
-  unstablePkgs = import inputs.nixpkgs-unstable {
-    system = "x86_64-linux";
-    config = config.nixpkgs.config;
-  };
+  # Native nixpkgs llama.cpp CUDA build used as the llama-swap serverPackage.
+  llamaCppCuda = pkgs.llama-cpp.override { cudaSupport = true; };
 
-  # llama.cpp selects Blackwell/NVFP4 architectures upstream; no local
-  # CMAKE_CUDA_ARCHITECTURES override is needed here.
-  unstableLlamaCpp = unstablePkgs.llama-cpp.override {
-    cudaSupport = true;
-  };
+  # WORKAROUND: gate Laya/SystemOne on verified native llama.cpp threshold b11361.
+  # Rationale: no upstream llama.cpp build now; native cached nixpkgs CUDA
+  # build gains SystemOne at b11361 (first b-tag containing PR #29818 merge
+  # a4cb4c61fd9d9c2066c7c1747821d3d65b8943bd, which registers /v1/systemone
+  # in tools/server/server.cpp), with semantic 0.6.0 as the equivalent
+  # semantic release. Numeric versions below b11361 (e.g. 9190) stay disabled.
+  # Upstream: https://github.com/ggml-org/llama.cpp/pull/29818
+  # REVIEW-BY: 2026-12-05
+  # Once locked nixpkgs llama-cpp at/above the verified threshold is
+  # established, remove this conditional and enable Laya unconditionally.
+  nativeSystemOneSupported =
+    let
+      version = llamaCppCuda.version;
+    in
+    (builtins.match "^[0-9]+$" version != null && lib.versionAtLeast version "11361")
+    || (lib.hasPrefix "0." version && lib.versionAtLeast version "0.6.0");
 
   # Qwen3 embedding GGUF (karakeep/miniflux shared catalog). Pinned to an
   # immutable release commit; content hash guards byte-identity.
@@ -70,6 +79,19 @@ let
     sha256 = "3b41ebe2502cbd03e811d5d16b022f5ab551eda58d62597d152f89535003c634";
   };
 
+  # Laya Q8_0 GGUF (SystemOne speech endpoint). Pinned to an immutable
+  # commit; content hash guards byte-identity (449397600 bytes).
+  # Fetched only when the native serverPackage supports SystemOne; below
+  # b11361 (e.g. 9190) this stays null so no fetch artifact activates.
+  laya =
+    if nativeSystemOneSupported then
+      pkgs.fetchurl {
+        url = "https://huggingface.co/ggml-org/Laya-GGUF/resolve/22265007700297ba9e128297e82540cf28c5d7d4/Laya-Q8_0.gguf";
+        sha256 = "c06528c5746d3bb8baa72a27938be95abbfd0b226f8471e8a9e365ed0bb066d2";
+      }
+    else
+      null;
+
   # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
   # The bundled FindCUDA parser is too stale to accept CUDA_ARCH_LIST=12.0 for Blackwell,
   # so we strip any existing CUDA_ARCH_LIST flags and inject sm_120 directly via postPatch.
@@ -107,7 +129,7 @@ in
   services.llama-swap = {
     enable = true;
     acceleration = "cuda";
-    serverPackage = unstableLlamaCpp;
+    serverPackage = llamaCppCuda;
     ctranslate2Cpp = ctranslate2CppBlackwell;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     port = 8081;
@@ -131,7 +153,9 @@ in
       "whisper-diarization"
       "kokoro-82m"
       "s1-mini"
-    ];
+    ] ++ lib.optionals nativeSystemOneSupported [ "laya" ];
+    # laya stays on-demand (not preloaded): existing policy only keeps the
+    # whisper/s1-mini audio path warm; nothing here calls for laya at boot.
     preloadModels = [
       "whisper-medium"
       "s1-mini"
@@ -158,6 +182,10 @@ in
       };
       "qwen-3.6-35b-a3b" = {
         file = toString qwen36Base;
+      };
+    } // lib.optionalAttrs nativeSystemOneSupported {
+      "laya" = {
+        file = toString laya;
       };
     };
     # llama-swap loading policy (see llama-swap groups semantics:
