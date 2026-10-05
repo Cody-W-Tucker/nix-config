@@ -12,6 +12,7 @@ Hermes is the local AI agent service for CodyOS. This directory owns the impleme
 | `mcp/default.nix` | MCP server registration, currently including Karakeep. |
 | `documents/default.nix` | SOUL, human profiles, memory spec, and task spec provisioning. |
 | `skills/` | Declarative seeded skill packs and business/knowledge skills. |
+| `profiles/` | Parked named profiles (`tmv-sales`, `builder`, `research`) under `${hermesHome}/profiles/<name>`. |
 | `toolsets/` | Platform toolset access by interface and web-search backend settings. |
 | `AGENTS.md` | Agent-facing implementation guidance and failure modes. |
 
@@ -96,6 +97,29 @@ Current skill groups include:
 
 ## Toolsets
 
-Toolsets define platform capability access by interface. The CLI has full trust. API, Discord, Telegram, and cron get narrower sets appropriate to their ambient or automated context.
+Toolsets define platform capability access by interface. The primary CLI has full trust; named profiles declare their own bounded CLI/API/cron sets appropriate to their role and automated context.
 
 Web search is configured through `toolsets/web-search.nix`, currently using xAI for search and Firecrawl for extraction/crawling.
+
+## Named profiles (parked)
+
+`profiles/` provisions exactly three parked profiles under
+`${hermesHome}/profiles/<name>` via `home.activation.hermesAgentProfiles`
+(after upstream `hermesAgentSetup`). No messaging adapters or credentials.
+
+| Profile | MCP (subset of `mcp/default.nix`) | Compression | Declared skills |
+| --- | --- | --- | --- |
+| `tmv-sales` | `karakeep` only; excludes nixos, actualBudget, mealie, stripe, code-review-graph | threshold 0.70, `micro_compact=false` | CRM/operator CA set plus declarative `crm-tools` and `google-workspace-tools` packs (only profile with business packs) |
+| `builder` | `nixos`, `code-review-graph`; no sales/finance/recipe | threshold 0.70, `micro_compact=false` | technical Nix/code set |
+| `research` | `karakeep` only (read-only, no mutation MCP) | threshold 0.65, `micro_compact=false` | web/evidence set |
+
+Nix owns `config.yaml` (with a build-time `_config_version`
+read from the Hermes package's `DEFAULT_CONFIG`, never static),
+`SOUL.md` (shared CA core plus a concise overlay), and `profile.yaml`
+(description metadata): overwritten every activation. Memories,
+curated CA-skill copies, and `tmv-sales` business-pack skills seeded
+from Nix store paths are mutable-preserving (seeded only when missing);
+a missing declared skill fails activation deterministically.
+
+Named configs inherit the root non-secret web backend selection (xAI search and
+Firecrawl extraction/crawling); credentials remain in environment files.

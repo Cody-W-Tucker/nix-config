@@ -18,6 +18,7 @@ in
     ./documents
     ./toolsets
     ./skills
+    ./profiles
     ./dashboard
   ];
 
@@ -176,7 +177,8 @@ in
         };
         compression = {
           enabled = true;
-          threshold = 0.85;
+          threshold = 0.70;
+          micro_compact = false;
         };
         checkpoints = {
           enabled = true;
