@@ -135,6 +135,8 @@ in
           "skills"
           "memory"
           "session_search"
+          "terminal"
+          "filesystem"
         ];
         cli = [
           "web"
@@ -142,6 +144,8 @@ in
           "skills"
           "memory"
           "session_search"
+          "terminal"
+          "filesystem"
         ];
         cron = [
           "web"
@@ -149,6 +153,8 @@ in
           "skills"
           "memory"
           "session_search"
+          "terminal"
+          "filesystem"
         ];
       };
       overlay = ''
