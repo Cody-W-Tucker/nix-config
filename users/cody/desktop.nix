@@ -77,6 +77,7 @@
     vesktop # Discord client
     kdePackages.kpeople # Contact integration for KDE Connect SMS
     playerctl # MPRIS cli; also provides playerctld D-Bus activation
+    tuxedo # TUI for tasks
   ];
 
   home.sessionVariables = {
