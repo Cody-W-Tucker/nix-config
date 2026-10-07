@@ -27,6 +27,7 @@
     usbutils # For listing USB devices
     udiskie # For mounting USB devices
     seahorse # GNOME keyring manager
+    gcr_3 # GNOME Keyring unlock prompt provider
   ];
 
   networking.firewall = {

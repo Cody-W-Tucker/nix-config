@@ -13,9 +13,10 @@ in
   };
 
   security.pam.services = {
-    # Enable PAM support for Hyprlock so it unlock the screen correctly
-    hyprlock = { };
+    # Let the first screen unlock also unlock the Login keyring after autologin.
+    hyprlock.enableGnomeKeyring = true;
     # Enable a keyring service for storing secrets
+    greetd.enableGnomeKeyring = true;
     login.enableGnomeKeyring = true;
   };
 
