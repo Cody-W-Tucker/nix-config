@@ -62,6 +62,23 @@
     image = ../../wallpapers/galaxy-waves.jpg;
   };
 
+  home.packages = with pkgs; [
+    inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop
+    # Agent memory loop: backpass bundles `acpx` and `lavish-axi` as private
+    # runtime dependencies on its own wrapper PATH.
+    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.backpass
+    libnotify # Notification library
+    nautilus # File manager
+    nixd # Nix daemon for development
+    gcalcli # Google Calendar CLI tool
+    feishin # Desktop app music player
+    wttrbar # Weather bar for Waybar
+    vesktop # Discord client
+    kdePackages.kpeople # Contact integration for KDE Connect SMS
+    playerctl # MPRIS cli; also provides playerctld D-Bus activation
+  ];
+
   home.sessionVariables = {
     # ---------------------------
     # HDR Passthrough Support

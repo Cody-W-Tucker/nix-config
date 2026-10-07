@@ -4,9 +4,6 @@
   ...
 }:
 
-let
-  backpass = pkgs.callPackage ../../../packages/backpass { };
-in
 {
   imports = [
     inputs.zen-browser.homeModules.beta
@@ -44,42 +41,6 @@ in
       name = "Adwaita";
     };
   };
-
-  home.packages = with pkgs; [
-    inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hermes-desktop
-    # Agent memory loop: backpass bundles `acpx` and `lavish-axi` as private
-    # runtime dependencies on its own wrapper PATH.
-    backpass
-    grim # Screenshot utility
-    slurp # Selection tool for screenshots
-    wl-clipboard # Clipboard utility for Wayland
-    tesseract4 # OCR utility
-    (pkgs.writeScriptBin "screenshot-ocr" ''
-      #!/bin/sh
-      imgname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S).png"
-      txtname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S)"
-      txtfname=$txtname.txt
-      grim -g "$(slurp)" $imgname;
-      tesseract $imgname $txtname;
-      wl-copy -n < $txtfname
-    '')
-    hyprpicker # Color picker for Hyprland
-    libnotify # Notification library
-    todoist # cli client
-    nautilus # File manager
-    nixd # Nix daemon for development
-    baobab # Gnome disk usage app
-    gcalcli # Google Calendar CLI tool
-    feishin # Desktop app music player
-    wttrbar # Weather bar for Waybar
-    vesktop # Discord client
-    kdePackages.kpeople # Contact integration for KDE Connect SMS
-    playerctl # MPRIS cli; also provides playerctld D-Bus activation
-    twitch-tui # Read chats from terminal
-    mousam # Weather CLI tool
-    witr # CLI tool that shows why processes are running
-  ];
 
   services = {
     tailscale-systray.enable = true;

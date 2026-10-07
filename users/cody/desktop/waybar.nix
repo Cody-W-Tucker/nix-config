@@ -211,7 +211,7 @@ in
           interval = 3600;
           exec = ''wttrbar --date-format "%m/%d" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions'';
           return-type = "json";
-          on-click = "mousam";
+          on-click = "${pkgs.lib.getExe pkgs.mousam}";
         };
         "custom/notification" = {
           tooltip = false;

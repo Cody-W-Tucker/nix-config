@@ -2,6 +2,7 @@
   config,
   lib,
   hardwareConfig,
+  pkgs,
   ...
 }:
 
@@ -53,6 +54,36 @@ let
     }
   ];
 
+  screenshotAction = pkgs.writeShellApplication {
+    name = "screenshot-to-clipboard";
+    runtimeInputs = [
+      pkgs.grim
+      pkgs.slurp
+      pkgs.wl-clipboard
+    ];
+    text = ''
+      grim -g "$(slurp)" - | wl-copy
+    '';
+  };
+
+  screenshotOcrAction = pkgs.writeShellApplication {
+    name = "screenshot-ocr";
+    runtimeInputs = [
+      pkgs.grim
+      pkgs.slurp
+      pkgs.wl-clipboard
+      pkgs.tesseract4
+    ];
+    text = ''
+      imgname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S).png"
+      txtname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S)"
+      txtfname="$txtname.txt"
+      grim -g "$(slurp)" "$imgname";
+      tesseract "$imgname" "$txtname";
+      wl-copy -n < "$txtfname"
+    '';
+  };
+
   binds = [
     # Move/resize windows with mainMod + LMB/RMB and dragging
     (mouseBind "${mainMod} + mouse:272" (lua "hl.dsp.window.drag()"))
@@ -73,11 +104,11 @@ let
     (execBind "${mainMod} + BackSpace" "rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n \"{result}\" | wl-copy'")
 
     # Screenshots
-    (execBind "${mainMod} + S" "screenshot-ocr")
-    (execBind "${mainMod} + SHIFT + S" ''grim -g "$(slurp)" - | wl-copy'')
+    (execBind "${mainMod} + S" "${lib.getExe screenshotOcrAction}")
+    (execBind "${mainMod} + SHIFT + S" "${lib.getExe screenshotAction}")
 
     # Color picker
-    (execBind "${mainMod} + mouse:274" "hyprpicker -a")
+    (execBind "${mainMod} + mouse:274" "${pkgs.lib.getExe pkgs.hyprpicker} -a")
 
     # Window management
     (actionBind "${mainMod} + W" (lua "hl.dsp.window.close()"))
