@@ -24,6 +24,7 @@
     ./plugins/treesitter.nix
     ./plugins/startup.nix
     ./plugins/ts-autotag.nix
+    ./plugins/img-clip.nix
   ];
 
   programs.nixvim = {
@@ -95,6 +96,7 @@
       direnv.enable = true;
       trouble.enable = true;
       zig.enable = true;
+      image.enable = true;
     };
     # Set the leader key to <Space>
     globals.mapleader = " ";
