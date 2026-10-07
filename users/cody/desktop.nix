@@ -80,6 +80,7 @@
     tuxedo # TUI for tasks
     wl-clipboard # Clipboard manager for Wayland
     imagemagick # Image manipulation tools
+    libsecret # Secret management library
   ];
 
   home.sessionVariables = {
