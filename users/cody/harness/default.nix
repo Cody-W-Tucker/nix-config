@@ -20,6 +20,7 @@ in
     llmPkgs.pi
     llmPkgs.code-review-graph
     llmPkgs.tuicr
+    pkgs.codex
   ];
 
   # tuicr: match stylix catppuccin-mocha palette
