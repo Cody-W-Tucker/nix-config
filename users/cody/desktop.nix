@@ -64,7 +64,12 @@
 
   home.packages = with pkgs; [
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop
+    # App-scoped native Wayland Electron override.
+    (inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop.override {
+      extraEnv = {
+        ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+      };
+    })
     # Agent memory loop: backpass bundles `acpx` and `lavish-axi` as private
     # runtime dependencies on its own wrapper PATH.
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.backpass
