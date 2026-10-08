@@ -188,6 +188,9 @@ in
     // lib.optionalAttrs nativeSystemOneSupported {
       "laya" = {
         file = toString laya;
+        contextSize = 8192;
+        batchSize = 2048;
+        ubatchSize = 1024;
       };
     };
     # llama-swap loading policy (see llama-swap groups semantics:
