@@ -175,13 +175,7 @@ in
         alias = "laya";
         mmprojFile = null;
         ttl = 600;
-        # Laya model card budgets 512 input tokens; keep b=ub=512 (upstream
-        # defaults b=2048/ub=512, but b=ub avoids a known decision-model issue).
-        contextSize = 512;
-        batchSize = 512;
-        ubatchSize = 512;
         threads = 6;
-        gpuLayers = 999;
         flashAttention = true;
         extraArgs = [ ];
       };

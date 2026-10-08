@@ -181,4 +181,12 @@
       "0"
     ];
   };
+  # Laya Q8_0 (SystemOne decision endpoint) — shared defaults keep host
+  # overrides minimal (store path only).
+  "laya" = {
+    file = "Laya-Q8_0.gguf";
+    contextSize = 8192;
+    batchSize = 2048;
+    ubatchSize = 1024;
+  };
 }
