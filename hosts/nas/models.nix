@@ -7,25 +7,14 @@
 }:
 
 let
-  # Native nixpkgs llama.cpp CUDA build used as the llama-swap serverPackage.
-  llamaCppCuda = pkgs.llama-cpp.override { cudaSupport = true; };
-
-  # WORKAROUND: gate Laya/SystemOne on verified native llama.cpp threshold b11361.
-  # Rationale: no upstream llama.cpp build now; native cached nixpkgs CUDA
-  # build gains SystemOne at b11361 (first b-tag containing PR #29818 merge
-  # a4cb4c61fd9d9c2066c7c1747821d3d65b8943bd, which registers /v1/systemone
-  # in tools/server/server.cpp), with semantic 0.6.0 as the equivalent
-  # semantic release. Numeric versions below b11361 (e.g. 9190) stay disabled.
-  # Upstream: https://github.com/ggml-org/llama.cpp/pull/29818
-  # REVIEW-BY: 2026-12-05
-  # Once locked nixpkgs llama-cpp at/above the verified threshold is
-  # established, remove this conditional and enable Laya unconditionally.
-  nativeSystemOneSupported =
-    let
-      version = llamaCppCuda.version;
-    in
-    (builtins.match "^[0-9]+$" version != null && lib.versionAtLeast version "11361")
-    || (lib.hasPrefix "0." version && lib.versionAtLeast version "0.6.0");
+  # Unstable nixpkgs llama.cpp CUDA build used as the llama-swap serverPackage.
+  # NAS intentionally tracks unstable llama-cpp 0.6.0 for SystemOne
+  # (upstream PR #29818) while the host stays on stable pkgs.
+  unstablePkgs = import inputs.nixpkgs-unstable {
+    inherit (pkgs) system;
+    config.allowUnfree = true;
+  };
+  llamaCppCuda = unstablePkgs.llama-cpp.override { cudaSupport = true; };
 
   # Qwen3 embedding GGUF (karakeep/miniflux shared catalog). Pinned to an
   # immutable release commit; content hash guards byte-identity.
@@ -81,16 +70,10 @@ let
 
   # Laya Q8_0 GGUF (SystemOne speech endpoint). Pinned to an immutable
   # commit; content hash guards byte-identity (449397600 bytes).
-  # Fetched only when the native serverPackage supports SystemOne; below
-  # b11361 (e.g. 9190) this stays null so no fetch artifact activates.
-  laya =
-    if nativeSystemOneSupported then
-      pkgs.fetchurl {
-        url = "https://huggingface.co/ggml-org/Laya-GGUF/resolve/22265007700297ba9e128297e82540cf28c5d7d4/Laya-Q8_0.gguf";
-        sha256 = "c06528c5746d3bb8baa72a27938be95abbfd0b226f8471e8a9e365ed0bb066d2";
-      }
-    else
-      null;
+  laya = pkgs.fetchurl {
+    url = "https://huggingface.co/ggml-org/Laya-GGUF/resolve/22265007700297ba9e128297e82540cf28c5d7d4/Laya-Q8_0.gguf";
+    sha256 = "c06528c5746d3bb8baa72a27938be95abbfd0b226f8471e8a9e365ed0bb066d2";
+  };
 
   # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
   # The bundled FindCUDA parser is too stale to accept CUDA_ARCH_LIST=12.0 for Blackwell,
@@ -128,6 +111,9 @@ in
 
   services.llama-swap = {
     enable = true;
+    # Keep the router on nixos-unstable alongside the llama.cpp server, so
+    # decision-endpoint support can move forward with the upstream packages.
+    package = unstablePkgs.llama-swap;
     acceleration = "cuda";
     serverPackage = llamaCppCuda;
     ctranslate2Cpp = ctranslate2CppBlackwell;
@@ -153,8 +139,8 @@ in
       "whisper-diarization"
       "kokoro-82m"
       "s1-mini"
-    ]
-    ++ lib.optionals nativeSystemOneSupported [ "laya" ];
+      "laya"
+    ];
     # laya stays on-demand (not preloaded): existing policy only keeps the
     # whisper/s1-mini audio path warm; nothing here calls for laya at boot.
     preloadModels = [
@@ -184,13 +170,20 @@ in
       "qwen-3.6-35b-a3b" = {
         file = toString qwen36Base;
       };
-    }
-    // lib.optionalAttrs nativeSystemOneSupported {
       "laya" = {
         file = toString laya;
-        contextSize = 8192;
-        batchSize = 2048;
-        ubatchSize = 1024;
+        alias = "laya";
+        mmprojFile = null;
+        ttl = 600;
+        # Laya model card budgets 512 input tokens; keep b=ub=512 (upstream
+        # defaults b=2048/ub=512, but b=ub avoids a known decision-model issue).
+        contextSize = 512;
+        batchSize = 512;
+        ubatchSize = 512;
+        threads = 6;
+        gpuLayers = 999;
+        flashAttention = true;
+        extraArgs = [ ];
       };
     };
     # llama-swap loading policy (see llama-swap groups semantics:

@@ -4,6 +4,16 @@ This page details the Speech-to-Text (STT) and Text-to-Speech (TTS) infrastructu
 
 For navigation: Cody's Home Manager desktop role is entered through `users/cody/desktop.nix`, which imports `users/cody/desktop/`; the speech-specific implementation lives under that desktop directory [users/cody/desktop.nix9-13](../users/cody/desktop.nix#L9-L13)
 
+## Public Audio API
+
+The public audio API is `llama-swap` at `http://nas:8081`:
+
+- `POST /v1/audio/transcriptions` with `model=whisper-medium` or `model=whisper-diarization`
+- `POST /v1/audio/speech` with `model=kokoro-82m`
+- `GET /v1/audio/voices` with optional `model=kokoro-82m`
+
+Wrapper upstream ports are dynamically assigned by `llama-swap` (`${PORT}` template substitution) and are not a client contract.
+
 ## Architecture Overview
 
 The speech pipeline is built on three primary server-side components and two client-side scripts. All servers are designed to be managed by `llama-swap`, which handles model lifecycle and hardware acceleration (CUDA/CPU) [modules/services/llama-swap/faster-whisper-openai-server.py37-60](../modules/services/llama-swap/faster-whisper-openai-server.py#L37-L60)
@@ -49,7 +59,7 @@ The diarization server provides speaker-aware transcription using WhisperX 3.8.6
 **Basic diarization request:**
 
 ```bash
-curl -s http://localhost:8081/v1/audio/transcriptions \
+curl -s http://nas:8081/v1/audio/transcriptions \
   -F file=@meeting.wav \
   -F model=whisper-diarization \
   -F response_format=diarized_json | jq .
@@ -58,7 +68,7 @@ curl -s http://localhost:8081/v1/audio/transcriptions \
 **With speaker count hints:**
 
 ```bash
-curl -s http://localhost:8081/v1/audio/transcriptions \
+curl -s http://nas:8081/v1/audio/transcriptions \
   -F file=@interview.wav \
   -F model=whisper-diarization \
   -F response_format=diarized_json \
@@ -69,7 +79,7 @@ curl -s http://localhost:8081/v1/audio/transcriptions \
 **Exact speaker count:**
 
 ```bash
-curl -s http://localhost:8081/v1/audio/transcriptions \
+curl -s http://nas:8081/v1/audio/transcriptions \
   -F file=@duet.wav \
   -F model=whisper-diarization \
   -F response_format=diarized_json \
@@ -99,12 +109,12 @@ Enrollment endpoints are **disabled** (HTTP 501) until a cross-session embedding
 
 ```bash
 # These return 501 until embedding matching is verified:
-curl -s -X POST http://localhost:8081/v1/identity/enroll \
+curl -s -X POST http://nas:8081/v1/identity/enroll \
   -F consent=true \
   -F person_id=cody \
   -F display_name="Cody" | jq .
 
-curl -s http://localhost:8081/v1/identity/candidates | jq .
+curl -s http://nas:8081/v1/identity/candidates | jq .
 # Returns: {"status": "matching_unavailable", ...}
 ```
 
@@ -119,16 +129,16 @@ curl -s http://localhost:8081/v1/identity/candidates | jq .
 
 ```bash
 # Check server health
-curl -s http://localhost:8081/v1/health | jq .
+curl -s http://nas:8081/v1/health | jq .
 
 # Verify model is registered
-curl -s http://localhost:8081/v1/models | jq .
+curl -s http://nas:8081/v1/models | jq .
 
 # Test busy response (send concurrent requests)
 # First request should process, second should return 503
 
 # Run smoke test with a short audio file
-curl -s http://localhost:8081/v1/audio/transcriptions \
+curl -s http://nas:8081/v1/audio/transcriptions \
   -F file=@/path/to/test.wav \
   -F model=whisper-diarization \
   -F response_format=diarized_json | jq '.speakers | length'

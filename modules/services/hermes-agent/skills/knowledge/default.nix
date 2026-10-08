@@ -41,9 +41,6 @@ let
     }) filteredKnowledgeEntries
   );
 
-  # Apply the llm-agents overlay to host pkgs so QMD is built with host pkgs
-  # (stable for NAS), allowing CUDA unfree predicate to apply correctly.
-  pkgsWithLlmAgents = pkgs.extend inputs.llm-agents.overlays.shared-nixpkgs;
 in
 {
   _module.args.allKnowledgeRelPaths = map (entry: entry.rel) allKnowledgeEntries;
@@ -51,12 +48,7 @@ in
   _module.args.filteredKnowledgeRoot = knowledgeSkillsDir;
 
   services.hermes-agent.extraPackages = [
-    # Disable Vulkan to prevent node-llama-cpp enumeration crashes in container;
-    # enable CUDA so QMD can use the host NVIDIA GPU passed through to the container.
-    (pkgsWithLlmAgents.llm-agents.qmd.override {
-      vulkanSupport = false;
-      cudaSupport = true;
-    })
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.qmd
   ];
 
   codyos.hermes-agent.skills.skillPacks = [
