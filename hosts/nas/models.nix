@@ -11,7 +11,7 @@ let
   # NAS intentionally tracks unstable llama-cpp 0.6.0 for SystemOne
   # (upstream PR #29818) while the host stays on stable pkgs.
   unstablePkgs = import inputs.nixpkgs-unstable {
-    inherit (pkgs) system;
+    system = pkgs.stdenv.hostPlatform.system;
     config.allowUnfree = true;
   };
   llamaCppCuda = unstablePkgs.llama-cpp.override { cudaSupport = true; };
