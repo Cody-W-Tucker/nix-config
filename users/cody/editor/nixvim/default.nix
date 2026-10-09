@@ -45,6 +45,29 @@
       register = "unnamedplus";
       providers.wl-copy.enable = true;
     };
+    # Remote SSH (e.g. `kitty +kitten ssh` from Beast to NAS): forward yanks
+    # via OSC 52 so Kitty pastes into the local clipboard. Local sessions keep
+    # the wl-copy provider configured above.
+    extraConfigLua = ''
+      if vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil then
+        local ok, osc52 = pcall(require, "vim.ui.clipboard.osc52")
+        if ok then
+          vim.g.clipboard = {
+            name = "OSC 52",
+            copy = {
+              ["+"] = osc52.copy("+"),
+              ["*"] = osc52.copy("*"),
+            },
+            -- Reads follow Kitty's clipboard permission prompt.
+            paste = {
+              ["+"] = osc52.paste("+"),
+              ["*"] = osc52.paste("*"),
+            },
+            cache_enabled = 0,
+          }
+        end
+      end
+    '';
     opts = {
       number = true;
       relativenumber = true;
