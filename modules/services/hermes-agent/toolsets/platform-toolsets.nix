@@ -1,6 +1,7 @@
 let
   # Default is the general operator, not the universal control plane.
-  # Scheduled runs and outgoing messaging remain deliberate profile-specific work.
+  # Cron keeps a narrower execution surface and is not exposed in the
+  # ordinary default conversation.
   defaultToolsets = [
     "web"
     "search"

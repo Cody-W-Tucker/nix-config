@@ -12,7 +12,6 @@ Hermes is the local AI agent service for CodyOS. This directory owns the impleme
 | `mcp/default.nix` | MCP server registration, currently including Karakeep. |
 | `documents/default.nix` | SOUL, human profiles, memory spec, and task spec provisioning. |
 | `skills/` | Declarative seeded skill packs and business/knowledge skills. |
-| `profiles/` | Parked named profiles (`tmv-sales`, `builder`, `research`) under `${hermesHome}/profiles/<name>`. |
 | `toolsets/` | Platform toolset access by interface and web-search backend settings. |
 | `AGENTS.md` | Agent-facing implementation guidance and failure modes. |
 
@@ -80,7 +79,7 @@ changed document or setting applies on the next process restart
 
 Skills are Markdown-based capability packs copied into `${hermesHome}/skills` by Home Manager activation scripts (`home.activation.*`, running as the user).
 
-Upstream's bundled skill catalog is opted out with `.no-bundled-skills` markers in the default Hermes home and each profile. Home Manager creates these markers when absent and sets their mode to `0600`; it does not add upstream-bundled skills to `codyos.hermes-agent.skills.skillPacks`.
+Upstream's bundled skill catalog is opted out with `.no-bundled-skills` markers in the default Hermes home. Home Manager creates these markers when absent and sets their mode to `0600`; it does not add upstream-bundled skills to `codyos.hermes-agent.skills.skillPacks`.
 
 Declared skill packs are seeded by Home Manager activation:
 
@@ -97,33 +96,10 @@ Current skill groups include:
 - Business skills for CRM (`crm-tools` stays) and Google Workspace (exactly the 12-skill retain set in `skills/default-exclusions.nix`: `gws-calendar`, `gws-gmail-triage`, `gws-tasks`, `gws-calendar-agenda`, `gws-calendar-insert`, `gws-gmail-send`, `gws-gmail-read`, `gws-gmail-reply`, `gws-people`, `gws-shared`, `gws-nas-oauth`, `gws-gmail`); Gmail triage is patched to default to `in:inbox`.
 - Knowledge skills for Obsidian Markdown and `qmd`/`research-state` workflows (`tools/obsidian-bases` and `tools/obsidian-cli` are excluded from the default).
 
-Evidence rule: every default exclusion must be backed by Nix source/evaluated evidence, never by runtime directories. `skills/default-validation.nix` proves each catalog path exists in a Nix artifact source (CA categorized via `readDir`, GWS upstream via `readDir`, knowledge entries) and is absent from every filtered default pack (CA filtered, GWS retained, knowledge filtered). Do not justify exclusions from `~/.local/share/hermes`, `${hermesHome}/skills`, or any mutable state; those are outputs, not sources. `skills/default-cleanup.nix` then deletes only those explicit catalog paths from the default home after seeding (no wildcards, no named-profile paths).
+Evidence rule: every default exclusion must be backed by Nix source/evaluated evidence, never by runtime directories. `skills/default-validation.nix` proves each catalog path exists in a Nix artifact source (CA categorized via `readDir`, GWS upstream via `readDir`, knowledge entries) and is absent from every filtered default pack (CA filtered, GWS retained, knowledge filtered). Do not justify exclusions from `~/.local/share/hermes`, `${hermesHome}/skills`, or any mutable state; those are outputs, not sources. `skills/default-cleanup.nix` then deletes only those explicit catalog paths from the default home after seeding (no wildcards).
 
 ## Toolsets
 
-Toolsets define platform capability access by interface. The primary CLI has full trust; named profiles declare their own bounded CLI/API/cron sets appropriate to their role and automated context.
+Toolsets define platform capability access by interface. The primary CLI has full trust.
 
 Web search is configured through `toolsets/web-search.nix`, currently using xAI for search and Firecrawl for extraction/crawling.
-
-## Named profiles (parked)
-
-`profiles/` provisions exactly three parked profiles under
-`${hermesHome}/profiles/<name>` via `home.activation.hermesAgentProfiles`
-(after upstream `hermesAgentSetup`). No messaging adapters or credentials.
-
-| Profile | MCP (subset of `mcp/default.nix`) | Compression | Declared skills |
-| --- | --- | --- | --- |
-| `tmv-sales` | `karakeep` only; excludes nixos, actualBudget, mealie, stripe, code-review-graph | threshold 0.70, `micro_compact=false` | CRM/operator CA set plus declarative `crm-tools` and `google-workspace-tools` packs (only profile with business packs) |
-| `builder` | `nixos`, `code-review-graph`; no sales/finance/recipe | threshold 0.70, `micro_compact=false` | technical Nix/code set |
-| `research` | `karakeep` only (read-only, no mutation MCP) | threshold 0.65, `micro_compact=false` | web/evidence set |
-
-Nix owns `config.yaml` (with a build-time `_config_version`
-read from the Hermes package's `DEFAULT_CONFIG`, never static),
-`SOUL.md` (shared CA core plus a concise overlay), and `profile.yaml`
-(description metadata): overwritten every activation. Memories,
-curated CA-skill copies, and `tmv-sales` business-pack skills seeded
-from Nix store paths are mutable-preserving (seeded only when missing);
-a missing declared skill fails activation deterministically.
-
-Named configs inherit the root non-secret web backend selection (xAI search and
-Firecrawl extraction/crawling); credentials remain in environment files.

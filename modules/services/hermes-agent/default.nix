@@ -18,7 +18,6 @@ in
     ./documents
     ./toolsets
     ./skills
-    ./profiles
     ./dashboard
   ];
 

@@ -1,5 +1,5 @@
 # Default-home only exclusion cleanup: delete explicit catalog paths after seeding.
-# No wildcards, no named-profile paths. Named profiles under profiles/<name> are untouched.
+# No wildcards.
 {
   config,
   lib,

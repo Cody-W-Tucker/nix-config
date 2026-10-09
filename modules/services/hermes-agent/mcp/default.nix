@@ -69,11 +69,9 @@ let
 in
 {
   config = {
-    # Named profiles draw from the complete registry. The ordinary default
-    # profile exposes only Karakeep, so unrelated MCP schemas and tools never
-    # enter its prompt surface.
-    _module.args.hermesMcpRegistry = mcpRegistry;
-
+    # Default profile only: expose just Karakeep here so unrelated MCP schemas
+    # and tools never enter its prompt surface. The remaining entries below
+    # stay defined but unwired; no named profiles consume them.
     services.hermes-agent = {
       extraPackages = [ crg ];
       mcpServers = {
