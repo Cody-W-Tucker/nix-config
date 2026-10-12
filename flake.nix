@@ -88,8 +88,17 @@
     };
     workflow = {
       # Context and state management for a personalized cognitive assistant.
-      url = "github:Cody-W-Tucker/runtime";
+      # Temporarily pins the extraction branch until research-state lands on runtime/main.
+      url = "github:Cody-W-Tucker/runtime/research-state-extraction";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    miniflux-curator = {
+      url = "github:Cody-W-Tucker/miniflux-curator";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    whisper-diarization = {
+      url = "github:Cody-W-Tucker/whisper-diarization";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     hermes-agent = {
       # Upstream Hermes Agent flake with package and NixOS module.

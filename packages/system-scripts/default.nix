@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 # System-wide scripts (installed to environment.systemPackages)
 # For user-specific scripts, see users/*/packages/scripts/
@@ -6,11 +6,12 @@
 let
   scriptNames = [
     ./check-imports.nix
-    ./research-state.nix
     ./update.nix
   ];
 
-  scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
+  scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames ++ [
+    inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.researchState
+  ];
 in
 
 {

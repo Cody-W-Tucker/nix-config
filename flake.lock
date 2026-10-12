@@ -581,6 +581,26 @@
         "type": "github"
       }
     },
+    "miniflux-curator": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791815280,
+        "narHash": "sha256-F40Qz+9VOgykWJAlU1wSyEstMerlvL7DkDk43vCzM0o=",
+        "owner": "Cody-W-Tucker",
+        "repo": "miniflux-curator",
+        "rev": "51979df836adfc9c7d99208e6528abc5700052d6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Cody-W-Tucker",
+        "repo": "miniflux-curator",
+        "type": "github"
+      }
+    },
     "nextmeeting": {
       "inputs": {
         "flake-utils": "flake-utils_2",
@@ -925,6 +945,7 @@
         "home-manager": "home-manager_2",
         "home-manager-stable": "home-manager-stable",
         "llm-agents": "llm-agents_2",
+        "miniflux-curator": "miniflux-curator",
         "nextmeeting": "nextmeeting",
         "nixos-hardware": "nixos-hardware",
         "nixos-secrets": "nixos-secrets",
@@ -938,6 +959,7 @@
         "stylix": "stylix",
         "treehouse": "treehouse",
         "vpn-confinement": "vpn-confinement",
+        "whisper-diarization": "whisper-diarization",
         "workflow": "workflow",
         "zen-browser": "zen-browser"
       }
@@ -1291,6 +1313,26 @@
         "type": "github"
       }
     },
+    "whisper-diarization": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791815321,
+        "narHash": "sha256-oocF5vl2g4U8V2BPTH1v5CglO3iVQQ5E1eBiGHq8OkA=",
+        "owner": "Cody-W-Tucker",
+        "repo": "whisper-diarization",
+        "rev": "7090025b82fbd0d23edb62f117c62aa27baae3ab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Cody-W-Tucker",
+        "repo": "whisper-diarization",
+        "type": "github"
+      }
+    },
     "workflow": {
       "inputs": {
         "nixpkgs": [
@@ -1298,15 +1340,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1791042270,
-        "narHash": "sha256-8IeMwZDzoRKDcG6azDKdFUuDyCORf36fDy5jx5gqEZ0=",
+        "lastModified": 1791815333,
+        "narHash": "sha256-53jxLocBuUdaukzBrrPDJd3c7WSfzj6IsF0y170oRVI=",
         "owner": "Cody-W-Tucker",
         "repo": "runtime",
-        "rev": "baa3eb2d9539dae40541fb932cd6bc2a50d78d5c",
+        "rev": "f89df71cedbbf81d2d4791fa348df31bf05a918f",
         "type": "github"
       },
       "original": {
         "owner": "Cody-W-Tucker",
+        "ref": "research-state-extraction",
         "repo": "runtime",
         "type": "github"
       }
