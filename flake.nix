@@ -91,6 +91,14 @@
       url = "github:Cody-W-Tucker/runtime";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    miniflux-curator = {
+      url = "github:Cody-W-Tucker/miniflux-curator";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    whisper-diarization = {
+      url = "github:Cody-W-Tucker/whisper-diarization";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     hermes-agent = {
       # Upstream Hermes Agent flake with package and NixOS module.
       url = "github:NousResearch/hermes-agent";

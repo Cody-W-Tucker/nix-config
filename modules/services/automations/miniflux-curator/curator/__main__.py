@@ -1,6 +1,0 @@
-"""Allow `python -m curator`."""
-
-from .main import main
-
-if __name__ == "__main__":
-    main()

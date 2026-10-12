@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -114,6 +115,11 @@ let
   whisperPython = proxy.mkWhisperPython cfg.ctranslate2Cpp;
   kokoroPython = proxy.mkKokoroPython pkgs;
   whisperDiarizePython = proxy.mkWhisperDiarizePython pkgs;
+  whisperDiarizationPackage =
+    inputs.whisper-diarization.lib.${pkgs.stdenv.hostPlatform.system}.mkPackage
+      {
+        python = whisperDiarizePython;
+      };
 
   # Build wrapper commands for audio models
   wrapperCommands = {
@@ -137,8 +143,7 @@ let
       ttl = 0;
       upstream.cmd = ''
         env HOME=${proxy.diarizationCache} \
-        PYTHONPATH=${./.} \
-        ${whisperDiarizePython}/bin/python3 -m diarization.server \
+        ${whisperDiarizationPackage}/bin/whisper-diarization \
           --host 127.0.0.1 \
           --port ''${PORT} \
           --model-id whisper-diarization \

@@ -8,7 +8,7 @@
 
 let
   cfg = config.services.miniflux-curator;
-  curatorScript = import ./script.nix { inherit pkgs inputs; };
+  curatorScript = inputs.miniflux-curator.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 
 {

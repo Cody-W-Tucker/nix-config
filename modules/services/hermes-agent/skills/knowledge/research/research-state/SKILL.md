@@ -251,14 +251,14 @@ restrictions as a description of Hermes's runtime permissions.
 ## Example
 
 An in-repo draft fixture lives at
-`packages/system-scripts/research-state/examples/discovery-join-draft.json`:
+`https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/examples/discovery-join-draft.json`:
 a bounded read-only discovery of whether intended→deployed→available evidence
 can be joined, grounded in Thesis lines 32–38 with an agreeing CA
 checkout/pin snapshot and an `unknown` deployed-correspondence prerequisite.
 It is an example/draft requiring a fresh packet and review — NOT an
 authorized or complete result. An alternate example scope for a second
 working object lives at
-`packages/system-scripts/research-state/examples/second-object-scope.json`
+`https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/examples/second-object-scope.json`
 (example only, not live evidence).
 
 ## Rules

@@ -207,11 +207,11 @@ research-state surprise-validate ./surprise.json [--packet ./packet.json]
 research-state surprise-store ./surprise.json --state-dir "${XDG_STATE_HOME:-$HOME/.local/state}/research-state" --packet ./packet.json
 
 # Full unit/integration suite (155 tests: Slices A+B+C+D)
-python3 -m unittest discover -s packages/system-scripts/research-state/tests -p '*.py' -v
+cd ~/Projects/workflow && python3 -m unittest discover -s research-state/tests -p '*.py' -v
 
 # Focused package-only build (wrapper derivation; no host build, no lock change)
 nix build --no-update-lock-file --impure --expr \
-  'let flake = builtins.getFlake "/etc/nixos"; pkgs = flake.inputs.nixpkgs.legacyPackages.x86_64-linux; in pkgs.callPackage /etc/nixos/packages/system-scripts/research-state.nix { inherit pkgs; }'
+  'let flake = builtins.getFlake "/etc/nixos"; pkgs = flake.inputs.nixpkgs.legacyPackages.x86_64-linux; in pkgs.callPackage /etc/nixos/https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/packages.nix { inherit pkgs; }'
 
 # Repo evaluation sanity (no build, no lock change; NOT a host build)
 nix flake check --no-build --no-update-lock-file
@@ -258,7 +258,7 @@ recorded in `scope_provenance.overrides`.
 ## Scope schema (`research-state-scope/v1`)
 
 One editable JSON scope lives next to `main.py` and is packaged alongside it
-(`packages/system-scripts/research-state/scope.json`); explicit flags override
+(`https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/scope.json`); explicit flags override
 its paths, nothing is silently shadowed. The default working object is NAS
 research continuity:
 
@@ -283,7 +283,7 @@ research continuity:
   `capture_output`), timeouts kill the child
 
 Invalid scopes fail fast (`collect` exits 2) — see
-`packages/system-scripts/research-state/tests/test.py`. Packets with duplicate
+`https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test.py`. Packets with duplicate
 source/observation ids are invalid (`validate` fails).
 
 ## Packet schema (`research-state/v1`)
@@ -408,7 +408,7 @@ research-state collect --state-dir "${XDG_STATE_HOME:-$HOME/.local/state}/resear
 ## Tests
 
 ```bash
-python3 -m unittest discover -s packages/system-scripts/research-state/tests -p '*.py' -v
+cd ~/Projects/workflow && python3 -m unittest discover -s research-state/tests -p '*.py' -v
 ```
 
 Covers: agreeing state (no false discrepancy), CA checkout-vs-pin mismatch
@@ -470,7 +470,7 @@ declared-only service existence can never establish usefulness. Discovery
 experiments require explicit `uncertainty` and can never claim `supported`.
 
 An in-repo example draft lives at
-`packages/system-scripts/research-state/examples/discovery-join-draft.json`:
+`https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/examples/discovery-join-draft.json`:
 a bounded read-only discovery of whether intended→deployed→available
 evidence can be joined, grounded in Thesis lines 32–38 with an agreeing CA
 checkout/pin snapshot and an `unknown` deployed-correspondence prerequisite.
@@ -537,7 +537,7 @@ metadata must exclude secrets
 (redaction of arbitrary free text is not guaranteed, so never put it here).
 
 Mechanics/integration proof lives in
-`packages/system-scripts/research-state/tests/test_attempt.py`: a complete
+`https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test_attempt.py`: a complete
 fixture attempt whose artifact bytes come from a real sandbox command, plus
 rejection paths for every rule above. It proves record mechanics only.
 
@@ -585,7 +585,7 @@ recognition), and later contact. Surprise is never scored:
 `score`/`surprise_score` keys are rejected in both records.
 
 Mechanics/integration proof lives in
-`packages/system-scripts/research-state/tests/test_transfer.py`: a second
+`https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test_transfer.py`: a second
 fixture object (distinct repo id, system service manager, non-empty
 interfaces) collecting a distinct agreeing packet; a valid adaptation
 stored via the CLI with `0600`/`0700` round-trip; an intentional decline
@@ -593,7 +593,7 @@ when target prerequisites are unknown; failed-source masquerade,
 blind-copy, same-object, reused-evidence, and prior-mismatch rejections;
 dropped-reopen rules; surprise no-score rules; and scheduling-absence plus
 no-`/proc`-substitute gates. An alternate example scope lives at
-`packages/system-scripts/research-state/examples/second-object-scope.json`.
+`https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/examples/second-object-scope.json`.
 
 Scheduling is deliberately absent: no timer, cron, scheduler module,
 dashboard, daemon, or background collection ships in any slice. Scheduling
@@ -619,16 +619,16 @@ remain open. No row is marked complete from fixtures.
 
 ## Files
 
-- `packages/system-scripts/research-state/main.py` — stdlib-only collector
-- `packages/system-scripts/research-state/scope.json` — the one editable scope
-- `packages/system-scripts/research-state.nix` — wrapper (Python, git,
+- `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/main.py` — stdlib-only collector
+- `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/scope.json` — the one editable scope
+- `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/packages.nix` — wrapper (Python, git,
   systemd on `PATH`; installed via `packages/system-scripts/default.nix`)
-- `packages/system-scripts/research-state/tests/test.py` — Slice A fixture tests
- - `packages/system-scripts/research-state/tests/test_salience.py` — Slice B
+- `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test.py` — Slice A fixture tests
+ - `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test_salience.py` — Slice B
    fixture tests (refs, no-candidate, authority/protected/counterexample,
    prerequisite/capability vs discovery, provenance/supersession, storage,
    skill packaging)
-  - `packages/system-scripts/research-state/tests/test_attempt.py` — Slice C
+  - `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test_attempt.py` — Slice C
     fixture tests (full lifecycle with real sandbox command output labeled
     mechanics/integration; baseline-before-result, same-condition comparison,
     protected/counterexample blocks on keep, unknown/missing checks, changed
@@ -637,7 +637,7 @@ remain open. No row is marked complete from fixtures.
     overwrite, retained failures/discards, dropped-idea reopen rules,
     manual-review vs deterministic checks, fresh-use packets, no arbitrary
     execution)
-  - `packages/system-scripts/research-state/tests/test_transfer.py` — Slice D
+  - `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test_transfer.py` — Slice D
     fixture tests (distinct second object via an alternate scope with
     system service manager and interfaces; valid adaptation CLI store
     round-trip; intentional decline on unknown prerequisites/unverified
@@ -645,10 +645,10 @@ remain open. No row is marked complete from fixtures.
     reused-evidence, and prior-mismatch rejections; dropped-reopen
     new-evidence rules; legitimate no-change; surprise handoff with no
     score; scheduling absence; no `/proc` substitute)
-- `packages/system-scripts/research-state/examples/discovery-join-draft.json`
+- `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/examples/discovery-join-draft.json`
   — example draft discovery contract (Thesis 32–38, agreeing checkout/pin,
   unknown deployed correspondence; draft only, not authorized)
-- `packages/system-scripts/research-state/examples/second-object-scope.json`
+- `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/examples/second-object-scope.json`
   — example alternate scope for a second working object
   (package-deployment inquiry with a system service manager and an explicit
   interface; example only, not live evidence)
