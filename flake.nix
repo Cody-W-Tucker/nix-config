@@ -88,8 +88,7 @@
     };
     workflow = {
       # Context and state management for a personalized cognitive assistant.
-      # Temporarily pins the extraction branch until research-state lands on runtime/main.
-      url = "github:Cody-W-Tucker/runtime/research-state-extraction";
+      url = "github:Cody-W-Tucker/runtime";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     miniflux-curator = {
