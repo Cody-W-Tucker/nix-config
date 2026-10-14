@@ -64,8 +64,25 @@
 
   home.packages = with pkgs; [
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    # App-scoped native Wayland Electron override.
-    inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop
+    # Hermes Desktop: stay on native Wayland and the NVIDIA hardware path.
+    # Vulkan is not compatible with Chromium's native Wayland ozone backend;
+    # without this flag, Electron can repeatedly lose its GPU process. Hermes
+    # then records that failure and reroutes subsequent launches to CPU-only
+    # SwiftShader. Keep that recovery path off after removing Vulkan.
+    (
+      (inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop.override {
+        extraEnv = {
+          ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+          HERMES_DESKTOP_NVIDIA_SWIFTSHADER = "0";
+        };
+      }).overrideAttrs
+        (old: {
+          postFixup = (old.postFixup or "") + ''
+            wrapProgram "$out/bin/hermes-desktop" \
+              --add-flags "--disable-features=Vulkan"
+          '';
+        })
+    )
     # Agent memory loop: backpass bundles `acpx` and `lavish-axi` as private
     # runtime dependencies on its own wrapper PATH.
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.backpass
