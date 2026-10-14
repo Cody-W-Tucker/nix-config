@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   ...
 }:
@@ -8,6 +9,35 @@
 let
   inherit (config.services.hermes-agent) workingDirectory;
   workflowPackage = inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.workflowCli;
+  hermesPython = config.services.hermes-agent.package.python.pkgs;
+  holographicPlugin = pkgs.fetchFromGitHub {
+    owner = "itpartypattaya";
+    repo = "hermes-plugin-holographic";
+    name = "holographic";
+    rev = "a6d009315bc72a7c4e68d6a0e60a6eeed68080fd";
+    hash = "sha256-JkHG1Rmb+5H3d/jpMrpQ1x8H8b1kgc+QorV4uQXCKaM=";
+  };
+  officialPlugins = pkgs.fetchFromGitHub {
+    owner = "NousResearch";
+    repo = "hermes-official-plugins";
+    rev = "a4e311e433f1470b1fec15434deea6a05e8644eb";
+    hash = "sha256-q9gpwik7FUp2z6H69z5eoq7qNZYvdi6KvU7fOG796C4=";
+  };
+  homeAssistantPlugin = pkgs.runCommand "homeassistant" { } ''
+    cp -R ${officialPlugins}/homeassistant "$out"
+    # Hermes's Nix derivation reports version 0.0.0 even though this pinned
+    # core includes the post-extraction plugin API. Avoid a false version-gate
+    # rejection of the official Home Assistant plugin.
+    substituteInPlace "$out/plugin.yaml" \
+      --replace-fail 'requires_hermes: ">=0.21.5"' 'requires_hermes: ">=0.0.0"'
+  '';
+  langfusePlugin = pkgs.runCommand "langfuse" { } ''
+    cp -R ${officialPlugins}/langfuse "$out"
+    # The installed Hermes source is post-extraction but its Nix derivation
+    # reports 0.0.0, so the catalog's semantic-version gate is a false reject.
+    substituteInPlace "$out/plugin.yaml" \
+      --replace-fail 'requires_hermes: ">=0.21.7"' 'requires_hermes: ">=0.0.0"'
+  '';
 in
 {
   imports = [
@@ -22,6 +52,13 @@ in
   ];
 
   config = {
+    # The upstream Nix module prefixes directory-plugin symlinks with
+    # `nix-managed-`. Its memory-provider discovery still identifies a
+    # provider by directory name, so Holographic needs the canonical link.
+    home.activation.hermesHolographicPlugin = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
+      $DRY_RUN_CMD ln -sfn ${holographicPlugin} ${config.services.hermes-agent.hermesHome}/plugins/holographic
+    '';
+
     # Upstream renamed this option: puts the `hermes` CLI into user packages
     # (was `addToSystemPackages`).
     programs.hermes-agent.enable = true;
@@ -41,6 +78,16 @@ in
         "firecrawl"
         "messaging"
       ];
+      # These integrations moved out of Hermes core. Keep their sources,
+      # transitive Python dependencies, and enablement declarative so a
+      # Home Manager activation cannot silently drop them.
+      extraPlugins = [
+        homeAssistantPlugin
+        langfusePlugin
+      ];
+      # Holographic needs NumPy. aiohttp (Home Assistant) and
+      # snowballstemmer (Holographic) are already sealed into Hermes.
+      extraPythonPackages = with hermesPython; [ numpy ];
       extraPackages = with pkgs; [
         binutils
         chromium
@@ -122,6 +169,74 @@ in
             tool_progress = "off";
           };
         };
+        # The core-to-plugin migration remembers these as known but does not
+        # select them on Nix-managed config. Preserve the prior HA surfaces.
+        platform_toolsets = {
+          api_server = [
+            "web"
+            "search"
+            "browser"
+            "skills"
+            "file"
+            "memory"
+            "session_search"
+            "terminal"
+            "homeassistant"
+          ];
+          cron = [
+            "web"
+            "search"
+            "skills"
+            "memory"
+            "session_search"
+            "terminal"
+            "homeassistant"
+          ];
+          discord = [
+            "web"
+            "search"
+            "browser"
+            "skills"
+            "file"
+            "memory"
+            "session_search"
+            "terminal"
+            "homeassistant"
+          ];
+          telegram = [
+            "web"
+            "search"
+            "browser"
+            "skills"
+            "file"
+            "memory"
+            "session_search"
+            "terminal"
+            "homeassistant"
+          ];
+          acp = [
+            "web"
+            "search"
+            "browser"
+            "skills"
+            "file"
+            "memory"
+            "session_search"
+            "terminal"
+            "homeassistant"
+          ];
+          webhook = [
+            "web"
+            "search"
+            "browser"
+            "skills"
+            "file"
+            "memory"
+            "session_search"
+            "terminal"
+            "homeassistant"
+          ];
+        };
         max_turns = 100;
         terminal = {
           backend = "local";
@@ -180,7 +295,11 @@ in
           user_profile_enabled = true;
         };
         plugins = {
-          enabled = [ "observability/langfuse" ];
+          enabled = [
+            "langfuse"
+            "holographic"
+            "homeassistant"
+          ];
           "hermes-memory-store".auto_extract = false;
         };
         compression = {
