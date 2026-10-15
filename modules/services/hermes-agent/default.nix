@@ -132,15 +132,19 @@ in
         auxiliary = {
           approval = {
             provider = "opencode-go";
-            model = "hy3";
+            model = "gpt-5.6-luna";
           };
           compression = {
-            provider = "opencode-go";
-            model = "hy3";
+            provider = "custom";
+            model = "qwen-3.6-35b-a3b";
+            base_url = "http://127.0.0.1:8081/v1";
+            api_key = "local-only";
           };
           web_extract = {
-            provider = "opencode-go";
-            model = "hy3";
+            provider = "custom";
+            model = "qwen-3.5-9b";
+            base_url = "http://127.0.0.1:8081/v1";
+            api_key = "local-only";
           };
           # Metadata and archival work stay local. Keep approval, web extraction,
           # and compression on hy3: they carry authorization, source-quality, or
