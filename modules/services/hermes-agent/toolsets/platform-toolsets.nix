@@ -1,8 +1,5 @@
 let
-  # Default is the general operator, not the universal control plane.
-  # Cron keeps a narrower execution surface and is not exposed in the
-  # ordinary default conversation.
-  defaultToolsets = [
+  primaryToolsets = [
     "web"
     "search"
     "browser"
@@ -11,28 +8,45 @@ let
     "memory"
     "session_search"
     "terminal"
+    "code_execution"
+    "cronjob"
+    "clarify"
+    "delegation"
+    "vision"
+    "x_search"
+    "a2a"
+    "todo"
+    "homeassistant"
+  ];
+  cronToolsets = [
+    "web"
+    "search"
+    "skills"
+    "memory"
+    "session_search"
+    "terminal"
+    "homeassistant"
+  ];
+  webhookToolsets = [
+    "web"
+    "search"
+    "browser"
+    "skills"
+    "file"
+    "memory"
+    "session_search"
+    "terminal"
+    "homeassistant"
   ];
 in
 {
-  config.services.hermes-agent.settings = {
-    # Gateway/CLI resolves active tools from platform_toolsets. Keep all
-    # interactive default surfaces on the same bounded, general-purpose set.
-    platform_toolsets = {
-      api_server = defaultToolsets;
-      telegram = defaultToolsets;
-      cli = defaultToolsets;
-      discord = defaultToolsets;
-
-      # Execution surface for already-created scheduled work; cronjob management
-      # is intentionally not exposed in the ordinary default conversation.
-      cron = [
-        "web"
-        "search"
-        "skills"
-        "memory"
-        "session_search"
-        "terminal"
-      ];
-    };
+  config.services.hermes-agent.settings.platform_toolsets = {
+    api_server = primaryToolsets;
+    telegram = primaryToolsets;
+    cli = primaryToolsets;
+    discord = primaryToolsets;
+    acp = primaryToolsets;
+    cron = cronToolsets;
+    webhook = webhookToolsets;
   };
 }
