@@ -98,8 +98,12 @@ in
 
       # Ebook destination: staging dir only (see tmpfiles above).
       INGEST_DIR = "/books";
-      # Audiobook destination: Audiobookshelf scans this library.
-      DESTINATION_AUDIOBOOK = "/audiobooks";
+      # Audiobook destination: Audiobookshelf Books library root
+      # (/mnt/media/AudioBookShelf/Books, mounted at /audiobooks).
+      DESTINATION_AUDIOBOOK = "/audiobooks/Books";
+      # Organize audiobooks into Author/Title directories.
+      FILE_ORGANIZATION_AUDIOBOOK = "organize";
+      TEMPLATE_AUDIOBOOK_ORGANIZE = "{Author}/{Title}/{Title}";
 
       # Navigation links only — Shelfmark has no Calibre API integration;
       # it never writes into the Calibre-managed /mnt/media/Books library.
