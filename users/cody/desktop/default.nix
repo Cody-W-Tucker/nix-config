@@ -31,6 +31,9 @@
     setAsDefaultBrowser = true;
   };
 
+  # Cursor code editor from spacex SI
+  programs.cursor.enable = true;
+
   # Keep these enabled without settings letting stylix manage
   dconf.enable = true;
 

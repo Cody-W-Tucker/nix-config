@@ -20,6 +20,7 @@ in
     llmPkgs.pi
     llmPkgs.code-review-graph
     llmPkgs.tuicr
+    llmPkgs.cursor-agent
     pkgs.codex
   ];
 
