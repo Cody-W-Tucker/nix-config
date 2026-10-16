@@ -136,7 +136,7 @@ in
           };
           compression = {
             provider = "custom";
-            model = "qwen-3.6-35b-a3b";
+            model = "qwen-3.5-9b";
             base_url = "http://127.0.0.1:8081/v1";
             api_key = "local-only";
           };

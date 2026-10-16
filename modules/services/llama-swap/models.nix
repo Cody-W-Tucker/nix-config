@@ -29,14 +29,14 @@
       "q8_0"
     ];
   };
-  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — multimodal reasoning endpoint. Same base
-  # weights as the (removed) task model, plus the matching projector; 32K
-  # context to keep the vision stack + Q8 KV cache within the RTX 5060 budget.
+  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — text-only reasoning endpoint.
+  # Omitting the 918 MB vision projector and using Q8 keys / Q4 values targets
+  # a 128K context window within the RTX 5060 VRAM budget.
   # ~5.5 GB weights.
   "qwen-3.5-9b" = {
     file = "qwen3.5-9b-nvfp4.gguf";
-    mmprojFile = "mmproj-qwen3.5-9b-nvfp4-f16.gguf";
-    contextSize = 32768;
+    mmprojFile = null;
+    contextSize = 131072;
     extraArgs = [
       "--reasoning"
       "off"
@@ -45,7 +45,7 @@
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
-      "q8_0"
+      "q4_0"
     ];
   };
   # Qwen3.6-35B-A3B in NVIDIA FP4 (NVFP4) — text-only MoE. 40 layers,

@@ -155,7 +155,8 @@ in
       };
       "qwen-3.5-9b" = {
         file = toString qwen35_9bBase;
-        mmprojFile = toString qwen35_9bMmproj;
+        # Keep the 9B reasoning endpoint text-only; the 4B endpoint serves vision.
+        mmprojFile = null;
       };
       "qwen3-embedding-0.6b" = {
         file = toString qwen3Embedding;
