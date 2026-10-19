@@ -8,7 +8,6 @@ let
     "memory"
     "session_search"
     "terminal"
-    "code_execution"
     "cronjob"
     "clarify"
     "delegation"
