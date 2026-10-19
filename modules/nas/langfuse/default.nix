@@ -122,7 +122,7 @@
         image = "docker.langfuse.com/langfuse/langfuse:4";
         environment = commonEnv;
         environmentFiles = [ langfuseEnvFile ];
-        ports = [ "127.0.0.1:3000:3000" ];
+        ports = [ "127.0.0.1:3030:3000" ];
         dependsOn = [
           "postgres"
           "redis"
@@ -242,7 +242,7 @@
   # proxied here. Internal dependency ports are NOT published (see above).
   services.nginx.virtualHosts = mkNginxVhost {
     host = "langfuse.homehub.tv";
-    port = 3000;
+    port = 3030;
     proxyWebsockets = true;
     locationExtraConfig = ''
       client_max_body_size 256m;
