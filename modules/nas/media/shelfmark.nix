@@ -96,11 +96,21 @@ in
       # Search across all configured sources.
       SEARCH_MODE = "universal";
 
-      # Ebook destination: staging dir only (see tmpfiles above).
-      INGEST_DIR = "/books";
+      # Ebook destination: staging dir only (see shelfmark-dirs above).
+      # /books is a second mount of Downloads/Shelfmark. Hardlinking from
+      # the same-path Downloads mount into /books crosses a mount boundary
+      # and Shelfmark then cannot open the completed torrent path.
+      INGEST_DIR = "/mnt/media/Downloads/Shelfmark";
+      HARDLINK_TORRENTS = "false";
+      # Transmission labels do not choose a directory. Without this,
+      # Shelfmark adds the torrent to the Transmission default
+      # (/mnt/media/Downloads) and later opens
+      # <download-dir>/<torrent name>. Pin books under the mounted tree.
+      TRANSMISSION_DOWNLOAD_DIR = "/mnt/media/Downloads/books";
       # Audiobook destination: Audiobookshelf Books library root
       # (/mnt/media/AudioBookShelf/Books, mounted at /audiobooks).
       DESTINATION_AUDIOBOOK = "/audiobooks/Books";
+      HARDLINK_TORRENTS_AUDIOBOOK = "false";
       # Organize audiobooks into Author/Title directories.
       FILE_ORGANIZATION_AUDIOBOOK = "organize";
       TEMPLATE_AUDIOBOOK_ORGANIZE = "{Author}/{Title}/{Title}";
@@ -115,15 +125,12 @@ in
     };
     volumes = [
       "/var/lib/shelfmark:/config"
-      # The /books staging mount is where Shelfmark delivers files, but
-      # Shelfmark also inspects Transmission's reported completed paths.
-      # Transmission reports the *host* path (e.g.
-      # /mnt/media/Downloads/Shelfmark/...), and Shelfmark opens that
-      # path inside the container — so the container must see the
-      # identical source path, not a differently-named mount. Hence the
-      # whole Downloads tree is bind-mounted at the same path.
+      # Shelfmark opens the path Transmission reports. Transmission
+      # reports the host path, so this bind must use that same path.
+      # Do not also mount Downloads/Shelfmark at /books: that second
+      # mount makes a hardlink from the completed torrent fail, and
+      # Shelfmark then reports the completed path as inaccessible.
       "/mnt/media/Downloads:/mnt/media/Downloads"
-      "/mnt/media/Downloads/Shelfmark:/books"
       "/mnt/media/AudioBookShelf:/audiobooks"
     ];
     # Host networking (same pattern as modules/nas/paperless-gpt.nix):

@@ -33,6 +33,9 @@
     "d /mnt/media/Channels 2775 root media - -"
     "d /mnt/media/Downloads 2775 root media - -"
     "d /mnt/media/Downloads/incomplete 2775 root media - -"
+    # Shelfmark pins Transmission ebook torrents here. Must exist before
+    # Transmission moves a completed torrent into it.
+    "d /mnt/media/Downloads/books 2775 root media - -"
     "d /mnt/media/Movies 2775 root media - -"
     "d /mnt/media/Music 2775 root media - -"
     "d /mnt/media/TV\\x20Shows 2775 root media - -"
