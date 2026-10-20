@@ -179,6 +179,42 @@ in
           cwd = workingDirectory;
           timeout = 600;
         };
+        # Keep deterministic platform authorization broad, but disclose cold
+        # schemas only when the model needs them. The bridge and compact
+        # manifest remain stable; full schemas arrive through tool_search.
+        tools.tool_search = {
+          enabled = "on";
+          listing = "auto";
+          listing_max_tokens = 1200;
+          search_default_limit = 5;
+          max_search_limit = 15;
+          # Extend Hermes's curated cold-tool default with delegation: its
+          # schema is unusually large and it is episodic. Do not defer
+          # terminal/file/web/browser/clarify/skills/memory: they are the
+          # normal working set for the personal operator.
+          defer = [
+            "computer_use"
+            "session_search"
+            "image_generate"
+            "todo_list"
+            "process_manage"
+            "cronjob_manage"
+            "browser_vault"
+            "drive_preview"
+            "gui_tour"
+            "desktop_preview"
+            "annotate_preview"
+            "manage_catalog"
+            "show_tip"
+            "desktop_project"
+            "close_terminal"
+            "set_theme"
+            "read_terminal"
+            "read_window_below"
+            "focus_pane"
+            "delegate_task"
+          ];
+        };
         discord = {
           require_mention = true; # Respond only when @mentioned
           auto_thread = true; # Isolate each conversation in a thread
