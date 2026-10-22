@@ -6,6 +6,8 @@
 }:
 
 {
+  sops.secrets."opencode-password" = { };
+
   imports = [
     ./core.nix
     ./desktop
@@ -15,6 +17,12 @@
   ];
 
   programs.zsh.autosuggestion.highlight = "fg=#${config.lib.stylix.colors.base04}";
+  # The NAS OpenCode server uses HTTP Basic auth. Scope its secret to the
+  # explicit remote alias so regular `op` sessions remain local.
+  programs.zsh.shellAliases.op- = ''
+    OPENCODE_SERVER_PASSWORD="$(<${config.sops.secrets."opencode-password".path})" \
+    opencode --server https://opencode.homehub.tv
+  '';
 
   # Styling and themes
   stylix = {
