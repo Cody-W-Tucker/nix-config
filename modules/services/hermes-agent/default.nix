@@ -199,6 +199,27 @@ in
             "todo_list"
             "process_manage"
             "cronjob_manage"
+            # Cold capability-management tools. Keep skill discovery and
+            # ordinary memory eager; defer only their rare mutation/query APIs.
+            "skill_manage"
+            "fact_store"
+            "vision_analyze"
+            # Defer every browser backend variant. The active browser-use
+            # backend exposes browser_exec; the named variants cover a later
+            # switch to Hermes's native CDP browser backend.
+            "browser_exec"
+            "browser_navigate"
+            "browser_snapshot"
+            "browser_click"
+            "browser_type"
+            "browser_scroll"
+            "browser_back"
+            "browser_press"
+            "browser_get_images"
+            "browser_vision"
+            "browser_console"
+            "browser_cdp"
+            "browser_dialog"
             "browser_vault"
             "drive_preview"
             "gui_tour"
