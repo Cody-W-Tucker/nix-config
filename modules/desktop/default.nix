@@ -16,8 +16,6 @@
   services = {
     # Allows nautilus (gnome files) to access gvfs mounts (trash and samba shares)
     gvfs.enable = true;
-    # Enable support for removable devices.
-    udisks2.enable = true;
   };
 
   # Install basic desktop environment packages that I want on all my systems.
@@ -25,7 +23,6 @@
     pavucontrol # PulseAudio volume control
     xdg-utils # xdg-open
     usbutils # For listing USB devices
-    udiskie # For mounting USB devices
     seahorse # GNOME keyring manager
     gcr_3 # GNOME Keyring unlock prompt provider
   ];

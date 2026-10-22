@@ -28,7 +28,6 @@ in
       no-mistakes
       fastfetch
       fd
-      ocrmypdf
       tree
       unzip
       zip
