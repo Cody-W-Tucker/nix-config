@@ -57,7 +57,6 @@ in
   # Bootloader.
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
     initrd.availableKernelModules = [
       "vmd"
       "xhci_pci"
