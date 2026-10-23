@@ -119,7 +119,7 @@
     {
       "langfuse-web" = {
         autoStart = true;
-        image = "docker.langfuse.com/langfuse/langfuse:4";
+        image = "docker.langfuse.com/langfuse/langfuse:4.68.0";
         environment = commonEnv;
         environmentFiles = [ langfuseEnvFile ];
         ports = [ "127.0.0.1:3030:3000" ];
@@ -139,7 +139,7 @@
 
       "langfuse-worker" = {
         autoStart = true;
-        image = "docker.langfuse.com/langfuse/langfuse-worker:4";
+        image = "docker.langfuse.com/langfuse/langfuse-worker:4.68.0";
         environment = commonEnv;
         environmentFiles = [ langfuseEnvFile ];
         dependsOn = [

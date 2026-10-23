@@ -192,7 +192,7 @@ Follow the repo's existing ZFS-snapshot/backup pattern and include the `/mnt/app
 
 Images are pinned in `modules/nas/langfuse/default.nix`:
 
-- `langfuse` / `langfuse-worker`: `4.15.0` (upstream compose used floating `:4`)
+- `langfuse` / `langfuse-worker`: `4.68.0` (both images use explicit matching tags)
 - `clickhouse-server`: `25.12`
 - `redis`: `7`
 - `postgres`: `17`

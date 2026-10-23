@@ -11,12 +11,13 @@
     ./skills/humanizer
     ./skills/cognitive
     ./tools/model-router
+    ./tools/langfuse
     ./tools/rtk
   ];
 
   # OpenCode Langfuse observability credentials (shared Home Manager scope):
   # the nixos-secrets `opencode-langfuse-env` secret is rendered by a SOPS
-  # template (codyt-owned, 0400) plus a declarative LANGFUSE_BASEURL. Values
+  # template (codyt-owned, 0400) plus a declarative LANGFUSE_BASE_URL. Values
   # stay out of the Nix store and out of eval-time substitution.
   sops.secrets."opencode-langfuse-env" = {
     mode = "0400";
@@ -26,7 +27,7 @@
     mode = "0400";
     content = ''
       ${config.sops.placeholder."opencode-langfuse-env"}
-      LANGFUSE_BASEURL=https://langfuse.homehub.tv
+      LANGFUSE_BASE_URL=https://langfuse.homehub.tv
     '';
   };
 
@@ -76,6 +77,14 @@
       - Node: nix shell nixpkgs#nodejs --command node script.js
     '';
     settings = {
+      # The model-router and langfuse modules each contribute their own
+      # entry to this list. Langfuse loads from a managed local plugin path
+      # (./tools/langfuse) instead of the bare npm spec as a TEMPORARY
+      # workaround for https://github.com/langfuse/opencode-observability-plugin/issues/55
+      # (upstream 0.5.2 resolves @opentelemetry/api@1.9.1, sdk-logs@3.0.0
+      # needs >=1.10.0). Removal: restore the bare spec once upstream ships
+      # a fixed release.
+      plugins = [ ];
       autoupdate = false;
       small_model = "opencode-go/deepseek-v4-flash";
       formatter = true;
