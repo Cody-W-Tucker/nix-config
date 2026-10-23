@@ -11,7 +11,6 @@
   imports = [
     ./core.nix
     ./desktop
-    ./harness/herdr
     ./editor/nixvim
     inputs.stylix.homeModules.stylix
   ];

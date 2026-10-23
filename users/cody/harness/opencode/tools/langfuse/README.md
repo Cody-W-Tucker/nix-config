@@ -14,13 +14,13 @@ Upstream issue: https://github.com/langfuse/opencode-observability-plugin/issues
 - Keeps a checked-in wrapper `plugin/package.json` pinning the exact
   upstream `0.5.2` tarball with an explicit npm `overrides` entry forcing
   `@opentelemetry/api@^1.10.0`, plus a managed forwarding entrypoint
-  `plugin/index.ts` (selected via package.json `main`, the same mechanism
-  as the model-router `src/index.ts` main) that default-exports the
+  `plugin/index.ts` (selected via package.json `main`, the standard OpenCode
+  V2 directory-plugin entrypoint mechanism) that default-exports the
   upstream plugin unchanged — a bare `package.json` alone is not loadable
   by OpenCode V2 directory-plugin resolution.
 - `default.nix` materializes it to
   `~/.config/opencode/plugins/langfuse-observability` via a
-  `home.activation` step (same pattern as `../model-router`), and registers
+  `home.activation` step, and registers
   that local path in `programs.opencode.settings.plugins`.
 - Never touches the OpenCode npm cache.
 - Secrets are untouched: Langfuse credentials still come from the SOPS

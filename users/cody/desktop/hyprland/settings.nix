@@ -131,7 +131,6 @@ let
     (actionBind "${mainMod} + Return" (lua ''hl.dsp.workspace.toggle_special("ai")''))
     (actionBind "${mainMod} + D" (lua ''hl.dsp.workspace.toggle_special("dev")''))
     # agent runner
-    (execBind "${mainMod} + SHIFT + D" "[workspace special:dev] ${terminal} -e herdr")
     (actionBind "${mainMod} + E" (lua ''hl.dsp.workspace.toggle_special("think")''))
     (actionBind "${mainMod} + Y" (lua ''hl.dsp.workspace.toggle_special("media")''))
 

@@ -1,13 +1,12 @@
 # Cody Desktop Harness
 
-Owns Cody's user-session AI/operator harness: OpenCode, Herdr, MCP wiring, local tools, skills, and agent packaging used from the desktop.
+Owns Cody's user-session AI/operator harness: OpenCode, MCP wiring, local tools, skills, and agent packaging used from the desktop.
 
 Does not own general desktop behavior, shell defaults, host services, or system model services unless the harness is only consuming them.
 
 ## Placement Rules
 
 - Put MCP server/client exposure in `mcp.nix` unless it belongs entirely to one packaged tool or skill.
-- Put Herdr configuration in `herdr/default.nix` and reusable Herdr module logic in `herdr/module.nix`.
 - Put OpenCode agents under `opencode/agents/` and agent-local skills under that agent family.
 - Put shared OpenCode skills under `opencode/skills/` only when multiple agents should use them.
 - Put custom OpenCode tool plugins under `opencode/tools/`, with implementation files beside their Nix packaging.
