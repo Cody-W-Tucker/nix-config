@@ -31,10 +31,10 @@
   };
 
   # Langfuse env for interactive OpenCode sessions: source the SOPS-rendered
-  # template (set -a exports the payload keys) so OpenCode (and its Langfuse
-  # observability plugin) inherits the vars from any interactive zsh.
+  # template (set -a exports the payload keys) so OpenCode and related tooling
+  # inherit the vars from any interactive zsh.
   programs.zsh.initContent = ''
-    # Langfuse credentials for OpenCode (@langfuse/opencode-observability-plugin)
+    # Langfuse credentials for OpenCode and related tooling.
     if [ -f "${config.sops.templates."opencode-langfuse-env".path}" ]; then
       set -a
       . "${config.sops.templates."opencode-langfuse-env".path}"
@@ -51,11 +51,11 @@
     config.sops.templates."opencode-langfuse-env".path
   ];
 
-  # The 99 nixvim integration brings its own OpenCode-backed model routing,
-  # so the model-router plugin file is dropped when 99 is enabled.
-  xdg.configFile."opencode/plugins/model-router.ts".enable = lib.mkIf config.cody.editor."99".enable (
-    lib.mkForce false
-  );
+  # Remove the previously unmanaged legacy plugin so global discovery cannot
+  # continue loading it after this configuration is activated.
+  home.activation.removeOpenCodeVoicePlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    rm -f "${config.xdg.configHome}/opencode/plugins/voice.ts"
+  '';
 
   programs.opencode = {
     enable = true;
@@ -77,7 +77,6 @@
     '';
     settings = {
       autoupdate = false;
-      experimental.openTelemetry = true;
       small_model = "opencode-go/deepseek-v4-flash";
       formatter = true;
       default_agent = "build";
@@ -97,9 +96,6 @@
           };
         };
       };
-      # Langfuse observability plugin (@langfuse/…), configured via the
-      # LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY / LANGFUSE_BASEURL env vars.
-      plugin = [ "@langfuse/opencode-observability-plugin@latest" ];
     };
   };
 }

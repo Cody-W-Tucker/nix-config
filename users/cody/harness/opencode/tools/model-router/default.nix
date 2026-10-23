@@ -9,8 +9,9 @@ let
   upstreamSrc = pkgs.fetchFromGitHub {
     owner = "marco-jardim";
     repo = "opencode-model-router";
-    rev = "v1.11.1";
-    hash = "sha256-B+sJAxzn0ZtHKeQ3kMAKtHmI5M/orfuOLyAvWCNSy+I=";
+    # Includes the OpenCode V2 adapter (server.ts), supported by OpenCode 2.0.20+.
+    rev = "841fa6ed977fc45a115ce32525fb57f84ea5a6aa";
+    hash = "sha256-n4jIqAj7ulQ1ttbOL4EP8qfwNBCpUV1N20ZG39eWagc=";
   };
 
   modelRouterSrc =
@@ -37,23 +38,21 @@ let
         mv "$tmp_json" "$out/tiers.json"
       '';
 
-  pluginPath = "${config.xdg.configHome}/opencode/plugins/model-router.ts";
+  pluginPath = "${config.xdg.configHome}/opencode/plugins/model-router";
 in
 {
-  home.activation.opencodeModelRouter = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    plugin_dir="${config.xdg.configHome}/opencode/plugins"
-    router_dir="$plugin_dir/model-router"
-    loader_file="$plugin_dir/model-router.ts"
+  home.activation.opencodeModelRouter = lib.mkIf (!config.cody.editor."99".enable) (
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      plugin_dir="${config.xdg.configHome}/opencode/plugins"
+      router_dir="$plugin_dir/model-router"
 
-    mkdir -p "$plugin_dir"
-    rm -rf "$router_dir"
-    cp -r ${modelRouterSrc} "$router_dir"
-    chmod -R u+w "$router_dir"
+      mkdir -p "$plugin_dir"
+      rm -rf "$router_dir"
+      cp -r ${modelRouterSrc} "$router_dir"
+      chmod -R u+w "$router_dir"
+      rm -f "$plugin_dir/model-router.ts"
+    ''
+  );
 
-    cat > "$loader_file" <<'EOF'
-    export { default } from "./model-router/src/index.ts"
-    EOF
-  '';
-
-  programs.opencode.settings.plugin = [ pluginPath ];
+  programs.opencode.settings.plugins = lib.mkIf (!config.cody.editor."99".enable) [ pluginPath ];
 }
