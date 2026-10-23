@@ -41,18 +41,16 @@ let
   pluginPath = "${config.xdg.configHome}/opencode/plugins/model-router";
 in
 {
-  home.activation.opencodeModelRouter = lib.mkIf (!config.cody.editor."99".enable) (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      plugin_dir="${config.xdg.configHome}/opencode/plugins"
-      router_dir="$plugin_dir/model-router"
+  home.activation.opencodeModelRouter = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    plugin_dir="${config.xdg.configHome}/opencode/plugins"
+    router_dir="$plugin_dir/model-router"
 
-      mkdir -p "$plugin_dir"
-      rm -rf "$router_dir"
-      cp -r ${modelRouterSrc} "$router_dir"
-      chmod -R u+w "$router_dir"
-      rm -f "$plugin_dir/model-router.ts"
-    ''
-  );
+    mkdir -p "$plugin_dir"
+    rm -rf "$router_dir"
+    cp -r ${modelRouterSrc} "$router_dir"
+    chmod -R u+w "$router_dir"
+    rm -f "$plugin_dir/model-router.ts"
+  '';
 
-  programs.opencode.settings.plugins = lib.mkIf (!config.cody.editor."99".enable) [ pluginPath ];
+  programs.opencode.settings.plugins = [ pluginPath ];
 }

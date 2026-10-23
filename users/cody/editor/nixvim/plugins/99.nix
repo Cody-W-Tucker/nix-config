@@ -13,9 +13,8 @@ in
     type = lib.types.bool;
     default = true;
     description = ''
-      Whether the 99 nixvim integration is enabled. When enabled, the 99
-      plugin provides its own OpenCode-backed model routing, so the
-      OpenCode model-router plugin is disabled.
+      Whether the 99 nixvim integration is enabled. It uses OpenCode for
+      editor requests without changing the default OpenCode model router.
     '';
   };
 
