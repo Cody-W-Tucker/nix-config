@@ -9,7 +9,6 @@
 let
   inherit (config.services.hermes-agent) workingDirectory;
   workflowPackage = inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.workflowCli;
-  hermesPython = config.services.hermes-agent.package.python.pkgs;
   holographicPlugin = pkgs.fetchFromGitHub {
     owner = "itpartypattaya";
     repo = "hermes-plugin-holographic";
@@ -85,9 +84,9 @@ in
         homeAssistantPlugin
         langfusePlugin
       ];
-      # Holographic needs NumPy. aiohttp (Home Assistant) and
-      # snowballstemmer (Holographic) are already sealed into Hermes.
-      extraPythonPackages = with hermesPython; [ numpy ];
+      # NumPy, aiohttp (Home Assistant), and snowballstemmer (Holographic)
+      # are sealed into Hermes's dependency groups. Do not inject them through
+      # extraPythonPackages: Hermes rejects duplicate distributions at build time.
       extraPackages = with pkgs; [
         binutils
         chromium
