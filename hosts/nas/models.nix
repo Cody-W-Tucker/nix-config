@@ -119,6 +119,7 @@ in
     ctranslate2Cpp = ctranslate2CppBlackwell;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     port = 8081;
+    openFirewall = false;
     modelOwner = "codyt";
     modelGroup = "users";
     serviceEnvironment = {

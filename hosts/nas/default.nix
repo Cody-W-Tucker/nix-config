@@ -229,6 +229,8 @@
         # Hermes Dashboard — remote web UI, authenticated via basic auth
         8642
         9119
+        # llama-swap router — reachable only over Tailscale
+        8081
       ];
       allowedTCPPorts = [
         # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
