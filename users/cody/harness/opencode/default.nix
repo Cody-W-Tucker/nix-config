@@ -11,7 +11,6 @@
     ./agents/knowledge
     ./skills/humanizer
     ./skills/cognitive
-    ./tools/langfuse
     ./tools/rtk
   ];
 
@@ -58,11 +57,11 @@
     rm -f "${config.xdg.configHome}/opencode/plugins/voice.ts"
   '';
 
-  # Remove the retired model-router directory plugin and the retired Herdr
-  # agent-state plugin so OpenCode plugin discovery cannot keep loading
-  # them from previous activations after their Nix modules were removed.
+  # Remove retired directory plugins so OpenCode plugin discovery cannot keep
+  # loading them from previous activations after their Nix modules were removed.
   home.activation.removeRetiredOpenCodePlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     rm -rf "${config.xdg.configHome}/opencode/plugins/model-router"
+    rm -rf "${config.xdg.configHome}/opencode/plugins/langfuse-observability"
     rm -f "${config.xdg.configHome}/opencode/plugins/model-router.ts"
     rm -f "${config.xdg.configHome}/opencode/plugins/herdr-agent-state.js"
   '';
@@ -86,14 +85,8 @@
       - Node: nix shell nixpkgs#nodejs --command node script.js
     '';
     settings = {
-      # The langfuse module contributes its own entry to this list.
-      # Langfuse loads from a managed local plugin path
-      # (./tools/langfuse) instead of the bare npm spec as a TEMPORARY
-      # workaround for https://github.com/langfuse/opencode-observability-plugin/issues/55
-      # (upstream 0.5.2 resolves @opentelemetry/api@1.9.1, sdk-logs@3.0.0
-      # needs >=1.10.0). Removal: restore the bare spec once upstream ships
-      # a fixed release.
-      plugins = [ ];
+      # v0.6.0 contains the fixes formerly carried by ./tools/langfuse.
+      plugins = [ "@langfuse/opencode-observability-plugin@0.6.0" ];
       autoupdate = false;
       small_model = "opencode-go/deepseek-v4-flash";
       formatter = true;
