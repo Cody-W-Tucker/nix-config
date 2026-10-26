@@ -2,6 +2,7 @@
   lib,
   pkgs,
   config,
+  options,
   ...
 }:
 {
@@ -113,6 +114,15 @@
           };
         };
       };
+    };
+  }
+  // lib.optionalAttrs (options.programs.opencode ? cli) {
+    # Stylix still sets the legacy `tui` option. OpenCode 2 reads terminal
+    # preferences from cli.json instead.
+    tui = lib.mkForce { };
+    cli.theme = {
+      name = "stylix";
+      mode = "system";
     };
   };
 }
