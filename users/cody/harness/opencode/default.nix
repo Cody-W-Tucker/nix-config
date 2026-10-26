@@ -11,6 +11,7 @@
     ./agents/knowledge
     ./skills/humanizer
     ./skills/cognitive
+    ./tools/langfuse
     ./tools/rtk
   ];
 
@@ -57,11 +58,11 @@
     rm -f "${config.xdg.configHome}/opencode/plugins/voice.ts"
   '';
 
-  # Remove retired directory plugins so OpenCode plugin discovery cannot keep
-  # loading them from previous activations after their Nix modules were removed.
+  # Remove the retired model-router directory plugin and the retired Herdr
+  # agent-state plugin so OpenCode plugin discovery cannot keep loading
+  # them from previous activations after their Nix modules were removed.
   home.activation.removeRetiredOpenCodePlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     rm -rf "${config.xdg.configHome}/opencode/plugins/model-router"
-    rm -rf "${config.xdg.configHome}/opencode/plugins/langfuse-observability"
     rm -f "${config.xdg.configHome}/opencode/plugins/model-router.ts"
     rm -f "${config.xdg.configHome}/opencode/plugins/herdr-agent-state.js"
   '';
@@ -85,8 +86,10 @@
       - Node: nix shell nixpkgs#nodejs --command node script.js
     '';
     settings = {
-      # v0.6.0 contains the fixes formerly carried by ./tools/langfuse.
-      plugins = [ "@langfuse/opencode-observability-plugin@0.6.0" ];
+      # The langfuse module contributes its own entry to this list. Keep its
+      # patched 0.5.2 directory plugin until upstream resolves the 0.6.0
+      # SynchronizedRef initialization failure on OpenCode 2.1.1.
+      plugins = [ ];
       autoupdate = false;
       small_model = "opencode-go/deepseek-v4-flash";
       formatter = true;

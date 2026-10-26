@@ -1,0 +1,10 @@
+{
+  "name": "langfuse-observability-managed",
+  "version": "0.6.0-synchronized-ref-patched.1",
+  "private": true,
+  "description": "Local compatibility patch for Langfuse OpenCode plugin 0.6.0 SynchronizedRef initialization on OpenCode 2.1.1.",
+  "main": "./index.ts",
+  "dependencies": {
+    "@langfuse/opencode-observability-plugin": "0.6.0"
+  }
+}
