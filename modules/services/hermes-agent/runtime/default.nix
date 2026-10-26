@@ -31,6 +31,15 @@ let
       hash = "sha256-f4GPOMwi2rqI/c7GLSrdzuThjRr0Upl4ttB1AehraUY=";
     };
     build-system = [ hermesPythonPackages.uv-build ];
+    # WORKAROUND: Langfuse 4.15.2 caps its build backend below uv-build 0.12,
+    # while Hermes's locked Python set provides uv-build 0.12.5. Patch the
+    # obsolete upper bound so PEP 517 can build the wheel.
+    # Upstream: https://github.com/NousResearch/hermes-agent/issues/48576
+    # REVIEW-BY: 2026-11-30
+    postPatch = ''
+      substituteInPlace pyproject.toml \
+        --replace-fail 'uv_build>=0.11.2,<0.12.0' 'uv_build>=0.11.2'
+    '';
     dependencies = with hermesPythonPackages; [
       httpx
       pydantic
