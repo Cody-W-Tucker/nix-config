@@ -121,7 +121,7 @@ in
       ];
       settings = {
         model = {
-          default = "gpt-5.6-terra";
+          default = "gpt-6.1-terra";
           provider = "openai-codex";
         };
         fallback_model = {
