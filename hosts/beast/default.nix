@@ -1,7 +1,6 @@
 {
   config,
   inputs,
-  lib,
   pkgs,
   self,
   ...
@@ -159,9 +158,6 @@ in
       # MT7925 Bluetooth is more stable when NetworkManager does not power-save Wi-Fi.
       "wifi.powersave" = 2;
     };
-    # NetworkManager forces useDHCP=false; override so the wired link is DHCP-only
-    # with no declarative static address.
-    useDHCP = lib.mkForce true;
     interfaces.eno1.wakeOnLan = {
       enable = true;
       policy = [ "magic" ];
