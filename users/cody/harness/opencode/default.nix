@@ -112,6 +112,9 @@
       };
     };
   }
+  // lib.optionalAttrs (options.programs.opencode ? mutableSettings) {
+    mutableSettings = true;
+  }
   // lib.optionalAttrs (options.programs.opencode ? cli) {
     # Stylix still sets the legacy `tui` option. OpenCode 2 reads terminal
     # preferences from cli.json instead.
