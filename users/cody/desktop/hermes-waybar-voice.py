@@ -569,9 +569,17 @@ def transcribe(path: Path) -> str | None:
 
 
 def chat(messages: list[dict[str, str]]) -> str | None:
+    voice_instruction = {
+        "role": "system",
+        "content": (
+            "This is a voice-only conversation. Keep responses very brief and "
+            "natural to hear, usually one or two sentences. Include essential "
+            "details, and avoid Markdown or long lists."
+        ),
+    }
     return http_chat_stream(
         f"{HERMES_BASE_URL}/v1/chat/completions",
-        {"model": CHAT_MODEL, "messages": messages, "stream": True},
+        {"model": CHAT_MODEL, "messages": [voice_instruction, *messages], "stream": True},
     )
 
 
