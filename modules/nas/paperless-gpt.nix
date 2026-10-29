@@ -43,6 +43,7 @@
       VISION_LLM_MAX_TOKENS = "2048";
       TZ = "America/Chicago";
       LOG_LEVEL = "info";
+      AUTO_GENERATE_TAGS = "false";
     };
     environmentFiles = [
       config.sops.secrets.paperless-ai-env.path
