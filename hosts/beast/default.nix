@@ -42,6 +42,7 @@ in
     ../../modules/desktop/gaming
     ../../modules/desktop/hardware/nvidia.nix
     ../../modules/services/docker.nix
+    ../../modules/services/paperless-scanning
 
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
@@ -79,6 +80,20 @@ in
 
   # System fileSystems
   fileSystems = {
+    "/mnt/paperless-consume" = {
+      device = "//192.168.1.2/PaperlessConsume";
+      fsType = "cifs";
+      options = [
+        "guest"
+        "uid=${toString config.ids.uids.scanner}"
+        "gid=${toString config.ids.gids.scanner}"
+        "nofail"
+        "noauto"
+        "x-systemd.automount"
+        "x-systemd.idle-timeout=60"
+        "x-systemd.mount-timeout=10s"
+      ];
+    };
     # Actual drives
     "/" = {
       device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
