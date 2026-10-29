@@ -44,6 +44,7 @@
       TZ = "America/Chicago";
       LOG_LEVEL = "info";
       AUTO_GENERATE_TAGS = "false";
+      AUTO_GENERATE_DOCUMENT_TYPE = "false";
     };
     environmentFiles = [
       config.sops.secrets.paperless-ai-env.path
