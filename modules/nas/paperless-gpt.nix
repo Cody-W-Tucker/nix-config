@@ -34,7 +34,7 @@
       # llama-swap requires no API key, but the OpenAI client still wants a
       # token string — declarative dummy, not a secret.
       OPENAI_API_KEY = "sk-llama-swap";
-      LLM_MODEL = "qwen-3.5-4b";
+      LLM_MODEL = "qwen-3.5-9b";
       # LLM-based OCR using the dedicated GLM-OCR vision model.
       OCR_PROVIDER = "llm";
       VISION_LLM_PROVIDER = "openai";
