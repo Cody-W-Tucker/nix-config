@@ -6,7 +6,7 @@ let
     # Keep the working directory and page images if scanning or conversion fails.
     work=$(mktemp -d /var/lib/paperless-scanning/scan-XXXXXXXX)
     cd "$work"
-    scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Color --resolution 300dpi
+    scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Color --resolution 300dpi --swcrop=yes
     ${pkgs.imagemagick}/bin/convert image* -density 300 scan.pdf
     test -s scan.pdf
     name="Scan-$(date +%Y%m%d-%H%M%S)-''${work##*-}.pdf"
