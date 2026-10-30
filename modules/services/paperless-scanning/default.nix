@@ -6,7 +6,8 @@ let
     # Keep the working directory and page images if scanning or conversion fails.
     work=$(mktemp -d /var/lib/paperless-scanning/scan-XXXXXXXX)
     cd "$work"
-    scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Color --resolution 300dpi --swcrop=yes
+    # Detect each page's end within a legal-length scan area, then crop its edges.
+    scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Color --resolution 300dpi --page-height 355.6 -y 355.6 --ald=yes --swcrop=yes
     ${pkgs.imagemagick}/bin/convert image* -density 300 scan.pdf
     test -s scan.pdf
     name="Scan-$(date +%Y%m%d-%H%M%S)-''${work##*-}.pdf"
