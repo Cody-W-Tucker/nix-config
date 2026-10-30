@@ -6,13 +6,34 @@ let
     # Keep the working directory and page images if scanning or conversion fails.
     work=$(mktemp -d /var/lib/paperless-scanning/scan-XXXXXXXX)
     cd "$work"
-    # Detect each page's end within a legal-length scan area, then crop its edges.
-    scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Color --resolution 300dpi --page-height 355.6 -y 355.6 --ald=yes --swcrop=yes
-    ${pkgs.imagemagick}/bin/convert image* -density 300 scan.pdf
+    # Detect each page's end within a legal-length scan area. Software cropping
+    # is disabled because it cut off content during an iX500 duplex scan.
+    scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Color --resolution 300dpi --page-height 355.6 -y 355.6 --ald=yes
+    mkdir cropped
+    for image in image*; do
+      # Expand the detected bounds by 2 mm at 300 dpi, without exceeding the scan.
+      set -- $(${pkgs.imagemagick}/bin/magick "$image" -format '%w %h' info:)
+      width=$1 height=$2
+      set -- $(${pkgs.imagemagick}/bin/magick "$image" -fuzz 15% -trim -format '%w %h %X %Y' info:)
+      crop_width=$1 crop_height=$2 x=$3 y=$4
+      if [ "$crop_width" -le 1 ] || [ "$crop_height" -le 1 ]; then
+        cp "$image" "cropped/$image"
+        continue
+      fi
+      left=$((x - 24)); top=$((y - 24))
+      right=$((x + crop_width + 24)); bottom=$((y + crop_height + 24))
+      [ "$left" -ge 0 ] || left=0
+      [ "$top" -ge 0 ] || top=0
+      [ "$right" -le "$width" ] || right=$width
+      [ "$bottom" -le "$height" ] || bottom=$height
+      ${pkgs.imagemagick}/bin/magick "$image" -crop "$((right - left))x$((bottom - top))+$left+$top" +repage "cropped/$image"
+    done
+    ${pkgs.imagemagick}/bin/convert cropped/image* -density 300 scan.pdf
     test -s scan.pdf
     name="Scan-$(date +%Y%m%d-%H%M%S)-''${work##*-}.pdf"
     mv scan.pdf "/var/lib/paperless-scanning/pending/$name"
-    rm -f image*
+    rm -f image* cropped/image*
+    rmdir cropped
     cd /
     rmdir "$work"
   '';
