@@ -62,6 +62,8 @@ in
     inherit passwordFile repository;
     paths = fixedHostData ++ cfg.dataDirectories ++ stagedDirs;
     exclude = [
+      # A live RocksDB/SQLite file copy is not a consistent database backup.
+      "/mnt/knowledge/.open-ontologies"
       "/home/codyt/.local/share/hermes/audio_cache"
       "/home/codyt/.local/share/hermes/cache"
       "/home/codyt/.local/share/hermes/**/*.db"

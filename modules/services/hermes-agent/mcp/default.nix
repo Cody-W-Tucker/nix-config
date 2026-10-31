@@ -3,7 +3,6 @@
   inputs,
   lib,
   pkgs,
-  self,
   ...
 }:
 
@@ -26,16 +25,7 @@ let
   };
   mcpRegistry = {
     open-ontologies = {
-      command = lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.open-ontologies;
-      args = [
-        "serve"
-        "--data-dir"
-        "${config.xdg.dataHome}/open-ontologies/hermes"
-        "--storage-mode"
-        "memory"
-        "--tools-allow"
-        "onto_status,onto_validate,onto_load,onto_query,onto_stats,onto_clear,onto_shacl,onto_vocab_check,onto_reason,onto_segment_retrieve"
-      ];
+      url = "http://127.0.0.1:18081/mcp";
     };
     karakeep = {
       command = lib.getExe' pkgs.nodejs "npx";

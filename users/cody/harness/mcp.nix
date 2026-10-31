@@ -1,26 +1,11 @@
-{
-  config,
-  lib,
-  pkgs,
-  self,
-  ...
-}:
+{ ... }:
 {
   # Global MCP tools for all agents
   programs.mcp = {
     enable = true;
     servers = {
       open-ontologies = {
-        command = lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.open-ontologies;
-        args = [
-          "serve"
-          "--data-dir"
-          "${config.xdg.dataHome}/open-ontologies/opencode"
-          "--storage-mode"
-          "memory"
-          "--tools-allow"
-          "onto_status,onto_validate,onto_load,onto_query,onto_stats,onto_clear,onto_shacl,onto_vocab_check,onto_reason,onto_segment_retrieve"
-        ];
+        url = "http://100.81.249.65:18082/mcp";
       };
       exa = {
         type = "remote";

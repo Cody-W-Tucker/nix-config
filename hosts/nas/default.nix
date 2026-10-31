@@ -13,6 +13,7 @@
     ../../modules/hardware/nvidia.nix
     ../../modules/nas
     ../../modules/services/opencode
+    ../../modules/services/open-ontologies
     inputs.workflow.nixosModules.default
     ./models.nix
     # VPN for media
