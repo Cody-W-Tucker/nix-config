@@ -5,7 +5,7 @@ SHACL validation, graph reasoning, and graph-based retrieval. Use existing note
 search or code-review-graph tools instead for ordinary notes or code searches.
 
 The NAS hosts one persistent graph at `/mnt/knowledge/.open-ontologies`.
-OpenCode on Beast and Hermes on the NAS share it. The MCP endpoint on Beast's
+OpenCode on Beast and the NAS and Hermes on the NAS share it. The MCP endpoint on Beast's
 Tailscale connection is restricted to Beast's Tailscale address; the NAS-local
 HTTP API is not authenticated. Other local users with access to the endpoint
 can read and change the graph. Do not open the database with a second process.

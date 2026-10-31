@@ -1,11 +1,15 @@
-{ ... }:
+{ osConfig, ... }:
 {
   # Global MCP tools for all agents
   programs.mcp = {
     enable = true;
     servers = {
       open-ontologies = {
-        url = "http://100.81.249.65:18082/mcp";
+        url =
+          if osConfig.networking.hostName == "nas" then
+            "http://127.0.0.1:18081/mcp"
+          else
+            "http://100.81.249.65:18082/mcp";
       };
       exa = {
         type = "remote";
