@@ -84,6 +84,8 @@
       Examples:
       - Python: nix shell nixpkgs#python3 --command python script.py
       - Node: nix shell nixpkgs#nodejs --command node script.js
+
+      ${builtins.readFile ../../../../docs/open-ontologies-mcp.md}
     '';
     settings = {
       # The langfuse module contributes its own entry to this list. Keep its

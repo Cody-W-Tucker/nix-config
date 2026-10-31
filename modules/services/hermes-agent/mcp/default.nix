@@ -3,6 +3,7 @@
   inputs,
   lib,
   pkgs,
+  self,
   ...
 }:
 
@@ -24,6 +25,18 @@ let
     '';
   };
   mcpRegistry = {
+    open-ontologies = {
+      command = lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.open-ontologies;
+      args = [
+        "serve"
+        "--data-dir"
+        "${config.xdg.dataHome}/open-ontologies/hermes"
+        "--storage-mode"
+        "memory"
+        "--tools-allow"
+        "onto_status,onto_validate,onto_load,onto_query,onto_stats,onto_clear,onto_shacl,onto_vocab_check,onto_reason,onto_segment_retrieve"
+      ];
+    };
     karakeep = {
       command = lib.getExe' pkgs.nodejs "npx";
       args = [
@@ -69,13 +82,13 @@ let
 in
 {
   config = {
-    # Default profile only: expose just Karakeep here so unrelated MCP schemas
+    # Default profile only: expose selected servers so unrelated MCP schemas
     # and tools never enter its prompt surface. The remaining entries below
     # stay defined but unwired; no named profiles consume them.
     services.hermes-agent = {
       extraPackages = [ crg ];
       mcpServers = {
-        inherit (mcpRegistry) karakeep;
+        inherit (mcpRegistry) karakeep open-ontologies;
       };
     };
   };
