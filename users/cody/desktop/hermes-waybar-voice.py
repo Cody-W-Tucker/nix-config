@@ -11,6 +11,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
+import uuid
 import wave
 from collections import deque
 from collections.abc import Callable
@@ -289,7 +290,9 @@ def save_messages(messages: list[dict[str, str]]) -> None:
         ):
             title = compact_text(message["content"])
             break
-    write_json(SESSION_FILE, {"messages": trimmed, "title": title})
+    session = read_json(SESSION_FILE)
+    session.update({"messages": trimmed, "title": title})
+    write_json(SESSION_FILE, session)
 
 
 def iter_sse_data(response):
@@ -332,6 +335,12 @@ def chunk_text(payload: dict) -> str:
 def http_chat_stream(
     url: str, payload: dict, timeout: float = CHAT_TIMEOUT_SECONDS
 ) -> str | None:
+    session = read_json(SESSION_FILE)
+    session_id = session.get("session_id")
+    if not isinstance(session_id, str) or not session_id:
+        session_id = uuid.uuid4().hex
+        session["session_id"] = session_id
+        write_json(SESSION_FILE, session)
     body = json.dumps(payload).encode()
     request = urllib.request.Request(
         url,
@@ -340,6 +349,7 @@ def http_chat_stream(
             "Content-Type": "application/json",
             "Accept": "text/event-stream",
             "Authorization": f"Bearer {GATEWAY_AUTH_TOKEN}",
+            "X-Hermes-Session-Id": session_id,
         },
         method="POST",
     )
