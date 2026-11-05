@@ -11,6 +11,8 @@
     ./agents/knowledge
     ./skills/humanizer
     ./skills/cognitive
+    ./skills/make-native
+    ./skills/untangle-codebase
     ./tools/langfuse
     ./tools/rtk
   ];
