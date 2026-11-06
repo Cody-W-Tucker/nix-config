@@ -35,25 +35,6 @@ let
   # Drag/resize binds need the mouse option flag (replaces hyprlang bindm)
   mouseBind = key: action: mkBind key action { mouse = true; };
 
-  specialWorkspaceRules = [
-    {
-      workspace = "special:ai";
-      on_created_empty = "${webApp}=https://www.perplexity.ai/";
-    }
-    {
-      workspace = "special:dev";
-      on_created_empty = terminal;
-    }
-    {
-      workspace = "special:media";
-      on_created_empty = "${webApp}=https://www.youtube.com/";
-    }
-    {
-      workspace = "special:think";
-      on_created_empty = "${webApp}=https://draw.homehub.tv/";
-    }
-  ];
-
   screenshotAction = pkgs.writeShellApplication {
     name = "screenshot-to-clipboard";
     runtimeInputs = [
@@ -220,6 +201,23 @@ let
   );
 in
 {
+  wayland.windowManager.hyprland.extraConfig = ''
+    local workspace_programs = {
+      ["special:ai"] = ${builtins.toJSON "${webApp}=https://www.perplexity.ai/"},
+      ["special:dev"] = ${builtins.toJSON terminal},
+      ["special:media"] = ${builtins.toJSON "${webApp}=https://www.youtube.com/"},
+      ["special:think"] = ${builtins.toJSON "${webApp}=https://draw.homehub.tv/"},
+    }
+
+    hl.on("workspace.created", function(ws)
+      if not ws.is_empty then return end
+      local command = workspace_programs[ws.name]
+      if command then
+        hl.exec_cmd(command, { workspace = ws.name .. " silent" })
+      end
+    end)
+  '';
+
   wayland.windowManager.hyprland.settings = {
     # Exposes the old `$mainMod` hyprlang variable as a Lua local
     mainMod = {
@@ -345,7 +343,7 @@ in
     ];
 
     # Workspace and monitor set in flake.nix
-    workspace_rule = hardwareConfig.workspace ++ specialWorkspaceRules;
+    workspace_rule = hardwareConfig.workspace;
     inherit (hardwareConfig) monitor;
 
     # Custom curves used by the animation entries below

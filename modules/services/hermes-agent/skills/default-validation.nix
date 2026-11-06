@@ -186,7 +186,8 @@ in
       message = "hermes-agent/skills: default exclusions missing from Nix sources: ${lib.concatStringsSep ", " missingSources}.";
     }
     {
-      assertion = returnedSources == [ ] && lib.all (rel: lib.elem rel defaultExcludedSkillPaths) retiredSourceRels;
+      assertion =
+        returnedSources == [ ] && lib.all (rel: lib.elem rel defaultExcludedSkillPaths) retiredSourceRels;
       message = "hermes-agent/skills: review retired exclusion paths; source returned or cleanup entry was removed: ${lib.concatStringsSep ", " returnedSources}.";
     }
     {

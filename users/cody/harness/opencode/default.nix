@@ -21,12 +21,17 @@ in
     ./tools/rtk
   ];
 
-  warnings = lib.optional (
-    config.programs.opencode.enable
-    && pkgs.stdenv.hostPlatform.isLinux
-    && config.programs.opencode.package.drvPath == opencode.drvPath
-    && (opencode.node_modules.outputHash or "") != "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
-  ) "OpenCode no longer uses the broken node_modules hash; remove the temporary hash workaround in users/cody/harness/opencode/default.nix.";
+  warnings =
+    lib.optional
+      (
+        config.programs.opencode.enable
+        && pkgs.stdenv.hostPlatform.isLinux
+        && config.programs.opencode.package.drvPath == opencode.drvPath
+        &&
+          (opencode.node_modules.outputHash or "")
+          != "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
+      )
+      "OpenCode no longer uses the broken node_modules hash; remove the temporary hash workaround in users/cody/harness/opencode/default.nix.";
 
   # OpenCode Langfuse observability credentials (shared Home Manager scope):
   # the nixos-secrets `opencode-langfuse-env` secret is rendered by a SOPS
@@ -88,7 +93,9 @@ in
     package = lib.mkDefault (
       if
         pkgs.stdenv.hostPlatform.isLinux
-        && (opencode.node_modules.outputHash or "") == "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
+        &&
+          (opencode.node_modules.outputHash or "")
+          == "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
       then
         opencode.overrideAttrs (old: {
           node_modules = old.node_modules.overrideAttrs {
