@@ -1,8 +1,6 @@
 {
   config,
   lib,
-  inputs,
-  pkgs,
   ...
 }:
 
@@ -14,7 +12,6 @@ in
     home-manager.users.codyt = {
       programs.opencode = {
         enable = true;
-        package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencode;
         web.enable = true;
         web.extraArgs = [
           "--hostname"

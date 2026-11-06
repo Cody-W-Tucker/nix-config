@@ -1,10 +1,14 @@
 {
   lib,
   pkgs,
+  inputs,
   config,
   options,
   ...
 }:
+let
+  opencode = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencode;
+in
 {
   imports = [
     ./agents/logging
@@ -20,8 +24,8 @@
   warnings = lib.optional (
     config.programs.opencode.enable
     && pkgs.stdenv.hostPlatform.isLinux
-    && config.programs.opencode.package.drvPath == pkgs.opencode.drvPath
-    && (pkgs.opencode.node_modules.outputHash or "") != "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
+    && config.programs.opencode.package.drvPath == opencode.drvPath
+    && (opencode.node_modules.outputHash or "") != "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
   ) "OpenCode no longer uses the broken node_modules hash; remove the temporary hash workaround in users/cody/harness/opencode/default.nix.";
 
   # OpenCode Langfuse observability credentials (shared Home Manager scope):
@@ -78,21 +82,21 @@
 
   programs.opencode = {
     enable = true;
-    # WORKAROUND: nixpkgs 2.2.5 has a platform-independent node_modules hash.
+    # WORKAROUND: OpenCode 2.2.5's node_modules hash fails on Linux.
     # https://github.com/NixOS/nixpkgs/pull/582675
     # REVIEW-BY: 2026-11-30
     package = lib.mkDefault (
       if
         pkgs.stdenv.hostPlatform.isLinux
-        && (pkgs.opencode.node_modules.outputHash or "") == "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
+        && (opencode.node_modules.outputHash or "") == "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
       then
-        pkgs.opencode.overrideAttrs (old: {
+        opencode.overrideAttrs (old: {
           node_modules = old.node_modules.overrideAttrs {
             outputHash = "sha256-prx9dX7kUvs/E3zopkaPk5LXh3xJAy5sZeum/W8L7cA=";
           };
         })
       else
-        pkgs.opencode
+        opencode
     );
     enableMcpIntegration = true;
     context = ''
