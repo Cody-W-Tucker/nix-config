@@ -54,7 +54,18 @@ let
     ++ allHermesOptionalRelPaths;
   defaultRels = filteredCognitiveAssistantRelPaths ++ gwsFilteredRels ++ filteredKnowledgeRelPaths;
 
-  missingSources = lib.filter (rel: !lib.elem rel sourceRels) defaultExcludedSkillPaths;
+  # Retain these paths for cleanup of older seeded skills even though Hermes
+  # removed them upstream. Review their status if they appear in a source again.
+  retiredSourceRels = [
+    "productivity/airtable"
+    "productivity/notion"
+    "productivity/powerpoint"
+    "productivity/xlsx"
+  ];
+  missingSources = lib.filter (
+    rel: !lib.elem rel sourceRels && !lib.elem rel retiredSourceRels
+  ) defaultExcludedSkillPaths;
+  returnedSources = lib.intersectLists retiredSourceRels sourceRels;
 
   reseeded = lib.filter (rel: lib.elem rel defaultRels) defaultExcludedSkillPaths;
 
@@ -172,7 +183,11 @@ in
     }
     {
       assertion = missingSources == [ ];
-      message = "hermes-agent/skills: every default exclusion must exist in CA/GWS/knowledge Nix source (evaluated evidence, not runtime dirs).";
+      message = "hermes-agent/skills: default exclusions missing from Nix sources: ${lib.concatStringsSep ", " missingSources}.";
+    }
+    {
+      assertion = returnedSources == [ ] && lib.all (rel: lib.elem rel defaultExcludedSkillPaths) retiredSourceRels;
+      message = "hermes-agent/skills: review retired exclusion paths; source returned or cleanup entry was removed: ${lib.concatStringsSep ", " returnedSources}.";
     }
     {
       assertion = gwsChatSendProven;
