@@ -54,6 +54,10 @@
         ps."ha-philipsjs"
         ps.androidtvremote2
         ps.pychromecast
+        ps.pymetno
+        ps.gtts
+        ps."kegtron-ble"
+        ps."ibeacon-ble"
 
         # NAS service integrations (runtime deps for UI-paired integrations)
         ps."jellyfin-apiclient-python"
@@ -87,6 +91,7 @@
     config = {
       # https://www.home-assistant.io/integrations/default_config/
       default_config = { };
+      automation = "!include automations.yaml";
 
       # Allow editing from the web UI
       homeassistant = {
