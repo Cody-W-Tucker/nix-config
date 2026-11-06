@@ -4,18 +4,20 @@
 }:
 
 let
-  # WORKAROUND: wtype 0.4 assigns generated text to control-range keycodes, which Chromium/Electron can misinterpret.
+  # WORKAROUND: wtype 0.5 still uses control-range codes for mixed text/key commands.
   # https://github.com/atx/wtype/issues/71
   # https://github.com/atx/wtype/pull/74
-  # https://github.com/atx/wtype/commit/4b4c4cbd22e57fa2dc03bc8a69f1f9e2fc7f220d
   # REVIEW-BY: 2026-11-30
   wtypeFixedKeycodes = pkgs.wtype.overrideAttrs (oa: {
-    patches = (oa.patches or [ ]) ++ [
-      (pkgs.fetchpatch {
-        url = "https://github.com/atx/wtype/commit/4b4c4cbd22e57fa2dc03bc8a69f1f9e2fc7f220d.patch";
-        hash = "sha256-Ds1/PJ6wKuBQu1kgbHnIA7SXlKWMNbvoT+jfowFaMA8=";
-      })
-    ];
+    postPatch = (oa.postPatch or "") + ''
+      substituteInPlace main.c \
+        --replace-fail 'wtype->keyboard, 0, cmd->single_key_code,' 'wtype->keyboard, 0, cmd->single_key_code + 29,' \
+        --replace-fail 'key_code = text_keycodes[(key_code - 1) % ARRAY_SIZE(text_keycodes)];' 'key_code = text_keycodes[(key_code - 1) % ARRAY_SIZE(text_keycodes)];
+      } else {
+        key_code += 29;' \
+        --replace-fail ': wtype->keymap_len + 9;' ': wtype->keymap_len + 38;' \
+        --replace-fail 'text_keycodes[i - first] : i + 1;' 'text_keycodes[i - first] : i + 30;'
+    '';
   });
 
   llamaDictate = pkgs.writeShellApplication {
