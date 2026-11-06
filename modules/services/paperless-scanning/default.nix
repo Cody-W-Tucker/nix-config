@@ -8,7 +8,7 @@ let
     cd "$work"
     # Detect each page's end within a legal-length scan area. Software cropping
     # is disabled because it cut off content during an iX500 duplex scan.
-    scanadf -d "$SCANBD_DEVICE" --source "ADF Duplex" --mode Color --resolution 300dpi --page-height 355.6 -y 355.6 --ald=yes
+    scanimage -d "$SCANBD_DEVICE" --batch='image%04d.pnm' --source "ADF Duplex" --mode Color --resolution 300dpi --page-height 355.6 -y 355.6 --ald=yes
     mkdir cropped
     for image in image*; do
       # Expand the detected bounds by 2 mm at 300 dpi, without exceeding the scan.
@@ -58,7 +58,7 @@ let
   tools = [
     pkgs.coreutils
     pkgs.util-linux
-    pkgs.sane-frontends
+    pkgs.sane-backends
     pkgs.imagemagick
     pkgs.ghostscript
   ];
