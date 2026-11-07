@@ -144,6 +144,30 @@ in
           provider = "xai-oauth";
           model = "grok-4.7";
         };
+        delegation = {
+          backend = "model_map";
+          backends.model_map.options = [
+            {
+              name = "fast";
+              description = "Narrow lookups, simple summaries, and straightforward edits.";
+              provider = "opencode-go";
+              model = "deepseek-v4.1-flash";
+            }
+            {
+              name = "medium";
+              description = "Multi-step research, ordinary implementation, and analysis.";
+              provider = "opencode-go";
+              model = "hy4";
+            }
+            {
+              name = "heavy";
+              description = "Difficult debugging, architecture, and consequential reviews.";
+              provider = "openai-codex";
+              model = "gpt-6.1-sol";
+              reasoning_effort = "high";
+            }
+          ];
+        };
         auxiliary = {
           approval = {
             provider = "opencode-go";
