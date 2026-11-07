@@ -22,6 +22,18 @@ let
     rev = "a4e311e433f1470b1fec15434deea6a05e8644eb";
     hash = "sha256-q9gpwik7FUp2z6H69z5eoq7qNZYvdi6KvU7fOG796C4=";
   };
+  delegationPlugins = pkgs.fetchFromGitHub {
+    owner = "NousResearch";
+    repo = "hermes-official-plugins";
+    rev = "bedc9e74ef792864cd7198a8e43cedd5b585ace7";
+    hash = "sha256-Dp9707nwpbsOe0N1hDuzvl7oHyP97G8puiNRQZz3bWs=";
+  };
+  advancedDelegationPlugin = pkgs.runCommand "advanced-delegation" { } ''
+    cp -R ${delegationPlugins}/advanced-delegation "$out"
+    # The pinned Hermes has the delegation-provider API but reports 0.0.0.
+    substituteInPlace "$out/plugin.yaml" \
+      --replace-fail 'requires_hermes: ">=0.22.5"' 'requires_hermes: ">=0.0.0"'
+  '';
   homeAssistantPlugin = pkgs.runCommand "homeassistant" { } ''
     cp -R ${officialPlugins}/homeassistant "$out"
     # Hermes's Nix derivation reports version 0.0.0 even though this pinned
@@ -56,6 +68,9 @@ in
     # provider by directory name, so Holographic needs the canonical link.
     home.activation.hermesHolographicPlugin = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
       $DRY_RUN_CMD ln -sfn ${holographicPlugin} ${config.services.hermes-agent.hermesHome}/plugins/holographic
+      # Migration detection checks canonical directory names, not manifests.
+      $DRY_RUN_CMD ln -sfn ${homeAssistantPlugin} ${config.services.hermes-agent.hermesHome}/plugins/homeassistant
+      $DRY_RUN_CMD ln -sfn ${langfusePlugin} ${config.services.hermes-agent.hermesHome}/plugins/langfuse
     '';
 
     # Upstream renamed this option: puts the `hermes` CLI into user packages
@@ -83,6 +98,7 @@ in
       extraPlugins = [
         homeAssistantPlugin
         langfusePlugin
+        advancedDelegationPlugin
       ];
       # NumPy, aiohttp (Home Assistant), and snowballstemmer (Holographic)
       # are sealed into Hermes's dependency groups. Do not inject them through
@@ -291,6 +307,7 @@ in
             "langfuse"
             "holographic"
             "homeassistant"
+            "advanced-delegation"
           ];
           "hermes-memory-store".auto_extract = false;
         };
