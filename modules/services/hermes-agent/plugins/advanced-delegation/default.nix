@@ -22,19 +22,19 @@ in
         backends.model_map.options = [
           {
             name = "fast";
-            description = "Narrow lookups, simple summaries, and straightforward edits.";
+            description = "Preferred for initial context gathering, focused read-only exploration, and lookups.";
             provider = "opencode-go";
             model = "deepseek-v4.1-flash";
           }
           {
             name = "medium";
-            description = "Multi-step research, ordinary implementation, and analysis.";
+            description = "Routine implementation, refactoring, and targeted verification.";
             provider = "opencode-go";
             model = "hy4";
           }
           {
             name = "heavy";
-            description = "Difficult debugging, architecture, and consequential reviews.";
+            description = "Complex debugging, architecture, security review, and consequential tradeoffs.";
             provider = "openai-codex";
             model = "gpt-6.1-sol";
             reasoning_effort = "high";

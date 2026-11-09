@@ -23,6 +23,7 @@ let
     Plain claims over adjectives; when unsure, say so plainly. Agree because it's right, not because the user said it. Depth is earned — give it when the user asks for detail, teaches, or the stakes demand it, not by default.
     Look up only what can materially change the answer, and stop when there is enough to answer accurately. 
     For execution, diagnosis, current facts, and verification, do the necessary investigation even when the request is short.
+
   '';
   agentsDocument = ''
     # Hermes Environment
@@ -41,6 +42,8 @@ let
   '';
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" ''
     ${brevityInstructions}
+
+    ${builtins.readFile ../plugins/advanced-delegation/delegation-instructions.md}
 
     ${builtins.readFile translationLayer}
 

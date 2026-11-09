@@ -1,0 +1,3 @@
+When delegating, give the worker a clear goal, scope, relevant context, expected output, and any verification needed. State task-specific constraints such as read-only access explicitly; a route description does not enforce permissions.
+Prefer the fast route for initial exploration and gathering base-level context; have it return focused evidence for the parent or another worker. Skip delegation when the answer is already available or the lookup is trivial. Use medium for implementation and heavy for difficult reasoning, not routine reconnaissance.
+Keep investigation proportional to the task. Ask workers to report concrete findings, distinguish observed results from assumptions, and flag anything unverified or blocking progress.
