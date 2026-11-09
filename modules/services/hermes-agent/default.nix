@@ -7,7 +7,6 @@
 }:
 
 let
-  inherit (config.services.hermes-agent) workingDirectory;
   workflowPackage = inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.workflowCli;
   holographicPlugin = pkgs.fetchFromGitHub {
     owner = "itpartypattaya";
@@ -22,6 +21,23 @@ let
     rev = "a4e311e433f1470b1fec15434deea6a05e8644eb";
     hash = "sha256-q9gpwik7FUp2z6H69z5eoq7qNZYvdi6KvU7fOG796C4=";
   };
+  sandboxPlugins = pkgs.fetchFromGitHub {
+    owner = "NousResearch";
+    repo = "hermes-official-plugins";
+    rev = "e7a218f26db88426ab3e7376f0e000b6e356f5e7";
+    hash = "sha256-zDjiWUVmWUPAyasy74mUuh+d/dpBi1SBh7GZvuTjxcI=";
+  };
+  # The pinned Hermes exposes both plugin APIs but its Nix version is 0.0.0.
+  bubblewrapPlugin = pkgs.runCommand "bubblewrap" { } ''
+    cp -R ${sandboxPlugins}/bubblewrap "$out"
+    substituteInPlace "$out/plugin.yaml" \
+      --replace-fail 'requires_hermes: ">=0.22.6"' 'requires_hermes: ">=0.0.0"'
+  '';
+  memoryWikiPlugin = pkgs.runCommand "memory-wiki" { } ''
+    cp -R ${sandboxPlugins}/memory-wiki "$out"
+    substituteInPlace "$out/plugin.yaml" \
+      --replace-fail 'requires_hermes: ">=0.21"' 'requires_hermes: ">=0.0.0"'
+  '';
   delegationPlugins = pkgs.fetchFromGitHub {
     owner = "NousResearch";
     repo = "hermes-official-plugins";
@@ -73,6 +89,10 @@ in
       $DRY_RUN_CMD ln -sfn ${langfusePlugin} ${config.services.hermes-agent.hermesHome}/plugins/langfuse
     '';
 
+    home.activation.hermesSandboxWorkspace = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
+      $DRY_RUN_CMD mkdir -p ${lib.escapeShellArg "${config.home.homeDirectory}/hermes-workspace"}
+    '';
+
     # Upstream renamed this option: puts the `hermes` CLI into user packages
     # (was `addToSystemPackages`).
     programs.hermes-agent.enable = true;
@@ -99,12 +119,16 @@ in
         homeAssistantPlugin
         langfusePlugin
         advancedDelegationPlugin
+        bubblewrapPlugin
+        memoryWikiPlugin
       ];
       # NumPy, aiohttp (Home Assistant), and snowballstemmer (Holographic)
       # are sealed into Hermes's dependency groups. Do not inject them through
       # extraPythonPackages: Hermes rejects duplicate distributions at build time.
       extraPackages = with pkgs; [
         binutils
+        bubblewrap
+        util-linux
         chromium
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agent-browser
         curl
@@ -214,8 +238,9 @@ in
         };
         max_turns = 100;
         terminal = {
-          backend = "local";
-          cwd = workingDirectory;
+          backend = "bubblewrap";
+          cwd = "${config.home.homeDirectory}/hermes-workspace";
+          degraded_mode = "fail";
           timeout = 600;
         };
         # Keep deterministic platform authorization broad, but disclose cold
@@ -332,7 +357,28 @@ in
             "holographic"
             "homeassistant"
             "advanced-delegation"
+            "bubblewrap"
+            "memory-wiki"
           ];
+          entries.bubblewrap.settings = {
+            profile = "workspace";
+            memory_mb = 2048;
+            cpu_seconds = 600;
+            home_default_deny = "all";
+
+            home_allow = [ "Projects" ];
+
+            binds = [
+              {
+                src = "/etc/nixos";
+                readonly = false;
+              }
+              {
+                src = "${config.home.homeDirectory}/Projects";
+                readonly = false;
+              }
+            ];
+          };
           "hermes-memory-store".auto_extract = false;
         };
         compression = {
