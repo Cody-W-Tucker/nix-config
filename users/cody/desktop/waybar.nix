@@ -8,6 +8,19 @@
 
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  # WORKAROUND: Waybar 0.15.0 cannot handle Hyprland's new workspace IPC.
+  # https://github.com/Alexays/Waybar/issues/5316
+  # REVIEW-BY: 2027-02-09 — remove once nixpkgs ships a compatible release.
+  waybarWithHyprlandFix = (pkgs.waybar.override { cavaSupport = false; }).overrideAttrs (old: {
+    version = "0.16.0";
+    mesonFlags = old.mesonFlags ++ [ "-Dwwan=disabled" ];
+    src = pkgs.fetchFromGitHub {
+      owner = "Alexays";
+      repo = "Waybar";
+      rev = "ecbd887aa8ce9f88525805e1df4c062003e87f91";
+      hash = "sha256-SfJ9AGoOLJyyJWEQPBC4VkYXcMkbXiWBvS+Ac0xR518=";
+    };
+  });
   hermesVoicePython = pkgs.python3.withPackages (ps: [ ps.pysilero-vad ]);
   hermesVoice = pkgs.writeShellApplication {
     name = "hermes-waybar-voice";
@@ -37,16 +50,16 @@ let
   };
   hermesVoiceCmd = lib.getExe hermesVoice;
   favorite_apps = {
-    "Zen Browser" = "🞋";
+    "zen-beta" = "🞋";
     "spotify" = "";
     "code" = "󰨞";
     "kitty" = "";
     "obsidian" = "";
-    "class<Zen Browser> title<.*Github.*>" = "";
-    "class<Zen Browser> title<.*Reddit.*>" = "";
-    "class<Zen Browser> title<.*Facebook.*>" = "";
-    "class<Zen Browser> title<.*Gmail.*>" = "";
-    "class<Zen Browser> title<.*Calendar.*>" = "";
+    "class<zen-beta> title<.*[Gg]it[Hh]ub.*>" = "";
+    "class<zen-beta> title<.*[Rr]eddit.*>" = "";
+    "class<zen-beta> title<.*[Ff]acebook.*>" = "";
+    "class<zen-beta> title<.*[Gg]mail.*>" = "";
+    "class<zen-beta> title<.*[Cc]alendar.*>" = "";
   };
 in
 {
@@ -54,8 +67,18 @@ in
 
   home.packages = [ hermesVoiceRepair ];
 
+  warnings =
+    lib.optional
+      (
+        config.programs.waybar.enable
+        && config.programs.waybar.package.outPath == waybarWithHyprlandFix.outPath
+        && lib.versionAtLeast pkgs.waybar.version "0.16.0"
+      )
+      "Waybar in nixpkgs is already ${pkgs.waybar.version}; review and remove the Hyprland compatibility override in users/cody/desktop/waybar.nix.";
+
   programs.waybar = {
     enable = true;
+    package = waybarWithHyprlandFix;
     systemd = {
       enable = true;
       targets = [ "graphical-session.target" ];
@@ -82,7 +105,6 @@ in
           "group/hardware"
         ];
         "hyprland/workspaces" = {
-          on-click = "activate";
           show-special = true;
           format = "{icon} {windows}";
           window-rewrite = favorite_apps;
@@ -168,14 +190,8 @@ in
           exec =
             let
               nextmeetingWithClass = pkgs.writeShellScript "nextmeeting-with-class" ''
-                OUTPUT=$(${nextmeeting} --skip-all-day-meeting --waybar --gcalcli-cmdline "gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv")
-                if echo "$OUTPUT" | grep -q '"text": "No meeting'; then
-                  echo '{"text":""}'
-                else
-                  # Extract the text value and prepend calendar icon
-                  TEXT=$(echo "$OUTPUT" | sed 's/.*"text": "\([^"]*\)".*/\1/')
-                  echo "{\"text\":\"󰃶 $TEXT\"}"
-                fi
+                ${nextmeeting} --skip-all-day-meeting --waybar --gcalcli-cmdline "gcalcli --nocolor agenda today --nodeclined --details=end --details=url --tsv" |
+                  ${lib.getExe pkgs.jq} -c 'if (.text | startswith("No meeting")) then .text = "" else .text = ("󰃶 " + .text) end'
               '';
             in
             toString nextmeetingWithClass;
@@ -191,6 +207,10 @@ in
           tooltip = true;
           on-click-right = "xdg-open https://calendar.google.com/calendar/u/0/r";
           tooltip-format = "<tt><small>{calendar}</small></tt>";
+          actions = {
+            on-scroll-up = "shift_up";
+            on-scroll-down = "shift_down";
+          };
           calendar = {
             mode = "year";
             mode-mon-col = 3;
@@ -340,7 +360,7 @@ in
       #workspaces button.urgent {
         background-color: #${config.lib.stylix.colors.base08};
         border-color: #${config.lib.stylix.colors.base08};
-        color: #${config.lib.stylix.colors.base08};
+        color: #${config.lib.stylix.colors.base00};
       }
 
       #privacy {
