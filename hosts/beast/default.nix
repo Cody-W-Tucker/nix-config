@@ -17,15 +17,17 @@ let
       }
     ];
     monitor = [
-      # Samsung Odyssey G65B exposes 2560x1440@239.97; keep SDR desktop output in sRGB and leave HDR to fullscreen-capable clients.
+      # Samsung Odyssey G65B: HDR output with SDR brightness tuned for the desktop.
       {
         output = "DP-1";
         mode = "2560x1440@239.97";
         position = "0x0";
-        scale = 1;
-        vrr = 2;
+        vrr = 3;
         bitdepth = 10;
-        cm = "srgb";
+        cm = "hdr";
+        sdrbrightness = 1;
+        sdrsaturation = 1;
+        sdr_max_luminance = 340;
       }
     ];
     # Suspend after 1 hour of idle
