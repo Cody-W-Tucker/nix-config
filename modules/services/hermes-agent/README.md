@@ -7,6 +7,7 @@ Hermes is the local AI agent service for CodyOS. This directory owns the impleme
 | Path | Role |
 | --- | --- |
 | `default.nix` | Main service integration and high-level `services.hermes-agent` settings. |
+| `plugins/` | Plugin-specific source pins, enablement, settings, and runtime wiring. |
 | `runtime/default.nix` | `hermes-agent` systemd **user** service wiring and user-scoped tmpfiles. |
 | `secrets/default.nix` | SOPS secret ownership, templates, and agent/dashboard env wiring. |
 | `mcp/default.nix` | MCP server registration, currently including Karakeep. |

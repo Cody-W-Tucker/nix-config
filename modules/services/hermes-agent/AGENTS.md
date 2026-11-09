@@ -47,7 +47,8 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 ## Where Changes Go
 
 - `default.nix`: upstream Hermes service settings, imports, top-level assembly
-- `runtime/default.nix`: `systemd.user.services.hermes-agent` wiring and user tmpfiles
+- `plugins/<name>/default.nix`: plugin source, enablement, settings, and plugin-specific runtime wiring
+- `runtime/default.nix`: shared `systemd.user.services.hermes-agent` wiring and user tmpfiles
 - `mcp/default.nix`: MCP server wiring
 - `secrets/default.nix`: Hermes-owned SOPS secrets, the `hermes-env` /
   `hermes-agent-env` / `hermes-dashboard-env` templates, and the backend's

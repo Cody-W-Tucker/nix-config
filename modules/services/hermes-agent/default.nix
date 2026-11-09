@@ -8,68 +8,12 @@
 
 let
   workflowPackage = inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.workflowCli;
-  holographicPlugin = pkgs.fetchFromGitHub {
-    owner = "itpartypattaya";
-    repo = "hermes-plugin-holographic";
-    name = "holographic";
-    rev = "a6d009315bc72a7c4e68d6a0e60a6eeed68080fd";
-    hash = "sha256-JkHG1Rmb+5H3d/jpMrpQ1x8H8b1kgc+QorV4uQXCKaM=";
-  };
-  officialPlugins = pkgs.fetchFromGitHub {
-    owner = "NousResearch";
-    repo = "hermes-official-plugins";
-    rev = "a4e311e433f1470b1fec15434deea6a05e8644eb";
-    hash = "sha256-q9gpwik7FUp2z6H69z5eoq7qNZYvdi6KvU7fOG796C4=";
-  };
-  sandboxPlugins = pkgs.fetchFromGitHub {
-    owner = "NousResearch";
-    repo = "hermes-official-plugins";
-    rev = "e7a218f26db88426ab3e7376f0e000b6e356f5e7";
-    hash = "sha256-zDjiWUVmWUPAyasy74mUuh+d/dpBi1SBh7GZvuTjxcI=";
-  };
-  # The pinned Hermes exposes both plugin APIs but its Nix version is 0.0.0.
-  bubblewrapPlugin = pkgs.runCommand "bubblewrap" { } ''
-    cp -R ${sandboxPlugins}/bubblewrap "$out"
-    substituteInPlace "$out/plugin.yaml" \
-      --replace-fail 'requires_hermes: ">=0.22.6"' 'requires_hermes: ">=0.0.0"'
-  '';
-  memoryWikiPlugin = pkgs.runCommand "memory-wiki" { } ''
-    cp -R ${sandboxPlugins}/memory-wiki "$out"
-    substituteInPlace "$out/plugin.yaml" \
-      --replace-fail 'requires_hermes: ">=0.21"' 'requires_hermes: ">=0.0.0"'
-  '';
-  delegationPlugins = pkgs.fetchFromGitHub {
-    owner = "NousResearch";
-    repo = "hermes-official-plugins";
-    rev = "bedc9e74ef792864cd7198a8e43cedd5b585ace7";
-    hash = "sha256-Dp9707nwpbsOe0N1hDuzvl7oHyP97G8puiNRQZz3bWs=";
-  };
-  advancedDelegationPlugin = pkgs.runCommand "advanced-delegation" { } ''
-    cp -R ${delegationPlugins}/advanced-delegation "$out"
-    # The pinned Hermes has the delegation-provider API but reports 0.0.0.
-    substituteInPlace "$out/plugin.yaml" \
-      --replace-fail 'requires_hermes: ">=0.22.5"' 'requires_hermes: ">=0.0.0"'
-  '';
-  homeAssistantPlugin = pkgs.runCommand "homeassistant" { } ''
-    cp -R ${officialPlugins}/homeassistant "$out"
-    # Hermes's Nix derivation reports version 0.0.0 even though this pinned
-    # core includes the post-extraction plugin API. Avoid a false version-gate
-    # rejection of the official Home Assistant plugin.
-    substituteInPlace "$out/plugin.yaml" \
-      --replace-fail 'requires_hermes: ">=0.21.5"' 'requires_hermes: ">=0.0.0"'
-  '';
-  langfusePlugin = pkgs.runCommand "langfuse" { } ''
-    cp -R ${officialPlugins}/langfuse "$out"
-    # The installed Hermes source is post-extraction but its Nix derivation
-    # reports 0.0.0, so the catalog's semantic-version gate is a false reject.
-    substituteInPlace "$out/plugin.yaml" \
-      --replace-fail 'requires_hermes: ">=0.21.7"' 'requires_hermes: ">=0.0.0"'
-  '';
 in
 {
   imports = [
     inputs.hermes-agent.homeManagerModules.default
     ./runtime
+    ./plugins
     ./mcp
     ./secrets
     ./documents
@@ -79,20 +23,6 @@ in
   ];
 
   config = {
-    # The upstream Nix module prefixes directory-plugin symlinks with
-    # `nix-managed-`. Its memory-provider discovery still identifies a
-    # provider by directory name, so Holographic needs the canonical link.
-    home.activation.hermesHolographicPlugin = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
-      $DRY_RUN_CMD ln -sfn ${holographicPlugin} ${config.services.hermes-agent.hermesHome}/plugins/holographic
-      # Migration detection checks canonical directory names, not manifests.
-      $DRY_RUN_CMD ln -sfn ${homeAssistantPlugin} ${config.services.hermes-agent.hermesHome}/plugins/homeassistant
-      $DRY_RUN_CMD ln -sfn ${langfusePlugin} ${config.services.hermes-agent.hermesHome}/plugins/langfuse
-    '';
-
-    home.activation.hermesSandboxWorkspace = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
-      $DRY_RUN_CMD mkdir -p ${lib.escapeShellArg "${config.home.homeDirectory}/hermes-workspace"}
-    '';
-
     # Upstream renamed this option: puts the `hermes` CLI into user packages
     # (was `addToSystemPackages`).
     programs.hermes-agent.enable = true;
@@ -112,23 +42,11 @@ in
         "firecrawl"
         "messaging"
       ];
-      # These integrations moved out of Hermes core. Keep their sources,
-      # transitive Python dependencies, and enablement declarative so a
-      # Home Manager activation cannot silently drop them.
-      extraPlugins = [
-        homeAssistantPlugin
-        langfusePlugin
-        advancedDelegationPlugin
-        bubblewrapPlugin
-        memoryWikiPlugin
-      ];
       # NumPy, aiohttp (Home Assistant), and snowballstemmer (Holographic)
       # are sealed into Hermes's dependency groups. Do not inject them through
       # extraPythonPackages: Hermes rejects duplicate distributions at build time.
       extraPackages = with pkgs; [
         binutils
-        bubblewrap
-        util-linux
         chromium
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agent-browser
         curl
@@ -149,11 +67,6 @@ in
         AGENT_BROWSER_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";
         VOICE_TOOLS_OPENAI_KEY = "local-only";
         MEALIE_BASE_URL = "https://mealie.homehub.tv";
-        # Token is HASS_TOKEN in the multiline `hermes` sops secret (not a
-        # sibling like mealie-api-key). Built-in ha_* tools enable when set.
-        HASS_URL = "http://127.0.0.1:8123";
-        # Bundled observability/langfuse plugin (also accepts LANGFUSE_*).
-        HERMES_LANGFUSE_BASE_URL = "https://langfuse.homehub.tv";
       };
       environmentFiles = [
         config.sops.templates."hermes-env".path
@@ -167,30 +80,6 @@ in
         fallback_model = {
           provider = "xai-oauth";
           model = "grok-4.7";
-        };
-        delegation = {
-          backend = "model_map";
-          backends.model_map.options = [
-            {
-              name = "fast";
-              description = "Narrow lookups, simple summaries, and straightforward edits.";
-              provider = "opencode-go";
-              model = "deepseek-v4.1-flash";
-            }
-            {
-              name = "medium";
-              description = "Multi-step research, ordinary implementation, and analysis.";
-              provider = "opencode-go";
-              model = "hy4";
-            }
-            {
-              name = "heavy";
-              description = "Difficult debugging, architecture, and consequential reviews.";
-              provider = "openai-codex";
-              model = "gpt-6.1-sol";
-              reasoning_effort = "high";
-            }
-          ];
         };
         auxiliary = {
           approval = {
@@ -237,12 +126,6 @@ in
           };
         };
         max_turns = 100;
-        terminal = {
-          backend = "bubblewrap";
-          cwd = "${config.home.homeDirectory}/hermes-workspace";
-          degraded_mode = "fail";
-          timeout = 600;
-        };
         # Keep deterministic platform authorization broad, but disclose cold
         # schemas only when the model needs them. The bridge and compact
         # manifest remain stable; full schemas arrive through tool_search.
@@ -350,36 +233,6 @@ in
           memory_enabled = true;
           provider = "holographic";
           user_profile_enabled = true;
-        };
-        plugins = {
-          enabled = [
-            "langfuse"
-            "holographic"
-            "homeassistant"
-            "advanced-delegation"
-            "bubblewrap"
-            "memory-wiki"
-          ];
-          entries.bubblewrap.settings = {
-            profile = "workspace";
-            memory_mb = 2048;
-            cpu_seconds = 600;
-            home_default_deny = "all";
-
-            home_allow = [ "Projects" ];
-
-            binds = [
-              {
-                src = "/etc/nixos";
-                readonly = false;
-              }
-              {
-                src = "${config.home.homeDirectory}/Projects";
-                readonly = false;
-              }
-            ];
-          };
-          "hermes-memory-store".auto_extract = false;
         };
         compression = {
           enabled = true;
