@@ -71,7 +71,6 @@
 
   home.packages = with pkgs; [
     inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.t3code-desktop
     # Hermes Desktop: stay on native Wayland and the NVIDIA hardware path.
     # Vulkan is not compatible with Chromium's native Wayland ozone backend;
     # without this flag, Electron can repeatedly lose its GPU process. Hermes
