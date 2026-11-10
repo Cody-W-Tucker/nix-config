@@ -8,9 +8,6 @@
 
 # Shared user config safe for all machines
 
-let
-  no-mistakes = pkgs.callPackage ../../packages/no-mistakes { };
-in
 {
   imports = [
     ./editor/nixvim
@@ -25,7 +22,7 @@ in
     packages = with pkgs; [
       inputs.treehouse.packages.${pkgs.stdenv.hostPlatform.system}.treehouse
       # Git push gate: runs an AI-driven validation pipeline, then opens a clean PR.
-      no-mistakes
+      inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.no-mistakes
       fastfetch
       fd
       tree

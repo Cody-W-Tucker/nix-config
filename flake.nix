@@ -139,7 +139,6 @@
         acpx = pkgs.callPackage ./packages/acpx { };
         backpass = pkgs.callPackage ./packages/backpass { };
         lavish-axi = pkgs.callPackage ./packages/lavish-axi { };
-        no-mistakes = pkgs.callPackage ./packages/no-mistakes { };
         open-ontologies = pkgs.callPackage ./packages/open-ontologies { };
       };
 
