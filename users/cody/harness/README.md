@@ -9,6 +9,10 @@ Central docs should point here for harness implementation detail.
 - `default.nix` — harness import root for the desktop profile.
 - `mcp.nix` — user-session MCP server/client wiring.
 - `opencode/default.nix` — OpenCode user harness root.
+- `claude-code/default.nix` — Claude Code user harness and shared MCP integration.
+- `context.nix` — shared environment and ontology instructions.
+- The no-mistakes skill for both harnesses comes from the installed CLI's pinned source.
+- Claude Code also receives the declarative OpenCode skills and the shared deja-search skill. OpenCode-specific plugins are not shared.
 
 ## Stack
 
