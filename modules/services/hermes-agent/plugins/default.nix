@@ -2,7 +2,6 @@
 {
   services.hermes-agent.settings.plugins.enabled = [
     "langfuse"
-    "holographic"
     "homeassistant"
     "advanced-delegation"
     "bubblewrap"
@@ -11,7 +10,7 @@
 
   imports = [
     ./langfuse
-    ./holographic
+    ./hindsight
     ./homeassistant
     ./advanced-delegation
     ./bubblewrap

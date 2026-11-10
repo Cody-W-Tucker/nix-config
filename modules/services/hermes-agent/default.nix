@@ -42,9 +42,9 @@ in
         "firecrawl"
         "messaging"
       ];
-      # NumPy, aiohttp (Home Assistant), and snowballstemmer (Holographic)
-      # are sealed into Hermes's dependency groups. Do not inject them through
-      # extraPythonPackages: Hermes rejects duplicate distributions at build time.
+      # NumPy and aiohttp are sealed into Hermes's dependency groups. Do not
+      # inject them through extraPythonPackages: Hermes rejects duplicate
+      # distributions at build time.
       extraPackages = with pkgs; [
         binutils
         chromium
@@ -231,7 +231,7 @@ in
         };
         memory = {
           memory_enabled = true;
-          provider = "holographic";
+          provider = "hindsight";
           user_profile_enabled = true;
         };
         compression = {

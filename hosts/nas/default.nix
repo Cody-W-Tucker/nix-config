@@ -14,6 +14,7 @@
     ../../modules/nas
     ../../modules/services/opencode
     ../../modules/services/open-ontologies
+    ../../modules/services/hindsight
     inputs.workflow.nixosModules.default
     ./models.nix
     # VPN for media
