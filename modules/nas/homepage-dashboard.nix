@@ -110,6 +110,13 @@ in
         {
           Tools = [
             {
+              Hindsight = {
+                href = "https://memory.${domain}";
+                icon = "https://memory.${domain}/favicon.ico";
+                description = "Agent Memory";
+              };
+            }
+            {
               OpenCode = {
                 href = "https://opencode.${domain}";
                 icon = "opencode";

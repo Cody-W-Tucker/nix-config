@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  mkNginxVhost,
   pkgs,
   ...
 }:
@@ -105,6 +106,12 @@ in
       ProtectHome = true;
     };
   };
+
+  services.nginx.virtualHosts."memory.homehub.tv" =
+    (mkNginxVhost {
+      host = "memory.homehub.tv";
+      port = 9999;
+    })."memory.homehub.tv";
 
   # Only Beast can reach the MCP endpoint over Tailscale. The API and UI stay
   # loopback-only. Like open-ontologies, this uses network restrictions, not
