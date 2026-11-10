@@ -15,6 +15,8 @@ in
   ];
 
   home.packages = [
+    inputs.treehouse.packages.${pkgs.stdenv.hostPlatform.system}.treehouse
+    llmPkgs.no-mistakes # Git push gate: runs an AI-driven validation pipeline, then opens a clean PR.
     llmPkgs.spec-kit
     llmPkgs.gnhf
     llmPkgs.pi

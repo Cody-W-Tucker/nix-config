@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  inputs,
   ...
 }:
 
@@ -20,9 +19,6 @@
       model = "pc105";
     };
     packages = with pkgs; [
-      inputs.treehouse.packages.${pkgs.stdenv.hostPlatform.system}.treehouse
-      # Git push gate: runs an AI-driven validation pipeline, then opens a clean PR.
-      inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.no-mistakes
       fastfetch
       fd
       tree
