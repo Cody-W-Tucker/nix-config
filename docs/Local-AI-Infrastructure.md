@@ -96,7 +96,7 @@ The following table maps conceptual infrastructure components to their implement
 | **Orchestrator**   | [modules/services/llama-swap/default.nix](../modules/services/llama-swap/default.nix)                                             | `mkModelCommand`[128-162](../128-162)         |
 | **Whisper Server** | [modules/services/llama-swap/faster-whisper-openai-server.py](../modules/services/llama-swap/faster-whisper-openai-server.py)     | `transcriptions` endpoint [98-134](../98-134) |
 | **Kokoro TTS**     | [modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py) | `speech` endpoint, voice mapping [17-26](../17-26)       |
-| **NVIDIA Config**  | [modules/desktop/hardware/nvidia.nix](../modules/desktop/hardware/nvidia.nix)                                                     | `hardware.nvidia.open`[15-15](../15-15)       |
+| **NVIDIA Config**  | [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix)                                                                     | `codyos.hardware.nvidia`, `hardware.nvidia.open` |
 
 ### Service Consumption Diagram
 

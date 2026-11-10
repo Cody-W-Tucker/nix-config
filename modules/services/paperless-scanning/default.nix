@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   scan = pkgs.writeShellScript "paperless-scan" ''
     set -eu
@@ -89,53 +94,57 @@ let
   '';
 in
 {
-  hardware.sane.enable = true;
+  options.codyos.paperless-scanning.enable = lib.mkEnableOption "ScanSnap button scanning delivered to the Paperless consume share";
 
-  users.users.scanner = {
-    isSystemUser = true;
-    uid = config.ids.uids.scanner;
-    group = "scanner";
-    extraGroups = [ "lp" ];
-  };
+  config = lib.mkIf config.codyos.paperless-scanning.enable {
+    hardware.sane.enable = true;
 
-  systemd.tmpfiles.rules = [
-    "d /var/lib/paperless-scanning 0700 scanner scanner -"
-    "d /var/lib/paperless-scanning/pending 0700 scanner scanner -"
-  ];
-
-  environment.etc."scanbd/scanbd.conf".source = scanbdConf;
-  environment.etc."scanbd/scripts/scan.script".source = scan;
-
-  systemd.services.scanbd = {
-    description = "ScanSnap button polling";
-    wantedBy = [ "multi-user.target" ];
-    path = tools;
-    environment = {
-      SANE_CONFIG_DIR = "/etc/sane-config";
-      LD_LIBRARY_PATH = "/etc/sane-libs";
-      HOME = "/var/lib/paperless-scanning";
+    users.users.scanner = {
+      isSystemUser = true;
+      uid = config.ids.uids.scanner;
+      group = "scanner";
+      extraGroups = [ "lp" ];
     };
-    serviceConfig = {
-      ExecStart = "${pkgs.scanbd}/bin/scanbd -c /etc/scanbd/scanbd.conf -f";
-      Restart = "on-failure";
-    };
-  };
 
-  systemd.services.paperless-scan-delivery = {
-    description = "Deliver queued scans to Paperless";
-    path = tools;
-    serviceConfig = {
-      Type = "oneshot";
-      User = "scanner";
-      Group = "scanner";
-      ExecStart = deliver;
+    systemd.tmpfiles.rules = [
+      "d /var/lib/paperless-scanning 0700 scanner scanner -"
+      "d /var/lib/paperless-scanning/pending 0700 scanner scanner -"
+    ];
+
+    environment.etc."scanbd/scanbd.conf".source = scanbdConf;
+    environment.etc."scanbd/scripts/scan.script".source = scan;
+
+    systemd.services.scanbd = {
+      description = "ScanSnap button polling";
+      wantedBy = [ "multi-user.target" ];
+      path = tools;
+      environment = {
+        SANE_CONFIG_DIR = "/etc/sane-config";
+        LD_LIBRARY_PATH = "/etc/sane-libs";
+        HOME = "/var/lib/paperless-scanning";
+      };
+      serviceConfig = {
+        ExecStart = "${pkgs.scanbd}/bin/scanbd -c /etc/scanbd/scanbd.conf -f";
+        Restart = "on-failure";
+      };
     };
-  };
-  systemd.timers.paperless-scan-delivery = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnBootSec = "1min";
-      OnUnitInactiveSec = "1min";
+
+    systemd.services.paperless-scan-delivery = {
+      description = "Deliver queued scans to Paperless";
+      path = tools;
+      serviceConfig = {
+        Type = "oneshot";
+        User = "scanner";
+        Group = "scanner";
+        ExecStart = deliver;
+      };
+    };
+    systemd.timers.paperless-scan-delivery = {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "1min";
+        OnUnitInactiveSec = "1min";
+      };
     };
   };
 }

@@ -20,6 +20,18 @@
     ./services.nix
     ./networking.nix
     ../../users/home.nix
+
+    # Opt-in features: always imported, inert until a host or profile sets
+    # the matching codyos.*.enable option.
+    ../hardware/nvidia.nix
+    ../desktop/gaming
+    ../desktop/hardware/openrazer
+    ../services/docker.nix
+    ../services/hindsight
+    ../services/nginx # provides mkNginxVhost to feature modules
+    ../services/open-ontologies
+    ../services/opencode
+    ../services/paperless-scanning
   ];
 
   # https://emudhra.we-have-a-problem.com/

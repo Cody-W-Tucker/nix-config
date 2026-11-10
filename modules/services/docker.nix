@@ -1,12 +1,18 @@
 # Shared Docker policy: enable Docker and prune unused images/containers weekly.
-# Hosts that import this module get a consistent baseline; host-specific tweaks
+# Hosts that enable this get a consistent baseline; host-specific tweaks
 # (package overrides, oci-containers.backend) stay local to the host.
+{ config, lib, ... }:
+
 {
-  virtualisation.docker = {
-    enable = true;
-    autoPrune = {
+  options.codyos.docker.enable = lib.mkEnableOption "Docker with weekly auto-prune";
+
+  config = lib.mkIf config.codyos.docker.enable {
+    virtualisation.docker = {
       enable = true;
-      dates = "weekly";
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
     };
   };
 }

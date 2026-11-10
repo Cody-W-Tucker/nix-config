@@ -7,7 +7,6 @@
 
 {
   imports = [
-    ../services/nginx
     ./actual-budget.nix
     ./backup-health.nix
     ./backups.nix
@@ -35,8 +34,10 @@
     ./tika.nix
     ./uptime-kuma.nix
     ./wake-beast.nix
-    ../services/docker.nix
   ];
+
+  # NAS services run in Docker (oci-containers backend below).
+  codyos.docker.enable = true;
 
   # Create the acme secret in sops
   sops.secrets.cloudflare-api-email = { };

@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ lib, ... }:
 
 {
 
@@ -29,56 +29,26 @@
     "d /mnt/backup/Share 0755 codyt users - -"
   ];
 
-  # Hostname-specific folder configurations
-  services.syncthing.settings.folders = lib.mkMerge [
-    # Beast folders
-    (lib.mkIf (config.networking.hostName == "beast") {
-      "Share" = {
-        path = "/mnt/backup/Share";
-        devices = [
-          "beast"
-          "nas"
-        ];
-        ignorePatterns = [
-          "node_modules"
-          "npm"
-          "pnpm"
-          ".pnpm-store"
-          ".git"
-          ".venv/"
-          ".bundle/"
-          ".next/"
-          "tmp/"
-          "__pycache__/"
-          ".turbo/"
-          ".trash/"
-        ];
-      };
-    })
-
-    # NAS folders
-    (lib.mkIf (config.networking.hostName == "nas") {
-      "Share" = {
-        path = "/mnt/backup/Share";
-        devices = [
-          "nas"
-          "beast"
-        ];
-        ignorePatterns = [
-          "node_modules"
-          "npm"
-          "pnpm"
-          ".pnpm-store"
-          ".git"
-          ".venv/"
-          ".bundle/"
-          ".next/"
-          "tmp/"
-          "__pycache__/"
-          ".turbo/"
-          ".trash/"
-        ];
-      };
-    })
-  ];
+  # Shared folder, identical on every host that imports this module.
+  services.syncthing.settings.folders."Share" = {
+    path = "/mnt/backup/Share";
+    devices = [
+      "beast"
+      "nas"
+    ];
+    ignorePatterns = [
+      "node_modules"
+      "npm"
+      "pnpm"
+      ".pnpm-store"
+      ".git"
+      ".venv/"
+      ".bundle/"
+      ".next/"
+      "tmp/"
+      "__pycache__/"
+      ".turbo/"
+      ".trash/"
+    ];
+  };
 }

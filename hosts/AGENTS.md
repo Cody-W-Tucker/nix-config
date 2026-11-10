@@ -10,4 +10,4 @@ Does not own reusable services, shared desktop behavior, or user preferences. Pu
 - Compose modules; do not implement large services inline in a host file.
 - Keep user account behavior in `users/` unless the host is only selecting a profile.
 - Move duplicated host logic into `modules/` once a second host wants it.
-- New host directories should read as facts plus imports, not a private module tree.
+- New host directories should read as facts, profile imports (`modules/desktop`, `modules/nas`), and `codyos.*.enable` feature switches, not a private module tree.

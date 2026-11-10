@@ -6,7 +6,7 @@
 }:
 
 let
-  cfg = config.services.wake-beast;
+  cfg = config.codyos.wake-beast;
   beastHost = "192.168.1.3";
   beastMac = "60:cf:84:7a:a3:4a";
   broadcastAddr = "192.168.1.255";
@@ -14,7 +14,7 @@ let
   retryDelay = 10;
 in
 {
-  options.services.wake-beast.enable = lib.mkEnableOption "Wake Beast and wait for host availability";
+  options.codyos.wake-beast.enable = lib.mkEnableOption "Wake Beast and wait for host availability";
 
   config = lib.mkIf cfg.enable {
     systemd.services.wake-beast = {

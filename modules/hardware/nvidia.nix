@@ -6,12 +6,13 @@
 }:
 
 let
-  cfg = config.services.nvidia-power-limit;
+  cfg = config.codyos.hardware.nvidia;
 in
 {
-  options.services.nvidia-power-limit = {
-    enable = lib.mkEnableOption "persistent nvidia-smi GPU power cap (oneshot after driver load)";
-    watts = lib.mkOption {
+  options.codyos.hardware.nvidia = {
+    enable = lib.mkEnableOption "NVIDIA driver, CUDA, and GPU monitoring";
+    powerLimit.enable = lib.mkEnableOption "persistent nvidia-smi GPU power cap (oneshot after driver load)";
+    powerLimit.watts = lib.mkOption {
       type = lib.types.ints.positive;
       default = 123;
       description = ''
@@ -21,7 +22,7 @@ in
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     boot.kernelModules = [ "nvidia-uvm" ];
 
     environment.systemPackages = with pkgs; [
@@ -49,7 +50,7 @@ in
     # Open firewall for NVIDIA GPU exporter
     networking.firewall.allowedTCPPorts = [ 9835 ];
 
-    systemd.services.nvidia-power-limit = lib.mkIf cfg.enable {
+    systemd.services.nvidia-power-limit = lib.mkIf cfg.powerLimit.enable {
       description = "Cap NVIDIA GPU board power (nvidia-smi -pl)";
       wantedBy = [ "multi-user.target" ];
       after = [
@@ -60,7 +61,7 @@ in
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = "${lib.getExe' config.hardware.nvidia.package "nvidia-smi"} -pl ${toString cfg.watts}";
+        ExecStart = "${lib.getExe' config.hardware.nvidia.package "nvidia-smi"} -pl ${toString cfg.powerLimit.watts}";
       };
     };
 

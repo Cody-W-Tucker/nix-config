@@ -5,7 +5,7 @@
 }:
 
 let
-  cfg = config.services.opencode;
+  cfg = config.codyos.opencode;
 in
 {
   config = lib.mkIf cfg.enable {

@@ -1,14 +1,20 @@
 {
+  config,
+  lib,
   pkgs,
   ...
 }:
 
 {
-  hardware.openrazer = {
-    enable = true;
-    users = [ "codyt" ];
-    devicesOffOnScreensaver = false;
-  };
+  options.codyos.hardware.openrazer.enable = lib.mkEnableOption "OpenRazer driver and Polychromatic";
 
-  environment.systemPackages = [ pkgs.polychromatic ];
+  config = lib.mkIf config.codyos.hardware.openrazer.enable {
+    hardware.openrazer = {
+      enable = true;
+      users = [ "codyt" ];
+      devicesOffOnScreensaver = false;
+    };
+
+    environment.systemPackages = [ pkgs.polychromatic ];
+  };
 }

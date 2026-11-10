@@ -41,11 +41,6 @@ in
     ../../modules/system/base.nix
     ../../modules/hardware/baseline.nix
     ../../modules/desktop
-    ../../modules/desktop/gaming
-    ../../modules/desktop/hardware/nvidia.nix
-    ../../modules/desktop/hardware/openrazer
-    ../../modules/services/docker.nix
-    ../../modules/services/paperless-scanning
 
     # Using community hardware configurations
     inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
@@ -55,6 +50,15 @@ in
 
   # ── Machine ─────────────────────────────────────────────────
   # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | Storage: 2TB NVMe
+
+  # ── Features ────────────────────────────────────────────────
+  codyos = {
+    docker.enable = true;
+    gaming.enable = true;
+    hardware.nvidia.enable = true;
+    hardware.openrazer.enable = true;
+    paperless-scanning.enable = true;
+  };
 
   # Bootloader.
   boot = {

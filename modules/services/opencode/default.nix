@@ -6,14 +6,14 @@
 }:
 
 let
-  cfg = config.services.opencode;
+  cfg = config.codyos.opencode;
 in
 {
   imports = [
     ./web-service.nix
   ];
 
-  options.services.opencode = {
+  options.codyos.opencode = {
     enable = lib.mkEnableOption "OpenCode web service";
   };
 

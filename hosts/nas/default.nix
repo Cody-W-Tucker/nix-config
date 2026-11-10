@@ -10,11 +10,7 @@
   imports = [
     ../../modules/system/base.nix
     ../../modules/hardware/baseline.nix
-    ../../modules/hardware/nvidia.nix
     ../../modules/nas
-    ../../modules/services/opencode
-    ../../modules/services/open-ontologies
-    ../../modules/services/hindsight
     inputs.workflow.nixosModules.default
     ./models.nix
     # VPN for media
@@ -136,6 +132,9 @@
     options = [
       "bind"
       "nofail"
+      # /mnt/backup is ZFS, mounted by zfs-mount.service rather than a .mount unit.
+      "x-systemd.requires=zfs-mount.service"
+      "x-systemd.after=zfs-mount.service"
     ];
   };
 
@@ -145,6 +144,9 @@
     options = [
       "bind"
       "nofail"
+      # /mnt/backup is ZFS, mounted by zfs-mount.service rather than a .mount unit.
+      "x-systemd.requires=zfs-mount.service"
+      "x-systemd.after=zfs-mount.service"
     ];
   };
 
@@ -154,6 +156,9 @@
     options = [
       "bind"
       "nofail"
+      # /mnt/backup is ZFS, mounted by zfs-mount.service rather than a .mount unit.
+      "x-systemd.requires=zfs-mount.service"
+      "x-systemd.after=zfs-mount.service"
     ];
   };
 
@@ -163,6 +168,9 @@
     options = [
       "bind"
       "nofail"
+      # /mnt/backup is ZFS, mounted by zfs-mount.service rather than a .mount unit.
+      "x-systemd.requires=zfs-mount.service"
+      "x-systemd.after=zfs-mount.service"
     ];
   };
 
@@ -188,12 +196,21 @@
       monthly = 3;
       flags = "-k -p --utc";
     };
-    wake-beast.enable = false;
-    opencode.enable = true; # web server for opencode
-    nvidia-power-limit = {
+  };
+
+  # ── Features ────────────────────────────────────────────────
+  codyos = {
+    hardware.nvidia = {
       enable = true;
-      watts = 123;
+      powerLimit = {
+        enable = true;
+        watts = 123;
+      };
     };
+    hindsight.enable = true;
+    open-ontologies.enable = true;
+    opencode.enable = true; # web server for opencode
+    wake-beast.enable = false;
   };
 
   # Networking

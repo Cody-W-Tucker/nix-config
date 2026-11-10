@@ -7,6 +7,7 @@
     ./logging.nix
     ./printing.nix
     ../services/syncthing.nix
+    ./hardware/nvidia.nix
     ./hardware/wifi.nix
     ./vpn
   ];

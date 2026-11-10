@@ -71,6 +71,22 @@ modules/services/hermes-agent/
 └── toolsets/     # Tool exposure and trust boundaries
 ```
 
+### 3. Profiles and `codyos.*` Features
+
+Hosts compose two kinds of NixOS modules:
+
+- **Profiles** describe a machine role and are selected by import: `modules/desktop` and `modules/nas`.
+- **Features** are optional pieces that any host can switch on. Each declares `options.codyos.<name>.enable`, wraps its config in `lib.mkIf`, and is imported unconditionally from [modules/system/base.nix](../modules/system/base.nix). Hosts and profiles enable them:
+
+```nix
+codyos = {
+  docker.enable = true;
+  hardware.nvidia.enable = true;
+};
+```
+
+Current features: `hardware.nvidia` (with `powerLimit`), `hardware.openrazer`, `gaming`, `docker`, `paperless-scanning`, `opencode`, `open-ontologies`, `hindsight`, `wake-beast`.
+
 ---
 
 ## Flake Inputs and Categories
