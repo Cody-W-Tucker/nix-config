@@ -1,5 +1,4 @@
 {
-  inputs,
   mkNginxVhost,
   pkgs,
   ...
@@ -10,7 +9,7 @@
     # Stable 26.05 karakeep is 0.32.0 built on nodejs 24.21, which aborts workers
     # in better-sqlite3 during GC (karakeep#2989). Unstable builds 0.33.1 against
     # nodejs_22. Same cross-input pattern as immich.
-    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.karakeep;
+    package = pkgs.unstable.karakeep;
     extraEnvironment = {
       PORT = "3005";
       DB_WAL_MODE = "true"; # This should improve the performance of the database.

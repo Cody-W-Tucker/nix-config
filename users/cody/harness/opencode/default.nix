@@ -7,7 +7,7 @@
   ...
 }:
 let
-  opencode = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencode;
+  opencode = pkgs.unstable.opencode;
 in
 {
   imports = [

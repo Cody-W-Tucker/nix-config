@@ -1,5 +1,4 @@
 {
-  inputs,
   mkNginxVhost,
   pkgs,
   ...
@@ -46,7 +45,6 @@
     };
     qdrant = {
       enable = true;
-      package = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.qdrant;
       settings = {
         storage = {
           storage_path = "/var/lib/qdrant/storage";

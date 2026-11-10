@@ -29,12 +29,6 @@
     # Unstable for newer versions of packages (mostly for the desktop).
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Pinned to a known-good nixpkgs revision, used ONLY for temporary service
-    # workarounds (see modules/nas/mealie.nix).
-    # Do not follow other inputs; this pins an exact commit.
-    nixpkgs-prior = {
-      url = "github:nixos/nixpkgs/f13ff45afd1bb73e640eaa08a7066dbed07e3238";
-    };
     home-manager = {
       # Configures the user environment and applications.
       url = "github:nix-community/home-manager";
@@ -134,6 +128,9 @@
     {
       # Official NixOS formatter with directory support
       formatter.x86_64-linux = pkgs.nixfmt-tree;
+
+      # Shared overlay; adds pkgs.unstable (see overlays/default.nix).
+      overlays.default = import ./overlays { inherit inputs; };
 
       packages.x86_64-linux = {
         acpx = pkgs.callPackage ./packages/acpx { };

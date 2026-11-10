@@ -1,24 +1,29 @@
 {
-  inputs,
+  config,
+  lib,
   mkNginxVhost,
   pkgs,
   ...
 }:
 
+let
+  cfg = config.services.mealie;
+in
 {
-  # WORKAROUND (2026-08-23): Mealie 2.8.x downloads NLTK corpora to /nltk_data at
-  # import time; as a systemd service that directory is not writable, so the unit
-  # fails to start.
-  # Upstream issue: https://github.com/mealie-recipes/mealie/issues/5242
-  # Upstream fix: https://github.com/mealie-recipes/mealie/pull/5290
-  # REVIEW-BY: 2026-11-23 — drop `package` once stable/unstable mealie bundles the
-  # NLTK data (no import-time /nltk_data write). No reliable consumer-scoped
-  # predicate is observable from this config, so the deadline comment drives review.
+  # WORKAROUND (2026-11-10): stable 26.05 ships Mealie 3.16.0, but the NAS
+  # database was already migrated by 3.22.0 (former nixpkgs-prior pin), and
+  # Mealie migrations cannot run backwards. Track unstable until stable catches up.
+  # Upstream: https://github.com/NixOS/nixpkgs/commits/master/pkgs/by-name/me/mealie
+  # REVIEW-BY: 2026-12-31 — drop `package` once the warning below fires.
   services.mealie = {
     enable = true;
-    package = inputs.nixpkgs-prior.legacyPackages.${pkgs.stdenv.hostPlatform.system}.mealie;
+    package = pkgs.unstable.mealie;
     port = 9000;
   };
+
+  warnings =
+    lib.optional (cfg.enable && lib.versionAtLeast pkgs.mealie.version cfg.package.version)
+      "Stable mealie (${pkgs.mealie.version}) has caught up with the unstable pin (${cfg.package.version}); remove `services.mealie.package` from modules/nas/mealie.nix.";
 
   services.nginx.virtualHosts = mkNginxVhost {
     host = "mealie.homehub.tv";

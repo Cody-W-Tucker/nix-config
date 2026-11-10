@@ -1,5 +1,4 @@
 {
-  inputs,
   mkNginxVhost,
   pkgs,
   ...
@@ -9,7 +8,7 @@
   services.immich = {
     enable = true;
     # Pull Immich from nixpkgs-unstable while the NAS host stays on stable.
-    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.immich;
+    package = pkgs.unstable.immich;
     port = 2283;
     host = "127.0.0.1";
     mediaLocation = "/mnt/backup/photos";

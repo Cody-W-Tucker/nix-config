@@ -12,6 +12,7 @@
     ../../packages/system-scripts
     ./locale.nix
     ./nix.nix
+    ./overlays.nix
     ./users.nix
     ./fonts.nix
     ./packages.nix
