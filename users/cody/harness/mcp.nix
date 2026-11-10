@@ -1,9 +1,27 @@
-{ osConfig, ... }:
+{
+  osConfig,
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
+let
+  deja = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu;
+  dejaMcp = pkgs.writeShellApplication {
+    name = "deja-mcp";
+    runtimeInputs = [ pkgs.sqlite ];
+    text = "exec ${lib.getExe deja} mcp";
+  };
+in
 {
   # Global MCP tools for all agents
   programs.mcp = {
     enable = true;
     servers = {
+      deja = {
+        command = lib.getExe dejaMcp;
+        args = [ "mcp" ];
+      };
       open-ontologies = {
         url =
           if osConfig.networking.hostName == "nas" then

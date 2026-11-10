@@ -9,6 +9,12 @@
 let
   common = import (inputs.hermes-agent + "/nix/moduleCommon.nix") { inherit lib; };
   crg = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.code-review-graph;
+  deja = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu;
+  dejaMcp = pkgs.writeShellApplication {
+    name = "deja-mcp";
+    runtimeInputs = [ pkgs.sqlite ];
+    text = "exec ${lib.getExe deja} mcp";
+  };
   actualBudgetMcp = pkgs.writeShellApplication {
     name = "actual-budget-mcp";
     runtimeInputs = [ pkgs.nodejs ];
@@ -27,6 +33,7 @@ let
     open-ontologies = {
       url = "http://127.0.0.1:18081/mcp";
     };
+    deja.command = lib.getExe dejaMcp;
     karakeep = {
       command = lib.getExe' pkgs.nodejs "npx";
       args = [
@@ -78,7 +85,7 @@ in
     services.hermes-agent = {
       extraPackages = [ crg ];
       mcpServers = {
-        inherit (mcpRegistry) karakeep open-ontologies;
+        inherit (mcpRegistry) karakeep open-ontologies deja;
       };
     };
   };

@@ -123,7 +123,14 @@ in
       # The langfuse module contributes its own entry to this list. Keep its
       # patched 0.5.2 directory plugin until upstream resolves the 0.6.0
       # SynchronizedRef initialization failure on OpenCode 2.1.1.
-      plugins = [ ];
+      plugins = [
+        {
+          package = "${
+            inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu.src
+          }/extensions/opencode";
+          options.tools = false; # The shared MCP server provides recall tools.
+        }
+      ];
       autoupdate = false;
       small_model = "opencode-go/deepseek-v4-flash";
       formatter = true;

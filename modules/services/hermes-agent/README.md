@@ -10,7 +10,7 @@ Hermes is the local AI agent service for CodyOS. This directory owns the impleme
 | `plugins/` | Plugin-specific source pins, enablement, settings, and runtime wiring. |
 | `runtime/default.nix` | `hermes-agent` systemd **user** service wiring and user-scoped tmpfiles. |
 | `secrets/default.nix` | SOPS secret ownership, templates, and agent/dashboard env wiring. |
-| `mcp/default.nix` | MCP server registration, currently including Karakeep. |
+| `mcp/default.nix` | MCP server registration, including Karakeep and Deja Vu. |
 | `documents/default.nix` | SOUL, human profiles, memory spec, and task spec provisioning. |
 | `skills/` | Declarative seeded skill packs and business/knowledge skills. |
 | `toolsets/` | Platform toolset access by interface and web-search backend settings. |
@@ -55,6 +55,12 @@ Secrets are SOPS-owned for Hermes inside the Home Manager configuration.
 MCP servers are registered through `services.hermes-agent.mcpServers`.
 
 Karakeep is the reference implementation, running `@karakeep/mcp` via npx with the shared `KARAKEEP_API_KEY` env value.
+
+Deja Vu exposes local session-history recall through its MCP server, with
+`sqlite3` available for database-backed histories. Its index is local to the
+NAS; this configuration does not synchronize it with other machines. Recall
+can expose the login user's indexed session history to Hermes, and the server
+also supports writing remembered notes.
 
 ## Documents and identity
 
