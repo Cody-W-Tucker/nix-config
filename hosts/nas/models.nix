@@ -158,6 +158,8 @@ in
         file = toString qwen35_9bBase;
         # Keep the 9B reasoning endpoint text-only; the 4B endpoint serves vision.
         mmprojFile = null;
+        # Leave room for the embedding model; validate the combined GPU load.
+        contextSize = 32768;
       };
       "qwen3-embedding-0.6b" = {
         file = toString qwen3Embedding;
@@ -182,13 +184,9 @@ in
         extraArgs = [ ];
       };
     };
-    # llama-swap loading policy (see llama-swap groups semantics:
-    # `swap` = members may run together when false; `exclusive` = loading a
-    # member unloads EVERY other group; `persistent` = other groups cannot
-    # unload it). A model may belong to exactly one group. All groups are
-    # mutually exclusive; every group is `exclusive=true` so any member load
-    # evicts all other groups. Within-group co-residency is governed by `swap`:
-    # swap:false, so their members may run together;
+    # The 4B and 9B swap with each other; embeddings stay available to both.
+    # Persistent embeddings cannot be evicted by audio or larger models, so
+    # those workloads may require explicitly unloading embeddings first.
     groups = {
       audio-stack = {
         swap = false;
@@ -201,13 +199,19 @@ in
         ];
       };
       inference-stack = {
-        swap = false;
+        swap = true;
         exclusive = true;
         persistent = false;
         members = [
           "qwen-3.5-4b"
-          "qwen3-embedding-0.6b"
+          "qwen-3.5-9b"
         ];
+      };
+      embedding-stack = {
+        swap = false;
+        exclusive = false;
+        persistent = true;
+        members = [ "qwen3-embedding-0.6b" ];
       };
     };
   };

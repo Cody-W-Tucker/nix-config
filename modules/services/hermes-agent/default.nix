@@ -87,10 +87,8 @@ in
             model = "gpt-5.6-luna";
           };
           compression = {
-            provider = "custom";
-            model = "qwen-3.5-9b";
-            base_url = "http://127.0.0.1:8081/v1";
-            api_key = "local-only";
+            provider = "opencode-go";
+            model = "gpt-5.6-luna";
           };
           web_extract = {
             provider = "custom";
@@ -98,9 +96,7 @@ in
             base_url = "http://127.0.0.1:8081/v1";
             api_key = "local-only";
           };
-          # Metadata and archival work stay local. Keep approval, web extraction,
-          # and compression on hy3: they carry authorization, source-quality, or
-          # long-session continuity risk respectively.
+          # Metadata and archival work stay local.
           curator = {
             provider = "custom";
             model = "qwen-3.5-9b";
