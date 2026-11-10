@@ -15,12 +15,13 @@ in
   ];
 
   home.packages = [
-    llmPkgs.openspec
+    llmPkgs.spec-kit
     llmPkgs.gnhf
     llmPkgs.pi
     llmPkgs.code-review-graph
     llmPkgs.tuicr
     llmPkgs.cursor-agent
+    llmPkgs.deja-vu # session search across all agents
     pkgs.codex
   ];
 
