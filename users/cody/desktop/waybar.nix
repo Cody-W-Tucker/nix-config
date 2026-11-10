@@ -124,6 +124,8 @@ in
         pulseaudio = {
           format = "{volume}% {icon}";
           format-bluetooth = "{volume}% {icon}";
+          format-muted = "󰖁 MUTED";
+          format-bluetooth-muted = "󰖁 MUTED ";
           format-icons = {
             headphone = "";
             hands-free = "";
@@ -328,6 +330,11 @@ in
         box-shadow: 0 4px 16px 0 #${config.lib.stylix.colors.base00};
         border: 1px solid #${config.lib.stylix.colors.base04};
         color: #${config.lib.stylix.colors.base04};
+      }
+
+      #pulseaudio.muted {
+        color: #${config.lib.stylix.colors.base08};
+        border-color: #${config.lib.stylix.colors.base08};
       }
 
       #workspaces {
