@@ -45,7 +45,7 @@
       device = "/dev/disk/by-uuid/0e0786ed-3740-4a19-83af-cf356e55393b";
       fsType = "btrfs";
     };
-    "home" = {
+    "/home" = {
       device = "/dev/disk/by-uuid/0e0786ed-3740-4a19-83af-cf356e55393b";
       fsType = "btrfs";
       options = [ "subvol=home" ];
