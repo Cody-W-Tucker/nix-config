@@ -13,6 +13,7 @@
     ../../modules/hardware/nvidia.nix
     ../../modules/nas
     ../../modules/services/opencode
+    ../../modules/services/t3code
     ../../modules/services/open-ontologies
     inputs.workflow.nixosModules.default
     ./models.nix
@@ -189,6 +190,7 @@
     };
     wake-beast.enable = false;
     opencode.enable = true; # web server for opencode
+    t3code.enable = true;
     nvidia-power-limit = {
       enable = true;
       watts = 123;
