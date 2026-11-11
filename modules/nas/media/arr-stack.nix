@@ -4,6 +4,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   # The Arr-stack services run inside the wg VPN namespace (declared in
   # transmission.nix) so their traffic exits through the VPN. FlareSolverr is
@@ -104,7 +107,7 @@
         proxyHost = "192.168.15.1";
       }
       // mkNginxVhost {
-        host = "bazarr.homehub.tv";
+        host = "bazarr.${domain}";
         port = config.services.bazarr.listenPort;
         proxyHost = "192.168.15.1";
       }

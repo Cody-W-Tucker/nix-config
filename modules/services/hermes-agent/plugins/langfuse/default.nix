@@ -1,10 +1,12 @@
 {
+  osConfig,
   config,
   lib,
   pkgs,
   ...
 }:
 let
+  inherit (osConfig.codyos.site) domain;
   officialPlugins = pkgs.fetchFromGitHub {
     owner = "NousResearch";
     repo = "hermes-official-plugins";
@@ -82,7 +84,7 @@ in
   '';
   services.hermes-agent = {
     extraPlugins = lib.mkOrder 1000 [ langfusePlugin ];
-    environment.HERMES_LANGFUSE_BASE_URL = "https://langfuse.homehub.tv";
+    environment.HERMES_LANGFUSE_BASE_URL = "https://langfuse.${domain}";
   };
   systemd.user.services.hermes-agent.Service.Environment = [ "PYTHONPATH=${hermesPythonPath}" ];
   systemd.user.services.hermes-backend.Service.Environment = [ "PYTHONPATH=${hermesPythonPath}" ];

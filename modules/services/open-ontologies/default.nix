@@ -18,7 +18,7 @@
         ConditionPathIsMountPoint = "/mnt/knowledge";
       };
       serviceConfig = {
-        User = "codyt";
+        User = config.codyos.site.user.name;
         Group = "users";
         UMask = "0077";
         ExecStart = "${
@@ -44,7 +44,7 @@
         # by the MCP transport's Host validation.
         recommendedProxySettings = false;
         extraConfig = ''
-          allow 100.108.143.19;
+          allow ${config.codyos.site.hosts.beast.tailscale};
           deny all;
           # MCP clients here do not send Origin; reject browser cross-origin calls.
           if ($http_origin != "") { return 403; }

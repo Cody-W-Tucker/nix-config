@@ -87,6 +87,31 @@ codyos = {
 
 Current features: `hardware.nvidia` (with `powerLimit`), `hardware.openrazer`, `gaming`, `docker`, `paperless-scanning`, `opencode`, `open-ontologies`, `hindsight`, `wake-beast`.
 
+### 4. Site Facts (`codyos.site`)
+
+Values shared across hosts live in one place, [modules/system/site.nix](../modules/system/site.nix):
+
+| Option | Value |
+| --- | --- |
+| `domain` | `homehub.tv` |
+| `user.name` / `user.home` / `user.email` | `codyt` / `/home/codyt` / primary email |
+| `lan.subnet`, `lan.gateway`, `lan.broadcast` | `192.168.1.0/24`, `.1`, `.255` |
+| `hosts.<name>.lan` / `.tailscale` / `.mac` | per-machine addresses for `nas` and `beast` |
+
+NixOS modules read them from `config.codyos.site`; Home Manager modules use `osConfig.codyos.site`. For example:
+
+```nix
+let
+  inherit (config.codyos.site) domain;
+in
+{
+  services.nginx.virtualHosts = mkNginxVhost {
+    host = "mealie.${domain}";
+    port = 9000;
+  };
+}
+```
+
 ---
 
 ## Flake Inputs and Categories

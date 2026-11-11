@@ -1,3 +1,8 @@
+{ config, ... }:
+
+let
+  inherit (config.codyos.site) user;
+in
 {
   services.samba = {
     enable = true;
@@ -23,7 +28,7 @@
         "guest ok" = "no";
         "create mask" = "0644";
         "directory mask" = "0755";
-        "force user" = "codyt";
+        "force user" = user.name;
         "force group" = "users";
       };
       Music = {
@@ -33,7 +38,7 @@
         "guest ok" = "no";
         "create mask" = "0644";
         "directory mask" = "0755";
-        "force user" = "codyt";
+        "force user" = user.name;
         "force group" = "media";
       };
       PaperlessConsume = {

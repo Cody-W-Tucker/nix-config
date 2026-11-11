@@ -7,6 +7,7 @@
 }:
 
 let
+  inherit (config.codyos.site) domain;
   cfg = config.services.mealie;
 in
 {
@@ -26,7 +27,7 @@ in
       "Stable mealie (${pkgs.mealie.version}) has caught up with the unstable pin (${cfg.package.version}); remove `services.mealie.package` from modules/nas/mealie.nix.";
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "mealie.homehub.tv";
+    host = "mealie.${domain}";
     port = 9000;
   };
 

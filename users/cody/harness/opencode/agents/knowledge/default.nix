@@ -1,11 +1,17 @@
-{ pkgs, config, ... }:
+{
+  osConfig,
+  pkgs,
+  config,
+  ...
+}:
 
 let
+  inherit (osConfig.codyos.site) domain;
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
     runtimeInputs = [ pkgs.nodejs ];
     text = ''
-      export KARAKEEP_API_ADDR="https://karakeep.homehub.tv"
+      export KARAKEEP_API_ADDR="https://karakeep.${domain}"
       KARAKEEP_API_KEY="$(< ${config.sops.secrets.karakeep-api-key.path})"
       export KARAKEEP_API_KEY
 

@@ -11,7 +11,7 @@
   config = lib.mkIf config.codyos.hardware.openrazer.enable {
     hardware.openrazer = {
       enable = true;
-      users = [ "codyt" ];
+      users = [ config.codyos.site.user.name ];
       devicesOffOnScreensaver = false;
     };
 

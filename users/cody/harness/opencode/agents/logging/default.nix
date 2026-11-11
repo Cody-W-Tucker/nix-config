@@ -1,10 +1,16 @@
-{ pkgs, config, ... }:
+{
+  osConfig,
+  pkgs,
+  config,
+  ...
+}:
 
 let
+  inherit (osConfig.codyos.site) domain;
   grafanaMcp = pkgs.writeShellApplication {
     name = "grafana-mcp";
     text = ''
-      export GRAFANA_URL="https://monitoring.homehub.tv"
+      export GRAFANA_URL="https://monitoring.${domain}"
       GRAFANA_SERVICE_ACCOUNT_TOKEN="$(< ${config.sops.secrets.grafana-mcp-token.path})"
       export GRAFANA_SERVICE_ACCOUNT_TOKEN
 

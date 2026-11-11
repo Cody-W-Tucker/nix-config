@@ -1,4 +1,5 @@
 {
+  osConfig,
   lib,
   pkgs,
   inputs,
@@ -7,6 +8,7 @@
   ...
 }:
 let
+  inherit (osConfig.codyos.site) domain;
   opencode = pkgs.unstable.opencode;
 in
 {
@@ -43,7 +45,7 @@ in
     mode = "0400";
     content = ''
       ${config.sops.placeholder."opencode-langfuse-env"}
-      LANGFUSE_BASE_URL=https://langfuse.homehub.tv
+      LANGFUSE_BASE_URL=https://langfuse.${domain}
     '';
   };
 

@@ -27,7 +27,7 @@ in
           if osConfig.networking.hostName == "nas" then
             "http://127.0.0.1:18081/mcp"
           else
-            "http://100.81.249.65:18082/mcp";
+            "http://${osConfig.codyos.site.hosts.nas.tailscale}:18082/mcp";
       };
       hindsight = {
         type = "remote";
@@ -35,7 +35,7 @@ in
           if osConfig.networking.hostName == "nas" then
             "http://127.0.0.1:8888/mcp/"
           else
-            "http://100.81.249.65:18083/mcp/";
+            "http://${osConfig.codyos.site.hosts.nas.tailscale}:18083/mcp/";
       };
       exa = {
         type = "remote";

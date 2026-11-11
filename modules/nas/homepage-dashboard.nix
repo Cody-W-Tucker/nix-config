@@ -1,16 +1,17 @@
 {
+  config,
   mkNginxVhost,
   ...
 }:
 
 let
-  domain = "homehub.tv";
+  inherit (config.codyos.site) domain;
 in
 {
 
   services = {
     nginx.virtualHosts = mkNginxVhost {
-      host = "homehub.tv";
+      host = domain;
       port = 8082;
       proxyWebsockets = true;
     };
@@ -19,7 +20,7 @@ in
       enable = true;
       listenPort = 8082;
       openFirewall = false;
-      allowedHosts = "homehub.tv";
+      allowedHosts = domain;
       settings = {
         title = "HomeHub.tv";
         cardBlur = "sm";
@@ -93,7 +94,7 @@ in
             }
             {
               Langfuse = {
-                href = "https://langfuse.homehub.tv";
+                href = "https://langfuse.${domain}";
                 icon = "https://langfuse.${domain}/favicon.ico";
                 description = "LLM Observability";
               };

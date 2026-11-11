@@ -5,6 +5,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   imports = [
     ./actual-budget.nix
@@ -47,11 +50,11 @@
   security.acme = {
     acceptTerms = true;
     defaults = {
-      email = "cody@tmvsocial.com";
+      inherit (config.codyos.site.user) email;
     };
-    certs."homehub.tv" = {
-      domain = "homehub.tv";
-      extraDomainNames = [ "*.homehub.tv" ];
+    certs.${domain} = {
+      inherit domain;
+      extraDomainNames = [ "*.${domain}" ];
       dnsProvider = "cloudflare";
       dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;

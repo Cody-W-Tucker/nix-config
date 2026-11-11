@@ -1,8 +1,12 @@
 {
+  config,
   mkNginxVhost,
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.uptime-kuma = {
     enable = true;
@@ -13,7 +17,7 @@
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "uptime.homehub.tv";
+    host = "uptime.${domain}";
     port = 3002;
     proxyWebsockets = true;
   };

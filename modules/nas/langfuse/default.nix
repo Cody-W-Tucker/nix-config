@@ -6,6 +6,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   imports = [
     ./review-queue.nix
@@ -80,9 +83,9 @@
         # Host allowlist short-circuits the IP check. Containers reach
         # llama-swap via host.docker.internal, never 127.0.0.1.
         LANGFUSE_LLM_CONNECTION_WHITELISTED_HOST = "host.docker.internal";
-        LANGFUSE_LLM_CONNECTION_WHITELISTED_IPS = "172.18.0.1,172.17.0.1,192.168.1.2";
+        LANGFUSE_LLM_CONNECTION_WHITELISTED_IPS = "172.18.0.1,172.17.0.1,${config.codyos.site.hosts.nas.lan}";
 
-        NEXTAUTH_URL = "https://langfuse.homehub.tv";
+        NEXTAUTH_URL = "https://langfuse.${domain}";
         TELEMETRY_ENABLED = "true";
         LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES = "false";
         CLICKHOUSE_MIGRATION_URL = "clickhouse://clickhouse:9000";
@@ -241,7 +244,7 @@
   # Nginx ingress: only the web service is exposed to the host (on localhost),
   # proxied here. Internal dependency ports are NOT published (see above).
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "langfuse.homehub.tv";
+    host = "langfuse.${domain}";
     port = 3030;
     proxyWebsockets = true;
     locationExtraConfig = ''

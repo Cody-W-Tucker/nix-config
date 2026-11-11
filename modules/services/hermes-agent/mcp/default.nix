@@ -1,4 +1,5 @@
 {
+  osConfig,
   config,
   inputs,
   lib,
@@ -7,6 +8,7 @@
 }:
 
 let
+  inherit (osConfig.codyos.site) domain;
   common = import (inputs.hermes-agent + "/nix/moduleCommon.nix") { inherit lib; };
   crg = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.code-review-graph;
   deja = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu;
@@ -23,7 +25,7 @@ let
       export ACTUAL_PASSWORD
       ACTUAL_BUDGET_SYNC_ID="$(cat ${config.sops.secrets."actual-budget-mcp-sync-id".path})"
       export ACTUAL_BUDGET_SYNC_ID
-      ACTUAL_SERVER_URL="https://budget.homehub.tv"
+      ACTUAL_SERVER_URL="https://budget.${domain}"
       export ACTUAL_SERVER_URL
 
       exec npx --yes actual-mcp@1.14.0 --enable-write

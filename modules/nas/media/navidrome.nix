@@ -4,6 +4,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.navidrome = {
     enable = true;
@@ -14,7 +17,7 @@
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "music.homehub.tv";
+    host = "music.${domain}";
     port = config.services.navidrome.settings.Port;
   };
 

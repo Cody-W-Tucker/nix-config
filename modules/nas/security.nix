@@ -1,3 +1,8 @@
+{ config, ... }:
+
+let
+  inherit (config.codyos.site) lan;
+in
 {
   # Fail2ban
   services.fail2ban = {
@@ -6,7 +11,7 @@
     maxretry = 5;
     ignoreIP = [
       # Whitelist LAN subnet
-      "192.168.1.0/24"
+      lan.subnet
     ];
     bantime = "24h"; # Ban IPs for one day on the first ban
     bantime-increment = {

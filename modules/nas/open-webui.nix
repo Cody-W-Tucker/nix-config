@@ -1,9 +1,13 @@
 {
+  config,
   mkNginxVhost,
   pkgs,
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   # ── Open WebUI (local AI chat interface) ───────────────────────
   services = {
@@ -21,7 +25,7 @@
 
         # TODO: make all this declarative instead of having to configure in the admin panel.
         # ENABLE_PERSISTENT_CONFIG = "False"
-        WEBUI_URL = "https://chat.homehub.tv";
+        WEBUI_URL = "https://chat.${domain}";
         WEBUI_SECRET_KEY = "local-only";
         USE_CUDA_DOCKER = "true";
 
@@ -33,7 +37,7 @@
 
         # Content Extraction
         CONTENT_EXTRACTION_ENGINE = "tika";
-        TIKA_SERVER_URL = "https://tika.homehub.tv";
+        TIKA_SERVER_URL = "https://tika.${domain}";
 
         # RAG
         ENABLE_RAG_HYBRID_SEARCH = "True";
@@ -63,7 +67,7 @@
     };
     nginx.virtualHosts =
       (mkNginxVhost {
-        host = "qdrant.homehub.tv";
+        host = "qdrant.${domain}";
         locations = {
           # HTTP API (REST API on port 6333)
           "/" = {
@@ -82,7 +86,7 @@
         };
       })
       // (mkNginxVhost {
-        host = "chat.homehub.tv";
+        host = "chat.${domain}";
         port = 8080;
         proxyWebsockets = true;
         locationExtraConfig = ''

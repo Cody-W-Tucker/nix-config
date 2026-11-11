@@ -5,6 +5,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   # Secret must be populated via `sops set` (or equivalent). The file is
   # expected to contain the raw secret key base string (a single line of
@@ -18,7 +21,7 @@
     # vhost is resolved. Manage the Nginx proxy ourselves with mkNginxVhost
     # so we get forceSSL + ACME like the rest of the fleet.
     webPort = 3004;
-    localDomain = "tracker.homehub.tv";
+    localDomain = "tracker.${domain}";
     configureNginx = false;
     secretKeyBaseFile = config.sops.secrets."dawarich-secret-key-base".path;
   };
@@ -27,7 +30,7 @@
   # store, falling back to the Rails app for dynamic routes and WebSocket
   # connections. The @dawarich named location proxies misses upstream.
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "tracker.homehub.tv";
+    host = "tracker.${domain}";
     locations = {
       "/" = {
         root = "${pkgs.dawarich}/public";

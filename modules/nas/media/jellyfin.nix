@@ -1,8 +1,12 @@
 {
+  config,
   mkNginxVhost,
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   systemd.services.jellyfin.environment.LIBVA_DRIVER_NAME = "nvidia";
 
@@ -19,7 +23,7 @@
   # Jellyfin's NixOS module doesn't expose a port option (port is configured
   # in the Jellyfin Web UI); 8096 is the upstream default HTTP port.
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "media.homehub.tv";
+    host = "media.${domain}";
     port = 8096;
     proxyWebsockets = true;
   };

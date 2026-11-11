@@ -104,7 +104,7 @@ in
   ];
 
   sops.secrets."huggingface-read" = {
-    owner = "codyt";
+    owner = config.codyos.site.user.name;
     group = "users";
     mode = "0400";
   };
@@ -120,7 +120,7 @@ in
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     port = 8081;
     openFirewall = false;
-    modelOwner = "codyt";
+    modelOwner = config.codyos.site.user.name;
     modelGroup = "users";
     serviceEnvironment = {
       HF_HOME = "/var/cache/llama-swap/huggingface";
@@ -221,7 +221,7 @@ in
     ProcSubset = lib.mkForce "all";
     ProtectProc = lib.mkForce "default";
     DynamicUser = lib.mkForce false;
-    User = "codyt";
+    User = config.codyos.site.user.name;
     Group = "users";
   };
 }

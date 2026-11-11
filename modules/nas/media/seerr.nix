@@ -4,11 +4,14 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.seerr.enable = true;
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "request.homehub.tv";
+    host = "request.${domain}";
     port = config.services.seerr.port;
     proxyWebsockets = true;
   };

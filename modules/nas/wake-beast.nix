@@ -7,9 +7,9 @@
 
 let
   cfg = config.codyos.wake-beast;
-  beastHost = "192.168.1.3";
-  beastMac = "60:cf:84:7a:a3:4a";
-  broadcastAddr = "192.168.1.255";
+  beastHost = config.codyos.site.hosts.beast.lan;
+  beastMac = config.codyos.site.hosts.beast.mac;
+  broadcastAddr = config.codyos.site.lan.broadcast;
   maxRetries = 30;
   retryDelay = 10;
 in

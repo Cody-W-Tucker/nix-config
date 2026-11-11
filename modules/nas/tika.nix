@@ -1,5 +1,8 @@
-{ mkNginxVhost, ... }:
+{ config, mkNginxVhost, ... }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.tika = {
     enable = true;
@@ -9,7 +12,7 @@
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "tika.homehub.tv";
+    host = "tika.${domain}";
     port = 9998;
     locationExtraConfig = ''
       proxy_set_header X-Tika-OCRLanguage "chi_sim+eng";

@@ -158,7 +158,7 @@ in
 
     vaults = {
       Personal = {
-        target = "/home/codyt/Knowledge/Personal";
+        target = "${config.home.homeDirectory}/Knowledge/Personal";
         settings = withSharedSnippets {
           communityPlugins = sharedCommunityPlugins ++ [
             {
@@ -193,7 +193,7 @@ in
         };
       };
       Base = {
-        target = "/home/codyt/Knowledge/Base";
+        target = "${config.home.homeDirectory}/Knowledge/Base";
         settings = withSharedSnippets { };
       };
     };

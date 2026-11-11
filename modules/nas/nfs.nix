@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   ...
 }:
@@ -62,8 +63,8 @@
   services.nfs.server = {
     enable = true;
     exports = ''
-      /mnt/projects 192.168.1.0/24(rw,sync,no_subtree_check)
-      /mnt/knowledge 192.168.1.0/24(rw,sync,no_subtree_check)
+      /mnt/projects ${config.codyos.site.lan.subnet}(rw,sync,no_subtree_check)
+      /mnt/knowledge ${config.codyos.site.lan.subnet}(rw,sync,no_subtree_check)
     '';
   };
 

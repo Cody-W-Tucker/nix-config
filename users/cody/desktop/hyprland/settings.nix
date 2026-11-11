@@ -1,4 +1,5 @@
 {
+  osConfig,
   config,
   lib,
   hardwareConfig,
@@ -7,6 +8,7 @@
 }:
 
 let
+  inherit (osConfig.codyos.site) domain;
   mainMod = "SUPER";
   browser = "uwsm app -- zen-beta";
   webApp = "chromium --new-window --app";
@@ -76,7 +78,7 @@ let
 
     # Web applications
     (execBind "${mainMod} + SHIFT + Return" "[workspace special:ai] ${webApp}=https://grok.com/")
-    (execBind "${mainMod} + A" "${webApp}=https://chat.homehub.tv")
+    (execBind "${mainMod} + A" "${webApp}=https://chat.${domain}")
 
     # Quick launch
     (execBind "${mainMod} + Tab" "rofi-launcher")
@@ -206,7 +208,7 @@ in
       ["special:ai"] = ${builtins.toJSON "${webApp}=https://www.perplexity.ai/"},
       ["special:dev"] = ${builtins.toJSON terminal},
       ["special:media"] = ${builtins.toJSON "${webApp}=https://www.youtube.com/"},
-      ["special:think"] = ${builtins.toJSON "${webApp}=https://draw.homehub.tv/"},
+      ["special:think"] = ${builtins.toJSON "${webApp}=https://draw.${domain}/"},
     }
 
     hl.on("workspace.created", function(ws)

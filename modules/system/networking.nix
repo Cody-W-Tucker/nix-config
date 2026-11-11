@@ -1,5 +1,10 @@
 # Network security services
 
+{ config, ... }:
+
+let
+  inherit (config.codyos.site) hosts;
+in
 {
   # Enable the OpenSSH daemon with hardening
   services.openssh = {
@@ -25,6 +30,6 @@
 
   # Shared hostname mappings for Tailscale IPs
   networking.hosts = {
-    "100.108.143.19" = [ "beast" ];
+    ${hosts.beast.tailscale} = [ "beast" ];
   };
 }

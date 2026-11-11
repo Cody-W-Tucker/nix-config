@@ -1,5 +1,8 @@
-{ mkNginxVhost, ... }:
+{ config, mkNginxVhost, ... }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.nginx = {
     upstreams = {
@@ -10,13 +13,13 @@
       };
       beast_syncthing = {
         servers = {
-          "100.108.143.19:8384" = { };
+          "${config.codyos.site.hosts.beast.tailscale}:8384" = { };
         };
       };
     };
     virtualHosts =
       mkNginxVhost {
-        host = "beast-syncthing.homehub.tv";
+        host = "beast-syncthing.${domain}";
         locations = {
           "/" = {
             proxyPass = "http://beast_syncthing/";
@@ -24,7 +27,7 @@
         };
       }
       // mkNginxVhost {
-        host = "nas-syncthing.homehub.tv";
+        host = "nas-syncthing.${domain}";
         locations = {
           "/" = {
             proxyPass = "http://nas_syncthing/";

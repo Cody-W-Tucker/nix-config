@@ -6,6 +6,10 @@
   ...
 }:
 
+let
+  site = config.codyos.site;
+in
+
 {
   imports = [
     ../../modules/system/base.nix
@@ -109,69 +113,18 @@
   };
 
   # ── User bind mounts ─────────────────────────────────────────
-  # Bind NAS-local storage into codyt's home directory:
-  # Projects and Knowledge from independent Btrfs subvolumes,
-  # declared directly via fileSystems above.
-
-  fileSystems."/home/codyt/Projects" = {
+  # Bind NAS-local Projects and Knowledge Btrfs subvolumes into the user's
+  # home. The Share folders (Documents, Music, …) come from syncthing.nix.
+  fileSystems."${site.user.home}/Projects" = {
     device = "/mnt/projects";
     fsType = "none";
     options = [ "bind" ];
   };
 
-  fileSystems."/home/codyt/Knowledge" = {
+  fileSystems."${site.user.home}/Knowledge" = {
     device = "/mnt/knowledge";
     fsType = "none";
     options = [ "bind" ];
-  };
-
-  # Syncthing-safe individual mappings for media dirs (Beast-style).
-  fileSystems."/home/codyt/Documents" = {
-    device = "/mnt/backup/Share/Documents";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-      # /mnt/backup is ZFS, mounted by zfs-mount.service rather than a .mount unit.
-      "x-systemd.requires=zfs-mount.service"
-      "x-systemd.after=zfs-mount.service"
-    ];
-  };
-
-  fileSystems."/home/codyt/Music" = {
-    device = "/mnt/backup/Share/Music";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-      # /mnt/backup is ZFS, mounted by zfs-mount.service rather than a .mount unit.
-      "x-systemd.requires=zfs-mount.service"
-      "x-systemd.after=zfs-mount.service"
-    ];
-  };
-
-  fileSystems."/home/codyt/Pictures" = {
-    device = "/mnt/backup/Share/Pictures";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-      # /mnt/backup is ZFS, mounted by zfs-mount.service rather than a .mount unit.
-      "x-systemd.requires=zfs-mount.service"
-      "x-systemd.after=zfs-mount.service"
-    ];
-  };
-
-  fileSystems."/home/codyt/Videos" = {
-    device = "/mnt/backup/Share/Videos";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-      # /mnt/backup is ZFS, mounted by zfs-mount.service rather than a .mount unit.
-      "x-systemd.requires=zfs-mount.service"
-      "x-systemd.after=zfs-mount.service"
-    ];
   };
 
   services = {
@@ -182,7 +135,7 @@
       # Enable IP forwarding so this host can act as a subnet router for the LAN.
       useRoutingFeatures = "server";
       extraSetFlags = [
-        "--advertise-routes=192.168.1.0/24"
+        "--advertise-routes=${site.lan.subnet}"
         "--accept-dns=false"
       ];
     };
@@ -233,8 +186,8 @@
       };
       ipv4 = {
         method = "manual";
-        addresses = "192.168.1.2/24";
-        gateway = "192.168.1.1";
+        addresses = "${site.hosts.nas.lan}/${toString site.lan.prefixLength}";
+        gateway = site.lan.gateway;
         may-fail = false;
       };
       ipv6 = {
@@ -282,7 +235,7 @@
     extraSpecialArgs = {
       inherit inputs self;
     };
-    users.codyt = {
+    users.${site.user.name} = {
       home.stateVersion = "25.11";
       imports = [
         ../../users/cody/server.nix
@@ -300,17 +253,17 @@
   nas.backups.sqlite = [
     {
       name = "hermes";
-      source = "/home/codyt/.local/share/hermes/state.db";
+      source = "${site.user.home}/.local/share/hermes/state.db";
       filename = "state.db";
     }
     {
       name = "hermes";
-      source = "/home/codyt/.local/share/hermes/crm/crm.db";
+      source = "${site.user.home}/.local/share/hermes/crm/crm.db";
       filename = "crm.db";
     }
   ];
   nas.backups.dataDirectories = [
-    "/home/codyt/.local/share/hermes"
+    "${site.user.home}/.local/share/hermes"
   ];
 
   # This value determines the NixOS release from which the default

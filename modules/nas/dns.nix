@@ -1,5 +1,13 @@
-{ inputs, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   networking = {
     firewall = {
@@ -28,8 +36,8 @@
         ];
 
         # All homehub.tv names resolve to the NAS on the local network.
-        local-zone = [ ''"homehub.tv." redirect'' ];
-        local-data = [ ''"homehub.tv. A 192.168.1.2"'' ];
+        local-zone = [ ''"${domain}." redirect'' ];
+        local-data = [ ''"${domain}. A ${config.codyos.site.hosts.nas.lan}"'' ];
 
         # StevenBlack ads/malware blocklist, generated upstream as a
         # local-zone always_nxdomain fragment and included directly.

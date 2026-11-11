@@ -7,6 +7,7 @@
 }:
 
 let
+  inherit (config.codyos.site) domain;
   port = 28981;
 in
 {
@@ -36,7 +37,7 @@ in
       PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
       PAPERLESS_CONSUMER_POLLING = "1"; # Faster processing
       # Reveres proxy stuff to get tika to work
-      PAPERLESS_URL = "https://paperless.homehub.tv";
+      PAPERLESS_URL = "https://paperless.${domain}";
       USE_X_FORWARD_HOST = "true";
       USE_X_FORWARD_PORT = "true";
     };
@@ -46,7 +47,7 @@ in
   # snapshotted centrally in backups.nix; no second local copy is needed.
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "paperless.homehub.tv";
+    host = "paperless.${domain}";
     inherit port;
     # These configuration options are required for WebSockets to work.
     # Without them Tika document conversion wouldn't work

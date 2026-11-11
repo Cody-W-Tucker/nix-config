@@ -1,9 +1,13 @@
 {
+  config,
   mkNginxVhost,
   pkgs,
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   networking.firewall.allowedTCPPorts = [ 8095 ];
   services.music-assistant = {
@@ -118,12 +122,12 @@
 
   services.nginx.virtualHosts =
     mkNginxVhost {
-      host = "home-assistant.homehub.tv";
+      host = "home-assistant.${domain}";
       port = 8123;
       proxyWebsockets = true;
     }
     // mkNginxVhost {
-      host = "music-assistant.homehub.tv";
+      host = "music-assistant.${domain}";
       port = 8095;
       proxyWebsockets = true;
     };

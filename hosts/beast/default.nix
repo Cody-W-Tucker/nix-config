@@ -7,6 +7,7 @@
 }:
 
 let
+  site = config.codyos.site;
   hardwareConfig = {
     # Controls the monitor layout for hyprland
     workspace = [
@@ -88,7 +89,7 @@ in
   # System fileSystems
   fileSystems = {
     "/mnt/paperless-consume" = {
-      device = "//192.168.1.2/PaperlessConsume";
+      device = "//${site.hosts.nas.lan}/PaperlessConsume";
       fsType = "cifs";
       options = [
         "guest"
@@ -115,43 +116,11 @@ in
         "dmask=0077"
       ];
     };
-    # Since we use syncthing to keep cody's home dirs synced we map these drives one by one.
-    "/home/codyt/Documents" = {
-      device = "/mnt/backup/Share/Documents";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
-    "/home/codyt/Music" = {
-      device = "/mnt/backup/Share/Music";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
-    "/home/codyt/Pictures" = {
-      device = "/mnt/backup/Share/Pictures";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
-    "/home/codyt/Videos" = {
-      device = "/mnt/backup/Share/Videos";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
+    # Share folders (Documents, Music, …) are bind-mounted by syncthing.nix.
 
     # NFS mounts from NAS
-    "/home/codyt/Projects" = {
-      device = "192.168.1.2:/mnt/projects";
+    "${site.user.home}/Projects" = {
+      device = "${site.hosts.nas.lan}:/mnt/projects";
       fsType = "nfs";
       options = [
         "noatime"
@@ -160,8 +129,8 @@ in
         "x-systemd.requires=network-online.target"
       ];
     };
-    "/home/codyt/Knowledge" = {
-      device = "192.168.1.2:/mnt/knowledge";
+    "${site.user.home}/Knowledge" = {
+      device = "${site.hosts.nas.lan}:/mnt/knowledge";
       fsType = "nfs";
       options = [
         "noatime"
@@ -205,7 +174,7 @@ in
       inherit inputs self;
       inherit hardwareConfig;
     };
-    users.codyt = {
+    users.${site.user.name} = {
       home.stateVersion = "25.05";
       imports = [
         ../../users/cody/desktop.nix

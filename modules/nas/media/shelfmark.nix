@@ -6,6 +6,7 @@
 }:
 
 let
+  inherit (config.codyos.site) domain;
   # Shelfmark's default Flask port, verified free on this host (`ss -tlnp`
   # and no references in the config). The container runs with host
   # networking (see extraOptions below), so Flask binds 0.0.0.0:8084
@@ -117,8 +118,8 @@ in
 
       # Navigation links only — Shelfmark has no Calibre API integration;
       # it never writes into the Calibre-managed /mnt/media/Books library.
-      CALIBRE_WEB_URL = "https://books.homehub.tv";
-      AUDIOBOOK_LIBRARY_URL = "https://audiobooks.homehub.tv";
+      CALIBRE_WEB_URL = "https://books.${domain}";
+      AUDIOBOOK_LIBRARY_URL = "https://audiobooks.${domain}";
 
       # Served behind HTTPS via the Nginx vhost below.
       SESSION_COOKIE_SECURE = "true";
@@ -167,7 +168,7 @@ in
   # and Socket.IO expects WebSocket upgrades, so websocket proxying is
   # required for live updates.
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "shelfmark.homehub.tv";
+    host = "shelfmark.${domain}";
     inherit port;
     proxyWebsockets = true;
   };

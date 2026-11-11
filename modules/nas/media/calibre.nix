@@ -5,6 +5,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services = {
     calibre-web = {
@@ -28,7 +31,7 @@
       extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
     };
     nginx.virtualHosts = mkNginxVhost {
-      host = "books.homehub.tv";
+      host = "books.${domain}";
       port = config.services.calibre-web.listen.port;
       locationExtraConfig = ''
         # Kobo sync requires large headers

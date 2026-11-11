@@ -64,14 +64,14 @@ in
     exclude = [
       # A live RocksDB/SQLite file copy is not a consistent database backup.
       "/mnt/knowledge/.open-ontologies"
-      "/home/codyt/.local/share/hermes/audio_cache"
-      "/home/codyt/.local/share/hermes/cache"
-      "/home/codyt/.local/share/hermes/**/*.db"
-      "/home/codyt/.local/share/hermes/**/*.db-wal"
-      "/home/codyt/.local/share/hermes/**/*.db-shm"
-      "/home/codyt/.local/share/hermes/**/*.sqlite"
-      "/home/codyt/.local/share/hermes/**/*.sqlite-wal"
-      "/home/codyt/.local/share/hermes/**/*.sqlite-shm"
+      "${config.codyos.site.user.home}/.local/share/hermes/audio_cache"
+      "${config.codyos.site.user.home}/.local/share/hermes/cache"
+      "${config.codyos.site.user.home}/.local/share/hermes/**/*.db"
+      "${config.codyos.site.user.home}/.local/share/hermes/**/*.db-wal"
+      "${config.codyos.site.user.home}/.local/share/hermes/**/*.db-shm"
+      "${config.codyos.site.user.home}/.local/share/hermes/**/*.sqlite"
+      "${config.codyos.site.user.home}/.local/share/hermes/**/*.sqlite-wal"
+      "${config.codyos.site.user.home}/.local/share/hermes/**/*.sqlite-shm"
       "*.in-progress"
     ];
     backupPrepareCommand = "${sqlitePrepare}";

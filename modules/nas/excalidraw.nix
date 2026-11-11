@@ -1,8 +1,12 @@
 {
+  config,
   mkNginxVhost,
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   virtualisation.oci-containers.containers.excalidraw = {
     autoStart = true;
@@ -16,7 +20,7 @@
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "draw.homehub.tv";
+    host = "draw.${domain}";
     port = 2919;
     locationExtraConfig = ''
       client_max_body_size 10M; # Allow uploads up to 10MB (adjust as needed)

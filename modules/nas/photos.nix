@@ -1,9 +1,13 @@
 {
+  config,
   mkNginxVhost,
   pkgs,
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.immich = {
     enable = true;
@@ -35,7 +39,7 @@
 
   # NGINX
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "photos.homehub.tv";
+    host = "photos.${domain}";
     port = 2283;
     proxyWebsockets = true;
     locationExtraConfig = ''

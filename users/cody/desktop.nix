@@ -1,10 +1,14 @@
 {
+  osConfig,
   pkgs,
   inputs,
   config,
   ...
 }:
 
+let
+  inherit (osConfig.codyos.site) domain;
+in
 {
   sops.secrets."opencode-password" = { };
 
@@ -20,7 +24,7 @@
   # explicit remote alias so regular `op` sessions remain local.
   programs.zsh.shellAliases.op- = ''
     OPENCODE_SERVER_PASSWORD="$(<${config.sops.secrets."opencode-password".path})" \
-    opencode --server https://opencode.homehub.tv
+    opencode --server https://opencode.${domain}
   '';
 
   # Styling and themes

@@ -4,6 +4,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.audiobookshelf = {
     enable = true;
@@ -14,7 +17,7 @@
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "audiobooks.homehub.tv";
+    host = "audiobooks.${domain}";
     port = config.services.audiobookshelf.port;
     # Audiobookshelf pushes playback/scanner updates over websockets.
     proxyWebsockets = true;

@@ -1,11 +1,22 @@
-{ lib, ... }:
+{ config, lib, ... }:
 
+let
+  inherit (config.codyos.site) user;
+  share = "/mnt/backup/Share";
+  # Share subfolders bind-mounted into the user's home on every host.
+  homeFolders = [
+    "Documents"
+    "Music"
+    "Pictures"
+    "Videos"
+  ];
+in
 {
 
   # Basic Syncthing service configuration
   services.syncthing = {
     enable = true;
-    user = "codyt";
+    user = user.name;
     dataDir = "/var/lib/syncthing";
     openDefaultPorts = true;
     overrideDevices = true;
@@ -25,13 +36,33 @@
   # Ensure syncthing directories exist with proper permissions
   systemd.tmpfiles.rules = [
     "d /mnt 0755 root root - -"
-    "d /mnt/backup 0755 codyt users - -"
-    "d /mnt/backup/Share 0755 codyt users - -"
+    "d /mnt/backup 0755 ${user.name} users - -"
+    "d ${share} 0755 ${user.name} users - -"
   ];
+
+  # Map Share subfolders into the home directory one by one, so the rest of
+  # the home directory stays outside Syncthing.
+  fileSystems = lib.genAttrs' homeFolders (
+    name:
+    lib.nameValuePair "${user.home}/${name}" {
+      device = "${share}/${name}";
+      fsType = "none";
+      options = [
+        "bind"
+        "nofail"
+      ]
+      # Where /mnt/backup is a ZFS pool (NAS), its datasets are mounted by
+      # zfs-mount.service rather than .mount units, so order after it.
+      ++ lib.optionals config.boot.zfs.enabled [
+        "x-systemd.requires=zfs-mount.service"
+        "x-systemd.after=zfs-mount.service"
+      ];
+    }
+  );
 
   # Shared folder, identical on every host that imports this module.
   services.syncthing.settings.folders."Share" = {
-    path = "/mnt/backup/Share";
+    path = share;
     devices = [
       "beast"
       "nas"

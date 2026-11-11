@@ -7,6 +7,7 @@
   ...
 }:
 let
+  inherit (config.codyos.site) domain;
   packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
@@ -110,11 +111,11 @@ in
       };
     };
 
-    services.nginx.virtualHosts."memory.homehub.tv" =
+    services.nginx.virtualHosts."memory.${domain}" =
       (mkNginxVhost {
-        host = "memory.homehub.tv";
+        host = "memory.${domain}";
         port = 9999;
-      })."memory.homehub.tv";
+      })."memory.${domain}";
 
     # Only Beast can reach the MCP endpoint over Tailscale. The API and UI stay
     # loopback-only. Like open-ontologies, this uses network restrictions, not
@@ -130,7 +131,7 @@ in
         proxyPass = "http://127.0.0.1:8888";
         recommendedProxySettings = false;
         extraConfig = ''
-          allow 100.108.143.19;
+          allow ${config.codyos.site.hosts.beast.tailscale};
           deny all;
           if ($http_origin != "") { return 403; }
           proxy_set_header Host 127.0.0.1:8888;

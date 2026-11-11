@@ -4,6 +4,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   imports = [
     ../services/automations/miniflux-curator
@@ -37,7 +40,7 @@
       config = {
         CLEANUP_FREQUENCY = 48;
         LISTEN_ADDR = "localhost:7777";
-        BASE_URL = "https://rss.homehub.tv";
+        BASE_URL = "https://rss.${domain}";
         INTEGRATION_ALLOW_PRIVATE_NETWORKS = "1";
       };
       adminCredentialsFile = config.sops.templates."miniflux-credentials".path;
@@ -48,7 +51,7 @@
       enable = true;
       minifluxUrl = "http://localhost:7777";
       apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
-      karakeepUrl = "https://karakeep.homehub.tv";
+      karakeepUrl = "https://karakeep.${domain}";
       karakeepApiKeyFile = config.sops.secrets."karakeep-api-key".path;
       openaiHost = "http://127.0.0.1:8081";
       embedModel = "qwen3-embedding-0.6b";
@@ -62,7 +65,7 @@
     };
 
     nginx.virtualHosts = mkNginxVhost {
-      host = "rss.homehub.tv";
+      host = "rss.${domain}";
       port = 7777;
     };
   };

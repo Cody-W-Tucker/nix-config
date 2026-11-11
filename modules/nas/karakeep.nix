@@ -1,8 +1,12 @@
 {
+  config,
   mkNginxVhost,
   pkgs,
   ...
 }:
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.karakeep = {
     enable = true;
@@ -33,7 +37,7 @@
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "karakeep.homehub.tv";
+    host = "karakeep.${domain}";
     port = 3005;
     proxyWebsockets = true;
   };

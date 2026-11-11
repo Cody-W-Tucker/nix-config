@@ -4,6 +4,9 @@
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   # Env file supplying secrets the upstream container requires.
   # Expected format (plain KEY=VALUE lines):
@@ -60,7 +63,7 @@
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "paperless-gpt.homehub.tv";
+    host = "paperless-gpt.${domain}";
     port = 28983; # container listens here via LISTEN_INTERFACE on the host stack
     proxyWebsockets = true;
   };

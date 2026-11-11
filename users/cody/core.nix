@@ -1,5 +1,6 @@
 {
   config,
+  osConfig,
   pkgs,
   lib,
   ...
@@ -149,7 +150,7 @@
       settings = {
         user = {
           name = "Cody W Tucker";
-          email = "cody@tmvsocial.com";
+          inherit (osConfig.codyos.site.user) email;
         };
         alias.st = "status";
         init.defaultBranch = "main";

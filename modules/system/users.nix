@@ -1,12 +1,16 @@
 # User accounts and groups configuration
 
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+
+let
+  inherit (config.codyos.site) user;
+in
 
 {
   # Make passwords uneditable
   users = {
     mutableUsers = false;
-    users.codyt = {
+    users.${user.name} = {
       isNormalUser = true;
       description = "Cody Tucker";
       extraGroups = [
@@ -34,9 +38,9 @@
 
   systemd.tmpfiles.rules = [
     # Pre-create borgbackup directories to avoid duplicate tmpfiles warnings
-    "d /home/codyt/.cache 0755 codyt users - -"
-    "d /home/codyt/.cache/borg 0755 codyt users - -"
-    "d /home/codyt/.config 0755 codyt users - -"
-    "d /home/codyt/.config/borg 0755 codyt users - -"
+    "d ${user.home}/.cache 0755 ${user.name} users - -"
+    "d ${user.home}/.cache/borg 0755 ${user.name} users - -"
+    "d ${user.home}/.config 0755 ${user.name} users - -"
+    "d ${user.home}/.config/borg 0755 ${user.name} users - -"
   ];
 }

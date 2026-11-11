@@ -9,7 +9,7 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
-    home-manager.users.codyt = {
+    home-manager.users.${config.codyos.site.user.name} = {
       programs.opencode = {
         enable = true;
         web.enable = true;

@@ -27,7 +27,7 @@
       port ? null,
       service ? null,
       baseHost ? null,
-      useACMEHost ? "homehub.tv",
+      useACMEHost ? config.codyos.site.domain,
       forceSSL ? true,
       kTLS ? true,
       proxyHost ? "127.0.0.1",

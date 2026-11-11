@@ -7,6 +7,7 @@
 }:
 
 let
+  inherit (config.codyos.site) domain;
   priorityToLevelScript = pkgs.writeText "fb-priority-to-level.lua" ''
     function priority_to_level(tag, timestamp, record)
       local map = {
@@ -33,8 +34,8 @@ in
           # and Port
           http_port = 3001;
           # Grafana needs to know on which domain and URL it's running
-          domain = "monitoring.homehub.tv";
-          root_url = "https://monitoring.homehub.tv";
+          domain = "monitoring.${domain}";
+          root_url = "https://monitoring.${domain}";
         };
       };
       provision.datasources.settings = {
@@ -402,7 +403,7 @@ in
     };
 
     nginx.virtualHosts = mkNginxVhost {
-      host = "monitoring.homehub.tv";
+      host = "monitoring.${domain}";
       port = config.services.grafana.settings.server.http_port;
       proxyWebsockets = true;
     };

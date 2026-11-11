@@ -18,3 +18,8 @@ Does not own one-host facts or Home Manager/user preferences. Put those in `host
 - Profiles (`desktop/`, `nas/`) describe a machine role; hosts select them by import.
 - Optional features declare `options.codyos.<name>.enable` and wrap their config in `lib.mkIf`. Import them from `system/base.nix` so every host can switch them on; hosts and profiles set the option.
 - Keep custom options under `codyos.*`, not upstream namespaces like `services.*`, unless deliberately extending an upstream module (e.g. `services.llama-swap`).
+
+## Site Facts
+
+- Never hardcode the domain, username, home path, email, LAN subnet, or host addresses. Read them from `config.codyos.site` (NixOS) or `osConfig.codyos.site` (Home Manager); values live in `system/site.nix`.
+- Name service hosts as `"<name>.${domain}"` with `inherit (config.codyos.site) domain;`.

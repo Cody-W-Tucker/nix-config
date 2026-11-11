@@ -1,11 +1,15 @@
 {
+  config,
   mkNginxVhost,
   ...
 }:
 
+let
+  inherit (config.codyos.site) domain;
+in
 {
   services.nginx.virtualHosts = mkNginxVhost {
-    host = "budget.homehub.tv";
+    host = "budget.${domain}";
     port = 5006;
     proxyWebsockets = true;
   };

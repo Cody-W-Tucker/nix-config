@@ -1,4 +1,5 @@
 {
+  osConfig,
   config,
   inputs,
   lib,
@@ -7,6 +8,7 @@
 }:
 
 let
+  inherit (osConfig.codyos.site) domain;
   workflowPackage = inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.workflowCli;
 in
 {
@@ -66,7 +68,7 @@ in
         # Playwright cache write into the immutable hermes-agent-env.
         AGENT_BROWSER_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";
         VOICE_TOOLS_OPENAI_KEY = "local-only";
-        MEALIE_BASE_URL = "https://mealie.homehub.tv";
+        MEALIE_BASE_URL = "https://mealie.${domain}";
       };
       environmentFiles = [
         config.sops.templates."hermes-env".path
