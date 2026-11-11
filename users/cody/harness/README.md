@@ -13,6 +13,7 @@ Central docs should point here for harness implementation detail.
 - `context.nix` — shared environment and ontology instructions.
 - The no-mistakes skill for both harnesses comes from the installed CLI's pinned source.
 - Claude Code also receives the declarative OpenCode skills and the shared deja-search skill. OpenCode-specific plugins are not shared.
+- `claude-code/langfuse/` — pinned upstream Langfuse Claude Code plugin (Stop/SessionEnd hooks) run with a Nix Python carrying langfuse 4.15.2. It reads `LANGFUSE_*` from the `opencode-langfuse-env` SOPS template sourced into zsh by `opencode/default.nix`, so only sessions started from an interactive zsh are traced.
 
 ## Stack
 
