@@ -43,9 +43,7 @@ Host policy (identity, features, ZFS storage settings, networking, Home Manager)
 | `/mnt/backup/documents` | `backup/documents`   | ZFS        | Paperless-ngx storage.                          |
 | `/mnt/backup/backups`   | `backup/backups`      | ZFS        | General backup target.                          |
 | `/mnt/projects`         | `nvme1n1[@projects]`  | Btrfs      | Project files (bind-mounted to `~/Projects`, NFS-exported to beast). |
-| `/mnt/projects-hdd`     | `backup/projects`     | ZFS        | Legacy HDD migration source for Projects — retained dataset, not NFS-exported. |
 | `/mnt/knowledge`        | `nvme1n1[@knowledge]` | Btrfs      | Knowledge base (bind-mounted to `~/Knowledge`, NFS-exported to beast). |
-| `/mnt/knowledge-hdd`    | `backup/knowledge`    | ZFS        | Legacy HDD migration source for Knowledge — retained dataset, not NFS-exported. |
 
 ## Networking
 

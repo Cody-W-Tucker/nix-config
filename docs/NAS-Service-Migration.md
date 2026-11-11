@@ -7,7 +7,7 @@ Once validated and production traffic is cut over, server is decommissioned — 
 
 - Boot: Btrfs on 1 TB NVMe (`0e0786ed-3740-4a19-83af-cf356e55393b`), subvolumes `@`, `@home`, `@nix`
 - Appdata: Btrfs on separate 1 TB NVMe (`17888441-14c2-465f-9786-b2eae0220553`), subvolumes `@appdata`, `@tmp`, `@projects`, `@knowledge`
-- Projects & Knowledge: active Btrfs paths `/mnt/projects` (`@projects`) and `/mnt/knowledge` (`@knowledge`) on the appdata NVMe. Legacy ZFS migration datasets `backup/projects` and `backup/knowledge` remain mounted at `/mnt/projects-hdd` and `/mnt/knowledge-hdd` as retained migration sources (not NFS-exported).
+- Projects & Knowledge: active Btrfs paths `/mnt/projects` (`@projects`) and `/mnt/knowledge` (`@knowledge`) on the appdata NVMe. The legacy ZFS migration datasets were removed after migration.
 - Media: 8 TB ext4 (`27ddc2ef-8f21-401d-b9eb-3ed4541c16c9`) at `/mnt/media`
 - ZFS: `backup` pool — mirror of 2× 4 TB ST4000VN006, auto-scrub enabled, ARC capped at 32 GiB
 - CPU: Intel Core i5-14400F — `boot.kernelModules = ["kvm-intel"]`

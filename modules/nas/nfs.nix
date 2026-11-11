@@ -1,61 +1,9 @@
 {
   config,
-  pkgs,
   ...
 }:
 
 {
-  # ── ZFS datasets ──────────────────────────────────────────────
-  # Create idempotently; no ordering against nfs-server.
-  # backup/projects and backup/knowledge are legacy HDD migration
-  # sources, retained at /mnt/projects-hdd and /mnt/knowledge-hdd.
-
-  systemd.services."zfs-create-backup-projects" = {
-    description = "Ensure ZFS dataset backup/projects exists and is mounted";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "shutdown.target" ];
-    after = [ "zfs-import-backup.service" ];
-    requires = [ "zfs-import-backup.service" ];
-    conflicts = [ "shutdown.target" ];
-    unitConfig.DefaultDependencies = false;
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      if ! ${pkgs.zfs}/bin/zfs list -H -o name backup/projects &>/dev/null; then
-        ${pkgs.zfs}/bin/zfs create -o mountpoint=/mnt/projects-hdd backup/projects
-      else
-        ${pkgs.zfs}/bin/zfs set mountpoint=/mnt/projects-hdd backup/projects
-      fi
-      ${pkgs.zfs}/bin/zfs mount backup/projects 2>/dev/null || true
-      ${pkgs.coreutils}/bin/chown 1000:100 /mnt/projects-hdd
-    '';
-  };
-
-  systemd.services."zfs-create-backup-knowledge" = {
-    description = "Ensure ZFS dataset backup/knowledge exists and is mounted";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "shutdown.target" ];
-    after = [ "zfs-import-backup.service" ];
-    requires = [ "zfs-import-backup.service" ];
-    conflicts = [ "shutdown.target" ];
-    unitConfig.DefaultDependencies = false;
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      if ! ${pkgs.zfs}/bin/zfs list -H -o name backup/knowledge &>/dev/null; then
-        ${pkgs.zfs}/bin/zfs create -o mountpoint=/mnt/knowledge-hdd backup/knowledge
-      else
-        ${pkgs.zfs}/bin/zfs set mountpoint=/mnt/knowledge-hdd backup/knowledge
-      fi
-      ${pkgs.zfs}/bin/zfs mount backup/knowledge 2>/dev/null || true
-      ${pkgs.coreutils}/bin/chown 1000:100 /mnt/knowledge-hdd
-    '';
-  };
-
   # ── NFS server ────────────────────────────────────────────────
   # Export only to Beast on the LAN.  Tailscale is NOT used for
   # these shares.
