@@ -1,0 +1,4 @@
+# statix lint settings, used by `statix check` locally and the flake's
+# `checks.<system>.statix`. Repeated top-level keys (e.g. `systemd.a` and
+# `systemd.b` in one module) are an accepted style in this repo.
+disabled = [ "repeated_keys" ]

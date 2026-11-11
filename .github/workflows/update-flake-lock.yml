@@ -20,6 +20,11 @@ jobs:
       - uses: DeterminateSystems/determinate-nix-action@v3
       - name: Check formatting without evaluating local flake
         run: nix run nixpkgs#nixfmt-tree -- --ci .
+      # Same lint rules as checks.x86_64-linux.{statix,deadnix} in flake.nix.
+      - name: Lint (statix)
+        run: nix run nixpkgs#statix -- check --config statix.toml .
+      - name: Find dead code (deadnix)
+        run: nix run nixpkgs#deadnix -- --fail --no-lambda-arg --no-lambda-pattern-names .
 
   private-flake-check:
     name: Private flake check (authenticated when token exists)

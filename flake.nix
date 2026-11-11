@@ -138,6 +138,27 @@
       # Every packages/<name>/ directory, as built by the overlay above.
       packages.x86_64-linux = builtins.intersectAttrs (builtins.readDir ./packages) pkgs;
 
+      # Run by `nix flake check` (locally and in CI), alongside evaluating both hosts.
+      checks.x86_64-linux =
+        let
+          lint =
+            name: tools: command:
+            pkgs.runCommand "check-${name}" { nativeBuildInputs = tools; } ''
+              cd ${self}
+              ${command}
+              touch $out
+            '';
+        in
+        {
+          formatting = lint "formatting" [ pkgs.nixfmt pkgs.findutils ] ''
+            find . -name '*.nix' -type f -print0 | xargs -0 nixfmt --check
+          '';
+          statix = lint "statix" [ pkgs.statix ] "statix check --config statix.toml .";
+          deadnix = lint "deadnix" [
+            pkgs.deadnix
+          ] "deadnix --fail --no-lambda-arg --no-lambda-pattern-names .";
+        };
+
       # Builds the different systems
       nixosConfigurations = {
         beast = inputs.nixpkgs-unstable.lib.nixosSystem {

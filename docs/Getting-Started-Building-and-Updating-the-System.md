@@ -109,10 +109,12 @@ A workflow runs on manual dispatch, every Sunday at 4:00 AM UTC, and on pull req
 
 **CI Pipeline Steps:**
 
-1. **PR Formatting Check:** Pull requests always run the public-safe `nixfmt-tree --ci .` check without evaluating the local flake [.github/workflows/update-flake-lock.yml12-22](../.github/workflows/update-flake-lock.yml#L12-L22)
+1. **PR Formatting and Lint Check:** Pull requests always run the public-safe `nixfmt-tree --ci .`, `statix check`, and `deadnix --fail` checks without evaluating the local flake [.github/workflows/update-flake-lock.yml12-22](../.github/workflows/update-flake-lock.yml#L12-L22)
 2. **PR Flake Check:** Pull requests run `nix flake check --print-build-logs` only when the `NIX_SECRETS_READ` secret is available; otherwise the private flake check is skipped [.github/workflows/update-flake-lock.yml24-46](../.github/workflows/update-flake-lock.yml#L24-L46)
 3. **Scheduled or Manual Update:** Non-PR runs require `NIX_SECRETS_READ`, run `nix flake update`, then run `nix flake check --print-build-logs` [.github/workflows/update-flake-lock.yml48-77](../.github/workflows/update-flake-lock.yml#L48-L77)
 4. **PR Creation:** If changes are detected, the workflow opens or updates `update/flake-lock` with title `chore(flake): update inputs` and labels `dependencies`, `automated`, and `nix` [.github/workflows/update-flake-lock.yml78-91](../.github/workflows/update-flake-lock.yml#L78-L91)
+
+`nix flake check` evaluates both hosts and runs the flake's `checks.x86_64-linux`: `formatting` (nixfmt), `statix` (lint rules in `statix.toml`), and `deadnix` (unused bindings). Run it locally before `update` for the same result.
 
 ### Garbage Collection
 
