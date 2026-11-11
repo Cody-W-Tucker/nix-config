@@ -20,7 +20,6 @@
       !include ${config.sops.templates."nix-access-tokens.conf".path}
     '';
     settings = {
-      auto-optimise-store = true;
       experimental-features = [
         "nix-command"
         "flakes"
@@ -34,6 +33,8 @@
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
     };
+    # Deduplicate the store on a timer rather than during every build.
+    optimise.automatic = true;
     gc = {
       automatic = true;
       dates = "weekly";

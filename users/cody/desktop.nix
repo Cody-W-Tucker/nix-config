@@ -15,7 +15,6 @@ in
   imports = [
     ./core.nix
     ./desktop
-    ./editor/nixvim
     inputs.stylix.homeModules.stylix
   ];
 
@@ -122,7 +121,7 @@ in
     # Electron and Browser Support
     # ---------------------------
 
-    # Force Electron apps to use X11 backend
+    # Let Electron/Chromium apps use the native Wayland backend
     NIXOS_OZONE_WL = 1;
 
     # Enable Wayland backend for Firefox (and other Mozilla apps)

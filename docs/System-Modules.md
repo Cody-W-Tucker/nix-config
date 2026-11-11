@@ -15,7 +15,7 @@ The `nix.nix` module manages the behavior of the Nix daemon and package fetching
 | Feature                   | Implementation            | Purpose                                                  |
 | ------------------------- | ------------------------- | -------------------------------------------------------- |
 | **Experimental Features** | `nix-command`, `flakes`   | Enables modern Nix workflows.                            |
-| **Optimization**          | `auto-optimise-store`     | Hardlinks identical files in the store to save space.    |
+| **Optimization**          | `optimise.automatic`      | Timer that hardlinks identical store files to save space. |
 | **Garbage Collection**    | `gc.automatic = true`     | Weekly cleanup of generations older than 7 days.         |
 | **Binary Caches**         | `extra-substituters`      | Uses Numtide and Nix-community caches for faster builds. |
 | **Secrets**               | `github-nix-secrets-read` | Injects GitHub tokens for private flake access.          |

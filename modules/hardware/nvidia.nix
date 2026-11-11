@@ -67,18 +67,7 @@ in
 
     # Build apps with CUDA support
     nixpkgs.config.cudaSupport = true;
-    nixpkgs.config.allowUnfreePredicate =
-      p:
-      builtins.all (
-        license:
-        license.free
-        || builtins.elem license.shortName [
-          "CUDA EULA"
-          "cuDNN EULA"
-          "cuTENSOR EULA"
-          "NVidia OptiX EULA"
-        ]
-      ) (if builtins.isList p.meta.license then p.meta.license else [ p.meta.license ]);
+    # CUDA licences are covered by the global nixpkgs.config.allowUnfree (system/nix.nix).
 
     # CUDA binary cache to avoid building from source
     nix.settings = {
