@@ -9,7 +9,6 @@
 
 let
   inherit (osConfig.codyos.site) domain;
-  common = import (inputs.hermes-agent + "/nix/moduleCommon.nix") { inherit lib; };
   crg = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.code-review-graph;
   deja = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu;
   dejaMcp = pkgs.writeShellApplication {

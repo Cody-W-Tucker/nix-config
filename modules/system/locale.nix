@@ -1,6 +1,6 @@
 # Locale and timezone settings
 
-{ ... }:
+_:
 
 {
   time.timeZone = "America/Chicago";

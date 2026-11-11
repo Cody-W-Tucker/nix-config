@@ -381,7 +381,7 @@ in
         logToStdout = lib.mkDefault "both";
         hooks.on_startup.preload = lib.mkDefault cfg.preloadModels;
         models = lib.mkDefault renderedModels;
-        groups = cfg.groups;
+        inherit (cfg) groups;
       };
     };
 

@@ -7,7 +7,7 @@
       autoInstall = {
         enable = true;
         overrides = {
-          black = pkgs.black;
+          inherit (pkgs) black;
         };
       };
       settings = {

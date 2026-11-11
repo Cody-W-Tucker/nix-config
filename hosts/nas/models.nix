@@ -56,10 +56,6 @@ let
     url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/3db49b5e08fb84a2ead8d6407f38f6638c79d08a/qwen3.5-9b-nvfp4.gguf";
     sha256 = "0db703913b6a1b057d423e9815095e9dc16499596a986446918314a48c4d9bad";
   };
-  qwen35_9bMmproj = pkgs.fetchurl {
-    url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/3db49b5e08fb84a2ead8d6407f38f6638c79d08a/mmproj-qwen3.5-9b-nvfp4-f16.gguf";
-    sha256 = "97f420245a85ce129bb764e86a5e21e27d782fe6d6056c6839b9c5fdb8f38289";
-  };
 
   # s1-mini Q4_K_M GGUF (superwhisper) used as the speech-to-text transcript
   # normalizer (llama-dictate posts raw Whisper output to it).

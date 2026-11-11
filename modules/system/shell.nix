@@ -1,6 +1,6 @@
 # Shell configuration (zsh, starship)
 
-{ ... }:
+_:
 
 {
   programs = {

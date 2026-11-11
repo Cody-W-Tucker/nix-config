@@ -4,8 +4,6 @@
   ...
 }:
 
-let
-in
 {
   config = {
     # `hermes` is a single multiline secret whose plaintext is plain

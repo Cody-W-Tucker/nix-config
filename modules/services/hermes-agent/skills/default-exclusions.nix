@@ -1,8 +1,7 @@
 # Catalog only: explicit default-home skill exclusions as category/skill rel paths.
 # Every entry must exist in a Nix source (CA categorized, GWS upstream, knowledge)
 # and must be absent from every default skill pack. See default-validation.nix.
-{ ... }:
-{
+_: {
   _module.args.defaultExcludedSkillPaths = [
     "apple/apple-notes"
     "apple/apple-reminders"
