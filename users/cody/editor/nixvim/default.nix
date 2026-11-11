@@ -30,6 +30,8 @@
   programs.nixvim = {
     enable = true;
     nixpkgs.useGlobalPackages = true;
+    # Rendering `man nixvim` walks every nixvim option and costs ~2s of eval per rebuild.
+    enableMan = false;
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;

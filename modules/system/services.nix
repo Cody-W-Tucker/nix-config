@@ -10,11 +10,15 @@
 
 {
   # Enables prompts to install missing packages when running commands
+  # The flake's own package is keyed to its single nixpkgs input, so call its
+  # builder with this host's nixpkgs revision (stable on nas, unstable on beast).
   programs.command-not-found = {
     enable = true;
-    dbPath =
-      lib.mkForce
-        inputs.flake-programs-sqlite.packages.${pkgs.stdenv.hostPlatform.system}.programs-sqlite;
+    dbPath = lib.mkForce (
+      pkgs.callPackage "${inputs.flake-programs-sqlite}/programs-sqlite.nix" {
+        nixpkgsRev = config.system.nixos.revision;
+      }
+    );
   };
 
   services = {

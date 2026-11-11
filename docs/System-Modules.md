@@ -28,7 +28,7 @@ Shared services are defined in `services.nix`, focusing on hardware health, firm
 
 - **Firmware Management**: The system enables `hardware.enableRedistributableFirmware` and utilizes `fwupd` for device firmware updates. The `fwupd-refresh` service is specifically configured to run as `root` to bypass interactive authentication during background updates.
 - **Hardware Monitoring**: The `prometheus.exporters.smartctl` service is enabled globally to expose storage health metrics for the monitoring stack.
-- **CLI UX**: Integration with `flake-programs-sqlite` allows the `command-not-found` utility to suggest packages from a pre-indexed database when a command is missing.
+- **CLI UX**: Integration with `flake-programs-sqlite` allows the `command-not-found` utility to suggest packages from a pre-indexed database when a command is missing. The database is picked per host from its own nixpkgs revision (`config.system.nixos.revision`), so beast (unstable) and nas (stable) each get matching suggestions.
 
 ---
 
