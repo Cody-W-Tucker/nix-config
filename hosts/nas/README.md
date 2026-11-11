@@ -6,11 +6,12 @@ Central docs should point here instead of duplicating this host map.
 
 ## Layout
 
-Host-local files are split into two Nix files. Machine identity, drives, networking, and boot config live in `default.nix`. The llama-swap inference catalog stays separate.
+Host policy (identity, features, ZFS storage settings, networking, Home Manager) lives in `default.nix`; disks and kernel modules live in `hardware-configuration.nix`. The llama-swap inference catalog stays separate in `models.nix`.
 
 | Path          | Role                                                                                                                                                                         |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default.nix` | Full host definition: boot/kernel, filesystems (Btrfs root, Btrfs appdata, ext4 media, ZFS backup), networking, Tailscale subnet router, Docker, NVIDIA, Home Manager entry. |
+| `default.nix` | Host policy: `codyos.*` features, ZFS pool/ARC/snapshots, home bind mounts, networking, Tailscale subnet router, Docker, Home Manager entry. |
+| `hardware-configuration.nix` | Hardware: filesystems (Btrfs root, Btrfs appdata/projects/knowledge, ext4 media) and initrd/kernel modules. |
 | `models.nix`  | `llama-swap` enablement, CUDA acceleration (Blackwell sm_120a), CTranslate2 Blackwell override, model catalog (chat, embedding, OCR, audio STT/TTS).                         |
 
 ## Hardware profile

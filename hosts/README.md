@@ -50,6 +50,6 @@ unset GITHUB_TOKEN
 
 ## Notes
 
-The current host pattern appears to inline hardware details into the host file instead of relying on a separate `hardware-configuration.nix`. If that stops being useful, splitting hardware back out would make regeneration easier when the machine changes.
+Each host keeps machine hardware (disks, initrd/kernel modules, device quirks) in `hardware-configuration.nix` and host policy in `default.nix`, so hardware can be regenerated with `nixos-generate-config` without touching policy.
 
 The first build will fail if the host is not already included in the private repo's `.sops.yaml` recipients or if `flake.lock` still pins `nixos-secrets` to an old SSH URL.

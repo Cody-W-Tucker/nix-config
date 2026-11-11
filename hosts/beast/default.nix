@@ -42,11 +42,7 @@ in
     ../../modules/system/base.nix
     ../../modules/hardware/baseline.nix
     ../../modules/desktop
-
-    # Using community hardware configurations
-    inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
-    inputs.nixos-hardware.nixosModules.common-pc-ssd
-    inputs.nixos-hardware.nixosModules.common-pc
+    ./hardware-configuration.nix
   ];
 
   # ── Machine ─────────────────────────────────────────────────
@@ -61,27 +57,8 @@ in
     paperless-scanning.enable = true;
   };
 
-  # Bootloader.
-  boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-    initrd.availableKernelModules = [
-      "vmd"
-      "xhci_pci"
-      "ahci"
-      "nvme"
-      "usbhid"
-      "usb_storage"
-      "sd_mod"
-    ];
-    kernelModules = [
-      "kvm-intel"
-      "btusb"
-    ];
-    extraModprobeConfig = ''
-      options mt7925e disable_aspm=Y
-      options btusb enable_autosuspend=n reset=1
-    '';
-  };
+  # Kernel (hardware modules and quirks are in hardware-configuration.nix).
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # ── Drives ──────────────────────────────────────────────────
   environment.systemPackages = [ pkgs.nfs-utils ];
@@ -100,20 +77,6 @@ in
         "x-systemd.automount"
         "x-systemd.idle-timeout=60"
         "x-systemd.mount-timeout=10s"
-      ];
-    };
-    # Actual drives
-    "/" = {
-      device = "/dev/disk/by-uuid/8a65acd3-482f-4e10-81c9-d814616564c6";
-      fsType = "ext4";
-      options = [ "noatime" ];
-    };
-    "/boot" = {
-      device = "/dev/disk/by-uuid/36FA-44EF";
-      fsType = "vfat";
-      options = [
-        "fmask=0077"
-        "dmask=0077"
       ];
     };
     # Share folders (Documents, Music, …) are bind-mounted by syncthing.nix.

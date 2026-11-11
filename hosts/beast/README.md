@@ -6,11 +6,12 @@ Central docs should point here instead of duplicating this host map.
 
 ## Layout
 
-Host-local files were collapsed into two Nix files. Machine identity, drives, networking, Docker, and desktop `hardwareConfig` live in `default.nix`. The llama-swap catalog stays separate.
+Host policy (identity, features, network mounts, networking, Docker, and desktop `hardwareConfig`) lives in `default.nix`; machine hardware lives in `hardware-configuration.nix`.
 
 | Path          | Role                                                                                                                                       |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `default.nix` | Full host definition: boot/kernel, filesystems, networking (incl. Wake-on-LAN), Docker, `hardwareConfig` for Hyprland, Home Manager entry. |
+| `default.nix` | Host policy: `codyos.*` features, kernel choice, NAS network mounts, networking (incl. Wake-on-LAN), `hardwareConfig` for Hyprland, Home Manager entry. |
+| `hardware-configuration.nix` | Hardware: root and EFI filesystems, initrd/kernel modules, MT7925 Wi-Fi/Bluetooth quirks, `nixos-hardware` profiles. |
 
 ## Hardware profile
 
