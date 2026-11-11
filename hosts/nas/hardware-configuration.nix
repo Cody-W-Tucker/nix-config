@@ -19,16 +19,23 @@
     "/" = {
       device = "/dev/disk/by-uuid/0e0786ed-3740-4a19-83af-cf356e55393b";
       fsType = "btrfs";
+      options = [ "noatime" ];
     };
     "/home" = {
       device = "/dev/disk/by-uuid/0e0786ed-3740-4a19-83af-cf356e55393b";
       fsType = "btrfs";
-      options = [ "subvol=home" ];
+      options = [
+        "subvol=home"
+        "noatime"
+      ];
     };
     "/nix" = {
       device = "/dev/disk/by-uuid/0e0786ed-3740-4a19-83af-cf356e55393b";
       fsType = "btrfs";
-      options = [ "subvol=nix" ];
+      options = [
+        "subvol=nix"
+        "noatime"
+      ];
     };
     "/boot" = {
       device = "/dev/disk/by-uuid/CBDD-BD07";

@@ -58,6 +58,15 @@ in
       ];
     };
     zfs.autoScrub.enable = true;
+    # Monthly Btrfs scrub. One mount per filesystem: the default (every Btrfs
+    # mount) would scrub the same disk once per subvolume.
+    btrfs.autoScrub = {
+      enable = true;
+      fileSystems = [
+        "/" # boot NVMe: root, home, nix
+        "/mnt/appdata" # appdata NVMe: appdata, tmp, projects, knowledge
+      ];
+    };
     zfs.autoSnapshot = {
       enable = true;
       frequent = 0;

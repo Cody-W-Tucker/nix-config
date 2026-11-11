@@ -10,8 +10,8 @@ Host policy (identity, features, ZFS storage settings, networking, Home Manager)
 
 | Path          | Role                                                                                                                                                                         |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default.nix` | Host policy: `codyos.*` features, ZFS pool/ARC/snapshots, home bind mounts, networking, Tailscale subnet router, Docker, Home Manager entry. |
-| `hardware-configuration.nix` | Hardware: filesystems (Btrfs root, Btrfs appdata/projects/knowledge, ext4 media) and initrd/kernel modules. |
+| `default.nix` | Host policy: `codyos.*` features, ZFS pool/ARC/snapshots, Btrfs auto-scrub, home bind mounts, networking, Tailscale subnet router, Docker, Home Manager entry. |
+| `hardware-configuration.nix` | Hardware: filesystems (Btrfs root, Btrfs appdata/projects/knowledge, ext4 media; all `noatime`) and initrd/kernel modules. |
 | `models.nix`  | `llama-swap` enablement, CUDA acceleration (Blackwell sm_120a), CTranslate2 Blackwell override, model catalog (chat, embedding, OCR, audio STT/TTS).                         |
 
 ## Hardware profile
@@ -20,30 +20,33 @@ Host policy (identity, features, ZFS storage settings, networking, Home Manager)
 | ------------ | -------------------------------------------------------------------------------------------------- |
 | CPU          | Intel Core i5-14400F, 10 cores (6P+4E) / 16 threads, up to 4.7 GHz.                                |
 | GPU          | NVIDIA GeForce RTX 5060, 8 GB VRAM, driver 595.71.05 (Blackwell, sm_120a).                         |
-| RAM          | 64 GB DDR5-6000 (ZFS ARC capped at 32 GiB).                                                        |
-| Boot NVMe    | WD Blue SN580 1 TB (`nvme0n1`) — Btrfs root (`/`, `/home`, `/nix`), vfat `/boot`.                  |
-| Appdata NVMe | WD Blue SN580 1 TB (`nvme1n1`) — Btrfs with `@appdata`, `@tmp`, `@projects`, and `@knowledge` subvolumes, zstd compression (`@projects` mounted at `/mnt/projects`, `@knowledge` at `/mnt/knowledge`). |
-| Media HDD    | Seagate ST8000VN004 8 TB (`sda`) — ext4 at `/mnt/media`.                                           |
-| ZFS pool     | `backup` — mirror of 2× Seagate ST4000VN006 4 TB (`sdb`, `sdd`), 3.62 TiB raw, auto-scrub enabled. |
+| RAM          | 64 GB DDR5-6000 (ZFS ARC capped at 8 GiB).                                                         |
+| Boot NVMe    | WD Blue SN580 1 TB — Btrfs root (`/`, `/home`, `/nix`), vfat `/boot`.                              |
+| Appdata NVMe | WD Blue SN580 1 TB — Btrfs with `@appdata`, `@tmp`, `@projects`, and `@knowledge` subvolumes, zstd compression (`@projects` mounted at `/mnt/projects`, `@knowledge` at `/mnt/knowledge`). |
+| Media HDD    | Seagate ST8000VN004 8 TB — ext4 at `/mnt/media`.                                                   |
+| ZFS pool     | `backup` — mirror of 2× Seagate ST4000VN006 4 TB (serials `ZW624NP8`, `ZW624PD8`), 3.62 TiB raw, auto-scrub enabled. |
+| Unused SSDs  | Crucial MX300 2 TB and Kingston SUV400 120 GB on the ASMedia SATA card; old NTFS partitions, not mounted. |
 | Kernel       | Linux 6.18 (NixOS 26.05 stable).                                                                   |
 | NIC          | `enp6s0` — 192.168.1.2/24 (static), IPv6 ULA `fd43:fa14:b975:8::/64`.                              |
 
 ## Storage layout
 
+Kernel names (`sdX`, `nvmeXn1`) change between boots; the config mounts by UUID. Both Btrfs filesystems are scrubbed monthly (`services.btrfs.autoScrub`, via `/` and `/mnt/appdata`).
+
 | Mountpoint              | Source               | Filesystem | Purpose                                         |
 | ----------------------- | -------------------- | ---------- | ----------------------------------------------- |
-| `/`                     | `nvme0n1p2`          | Btrfs      | Root, home, nix store subvolumes.               |
-| `/boot`                 | `nvme0n1p1`          | vfat       | EFI system partition.                           |
-| `/mnt/appdata`          | `nvme1n1[@appdata]`  | Btrfs      | High-write app data (zstd, noatime).            |
-| `/mnt/tmp`              | `nvme1n1[@tmp]`      | Btrfs      | Scratch / temp (zstd, noatime).                 |
-| `/mnt/media`            | `sda1` (ST8000VN004) | ext4       | Media library (flat category directories).      |
+| `/`                     | Boot NVMe, part. 2   | Btrfs      | Root, home, nix store subvolumes (noatime).     |
+| `/boot`                 | Boot NVMe, part. 1   | vfat       | EFI system partition.                           |
+| `/mnt/appdata`          | Appdata NVMe `@appdata` | Btrfs   | High-write app data (zstd, noatime).            |
+| `/mnt/tmp`              | Appdata NVMe `@tmp`  | Btrfs      | Scratch / temp (zstd, noatime).                 |
+| `/mnt/media`            | ST8000VN004, part. 1 | ext4       | Media library (flat category directories).      |
 | `/mnt/backup`           | `backup` ZFS pool    | ZFS        | Root of backup pool.                            |
 | `/mnt/backup/Share`     | `backup/Share`       | ZFS        | Samba share (Syncthing with beast).             |
 | `/mnt/backup/photos`    | `backup/photos`      | ZFS        | Immich media library.                           |
 | `/mnt/backup/documents` | `backup/documents`   | ZFS        | Paperless-ngx storage.                          |
 | `/mnt/backup/backups`   | `backup/backups`      | ZFS        | General backup target.                          |
-| `/mnt/projects`         | `nvme1n1[@projects]`  | Btrfs      | Project files (bind-mounted to `~/Projects`, NFS-exported to beast). |
-| `/mnt/knowledge`        | `nvme1n1[@knowledge]` | Btrfs      | Knowledge base (bind-mounted to `~/Knowledge`, NFS-exported to beast). |
+| `/mnt/projects`         | Appdata NVMe `@projects` | Btrfs      | Project files (bind-mounted to `~/Projects`, NFS-exported to beast). |
+| `/mnt/knowledge`        | Appdata NVMe `@knowledge` | Btrfs      | Knowledge base (bind-mounted to `~/Knowledge`, NFS-exported to beast). |
 
 ## Networking
 
@@ -59,7 +62,7 @@ Host policy (identity, features, ZFS storage settings, networking, Home Manager)
 - **Docker** (docker 29): Actual Budget MCP, Hermes agent, Excalidraw.
 - **llama-swap**: CUDA-accelerated inference on RTX 5060 — chat (Qwen 3.5), embedding, OCR, Whisper STT, Kokoro TTS.
 - **Tailscale**: Subnet router advertising `192.168.1.0/24`; Hermes API (8642) and Dashboard (9119) exposed over Tailscale only.
-- **ZFS**: Auto-scrub enabled; ARC capped at 32 GiB via `zfs.zfs_arc_max`. Daily, weekly, and monthly snapshots cover `backup/photos`, `backup/documents`, `backup/Share`, and `backup/backups`.
+- **ZFS**: Auto-scrub enabled; ARC capped at 8 GiB via `zfs.zfs_arc_max`. Daily, weekly, and monthly snapshots cover `backup/photos`, `backup/documents`, `backup/Share`, and `backup/backups`.
 - **Backups**: service-owned SQLite exports (plus Karakeep's catalog, captured assets and settings) stage on `backup/backups`; Restic includes those exports, Projects, Knowledge, Hermes, and Langfuse's MinIO objects. The shared module owns the Restic repository, PostgreSQL/ClickHouse dumps, and ZFS snapshot policy. Paperless originals live on the snapshotted `backup/documents` dataset, not the 8 TB media disk. Add `restic-nas-password` with `sops` before activation. No off-box copy or restore drill is configured; ZFS originals and the 8 TB media disk remain vulnerable to whole-NAS loss.
 - **Syncthing**: NAS↔beast share sync; GUI at `nas-syncthing.homehub.tv` (port 8384 is open on Tailscale only).
 - **Bluetooth**: Enabled for Home Assistant (future controller).
