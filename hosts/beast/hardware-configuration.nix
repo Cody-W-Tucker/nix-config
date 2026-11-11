@@ -11,7 +11,6 @@
 
   boot = {
     initrd.availableKernelModules = [
-      "vmd"
       "xhci_pci"
       "ahci"
       "nvme"
