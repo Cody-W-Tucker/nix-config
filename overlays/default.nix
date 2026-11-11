@@ -4,9 +4,8 @@
 # with the host's own pkgs (so packages can depend on each other by name).
 #
 # `pkgs.unstable` exposes nixpkgs-unstable for hosts on stable nixpkgs (the NAS).
-# It reuses the flake's default-config instance, so it does NOT inherit the
-# host's nixpkgs.config (allowUnfree, cudaSupport). Consumers needing unfree or
-# CUDA builds instantiate their own (see hosts/nas/models.nix).
+# It is built with the host's own nixpkgs.config (allowUnfree, cudaSupport), so
+# consumers never need a separate nixpkgs import for unfree or CUDA builds.
 { inputs }:
 final: prev:
 prev.lib.packagesFromDirectoryRecursive {
@@ -14,5 +13,8 @@ prev.lib.packagesFromDirectoryRecursive {
   directory = ../packages;
 }
 // {
-  unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
+  unstable = import inputs.nixpkgs-unstable {
+    inherit (prev.stdenv.hostPlatform) system;
+    inherit (prev) config;
+  };
 }

@@ -2,20 +2,10 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 
 let
-  # Unstable nixpkgs llama.cpp CUDA build used as the llama-swap serverPackage.
-  # NAS intentionally tracks unstable llama-cpp 0.6.0 for SystemOne
-  # (upstream PR #29818) while the host stays on stable pkgs.
-  unstablePkgs = import inputs.nixpkgs-unstable {
-    system = pkgs.stdenv.hostPlatform.system;
-    config.allowUnfree = true;
-  };
-  llamaCppCuda = unstablePkgs.llama-cpp.override { cudaSupport = true; };
-
   # Qwen3 embedding GGUF (karakeep/miniflux shared catalog). Pinned to an
   # immutable release commit; content hash guards byte-identity.
   qwen3Embedding = pkgs.fetchurl {
@@ -109,9 +99,11 @@ in
     enable = true;
     # Keep the router on nixos-unstable alongside the llama.cpp server, so
     # decision-endpoint support can move forward with the upstream packages.
-    package = unstablePkgs.llama-swap;
-    acceleration = "cuda";
-    serverPackage = llamaCppCuda;
+    package = pkgs.unstable.llama-swap;
+    # NAS intentionally tracks unstable llama-cpp 0.6.0 for SystemOne
+    # (upstream PR #29818) while the host stays on stable pkgs. CUDA comes from
+    # the host nixpkgs.config that pkgs.unstable inherits.
+    serverPackage = pkgs.unstable.llama-cpp;
     ctranslate2Cpp = ctranslate2CppBlackwell;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     port = 8081;

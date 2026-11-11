@@ -20,7 +20,8 @@ writeShellApplication {
 
     set -euo pipefail
 
-    cd /etc/nixos
+    # Defaults to the live repo; `nix flake check` passes the flake source.
+    cd "''${1:-/etc/nixos}"
     error_count=0
 
     # Find all default.nix files in the project

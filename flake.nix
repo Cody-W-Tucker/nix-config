@@ -157,6 +157,7 @@
           deadnix = lint "deadnix" [
             pkgs.deadnix
           ] "deadnix --fail --no-lambda-arg --no-lambda-pattern-names .";
+          imports = lint "imports" [ pkgs.check-imports ] "check-imports .";
         };
 
       # Builds the different systems

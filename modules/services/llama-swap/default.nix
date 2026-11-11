@@ -92,12 +92,6 @@ let
   proxy = import ./proxy.nix { inherit pkgs; };
   settingsFormat = pkgs.formats.yaml { };
 
-  defaultServerPackage =
-    if cfg.acceleration == "cuda" then
-      pkgs.llama-cpp.override { cudaSupport = true; }
-    else
-      pkgs.llama-cpp;
-
   # Build Python environments for audio wrapper services
   whisperPython = proxy.mkWhisperPython cfg.ctranslate2Cpp;
   kokoroPython = proxy.mkKokoroPython pkgs;
@@ -243,18 +237,9 @@ let
 in
 {
   options.services.llama-swap = {
-    acceleration = lib.mkOption {
-      type = lib.types.enum [
-        "cpu"
-        "cuda"
-      ];
-      default = "cpu";
-      description = "Backend used to build the llama-server package and service environment.";
-    };
-
     serverPackage = lib.mkOption {
       type = lib.types.package;
-      default = defaultServerPackage;
+      default = pkgs.llama-cpp;
       defaultText = lib.literalExpression "pkgs.llama-cpp";
       description = "llama.cpp package that provides the llama-server binary used by llama-swap.";
     };

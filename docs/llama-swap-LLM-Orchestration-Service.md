@@ -13,7 +13,7 @@ The service is defined in `modules/services/llama-swap/default.nix`. It uses a s
 Key features include:
 
 - **TTL-based Swapping**: Models are kept alive for a specified duration after their last request. This is configured via the `ttl` option [modules/services/llama-swap/default.nix33-37](../modules/services/llama-swap/default.nix#L33-L37)
-- **Hardware Acceleration**: The service supports `cpu` and `cuda` backends and selects the matching `llama-cpp` package from the `acceleration` setting [modules/services/llama-swap/default.nix95-100](../modules/services/llama-swap/default.nix#L95-L100)
+- **Hardware Acceleration**: CUDA comes from the host-wide `nixpkgs.config.cudaSupport` (set by `codyos.hardware.nvidia`); the module has no backend switch of its own [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix)
 - **Command Generation**: The `mkModelCommand` function dynamically builds the `llama-server` CLI string, incorporating parameters like context size, batch size, and GPU layers [modules/services/llama-swap/default.nix128-162](../modules/services/llama-swap/default.nix#L128-L162)
 
 ## Model Catalog and Types
@@ -52,9 +52,7 @@ For models with vision capabilities, such as `glm-ocr-f16`, the catalog must spe
 
 ## Hardware Acceleration Backends
 
-`llama-swap` abstracts the underlying hardware through the `acceleration` option.
-
-- **CPU** (default) or **CUDA**. CUDA is used on the `nas` host (NVIDIA RTX 5060). It overrides `llama-cpp` with `cudaSupport = true`[modules/services/llama-swap/default.nix96-97](../modules/services/llama-swap/default.nix#L96-L97)
+`llama-swap` has no backend switch of its own. `serverPackage` defaults to `pkgs.llama-cpp`, and the Python wrappers use plain `torch`, so CUDA comes from the host-wide `nixpkgs.config.cudaSupport` set by `codyos.hardware.nvidia` [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix). The `nas` host (NVIDIA RTX 5060) uses `pkgs.unstable.llama-cpp`, which inherits that config through the overlay [hosts/nas/models.nix](../hosts/nas/models.nix).
 
 ## Specialized TTS Wrappers
 
@@ -89,7 +87,6 @@ The following diagram bridges the high-level service concepts to the specific Ni
 classDiagram
     class LlamaSwapModule {
         <<NixOS Module>>
-        services.llama-swap.acceleration
         services.llama-swap.enabledModels
         mkModelCommand()
     }

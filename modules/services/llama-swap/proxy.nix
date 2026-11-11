@@ -35,15 +35,10 @@ let
       ]
     );
 
-  # Kokoro (and future torch-based audio models) need a CUDA-enabled torch
-  # for GPU inference. The base python313Packages.torch is CPU-only.
+  # Kokoro needs CUDA torch for GPU inference; the host-wide
+  # nixpkgs.config.cudaSupport already provides it.
   mkKokoroPython =
     pkgs:
-    let
-      torchWithCuda = pkgs.python313Packages.torch.override {
-        cudaSupport = true;
-      };
-    in
     pkgs.python313.withPackages (
       ps: with ps; [
         # Provide the spacy model that misaki's G2P (used by kokoro) requires.
@@ -53,7 +48,7 @@ let
         fastapi
         kokoro
         numpy
-        torchWithCuda
+        torch
         uvicorn
       ]
     );
@@ -61,20 +56,10 @@ let
   # WhisperX diarization server: speech-to-text with speaker labels.
   # Uses WhisperX for transcription + alignment and pyannote for diarization.
   # Both require CUDA for acceptable latency.
-  #
-  # Override the entire Python 3.13 package set so torch carries CUDA by default.
-  # This avoids the collision where stock whisperx propagates CPU torch while an
-  # explicit CUDA torch is also present in withPackages.
+  # CUDA torch comes from the host-wide nixpkgs.config.cudaSupport.
   mkWhisperDiarizePython =
     pkgs:
-    let
-      whisperDiarizeScope = pkgs.python313.override {
-        packageOverrides = final: prev: {
-          torch = prev.torch.override { cudaSupport = true; };
-        };
-      };
-    in
-    whisperDiarizeScope.withPackages (
+    pkgs.python313.withPackages (
       ps: with ps; [
         fastapi
         python-multipart

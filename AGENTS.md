@@ -11,19 +11,16 @@ You are assisting a user working on a NixOS system config using flakes. Full doc
 
 ## Build Testing
 
-Build-test risky changes such as new services, complex module refactors, unfamiliar Nix patterns, flake-input swaps, and Home Manager module wiring. For each risky change, run both `nix flake check` and a relevant host build or dry-run. Do not call a risky change validated unless both succeed; report either missing check as unverified. Simple package-list updates, existing-value changes, and minor configuration tweaks rarely need pre-testing; the user will catch issues during their `update` run.
+Validate risky changes such as new services, complex module refactors, unfamiliar Nix patterns, flake-input swaps, and Home Manager module wiring with `nix flake check`. It is the only required check: it evaluates both hosts and runs formatting, statix, deadnix, and `check-imports`, so do not also run `nixos-rebuild dry-run` (it repeats the same evaluation). Do not call a risky change validated unless it succeeds. Simple package-list updates, existing-value changes, and minor configuration tweaks rarely need pre-testing; the user will catch issues during their `update` run.
 
-If the system doesn't build, check the logs and solve the issues.
+If the check fails, read the logs and solve the issues.
 
 ```bash
-# Test build current host
-nixos-rebuild dry-run --flake .
-
-# Test build a different host. (Check the hostname of the current session if unsure.)
-nixos-rebuild dry-run --flake .#beast
-
-# Checks entire system and all flake outputs.
+# Checks both hosts and all flake outputs. Stage new files first.
 nix flake check
+
+# Optional: actually build a host when the derivations themselves are in doubt.
+nixos-rebuild build --flake .#nas
 ```
 
 Once the changes have settled, the user will run the `update` script to build and activate the system.

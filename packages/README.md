@@ -39,7 +39,7 @@ Keep package directory names in lowercase kebab-case; the directory name is the 
 Maintenance commands installed into the system environment by `modules/system/scripts.nix`.
 
 - `update` formats the repo, runs `check-imports`, stages changes, prompts for a commit message, rebuilds with `sudo nixos-rebuild switch`, then pushes.
-- `check-imports` checks directories with a `default.nix` and reports `.nix` files that are present but not imported, plus imports that point at missing files.
+- `check-imports [dir]` checks directories with a `default.nix` (under `/etc/nixos` by default) and reports `.nix` files that are present but not imported, plus imports that point at missing files. It also runs as the `imports` flake check.
 
 Use `check-imports` when adding or moving Nix modules. Use `update` for the normal operator path after changes have settled.
 
