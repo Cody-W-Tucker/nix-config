@@ -31,9 +31,6 @@ let
     '';
   };
   mcpRegistry = {
-    open-ontologies = {
-      url = "http://127.0.0.1:18081/mcp";
-    };
     deja.command = lib.getExe dejaMcp;
     karakeep = {
       command = lib.getExe' pkgs.nodejs "npx";
@@ -86,7 +83,7 @@ in
     services.hermes-agent = {
       extraPackages = [ crg ];
       mcpServers = {
-        inherit (mcpRegistry) karakeep open-ontologies deja;
+        inherit (mcpRegistry) karakeep deja;
       };
     };
   };

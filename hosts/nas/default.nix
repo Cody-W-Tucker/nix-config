@@ -79,7 +79,6 @@ in
       };
     };
     hindsight.enable = true;
-    open-ontologies.enable = true;
     opencode.enable = true; # web server for opencode
     wake-beast.enable = false;
   };

@@ -118,7 +118,7 @@ in
       })."memory.${domain}";
 
     # Only Beast can reach the MCP endpoint over Tailscale. The API and UI stay
-    # loopback-only. Like open-ontologies, this uses network restrictions, not
+    # loopback-only. This uses network restrictions, not
     # application authentication; local users can still access the API.
     services.nginx.virtualHosts."hindsight-tailnet" = {
       listen = [

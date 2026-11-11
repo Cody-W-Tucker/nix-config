@@ -37,8 +37,6 @@ let
     This is a minimal environment. Common language runtimes may not be globally available.
     Use `nix shell` only when a required tool or runtime is missing.
     Do not use `nix shell` for standard Unix utilities that are typically available, such as `bash`, `coreutils`, `grep`, `sed`, `awk`, or `git`.
-
-    ${builtins.readFile ../../../../docs/open-ontologies-mcp.md}
   '';
   hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" ''
     ${brevityInstructions}

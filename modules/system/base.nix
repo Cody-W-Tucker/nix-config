@@ -30,7 +30,6 @@
     ../services/docker.nix
     ../services/hindsight
     ../services/nginx # provides mkNginxVhost to feature modules
-    ../services/open-ontologies
     ../services/opencode
     ../services/paperless-scanning
   ];

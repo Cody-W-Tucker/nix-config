@@ -63,7 +63,6 @@ in
     paths = fixedHostData ++ cfg.dataDirectories ++ stagedDirs;
     exclude = [
       # A live RocksDB/SQLite file copy is not a consistent database backup.
-      "/mnt/knowledge/.open-ontologies"
       "${config.codyos.site.user.home}/.local/share/hermes/audio_cache"
       "${config.codyos.site.user.home}/.local/share/hermes/cache"
       "${config.codyos.site.user.home}/.local/share/hermes/**/*.db"

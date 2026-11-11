@@ -58,10 +58,6 @@ Kokoro TTS model files for the llama-swap `kokoro-82m` wrapper (`modules/service
 - Fetches from HuggingFace with fixed hashes, so the runtime gets a reproducible model directory.
 - The spaCy `en_core_web_sm` model that Kokoro's G2P (via misaki) needs comes from nixpkgs (`python3Packages.spacy-models.en_core_web_sm`).
 
-### `open-ontologies`
-
-Shared Open Ontologies MCP server, run on the NAS by `modules/services/open-ontologies` (`codyos.open-ontologies.enable`).
-
 ### `backpass`
 
 Pinned [Backpass](https://github.com/kunchenguid/backpass) `v0.1.31` (Node >=22.5) from the npm registry via `buildNpmPackage` with a vendored `package-lock.json`. The wrapper prefixes the nix-built `acpx` and `lavish-axi` onto `PATH` because Backpass shells out to both helpers resolved from `PATH`.

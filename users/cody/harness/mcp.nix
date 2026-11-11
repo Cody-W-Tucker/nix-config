@@ -22,13 +22,6 @@ in
         command = lib.getExe dejaMcp;
         args = [ "mcp" ];
       };
-      open-ontologies = {
-        url =
-          if osConfig.networking.hostName == "nas" then
-            "http://127.0.0.1:18081/mcp"
-          else
-            "http://${osConfig.codyos.site.hosts.nas.tailscale}:18082/mcp";
-      };
       hindsight = {
         type = "remote";
         url =

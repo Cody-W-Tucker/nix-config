@@ -85,7 +85,7 @@ codyos = {
 };
 ```
 
-Current features: `hardware.nvidia` (with `powerLimit`), `hardware.openrazer`, `gaming`, `docker`, `paperless-scanning`, `opencode`, `open-ontologies`, `hindsight`, `wake-beast`.
+Current features: `hardware.nvidia` (with `powerLimit`), `hardware.openrazer`, `gaming`, `docker`, `paperless-scanning`, `opencode`, `hindsight`, `wake-beast`.
 
 ### 4. Site Facts (`codyos.site`)
 

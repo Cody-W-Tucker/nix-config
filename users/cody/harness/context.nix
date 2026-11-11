@@ -12,8 +12,6 @@ let
     Examples:
     - Python: nix shell nixpkgs#python3 --command python script.py
     - Node: nix shell nixpkgs#nodejs --command node script.js
-
-    ${builtins.readFile ../../../docs/open-ontologies-mcp.md}
   '';
 in
 {
