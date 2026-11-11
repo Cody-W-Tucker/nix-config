@@ -13,6 +13,7 @@ in
     ./actual-budget.nix
     ./backup-health.nix
     ./backups.nix
+    ./binary-cache
     ./dawarich.nix
     ./home-assistant.nix
     ./open-webui.nix

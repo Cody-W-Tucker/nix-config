@@ -27,8 +27,18 @@ The `update` script is defined as a `pkgs.writeShellApplication` in [packages/up
 3. **Commit:** Prompts for a commit message and commits all changes to the local git state [packages/update/package.nix](../packages/update/package.nix)
 4. **Rebuild:** Executes `sudo nixos-rebuild switch` to apply the new configuration [packages/update/package.nix](../packages/update/package.nix)
 5. **Push:** Synchronizes the local repository with the remote origin [packages/update/package.nix](../packages/update/package.nix)
+6. **NAS (optional):** With `update --nas [message]`, it then runs `git pull --ff-only && sudo nixos-rebuild switch` on the NAS over SSH. The NAS evaluates and builds itself; `ssh -t` lets its sudo prompt for a password [packages/update/package.nix](../packages/update/package.nix)
 
 The script does **not** run `nix flake update`. Updating inputs is a separate operator choice.
+
+### NAS Binary Cache and Nightly Builds
+
+The NAS serves its store as a signed binary cache (Harmonia, port 5000, Tailscale only) and pre-builds every host at about 03:00 from GitHub `main` [modules/nas/binary-cache](../modules/nas/binary-cache/default.nix). Beast lists it as its first substituter, so after a nightly run `update` on beast downloads over the LAN instead of compiling. The same job switches the NAS to `main` and also builds the pending `update/flake-lock` PR branch (build only), so merging that PR is already cached.
+
+- Builds are GC-rooted under `/nix/var/nix/gcroots/nightly-build`.
+- Run it now: `sudo systemctl start nightly-build` on the NAS; logs via `journalctl -u nightly-build`.
+- The signing key is the sops secret `nas-cache-signing-key`; its public half is pinned in [hosts/beast/default.nix](../hosts/beast/default.nix).
+- Because the nightly switch follows GitHub `main`, uncommitted edits made directly on the NAS are not deployed by it.
 
 ### Related Operator Shortcuts
 

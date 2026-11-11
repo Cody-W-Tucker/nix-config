@@ -644,11 +644,11 @@
     },
     "nixos-secrets": {
       "locked": {
-        "lastModified": 1790475570,
-        "narHash": "sha256-PXIp34mzsG6voHoFjYYMaQeyLJvl+20xnM+EhxAuK8E=",
+        "lastModified": 1794418306,
+        "narHash": "sha256-PmeoIC412688Ffdn9SDEA+MYs0KFlz4jh6nTfViqezU=",
         "owner": "Cody-W-Tucker",
         "repo": "nixos-secrets",
-        "rev": "e7254d4f52f1bde60ffa17e619eb51029eee8304",
+        "rev": "a18017eba5512b940a3d18ae8a5f409823c98789",
         "type": "github"
       },
       "original": {
