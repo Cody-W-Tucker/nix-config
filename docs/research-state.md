@@ -622,7 +622,7 @@ remain open. No row is marked complete from fixtures.
 - `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/main.py` — stdlib-only collector
 - `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/scope.json` — the one editable scope
 - `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/packages.nix` — wrapper (Python, git,
-  systemd on `PATH`; installed via `packages/system-scripts/default.nix`)
+  systemd on `PATH`; installed via `modules/system/scripts.nix`)
 - `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test.py` — Slice A fixture tests
  - `https://github.com/Cody-W-Tucker/runtime/tree/research-state-extraction/research-state/tests/test_salience.py` — Slice B
    fixture tests (refs, no-candidate, authority/protected/counterexample,

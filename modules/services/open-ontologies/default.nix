@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  self,
   ...
 }:
 {
@@ -21,9 +20,7 @@
         User = config.codyos.site.user.name;
         Group = "users";
         UMask = "0077";
-        ExecStart = "${
-          self.packages.${pkgs.stdenv.hostPlatform.system}.open-ontologies
-        }/bin/open-ontologies --data-dir /mnt/knowledge/.open-ontologies serve-http --host 127.0.0.1 --port 18081 --storage-mode persistent --tools-allow onto_status,onto_validate,onto_load,onto_query,onto_stats,onto_clear,onto_shacl,onto_vocab_check,onto_reason,onto_segment_retrieve";
+        ExecStart = "${lib.getExe pkgs.open-ontologies} --data-dir /mnt/knowledge/.open-ontologies serve-http --host 127.0.0.1 --port 18081 --storage-mode persistent --tools-allow onto_status,onto_validate,onto_load,onto_query,onto_stats,onto_clear,onto_shacl,onto_vocab_check,onto_reason,onto_segment_retrieve";
         Restart = "on-failure";
         RestartSec = 5;
       };

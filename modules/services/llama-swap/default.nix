@@ -91,25 +91,12 @@ let
   defaultModelCatalog = import ./models.nix;
   proxy = import ./proxy.nix { inherit pkgs; };
   settingsFormat = pkgs.formats.yaml { };
-  llamaCppStrix = pkgs.callPackage ../../../packages/llama-cpp-strix { };
 
   defaultServerPackage =
-    if cfg.acceleration == "rocm" then
-      llamaCppStrix
-    else if cfg.acceleration == "cuda" then
+    if cfg.acceleration == "cuda" then
       pkgs.llama-cpp.override { cudaSupport = true; }
     else
       pkgs.llama-cpp;
-
-  backendEnvironment =
-    if cfg.acceleration == "rocm" then
-      {
-        HSA_OVERRIDE_GFX_VERSION = "11.5.1";
-        HIP_PATH = "${pkgs.rocmPackages.rocm-core}";
-        ROCM_PATH = "${pkgs.rocmPackages.rocm-core}";
-      }
-    else
-      { };
 
   # Build Python environments for audio wrapper services
   whisperPython = proxy.mkWhisperPython cfg.ctranslate2Cpp;
@@ -260,7 +247,6 @@ in
       type = lib.types.enum [
         "cpu"
         "cuda"
-        "rocm"
       ];
       default = "cpu";
       description = "Backend used to build the llama-server package and service environment.";
@@ -399,7 +385,7 @@ in
       };
     };
 
-    systemd.services.llama-swap.environment = backendEnvironment // cfg.serviceEnvironment;
+    systemd.services.llama-swap.environment = cfg.serviceEnvironment;
 
     systemd.tmpfiles.rules = [
       "d /srv/llama-swap 0755 root root - -"

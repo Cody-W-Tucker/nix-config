@@ -6,7 +6,7 @@
 
 let
   googleWorkspaceCli = inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.gws;
-  crmCli = pkgs.callPackage ../../../../../packages/crm-cli { };
+  crmCli = pkgs.crm-cli;
 in
 {
   imports = [

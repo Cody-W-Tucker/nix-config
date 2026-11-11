@@ -119,7 +119,10 @@
     }:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs-unstable.legacyPackages.${system};
+      pkgs = import nixpkgs-unstable {
+        inherit system;
+        overlays = [ self.overlays.default ];
+      };
       specialArgs = {
         inherit inputs self;
         home-manager-input = inputs.home-manager;
@@ -129,15 +132,11 @@
       # Official NixOS formatter with directory support
       formatter.x86_64-linux = pkgs.nixfmt-tree;
 
-      # Shared overlay; adds pkgs.unstable (see overlays/default.nix).
+      # Shared overlay; adds local packages and pkgs.unstable (see overlays/default.nix).
       overlays.default = import ./overlays { inherit inputs; };
 
-      packages.x86_64-linux = {
-        acpx = pkgs.callPackage ./packages/acpx { };
-        backpass = pkgs.callPackage ./packages/backpass { };
-        lavish-axi = pkgs.callPackage ./packages/lavish-axi { };
-        open-ontologies = pkgs.callPackage ./packages/open-ontologies { };
-      };
+      # Every packages/<name>/ directory, as built by the overlay above.
+      packages.x86_64-linux = builtins.intersectAttrs (builtins.readDir ./packages) pkgs;
 
       # Builds the different systems
       nixosConfigurations = {

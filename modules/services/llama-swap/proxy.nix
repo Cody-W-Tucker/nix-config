@@ -11,7 +11,7 @@ let
   diarizationEmbeddingCache = "/var/lib/llama-swap/diarization/embedding-cache";
   diarizationCache = "/var/cache/llama-swap/whisperx";
 
-  kokoroAssets = (pkgs.callPackage ../../../packages/kokoro { }).assets;
+  kokoroAssets = pkgs.kokoro-assets;
 
   # Build Python environments with optional ctranslate2 override for specific CUDA architectures.
   # The ctranslate2 package uses its own CMake CUDA_ARCH_LIST and does not inherit nixpkgs cudaCapabilities.
@@ -49,7 +49,7 @@ let
         # Provide the spacy model that misaki's G2P (used by kokoro) requires.
         # Without it in the same env, misaki calls spacy.cli.download which fails
         # in the Nix python env (no pip/uv).
-        (pkgs.callPackage ../../../packages/kokoro { pythonPkgs = ps; }).en-core-web-sm
+        spacy-models.en_core_web_sm
         fastapi
         kokoro
         numpy

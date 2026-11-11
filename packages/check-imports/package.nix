@@ -1,12 +1,18 @@
-{ pkgs }:
+{
+  writeShellApplication,
+  findutils,
+  coreutils,
+  gnugrep,
+  gnused,
+}:
 
-pkgs.writeShellApplication {
+writeShellApplication {
   name = "check-imports";
   runtimeInputs = [
-    pkgs.findutils
-    pkgs.coreutils
-    pkgs.gnugrep
-    pkgs.gnused
+    findutils
+    coreutils
+    gnugrep
+    gnused
   ];
   text = ''
     # Check for missing module imports in Nix configurations

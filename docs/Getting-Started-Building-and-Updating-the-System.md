@@ -18,15 +18,15 @@ To test a configuration without applying it to the bootloader or the running sys
 The repository provides a centralized `update` script to standardize the deployment workflow. This script automates formatting, import validation, committing, rebuilding, and pushing the resulting change.
 
 **Implementation Detail:**
-The `update` script is defined as a `pkgs.writeShellApplication` in [packages/system-scripts/update.nix6-36](../packages/system-scripts/update.nix#L6-L36) It is automatically included in the system path via the `environment.systemPackages` list in [packages/system-scripts/default.nix17](../packages/system-scripts/default.nix#L17-L17)
+The `update` script is defined as a `pkgs.writeShellApplication` in [packages/update/package.nix](../packages/update/package.nix) It is automatically included in the system path via the `environment.systemPackages` list in [modules/system/scripts.nix](../modules/system/scripts.nix)
 
 **Workflow Logic:**
 
-1. **Format:** Runs `nix fmt` on the repository [packages/system-scripts/update.nix18](../packages/system-scripts/update.nix#L18-L18)
-2. **Validate:** Executes `check-imports` to ensure no dangling `.nix` files exist [packages/system-scripts/update.nix21](../packages/system-scripts/update.nix#L21-L21)
-3. **Commit:** Prompts for a commit message and commits all changes to the local git state [packages/system-scripts/update.nix23-32](../packages/system-scripts/update.nix#L23-L32)
-4. **Rebuild:** Executes `sudo nixos-rebuild switch` to apply the new configuration [packages/system-scripts/update.nix33](../packages/system-scripts/update.nix#L33-L33)
-5. **Push:** Synchronizes the local repository with the remote origin [packages/system-scripts/update.nix34](../packages/system-scripts/update.nix#L34-L34)
+1. **Format:** Runs `nix fmt` on the repository [packages/update/package.nix](../packages/update/package.nix)
+2. **Validate:** Executes `check-imports` to ensure no dangling `.nix` files exist [packages/update/package.nix](../packages/update/package.nix)
+3. **Commit:** Prompts for a commit message and commits all changes to the local git state [packages/update/package.nix](../packages/update/package.nix)
+4. **Rebuild:** Executes `sudo nixos-rebuild switch` to apply the new configuration [packages/update/package.nix](../packages/update/package.nix)
+5. **Push:** Synchronizes the local repository with the remote origin [packages/update/package.nix](../packages/update/package.nix)
 
 The script does **not** run `nix flake update`. Updating inputs is a separate operator choice.
 
@@ -49,8 +49,8 @@ A common failure mode in Nix flakes is adding a new `.nix` file to a directory b
 
 The script performs two primary checks:
 
-1. **Orphaned Files:** It finds all `.nix` files in a directory containing a `default.nix` and verifies they are referenced in that `default.nix`[packages/system-scripts/check-imports.nix49-54](../packages/system-scripts/check-imports.nix#L49-L54)
-2. **Broken Links:** It verifies that every relative import (e.g., `./module.nix`) in a `default.nix` actually points to an existing file [packages/system-scripts/check-imports.nix57-61](../packages/system-scripts/check-imports.nix#L57-L61)
+1. **Orphaned Files:** It finds all `.nix` files in a directory containing a `default.nix` and verifies they are referenced in that `default.nix`[packages/check-imports/package.nix](../packages/check-imports/package.nix)
+2. **Broken Links:** It verifies that every relative import (e.g., `./module.nix`) in a `default.nix` actually points to an existing file [packages/check-imports/package.nix](../packages/check-imports/package.nix)
 
 ### Technical Implementation
 
@@ -138,9 +138,9 @@ flowchart LR
         NIX_SETTINGS["nix.nix (Settings)"]
         SYS_PKGS["packages.nix (Base PKGs)"]
     end
-    subgraph subGraph0 ["System Scripts (packages/system-scripts/)"]
-        UPDATE["update.nix (App)"]
-        CHECK["check-imports.nix (App)"]
+    subgraph subGraph0 ["System Scripts (packages/update, packages/check-imports)"]
+        UPDATE["update (App)"]
+        CHECK["check-imports (App)"]
     end
     UPDATE --> CHECK
     UPDATE --> REBUILD

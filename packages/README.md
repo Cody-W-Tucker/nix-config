@@ -4,25 +4,39 @@
 
 ## Layout
 
-- `packages/<name>/default.nix` is the public entry point.
-- `packages/<name>/package.nix` holds the derivation when the package needs more than a tiny expression.
-- `packages/system-scripts/` holds wrapped command-line tools used to maintain this repo.
+Every package is one directory with one entry point, the same shape nixpkgs uses for `pkgs/by-name`:
 
-Prefer the thin `default.nix` pattern:
-
-```nix
-{ pkgs, ... }:
-
-pkgs.callPackage ./package.nix { }
+```
+packages/<name>/package.nix   # a plain callPackage function
+packages/<name>/...           # helper files it needs (lock files, patches)
 ```
 
-Keep package files named in lowercase kebab-case. If a package needs helper files, keep them inside that package directory and make the ownership obvious from the file name.
+`overlays/default.nix` discovers these with `lib.packagesFromDirectoryRecursive`, so each directory becomes `pkgs.<name>` on every host, and `nix build .#<name>` builds it. There is no per-package `default.nix` and no list to update.
+
+- Packages are built against the host's own nixpkgs (stable on the NAS, unstable on Beast).
+- Depend on another local package by naming it as an argument, like any nixpkgs dependency (`backpass` takes `acpx` and `lavish-axi`).
+- Consumers write `pkgs.<name>`. Do not use `callPackage` on a path into `packages/`, and do not use `self.packages`.
+
+```nix
+# packages/<name>/package.nix
+{
+  lib,
+  buildNpmPackage,
+  fetchzip,
+}:
+
+buildNpmPackage {
+  # ...
+}
+```
+
+Keep package directory names in lowercase kebab-case; the directory name is the attribute name. Check that it does not shadow an existing nixpkgs attribute.
 
 ## Current packages
 
-### `system-scripts`
+### `update` and `check-imports`
 
-Maintenance commands installed into the system environment.
+Maintenance commands installed into the system environment by `modules/system/scripts.nix`.
 
 - `update` formats the repo, runs `check-imports`, stages changes, prompts for a commit message, rebuilds with `sudo nixos-rebuild switch`, then pushes.
 - `check-imports` checks directories with a `default.nix` and reports `.nix` files that are present but not imported, plus imports that point at missing files.
@@ -36,27 +50,29 @@ Pinned [crm.cli](https://github.com/dzhng/crm.cli) `v0.3.10`. No upstream flake.
 - Wired into Hermes via `modules/services/hermes-agent/skills/business` `extraPackages`.
 - Database path is `CRM_DB` (Hermes unit: `$HERMES_HOME/crm/crm.db`), not this derivation.
 
-### `kokoro`
+### `kokoro-assets`
 
-Kokoro TTS model bundle and its supporting spaCy model.
-Local packaging details:
+Kokoro TTS model files for the llama-swap `kokoro-82m` wrapper (`modules/services/llama-swap/proxy.nix`).
 
-- `default.nix` uses a `runCommand` derivation to assemble model files into one store path.
-- Includes `kokoro-v1_0.pth`, model config, and selected voice profiles.
-- Fetches voice assets from HuggingFace so the runtime can consume a fixed, reproducible model directory.
-- `en-core-web-sm.nix` packages the spaCy small English model that Kokoro's G2P (via misaki) requires at runtime.
+- A `runCommand` derivation assembles `kokoro-v1_0.pth`, the model config, and selected voice profiles into one store path.
+- Fetches from HuggingFace with fixed hashes, so the runtime gets a reproducible model directory.
+- The spaCy `en_core_web_sm` model that Kokoro's G2P (via misaki) needs comes from nixpkgs (`python3Packages.spacy-models.en_core_web_sm`).
+
+### `open-ontologies`
+
+Shared Open Ontologies MCP server, run on the NAS by `modules/services/open-ontologies` (`codyos.open-ontologies.enable`).
 
 ### `backpass`
 
 Pinned [Backpass](https://github.com/kunchenguid/backpass) `v0.1.31` (Node >=22.5) from the npm registry via `buildNpmPackage` with a vendored `package-lock.json`. The wrapper prefixes the nix-built `acpx` and `lavish-axi` onto `PATH` because Backpass shells out to both helpers resolved from `PATH`.
 
-- Only `backpass` is wired into the desktop user environment in `users/cody/desktop/default.nix`; `acpx` and `lavish-axi` are private runtime dependencies on the wrapper `PATH`, so `backpass` resolves both without `nix shell` and without installing either helper directly.
+- Only `backpass` is installed, in the desktop user environment (`users/cody/desktop.nix`). `acpx` and `lavish-axi` are private runtime dependencies on the wrapper `PATH`, so `backpass` resolves both without `nix shell` and without installing either helper directly.
 
 ### `lavish-axi`
 
 Pinned [lavish-axi](https://github.com/kunchenguid/lavish-axi) `v0.1.31` (Node >=22) from the npm registry via `buildNpmPackage` with a vendored `package-lock.json`. This is the optional Backpass review UI (`lavish-axi` binary, `dist/` ships prebuilt so `dontNpmBuild` is set with `npmPackFlags = [ "--ignore-scripts" ]`).
 
-- Exposed as `packages.x86_64-linux.lavish-axi` for direct builds, but not installed directly; the desktop installs only `backpass`, which bundles this UI on its wrapper `PATH`.
+- Buildable directly as `.#lavish-axi`, but not installed directly; the desktop installs only `backpass`, which bundles this UI on its wrapper `PATH`.
 
 ### `acpx`
 
@@ -64,10 +80,8 @@ Pinned [acpx](https://github.com/openclaw/acpx) `v0.19.4` (Node >=22.13) from th
 
 ## Adding or changing a package
 
-1. Create `packages/<name>/default.nix`.
-2. Move non-trivial build logic into `packages/<name>/package.nix`.
-3. Expose the package through the module or package set that consumes it.
-4. If it is a system operator command, add it through `packages/system-scripts/default.nix` or the appropriate system package module.
-5. Run the smallest relevant check. For import wiring, run `check-imports`. For risky packaging changes, build the specific package or run a dry rebuild for the affected host.
+1. Create `packages/<name>/package.nix` as a `callPackage` function, and `git add` it (flakes only see tracked files).
+2. Use it as `pkgs.<name>` from the module that consumes it. For a system operator command, add it to `modules/system/scripts.nix`.
+3. Build it: `nix build .#<name>`. For packages used on the NAS, also build the NAS variant, since it uses stable nixpkgs: `nix build --impure --expr '(builtins.getFlake "/etc/nixos").nixosConfigurations.nas.pkgs.<name>'`.
 
 Agent-facing packaging recipes live in `.agents/skills/nix-packaging/`. Do not copy those examples here; this README owns the local `packages/` tree and points agents/operators to the package files that actually ship.

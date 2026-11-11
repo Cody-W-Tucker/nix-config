@@ -1,15 +1,18 @@
-{ pkgs }:
+{
+  writeShellApplication,
+  nix,
+  git,
+  nixos-rebuild,
+  check-imports,
+}:
 
-let
-  checkImports = pkgs.callPackage ./check-imports.nix { };
-in
-pkgs.writeShellApplication {
+writeShellApplication {
   name = "update";
   runtimeInputs = [
-    pkgs.nix
-    pkgs.git
-    pkgs.nixos-rebuild
-    checkImports
+    nix
+    git
+    nixos-rebuild
+    check-imports
   ];
   text = ''
     set -euo pipefail

@@ -1,8 +1,8 @@
+# Kokoro-82M TTS model files (weights, config, selected voices) assembled
+# into one store path for the llama-swap kokoro wrapper.
 {
-  callPackage,
   runCommand,
   fetchurl,
-  pythonPkgs ? null,
 }:
 
 let
@@ -44,19 +44,15 @@ let
     bm_george = "sha256-8byBIhPcWXdHaeXIAASxPut5vXgTCxGy1/k0VC2rgRs=";
   };
 in
-{
-  assets = runCommand "kokoro" { } ''
-    mkdir -p $out
-    cp ${config} $out/config.json
-    cp ${weights} $out/kokoro-v1_0.pth
-    ${builtins.concatStringsSep "\n" (
-      builtins.attrValues (
-        builtins.mapAttrs (name: hash: ''
-          cp ${mkVoice name hash} $out/${name}.pt
-        '') voices
-      )
-    )}
-  '';
-
-  en-core-web-sm = callPackage ./en-core-web-sm.nix { inherit pythonPkgs; };
-}
+runCommand "kokoro" { } ''
+  mkdir -p $out
+  cp ${config} $out/config.json
+  cp ${weights} $out/kokoro-v1_0.pth
+  ${builtins.concatStringsSep "\n" (
+    builtins.attrValues (
+      builtins.mapAttrs (name: hash: ''
+        cp ${mkVoice name hash} $out/${name}.pt
+      '') voices
+    )
+  )}
+''

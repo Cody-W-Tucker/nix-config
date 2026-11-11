@@ -13,83 +13,50 @@ Create new Nix packages or update existing ones, with language-specific examples
 2. Determine the programming language(s) used.
 3. Analyze the software structure (build system, dependencies, configuration files).
 4. Create the package following language-specific guidance below.
-5. Optionally, integrate the package into the current project (e.g., add to overlay and expose via `packages` in `flake.nix`).
-6. Test iteratively: run `nix build .#<package-name>`, read errors, fix issues, and rebuild until successful.
+5. Integrate it: `git add` the new directory. The shared overlay exposes it as `pkgs.<package-name>` and as the flake output `.#<package-name>` automatically.
+6. Test iteratively: run `nix build .#<package-name>`, read errors, fix issues, and rebuild until successful. If the NAS uses it, also build it against the NAS's stable nixpkgs (see `packages/README.md`).
 
 ## Repository Package Structure
 
-All custom packages live in `packages/<package-name>/` with a consistent structure:
+All custom packages live in `packages/<package-name>/`, one directory per package, the same shape nixpkgs uses for `pkgs/by-name`:
 
 ```
 packages/
   <package-name>/
-    default.nix    # Entry point that calls `callPackage` on package.nix
-    package.nix      # The actual package definition (optional if defined in default.nix)
+    package.nix      # A plain callPackage function; the only entry point
+    ...              # Helper files it needs (package-lock.json, patches)
 ```
 
-### `default.nix` template
+Do not add a `default.nix` wrapper. `overlays/default.nix` discovers every `packages/<name>/package.nix` with `lib.packagesFromDirectoryRecursive`, and `flake.nix` exports the same set as `packages.x86_64-linux`, so there is no list to maintain. The directory name becomes the attribute name, so check it does not shadow an existing nixpkgs package.
+
+### `package.nix` template
 
 ```nix
-{ pkgs }:
-
-pkgs.callPackage ./package.nix { }
-```
-
-This structure makes packages self-contained and ready to import from anywhere in the repository using `pkgs.callPackage ./path/to/packages/<package-name> { }`. The flake's nixpkgs is passed through automatically via `callPackage`.
-
-## Exposing Packages via Flake Output
-
-Add packages to `flake.nix` so they're buildable with `nix build .#<package-name>` and accessible throughout your configuration:
-
-```nix
-# In flake.nix outputs
-let
-  system = "x86_64-linux";
-  pkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
-in
 {
-  packages.${system} = {
-    headroom-ai = pkgs.callPackage ./packages/headroom-ai { };
-    rlm-cli = pkgs.callPackage ./packages/rlm-cli { };
-  };
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  # Other local packages are ordinary arguments, e.g. `acpx`.
+}:
+
+stdenv.mkDerivation {
+  # ...
 }
 ```
 
 ## Using Packages in Modules
 
-Pass `self` through `specialArgs` so modules can access `self.packages`:
-
-**In flake.nix:**
+Use `pkgs.<package-name>` in NixOS and Home Manager modules (Home Manager shares the system `pkgs` via `useGlobalPkgs`):
 
 ```nix
-let
-  specialArgs = { inherit inputs self; };
-in
-nixosConfigurations.myhost = inputs.nixpkgs.lib.nixosSystem {
-  inherit system specialArgs;
-  # ...
-};
-```
+{ lib, pkgs, ... }:
 
-**For Home Manager modules, also add to extraSpecialArgs:**
-
-```nix
-home-manager.extraSpecialArgs = { inherit inputs self; };
-```
-
-**In service modules:**
-
-```nix
-{ config, lib, pkgs, self, ... }:
-
-let
-  myPackage = self.packages.${pkgs.system}.my-package;
-in
 {
-  # Use myPackage in your configuration
+  systemd.services.my-service.serviceConfig.ExecStart = lib.getExe pkgs.my-package;
 }
 ```
 
+Do not use `self.packages.${system}.<name>` or `callPackage ./path/to/packages/<name>` in modules: both bypass the host's nixpkgs and build a second copy of the package.
 ## Workflow: Updating an Existing Package
 
 Typically, update the `version` and source fetching attributes (e.g., `fetchFromGitHub`). The `hash` field must also be updated using one of these methods:

@@ -4,7 +4,7 @@ The `llama-swap` service is a specialized NixOS module designed to manage local 
 
 ## Service Architecture and Implementation
 
-`llama-swap` provides a unified OpenAI-compatible API endpoint that abstracts away the complexities of model loading, backend selection (CUDA vs ROCm), and specific model types (Chat, Embedding, Vision, TTS).
+`llama-swap` provides a unified OpenAI-compatible API endpoint that abstracts away the complexities of model loading, backend selection (CPU or CUDA), and specific model types (Chat, Embedding, Vision, TTS).
 
 ### Core Components and Logic
 
@@ -13,7 +13,7 @@ The service is defined in `modules/services/llama-swap/default.nix`. It uses a s
 Key features include:
 
 - **TTL-based Swapping**: Models are kept alive for a specified duration after their last request. This is configured via the `ttl` option [modules/services/llama-swap/default.nix33-37](../modules/services/llama-swap/default.nix#L33-L37)
-- **Hardware Acceleration**: The service supports `cpu`, `cuda`, and `rocm` backends. It automatically selects the appropriate `llama-cpp` package and sets necessary environment variables (e.g., `HSA_OVERRIDE_GFX_VERSION` for ROCm) based on the `acceleration` setting [modules/services/llama-swap/default.nix94-110](../modules/services/llama-swap/default.nix#L94-L110)
+- **Hardware Acceleration**: The service supports `cpu` and `cuda` backends and selects the matching `llama-cpp` package from the `acceleration` setting [modules/services/llama-swap/default.nix95-100](../modules/services/llama-swap/default.nix#L95-L100)
 - **Command Generation**: The `mkModelCommand` function dynamically builds the `llama-server` CLI string, incorporating parameters like context size, batch size, and GPU layers [modules/services/llama-swap/default.nix128-162](../modules/services/llama-swap/default.nix#L128-L162)
 
 ## Model Catalog and Types
@@ -54,7 +54,7 @@ For models with vision capabilities, such as `glm-ocr-f16`, the catalog must spe
 
 `llama-swap` abstracts the underlying hardware through the `acceleration` option.
 
-- **CUDA**: Used on the `nas` host (NVIDIA RTX 5060). It overrides `llama-cpp` with `cudaSupport = true`[modules/services/llama-swap/default.nix97-98](../modules/services/llama-swap/default.nix#L97-L98)
+- **CPU** (default) or **CUDA**. CUDA is used on the `nas` host (NVIDIA RTX 5060). It overrides `llama-cpp` with `cudaSupport = true`[modules/services/llama-swap/default.nix96-97](../modules/services/llama-swap/default.nix#L96-L97)
 
 ## Specialized TTS Wrappers
 
@@ -106,7 +106,6 @@ classDiagram
     }
     class Backends {
         <<Packages>>
-        llama-cpp-strix
         pkgs.llama-cpp
     }
     LlamaSwapModule ..> ModelCatalog

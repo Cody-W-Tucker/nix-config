@@ -96,7 +96,7 @@ in
     )
     # Agent memory loop: backpass bundles `acpx` and `lavish-axi` as private
     # runtime dependencies on its own wrapper PATH.
-    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.backpass
+    backpass
     libnotify # Notification library
     nautilus # File manager
     nixd # Nix daemon for development

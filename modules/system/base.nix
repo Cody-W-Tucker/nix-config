@@ -9,7 +9,7 @@
     inputs.sops-nix.nixosModules.sops
     inputs.nixos-secrets.nixosModules.default
     home-manager-input.nixosModules.home-manager
-    ../../packages/system-scripts
+    ./scripts.nix
     ./locale.nix
     ./nix.nix
     ./overlays.nix
