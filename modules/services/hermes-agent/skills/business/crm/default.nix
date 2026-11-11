@@ -1,12 +1,9 @@
 { pkgs, ... }:
 
 let
-  # Canonical upstream SKILL.md pinned by content hash.
-  # Source: https://github.com/dzhng/crm.cli/blob/main/skills/SKILL.md
-  crmSkill = builtins.fetchurl {
-    url = "https://raw.githubusercontent.com/dzhng/crm.cli/main/skills/SKILL.md";
-    sha256 = "0y44iqgfxzl0r1712pqpm8l39gz8bw74m64dmmvy7ahkmn98gz5a";
-  };
+  # Upstream SKILL.md from the same pinned release as the crm-cli package
+  # (packages/crm-cli), so the skill and the CLI always match.
+  crmSkill = "${pkgs.crm-cli.src}/skills/SKILL.md";
 
   crmSkills = pkgs.linkFarm "hermes-agent-crm-skills" [
     {
