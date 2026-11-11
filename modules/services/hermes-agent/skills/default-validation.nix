@@ -85,7 +85,6 @@ in
           "creative/ascii-video"
           "creative/baoyu-infographic"
           "creative/design-md"
-          "creative/humanizer"
           "creative/manim-video"
           "creative/popular-web-designs"
           "creative/songwriting-and-ai-music"

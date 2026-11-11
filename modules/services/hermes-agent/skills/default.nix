@@ -7,6 +7,7 @@
     ./cognitive-assistant.nix
     ./seeded-skills.nix
     ./bundled-skill-policy.nix
+    ./humanizer.nix
     ./default-cleanup.nix
     ./default-validation.nix
     ./business
