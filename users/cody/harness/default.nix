@@ -39,6 +39,9 @@ in
 
   # Codex, OpenCode and Pi discover the shared Agent Skills directory.
   home.file.".agents/skills/deja-search".source = "${llmPkgs.deja-vu.src}/skills/deja-search";
+  xdg.configFile."deja/exclude".text = ''
+    harness:pi
+  '';
 
   # Both harnesses use the skill shipped with the installed no-mistakes CLI.
   home.file.".agents/skills/no-mistakes/SKILL.md".source =
