@@ -33,6 +33,11 @@ in
     };
   };
 
+  # Sync and discovery ports are opened by openDefaultPorts. The web GUI is
+  # reachable over Tailscale only: the NAS nginx proxies beast-syncthing.${domain}
+  # to Beast's Tailscale address, and nas-syncthing.${domain} to the NAS locally.
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8384 ];
+
   # Ensure syncthing directories exist with proper permissions
   systemd.tmpfiles.rules = [
     "d /mnt 0755 root root - -"

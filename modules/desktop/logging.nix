@@ -59,6 +59,6 @@ in
     };
   };
 
-  # Open port for Loki
-  networking.firewall.allowedTCPPorts = [ 9002 ];
+  # Node exporter: scraped by the NAS Prometheus over Tailscale.
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 9002 ];
 }

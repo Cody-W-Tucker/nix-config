@@ -1,6 +1,7 @@
 # Core system services
 
 {
+  config,
   inputs,
   lib,
   pkgs,
@@ -25,7 +26,6 @@
 
     prometheus.exporters.smartctl = {
       enable = true;
-      openFirewall = true;
       user = "root";
       group = "root";
     };
@@ -40,6 +40,11 @@
       "${lib.getExe' pkgs.fwupd "fwupdmgr"} refresh"
     ];
   };
+
+  # smartctl exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+    config.services.prometheus.exporters.smartctl.port
+  ];
 
   # Include all firmware for devices like Bluetooth
   hardware.enableRedistributableFirmware = true;

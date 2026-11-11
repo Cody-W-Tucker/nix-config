@@ -28,15 +28,8 @@
     gcr_3 # GNOME Keyring unlock prompt provider
   ];
 
+  # Syncthing ports come from modules/services/syncthing.nix.
   networking.firewall = {
-    allowedTCPPorts = [
-      8384 # Syncthing GUI
-      22000 # Syncthing sync protocol
-    ];
-    allowedUDPPorts = [
-      22000 # Syncthing sync protocol
-      21027 # Syncthing local discovery
-    ];
     # Open firewall ports for KDE Connect discovery
     allowedTCPPortRanges = [
       {

@@ -47,8 +47,8 @@ in
       port = 9835;
     };
 
-    # Open firewall for NVIDIA GPU exporter
-    networking.firewall.allowedTCPPorts = [ 9835 ];
+    # NVIDIA GPU exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 9835 ];
 
     systemd.services.nvidia-power-limit = lib.mkIf cfg.powerLimit.enable {
       description = "Cap NVIDIA GPU board power (nvidia-smi -pl)";

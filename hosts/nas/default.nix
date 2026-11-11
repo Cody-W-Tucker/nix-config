@@ -122,10 +122,6 @@ in
         # llama-swap router — reachable only over Tailscale
         8081
       ];
-      allowedTCPPorts = [
-        # Syncthing GUI — shared module binds 0.0.0.0:8384; open firewall for LAN access
-        8384
-      ];
     };
   };
 
