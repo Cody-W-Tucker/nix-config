@@ -6,7 +6,6 @@
   programs.nixvim = {
     clipboard.providers.wl-copy.enable = true;
     extraPackages = with pkgs; [
-      zig
       black
       prettier
       prettierd
@@ -38,7 +37,6 @@
         css
         astro
         tsx
-        zig
       ];
       conform-nvim = {
         settings = {
