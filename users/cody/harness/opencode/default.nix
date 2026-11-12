@@ -113,7 +113,10 @@ in
           package = "${
             inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu.src
           }/extensions/opencode";
-          options.tools = false; # The shared MCP server provides recall tools.
+          options = {
+            autoRecall = false;
+            tools = false; # The shared MCP server provides recall tools.
+          };
         }
       ];
       autoupdate = false;

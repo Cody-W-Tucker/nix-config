@@ -13,6 +13,7 @@ Central docs should point here for harness implementation detail.
 - `context.nix` — shared environment instructions.
 - The no-mistakes skill for both harnesses comes from the installed CLI's pinned source.
 - Claude Code also receives the declarative OpenCode skills and the shared deja-search skill. OpenCode-specific plugins are not shared.
+- OpenCode's Déjà auto-recall hooks are disabled; on-demand searches use the shared MCP server. Déjà uses the NAS llama-swap embedding model for semantic search. Run `deja embed` on each host after activation to create its local vector sidecar, and rerun it when Déjà reports the sidecar is stale. Embedding sends redacted indexed session text to the NAS and uses its model resources; lexical search remains available without the sidecar. Check `deja doctor` first: exclusions do not remove sessions already indexed, and rebuilding the index can drop sessions whose source transcripts no longer exist.
 - `claude-code/langfuse/` — pinned upstream Langfuse Claude Code plugin (Stop/SessionEnd hooks) run with a Nix Python carrying langfuse 4.15.2. It reads `LANGFUSE_*` from the `opencode-langfuse-env` SOPS template sourced into zsh by `opencode/default.nix`, so only sessions started from an interactive zsh are traced.
 
 ## Stack
