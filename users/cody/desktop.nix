@@ -138,6 +138,7 @@ in
     feishin # Desktop app music player
     wttrbar # Weather bar for Waybar
     vesktop # Discord client
+    rustdesk-flutter # Remote support into customer machines (public RustDesk servers)
     kdePackages.kpeople # Contact integration for KDE Connect SMS
     playerctl # MPRIS cli; also provides playerctld D-Bus activation
     tuxedo # TUI for tasks
