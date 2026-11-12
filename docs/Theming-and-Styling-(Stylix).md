@@ -112,4 +112,4 @@ While Stylix manages most of the environment, certain applications are excluded 
 - **GTK**: Icons are manually set to the Adwaita theme rather than letting Stylix determine the icon pack [users/cody/desktop/default.nix37-43](../users/cody/desktop/default.nix#L37-L43)
 - **Waybar, Hyprlock, FZF**: Stylix targets are disabled because local config fully replaces them (`desktop/waybar.nix`, `desktop/hyprland.nix`, `core.nix`) [users/cody/desktop.nix36-39](../users/cody/desktop.nix#L36-L39)
 - **Rofi**: Stylix still supplies colors, but its font is disabled (`rofi.fonts.enable = false`) because `desktop/rofi.nix` sets its own [users/cody/desktop.nix40-41](../users/cody/desktop.nix#L40-L41)
-- **Dconf**: Not set explicitly; Home Manager enables `dconf` by default on Linux, which lets Stylix manage GSettings for GNOME-adjacent applications
+- **Dconf**: The GNOME target is disabled, so `users/cody/desktop.nix` sets the desktop color-scheme preference from Stylix polarity directly for applications that follow the system preference.

@@ -50,6 +50,10 @@ in
   '';
 
   # Styling and themes
+  # The GNOME target is disabled, but apps still need its color preference.
+  dconf.settings."org/gnome/desktop/interface".color-scheme =
+    if config.stylix.polarity == "dark" then "prefer-dark" else "default";
+
   stylix = {
     enable = true;
     overlays.enable = false; # stop stylix from overriding nixpkgs
