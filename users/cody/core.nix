@@ -14,11 +14,6 @@
     ./harness
   ];
   home = {
-    # Keyboard
-    keyboard = {
-      layout = "us";
-      model = "pc105";
-    };
     packages = with pkgs; [
       fastfetch
       fd
@@ -99,7 +94,6 @@
       # Enable GitHub CLI
       enable = true;
     };
-    bash.historyFile = "$HOME/.local/share/bash/bash_history";
     bat = {
       enable = true;
       config.pager = "less -FR";
@@ -116,16 +110,14 @@
     fzf = {
       enable = true;
       enableZshIntegration = true;
-      colors = lib.mkIf (config.lib ? stylix) (
-        lib.mkForce {
-          "fg+" = "#" + config.lib.stylix.colors.base0D;
-          "bg+" = "-1";
-          "fg" = "#" + config.lib.stylix.colors.base05;
-          "bg" = "-1";
-          "prompt" = "#" + config.lib.stylix.colors.base03;
-          "pointer" = "#" + config.lib.stylix.colors.base0D;
-        }
-      );
+      colors = lib.mkIf (config.lib ? stylix) {
+        "fg+" = "#" + config.lib.stylix.colors.base0D;
+        "bg+" = "-1";
+        "fg" = "#" + config.lib.stylix.colors.base05;
+        "bg" = "-1";
+        "prompt" = "#" + config.lib.stylix.colors.base03;
+        "pointer" = "#" + config.lib.stylix.colors.base0D;
+      };
       defaultOptions = [
         "--margin=1"
         "--layout=reverse"

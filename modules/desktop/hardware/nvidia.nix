@@ -3,18 +3,12 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
 {
   config = lib.mkIf config.codyos.hardware.nvidia.enable {
     environment = {
-      # Use EGL for Wayland
-      systemPackages = with pkgs; [
-        egl-wayland
-      ];
-
       # NVIDIA-specific environment variables
       sessionVariables = {
         # ---------------------------
@@ -29,14 +23,6 @@
         # Required for Firefox/Zen hardware acceleration with NVIDIA
         MOZ_DISABLE_RDD_SANDBOX = "1";
       };
-
-      # Global Electron flags for NVIDIA Wayland — fixes scroll glitches and rendering artifacts (system-wide)
-      etc."xdg/electron-flags.conf".text = ''
-        --enable-features=UseOzonePlatform,WaylandWindowDecorations,VaapiVideoDecodeLinuxGL
-        --ozone-platform-hint=auto
-        --disable-gpu-shader-disk-cache
-        --enable-features=WaylandLinuxDrmSyncobj
-      '';
     };
   };
 }

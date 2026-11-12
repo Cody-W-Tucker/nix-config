@@ -18,10 +18,7 @@ in
   programs.mcp = {
     enable = true;
     servers = {
-      deja = {
-        command = lib.getExe dejaMcp;
-        args = [ "mcp" ];
-      };
+      deja.command = lib.getExe dejaMcp;
       hindsight = {
         type = "remote";
         url =

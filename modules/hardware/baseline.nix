@@ -1,4 +1,5 @@
-# Shared hardware baseline: boot loader policy, Intel microcode, and swap policy.
+# Shared hardware baseline: boot loader policy, redistributable firmware, Intel
+# microcode, and swap policy.
 # Consumed by every Intel-based host; keep this module free of host-specific
 # disk, kernel, or GPU settings.
 {
@@ -12,6 +13,9 @@
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
+
+  # Include all firmware for devices like Bluetooth
+  hardware.enableRedistributableFirmware = true;
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 

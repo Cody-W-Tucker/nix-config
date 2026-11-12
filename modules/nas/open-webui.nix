@@ -18,7 +18,6 @@ in
       });
       host = "0.0.0.0";
       port = 8080;
-      stateDir = "/var/lib/open-webui";
       openFirewall = true;
       environment = {
         HOME = "/var/lib/open-webui";
@@ -50,19 +49,12 @@ in
     qdrant = {
       enable = true;
       settings = {
-        storage = {
-          storage_path = "/var/lib/qdrant/storage";
-          snapshots_path = "/var/lib/qdrant/snapshots";
-        };
         hsnw_index = {
           on_disk = true;
         };
         service = {
           host = "0.0.0.0";
-          http_port = 6333;
-          grpc_port = 6334;
         };
-        telemetry_disabled = true;
       };
     };
     nginx.virtualHosts =
@@ -87,7 +79,7 @@ in
       })
       // (mkNginxVhost {
         host = "chat.${domain}";
-        port = 8080;
+        inherit (config.services.open-webui) port;
         proxyWebsockets = true;
         locationExtraConfig = ''
           proxy_buffering off;

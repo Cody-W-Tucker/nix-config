@@ -13,12 +13,6 @@
     sops.secrets."hermes" = { };
     sops.secrets."opencode-api-key" = { };
 
-    # Actual Budget MCP credentials, consumed by the Actual Budget MCP
-    # wrapper (npx) in ../mcp/default.nix via direct secret paths (not env
-    # templates).
-    sops.secrets."actual-budget-mcp-password" = { };
-    sops.secrets."actual-budget-mcp-sync-id" = { };
-
     # Mealie API token. Rendered into hermes-env as MEALIE_API_KEY so the
     # agent can call https://mealie.homehub.tv OpenAPI directly.
     sops.secrets."mealie-api-key" = { };

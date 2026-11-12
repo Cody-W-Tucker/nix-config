@@ -3,7 +3,7 @@
 The flake exports exactly two NixOS configurations, defined in [`flake.nix`](../flake.nix):
 
 - `nixosConfigurations.beast` — evaluates [`hosts/beast`](../hosts/beast) against `nixpkgs-unstable`.
-- `nixosConfigurations.nas` — evaluates [`hosts/nas`](../hosts/nas) against stable `nixpkgs`, with `home-manager-stable` bound via `specialArgs`.
+- `nixosConfigurations.nas` — evaluates [`hosts/nas`](../hosts/nas) against stable `nixpkgs`, with `home-manager-stable`'s NixOS module in its module list (beast gets `home-manager`'s the same way).
 
 Both hosts share foundational modules under [`modules/system/`](../modules/system) (e.g. [`modules/system/base.nix`](../modules/system/base.nix)).
 

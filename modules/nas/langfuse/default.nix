@@ -121,7 +121,6 @@ in
     in
     {
       "langfuse-web" = {
-        autoStart = true;
         image = "docker.langfuse.com/langfuse/langfuse:4.68.0";
         environment = commonEnv;
         environmentFiles = [ langfuseEnvFile ];
@@ -132,16 +131,14 @@ in
           "minio"
           "clickhouse"
         ];
+        networks = [ "langfuse" ];
         extraOptions = [
-          "--network=langfuse"
           "--network-alias=langfuse-web"
           "--add-host=host.docker.internal:host-gateway"
         ];
-        log-driver = "journald";
       };
 
       "langfuse-worker" = {
-        autoStart = true;
         image = "docker.langfuse.com/langfuse/langfuse-worker:4.68.0";
         environment = commonEnv;
         environmentFiles = [ langfuseEnvFile ];
@@ -151,16 +148,14 @@ in
           "minio"
           "clickhouse"
         ];
+        networks = [ "langfuse" ];
         extraOptions = [
-          "--network=langfuse"
           "--network-alias=langfuse-worker"
           "--add-host=host.docker.internal:host-gateway"
         ];
-        log-driver = "journald";
       };
 
       "postgres" = {
-        autoStart = true;
         image = "docker.io/postgres:17";
         environment = {
           POSTGRES_USER = "postgres";
@@ -170,15 +165,13 @@ in
         };
         environmentFiles = [ langfuseEnvFile ];
         volumes = [ "/mnt/appdata/langfuse/postgres:/var/lib/postgresql/data" ];
+        networks = [ "langfuse" ];
         extraOptions = [
-          "--network=langfuse"
           "--network-alias=postgres"
         ];
-        log-driver = "journald";
       };
 
       "clickhouse" = {
-        autoStart = true;
         image = "docker.io/clickhouse/clickhouse-server:25.12";
         user = "101:101";
         environment = {
@@ -190,15 +183,13 @@ in
           "/mnt/appdata/langfuse/clickhouse:/var/lib/clickhouse"
           "/mnt/appdata/langfuse/clickhouse-logs:/var/log/clickhouse-server"
         ];
+        networks = [ "langfuse" ];
         extraOptions = [
-          "--network=langfuse"
           "--network-alias=clickhouse"
         ];
-        log-driver = "journald";
       };
 
       "minio" = {
-        autoStart = true;
         image = "cgr.dev/chainguard/minio";
         entrypoint = "sh";
         # Create the upstream default bucket before making MinIO available.
@@ -214,15 +205,13 @@ in
         ];
         environmentFiles = [ langfuseEnvFile ];
         volumes = [ "/mnt/appdata/langfuse/minio:/data" ];
+        networks = [ "langfuse" ];
         extraOptions = [
-          "--network=langfuse"
           "--network-alias=minio"
         ];
-        log-driver = "journald";
       };
 
       "redis" = {
-        autoStart = true;
         image = "docker.io/redis:7";
         # Password comes from the SOPS env file (REDIS_AUTH); expand it at runtime
         # so the secret is never written to the Nix store.
@@ -233,11 +222,10 @@ in
         ];
         environmentFiles = [ langfuseEnvFile ];
         volumes = [ "/mnt/appdata/langfuse/redis:/data" ];
+        networks = [ "langfuse" ];
         extraOptions = [
-          "--network=langfuse"
           "--network-alias=redis"
         ];
-        log-driver = "journald";
       };
     };
 

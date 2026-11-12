@@ -39,7 +39,6 @@ in
       "@dawarich" = {
         proxyPass = "http://127.0.0.1:3004";
         proxyWebsockets = true;
-        recommendedProxySettings = true;
       };
     };
   };

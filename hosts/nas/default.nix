@@ -2,7 +2,6 @@
   config,
   inputs,
   pkgs,
-  self,
   ...
 }:
 
@@ -49,7 +48,6 @@ in
     # Auto configure usb etc, when plugedin
     udisks2.enable = true;
     tailscale = {
-      enable = true;
       # Enable IP forwarding so this host can act as a subnet router for the LAN.
       useRoutingFeatures = "server";
       extraSetFlags = [
@@ -67,15 +65,6 @@ in
         "/mnt/appdata" # appdata NVMe: appdata, tmp, projects, knowledge
       ];
     };
-    zfs.autoSnapshot = {
-      enable = true;
-      frequent = 0;
-      hourly = 0;
-      daily = 7;
-      weekly = 4;
-      monthly = 3;
-      flags = "-k -p --utc";
-    };
   };
 
   # ── Features ────────────────────────────────────────────────
@@ -89,14 +78,12 @@ in
     };
     hindsight.enable = true;
     opencode.enable = true; # web server for opencode
-    wake-beast.enable = false;
   };
 
   # Networking
   networking = {
     hostName = "nas";
     hostId = "60f0861b";
-    networkmanager.enable = true;
     # Static LAN address for the NAS so it keeps a predictable IP across router
     # resets. Starlink does not publish a reserved DHCP pool, so we pin the
     # active physical connection instead of relying on a lease.
@@ -136,26 +123,23 @@ in
   # Docker package
   virtualisation.docker.package = pkgs.docker_29;
 
+  # llama-swap (models.nix) and Hermes (modules/services/hermes-agent/runtime)
+  # put /run/current-system/sw/lib on LD_LIBRARY_PATH and may load CUDA
+  # libraries from the toolkit there, so keep it installed on this host.
+  environment.systemPackages = [ pkgs.cudaPackages.cudatoolkit ];
+
   hardware = {
     # NVIDIA GPU (RTX 5060)
-    # NVIDIA driver is provided by hardware.nvidia settings, not xserver.videoDrivers
-    graphics.enable = true;
     # NVIDIA container toolkit for CUDA container access
-    nvidia-container-toolkit = {
-      enable = true;
-      suppressNvidiaDriverAssertion = true;
-    };
-    bluetooth = {
-      # Bluetooth support for Home Assistant (prepares for future controller)
-      enable = true;
-      powerOnBoot = true;
-    };
+    nvidia-container-toolkit.enable = true;
+    # Bluetooth support for Home Assistant (prepares for future controller)
+    bluetooth.enable = true;
   };
 
   # Home-manager configuration
   home-manager = {
     extraSpecialArgs = {
-      inherit inputs self;
+      inherit inputs;
     };
     users.${site.user.name} = {
       home.stateVersion = "25.11";

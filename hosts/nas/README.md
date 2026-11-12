@@ -10,7 +10,7 @@ Host policy (identity, features, ZFS storage settings, networking, Home Manager)
 
 | Path          | Role                                                                                                                                                                         |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default.nix` | Host policy: `codyos.*` features, ZFS pool/ARC/snapshots, Btrfs auto-scrub, home bind mounts, networking, Tailscale subnet router, Docker, Home Manager entry. |
+| `default.nix` | Host policy: `codyos.*` features, ZFS pool/ARC, Btrfs auto-scrub, home bind mounts, networking, Tailscale subnet router, Docker, CUDA toolkit, Home Manager entry. ZFS snapshot policy lives in `modules/nas/backups.nix`. |
 | `hardware-configuration.nix` | Hardware: filesystems (Btrfs root, Btrfs appdata/projects/knowledge, ext4 media; all `noatime`) and initrd/kernel modules. |
 | `models.nix`  | `llama-swap` enablement, CUDA acceleration (Blackwell sm_120a), CTranslate2 Blackwell override, model catalog (chat, embedding, OCR, audio STT/TTS).                         |
 

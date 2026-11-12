@@ -38,7 +38,7 @@ The system configuration is further divided into specialized areas covered in th
 
 ### [Base System Configuration](/Cody-W-Tucker/nix-config/3.1-base-system-configuration)
 
-Covers the fundamental environment setup defined in `modules/system/base.nix`. This includes locale settings, system fonts, the global `zsh` shell configuration, and the integration of `sops-nix` for system-level secret decryption. It also details how `home-manager` is wired into the system flake to manage user environments.
+Covers the fundamental environment setup defined in `modules/system/base.nix`. This includes locale settings, the global `zsh` shell configuration, and the integration of `sops-nix` for system-level secret decryption. It also details how `home-manager` manages user environments; its NixOS module is added per host in `flake.nix` (unstable for beast, stable for nas).
 
 ### [Networking and VPN](/Cody-W-Tucker/nix-config/3.2-networking-and-vpn)
 

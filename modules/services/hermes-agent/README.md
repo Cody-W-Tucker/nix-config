@@ -106,7 +106,7 @@ Current skill groups include:
 
 - Cognitive-assistant user-pattern skills (filtered: `skills/cognitive-assistant.nix` seeds every CA skill except the explicit `skills/default-exclusions.nix` catalog).
 - Business skills for CRM (`crm-tools` stays) and Google Workspace (exactly the 12-skill retain set in `skills/default-exclusions.nix`: `gws-calendar`, `gws-gmail-triage`, `gws-tasks`, `gws-calendar-agenda`, `gws-calendar-insert`, `gws-gmail-send`, `gws-gmail-read`, `gws-gmail-reply`, `gws-people`, `gws-shared`, `gws-nas-oauth`, `gws-gmail`); Gmail triage is patched to default to `in:inbox`.
-- Knowledge skills for Obsidian Markdown and `qmd`/`research-state` workflows (`tools/obsidian-bases` and `tools/obsidian-cli` are excluded from the default).
+- Knowledge skills for Obsidian Markdown and `qmd`/`research-state` workflows.
 
 Evidence rule: every default exclusion must be backed by Nix source/evaluated evidence, never by runtime directories. `skills/default-validation.nix` proves each catalog path exists in a Nix artifact source (CA categorized via `readDir`, GWS upstream via `readDir`, knowledge entries) and is absent from every filtered default pack (CA filtered, GWS retained, knowledge filtered). Do not justify exclusions from `~/.local/share/hermes`, `${hermesHome}/skills`, or any mutable state; those are outputs, not sources. `skills/default-cleanup.nix` then deletes only those explicit catalog paths from the default home after seeding (no wildcards).
 

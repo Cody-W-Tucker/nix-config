@@ -25,7 +25,7 @@ in
     }))
   ];
 
-  # Bring in env session variables from ../ui.nix
+  # Expose Home Manager session variables to UWSM-launched sessions
   xdg.configFile."uwsm/env".source =
     "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
 
@@ -34,7 +34,6 @@ in
     package = null; # null to use NixOS module
     portalPackage = null; # null to use NixOS module
     systemd.enable = false; # Since using UWSM, disable systemd
-    xwayland.enable = true;
     configType = "lua";
   };
 
@@ -88,7 +87,7 @@ in
         hide_cursor = true;
         ignore_empty_input = true;
       };
-      background = lib.mkForce [
+      background = [
         {
           monitor = "";
           path = "screenshot";
@@ -102,7 +101,7 @@ in
           vibrancy_darkness = 0.0;
         }
       ];
-      input-field = lib.mkForce [
+      input-field = [
         {
           size = "200, 50";
           outline_thickness = 3;

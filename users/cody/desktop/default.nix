@@ -34,9 +34,6 @@
   # Cursor code editor from spacex SI
   programs.cursor.enable = true;
 
-  # Keep these enabled without settings letting stylix manage
-  dconf.enable = true;
-
   gtk = {
     enable = true;
     iconTheme = {
@@ -61,7 +58,6 @@
       # Clipboard history
       enable = true;
       allowImages = true;
-      systemdTargets = "graphical-session.target";
       extraOptions = [
         "-max-dedupe-search"
         "10"

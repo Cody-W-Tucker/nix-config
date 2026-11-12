@@ -63,26 +63,17 @@ let
 
   # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
   # The bundled FindCUDA parser is too stale to accept CUDA_ARCH_LIST=12.0 for Blackwell,
-  # so we strip any existing CUDA_ARCH_LIST flags and inject sm_120 directly via postPatch.
-  ctranslate2CppBlackwell =
-    let
-      ctranslate2Cpp = pkgs.ctranslate2.override {
-        withCUDA = true;
-        withCuDNN = true;
-      };
-    in
-    ctranslate2Cpp.overrideAttrs (old: {
-      cmakeFlags = builtins.filter (
-        f: !(builtins.isString f && builtins.match ".*CUDA_ARCH_LIST.*" f != null)
-      ) (old.cmakeFlags or [ ]);
-      postPatch = (old.postPatch or "") + ''
-        # Bypass stale FindCUDA parser for Blackwell (sm_120): inject explicit
-        # compute_120/sm_120 gencode after the existing ARCH_FLAGS expansion.
-        for f in $(grep -rl 'list(APPEND CUDA_NVCC_FLAGS .*ARCH_FLAGS' .); do
-          sed -i '/list(APPEND CUDA_NVCC_FLAGS .*ARCH_FLAGS/a\  list(APPEND CUDA_NVCC_FLAGS "-gencode" "arch=compute_120,code=sm_120")' "$f"
-        done
-      '';
-    });
+  # so we inject sm_120 directly via postPatch. CUDA/cuDNN come from the host-wide
+  # nixpkgs.config.cudaSupport.
+  ctranslate2CppBlackwell = pkgs.ctranslate2.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      # Bypass stale FindCUDA parser for Blackwell (sm_120): inject explicit
+      # compute_120/sm_120 gencode after the existing ARCH_FLAGS expansion.
+      for f in $(grep -rl 'list(APPEND CUDA_NVCC_FLAGS .*ARCH_FLAGS' .); do
+        sed -i '/list(APPEND CUDA_NVCC_FLAGS .*ARCH_FLAGS/a\  list(APPEND CUDA_NVCC_FLAGS "-gencode" "arch=compute_120,code=sm_120")' "$f"
+      done
+    '';
+  });
 in
 {
   imports = [
@@ -143,9 +134,8 @@ in
         upstream.concurrencyLimit = 1;
       };
       "qwen-3.5-9b" = {
+        # Text-only (catalog sets no projector); the 4B endpoint serves vision.
         file = toString qwen35_9bBase;
-        # Keep the 9B reasoning endpoint text-only; the 4B endpoint serves vision.
-        mmprojFile = null;
         # Leave room for the embedding model; validate the combined GPU load.
         contextSize = 32768;
       };
@@ -164,12 +154,6 @@ in
       };
       "laya" = {
         file = toString laya;
-        alias = "laya";
-        mmprojFile = null;
-        ttl = 600;
-        threads = 6;
-        flashAttention = true;
-        extraArgs = [ ];
       };
     };
     # The 4B and 9B swap with each other; embeddings stay available to both.

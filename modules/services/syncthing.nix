@@ -17,7 +17,6 @@ in
   services.syncthing = {
     enable = true;
     user = user.name;
-    dataDir = "/var/lib/syncthing";
     openDefaultPorts = true;
     overrideDevices = true;
     overrideFolders = true;

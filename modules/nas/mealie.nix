@@ -19,7 +19,6 @@ in
   services.mealie = {
     enable = true;
     package = pkgs.unstable.mealie;
-    port = 9000;
   };
 
   warnings =
@@ -28,7 +27,7 @@ in
 
   services.nginx.virtualHosts = mkNginxVhost {
     host = "mealie.${domain}";
-    port = 9000;
+    inherit (cfg) port;
   };
 
   nas.backups.sqlite = [

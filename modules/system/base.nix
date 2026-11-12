@@ -1,6 +1,5 @@
 {
   inputs,
-  home-manager-input,
   ...
 }:
 
@@ -8,17 +7,16 @@
   imports = [
     inputs.sops-nix.nixosModules.sops
     inputs.nixos-secrets.nixosModules.default
-    home-manager-input.nixosModules.home-manager
     ./scripts.nix
     ./locale.nix
     ./nix.nix
     ./overlays.nix
     ./users.nix
-    ./fonts.nix
     ./packages.nix
     ./shell.nix
     ./services.nix
     ./networking.nix
+    ./logging.nix
     ./site.nix
     ../../users/home.nix
 

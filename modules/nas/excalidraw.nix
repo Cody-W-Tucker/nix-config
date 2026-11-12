@@ -9,10 +9,9 @@ let
 in
 {
   virtualisation.oci-containers.containers.excalidraw = {
-    autoStart = true;
     image = "excalidraw/excalidraw:latest";
     environment = {
-      TZ = "America/Chicago";
+      TZ = config.time.timeZone;
     };
     ports = [
       "2919:80"

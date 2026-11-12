@@ -8,7 +8,7 @@ let
     ./rofi-web-launcher.nix
   ];
 
-  scriptPackages = map (script: pkgs.callPackage (toString script) { inherit pkgs; }) scriptNames;
+  scriptPackages = map (script: pkgs.callPackage script { }) scriptNames;
 in
 
 {

@@ -39,17 +39,5 @@
       default = [ ];
       description = "Declarative Hermes skill packs to seed into the mutable local skills tree.";
     };
-
-    seedDirs = lib.mkOption {
-      type = lib.types.listOf lib.types.path;
-      default = [ ];
-      description = "Legacy mutable skill directories to seed into Hermes' local skills tree.";
-    };
-
-    userPatternSkillList = lib.mkOption {
-      type = lib.types.lines;
-      readOnly = true;
-      description = "Rendered list of Cognitive Assistant user-pattern skills for the Hermes AGENTS document.";
-    };
   };
 }

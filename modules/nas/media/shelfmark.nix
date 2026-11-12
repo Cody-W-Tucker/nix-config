@@ -67,7 +67,6 @@ in
   };
 
   virtualisation.oci-containers.containers.shelfmark = {
-    autoStart = true;
     # v1.3.15 is the verified latest stable release (GitHub, 2026-09-02);
     # digest taken from the ghcr.io OCI manifest index. Full image (not
     # -lite): universal search needs the built-in browser for
@@ -86,7 +85,7 @@ in
       CONFIG_DIR = "/config";
       FLASK_HOST = "0.0.0.0";
       FLASK_PORT = toString port;
-      TZ = "America/Chicago";
+      TZ = config.time.timeZone;
 
       # Consumed by the upstream entrypoint (UMASK_VALUE=${UMASK:-0022}).
       # 002 makes delivered files group-writable so the media group can

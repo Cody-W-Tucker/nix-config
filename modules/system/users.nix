@@ -19,7 +19,6 @@ in
         "media"
         "scanner"
         "lp"
-        "bluetooth"
         "input"
         "documents"
       ];
@@ -35,12 +34,4 @@ in
     groups.media = { };
     groups.documents = { };
   };
-
-  systemd.tmpfiles.rules = [
-    # Pre-create borgbackup directories to avoid duplicate tmpfiles warnings
-    "d ${user.home}/.cache 0755 ${user.name} users - -"
-    "d ${user.home}/.cache/borg 0755 ${user.name} users - -"
-    "d ${user.home}/.config 0755 ${user.name} users - -"
-    "d ${user.home}/.config/borg 0755 ${user.name} users - -"
-  ];
 }

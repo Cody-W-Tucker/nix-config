@@ -9,17 +9,9 @@ let
   inherit (config.services.hermes-agent) hermesHome;
   cfg = config.codyos.hermes-agent.skills;
 
-  legacySeedPacks = map (dir: {
-    name = "legacy-seed-dir";
-    root = dir;
-    mode = "mutable";
-  }) cfg.seedDirs;
-
-  skillPacks = cfg.skillPacks ++ legacySeedPacks;
-
   packCommands = lib.concatMapStringsSep "\n" (pack: ''
     seed_skill_pack ${lib.escapeShellArg pack.root} ${lib.escapeShellArg pack.mode}
-  '') skillPacks;
+  '') cfg.skillPacks;
 
 in
 {

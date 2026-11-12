@@ -12,14 +12,12 @@ in
   services = {
     nginx.virtualHosts = mkNginxVhost {
       host = domain;
-      port = 8082;
+      port = config.services.homepage-dashboard.listenPort;
       proxyWebsockets = true;
     };
 
     homepage-dashboard = {
       enable = true;
-      listenPort = 8082;
-      openFirewall = false;
       allowedHosts = domain;
       settings = {
         title = "HomeHub.tv";

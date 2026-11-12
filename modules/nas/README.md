@@ -135,7 +135,7 @@ Paperless consume behavior is tuned for operator convenience:
 
 ### Backups
 
-Photo and document modules include BorgBackup job definitions for backing up important personal data to the `beast` workstation. Treat these as service-local backup ownership: photo backup changes belong in `photos.nix`; document backup changes belong in `paperless.nix`.
+Photo and document data live on the `backup/photos` and `backup/documents` ZFS datasets, which `backups.nix` snapshots centrally. Service modules register their SQLite databases through `nas.backups.sqlite` for the Restic job in `backups.nix`; there are no per-service BorgBackup jobs.
 
 ## Langfuse
 
@@ -230,7 +230,9 @@ Keep DNS and sync changes small and explicit. These services affect the rest of 
 - Grafana at `monitoring.homehub.tv` for dashboards.
 - Loki for logs, including Nginx log ingestion.
 - Tempo for traces and OTLP ingestion.
-- Exporters for host, Nginx, SMART, GPU, and remote targets as configured.
+- Exporters for Nginx, SMART, GPU, and remote targets as configured.
+
+The node exporter (`9002`) and systemd journal shipping to Loki (Fluent Bit) are not defined here; they come from the shared `modules/system/logging.nix`, which every host imports. `monitoring.nix` only appends the NAS-specific Fluent Bit input and output for the Nginx access log.
 
 Prometheus scrapes the server and selected `beast` metrics. Important endpoints and roles:
 

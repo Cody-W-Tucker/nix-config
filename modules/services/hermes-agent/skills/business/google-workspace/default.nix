@@ -66,7 +66,6 @@ in
     (lib.sort (a: b: a < b))
   ];
   _module.args.filteredGwsSkillNames = gwsSkillNames;
-  _module.args.filteredGwsRoot = googleWorkspaceSkills;
 
   codyos.hermes-agent.skills.skillPacks = [
     {

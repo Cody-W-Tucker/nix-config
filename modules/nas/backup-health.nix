@@ -63,7 +63,6 @@ let
   mkHealthHooks = job: {
     # mkBefore so duration covers the whole run; + runs as root; %%s avoids systemd specifier expansion.
     ExecStartPre = lib.mkBefore [
-      "+${pkgs.coreutils}/bin/mkdir -p ${runDir} ${textfileDir}"
       "+${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/date +%%s > ${runDir}/${job}.start'"
     ];
     # -+: run as root (+) without failing the backup unit on reporting errors (-).

@@ -18,81 +18,69 @@ let
     hash = "sha256-GlfRvFoH33W8T1I3hiZmZHzy99DazJRMgu13ufIOoyg=";
   };
 
-  obsidianTrayPlugin = pkgs.runCommand "obsidian-tray-0.3.5" { } ''
-    mkdir -p $out
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/dragonwocky/obsidian-tray/releases/download/0.3.5/main.js";
-        hash = "sha256-BHGlkLij4wgpP10upwgFN3rBVmBTcoVl1j6ktVCUrUI=";
-      }
-    } $out/main.js
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/dragonwocky/obsidian-tray/releases/download/0.3.5/manifest.json";
-        hash = "sha256-gOjuAtf7mcgrlH162TrC37BmP0hQthSMfeOAN+/kSjQ=";
-      }
-    } $out/manifest.json
-  '';
+  # Fetch a community plugin from its GitHub release assets.
+  mkReleasePlugin =
+    {
+      owner,
+      repo,
+      version,
+      files,
+    }:
+    pkgs.runCommand "${repo}-${version}" { } (
+      ''
+        mkdir -p $out
+      ''
+      + lib.concatMapStrings (file: ''
+        cp ${
+          pkgs.fetchurl {
+            url = "https://github.com/${owner}/${repo}/releases/download/${version}/${file}";
+            hash = files.${file};
+          }
+        } $out/${file}
+      '') (builtins.attrNames files)
+    );
 
-  obsidianAutoDailyNotePlugin = pkgs.runCommand "auto-daily-note-1.0.0" { } ''
-    mkdir -p $out
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/litegral/auto-daily-note/releases/download/1.0.0/main.js";
-        hash = "sha256-GhXQ8oQGWrgyHJb+uVBlQW3XP3IohBwAedSuVuKQkZ0=";
-      }
-    } $out/main.js
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/litegral/auto-daily-note/releases/download/1.0.0/manifest.json";
-        hash = "sha256-eZwUnAItdSKr/LBy3xkWiRhw5QGJJRh/brGlzWP/iy4=";
-      }
-    } $out/manifest.json
-  '';
+  obsidianTrayPlugin = mkReleasePlugin {
+    owner = "dragonwocky";
+    repo = "obsidian-tray";
+    version = "0.3.5";
+    files = {
+      "main.js" = "sha256-BHGlkLij4wgpP10upwgFN3rBVmBTcoVl1j6ktVCUrUI=";
+      "manifest.json" = "sha256-gOjuAtf7mcgrlH162TrC37BmP0hQthSMfeOAN+/kSjQ=";
+    };
+  };
 
-  obsidianRolloverDailyTodosPlugin = pkgs.runCommand "obsidian-rollover-daily-todos-1.2.0" { } ''
-    mkdir -p $out
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/lumoe/obsidian-rollover-daily-todos/releases/download/1.2.0/main.js";
-        hash = "sha256-TwgpNjyVgHnqAioVScLq59iB4axgpB3x/I7J/9m8Ock=";
-      }
-    } $out/main.js
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/lumoe/obsidian-rollover-daily-todos/releases/download/1.2.0/manifest.json";
-        hash = "sha256-m1JvPjwSFF3kKAlils5gFbztfGK6kQpbC3kDQMUQH8E=";
-      }
-    } $out/manifest.json
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/lumoe/obsidian-rollover-daily-todos/releases/download/1.2.0/versions.json";
-        hash = "sha256-8oIWEqT4PYeeIyhVzLqSUNpp4SSK19GlAuo52RRD8gs=";
-      }
-    } $out/versions.json
-  '';
+  obsidianAutoDailyNotePlugin = mkReleasePlugin {
+    owner = "litegral";
+    repo = "auto-daily-note";
+    version = "1.0.0";
+    files = {
+      "main.js" = "sha256-GhXQ8oQGWrgyHJb+uVBlQW3XP3IohBwAedSuVuKQkZ0=";
+      "manifest.json" = "sha256-eZwUnAItdSKr/LBy3xkWiRhw5QGJJRh/brGlzWP/iy4=";
+    };
+  };
 
-  obsidianGitPlugin = pkgs.runCommand "obsidian-git-2.41.1" { } ''
-    mkdir -p $out
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.41.1/main.js";
-        hash = "sha256-KKGK/KsdLxUqDTyJr/OOKpetC+GuqvmWMGEyM7vsbBs=";
-      }
-    } $out/main.js
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.41.1/manifest.json";
-        hash = "sha256-XU0PQRUYY2wdKkgxQlqONIe5JbW9QTvgyiLm3jilk/c=";
-      }
-    } $out/manifest.json
-    cp ${
-      pkgs.fetchurl {
-        url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.41.1/styles.css";
-        hash = "sha256-v6j71F/kn/NA/bGWuEut1jGu3l1vlnQPM26nec1EEAU=";
-      }
-    } $out/styles.css
-  '';
+  obsidianRolloverDailyTodosPlugin = mkReleasePlugin {
+    owner = "lumoe";
+    repo = "obsidian-rollover-daily-todos";
+    version = "1.2.0";
+    files = {
+      "main.js" = "sha256-TwgpNjyVgHnqAioVScLq59iB4axgpB3x/I7J/9m8Ock=";
+      "manifest.json" = "sha256-m1JvPjwSFF3kKAlils5gFbztfGK6kQpbC3kDQMUQH8E=";
+      "versions.json" = "sha256-8oIWEqT4PYeeIyhVzLqSUNpp4SSK19GlAuo52RRD8gs=";
+    };
+  };
+
+  obsidianGitPlugin = mkReleasePlugin {
+    owner = "Vinzent03";
+    repo = "obsidian-git";
+    version = "2.41.1";
+    files = {
+      "main.js" = "sha256-KKGK/KsdLxUqDTyJr/OOKpetC+GuqvmWMGEyM7vsbBs=";
+      "manifest.json" = "sha256-XU0PQRUYY2wdKkgxQlqONIe5JbW9QTvgyiLm3jilk/c=";
+      "styles.css" = "sha256-v6j71F/kn/NA/bGWuEut1jGu3l1vlnQPM26nec1EEAU=";
+    };
+  };
 
   sharedCommunityPlugins = [
     {
@@ -101,6 +89,8 @@ let
     }
   ];
 
+  # Stylix's obsidian target defines vault-level cssSnippets, which would
+  # otherwise replace the shared defaults instead of extending them.
   withSharedSnippets =
     settings:
     lib.mkMerge [
@@ -138,7 +128,6 @@ in
 
   programs.obsidian = {
     enable = true;
-    package = config.lib.nixGL.wrap pkgs.obsidian;
     cli.enable = true;
 
     defaultSettings = {

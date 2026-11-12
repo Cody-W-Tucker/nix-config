@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
@@ -23,13 +22,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    boot.kernelModules = [ "nvidia-uvm" ];
-
-    environment.systemPackages = with pkgs; [
-      cudaPackages.cudatoolkit
-      nvidia-vaapi-driver
-    ];
-
     # Load nvidia driver for Xorg and Wayland. Even on headless installs, this is vital to installing the nvidia drivers.
     services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -42,13 +34,12 @@ in
     };
 
     # NVIDIA GPU monitoring for Prometheus
-    services.prometheus.exporters.nvidia-gpu = {
-      enable = true;
-      port = 9835;
-    };
+    services.prometheus.exporters.nvidia-gpu.enable = true;
 
     # NVIDIA GPU exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 9835 ];
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+      config.services.prometheus.exporters.nvidia-gpu.port
+    ];
 
     systemd.services.nvidia-power-limit = lib.mkIf cfg.powerLimit.enable {
       description = "Cap NVIDIA GPU board power (nvidia-smi -pl)";

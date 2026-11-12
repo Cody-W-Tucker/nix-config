@@ -40,19 +40,10 @@ let
       path = "${caCategorized}/${rel}";
     }) filteredCognitiveAssistantRelPaths
   );
-
-  excludedLeafNames = map (rel: lib.last (lib.splitString "/" rel)) defaultExcludedSkillPaths;
-
-  filteredSkillNames = lib.filter (
-    name: !(lib.elem name defaultExcludedSkillPaths || lib.elem name excludedLeafNames)
-  ) caSkills.names;
-
-  filteredSkillList = lib.concatMapStringsSep "\n" (name: "- ${name}") filteredSkillNames;
 in
 {
   _module.args.allCognitiveAssistantRelPaths = allCognitiveAssistantRelPaths;
   _module.args.filteredCognitiveAssistantRelPaths = filteredCognitiveAssistantRelPaths;
-  _module.args.filteredCognitiveAssistantRoot = filteredCognitiveAssistantRoot;
 
   codyos.hermes-agent.skills.skillPacks = [
     {
@@ -61,6 +52,4 @@ in
       mode = "mutable";
     }
   ];
-
-  codyos.hermes-agent.skills.userPatternSkillList = filteredSkillList;
 }

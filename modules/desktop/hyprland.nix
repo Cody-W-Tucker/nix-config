@@ -24,8 +24,6 @@ in
   services = {
     greetd = {
       enable = true;
-      # do not restart on session exit (useful on autologin)
-      restart = false;
       settings = {
         terminal.vt = 1;
         initial_session = session;

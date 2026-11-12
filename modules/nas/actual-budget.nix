@@ -10,7 +10,7 @@ in
 {
   services.nginx.virtualHosts = mkNginxVhost {
     host = "budget.${domain}";
-    port = 5006;
+    port = config.services.actual.settings.port;
     proxyWebsockets = true;
   };
 

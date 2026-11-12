@@ -47,7 +47,7 @@ The speaker embedding model (`speechbrain/spkrec-ecapa-voxceleb`) is public on H
 
 ## Diarization embedding cache directory
 
-The diarization server writes speaker-embedding weights to `/var/lib/llama-swap/diarization/embedding-cache`. This directory is created by `systemd.tmpfiles.rules` in `hosts/beast/models.nix` with the same owner (`codyt:users`) and permissions (`0750`) as the enrollment directory, and is listed in the service's `ReadWritePaths`.
+The diarization server writes speaker-embedding weights to `/var/lib/llama-swap/diarization/embedding-cache`. This directory is created by `systemd.tmpfiles.rules` in `modules/services/llama-swap/default.nix` with the same owner and permissions (`0750`) as the enrollment directory (`modelOwner:modelGroup`, `codyt:users` on the NAS via `hosts/nas/models.nix`), and is listed in the service's `ReadWritePaths`.
 
 Deploy with:
 

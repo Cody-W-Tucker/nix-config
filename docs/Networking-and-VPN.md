@@ -1,10 +1,10 @@
 # Networking and VPN
 
-This page details the networking architecture of CodyOS, covering system-level security, the Tailscale mesh VPN, Mullvad VPN integration, and the advanced `vpn-confinement` mechanism used to isolate specific services into dedicated network namespaces.
+This page details the networking architecture of CodyOS, covering system-level security, the Tailscale mesh VPN, and the advanced `vpn-confinement` mechanism used to isolate specific services into dedicated network namespaces.
 
 ## System Networking and Security
 
-CodyOS utilizes a hardened networking stack by default. Base networking configuration is defined in `modules/system/networking.nix` and imported into the base system profile [modules/system/base.nix19](../modules/system/base.nix#L19-L19)
+CodyOS utilizes a hardened networking stack by default. Base networking configuration is defined in `modules/system/networking.nix` and imported into the base system profile [modules/system/base.nix18](../modules/system/base.nix#L18-L18)
 
 ### Hardening and Firewall
 
@@ -16,30 +16,24 @@ The system employs `nftables` as the primary firewall backend [modules/system/ne
 
 ### Host-Specific Configuration
 
-Individual hosts manage their own interface logic. For example, the `nas` host uses `networkmanager` with a declarative static LAN profile (`Wired connection 1` on `enp6s0` → `192.168.1.2/24`, gateway `192.168.1.1`) instead of DHCP [hosts/nas/default.nix172-205](../hosts/nas/default.nix#L172-L205).
+NetworkManager is enabled for every host in `modules/system/networking.nix`; individual hosts manage their own interface logic. For example, the `nas` host uses a declarative static LAN profile (`Wired connection 1` on `enp6s0` → `192.168.1.2/24`, gateway `192.168.1.1`) instead of DHCP [hosts/nas/default.nix91-110](../hosts/nas/default.nix#L91-L110).
 
 ---
 
 ## VPN Infrastructure
 
-The repository supports multiple VPN technologies tailored for different use cases: mesh networking (Tailscale), privacy-focused browsing (Mullvad), and service-level isolation (Wireguard via vpn-confinement).
+The repository supports two VPN technologies tailored for different use cases: mesh networking (Tailscale) and service-level isolation (Wireguard via vpn-confinement).
 
 ### Tailscale Mesh VPN
 
 Tailscale is used for secure, zero-config point-to-point connectivity between hosts.
 
-- **Implementation**: Enabled via `services.tailscale.enable`[modules/desktop/vpn/tailscale.nix5](../modules/desktop/vpn/tailscale.nix#L5-L5)
-- **Usage**: Applied to both the `nas`[hosts/nas/default.nix84](../hosts/nas/default.nix#L84-L84) and desktop environments.
-
-### Mullvad VPN
-
-Mullvad is provided as a system service for general-purpose desktop privacy.
-
-- **Implementation**: Defined in `modules/desktop/vpn/mullvad.nix` using the `mullvad-vpn` package [modules/desktop/vpn/mullvad.nix3-6](../modules/desktop/vpn/mullvad.nix#L3-L6)
+- **Implementation**: Enabled for every host via `services.tailscale.enable` in the shared networking module [modules/system/networking.nix37](../modules/system/networking.nix#L37-L37), alongside `networking.networkmanager.enable` [modules/system/networking.nix32](../modules/system/networking.nix#L32-L32)
+- **Host-specific flags**: The `nas` adds subnet-router settings (`useRoutingFeatures = "server"`, `--advertise-routes`, `--accept-dns=false`) in [hosts/nas/default.nix](../hosts/nas/default.nix).
 
 ### Data Flow: VPN Services
 
-The following diagram illustrates how different VPN modules are integrated into the system.
+The following diagram illustrates how the Tailscale module is integrated into the system.
 
 **VPN Integration Architecture**
 
@@ -49,21 +43,14 @@ flowchart LR
         NAS["hosts/nas/default.nix"]
         BEAST["hosts/beast/default.nix"]
     end
-    subgraph VPNModules
-        TS["modules/desktop/vpn/tailscale.nix"]
-        MV["modules/desktop/vpn/mullvad.nix"]
-        VPN_DEF["modules/desktop/vpn/default.nix"]
-    end
     subgraph SystemModules
         BASE["modules/system/base.nix"]
-        NET["modules/system/networking.nix"]
+        NET["modules/system/networking.nix (Tailscale, NetworkManager)"]
     end
     BASE --> NET
     NAS --> BASE
-    NAS --> TS
-    BEAST --> VPN_DEF
-    VPN_DEF --> TS
-    VPN_DEF --> MV
+    BEAST --> BASE
+    NAS -.->|"subnet-router flags"| NET
 ```
 
 ---

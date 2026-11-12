@@ -11,7 +11,7 @@ Host policy (identity, features, network mounts, networking, Docker, and desktop
 | Path          | Role                                                                                                                                       |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | `default.nix` | Host policy: `codyos.*` features, kernel choice, NAS network mounts, networking (incl. Wake-on-LAN), `hardwareConfig` for Hyprland, Home Manager entry. |
-| `hardware-configuration.nix` | Hardware: root and EFI filesystems, initrd/kernel modules, MT7925 Wi-Fi/Bluetooth quirks, `nixos-hardware` profiles. |
+| `hardware-configuration.nix` | Hardware: root and EFI filesystems, initrd/kernel modules, MT7925 Wi-Fi/Bluetooth quirks. |
 
 ## Hardware profile
 

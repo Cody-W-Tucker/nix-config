@@ -24,7 +24,6 @@ in
   ];
 
   virtualisation.oci-containers.containers.paperless-gpt = {
-    autoStart = true;
     image = "icereed/paperless-gpt:latest";
     environment = {
       # With host networking, reach the host's Paperless API directly via localhost.
@@ -44,7 +43,7 @@ in
       VISION_LLM_MODEL = "glm-ocr-f16";
       # Cap OCR-generated output length; prevents runaway vision calls.
       VISION_LLM_MAX_TOKENS = "2048";
-      TZ = "America/Chicago";
+      TZ = config.time.timeZone;
       LOG_LEVEL = "info";
       AUTO_GENERATE_TAGS = "false";
       AUTO_GENERATE_DOCUMENT_TYPE = "false";

@@ -1,5 +1,6 @@
 # NAS hardware: disks, filesystems, and initrd/kernel modules. Storage policy
-# (ZFS pools, ARC size, snapshots) and host policy live in default.nix.
+# (ZFS pools, ARC size) and host policy live in default.nix; ZFS snapshot
+# policy lives in modules/nas/backups.nix.
 {
   boot = {
     initrd.availableKernelModules = [
@@ -10,9 +11,7 @@
       "usb_storage"
       "sd_mod"
     ];
-    initrd.kernelModules = [ ];
     kernelModules = [ "kvm-intel" ];
-    extraModulePackages = [ ];
   };
 
   fileSystems = {
@@ -49,7 +48,6 @@
       device = "/dev/disk/by-uuid/27ddc2ef-8f21-401d-b9eb-3ed4541c16c9";
       fsType = "ext4";
       options = [
-        "defaults"
         "noatime"
         "nofail"
         "x-systemd.device-timeout=30s"

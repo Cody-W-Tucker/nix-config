@@ -1,4 +1,4 @@
-# System-wide fonts configuration
+# Desktop fonts. fontDir also sets the Xwayland default core-font path.
 
 { pkgs, ... }:
 
@@ -8,9 +8,7 @@
     enableDefaultPackages = true;
     packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk-sans
       font-awesome
-      source-han-sans
       nerd-fonts.meslo-lg
       nerd-fonts.jetbrains-mono
     ];

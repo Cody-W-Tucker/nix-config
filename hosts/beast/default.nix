@@ -2,7 +2,6 @@
   config,
   inputs,
   pkgs,
-  self,
   ...
 }:
 
@@ -71,9 +70,7 @@ in
   };
 
   # ── Drives ──────────────────────────────────────────────────
-  environment.systemPackages = [ pkgs.nfs-utils ];
-
-  # System fileSystems
+  # System fileSystems (NFS and CIFS tools come from system.fsPackages)
   fileSystems = {
     "/mnt/paperless-consume" = {
       device = "//${site.hosts.nas.lan}/PaperlessConsume";
@@ -117,7 +114,6 @@ in
   # Networking
   networking = {
     hostName = "beast";
-    networkmanager.enable = true;
     networkmanager.settings.connection = {
       # MT7925 Bluetooth is more stable when NetworkManager does not power-save Wi-Fi.
       "wifi.powersave" = 2;
@@ -128,23 +124,13 @@ in
     };
   };
 
-  services.fluent-bit.settings.pipeline.inputs = [
-    {
-      name = "systemd";
-      tag = "journal";
-      read_from_tail = true;
-      strip_underscores = true;
-      lowercase = true;
-    }
-  ];
-
   # Should be the same as the version of NixOS you installed on this machine.
   system.stateVersion = "25.05"; # Did you read the comment?
 
   # Home-manager configuration with hardware-specific settings
   home-manager = {
     extraSpecialArgs = {
-      inherit inputs self;
+      inherit inputs;
       inherit hardwareConfig;
     };
     users.${site.user.name} = {

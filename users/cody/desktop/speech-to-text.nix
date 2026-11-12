@@ -25,14 +25,13 @@ let
     runtimeInputs = [
       pkgs.coreutils
       pkgs.curl
+      pkgs.gnused
       pkgs.jq
       pkgs.libnotify
       pkgs.pipewire
       wtypeFixedKeycodes
     ];
     text = ''
-      set -euo pipefail
-
       pidfile="/tmp/llama-dictate-recording.pid"
       pathfile="/tmp/llama-dictate-recording.path"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
@@ -44,10 +43,10 @@ let
 
        warm_model() {
          # Ask llama-swap to bring up both backends without sending fake requests.
-         ${pkgs.curl}/bin/curl --silent --show-error --fail \
+         curl --silent --show-error --fail \
            --max-time 60 \
            "$warmup_url" >/dev/null 2>&1 &
-         ${pkgs.curl}/bin/curl --silent --show-error --fail \
+         curl --silent --show-error --fail \
            --max-time 60 \
            "$normalizer_warmup_url" >/dev/null 2>&1 &
        }
@@ -196,7 +195,7 @@ let
         text="$1"
         system_prompt="You are a text normalizer for speech-to-text transcripts. The input begins with a control line specifying the styling, structure, and context settings; clean the transcript to match those settings and output only the cleaned text."
 
-        payload="$(printf '%s' "$text" | ${pkgs.jq}/bin/jq -R -s --arg sys "$system_prompt" '
+        payload="$(printf '%s' "$text" | jq -R -s --arg sys "$system_prompt" '
           {
             model: "s1-mini",
             max_tokens: 2048,
@@ -207,12 +206,12 @@ let
             ]
           }')"
 
-        response="$(${pkgs.curl}/bin/curl --silent --show-error --fail \
+        response="$(curl --silent --show-error --fail \
           --max-time 60 \
           -X POST "$norm_url" \
           -H "Content-Type: application/json" \
           -d "$payload" \
-          | ${pkgs.jq}/bin/jq -r '.choices[0].message.content? // empty')" || return 1
+          | jq -r '.choices[0].message.content? // empty')" || return 1
 
         [ -n "$response" ] || return 1
 
@@ -287,14 +286,14 @@ let
           return 1
         fi
 
-        response="$(${pkgs.curl}/bin/curl --silent --show-error --fail \
+        response="$(curl --silent --show-error --fail \
           --max-time 120 \
           -X POST "$api_url" \
           -F "file=@$path;type=audio/wav" \
           -F "model=$model" \
           -F "language=en")"
 
-        raw_text="$(printf '%s' "$response" | ${pkgs.jq}/bin/jq -r '.text // empty' | tr -s ' ')"
+        raw_text="$(printf '%s' "$response" | jq -r '.text // empty' | tr -s ' ')"
         raw_text="$(printf '%s' "$raw_text" | sed 's/^ *//;s/ *$//')"
 
         if [ -z "$raw_text" ]; then

@@ -7,7 +7,6 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     wireplumber = {
-      enable = true;
       extraConfig = {
         "bluetooth" = {
           "wireplumber.settings" = {
@@ -54,16 +53,12 @@
 
   hardware.bluetooth = {
     enable = true;
-    powerOnBoot = true;
     settings = {
       General = {
         ControllerMode = "bredr";
         FastConnectable = true;
         JustWorksRepairing = "always";
         MultiProfile = "multiple";
-      };
-      Policy = {
-        AutoEnable = true;
       };
     };
   };

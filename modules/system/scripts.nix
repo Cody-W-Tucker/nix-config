@@ -7,6 +7,6 @@
   environment.systemPackages = [
     pkgs.check-imports
     pkgs.update
-    inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.researchState
+    (import "${inputs.workflow}/packages.nix" { inherit pkgs; }).researchState
   ];
 }

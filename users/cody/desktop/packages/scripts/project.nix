@@ -4,8 +4,6 @@ pkgs.writeShellApplication {
   name = "project";
   runtimeInputs = [ pkgs.nix ];
   text = ''
-    set -euo pipefail
-
     TEMPLATE_BASE="https://flakehub.com/f/Cody-W-Tucker/dev-templates/*"
 
     show_help() {

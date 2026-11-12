@@ -6,14 +6,13 @@ in
 {
   services.tika = {
     enable = true;
-    port = 9998;
     listenAddress = "0.0.0.0";
     openFirewall = true;
   };
 
   services.nginx.virtualHosts = mkNginxVhost {
     host = "tika.${domain}";
-    port = 9998;
+    inherit (config.services.tika) port;
     locationExtraConfig = ''
       proxy_set_header X-Tika-OCRLanguage "chi_sim+eng";
     '';

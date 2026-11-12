@@ -92,7 +92,6 @@
     package = pkgs.transmission_4;
     group = "media";
     openRPCPort = true; # Allows Sonarr/Radarr to connect
-    openPeerPorts = false; # Does not open peer ports on the firewall
     settings = {
       download-dir = "/mnt/media/Downloads";
       incomplete-dir = "/mnt/media/Downloads/incomplete";

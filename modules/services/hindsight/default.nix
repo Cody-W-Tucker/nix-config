@@ -54,6 +54,7 @@ in
         "llama-swap.service"
       ];
       environment = {
+        HOME = "/var/lib/hindsight";
         HINDSIGHT_API_DATABASE_URL = "postgresql://hindsight@/hindsight?host=/run/postgresql";
         HINDSIGHT_API_LLM_PROVIDER = "openai";
         HINDSIGHT_API_LLM_BASE_URL = "http://127.0.0.1:8081/v1";
@@ -77,7 +78,6 @@ in
         User = "hindsight";
         Group = "hindsight";
         StateDirectory = "hindsight";
-        Environment = "HOME=/var/lib/hindsight";
         ExecStart = "${lib.getExe packages.hindsight} --host 127.0.0.1 --port 8888";
         Restart = "on-failure";
         RestartSec = 10;
@@ -111,36 +111,38 @@ in
       };
     };
 
-    services.nginx.virtualHosts."memory.${domain}" =
-      (mkNginxVhost {
+    services.nginx.virtualHosts =
+      mkNginxVhost {
         host = "memory.${domain}";
         port = 9999;
-      })."memory.${domain}";
-
-    # Only Beast can reach the MCP endpoint over Tailscale. The API and UI stay
-    # loopback-only. This uses network restrictions, not
-    # application authentication; local users can still access the API.
-    services.nginx.virtualHosts."hindsight-tailnet" = {
-      listen = [
-        {
-          addr = "0.0.0.0";
-          port = 18083;
-        }
-      ];
-      locations."= /mcp/" = {
-        proxyPass = "http://127.0.0.1:8888";
-        recommendedProxySettings = false;
-        extraConfig = ''
-          allow ${config.codyos.site.hosts.beast.tailscale};
-          deny all;
-          if ($http_origin != "") { return 403; }
-          proxy_set_header Host 127.0.0.1:8888;
-          proxy_buffering off;
-          proxy_read_timeout 3600s;
-        '';
+      }
+      // {
+        # Only Beast can reach the MCP endpoint over Tailscale. The API and UI stay
+        # loopback-only. This uses network restrictions, not
+        # application authentication; local users can still access the API.
+        "hindsight-tailnet" = {
+          listen = [
+            {
+              addr = "0.0.0.0";
+              port = 18083;
+            }
+          ];
+          locations."= /mcp/" = {
+            proxyPass = "http://127.0.0.1:8888";
+            recommendedProxySettings = false;
+            extraConfig = ''
+              allow ${config.codyos.site.hosts.beast.tailscale};
+              deny all;
+              if ($http_origin != "") { return 403; }
+              proxy_set_header Host 127.0.0.1:8888;
+              proxy_buffering off;
+              proxy_read_timeout 3600s;
+            '';
+          };
+          locations."/".return = "404";
+        };
       };
-      locations."/".return = "404";
-    };
+
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 18083 ];
   };
 }

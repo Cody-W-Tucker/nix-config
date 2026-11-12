@@ -33,6 +33,12 @@ in
     polarity = "dark";
     targets = {
       nixvim.enable = false;
+      # Fully replaced by local config in desktop/{waybar,hyprland}.nix and core.nix.
+      waybar.enable = false;
+      hyprlock.enable = false;
+      fzf.enable = false;
+      # rofi.nix sets its own font; keep the target for theme colors.
+      rofi.fonts.enable = false;
       firefox.profileNames = [ "default" ];
       zen-browser.profileNames = [ "Default Profile" ];
       kitty.fonts.override = {

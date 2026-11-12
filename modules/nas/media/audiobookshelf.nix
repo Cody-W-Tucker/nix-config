@@ -11,8 +11,6 @@ in
   services.audiobookshelf = {
     enable = true;
     group = "media";
-    # Local-only binding; exposed through the Nginx vhost below.
-    host = "127.0.0.1";
     port = 8091;
   };
 

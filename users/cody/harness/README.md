@@ -22,7 +22,7 @@ Central docs should point here for harness implementation detail.
 | Harness root          | Desktop harness import                       | `default.nix`                                                                                                      |
 | MCP wiring            | User-session MCP servers and client exposure | `mcp.nix`                                                                                                          |
 | Agent runtime surface | OpenCode                                     | `opencode/default.nix`                                                                                             |
-| Agent families        | Business, Knowledge, Logging, Verifier       | `opencode/agents/business/`, `opencode/agents/knowledge/`, `opencode/agents/logging/`, `opencode/agents/verifier/` |
+| Agent families        | Knowledge, Logging                           | `opencode/agents/knowledge/`, `opencode/agents/logging/`                                                           |
 | Agent-local skills    | Family-specific skills                       | `opencode/agents/*/skills/`                                                                                        |
 | Custom tool plugins   | RTK, other OpenCode tools                    | `opencode/tools/`, `opencode/tools/rtk/`                                                                           |
 | Context trimming      | RTK read/context reduction tool              | `opencode/tools/rtk/`                                                                                              |

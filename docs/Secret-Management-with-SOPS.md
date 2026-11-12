@@ -117,8 +117,8 @@ Single-value secrets that are only consumed as env vars (`opencode-api-key`, `ka
 
 The `nixos-secrets` flake provides a standardized interface for accessing secret paths across different hosts.
 
-- **NixOS Module**: Imported in `base.nix` to provide system-level SOPS configuration [modules/system/base.nix20](../modules/system/base.nix#L20-L20)
-- **Home Manager Module**: Imported in host-specific user configs (e.g., `hosts/nas/default.nix`) to handle user-level secrets [hosts/nas/default.nix117](../hosts/nas/default.nix#L117-L117)
+- **NixOS Module**: Imported in `base.nix` to provide system-level SOPS configuration [modules/system/base.nix9](../modules/system/base.nix#L9-L9)
+- **Home Manager Module**: Imported in host-specific user configs (e.g., `hosts/nas/default.nix`) to handle user-level secrets [hosts/nas/default.nix149](../hosts/nas/default.nix#L149-L149)
 - **Path Abstraction**: Modules reference paths like `inputs.nixos-secrets.paths.serverWireguardSopsFile` rather than hardcoding file strings [modules/nas/media/default.nix156](../modules/nas/media/default.nix#L156-L156)
 
 ## Security Rules

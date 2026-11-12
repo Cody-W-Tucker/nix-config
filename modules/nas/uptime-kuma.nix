@@ -18,7 +18,7 @@ in
 
   services.nginx.virtualHosts = mkNginxVhost {
     host = "uptime.${domain}";
-    port = 3002;
+    port = config.services.uptime-kuma.settings.UPTIME_KUMA_PORT;
     proxyWebsockets = true;
   };
 

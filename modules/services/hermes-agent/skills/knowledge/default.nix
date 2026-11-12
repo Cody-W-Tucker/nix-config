@@ -9,14 +9,6 @@
 let
   allKnowledgeEntries = [
     {
-      rel = "tools/obsidian-bases";
-      file = ./note-taking/obsidian-bases/SKILL.md;
-    }
-    {
-      rel = "tools/obsidian-cli";
-      file = ./note-taking/obsidian-cli/SKILL.md;
-    }
-    {
       rel = "tools/obsidian-markdown";
       file = ./note-taking/obsidian-markdown/SKILL.md;
     }
@@ -45,7 +37,6 @@ in
 {
   _module.args.allKnowledgeRelPaths = map (entry: entry.rel) allKnowledgeEntries;
   _module.args.filteredKnowledgeRelPaths = map (entry: entry.rel) filteredKnowledgeEntries;
-  _module.args.filteredKnowledgeRoot = knowledgeSkillsDir;
 
   services.hermes-agent.extraPackages = [
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.qmd

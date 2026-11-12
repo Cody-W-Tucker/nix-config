@@ -297,7 +297,6 @@ in
         mouse_move_enables_dpms = true;
         key_press_enables_dpms = true;
         force_default_wallpaper = 0;
-        disable_hyprland_logo = lib.mkForce true;
         focus_on_activate = true;
       };
     };

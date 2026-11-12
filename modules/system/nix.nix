@@ -16,6 +16,8 @@
   };
 
   nix = {
+    # Flakes-only hosts: no nix-channel, and no stale channels entry in NIX_PATH.
+    channel.enable = false;
     extraOptions = ''
       !include ${config.sops.templates."nix-access-tokens.conf".path}
     '';

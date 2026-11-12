@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  options,
   pkgs,
   ...
 }:
@@ -16,8 +17,6 @@ in
     enable = true;
     package = llmPkgs.claude-code;
     enableMcpIntegration = true;
-    # Merge into a writable settings.json so /config and /model keep working.
-    mutableSettings = true;
     settings.env.CLAUDE_CODE_SUBAGENT_MODEL = "claude-opus-5-5";
     skills =
       lib.mapAttrs (
@@ -28,5 +27,11 @@ in
         deja-search = "${llmPkgs.deja-vu.src}/skills/deja-search";
         no-mistakes = "${llmPkgs.no-mistakes.src}/skills/no-mistakes/SKILL.md";
       };
+  }
+  # Guard: Home Manager release-26.05 (NAS) lacks this option. Drop the guard
+  # once the NAS is on a Home Manager release that has it.
+  // lib.optionalAttrs (options.programs.claude-code ? mutableSettings) {
+    # Merge into a writable settings.json so /config and /model keep working.
+    mutableSettings = true;
   };
 }

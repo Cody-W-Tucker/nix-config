@@ -10,8 +10,6 @@ pkgs.writeShellApplication {
     pkgs.systemd
   ];
   text = ''
-    set -euo pipefail
-
     # Focus an existing window by class, or launch the application if not found
     # Usage: focus-or-run <window_class> <command_to_run>
 

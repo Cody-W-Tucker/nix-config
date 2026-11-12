@@ -4,9 +4,9 @@ The CodyOS theming architecture is powered by **Stylix**, a declarative theming 
 
 ## Where To Look
 
-- `users/cody/desktop.nix`: top-level Stylix enablement and shared desktop theme settings such as polarity, opacity, cursor, fonts, wallpaper, and target overrides [users/cody/desktop.nix18-59](../users/cody/desktop.nix#L18-L59)
-- `users/cody/desktop/default.nix`: desktop role module imports plus the base16 scheme, GTK icon override, and `dconf` enablement [users/cody/desktop/default.nix8-40](../users/cody/desktop/default.nix#L8-L40)
-- `modules/system/fonts.nix`: system-level font availability during boot and login [modules/system/fonts.nix6-17](../modules/system/fonts.nix#L6-L17)
+- `users/cody/desktop.nix`: top-level Stylix enablement and shared desktop theme settings such as polarity, opacity, cursor, fonts, wallpaper, and target overrides [users/cody/desktop.nix30-79](../users/cody/desktop.nix#L30-L79)
+- `users/cody/desktop/default.nix`: desktop role module imports plus the base16 scheme and GTK icon override [users/cody/desktop/default.nix8-43](../users/cody/desktop/default.nix#L8-L43)
+- `modules/desktop/fonts.nix`: system-level font availability for the desktop profile (beast only; the headless NAS installs no fonts) [modules/desktop/fonts.nix6-15](../modules/desktop/fonts.nix#L6-L15)
 
 ## Configuration Split
 
@@ -56,22 +56,22 @@ flowchart LR
 
 Yazi uses Stylix colors to theme its Git integration via custom Lua initialization. Colors are mapped from the base16 palette to specific Git states:
 
-- **Modified**: `base0A` (Yellow) [users/cody/desktop/programs.nix66](../users/cody/desktop/programs.nix#L66-L66)
-- **Added**: `base0B` (Green) [users/cody/desktop/programs.nix67](../users/cody/desktop/programs.nix#L67-L67)
-- **Deleted**: `base08` (Red) [users/cody/desktop/programs.nix68](../users/cody/desktop/programs.nix#L68-L68)
-- **Untracked**: `base0C` (Cyan) [users/cody/desktop/programs.nix70](../users/cody/desktop/programs.nix#L70-L70)
+- **Modified**: `base0A` (Yellow) [users/cody/core.nix83](../users/cody/core.nix#L83-L83)
+- **Added**: `base0B` (Green) [users/cody/core.nix84](../users/cody/core.nix#L84-L84)
+- **Deleted**: `base08` (Red) [users/cody/core.nix85](../users/cody/core.nix#L85-L85)
+- **Untracked**: `base0C` (Cyan) [users/cody/core.nix87](../users/cody/core.nix#L87-L87)
 
 #### 2. FZF (Fuzzy Finder)
 
-The `fzf` module uses `lib.mkForce` to override default Stylix behavior for high-contrast UI elements:
+The Stylix `fzf` target is disabled (`stylix.targets.fzf.enable = false` in [users/cody/desktop.nix39](../users/cody/desktop.nix#L39-L39)); `programs.fzf.colors` in `users/cody/core.nix` sets the palette itself from `config.lib.stylix.colors`, guarded by `lib.mkIf (config.lib ? stylix)` so hosts without Stylix skip it:
 
-- `fg+` (Current match) and `pointer` use `base0D`[users/cody/desktop/programs.nix116-121](../users/cody/desktop/programs.nix#L116-L121)
-- `prompt` uses `base03`[users/cody/desktop/programs.nix120](../users/cody/desktop/programs.nix#L120-L120)
+- `fg+` (Current match) and `pointer` use `base0D` [users/cody/core.nix113-120](../users/cody/core.nix#L113-L120)
+- `prompt` uses `base03` [users/cody/core.nix118](../users/cody/core.nix#L118-L118)
 
 #### 3. Terminal and Shell
 
-- **Kitty**: Automatically themed by Stylix, with a specific override in the desktop role [users/cody/desktop.nix21-27](../users/cody/desktop.nix#L21-L27)
-- **Zsh**: The `autosuggestion.highlight` uses the Stylix palette directly [users/cody/desktop.nix15](../users/cody/desktop.nix#L15-L15)
+- **Kitty**: Automatically themed by Stylix, with a specific override in the desktop role [users/cody/desktop.nix44-46](../users/cody/desktop.nix#L44-L46)
+- **Zsh**: The `autosuggestion.highlight` uses the Stylix palette directly [users/cody/desktop.nix21](../users/cody/desktop.nix#L21-L21)
 
 ## UI Component Configuration
 
@@ -82,7 +82,7 @@ flowchart LR
     subgraph subGraph2 ["Code Entities"]
         HYP_CODE["users/cody/desktop/hyprland.nix"]
         WB_CODE["users/cody/desktop/waybar.nix"]
-        PROG_CODE["users/cody/desktop/programs.nix"]
+        PROG_CODE["users/cody/core.nix"]
     end
     subgraph subGraph1 ["Visual Components"]
         HYP["Hyprland"]
@@ -108,6 +108,8 @@ flowchart LR
 
 While Stylix manages most of the environment, certain applications are excluded or handled manually:
 
-- **NixVim**: Stylix integration is disabled (`nixvim.enable = false`) to allow the editor's internal Catppuccin theme to handle specialized syntax highlighting [users/cody/desktop.nix22](../users/cody/desktop.nix#L22-L22)
-- **GTK**: Icons are manually set to the Adwaita theme rather than letting Stylix determine the icon pack [users/cody/desktop/default.nix34-40](../users/cody/desktop/default.nix#L34-L40)
-- **Dconf**: Enabled to allow Stylix to manage GSettings for GNOME-adjacent applications [users/cody/desktop/default.nix32](../users/cody/desktop/default.nix#L32-L32)
+- **NixVim**: Stylix integration is disabled (`nixvim.enable = false`) to allow the editor's internal Catppuccin theme to handle specialized syntax highlighting [users/cody/desktop.nix35](../users/cody/desktop.nix#L35-L35)
+- **GTK**: Icons are manually set to the Adwaita theme rather than letting Stylix determine the icon pack [users/cody/desktop/default.nix37-43](../users/cody/desktop/default.nix#L37-L43)
+- **Waybar, Hyprlock, FZF**: Stylix targets are disabled because local config fully replaces them (`desktop/waybar.nix`, `desktop/hyprland.nix`, `core.nix`) [users/cody/desktop.nix36-39](../users/cody/desktop.nix#L36-L39)
+- **Rofi**: Stylix still supplies colors, but its font is disabled (`rofi.fonts.enable = false`) because `desktop/rofi.nix` sets its own [users/cody/desktop.nix40-41](../users/cody/desktop.nix#L40-L41)
+- **Dconf**: Not set explicitly; Home Manager enables `dconf` by default on Linux, which lets Stylix manage GSettings for GNOME-adjacent applications

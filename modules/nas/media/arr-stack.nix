@@ -1,11 +1,41 @@
 {
   config,
+  lib,
   mkNginxVhost,
   ...
 }:
 
 let
   inherit (config.codyos.site) domain;
+  confinedServices = [
+    "prowlarr"
+    "sonarr"
+    "radarr"
+    "readarr"
+    "bazarr"
+    "lidarr"
+  ];
+  # Indexer Manager (no group override — matches original)
+  mediaServices = lib.remove "prowlarr" confinedServices;
+  # Must match rpc-bind-address in transmission.nix.
+  namespaceAddress = "192.168.15.1";
+  # Bazarr has no settings.server.port option; its port is listenPort.
+  mkConfinedVhost =
+    name:
+    mkNginxVhost (
+      (
+        if name == "bazarr" then
+          {
+            host = "bazarr.${domain}";
+            port = config.services.bazarr.listenPort;
+          }
+        else
+          { service = name; }
+      )
+      // {
+        proxyHost = namespaceAddress;
+      }
+    );
 in
 {
   # The Arr-stack services run inside the wg VPN namespace (declared in
@@ -20,37 +50,12 @@ in
   # outside the host/bridge. Host-side consumers (nginx, LAN clients) reach
   # confined services at the namespace address 192.168.15.1 via the port
   # mappings in transmission.nix.
-  systemd.services = {
-    prowlarr.vpnConfinement = {
+  systemd.services = lib.genAttrs confinedServices (_: {
+    vpnConfinement = {
       enable = true;
       vpnNamespace = "wg";
     };
-
-    sonarr.vpnConfinement = {
-      enable = true;
-      vpnNamespace = "wg";
-    };
-
-    radarr.vpnConfinement = {
-      enable = true;
-      vpnNamespace = "wg";
-    };
-
-    readarr.vpnConfinement = {
-      enable = true;
-      vpnNamespace = "wg";
-    };
-
-    bazarr.vpnConfinement = {
-      enable = true;
-      vpnNamespace = "wg";
-    };
-
-    lidarr.vpnConfinement = {
-      enable = true;
-      vpnNamespace = "wg";
-    };
-  };
+  });
 
   # FlareSolverr listens on the host network; the wg namespace reaches it
   # across the wg-br bridge at 192.168.15.5 (permitted as a /32 egress
@@ -62,65 +67,23 @@ in
     config.services.flaresolverr.port
   ];
 
-  services = {
-    sonarr = {
+  services =
+    lib.genAttrs mediaServices (_: {
       enable = true;
       group = "media";
-    };
-    radarr = {
-      enable = true;
-      group = "media";
-    };
-    readarr = {
-      enable = true;
-      group = "media";
-    };
-    bazarr = {
-      enable = true;
-      group = "media";
-    };
-    lidarr = {
-      enable = true;
-      group = "media";
-    };
-    # Indexer Manager (no group override — matches original)
-    prowlarr.enable = true;
-    flaresolverr.enable = true;
+    })
+    // {
+      prowlarr.enable = true;
+      flaresolverr.enable = true;
 
-    # Every confined service above is proxied by nginx at the namespace
-    # address instead of 127.0.0.1 (LAN access comes from the host port
-    # mappings in transmission.nix). FlareSolverr runs on the host network
-    # and needs no vhost; the wg namespace reaches it directly at the wg-br
-    # bridge address. Ports are still derived from each service's NixOS
-    # module options.
-    nginx.virtualHosts =
-      mkNginxVhost {
-        service = "sonarr";
-        proxyHost = "192.168.15.1";
-      }
-      // mkNginxVhost {
-        service = "radarr";
-        proxyHost = "192.168.15.1";
-      }
-      // mkNginxVhost {
-        service = "readarr";
-        proxyHost = "192.168.15.1";
-      }
-      // mkNginxVhost {
-        host = "bazarr.${domain}";
-        port = config.services.bazarr.listenPort;
-        proxyHost = "192.168.15.1";
-      }
-      // mkNginxVhost {
-        service = "lidarr";
-        proxyHost = "192.168.15.1";
-      }
-      // mkNginxVhost {
-        service = "prowlarr";
-        # Must match rpc-bind-address in transmission.nix.
-        proxyHost = "192.168.15.1";
-      };
-  };
+      # Every confined service above is proxied by nginx at the namespace
+      # address instead of 127.0.0.1 (LAN access comes from the host port
+      # mappings in transmission.nix). FlareSolverr runs on the host network
+      # and needs no vhost; the wg namespace reaches it directly at the wg-br
+      # bridge address. Ports are still derived from each service's NixOS
+      # module options.
+      nginx.virtualHosts = lib.mergeAttrsList (map mkConfinedVhost confinedServices);
+    };
 
   nas.backups.sqlite = [
     {

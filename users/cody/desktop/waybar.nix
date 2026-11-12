@@ -79,10 +79,7 @@ in
   programs.waybar = {
     enable = true;
     package = waybarWithHyprlandFix;
-    systemd = {
-      enable = true;
-      targets = [ "graphical-session.target" ];
-    };
+    systemd.enable = true;
     settings = [
       {
         position = "top";
@@ -300,7 +297,7 @@ in
         };
       }
     ];
-    style = lib.mkForce ''
+    style = ''
       * {
         font-family: 'JetBrainsMono Nerd Font', Inter, Roboto, Helvetica, Arial, sans-serif;
         font-size: 14px;

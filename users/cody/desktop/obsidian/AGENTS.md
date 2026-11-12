@@ -1,6 +1,6 @@
 # Obsidian Via Home Manager
 
-Owns Cody's declarative Obsidian Home Manager configuration: vault definitions, shared app settings, plugins, plugin settings, hotkeys, snippets, and desktop launch integration.
+Owns Cody's declarative Obsidian Home Manager configuration: vault definitions, shared app settings, plugins, plugin settings, hotkeys, and snippets.
 
 Does not own note content, generated vault state, or general knowledge-base agent behavior outside the Obsidian app configuration.
 

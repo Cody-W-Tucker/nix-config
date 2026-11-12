@@ -1,10 +1,10 @@
 # Obsidian Home Manager Configuration
 
-This directory contains Cody's declarative Obsidian configuration for Home Manager. It manages vault definitions, shared settings, plugins, plugin settings, hotkeys, CSS snippets, and the desktop entry for the primary vault.
+This directory contains Cody's declarative Obsidian configuration for Home Manager. It manages vault definitions, shared settings, plugins, plugin settings, hotkeys, and CSS snippets.
 
 ## Structure
 
-- `default.nix` — Obsidian package/config owner, shared settings, vault definitions, plugins, snippets, and desktop entry.
+- `default.nix` — Obsidian package/config owner, shared settings, vault definitions, plugins, and snippets.
 - `hotkeys.nix` — shared Obsidian hotkeys.
 - `plugin-data/*.json` — preserved plugin settings loaded by Nix.
 - `snippets/*.css` — shared CSS snippets.

@@ -1,14 +1,8 @@
-# Beast hardware: disks, initrd/kernel modules, device quirks, and the
-# nixos-hardware profiles for this machine. Host policy lives in default.nix.
-{ inputs, ... }:
+# Beast hardware: disks, initrd/kernel modules, and device quirks for this
+# machine. Host policy lives in default.nix.
+_:
 
 {
-  imports = [
-    inputs.nixos-hardware.nixosModules.common-cpu-intel-cpu-only
-    inputs.nixos-hardware.nixosModules.common-pc-ssd
-    inputs.nixos-hardware.nixosModules.common-pc
-  ];
-
   boot = {
     initrd.availableKernelModules = [
       "xhci_pci"

@@ -13,7 +13,6 @@
         KNOWLEDGE_BASE = "$HOME/Knowledge/Base";
       };
     };
-    mime.enable = true;
     desktopEntries.doxx = {
       name = "doxx";
       genericName = "Word Document Viewer";

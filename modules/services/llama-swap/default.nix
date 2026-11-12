@@ -287,12 +287,6 @@ in
       description = "Host-specific overrides merged onto `services.llama-swap.modelCatalog`.";
     };
 
-    models = lib.mkOption {
-      type = lib.types.attrsOf modelType;
-      readOnly = true;
-      description = "Resolved model definitions after merging catalog, wrapper commands, and overrides. Read-only; populated by the module.";
-    };
-
     enabledModels = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
@@ -352,13 +346,9 @@ in
 
     environment.systemPackages = [ cfg.serverPackage ];
 
-    services.llama-cpp.enable = lib.mkForce false;
-
     services.llama-swap = {
-      port = lib.mkDefault 8080;
       listenAddress = lib.mkDefault "0.0.0.0";
       openFirewall = lib.mkDefault true;
-      models = selectedModels;
 
       settings = {
         healthCheckTimeout = lib.mkDefault 60;
@@ -375,7 +365,6 @@ in
     systemd.tmpfiles.rules = [
       "d /srv/llama-swap 0755 root root - -"
       "d ${cfg.modelDirectory} 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
-      "d /srv/llama-swap/voices 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
       # CacheDirectory creates /var/cache/llama-swap as root:root; re-own for service user so
       # HF_HOME and XDG_CACHE_HOME subdirectories are writable at runtime.
       "d /var/cache/llama-swap 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"

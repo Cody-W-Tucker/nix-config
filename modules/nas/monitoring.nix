@@ -1,24 +1,12 @@
 {
   config,
   lib,
-  pkgs,
   mkNginxVhost,
   ...
 }:
 
 let
   inherit (config.codyos.site) domain;
-  priorityToLevelScript = pkgs.writeText "fb-priority-to-level.lua" ''
-    function priority_to_level(tag, timestamp, record)
-      local map = {
-        ["0"] = "emerg",  ["1"] = "alert", ["2"] = "crit",
-        ["3"] = "err",    ["4"] = "warning", ["5"] = "notice",
-        ["6"] = "info",   ["7"] = "debug",
-      }
-      record["level"] = map[tostring(record["priority"])] or "info"
-      return 2, timestamp, record
-    end
-  '';
 in
 {
   services = {
@@ -60,11 +48,7 @@ in
       extraFlags = [ "--web.enable-remote-write-receiver" ];
       port = 9001;
       exporters = {
-        node = {
-          enable = true;
-          enabledCollectors = [ "systemd" ];
-          port = 9002;
-        };
+        # node exporter: modules/system/logging.nix
         nginx = {
           enable = true;
           port = 9115;
@@ -171,7 +155,7 @@ in
           job_name = "nginx";
           static_configs = [
             {
-              targets = [ "127.0.0.1:9115" ];
+              targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.nginx.port}" ];
               labels = {
                 host = "${config.networking.hostName}";
               };
@@ -182,7 +166,7 @@ in
           job_name = "nginx-logs";
           static_configs = [
             {
-              targets = [ "127.0.0.1:9117" ];
+              targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.nginxlog.port}" ];
               labels = {
                 host = "${config.networking.hostName}";
               };
@@ -349,57 +333,27 @@ in
       };
     };
 
-    fluent-bit = {
-      enable = true;
-      settings = {
-        service = {
-          flush = 1;
-          log_level = "info";
-        };
-        pipeline = {
-          inputs = [
-            {
-              name = "systemd";
-              tag = "journal";
-              read_from_tail = true;
-              strip_underscores = true;
-              lowercase = true;
-            }
-            {
-              name = "tail";
-              tag = "nginx.access";
-              path = "/var/log/nginx/access.log";
-              read_from_head = false;
-            }
-          ];
-          filters = [
-            {
-              name = "lua";
-              match = "journal";
-              script = toString priorityToLevelScript;
-              call = "priority_to_level";
-            }
-          ];
-          outputs = [
-            {
-              name = "loki";
-              match = "journal";
-              host = "127.0.0.1";
-              port = config.services.loki.configuration.server.http_listen_port;
-              labels = "job=systemd-journal,host=$hostname,unit=$systemd_unit,level=$level";
-              line_format = "json";
-            }
-            {
-              name = "loki";
-              match = "nginx.access";
-              host = "127.0.0.1";
-              port = config.services.loki.configuration.server.http_listen_port;
-              labels = "job=nginx-access,host=${config.networking.hostName}";
-              line_format = "json";
-            }
-          ];
-        };
-      };
+    # Journal shipping is shared with every host (modules/system/logging.nix);
+    # the NAS adds its nginx access log.
+    fluent-bit.settings.pipeline = {
+      inputs = [
+        {
+          name = "tail";
+          tag = "nginx.access";
+          path = "/var/log/nginx/access.log";
+          read_from_head = false;
+        }
+      ];
+      outputs = [
+        {
+          name = "loki";
+          match = "nginx.access";
+          host = "127.0.0.1";
+          port = config.services.loki.configuration.server.http_listen_port;
+          labels = "job=nginx-access,host=${config.networking.hostName}";
+          line_format = "json";
+        }
+      ];
     };
 
     nginx.virtualHosts = mkNginxVhost {
@@ -409,11 +363,9 @@ in
     };
   };
 
-  # Grant Fluent Bit access to nginx logs in addition to the journal access from the module.
-  systemd.services.fluent-bit.serviceConfig.SupplementaryGroups = lib.mkForce [
-    "systemd-journal"
-    "nginx"
-  ];
+  # Grant Fluent Bit access to nginx logs; list unit options concatenate with
+  # the module's systemd-journal group.
+  systemd.services.fluent-bit.serviceConfig.SupplementaryGroups = [ "nginx" ];
 
   # Restic exporter reads /mnt/backup/backups/restic as root; fail closed when storage is absent.
   systemd.services.prometheus-restic-exporter = {

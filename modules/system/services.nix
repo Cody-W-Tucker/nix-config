@@ -14,17 +14,12 @@
   # builder with this host's nixpkgs revision (stable on nas, unstable on beast).
   programs.command-not-found = {
     enable = true;
-    dbPath = lib.mkForce (
-      pkgs.callPackage "${inputs.flake-programs-sqlite}/programs-sqlite.nix" {
-        nixpkgsRev = config.system.nixos.revision;
-      }
-    );
+    dbPath = pkgs.callPackage "${inputs.flake-programs-sqlite}/programs-sqlite.nix" {
+      nixpkgsRev = config.system.nixos.revision;
+    };
   };
 
   services = {
-    # Logrotate
-    logrotate.enable = true;
-
     # Firmware updates
     fwupd.enable = true;
 
@@ -49,7 +44,4 @@
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
     config.services.prometheus.exporters.smartctl.port
   ];
-
-  # Include all firmware for devices like Bluetooth
-  hardware.enableRedistributableFirmware = true;
 }

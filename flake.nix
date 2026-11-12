@@ -1,10 +1,6 @@
 {
   description = "CodyOS";
   inputs = {
-    nixos-hardware = {
-      # Provides hardware-specific modules.
-      url = "github:NixOS/nixos-hardware/master";
-    };
     # Stable packages (for the NAS).
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     sops-nix = {
@@ -52,7 +48,8 @@
     nixvim = {
       # Configures neovim and related plugins.
       url = "github:nix-community/nixvim";
-      # Nixvim tests against their nixpkgs version and we shouldn't follow our own if we want the benefit.
+      # Not following nixpkgs: packages come from ours (nixpkgs.useGlobalPackages), so
+      # nixvim's own pin only supplies lib, which keeps its tested lib/module compatibility.
     };
     zen-browser = {
       # Modern web browser based on firefox.
@@ -79,6 +76,8 @@
       # Generated prompt and skill artifacts for a personalized cognitive assistant.
       url = "github:Cody-W-Tucker/Cognitive-Assistant";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.llm-agents.follows = "llm-agents";
+      inputs.ai-data-extractor.inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     workflow = {
       # Context and state management for a personalized cognitive assistant.
@@ -96,11 +95,8 @@
     hermes-agent = {
       # Upstream Hermes Agent flake with package and NixOS module.
       url = "github:NousResearch/hermes-agent";
-    };
-    treehouse = {
-      # Git worktree pool manager for parallel agent workflows.
-      url = "github:kunchenguid/treehouse";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.home-manager.follows = "home-manager";
     };
     stevenblack = {
       # StevenBlack ads/malware blocklist, consumed directly as the upstream
@@ -125,7 +121,6 @@
       };
       specialArgs = {
         inherit inputs self;
-        home-manager-input = inputs.home-manager;
       };
     in
     {
@@ -136,7 +131,9 @@
       overlays.default = import ./overlays { inherit inputs; };
 
       # Every packages/<name>/ directory, as built by the overlay above.
-      packages.x86_64-linux = builtins.intersectAttrs (builtins.readDir ./packages) pkgs;
+      packages.x86_64-linux = builtins.mapAttrs (name: _: pkgs.${name}) (
+        pkgs.lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./packages)
+      );
 
       # Run by `nix flake check` (locally and in CI), alongside evaluating both hosts.
       checks.x86_64-linux =
@@ -164,14 +161,17 @@
       nixosConfigurations = {
         beast = inputs.nixpkgs-unstable.lib.nixosSystem {
           inherit system specialArgs;
-          modules = [ ./hosts/beast ];
+          modules = [
+            inputs.home-manager.nixosModules.home-manager
+            ./hosts/beast
+          ];
         };
         nas = inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = specialArgs // {
-            home-manager-input = inputs.home-manager-stable;
-          };
-          modules = [ ./hosts/nas ];
+          inherit system specialArgs;
+          modules = [
+            inputs.home-manager-stable.nixosModules.home-manager
+            ./hosts/nas
+          ];
         };
       };
     };

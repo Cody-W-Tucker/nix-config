@@ -9,9 +9,6 @@
   options.codyos.gaming.enable = lib.mkEnableOption "Steam, gamescope, gamemode, and gaming performance tweaks";
 
   config = lib.mkIf config.codyos.gaming.enable {
-    # Enable OpenGL for 32-bit applications (steam, games, etc.)
-    hardware.graphics.enable32Bit = true;
-
     # Gaming Configuration
     programs = {
       steam = {

@@ -157,7 +157,6 @@
   };
   "whisper-diarization" = {
     file = null;
-    ttl = 300; # Keep resident for diarization requests.
   };
   "kokoro-82m" = {
     file = null;

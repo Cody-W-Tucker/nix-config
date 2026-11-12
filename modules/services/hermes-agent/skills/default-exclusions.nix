@@ -67,8 +67,6 @@ _: {
     "tools/gws-workflow-meeting-prep"
     "tools/gws-workflow-standup-report"
     "tools/gws-workflow-weekly-digest"
-    "tools/obsidian-bases"
-    "tools/obsidian-cli"
   ];
 
   _module.args.defaultRetainedGwsSkillNames = [

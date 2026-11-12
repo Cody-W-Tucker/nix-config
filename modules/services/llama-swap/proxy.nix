@@ -69,11 +69,9 @@ let
       ]
     );
 
-  # Default ctranslate2 without architecture-specific overrides
-  defaultCTranslate2Cpp = pkgs.ctranslate2.override {
-    withCUDA = true;
-    withCuDNN = true;
-  };
+  # Default ctranslate2 without architecture-specific overrides. CUDA/cuDNN
+  # follow the host-wide nixpkgs.config.cudaSupport.
+  defaultCTranslate2Cpp = pkgs.ctranslate2;
 in
 {
   inherit

@@ -13,7 +13,6 @@ in
     enable = true;
     # Pull Immich from nixpkgs-unstable while the NAS host stays on stable.
     package = pkgs.unstable.immich;
-    port = 2283;
     host = "127.0.0.1";
     mediaLocation = "/mnt/backup/photos";
     group = "media";
@@ -40,7 +39,7 @@ in
   # NGINX
   services.nginx.virtualHosts = mkNginxVhost {
     host = "photos.${domain}";
-    port = 2283;
+    inherit (config.services.immich) port;
     proxyWebsockets = true;
     locationExtraConfig = ''
       client_max_body_size 50000M;
@@ -49,16 +48,4 @@ in
       send_timeout         600s;
     '';
   };
-
-  # Backup photos to workstation hard drive
-  # services.borgbackup.jobs.photos = {
-  #   user = "codyt";
-  #   group = "media";
-  #   paths = "/mnt/media/Photos/originals";
-  #   encryption.mode = "none";
-  #   environment.BORG_RSH = "ssh -i /home/codyt/.ssh/id_ed25519";
-  #   repo = "codyt@192.168.1.238:/mnt/backup/Photos";
-  #   compression = "lz4";
-  #   startAt = "daily";
-  # };
 }
