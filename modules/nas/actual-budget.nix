@@ -17,8 +17,7 @@ in
   services.actual = {
     enable = true;
     settings.port = 5006;
-    openFirewall = true;
-    # settings.hostname = "budget.homehub.tv";
+    settings.hostname = "127.0.0.1";
   };
 
   nas.backups.sqlite = [

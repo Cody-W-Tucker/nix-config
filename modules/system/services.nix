@@ -3,7 +3,6 @@
 {
   config,
   inputs,
-  lib,
   pkgs,
   ...
 }:
@@ -28,16 +27,6 @@
       user = "root";
       group = "root";
     };
-  };
-
-  systemd.services.fwupd-refresh.serviceConfig = {
-    User = lib.mkForce "root";
-    ExecStart = lib.mkForce [
-      ""
-      # Running as the dedicated service user hits fwupd polkit auth in the
-      # timer context, so use root for the non-interactive refresh.
-      "${lib.getExe' pkgs.fwupd "fwupdmgr"} refresh"
-    ];
   };
 
   # smartctl exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).

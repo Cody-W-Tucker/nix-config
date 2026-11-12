@@ -14,7 +14,7 @@ in
       TZ = config.time.timeZone;
     };
     ports = [
-      "2919:80"
+      "127.0.0.1:2919:80"
     ];
   };
 

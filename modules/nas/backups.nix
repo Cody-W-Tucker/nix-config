@@ -112,7 +112,8 @@ in
     backupAll = true;
     compression = "zstd";
     location = "/mnt/backup/backups/postgresql";
-    startAt = "daily";
+    # Restic starts this service through its Requires/After dependencies.
+    startAt = [ ];
   };
 
   systemd.services.postgresqlBackup = {

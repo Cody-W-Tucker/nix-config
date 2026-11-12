@@ -8,18 +8,10 @@
     grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
       bash
       json
-      python
       toml
       yaml
-      javascript
-      typescript
-      html
-      css
       lua
       xml
-      astro
-      tsx
-      zig
     ];
   };
 }

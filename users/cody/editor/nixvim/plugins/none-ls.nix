@@ -21,17 +21,6 @@
             enable = true;
             package = pkgs.nixfmt;
           };
-          # Black is handled by conform.nvim for Python files to avoid conflicts
-          prettier = {
-            enable = true;
-            disableTsServerFormatter = true;
-            package = pkgs.prettier;
-            settings = ''
-              {
-                extra_args = { "--no-semi" },
-              }
-            '';
-          };
           stylua.enable = true;
           yamlfmt = {
             enable = true;

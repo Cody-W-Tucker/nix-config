@@ -23,7 +23,6 @@
     ./plugins/telescope.nix
     ./plugins/treesitter.nix
     ./plugins/startup.nix
-    ./plugins/ts-autotag.nix
     ./plugins/img-clip.nix
   ];
 
@@ -45,7 +44,6 @@
     clipboard = {
       # Use system clipboard
       register = "unnamedplus";
-      providers.wl-copy.enable = true;
     };
     # Remote SSH (e.g. `kitty +kitten ssh` from Beast to NAS): forward yanks
     # via OSC 52 so Kitty pastes into the local clipboard. Local sessions keep
@@ -120,12 +118,15 @@
       web-devicons.enable = true;
       direnv.enable = true;
       trouble.enable = true;
-      zig.enable = true;
       image.enable = true;
     };
     # Set the leader key to <Space>
     globals.mapleader = " ";
     extraPlugins = with pkgs.vimPlugins; [ vim-pencil ];
-    extraPackages = with pkgs; [ zig ];
+    extraPackages = with pkgs; [
+      nixfmt
+      yamllint
+      yamlfmt
+    ];
   };
 }

@@ -16,11 +16,13 @@ in
       package = pkgs.open-webui.overridePythonAttrs (oldAttrs: {
         dependencies = oldAttrs.dependencies ++ [ pkgs.python3Packages.qdrant-client ];
       });
-      host = "0.0.0.0";
+      host = "127.0.0.1";
       port = 8080;
-      openFirewall = true;
       environment = {
         HOME = "/var/lib/open-webui";
+        SCARF_NO_ANALYTICS = "True";
+        DO_NOT_TRACK = "True";
+        ANONYMIZED_TELEMETRY = "False";
 
         # TODO: make all this declarative instead of having to configure in the admin panel.
         # ENABLE_PERSISTENT_CONFIG = "False"
@@ -49,9 +51,7 @@ in
     qdrant = {
       enable = true;
       settings = {
-        hsnw_index = {
-          on_disk = true;
-        };
+        storage.hnsw_index.on_disk = true;
         service = {
           host = "0.0.0.0";
         };

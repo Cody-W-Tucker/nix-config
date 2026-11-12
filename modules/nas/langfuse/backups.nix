@@ -48,20 +48,4 @@
       );
     };
   };
-
-  systemd.timers.langfuse-postgres-backup = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily";
-      Persistent = true;
-    };
-  };
-
-  systemd.timers.langfuse-clickhouse-backup = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily";
-      Persistent = true;
-    };
-  };
 }

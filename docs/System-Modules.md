@@ -26,7 +26,7 @@ The `nix.nix` module manages the behavior of the Nix daemon and package fetching
 
 Shared services are defined in `services.nix`, focusing on hardware health, firmware integrity, and CLI usability.
 
-- **Firmware Management**: The system enables `hardware.enableRedistributableFirmware` and utilizes `fwupd` for device firmware updates. The `fwupd-refresh` service is specifically configured to run as `root` to bypass interactive authentication during background updates.
+- **Firmware Management**: The system enables `hardware.enableRedistributableFirmware` and uses `fwupd` for device firmware updates. The upstream `fwupd-refresh` service and its polkit permissions handle background refreshes.
 - **Hardware Monitoring**: The `prometheus.exporters.smartctl` service is enabled globally to expose storage health metrics for the monitoring stack.
 - **CLI UX**: Integration with `flake-programs-sqlite` allows the `command-not-found` utility to suggest packages from a pre-indexed database when a command is missing. The database is picked per host from its own nixpkgs revision (`config.system.nixos.revision`), so beast (unstable) and nas (stable) each get matching suggestions.
 

@@ -31,26 +31,12 @@ in
         type = "remote";
         url = "https://mcp.exa.ai/mcp";
       };
-      context7 = {
-        command = "nix-shell";
-        args = [
-          "-p"
-          "nodejs"
-          "--run"
-          "npx -y @upstash/context7-mcp"
-        ];
-      };
+      context7.command = lib.getExe pkgs.context7-mcp;
       gh_grep = {
         type = "remote";
         url = "https://mcp.grep.app";
       };
-      nixos-option-search = {
-        command = "nix";
-        args = [
-          "run"
-          "github:utensils/mcp-nixos"
-        ];
-      };
+      nixos-option-search.command = lib.getExe pkgs.mcp-nixos;
     };
   };
 }

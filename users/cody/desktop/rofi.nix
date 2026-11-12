@@ -9,9 +9,9 @@
     settings = {
       modi = "drun";
       show-icons = true;
-      icon-theme = "Papirus";
+      icon-theme = "Adwaita";
       location = 0;
-      font = "JetBrains Nerd Font 16";
+      font = "JetBrainsMono Nerd Font Mono 16";
       drun-display-format = "{icon} {name}";
       # display-web-search = "";
       display-drun = "";
