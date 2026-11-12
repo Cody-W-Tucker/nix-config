@@ -16,6 +16,9 @@ in
     enable = true;
     package = llmPkgs.claude-code;
     enableMcpIntegration = true;
+    # Merge into a writable settings.json so /config and /model keep working.
+    mutableSettings = true;
+    settings.env.CLAUDE_CODE_SUBAGENT_MODEL = "claude-opus-5-5";
     skills =
       lib.mapAttrs (
         _: skill:
