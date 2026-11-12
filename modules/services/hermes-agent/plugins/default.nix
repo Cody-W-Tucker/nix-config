@@ -15,5 +15,6 @@
     ./advanced-delegation
     ./bubblewrap
     ./memory-wiki
+    ./claude-subscription-directsdk
   ];
 }
