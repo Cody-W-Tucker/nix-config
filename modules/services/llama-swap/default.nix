@@ -62,15 +62,15 @@ let
         };
 
         gpuLayers = lib.mkOption {
-          type = lib.types.int;
-          default = 999;
-          description = "Maximum GPU layers passed to llama-server with `--n-gpu-layers`.";
+          type = lib.types.nullOr lib.types.int;
+          default = null;
+          description = "Maximum GPU layers passed to llama-server with `--n-gpu-layers`. Leave null so llama-server's default `--fit on` picks GPU layers and MoE expert placement from free VRAM at load time; setting a value disables that fitting.";
         };
 
         flashAttention = lib.mkOption {
           type = lib.types.bool;
           default = true;
-          description = "Whether to enable flash attention.";
+          description = "Whether to enable flash attention. Rendered explicitly as `--flash-attn on|off`, because llama-server defaults to `auto`.";
         };
 
         extraArgs = lib.mkOption {
@@ -200,13 +200,15 @@ let
         (escape model.alias)
         "--no-webui"
       ]
-      ++ lib.optionals model.flashAttention [
-        "--flash-attn"
-        (escape "on")
-      ]
       ++ [
+        "--flash-attn"
+        (escape (if model.flashAttention then "on" else "off"))
+      ]
+      ++ lib.optionals (model.gpuLayers != null) [
         "--n-gpu-layers"
         (escape (toString model.gpuLayers))
+      ]
+      ++ [
         "-c"
         (escape (toString model.contextSize))
         "-b"

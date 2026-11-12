@@ -41,7 +41,7 @@ let
     sha256 = "f3d2fdc74e3ef19925ccbf794b04d7f6f11fb12eba7722b7749219d0cc5c36ed";
   };
 
-  # Qwen3.5-9B NVFP4 multimodal pair for the qwen-3.5-9b reasoning endpoint.
+  # Qwen3.5-9B NVFP4 base GGUF for the text-only, non-reasoning qwen-3.5-9b endpoint.
   qwen35_9bBase = pkgs.fetchurl {
     url = "https://huggingface.co/FreedomAISVR/Qwen3.5-9B-NVFP4-GGUF/resolve/3db49b5e08fb84a2ead8d6407f38f6638c79d08a/qwen3.5-9b-nvfp4.gguf";
     sha256 = "0db703913b6a1b057d423e9815095e9dc16499596a986446918314a48c4d9bad";
@@ -136,8 +136,6 @@ in
       "qwen-3.5-9b" = {
         # Text-only (catalog sets no projector); the 4B endpoint serves vision.
         file = toString qwen35_9bBase;
-        # Leave room for the embedding model; validate the combined GPU load.
-        contextSize = 32768;
       };
       "qwen3-embedding-0.6b" = {
         file = toString qwen3Embedding;
@@ -156,9 +154,9 @@ in
         file = toString laya;
       };
     };
-    # The 4B and 9B swap with each other; embeddings stay available to both.
-    # Persistent embeddings cannot be evicted by audio or larger models, so
-    # those workloads may require explicitly unloading embeddings first.
+    # The 9B and embeddings run together as the everyday text stack. The 4B is
+    # only used for vision and the 35B MoE is situational; loading either one
+    # unloads the text stack, so the MoE gets the whole GPU for its experts.
     groups = {
       audio-stack = {
         swap = false;
@@ -170,20 +168,26 @@ in
           "s1-mini"
         ];
       };
-      inference-stack = {
-        swap = true;
+      text-stack = {
+        swap = false;
         exclusive = true;
         persistent = false;
         members = [
-          "qwen-3.5-4b"
           "qwen-3.5-9b"
+          "qwen3-embedding-0.6b"
         ];
       };
-      embedding-stack = {
-        swap = false;
-        exclusive = false;
-        persistent = true;
-        members = [ "qwen3-embedding-0.6b" ];
+      vision-stack = {
+        swap = true;
+        exclusive = true;
+        persistent = false;
+        members = [ "qwen-3.5-4b" ];
+      };
+      moe-stack = {
+        swap = true;
+        exclusive = true;
+        persistent = false;
+        members = [ "qwen-3.6-35b-a3b" ];
       };
     };
   };

@@ -9,6 +9,34 @@
 # (e.g. wrapper commands that reference host-specific Python environments) are
 # merged in default.nix.
 
+let
+  # Server-side sampling defaults from the Qwen3.5 / Qwen3.6 model cards
+  # ("Best Practices"). Clients can still override them per request.
+  qwenNonThinkingSampling = [
+    "--temp"
+    "0.7"
+    "--top-p"
+    "0.8"
+    "--top-k"
+    "20"
+    "--min-p"
+    "0"
+    "--presence-penalty"
+    "1.5"
+  ];
+  qwenThinkingSampling = [
+    "--temp"
+    "1.0"
+    "--top-p"
+    "0.95"
+    "--top-k"
+    "20"
+    "--min-p"
+    "0"
+    "--presence-penalty"
+    "1.5"
+  ];
+in
 {
   # Qwen3.5-4B in NVIDIA FP4 (NVFP4) — multimodal, non-reasoning task endpoint.
   # ~2.4 GB weights. On the RTX 5060 (8 GB) at 64K context with Q8 KV cache the
@@ -27,16 +55,16 @@
       "q8_0"
       "--cache-type-v"
       "q8_0"
-    ];
+    ]
+    ++ qwenNonThinkingSampling;
   };
-  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — text-only reasoning endpoint.
-  # Omitting the 918 MB vision projector and using Q8 keys / Q4 values targets
-  # a 128K context window within the RTX 5060 VRAM budget.
-  # ~5.5 GB weights.
+  # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — text-only, non-reasoning endpoint
+  # (the 4B serves vision). ~5.3 GB weights; 32K context with Q8 keys and
+  # values leaves room for the persistent embedding model.
   "qwen-3.5-9b" = {
     file = "qwen3.5-9b-nvfp4.gguf";
     mmprojFile = null;
-    contextSize = 131072;
+    contextSize = 32768;
     extraArgs = [
       "--reasoning"
       "off"
@@ -45,37 +73,56 @@
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
-      "q4_0"
-    ];
+      "q8_0"
+    ]
+    ++ qwenNonThinkingSampling;
   };
-  # Qwen3.6-35B-A3B in NVIDIA FP4 (NVFP4) — text-only MoE. 40 layers,
-  # 35B total / ~3B active, 256 routed experts (8 selected/token)
+  # Qwen3.6-35B-A3B in NVIDIA FP4 (NVFP4) — text-only MoE reasoning endpoint.
+  # 40 layers, 35B total / ~3B active, 256 routed experts (8 selected/token).
+  #
+  # Expert placement is left to llama-server's `--fit` (no `--n-gpu-layers` /
+  # `--n-cpu-moe`), which keeps as many experts on the GPU as free VRAM allows
+  # and spills the rest to RAM; `--fit-target 512` halves the default 1 GiB
+  # safety margin. Benchmarked 2026-11-12 on the empty RTX 5060 (400-token
+  # generations, ~6K-token prompt, 262K ctx):
+  #   fit, 1 GiB margin, b1024/ub512        ~48 tok/s gen,  ~720 tok/s prompt
+  #   fit, 512 MiB margin, b2048/ub1024     ~50 tok/s gen, ~1130 tok/s prompt  <- used
+  #   + --moe-cache-mib 1024 / 3072         ~33 / ~23 tok/s gen (cache displaces
+  #                                         statically placed experts; slower)
+  #   b2048/ub2048                          ~30 tok/s gen, ~1480 tok/s prompt
+  #   --spec-draft-n-max 3                  slower than 2 (lower acceptance)
+  #   -c 131072                             ~53 tok/s gen (frees VRAM for experts)
+  # With the audio stack resident the same flags gave ~24 tok/s; the old fixed
+  # `--n-cpu-moe 37` OOMed in that state.
+  #
+  # `--spec-type draft-mtp` is required to load this GGUF at all: without it
+  # llama.cpp 0.8.0 rejects the MTP tensors ("wrong number of tensors").
   "qwen-3.6-35b-a3b" = {
     file = "qwen3.6-35b-a3b-nvfp4.gguf";
     contextSize = 262144;
-    batchSize = 1024;
-    ubatchSize = 512;
+    batchSize = 2048;
+    ubatchSize = 1024;
     extraArgs = [
+      "--fit-target"
+      "512"
       "--parallel"
       "1"
-      "--n-cpu-moe"
-      "37"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
       "q4_0"
       "--load-mode"
       "none"
-      "--reasoning-preserve"
       "--reasoning-budget"
       "2048"
       "--reasoning-budget-message"
-      "Wait._I_am_overthinking._I_should_answer_now."
+      "Wait, I am overthinking. I should answer now."
       "--spec-type"
       "draft-mtp"
       "--spec-draft-n-max"
       "2"
-    ];
+    ]
+    ++ qwenThinkingSampling;
   };
   "qwen3-embedding-0.6b" = {
     file = "Qwen3-Embedding-0.6B-Q8_0.gguf";
@@ -127,6 +174,9 @@
     # the model to not recognize its natural stopping point and generate until
     # context limit (truncated=1 at 8191 tokens).
     flashAttention = false;
+    # `--fit off` (below) stops llama-server choosing placement, so pin
+    # every layer to the GPU explicitly.
+    gpuLayers = 999;
     extraArgs = [
       "--samplers"
       "top_k"
