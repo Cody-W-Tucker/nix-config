@@ -31,6 +31,9 @@ in
       nvidiaPersistenced = true;
       package = config.boot.kernelPackages.nvidiaPackages.production;
       nvidiaSettings = false;
+      # With 595+ kernel suspend notifiers, VRAM is otherwise saved to kernel RAM at
+      # suspend, which intermittently fails (NV_ERR_NO_MEMORY) and breaks resume.
+      moduleParams.nvidia.NVreg_TemporaryFilePath = "/var/tmp";
     };
 
     # NVIDIA GPU monitoring for Prometheus
