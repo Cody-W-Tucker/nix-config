@@ -81,10 +81,9 @@ in
       assertion =
         filteredKnowledgeRelPaths == [
           "tools/obsidian-markdown"
-          "tools/qmd"
           "research/research-state"
         ];
-      message = "hermes-agent/skills: knowledge-tools must retain only obsidian-markdown, qmd, and research-state after exclusions.";
+      message = "hermes-agent/skills: knowledge-tools must retain only obsidian-markdown and research-state after exclusions.";
     }
     {
       assertion = lib.elem "crm-tools" packNames;

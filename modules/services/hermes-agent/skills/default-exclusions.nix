@@ -67,6 +67,9 @@ _: {
     "tools/gws-workflow-meeting-prep"
     "tools/gws-workflow-standup-report"
     "tools/gws-workflow-weekly-digest"
+    # QMD is reached through the qmd MCP server (mcp/default.nix); its tool
+    # descriptions carry the query grammar. The CLI skill duplicated them.
+    "tools/qmd"
   ];
 
   _module.args.defaultRetainedGwsSkillNames = [

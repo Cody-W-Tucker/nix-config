@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [knowledge, research, evidence, continuity, salience, contract, attempt, transfer]
-    related_skills: [qmd]
+    related_skills: []
 prerequisites:
   commands: [research-state]
 ---
@@ -118,7 +118,7 @@ the repo. A draft contract never authorizes execution.
 1. **Collect/load a packet.** `collect` a fresh packet, or `render`/`validate`
    a retained one. Check freshness (`collected_at` vs now) and note
    `superseded_by` before citing direction.
-2. **Ground direction.** Locate passages with QMD (`qmd search`), then cite
+2. **Ground direction.** Locate passages with the QMD MCP (`mcp__qmd__query`), then cite
    direct reads. Supplied excerpts (e.g. the Thesis snapshot in the plan)
    count only as timestamped snapshots until freshly re-read.
 3. **Separate observations from interpretations.** Packet rows are facts;
