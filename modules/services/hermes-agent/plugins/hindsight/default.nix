@@ -68,9 +68,9 @@ in
       mode = "local_external";
       api_url = "http://127.0.0.1:8888";
       bank_id = "cody";
-      auto_retain = false;
-      auto_recall = false;
-      memory_mode = "tools";
+      auto_retain = true;
+      auto_recall = true;
+      memory_mode = "hybrid";
     };
   };
 
