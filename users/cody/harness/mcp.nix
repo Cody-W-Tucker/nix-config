@@ -3,6 +3,7 @@
   inputs,
   pkgs,
   lib,
+  config,
   ...
 }:
 let
@@ -27,15 +28,71 @@ let
       exec ${lib.getExe deja} mcp
     '';
   };
+  grafanaMcp = pkgs.writeShellApplication {
+    name = "grafana-mcp";
+    text = ''
+      export GRAFANA_URL="https://monitoring.${osConfig.codyos.site.domain}"
+      GRAFANA_SERVICE_ACCOUNT_TOKEN="$(< ${config.sops.secrets.grafana-mcp-token.path})"
+      export GRAFANA_SERVICE_ACCOUNT_TOKEN
+      exec ${pkgs.mcp-grafana}/bin/mcp-grafana "$@"
+    '';
+  };
+  karakeepMcp = pkgs.writeShellApplication {
+    name = "karakeep-mcp";
+    runtimeInputs = [ pkgs.nodejs ];
+    text = ''
+      export KARAKEEP_API_ADDR="https://karakeep.${osConfig.codyos.site.domain}"
+      KARAKEEP_API_KEY="$(< ${config.sops.secrets.karakeep-api-key.path})"
+      export KARAKEEP_API_KEY
+      exec npx -y @karakeep/mcp "$@"
+    '';
+  };
 in
 {
   home.sessionVariables = dejaEmbedding;
+
+  sops.secrets.grafana-mcp-token = { };
+  sops.secrets.karakeep-api-key = { };
+
+  programs.opencode.settings.mcp.servers = {
+    grafana = {
+      type = "local";
+      command = [ "${grafanaMcp}/bin/grafana-mcp" ];
+    };
+    karakeep = {
+      type = "local";
+      command = [ "${karakeepMcp}/bin/karakeep-mcp" ];
+    };
+  };
 
   # Global MCP tools for all agents
   programs.mcp = {
     enable = true;
     servers = {
       deja.command = lib.getExe dejaMcp;
+      # Use the same NAS index and GPU backend as Hermes, without exposing a
+      # network listener. On the NAS itself, run QMD directly.
+      qmd =
+        if osConfig.networking.hostName == "nas" then
+          {
+            command = lib.getExe inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.qmd;
+            args = [ "mcp" ];
+            env = {
+              QMD_LLAMA_GPU = "vulkan";
+              VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json";
+            };
+          }
+        else
+          {
+            command = lib.getExe pkgs.openssh;
+            args = [
+              "-T"
+              "-o"
+              "BatchMode=yes"
+              "nas"
+              "env QMD_LLAMA_GPU=vulkan VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json qmd mcp"
+            ];
+          };
       hindsight = {
         type = "remote";
         url =

@@ -13,8 +13,6 @@ let
 in
 {
   imports = [
-    ./agents/logging
-    ./agents/knowledge
     ./skills/humanizer
     ./skills/cognitive
     ./skills/make-native
