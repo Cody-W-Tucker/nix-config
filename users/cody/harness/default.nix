@@ -1,11 +1,14 @@
 {
   inputs,
   pkgs,
+  config,
+  lib,
   ...
 }:
 
 let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  piLangfuseDir = "${config.home.homeDirectory}/.pi/agent/langfuse-plugin";
 in
 
 {
@@ -41,6 +44,22 @@ in
     llmPkgs.spec-kit
     llmPkgs.backlog-md
   ];
+
+  # Pi discovers this entrypoint globally; dependencies live outside the
+  # extension directory so their own files are not discovered as extensions.
+  home.file.".pi/agent/extensions/langfuse.ts".text = ''
+    export { default } from "${piLangfuseDir}/node_modules/@langfuse/pi-observability-plugin/src/index.ts";
+  '';
+  home.activation.piLangfusePlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    PATH="${lib.getBin pkgs.nodejs}/bin:$PATH"
+    plugin_dir="${piLangfuseDir}"
+    manifest="$plugin_dir/node_modules/@langfuse/pi-observability-plugin/package.json"
+    version="$(node -p "require('$manifest').version" 2>/dev/null || true)"
+    if [ "$version" != "0.1.2" ]; then
+      mkdir -p "$plugin_dir"
+      npm install --prefix "$plugin_dir" --no-save --no-package-lock --ignore-scripts --no-audit --no-fund '@langfuse/pi-observability-plugin@0.1.2'
+    fi
+  '';
 
   # Codex, OpenCode and Pi discover the shared Agent Skills directory.
   home.file.".agents/skills/deja-search".source = "${llmPkgs.deja-vu.src}/skills/deja-search";
