@@ -131,7 +131,6 @@ in
       "qwen-3.5-4b" = {
         file = toString qwen35_4b;
         mmprojFile = toString qwen35_4bMmproj;
-        upstream.concurrencyLimit = 1;
       };
       "qwen-3.5-9b" = {
         # Text-only (catalog sets no projector); the 4B endpoint serves vision.

@@ -45,9 +45,11 @@ in
     file = "qwen3.5-4b-nvfp4.gguf";
     mmprojFile = "mmproj-qwen3.5-4b-nvfp4-f16.gguf";
     ttl = 300;
+    # Slots share one unified KV pool (the full -c), so extra parallelism
+    # costs little VRAM; concurrent requests split the 64K context.
     extraArgs = [
       "--parallel"
-      "2"
+      "4"
       "--kv-unified"
       "--reasoning"
       "off"
@@ -60,7 +62,8 @@ in
   };
   # Qwen3.5-9B in NVIDIA FP4 (NVFP4) — text-only, non-reasoning endpoint
   # (the 4B serves vision). ~5.3 GB weights; 32K context with Q8 keys and
-  # values leaves room for the persistent embedding model.
+  # values leaves room for the embedding model in the same group. Four slots
+  # share the unified 32K KV pool.
   "qwen-3.5-9b" = {
     file = "qwen3.5-9b-nvfp4.gguf";
     mmprojFile = null;
@@ -69,7 +72,8 @@ in
       "--reasoning"
       "off"
       "--parallel"
-      "1"
+      "4"
+      "--kv-unified"
       "--cache-type-k"
       "q8_0"
       "--cache-type-v"
@@ -131,10 +135,15 @@ in
     ubatchSize = 512;
     flashAttention = false; # avoid flash-attn to reduce startup instability in llama-server.
     ttl = 300;
+    # Many background clients (Hindsight, Karakeep, deja, code-review-graph)
+    # embed concurrently; eight slots share the unified 8K KV pool.
     extraArgs = [
       "--embeddings"
       "--pooling"
       "last"
+      "--parallel"
+      "8"
+      "--kv-unified"
     ];
   };
   # OCR prefers deterministic decoding. Allow a small amount of request
