@@ -93,9 +93,10 @@ in
         modules-left = [
           "group/workspaces"
           "custom/agenda"
+          "custom/ai-usage"
         ];
         modules-center = [
-          "group/notification"
+          "custom/notification"
           "clock"
           "custom/weather"
         ];
@@ -121,17 +122,6 @@ in
           modules = [
             "hyprland/workspaces"
             "tray"
-          ];
-        };
-        "group/notification" = {
-          orientation = "horizontal";
-          drawer = {
-            transition-duration = 500;
-            transition-left-to-right = false;
-          };
-          modules = [
-            "custom/notification"
-            "custom/ai-usage"
           ];
         };
         pulseaudio = {
