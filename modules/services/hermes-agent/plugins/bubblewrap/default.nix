@@ -39,7 +39,12 @@ in
         memory_mb = 2048;
         cpu_seconds = 600;
         home_default_deny = "all";
-        home_allow = [ "Projects" ];
+        # .config/qmd holds index.yml (collection names). Without it, `qmd -c <name>`
+        # fails "Collection not found" although ~/.cache/qmd/index.sqlite is visible.
+        home_allow = [
+          "Projects"
+          ".config/qmd"
+        ];
         binds = [
           {
             src = "/etc/nixos";
