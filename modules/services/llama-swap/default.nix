@@ -358,8 +358,8 @@ in
         logToStdout = lib.mkDefault "both";
         hooks.on_startup.preload = lib.mkDefault cfg.preloadModels;
         models = lib.mkDefault renderedModels;
-        inherit (cfg) groups;
-      };
+      }
+      // lib.optionalAttrs (cfg.groups != { }) { inherit (cfg) groups; };
     };
 
     systemd.services.llama-swap.environment = cfg.serviceEnvironment;

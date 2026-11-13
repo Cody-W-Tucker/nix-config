@@ -16,6 +16,12 @@ Key features include:
 - **Hardware Acceleration**: CUDA comes from the host-wide `nixpkgs.config.cudaSupport` (set by `codyos.hardware.nvidia`); the module has no backend switch of its own [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix)
 - **Command Generation**: The `mkModelCommand` function dynamically builds the `llama-server` CLI string, incorporating parameters like context size, batch size, and GPU layers [modules/services/llama-swap/default.nix128-162](../modules/services/llama-swap/default.nix#L128-L162)
 
+On NAS, the matrix router allows `qwen3-embedding-0.6b` to run alongside either
+the audio stack (`whisper-medium`, `s1-mini`, and `kokoro-82m`) or `qwen-3.5-9b`.
+The audio and 9B stacks do not coexist; other models run alone. An embedding
+request can therefore evict an isolated model such as the 35B. Only requested
+models load, and their normal idle TTLs still apply. See [the NAS model config](../hosts/nas/models.nix).
+
 ## Model Catalog and Types
 
 The model catalog is centralized in `modules/services/llama-swap/models.nix`. This file defines the hardware "footprint" for each model, ensuring they fit within the host's VRAM constraints [modules/services/llama-swap/models.nix1-5](../modules/services/llama-swap/models.nix#L1-L5)
@@ -110,4 +116,3 @@ classDiagram
     ModelCatalog ..> TTSServers
     LlamaSwapModule ..> TTSServers
 ```
-

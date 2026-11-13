@@ -153,40 +153,23 @@ in
         file = toString laya;
       };
     };
-    # The 9B and embeddings run together as the everyday text stack. The 4B is
-    # only used for vision and the 35B MoE is situational; loading either one
-    # unloads the text stack, so the MoE gets the whole GPU for its experts.
-    groups = {
-      audio-stack = {
-        swap = false;
-        exclusive = true;
-        persistent = false;
-        members = [
-          "whisper-medium"
-          "kokoro-82m"
-          "s1-mini"
-        ];
-      };
-      text-stack = {
-        swap = false;
-        exclusive = true;
-        persistent = false;
-        members = [
-          "qwen-3.5-9b"
-          "qwen3-embedding-0.6b"
-        ];
-      };
-      vision-stack = {
-        swap = true;
-        exclusive = true;
-        persistent = false;
-        members = [ "qwen-3.5-4b" ];
-      };
-      moe-stack = {
-        swap = true;
-        exclusive = true;
-        persistent = false;
-        members = [ "qwen-3.6-35b-a3b" ];
+    # Embeddings can coexist with either audio or the 9B, without requiring
+    # audio and the 9B to fit together. Unlisted models run alone, keeping
+    # the 35B's GPU budget and unmeasured combinations conservative.
+    settings.routing.router = {
+      use = "matrix";
+      settings.matrix = {
+        vars = {
+          embed = "qwen3-embedding-0.6b";
+          whisper = "whisper-medium";
+          kokoro = "kokoro-82m";
+          normalize = "s1-mini";
+          text = "qwen-3.5-9b";
+        };
+        sets = {
+          audio = "embed & whisper & kokoro & normalize";
+          text = "embed & text";
+        };
       };
     };
   };
