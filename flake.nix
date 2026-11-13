@@ -67,6 +67,10 @@
       url = "github:numtide/llm-agents.nix";
       # LLM Agents tests against their nixpkgs version and we shouldn't follow our own if we want the benefit.
     };
+    ai-usagebar = {
+      url = "github:akitaonrails/ai-usagebar";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     googleworkspace-cli = {
       # Google Workspace CLI for Drive, Gmail, Calendar, and related APIs.
       url = "github:googleworkspace/cli";

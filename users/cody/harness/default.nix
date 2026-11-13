@@ -22,6 +22,7 @@ in
     llmPkgs.pi
     llmPkgs.cursor-agent
     llmPkgs.muse-code
+    llmPkgs.grok
 
     # Agent workspace: persistent agent terminals. The NAS core is the shared
     # remote that Beast's herdr-app reaches over SSH; both use this pinned hc.

@@ -20,6 +20,26 @@
         "type": "github"
       }
     },
+    "ai-usagebar": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794520413,
+        "narHash": "sha256-UDIv3QZUvMG8HvEyWz8uFFOSVlJuZ88tiWpXSMYY+5E=",
+        "owner": "akitaonrails",
+        "repo": "ai-usagebar",
+        "rev": "7418f4c29245dd29660d40e0d1f03071183861a5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "akitaonrails",
+        "repo": "ai-usagebar",
+        "type": "github"
+      }
+    },
     "base16": {
       "inputs": {
         "fromYaml": "fromYaml"
@@ -711,6 +731,7 @@
     },
     "root": {
       "inputs": {
+        "ai-usagebar": "ai-usagebar",
         "cognitive-assistant": "cognitive-assistant",
         "flake-programs-sqlite": "flake-programs-sqlite",
         "googleworkspace-cli": "googleworkspace-cli",

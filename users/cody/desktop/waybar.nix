@@ -8,6 +8,8 @@
 
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  aiUsagebar = inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  aiUsagebarCmd = lib.getExe aiUsagebar;
   # WORKAROUND: Waybar 0.15.0 cannot handle Hyprland's new workspace IPC.
   # https://github.com/Alexays/Waybar/issues/5316
   # REVIEW-BY: 2027-02-09 — remove once nixpkgs ships a compatible release.
@@ -65,7 +67,10 @@ in
 {
   sops.secrets."hermes" = { };
 
-  home.packages = [ hermesVoiceRepair ];
+  home.packages = [
+    aiUsagebar
+    hermesVoiceRepair
+  ];
 
   warnings =
     lib.optional
@@ -90,7 +95,7 @@ in
           "custom/agenda"
         ];
         modules-center = [
-          "custom/notification"
+          "group/notification"
           "clock"
           "custom/weather"
         ];
@@ -116,6 +121,17 @@ in
           modules = [
             "hyprland/workspaces"
             "tray"
+          ];
+        };
+        "group/notification" = {
+          orientation = "horizontal";
+          drawer = {
+            transition-duration = 500;
+            transition-left-to-right = false;
+          };
+          modules = [
+            "custom/notification"
+            "custom/ai-usage"
           ];
         };
         pulseaudio = {
@@ -231,6 +247,16 @@ in
           exec = ''wttrbar --date-format "%m/%d" --location kearney+nebraska --nerd --fahrenheit --mph --observation-time --hide-conditions'';
           return-type = "json";
           on-click = "${pkgs.lib.getExe pkgs.mousam}";
+        };
+        "custom/ai-usage" = {
+          exec = aiUsagebarCmd;
+          return-type = "json";
+          interval = 300;
+          signal = 13;
+          tooltip = true;
+          on-click = "${lib.getExe pkgs.kitty} -e ${lib.getExe' aiUsagebar "ai-usagebar-tui"}";
+          on-scroll-up = "${aiUsagebarCmd} --cycle-next";
+          on-scroll-down = "${aiUsagebarCmd} --cycle-prev";
         };
         "custom/notification" = {
           tooltip = false;
