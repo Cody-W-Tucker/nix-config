@@ -23,6 +23,10 @@ in
     llmPkgs.cursor-agent
     llmPkgs.muse-code
 
+    # Agent workspace: persistent agent terminals. The NAS core is the shared
+    # remote that Beast's herdr-app reaches over SSH; both use this pinned hc.
+    llmPkgs.herdr-core
+
     # Memory and Session Management
     llmPkgs.deja-vu # session search across all agents
     pkgs.sqlite # Deja Vu reads OpenCode and Hermes session databases with sqlite3.

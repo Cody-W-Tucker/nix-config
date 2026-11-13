@@ -128,6 +128,8 @@ in
           '';
         })
     )
+    # Herdr desktop app; add the NAS under Settings → Machines to see its agents.
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr-app
     # Agent memory loop: backpass bundles `acpx` and `lavish-axi` as private
     # runtime dependencies on its own wrapper PATH.
     backpass
