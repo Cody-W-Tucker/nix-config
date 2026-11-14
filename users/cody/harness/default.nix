@@ -17,6 +17,7 @@ in
     ./opencode
     ./context.nix
     ./mcp.nix
+    ./skills
   ];
 
   home.packages = [
@@ -61,16 +62,9 @@ in
     fi
   '';
 
-  # Codex, OpenCode and Pi discover the shared Agent Skills directory.
-  home.file.".agents/skills/deja-search".source = "${llmPkgs.deja-vu.src}/skills/deja-search";
-  home.file.".agents/skills/gnhf".source = "${llmPkgs.gnhf}/lib/node_modules/gnhf/skills/gnhf";
   xdg.configFile."deja/exclude".text = ''
     harness:pi
   '';
-
-  # Both harnesses use the skill shipped with the installed no-mistakes CLI.
-  home.file.".agents/skills/no-mistakes/SKILL.md".source =
-    "${llmPkgs.no-mistakes.src}/skills/no-mistakes/SKILL.md";
 
   # tuicr: match stylix catppuccin-mocha palette
   xdg.configFile."tuicr/config.toml".source = ./tuicr.toml;

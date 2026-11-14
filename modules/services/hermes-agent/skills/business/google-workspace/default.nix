@@ -1,18 +1,29 @@
 {
   inputs,
-  lib,
   pkgs,
-  defaultRetainedGwsSkillNames,
   ...
 }:
 
 let
   googleWorkspaceSkillsRoot = inputs.googleworkspace-cli + "/skills";
-  googleWorkspaceSkill = name: googleWorkspaceSkillsRoot + "/${name}/SKILL.md";
 
-  gwsSkillNames = defaultRetainedGwsSkillNames;
+  # Upstream ships ~45 gws-* skills; Hermes gets only these.
+  gwsSkillNames = [
+    "gws-shared"
+    "gws-calendar"
+    "gws-calendar-agenda"
+    "gws-calendar-insert"
+    "gws-gmail"
+    "gws-gmail-read"
+    "gws-gmail-reply"
+    "gws-gmail-send"
+    "gws-gmail-triage"
+    "gws-people"
+    "gws-tasks"
+  ];
 
-  gmailTriageSkill = pkgs.writeText "gws-gmail-triage-SKILL.md" (
+  # Triage defaults to the inbox instead of every unread message.
+  gmailTriageSkillDir = pkgs.writeTextDir "SKILL.md" (
     builtins.replaceStrings
       [
         "description: \"Gmail: Show unread inbox summary (sender, subject, date).\""
@@ -40,33 +51,19 @@ let
         "gws gmail +triage --query 'in:inbox' --format json | jq '.[].subject'"
         "gws gmail +triage --query 'in:inbox' --labels"
       ]
-      (builtins.readFile (googleWorkspaceSkill "gws-gmail-triage"))
+      (builtins.readFile (googleWorkspaceSkillsRoot + "/gws-gmail-triage/SKILL.md"))
   );
 
-  gmailTriageSkillDir = pkgs.runCommand "gws-gmail-triage-skill" { } ''
-    mkdir -p "$out"
-    cp ${gmailTriageSkill} "$out/SKILL.md"
-  '';
-
-  customSkillDirs = {
-    "gws-gmail-triage" = gmailTriageSkillDir;
-  };
+  patchedSkillDirs.gws-gmail-triage = gmailTriageSkillDir;
 
   googleWorkspaceSkills = pkgs.linkFarm "hermes-agent-google-workspace-skills" (
     map (name: {
       name = "tools/${name}";
-      path = lib.attrByPath [ name ] (googleWorkspaceSkillsRoot + "/${name}") customSkillDirs;
+      path = patchedSkillDirs.${name} or (googleWorkspaceSkillsRoot + "/${name}");
     }) gwsSkillNames
   );
 in
 {
-  _module.args.allGwsSkillNames = lib.pipe (builtins.readDir googleWorkspaceSkillsRoot) [
-    (lib.filterAttrs (name: type: type == "directory" && lib.hasPrefix "gws-" name))
-    lib.attrNames
-    (lib.sort (a: b: a < b))
-  ];
-  _module.args.filteredGwsSkillNames = gwsSkillNames;
-
   codyos.hermes-agent.skills.skillPacks = [
     {
       name = "google-workspace-tools";

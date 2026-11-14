@@ -28,15 +28,6 @@ let
       exec ${lib.getExe deja} mcp
     '';
   };
-  grafanaMcp = pkgs.writeShellApplication {
-    name = "grafana-mcp";
-    text = ''
-      export GRAFANA_URL="https://monitoring.${osConfig.codyos.site.domain}"
-      GRAFANA_SERVICE_ACCOUNT_TOKEN="$(< ${config.sops.secrets.grafana-mcp-token.path})"
-      export GRAFANA_SERVICE_ACCOUNT_TOKEN
-      exec ${pkgs.mcp-grafana}/bin/mcp-grafana "$@"
-    '';
-  };
   karakeepMcp = pkgs.writeShellApplication {
     name = "karakeep-mcp";
     runtimeInputs = [ pkgs.nodejs ];
@@ -51,25 +42,14 @@ in
 {
   home.sessionVariables = dejaEmbedding;
 
-  sops.secrets.grafana-mcp-token = { };
   sops.secrets.karakeep-api-key = { };
-
-  programs.opencode.settings.mcp.servers = {
-    grafana = {
-      type = "local";
-      command = [ "${grafanaMcp}/bin/grafana-mcp" ];
-    };
-    karakeep = {
-      type = "local";
-      command = [ "${karakeepMcp}/bin/karakeep-mcp" ];
-    };
-  };
 
   # Global MCP tools for all agents
   programs.mcp = {
     enable = true;
     servers = {
       deja.command = lib.getExe dejaMcp;
+      karakeep.command = lib.getExe karakeepMcp;
       # Use the same NAS index and GPU backend as Hermes, without exposing a
       # network listener. On the NAS itself, run QMD directly.
       qmd =
@@ -94,7 +74,6 @@ in
             ];
           };
       hindsight = {
-        type = "remote";
         url =
           if osConfig.networking.hostName == "nas" then
             "http://127.0.0.1:8888/mcp/"
@@ -102,12 +81,10 @@ in
             "http://${osConfig.codyos.site.hosts.nas.tailscale}:18083/mcp/";
       };
       exa = {
-        type = "remote";
         url = "https://mcp.exa.ai/mcp";
       };
       context7.command = lib.getExe pkgs.context7-mcp;
       gh_grep = {
-        type = "remote";
         url = "https://mcp.grep.app";
       };
       nixos-option-search.command = lib.getExe pkgs.mcp-nixos;

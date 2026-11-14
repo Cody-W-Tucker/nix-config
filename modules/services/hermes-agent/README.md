@@ -91,24 +91,27 @@ changed document or setting applies on the next process restart
 
 Skills are Markdown-based capability packs copied into `${hermesHome}/skills` by Home Manager activation scripts (`home.activation.*`, running as the user).
 
-Upstream's bundled skill catalog is opted out with `.no-bundled-skills` markers in the default Hermes home. Home Manager creates these markers when absent and sets their mode to `0600`; it does not add upstream-bundled skills to `codyos.hermes-agent.skills.skillPacks`.
+Skills use Hermes' documented configuration rather than a custom sync script:
 
-Declared skill packs are seeded by Home Manager activation:
+- Upstream's bundled catalog is opted out with the `.no-bundled-skills` marker that `hermes skills opt-out` writes.
+- Packs are declared in `codyos.hermes-agent.skills.skillPacks` (`skills/module.nix`):
 
-| Mode | Ownership | Use it for |
+| Mode | How Hermes gets it | Use it for |
 | --- | --- | --- |
-| `managed` | Nix store is the source of truth; the runtime copy is replaced on activation. | Stable, Nix-owned skill packs. |
-| `mutable` | Runtime copy is created only when missing or malformed. | Agent-local learning and user-pattern skills. |
+| `managed` | Listed in `skills.external_dirs` and read straight from the Nix store. The curator does not edit external skills. | Nix-owned tool skills. |
+| `mutable` | Copied once into `${hermesHome}/skills` (`cp --update=none`). The agent and curator can patch the copy; activation never overwrites it. | Skills Hermes should keep learning in. |
 
-The seeding script also removes malformed shadow directories that would block proper skill loading.
+- `skills/exclusions.nix` sets `skills.disabled`, which hides skills by name from the index, slash commands and cron. Evaluation warns when a name no longer matches a skill in the Cognitive Assistant or Hermes sources.
 
-Current skill groups include:
+Local skills take precedence over `external_dirs`, so a local copy with the same name shadows a managed skill. Upstream changes to a mutable skill do not reach a copy that already exists; delete the local copy to take the new version.
 
-- Cognitive-assistant user-pattern skills (filtered: `skills/cognitive-assistant.nix` seeds every CA skill except the explicit `skills/default-exclusions.nix` catalog).
-- Business skills for CRM (`crm-tools` stays) and Google Workspace (exactly the 12-skill retain set in `skills/default-exclusions.nix`: `gws-calendar`, `gws-gmail-triage`, `gws-tasks`, `gws-calendar-agenda`, `gws-calendar-insert`, `gws-gmail-send`, `gws-gmail-read`, `gws-gmail-reply`, `gws-people`, `gws-shared`, `gws-nas-oauth`, `gws-gmail`); Gmail triage is patched to default to `in:inbox`.
-- The `research-state` knowledge skill. QMD search uses the `qmd` MCP server; the QMD and Obsidian Markdown skills are excluded.
+Current packs:
 
-Evidence rule: every default exclusion must be backed by Nix source/evaluated evidence, never by runtime directories. `skills/default-validation.nix` proves each catalog path exists in a Nix artifact source (CA categorized via `readDir`, GWS upstream via `readDir`, knowledge entries) and is absent from every filtered default pack (CA filtered, GWS retained, knowledge filtered). Do not justify exclusions from `~/.local/share/hermes`, `${hermesHome}/skills`, or any mutable state; those are outputs, not sources. `skills/default-cleanup.nix` then deletes only those explicit catalog paths from the default home after seeding (no wildcards).
+- `cognitive-assistant` (mutable): every Cognitive Assistant skill.
+- `hermes-humanizer` (mutable): the upstream humanizer skill.
+- `crm-tools` and `google-workspace-tools` (managed): the CRM CLI skill and an allowlist of 11 `gws-*` skills (`skills/business/`). Gmail triage is patched to default to `in:inbox`.
+- `knowledge-tools` (managed): the `research-state` skill. QMD search uses the `qmd` MCP server instead of a skill.
+- `workflow` (managed): skills from the workflow input.
 
 ## Toolsets
 

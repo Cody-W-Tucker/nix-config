@@ -9,7 +9,7 @@ Does not own general desktop behavior, shell defaults, host services, or system 
 - Manage all OpenCode agents, skills, tools, and configuration declaratively in this NixOS repository. Do not directly edit `~/.config/opencode`; make the corresponding Nix change and let Home Manager apply it.
 - Put MCP server/client exposure in `mcp.nix` unless it belongs entirely to one packaged tool or skill.
 - Put OpenCode agents under `opencode/agents/` and agent-local skills under that agent family.
-- Put shared OpenCode skills under `opencode/skills/` only when multiple agents should use them.
+- Put skills every harness should load under `skills/`, contributed through `codyos.harness.skills`; do not set a per-tool `skills` option for them.
 - Put custom OpenCode tool plugins under `opencode/tools/`, with implementation files beside their Nix packaging.
 - Keep secrets out of this tree; use existing SOPS or secret wrapper plumbing.
 

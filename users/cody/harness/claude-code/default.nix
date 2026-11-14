@@ -1,5 +1,4 @@
 {
-  config,
   inputs,
   lib,
   options,
@@ -18,16 +17,6 @@ in
     package = llmPkgs.claude-code;
     enableMcpIntegration = true;
     settings.env.CLAUDE_CODE_SUBAGENT_MODEL = "claude-opus-5-5";
-    skills =
-      lib.mapAttrs (
-        _: skill:
-        builtins.replaceStrings [ "compatibility: opencode\n" ] [ "compatibility: claude-code\n" ] skill
-      ) config.programs.opencode.skills
-      // {
-        deja-search = "${llmPkgs.deja-vu.src}/skills/deja-search";
-        gnhf = "${llmPkgs.gnhf}/lib/node_modules/gnhf/skills/gnhf";
-        no-mistakes = "${llmPkgs.no-mistakes.src}/skills/no-mistakes/SKILL.md";
-      };
   }
   # Guard: Home Manager release-26.05 (NAS) lacks this option. Drop the guard
   # once the NAS is on a Home Manager release that has it.

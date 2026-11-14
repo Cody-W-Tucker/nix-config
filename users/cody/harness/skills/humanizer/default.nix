@@ -1,5 +1,5 @@
 {
-  programs.opencode.skills = {
+  codyos.harness.skills = {
     humanizer = ''
       ---
       name: humanizer

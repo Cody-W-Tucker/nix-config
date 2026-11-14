@@ -1,54 +1,10 @@
-# Filtered Cognitive Assistant pack: all CA skills except the explicit exclusion catalog.
-# Filtering uses only Nix artifact paths (readDir on the CA categorized root plus
-# the exclusion catalog). No runtime directories are consulted.
+{ inputs, ... }:
 {
-  inputs,
-  lib,
-  pkgs,
-  defaultExcludedSkillPaths,
-  ...
-}:
-let
-  caSkills = inputs.cognitive-assistant.lib.artifacts.skills;
-  caCategorized = caSkills.categorized;
-
-  caCategories = builtins.readDir caCategorized;
-
-  categoryDirs = lib.filterAttrs (name: type: type == "directory") caCategories;
-
-  skillsInCategory =
-    category:
-    let
-      entries = builtins.readDir (caCategorized + "/${category}");
-      skillDirs = lib.filterAttrs (name: type: type == "directory") entries;
-    in
-    lib.attrNames skillDirs;
-
-  allCognitiveAssistantRelPaths = lib.sort (a: b: a < b) (
-    lib.concatMap (category: map (skill: "${category}/${skill}") (skillsInCategory category)) (
-      lib.attrNames categoryDirs
-    )
-  );
-
-  filteredCognitiveAssistantRelPaths = lib.filter (
-    rel: !lib.elem rel defaultExcludedSkillPaths
-  ) allCognitiveAssistantRelPaths;
-
-  filteredCognitiveAssistantRoot = pkgs.linkFarm "cognitive-assistant-skills-filtered" (
-    map (rel: {
-      name = rel;
-      path = "${caCategorized}/${rel}";
-    }) filteredCognitiveAssistantRelPaths
-  );
-in
-{
-  _module.args.allCognitiveAssistantRelPaths = allCognitiveAssistantRelPaths;
-  _module.args.filteredCognitiveAssistantRelPaths = filteredCognitiveAssistantRelPaths;
-
+  # Every Cognitive Assistant skill; exclusions.nix disables the ones that do not fit.
   codyos.hermes-agent.skills.skillPacks = [
     {
       name = "cognitive-assistant";
-      root = filteredCognitiveAssistantRoot;
+      root = inputs.cognitive-assistant.lib.artifacts.skills.categorized;
       mode = "mutable";
     }
   ];

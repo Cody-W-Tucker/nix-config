@@ -22,6 +22,7 @@ in
         completion = {
           source = "cmp",
           custom_rules = {
+            "${config.home.homeDirectory}/.agents/skills",
             "${config.home.homeDirectory}/.config/opencode/skills",
             "/etc/nixos/.agents/skills",
           },
