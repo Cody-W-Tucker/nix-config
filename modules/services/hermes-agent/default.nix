@@ -14,6 +14,7 @@ in
 {
   imports = [
     inputs.hermes-agent.homeManagerModules.default
+    inputs.cognitive-assistant.homeManagerModules.cognitive-assistant
     ./runtime
     ./plugins
     ./mcp

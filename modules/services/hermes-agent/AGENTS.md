@@ -53,8 +53,9 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 - `secrets/default.nix`: Hermes-owned SOPS secrets, the `hermes-env` /
   `hermes-agent-env` / `hermes-dashboard-env` templates, and the backend's
   dashboard env wiring
-- `documents/default.nix`: workspace documents plus SOUL installation via
-  `hermesHomeFiles`
+- `documents/default.nix`: workspace documents, plus the living SOUL and its
+  daily improvement pass via `services.cognitive-assistant` (never
+  `hermesHomeFiles."SOUL.md"`, which would overwrite the link)
 - `toolsets/`: platform tool exposure and trust boundaries
 - `skills/`: managed vs mutable skill packaging via user activation scripts
 

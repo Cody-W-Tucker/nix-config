@@ -75,7 +75,7 @@ Provisioned artifacts include:
 
 | Artifact | Target | Purpose |
 | --- | --- | --- |
-| `SOUL.md` | `${hermesHome}/SOUL.md` via `services.hermes-agent.hermesHomeFiles` | Core identity and CodyOS-specific operating rules. |
+| `SOUL.md` | `${hermesHome}/SOUL.md`, a symlink to the living SOUL, via `services.cognitive-assistant` | Core identity and CodyOS-specific operating rules, plus records learned in use. |
 | `MEMORY-SPEC.md` | Working directory via `documents` | Long-term memory protocol. |
 | `TASK-SPEC.md` | Working directory via `documents` | Task decomposition protocol. |
 | `human-profiles/EXISTENTIAL-HUMAN-PROFILE.md` | Working directory | High-level user values and goals. |

@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   ...
 }:
@@ -10,7 +11,13 @@ let
   artifacts = inputs.cognitive-assistant.lib.artifacts;
   inherit (artifacts) operational existential;
   inherit (config.services.hermes-agent) hermesHome;
-  inherit (artifacts.alignment) translationLayer;
+  qmd = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.qmd;
+  # The improvement pass judges sessions with the local model: transcripts
+  # never leave the NAS. One outcome prompt can reach ~15K tokens.
+  improveLlm = {
+    baseUrl = "http://127.0.0.1:8081/v1";
+    model = "qwen-3.6-35b-a3b";
+  };
   existentialProfileFile = pkgs.writeText "hermes-existential-human-profile.md" (
     builtins.readFile existential.humanProfile
   );
@@ -38,15 +45,6 @@ let
     Use `nix shell` only when a required tool or runtime is missing.
     Do not use `nix shell` for standard Unix utilities that are typically available, such as `bash`, `coreutils`, `grep`, `sed`, `awk`, or `git`.
   '';
-  hermesSoulFile = pkgs.writeText "hermes-agent-soul.md" ''
-    ${brevityInstructions}
-
-    ${builtins.readFile ../plugins/advanced-delegation/delegation-instructions.md}
-
-    ${builtins.readFile translationLayer}
-
-    ${agentsDocument}
-  '';
 in
 
 {
@@ -61,9 +59,47 @@ in
     };
 
     # Hermes loads its primary identity from HERMES_HOME/SOUL.md, not from the
-    # workspace documents directory. Upstream replaces the NixOS
-    # system.activationScripts path with the declarative hermesHomeFiles
-    # surface; files land user-owned (0600) after hermes-agent-setup.
-    services.hermes-agent.hermesHomeFiles."SOUL.md" = hermesSoulFile;
+    # workspace documents directory. That file is the Cognitive Assistant's
+    # living SOUL: on activation `ca soul compile` builds
+    # prefix + bootstrap SOUL + records learned in use + suffix under
+    # ~/.local/share/cognitive-assistant/soul and `ca soul link` points
+    # SOUL.md at it. Do not also declare SOUL.md in hermesHomeFiles: upstream
+    # would install a regular file over the link.
+    services.cognitive-assistant = {
+      enable = true;
+      inherit hermesHome;
+      soul = {
+        prefix = ''
+          ${brevityInstructions}
+
+          ${builtins.readFile ../plugins/advanced-delegation/delegation-instructions.md}
+        '';
+        suffix = agentsDocument;
+      };
+      llm = improveLlm;
+      # The daily pass analyzes new Hermes sessions and scores their outcomes,
+      # which builds the baseline. It adopts and reverts nothing until this is
+      # switched on, after the outcome backtest has set minSessions.
+      improve.auto = false;
+    };
+
+    # The pass shells out to git (commits after a session) and qmd (journal
+    # notes after a session) for follow-up evidence. User units do not inherit
+    # the login PATH; the `ca` wrapper prepends its own python and node.
+    systemd.user.services.ca-improve.Service.Environment = [
+      "PATH=${
+        lib.makeBinPath [
+          pkgs.git
+          qmd
+        ]
+      }"
+    ];
+
+    # Same endpoint for manual runs from a login shell, such as
+    # `ca improve-outcome --since 70d --dry-run`.
+    home.sessionVariables = {
+      CA_LLM_BASE_URL = improveLlm.baseUrl;
+      CA_LLM_MODEL = improveLlm.model;
+    };
   };
 }
