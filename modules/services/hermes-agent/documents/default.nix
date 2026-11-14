@@ -80,7 +80,7 @@ in
       # The daily pass analyzes new Hermes sessions and scores their outcomes,
       # which builds the baseline. It adopts and reverts nothing until this is
       # switched on, after the outcome backtest has set minSessions.
-      improve.auto = false;
+      improve.auto = true;
     };
 
     # The pass shells out to git (commits after a session) and qmd (journal
