@@ -25,6 +25,7 @@ in
       ) config.programs.opencode.skills
       // {
         deja-search = "${llmPkgs.deja-vu.src}/skills/deja-search";
+        gnhf = "${llmPkgs.gnhf}/lib/node_modules/gnhf/skills/gnhf";
         no-mistakes = "${llmPkgs.no-mistakes.src}/skills/no-mistakes/SKILL.md";
       };
   }

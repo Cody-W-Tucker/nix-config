@@ -63,6 +63,7 @@ in
 
   # Codex, OpenCode and Pi discover the shared Agent Skills directory.
   home.file.".agents/skills/deja-search".source = "${llmPkgs.deja-vu.src}/skills/deja-search";
+  home.file.".agents/skills/gnhf".source = "${llmPkgs.gnhf}/lib/node_modules/gnhf/skills/gnhf";
   xdg.configFile."deja/exclude".text = ''
     harness:pi
   '';
