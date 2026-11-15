@@ -10,6 +10,7 @@
 let
   inherit (osConfig.codyos.site) domain;
   workflowPackage = inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.workflowCli;
+  hermesCommon = import "${inputs.hermes-agent}/nix/moduleCommon.nix" { inherit lib; };
 in
 {
   imports = [
@@ -40,6 +41,15 @@ in
       # creates both directories and merges config/secrets/documents into them.
       hermesHome = "${config.xdg.dataHome}/hermes";
       workingDirectory = "${config.xdg.dataHome}/hermes/workspace";
+      # Install the rendered settings as the whole config.yaml on every
+      # activation. Upstream's default deep-merges them into the file on disk,
+      # which keeps keys Nix no longer supplies: removed MCP servers stayed live.
+      configFile =
+        (hermesCommon.mkConfigFiles {
+          inherit pkgs;
+          cfg = config.services.hermes-agent;
+          inherit (config.services.hermes-agent) workingDirectory;
+        }).generated;
       extraDependencyGroups = [
         "edge-tts"
         "firecrawl"
@@ -105,6 +115,10 @@ in
             model = "qwen-3.5-9b";
             base_url = "http://127.0.0.1:8081/v1";
             api_key = "local-only";
+            extra_body = {
+              reasoning_effort = "medium";
+              thinking.type = "enabled";
+            };
           };
           title_generation = {
             provider = "custom";
@@ -119,10 +133,26 @@ in
             api_key = "local-only";
           };
         };
-        display.platforms = {
-          discord = {
-            tool_progress = "off";
+        display = {
+          in_app_tips = false;
+          in_app_tours = false;
+          platforms = {
+            discord = {
+              tool_progress = "off";
+            };
           };
+        };
+        # Preferences that were set at runtime and lived only in config.yaml.
+        # They are declared here because the file is now replaced whole.
+        telemetry.shared_metrics = {
+          enabled = false;
+          send = false;
+          offer_version = 2;
+        };
+        gateway.multiplex_profiles = true;
+        plugins.hermes-memory-store = {
+          auto_extract = false;
+          default_trust = 0.5;
         };
         max_turns = 100;
         # Keep deterministic platform authorization broad, but disclose cold
@@ -216,6 +246,7 @@ in
         };
         agent = {
           max_turns = 60;
+          reasoning_effort = "low";
         };
         curator = {
           enabled = true;

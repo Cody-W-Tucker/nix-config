@@ -37,7 +37,7 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
   `services.hermes-agent = { ... };` block there.
 - Do not create local option blocks just to thread constants around. Use plain local values.
 - Prefer direct writes into upstream `services.hermes-agent.*` surfaces over local pass-through abstractions.
-- Prefer declarative overwrite over residual runtime state. `configFile` is intentionally generated so old `config.yaml` keys do not linger.
+- Prefer declarative overwrite over residual runtime state. `configFile` is set to upstream's rendered `settings`, so every activation replaces `config.yaml` whole and keys Nix no longer supplies do not linger.
 - Companion modules must stay user-scoped: `systemd.user.*`
   (`runtime/default.nix`, `secrets/default.nix`), `home.activation.*`
   (`skills/*.nix`), and upstream document surfaces (`documents/default.nix`).
@@ -61,8 +61,8 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 
 ## Expensive Mistakes
 
-- If behavior seems to ignore Nix config, inspect upstream's merge rules
-  (`configFile` merges Nix settings into on-disk YAML) before assuming the setting is wrong.
+- `config.yaml` is replaced on every activation. Runtime edits (`hermes config set`,
+  settings panes, `hermes mcp add`) do not survive; put the setting in Nix.
 - If a change widens filesystem access or tool access, treat that as a trust-boundary change, not a convenience edit.
 - Hermes identity comes from `${hermesHome}/SOUL.md`, not from workspace `AGENTS.md`.
 - Hermes must see normal files under `${hermesHome}/skills`; malformed local skill dirs can shadow packaged skills and break loading.

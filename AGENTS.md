@@ -2,6 +2,26 @@
 
 You are assisting a user working on a NixOS system config using flakes. Full documentation is available at `docs/`.
 
+## Capability Floor
+
+When planning new features. The evaluated config is the map of what each host can do.
+
+```bash
+# Declared capabilities for a host (nas or beast).
+nix eval --json .#nixosConfigurations.nas.config --apply 'c:
+  let hm = c.home-manager.users.codyt; in
+  builtins.mapAttrs (_: builtins.attrNames) {
+    services = c.systemd.services;
+    timers = c.systemd.timers;
+    userServices = hm.systemd.user.services;
+    userTimers = hm.systemd.user.timers;
+    containers = c.virtualisation.oci-containers.containers;
+  }'
+```
+
+- Declared is not running. Confirm on the host itself with `systemctl` (`--user` for user units) before treating a capability as available.
+- When work needs a capability that is not on the floor, declare it in Nix first, then build on it.
+
 ## Evidence Discipline
 
 - Before declaring an audit or evidence report complete, verify every acceptance criterion with direct source or evaluated evidence; explicitly mark anything unverified. When a criterion requires behavioral confirmation, run a focused runtime test; source inspection alone is insufficient.
