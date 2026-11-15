@@ -36,6 +36,18 @@ in
     services.hermes-agent = {
       enable = true;
       gateway.enable = true;
+      # WORKAROUND: Hermes patches 0.15.2, but patchelfUnstable already has the fix.
+      # https://github.com/NousResearch/hermes-agent/issues
+      # REVIEW-BY: 2026-12-15
+      package = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+        pmPackages = lib.filterAttrs (_: lib.isDerivation) (
+          pkgs.unstable.callPackage "${inputs.hermes-agent}/nix/pm-packages.nix" {
+            patchelf = pkgs.unstable.patchelfUnstable // {
+              overrideAttrs = _: pkgs.unstable.patchelfUnstable;
+            };
+          }
+        );
+      };
       # User-scoped persistent state: HERMES_HOME and the agent workspace both
       # live under the user's XDG data directory. Upstream's HM activation
       # creates both directories and merges config/secrets/documents into them.

@@ -17,16 +17,6 @@ in
     ./tools/rtk
   ];
 
-  warnings =
-    lib.optional
-      (
-        config.programs.opencode.enable
-        && pkgs.stdenv.hostPlatform.isLinux
-        && config.programs.opencode.package.drvPath == opencode.drvPath
-        && (opencode.node_modules.outputHash or "") != "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
-      )
-      "OpenCode no longer uses the broken node_modules hash; remove the temporary hash workaround in users/cody/harness/opencode/default.nix.";
-
   # OpenCode Langfuse observability credentials (shared Home Manager scope):
   # the nixos-secrets `opencode-langfuse-env` secret is rendered by a SOPS
   # template (codyt-owned, 0400) plus a declarative LANGFUSE_BASE_URL. Values
@@ -81,22 +71,7 @@ in
 
   programs.opencode = {
     enable = true;
-    # WORKAROUND: OpenCode 2.2.5's node_modules hash fails on Linux.
-    # https://github.com/NixOS/nixpkgs/pull/582675
-    # REVIEW-BY: 2026-11-30
-    package = lib.mkDefault (
-      if
-        pkgs.stdenv.hostPlatform.isLinux
-        && (opencode.node_modules.outputHash or "") == "sha256-xfOVcw1+waLVNhFDwzOtzxrUSQEogvn88YomydOlhwc="
-      then
-        opencode.overrideAttrs (old: {
-          node_modules = old.node_modules.overrideAttrs {
-            outputHash = "sha256-prx9dX7kUvs/E3zopkaPk5LXh3xJAy5sZeum/W8L7cA=";
-          };
-        })
-      else
-        opencode
-    );
+    package = lib.mkDefault opencode;
     enableMcpIntegration = true;
     settings = {
       # The langfuse module contributes its own entry to this list. Keep its

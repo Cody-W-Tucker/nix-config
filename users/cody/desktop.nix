@@ -8,6 +8,19 @@
 
 let
   inherit (osConfig.codyos.site) domain;
+  # WORKAROUND: Hermes patches patchelf 0.15.2; patchelfUnstable already has the fix.
+  # https://github.com/NousResearch/hermes-agent/issues
+  # REVIEW-BY: 2026-12-15
+  hermesPackage = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+    pmPackages = pkgs.lib.filterAttrs (_: pkgs.lib.isDerivation) (
+      pkgs.unstable.callPackage "${inputs.hermes-agent}/nix/pm-packages.nix" {
+        patchelf = pkgs.unstable.patchelfUnstable // {
+          overrideAttrs = _: pkgs.unstable.patchelfUnstable;
+        };
+      }
+    );
+  };
+  inherit (hermesPackage) hermesDesktop;
 in
 {
   sops.secrets."opencode-password" = { };
@@ -115,7 +128,7 @@ in
     # then records that failure and reroutes subsequent launches to CPU-only
     # SwiftShader. Keep that recovery path off after removing Vulkan.
     (
-      (inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.desktop.override {
+      (hermesDesktop.override {
         extraEnv = {
           ELECTRON_OZONE_PLATFORM_HINT = "wayland";
           HERMES_DESKTOP_NVIDIA_SWIFTSHADER = "0";

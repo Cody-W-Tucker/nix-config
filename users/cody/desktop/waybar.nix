@@ -8,21 +8,15 @@
 
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  aiUsagebar = inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  # WORKAROUND: upstream's package omits SQLite required by its Rust binaries.
+  # https://github.com/akitaonrails/ai-usagebar/issues
+  # REVIEW-BY: 2026-12-15
+  aiUsagebar =
+    inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+      (old: {
+        buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.sqlite ];
+      });
   aiUsagebarCmd = lib.getExe aiUsagebar;
-  # WORKAROUND: Waybar 0.15.0 cannot handle Hyprland's new workspace IPC.
-  # https://github.com/Alexays/Waybar/issues/5316
-  # REVIEW-BY: 2027-02-09 — remove once nixpkgs ships a compatible release.
-  waybarWithHyprlandFix = (pkgs.waybar.override { cavaSupport = false; }).overrideAttrs (old: {
-    version = "0.16.0";
-    mesonFlags = old.mesonFlags ++ [ "-Dwwan=disabled" ];
-    src = pkgs.fetchFromGitHub {
-      owner = "Alexays";
-      repo = "Waybar";
-      rev = "ecbd887aa8ce9f88525805e1df4c062003e87f91";
-      hash = "sha256-SfJ9AGoOLJyyJWEQPBC4VkYXcMkbXiWBvS+Ac0xR518=";
-    };
-  });
   hermesVoicePython = pkgs.python3.withPackages (ps: [ ps.pysilero-vad ]);
   hermesVoice = pkgs.writeShellApplication {
     name = "hermes-waybar-voice";
@@ -72,18 +66,8 @@ in
     hermesVoiceRepair
   ];
 
-  warnings =
-    lib.optional
-      (
-        config.programs.waybar.enable
-        && config.programs.waybar.package.outPath == waybarWithHyprlandFix.outPath
-        && lib.versionAtLeast pkgs.waybar.version "0.16.0"
-      )
-      "Waybar in nixpkgs is already ${pkgs.waybar.version}; review and remove the Hyprland compatibility override in users/cody/desktop/waybar.nix.";
-
   programs.waybar = {
     enable = true;
-    package = waybarWithHyprlandFix;
     systemd.enable = true;
     settings = [
       {

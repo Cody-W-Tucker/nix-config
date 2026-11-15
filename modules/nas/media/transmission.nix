@@ -25,7 +25,7 @@
   vpnNamespaces.wg = {
     enable = true;
     wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
-    accessibleFrom = [ "192.168.0.0/24" ];
+    allowedIngress = [ "192.168.0.0/24" ];
     # Host-side wg-br bridge address of FlareSolverr (running on the host
     # network, see arr-stack.nix). The namespace OUTPUT kill switch drops
     # new connections out the veth unless the destination is explicitly
@@ -70,12 +70,8 @@
         to = config.services.lidarr.settings.server.port;
       }
     ];
-    openVPNPorts = [
-      {
-        port = 60729;
-        protocol = "both";
-      }
-    ];
+    vpn.allowedTCPPorts = [ 60729 ];
+    vpn.allowedUDPPorts = [ 60729 ];
   };
 
   systemd.services.transmission = {
@@ -140,7 +136,7 @@
       rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
 
       # Peer port matches the provider-forwarded port opened via
-      # vpnNamespaces.wg.openVPNPorts above. Randomization stays disabled
+      # vpnNamespaces.wg.vpn.allowedTCPPorts/allowedUDPPorts above. Randomization stays disabled
       # (module default `peer-port-random-on-start = false`).
       peer-port = 60729;
     };
