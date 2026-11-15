@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  osConfig,
   pkgs,
   ...
 }:
@@ -77,10 +78,24 @@ in
         suffix = agentsDocument;
       };
       llm = improveLlm;
-      # The daily pass analyzes new Hermes sessions and scores their outcomes,
+      # The daily pass analyzes new sessions and scores their outcomes,
       # which builds the baseline. It adopts and reverts nothing until this is
       # switched on, after the outcome backtest has set minSessions.
       improve.auto = true;
+      # Sessions come from Langfuse, which every harness traces into from both
+      # hosts. Empty reads all supported harnesses (Hermes, Claude, OpenCode);
+      # Pi is always excluded upstream.
+      improve.harnesses = [ ];
+      # Reuse the read-capable project key the harnesses already trace with
+      # (users/cody/harness/opencode renders it in this Home Manager scope).
+      langfuse = {
+        baseUrl = "https://langfuse.${osConfig.codyos.site.domain}";
+        environmentFile = config.sops.templates."opencode-langfuse-env".path;
+      };
+      # Per-night bound on local-model work: at most this many sessions are
+      # analyzed, and at most this many outcome-scored. Hermes goes first so
+      # the auto verdict keeps getting data; the backlog waits for later runs.
+      improve.maxSessions = 40;
     };
 
     # The pass shells out to git (commits after a session) and qmd (journal

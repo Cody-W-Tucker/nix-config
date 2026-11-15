@@ -153,11 +153,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794690126,
-        "narHash": "sha256-7qEblH5HCr3VJVdMzfsQP7qrDCFdCjEhmjTZbKqsFgI=",
+        "lastModified": 1794708095,
+        "narHash": "sha256-juAZrCxOnBzfvSY3GN1BjBBkfFjB5YG9HfRwkBDTBYs=",
         "owner": "Cody-W-Tucker",
         "repo": "Cognitive-Assistant",
-        "rev": "3f2ad7dff21729bd38f9f92dd5f8870f13d2a970",
+        "rev": "a8c02bd79399cdc57af15b47735a1a7456a90191",
         "type": "github"
       },
       "original": {
