@@ -70,47 +70,53 @@ in
   };
 
   # ── Drives ──────────────────────────────────────────────────
-  # System fileSystems (NFS and CIFS tools come from system.fsPackages)
-  fileSystems = {
-    "/mnt/paperless-consume" = {
-      device = "//${site.hosts.nas.lan}/PaperlessConsume";
-      fsType = "cifs";
-      options = [
-        "guest"
-        "uid=${toString config.ids.uids.scanner}"
-        "gid=${toString config.ids.gids.scanner}"
-        "nofail"
-        "noauto"
-        "x-systemd.automount"
-        "x-systemd.idle-timeout=60"
-        "x-systemd.mount-timeout=10s"
-      ];
-    };
-    # Share folders (Documents, Music, …) are bind-mounted by syncthing.nix.
-
-    # NFS mounts from NAS
-    "${site.user.home}/Projects" = {
-      device = "${site.hosts.nas.lan}:/mnt/projects";
-      fsType = "nfs";
-      options = [
-        "noatime"
-        "nofail"
-        "x-systemd.automount"
-        "x-systemd.requires=network-online.target"
-      ];
-    };
-    "${site.user.home}/Knowledge" = {
-      device = "${site.hosts.nas.lan}:/mnt/knowledge";
-      fsType = "nfs";
-      options = [
-        "noatime"
-        "nofail"
-        "x-systemd.automount"
-        "x-systemd.requires=network-online.target"
-      ];
-    };
-
-  };
+  # Native units keep unavailable NAS shares out of fstab-generator during
+  # systemd re-execution: https://github.com/systemd/systemd/issues/44396
+  system.fsPackages = [
+    pkgs.nfs-utils
+    pkgs.cifs-utils
+  ];
+  systemd.mounts = [
+    {
+      what = "//${site.hosts.nas.lan}/PaperlessConsume";
+      where = "/mnt/paperless-consume";
+      type = "cifs";
+      options = "guest,uid=${toString config.ids.uids.scanner},gid=${toString config.ids.gids.scanner}";
+      mountConfig.TimeoutSec = "10s";
+    }
+    {
+      what = "${site.hosts.nas.lan}:/mnt/projects";
+      where = "${site.user.home}/Projects";
+      type = "nfs";
+      options = "noatime";
+      requires = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+    }
+    {
+      what = "${site.hosts.nas.lan}:/mnt/knowledge";
+      where = "${site.user.home}/Knowledge";
+      type = "nfs";
+      options = "noatime";
+      requires = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+    }
+  ];
+  systemd.automounts = [
+    {
+      where = "/mnt/paperless-consume";
+      wantedBy = [ "remote-fs.target" ];
+      automountConfig.TimeoutIdleSec = "60s";
+    }
+    {
+      where = "${site.user.home}/Projects";
+      wantedBy = [ "remote-fs.target" ];
+    }
+    {
+      where = "${site.user.home}/Knowledge";
+      wantedBy = [ "remote-fs.target" ];
+    }
+  ];
+  # Share folders (Documents, Music, …) are bind-mounted by syncthing.nix.
   # Networking
   networking = {
     hostName = "beast";
