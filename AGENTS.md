@@ -72,41 +72,27 @@ Once the changes have settled, the user will run the `update` script to build an
 - Never commit raw secrets (use SOPS-NIX.)
 - The user will need to add secrets via the sops edit command.
 
-<!-- code-review-graph MCP tools -->
+## Tracing Configuration: Evaluate, Don't Scan
 
-## MCP Tools: code-review-graph
+The module system merges every file, so the evaluated config is the only complete answer to "what sets this" and "what is this set to". Ask it before reading module trees. Use Grep only for plain text (comments, strings inside scripts, docs). Replace `<host>` with `nas` or `beast`; each command takes about a second once the flake is cached.
 
-Use code-review-graph tools before filesystem scanning for broad exploration,
-impact analysis, relationship tracing, and reviews. For targeted verification of
-already-named files, inspect those files directly. The graph is faster and gives
-structural context (callers, dependents, test coverage) that file scanning cannot.
+```bash
+# Which files contribute definitions for an option
+nix eval --json .#nixosConfigurations.<host>.options.networking.firewall.interfaces.definitionsWithLocations \
+  --apply 'map (d: d.file)'
 
-### When to use graph tools FIRST
+# The final merged value
+nix eval --json .#nixosConfigurations.<host>.config.services.nginx.enable
 
-- **Exploring code**: `semantic_search_nodes_tool` or `query_graph_tool` instead of Grep
-- **Understanding impact**: `get_impact_radius_tool` instead of manually tracing imports
-- **Code review**: `detect_changes_tool` + `get_review_context_tool` instead of reading entire files
-- **Finding relationships**: `query_graph_tool` with callers_of/callees_of/imports_of/tests_for
-- **Architecture questions**: `get_architecture_overview_tool` + `list_communities_tool`
+# Where an option is declared (upstream module or a codyos.* option here)
+nix eval --json .#nixosConfigurations.<host>.options.codyos.docker.enable.declarationPositions
 
-Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need. If the graph reports stale/not ready, update it and retry before using filesystem tools. This fallback rule applies to exploration, not targeted inspection of already-identified paths.
+# Home Manager values for the primary user
+nix eval --json .#nixosConfigurations.<host>.config.home-manager.users.codyt.programs.opencode.settings.small_model
+```
 
-### Key Tools
-
-| Tool                             | Use when                                               |
-| -------------------------------- | ------------------------------------------------------ |
-| `detect_changes_tool`            | Reviewing code changes — gives risk-scored analysis    |
-| `get_review_context_tool`        | Need source snippets for review — token-efficient      |
-| `get_impact_radius_tool`         | Understanding blast radius of a change                 |
-| `get_affected_flows_tool`        | Finding which execution paths are impacted             |
-| `query_graph_tool`               | Tracing callers, callees, imports, tests, dependencies |
-| `semantic_search_nodes_tool`     | Finding functions/classes by name or keyword           |
-| `get_architecture_overview_tool` | Understanding high-level codebase structure            |
-| `refactor_tool`                  | Planning renames, finding dead code                    |
-
-### Workflow
-
-1. The graph auto-updates on file changes (via hooks).
-2. Use `detect_changes_tool` for code review.
-3. Use `get_affected_flows_tool` to understand impact.
-4. Use `query_graph_tool` pattern="tests_for" to check coverage.
+- An option that differs between hosts needs one query per host; do not infer one from the other.
+- Definition locations show contributors, not every consumer. Evaluate affected values on both hosts and inspect the contributing sources before judging impact.
+- For attribute-set options (`systemd.services`, `services.nginx.virtualHosts`), query the option itself to list every contributing file, then narrow with the specific attribute under `config`.
+- Values that are derivations or functions do not serialize; select a leaf (`.drvPath`, `.name`) or drop `--json`.
+- New files must be `git add`-ed before these commands can see them.

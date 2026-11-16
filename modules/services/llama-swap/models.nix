@@ -135,7 +135,7 @@ in
     ubatchSize = 512;
     flashAttention = false; # avoid flash-attn to reduce startup instability in llama-server.
     ttl = 300;
-    # Many background clients (Hindsight, Karakeep, deja, code-review-graph)
+    # Many background clients (Hindsight, Karakeep, deja)
     # embed concurrently; eight slots share the unified 8K KV pool.
     extraArgs = [
       "--embeddings"

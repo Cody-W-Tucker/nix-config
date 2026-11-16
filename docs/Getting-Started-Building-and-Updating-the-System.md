@@ -15,7 +15,7 @@ To test a configuration without applying it to the bootloader or the running sys
 
 ### The Update Script
 
-The repository provides a centralized `update` script to standardize the deployment workflow. This script automates formatting, import validation, committing, rebuilding, and pushing the resulting change.
+The repository provides a centralized `update` script to standardize the deployment workflow. It validates and builds both hosts before committing, activating, or pushing the change.
 
 **Implementation Detail:**
 The `update` script is defined as a `pkgs.writeShellApplication` in [packages/update/package.nix](../packages/update/package.nix) It is automatically included in the system path via the `environment.systemPackages` list in [modules/system/scripts.nix](../modules/system/scripts.nix)
@@ -24,12 +24,20 @@ The `update` script is defined as a `pkgs.writeShellApplication` in [packages/up
 
 1. **Format:** Runs `nix fmt` on the repository [packages/update/package.nix](../packages/update/package.nix)
 2. **Validate:** Executes `check-imports` to ensure no dangling `.nix` files exist [packages/update/package.nix](../packages/update/package.nix)
-3. **Commit:** Prompts for a commit message and commits all changes to the local git state [packages/update/package.nix](../packages/update/package.nix)
-4. **Rebuild:** Executes `sudo nixos-rebuild switch` to apply the new configuration [packages/update/package.nix](../packages/update/package.nix)
-5. **Push:** Synchronizes the local repository with the remote origin [packages/update/package.nix](../packages/update/package.nix)
-6. **NAS (optional):** With `update --nas [message]`, it then runs `git pull --ff-only && sudo nixos-rebuild switch` on the NAS over SSH. The NAS evaluates and builds itself; `ssh -t` lets its sudo prompt for a password [packages/update/package.nix](../packages/update/package.nix)
+3. **Stage:** Stages changes so flakes see new files.
+4. **Build both hosts:** Runs `nix build --no-link` on Beast's and the NAS's system closures. Both builds must succeed before continuing.
+5. **Commit:** Prompts for a commit message and commits the staged changes.
+6. **Activate:** Executes `sudo nixos-rebuild switch` on the current host.
+7. **Push:** Pushes only after both builds and local activation succeeded.
+8. **NAS (optional):** With `update --nas [message]`, it then runs `git pull --ff-only && sudo nixos-rebuild switch` on the NAS over SSH. `ssh -t` lets its sudo prompt for a password.
+
+The workflow lives in [packages/update/update.sh](../packages/update/update.sh). A failed build leaves changes staged, without committing or activating. A failed local activation prevents the push. Building both hosts uses the current machine's Nix builders and substituters; it does not require SSH to the other host. Agents run `nix flake check` separately before handing off changes; `update` does not repeat it.
 
 The script does **not** run `nix flake update`. Updating inputs is a separate operator choice.
+
+### Trying a Change Before Committing
+
+Use native `sudo nixos-rebuild test --flake .#<host>` to build and activate the working tree without committing or changing boot selection. New files must be staged first so flakes can see them. Reboot to return to the boot-selected configuration. This command has no timed automatic rollback: do not rely on it to recover automatically from a lost SSH connection. Run `update` when the changes are ready to commit.
 
 ### NAS Binary Cache and Nightly Builds
 
@@ -124,7 +132,7 @@ A workflow runs on manual dispatch, every Sunday at 00:00 UTC (Saturday at 6:00 
 3. **Scheduled or Manual Update:** Non-PR runs require `NIX_SECRETS_READ` and run `nix flake update` [.github/workflows/update-flake-lock.yml57-85](../.github/workflows/update-flake-lock.yml#L57-L85)
 4. **PR Creation:** If changes are detected, the workflow opens or updates `update/flake-lock` authenticated with `NIX_SECRETS_READ` (with title `chore(flake): update inputs` and labels `dependencies`, `automated`, and `nix`), which immediately triggers the PR check jobs on the pull request without manual approval [.github/workflows/update-flake-lock.yml86-100](../.github/workflows/update-flake-lock.yml#L86-L100)
 
-`nix flake check` evaluates both hosts and runs the flake's `checks.x86_64-linux`: `formatting` (nixfmt), `statix` (lint rules in `statix.toml`), `deadnix` (unused bindings), and `imports` (`check-imports` against the flake source). Run it locally before `update` for the same result.
+`nix flake check` evaluates both hosts and runs the flake's `checks.x86_64-linux`: `formatting` (nixfmt), `statix` (lint rules in `statix.toml`), `deadnix` (unused bindings), `imports` (`check-imports` against the flake source), `update` (mocked build/push-gate tests), and `hindsight-retain` (memory-plugin tests). Agents run this before handoff; `update` only builds the system closures and does not repeat the flake check.
 
 ### Garbage Collection
 

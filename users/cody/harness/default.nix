@@ -38,7 +38,6 @@ in
     pkgs.sqlite # Deja Vu reads OpenCode and Hermes session databases with sqlite3.
 
     # Git and Code Review
-    llmPkgs.code-review-graph
     llmPkgs.tuicr
     llmPkgs.gnhf
     llmPkgs.no-mistakes # Git push gate: runs an AI-driven validation pipeline, then opens a clean PR.

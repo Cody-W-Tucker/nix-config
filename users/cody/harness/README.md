@@ -11,7 +11,7 @@ Central docs should point here for harness implementation detail.
 - `opencode/default.nix` — OpenCode user harness root.
 - `claude-code/default.nix` — Claude Code user harness and shared MCP integration.
 - `context.nix` — shared environment instructions.
-- `plugins/default.nix` — shared plugins for OpenCode and Claude Code (`codyos.harness.plugins`), including `langfuse` (OpenCode 0.6.0 wrapper + pinned Claude Code 1.2.2 Stop/SessionEnd hook reading `LANGFUSE_*` from the zsh-sourced `opencode-langfuse-env` SOPS template), `rtk` (OpenCode plugin + Claude Code `PreToolUse` Bash rewrite hook + shared context), and `tokeneconomizer` (`pkgs.tokeneconomizer`).
+- `plugins/default.nix` — shared plugins for OpenCode and Claude Code (`codyos.harness.plugins`), including `hindsight` (OpenCode 2 turn-end retain plugin + Claude Code Stop hook retaining to the project's Hindsight bank), `langfuse` (OpenCode 0.6.0 wrapper + pinned Claude Code 1.2.2 Stop/SessionEnd hook reading `LANGFUSE_*` from the zsh-sourced `opencode-langfuse-env` SOPS template), `rtk` (OpenCode plugin + Claude Code `PreToolUse` Bash rewrite hook + shared context), and `tokeneconomizer` (`pkgs.tokeneconomizer`).
 - `skills/default.nix` — shared skills for every harness, including the deja-search, gnhf and no-mistakes skills from their pinned packages.
 - `programs.mcp.servers` in `mcp.nix` is the one MCP list. Claude Code and OpenCode take it through `enableMcpIntegration`. Leave out `type`: each consumer derives it from `url`.
 - All harnesses use the shared QMD MCP connection. On other hosts it starts QMD over SSH on the NAS, using the same index and GPU backend as Hermes; NAS sessions run QMD locally. SSH requires noninteractive access to the NAS.
@@ -27,7 +27,7 @@ Central docs should point here for harness implementation detail.
 | MCP wiring            | User-session MCP servers and client exposure | `mcp.nix`                                                                                                          |
 | Agent runtime surface | OpenCode, Claude Code                        | `opencode/default.nix`, `claude-code/default.nix`                                                                  |
 | Knowledge and logging | Karakeep and QMD MCP servers                 | `mcp.nix`                                                                                                          |
-| Shared plugins        | Langfuse, RTK, TokenEconomizer               | `plugins/default.nix`, `plugins/langfuse/`, `plugins/rtk/`, `plugins/tokeneconomizer/`                             |
+| Shared plugins        | Hindsight, Langfuse, RTK, TokenEconomizer    | `plugins/default.nix`, `plugins/hindsight/`, `plugins/langfuse/`, `plugins/rtk/`, `plugins/tokeneconomizer/`       |
 | Shared skills         | Cognitive, Deja, GNHF, Humanizer, etc.       | `skills/default.nix`                                                                                               |
 
 ## Layout Notes

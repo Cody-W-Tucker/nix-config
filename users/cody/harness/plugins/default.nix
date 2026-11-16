@@ -78,6 +78,7 @@ let
 in
 {
   imports = [
+    ./hindsight
     ./langfuse
     ./rtk
     ./tokeneconomizer

@@ -93,14 +93,11 @@ in
       };
       lsp = {
         nix = {
-          command = [ "${lib.getExe pkgs.nil}" ];
+          command = [
+            "${lib.getExe pkgs.nixd}"
+            "--config=${builtins.toJSON { formatting.command = [ (lib.getExe pkgs.nixfmt) ]; }}"
+          ];
           extensions = [ ".nix" ];
-          # 'initialization' passes options directly to the LSP during startup
-          initialization = {
-            formatting = {
-              command = [ "${lib.getExe pkgs.nixfmt}" ];
-            };
-          };
         };
       };
     };

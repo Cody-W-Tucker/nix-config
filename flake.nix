@@ -159,6 +159,12 @@
             pkgs.deadnix
           ] "deadnix --fail --no-lambda-arg --no-lambda-pattern-names .";
           imports = lint "imports" [ pkgs.check-imports ] "check-imports .";
+          update = lint "update" [ pkgs.python3 pkgs.bash ] ''
+            python3 packages/update/test-update.py -v
+          '';
+          hindsight-retain = lint "hindsight-retain" [ pkgs.nodejs pkgs.git ] ''
+            node --test users/cody/harness/plugins/hindsight/opencode-retain.test.mjs
+          '';
         };
 
       # Builds the different systems
