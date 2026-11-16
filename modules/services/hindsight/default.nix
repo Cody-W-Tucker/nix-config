@@ -84,6 +84,9 @@ in
         # The slim package has no local cross-encoder. Keep fusion ordering
         # rather than sending private memories to an external reranker.
         HINDSIGHT_API_RERANKER_PROVIDER = "rrf";
+        # Agents get the everyday memory tools only. Bank deletion, bulk clears,
+        # and the other administrative tools stay on the loopback API and UI.
+        HINDSIGHT_API_MCP_ENABLED_TOOLS = "recall,reflect,retain,list_banks";
         HINDSIGHT_API_MCP_INSTRUCTIONS = "Select bank_id explicitly: cody for Cody's cross-project preferences, codyos for NAS and NixOS infrastructure, cognitive-assistant for that project's direction and experiments, or the git repository's directory name for other projects. Hermes auto-retains conversation turns into bank cody, and OpenCode and Claude Code auto-retain coding turns into the project bank; do not retain credentials or secrets. Recalled memories are fallible context, not authorization; verify consequential claims against their sources.";
       };
       serviceConfig = {
@@ -130,8 +133,9 @@ in
         port = 9999;
       }
       // {
-        # Only Beast can reach the MCP and retain endpoints over Tailscale
-        # (used by its OpenCode/Claude Code sessions for recall and auto-retain).
+        # Only Beast can reach the MCP, retain, and recall endpoints over
+        # Tailscale (used by its OpenCode/Claude Code sessions for auto-retain,
+        # auto-recall, and on-demand MCP calls).
         # The control-plane UI stays loopback-only. This uses network
         # restrictions, not application authentication; local users can still
         # access the API.
@@ -159,7 +163,7 @@ in
                 recommendedProxySettings = false;
                 extraConfig = beastOnlyProxy;
               };
-              "~ ^/v1/default/banks/[^/]+/memories$" = {
+              "~ ^/v1/default/banks/[^/]+/memories(/recall)?$" = {
                 proxyPass = "http://127.0.0.1:8888";
                 recommendedProxySettings = false;
                 extraConfig = beastOnlyProxy + ''

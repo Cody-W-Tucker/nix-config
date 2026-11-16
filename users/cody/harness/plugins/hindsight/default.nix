@@ -1,8 +1,9 @@
-# Hindsight auto-retain for OpenCode and Claude Code.
+# Hindsight auto-retain and auto-recall for OpenCode and Claude Code.
 #
-# Recall stays on demand through the shared Hindsight MCP server in ../../mcp.nix;
-# this module covers the write-back half so coding sessions populate the memory
-# banks without manual retain calls.
+# Coding sessions write to the project's memory bank after each turn, and each
+# prompt is answered with memories recalled from that bank and the shared user
+# bank. The Hindsight MCP server in ../../mcp.nix stays available for explicit
+# calls.
 {
   config,
   inputs,
@@ -28,15 +29,19 @@ let
     "${config.home.homeDirectory}/Projects/Cognitive-Assistant" = "cognitive-assistant";
   };
 
-  opencodePlugin = pkgs.replaceVars ./opencode-retain.js {
-    inherit apiUrl;
+  # Cross-project user preferences, recalled alongside the project bank.
+  sharedBank = "cody";
+
+  opencodePlugin = pkgs.replaceVars ./opencode-memory.js {
+    inherit apiUrl sharedBank;
     bankMap = builtins.toJSON bankMap;
   };
 
   claudeSettings = pkgs.writeText "hindsight-claude-settings.json" (
     builtins.toJSON {
       hindsightApiUrl = apiUrl;
-      autoRecall = false;
+      autoRecall = true;
+      recallAdditionalBanks = [ sharedBank ];
       autoRetain = true;
       retainMode = "full-session";
       retainEveryNTurns = 1;
@@ -50,10 +55,22 @@ let
     }
   );
 
-  # Only the Stop hook is registered: recall is off and the server is external,
-  # so SessionStart, UserPromptSubmit, and SessionEnd have nothing to do.
+  # UserPromptSubmit recalls and Stop retains. The server is external, so
+  # SessionStart and SessionEnd have nothing to do.
   claudeHooks = pkgs.writeText "hindsight-claude-hooks.json" (
     builtins.toJSON {
+      hooks.UserPromptSubmit = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "${lib.getExe pkgs.python3} \"\${CLAUDE_PLUGIN_ROOT}/scripts/recall.py\"";
+              # Two banks, each with a 10 second request timeout.
+              timeout = 25;
+            }
+          ];
+        }
+      ];
       hooks.Stop = [
         {
           hooks = [

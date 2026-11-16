@@ -22,4 +22,4 @@ Does not own general desktop behavior, shell defaults, host services, or system 
 
 ## Focused Tests
 
-- When changing the OpenCode Hindsight retain plugin, run `nix shell nixpkgs#nodejs --command node --test users/cody/harness/plugins/hindsight/opencode-retain.test.mjs` from the repository root.
+- When changing the OpenCode Hindsight memory plugin, run `nix shell nixpkgs#nodejs --command node --test users/cody/harness/plugins/hindsight/opencode-memory.test.mjs` from the repository root.
