@@ -90,4 +90,11 @@ in
       nixos-option-search.command = lib.getExe pkgs.mcp-nixos;
     };
   };
+
+  # Pi uses the same MCP schema, without Home Manager's null/default fields.
+  home.file."${config.programs.pi-coding-agent.configDir}/mcp.json".text = builtins.toJSON {
+    mcpServers = lib.mapAttrs (
+      _: server: lib.filterAttrs (_: value: value != null && value != [ ] && value != { }) server
+    ) config.programs.mcp.servers;
+  };
 }

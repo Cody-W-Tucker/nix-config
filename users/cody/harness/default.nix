@@ -3,6 +3,7 @@
   pkgs,
   config,
   lib,
+  osConfig,
   ...
 }:
 
@@ -19,12 +20,20 @@ in
     ./mcp.nix
     ./plugins
     ./skills
-  ];
+  ]
+  ++
+    lib.optionals
+      (
+        osConfig.networking.hostName == "nas"
+        && !(builtins.pathExists "${inputs.home-manager-stable}/modules/programs/pi-coding-agent.nix")
+      )
+      [
+        "${inputs.home-manager}/modules/programs/pi-coding-agent.nix"
+      ];
 
   home.packages = [
     # Harness Packages
     pkgs.codex
-    llmPkgs.pi
     llmPkgs.cursor-agent
     llmPkgs.muse-code
     llmPkgs.grok
@@ -45,6 +54,11 @@ in
     llmPkgs.spec-kit
     llmPkgs.backlog-md
   ];
+
+  programs.pi-coding-agent = {
+    enable = true;
+    package = llmPkgs.pi;
+  };
 
   # Pi discovers this entrypoint globally; dependencies live outside the
   # extension directory so their own files are not discovered as extensions.
