@@ -9,12 +9,15 @@ Create new Nix packages or update existing ones, with language-specific examples
 
 ## Workflow: Creating a New Package
 
-1. Identify the software source: internal to this repo or external (e.g., a GitHub repository).
-2. Determine the programming language(s) used.
-3. Analyze the software structure (build system, dependencies, configuration files).
-4. Create the package following language-specific guidance below.
-5. Integrate it: `git add` the new directory. The shared overlay exposes it as `pkgs.<package-name>` and as the flake output `.#<package-name>` automatically.
-6. Test iteratively: run `nix build .#<package-name>`, read errors, fix issues, and rebuild until successful. If the NAS uses it, also build it against the NAS's stable nixpkgs (see `packages/README.md`).
+1. Define success: identify the CLI operation, API call, or harness behavior the package must support, and a focused check that demonstrates it.
+2. Identify the software source (internal or external), version, language(s), build system, and dependencies.
+3. Explore before integrating when behavior or dependencies are uncertain: use a temporary Nix environment and a scratch directory under `/tmp/opencode` to exercise the relevant package/version. Prefer the repository's locked inputs so the experiment matches the intended package set. Prototype the required behavior, inspect failures, and iterate before adding maintained files.
+4. Capture the working implementation and dependencies in `packages/<package-name>/`, following the language-specific guidance below. Preserve the successful check so it can be repeated against the packaged output.
+5. Make the package visible to the flake: `git add` the new directory. The shared overlay exposes it as `pkgs.<package-name>` and as the flake output `.#<package-name>` automatically.
+6. Build with `nix build .#<package-name>`, fix any packaging failures, and replay the focused behavioral check against the resulting package, not the scratch implementation. A successful development-shell experiment does not prove a sandboxed Nix build succeeds; a successful build alone does not prove the required behavior works.
+7. Integrate the tested package into its consumers and validate the affected host values or behavior as appropriate. If the NAS uses it, also build it against the NAS's stable nixpkgs (see `packages/README.md`). Report what passed and anything unverified.
+
+Use the simplest execution tool that provides evidence; Code Mode, a persistent REPL, and a VM are not prerequisites. Temporary Nix shells provide dependencies, not isolation from the user's files or services; keep experiments scoped and avoid production side effects. For straightforward version bumps or known packaging patterns, skip a separate prototype and use focused build-and-test checks directly.
 
 ## Repository Package Structure
 
