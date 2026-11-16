@@ -10,8 +10,6 @@ let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
-  imports = [ ./langfuse ];
-
   programs.claude-code = {
     enable = true;
     package = llmPkgs.claude-code;

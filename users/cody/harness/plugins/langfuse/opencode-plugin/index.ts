@@ -9,8 +9,8 @@
 // package.json.
 //
 // REMOVAL CONDITION: delete this file with the rest of
-// `users/cody/harness/opencode/tools/langfuse/` once upstream ships a fixed
-// release (see ./default.nix).
+// `users/cody/harness/plugins/langfuse/opencode-plugin/` once upstream ships a
+// fixed release (see ../default.nix).
 import langfusePlugin from "@langfuse/opencode-observability-plugin";
 
 export default langfusePlugin;

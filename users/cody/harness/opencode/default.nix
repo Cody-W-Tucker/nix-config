@@ -12,11 +12,6 @@ let
   opencode = pkgs.unstable.opencode;
 in
 {
-  imports = [
-    ./tools/langfuse
-    ./tools/rtk
-  ];
-
   # OpenCode Langfuse observability credentials (shared Home Manager scope):
   # the nixos-secrets `opencode-langfuse-env` secret is rendered by a SOPS
   # template (codyt-owned, 0400) plus a declarative LANGFUSE_BASE_URL. Values

@@ -17,6 +17,7 @@ in
     ./opencode
     ./context.nix
     ./mcp.nix
+    ./plugins
     ./skills
   ];
 

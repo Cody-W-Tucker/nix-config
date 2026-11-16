@@ -10,7 +10,7 @@ Does not own general desktop behavior, shell defaults, host services, or system 
 - Put MCP server/client exposure in `mcp.nix` unless it belongs entirely to one packaged tool or skill.
 - Put OpenCode agents under `opencode/agents/` and agent-local skills under that agent family.
 - Put skills every harness should load under `skills/`, contributed through `codyos.harness.skills`; do not set a per-tool `skills` option for them.
-- Put custom OpenCode tool plugins under `opencode/tools/`, with implementation files beside their Nix packaging.
+- Put plugins shared across OpenCode and Claude Code under `plugins/`, contributed through `codyos.harness.plugins`; put OpenCode-only tool plugins under `opencode/tools/`, with implementation files beside their Nix packaging.
 - Keep secrets out of this tree; use existing SOPS or secret wrapper plumbing.
 
 ## Failure Modes
