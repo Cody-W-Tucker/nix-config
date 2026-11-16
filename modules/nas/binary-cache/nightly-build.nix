@@ -17,12 +17,14 @@ let
     runtimeInputs = [
       config.nix.package
       config.system.build.nixos-rebuild
+      pkgs.curl
       pkgs.git
       pkgs.jq
       pkgs.util-linux # runuser
     ];
     text = ''
       repo="github:Cody-W-Tucker/nix-config"
+      pulls_url="https://api.github.com/repos/Cody-W-Tucker/nix-config/pulls?state=open&head=Cody-W-Tucker:update/flake-lock"
       roots=/nix/var/nix/gcroots/nightly-build
       mkdir -p "$roots"
       status=0
@@ -33,6 +35,13 @@ let
         local meta rev
         meta=$(nix flake metadata --refresh --json "$1") || return 1
         rev=$(jq -er '.locked.rev' <<<"$meta") || return 1
+        echo "$repo?rev=$rev"
+      }
+
+      open_pr_ref() {
+        local json rev
+        json=$(curl -fsSL "$pulls_url") || return 1
+        rev=$(jq -er '.[0].head.sha // empty' <<<"$json") || return 1
         echo "$repo?rev=$rev"
       }
 
@@ -74,7 +83,7 @@ let
       fi
 
       # Pending flake-update PR (opened weekly by CI); build only, never switch.
-      if pr=$(locked_ref "$repo?ref=update/flake-lock" 2>/dev/null); then
+      if pr=$(open_pr_ref); then
         build pr-beast "$pr" beast || status=1
         build pr-nas "$pr" nas || status=1
       else

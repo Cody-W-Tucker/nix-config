@@ -2,7 +2,7 @@ name: "Update flake.lock"
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 4 * * 0' # Every Sunday at 4am UTC
+    - cron: '0 0 * * 0' # Every Sunday at 00:00 UTC (Saturday 6pm CST)
   pull_request:
     types: [opened, synchronize, reopened]
 concurrency:
@@ -83,13 +83,11 @@ jobs:
         if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
         run: |
           nix flake update
-      - name: Flake check
-        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
-        run: nix flake check --print-build-logs
       - name: Create Pull Request if changes exist
         id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.NIX_SECRETS_READ }}
           commit-message: "chore(flake): update inputs"
           title: "chore(flake): update inputs"
           body: |
