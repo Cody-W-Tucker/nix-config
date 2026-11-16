@@ -29,18 +29,25 @@ nix eval --json .#nixosConfigurations.nas.config --apply 'c:
 - Verify claims about upstream options, NixOS behavior, and override/build semantics in authoritative documentation, source, or tests; search snippets are not evidence.
 - Count reads and checks as successful only when their status and output demonstrate success; on failure, inspect the error, correct the invocation, and rerun before concluding.
 
-## Build Testing
+## Change Validation
 
-Validate risky changes such as new services, complex module refactors, unfamiliar Nix patterns, flake-input swaps, and Home Manager module wiring with `nix flake check`. It is the only required check: it evaluates both hosts and runs formatting, statix, deadnix, and `check-imports`, so do not also run `nixos-rebuild dry-run` (it repeats the same evaluation). Do not call a risky change validated unless it succeeds. Simple package-list updates, existing-value changes, and minor configuration tweaks rarely need pre-testing; the user will catch issues during their `update` run.
+Identify the affected hosts and expected behavior, then choose the smallest checks that can provide meaningful evidence, in this order:
 
-If the check fails, read the logs and solve the issues.
+1. For existing option values and package-list changes, evaluate the relevant merged values on each affected host; run a focused check when useful.
+2. For packages, scripts, generated configuration, and plugins, build and test the changed artifact or behavior directly when practical.
+3. For significant module wiring, new services, or changes spanning a host configuration, build the affected host closure when narrower checks cannot adequately catch likely build failures.
+
+Use `nix flake check` when repository-wide validation is appropriate, such as broad refactors or flake-input changes. It evaluates both hosts and runs the declared checks; it does not build every package or host closure, activate a system, or prove runtime behavior. Individual checks can be run with `nix build .#checks.x86_64-linux.<name>`.
+
+Run focused behavioral checks where possible, and report what passed and what remains unverified. Evaluation can run from either host, but claims about actual hardware, services, secrets, or network behavior require evidence from the affected host. Do not activate, switch, or run `nixos-rebuild test` without the user's authorization. If a check fails, inspect the error and address it; do not claim validation that was not performed.
 
 ```bash
-# Checks both hosts and all flake outputs. Stage new files first.
+# Repository-wide evaluation and declared checks. Stage new files first.
 nix flake check
 
-# Optional: actually build a host when the derivations themselves are in doubt.
-nixos-rebuild build --flake .#nas
+# Example: build an affected package or host without activation.
+nix build --no-link .#update
+nix build --no-link .#nixosConfigurations.nas.config.system.build.toplevel
 ```
 
 Once the changes have settled, the user will run the `update` script to build and activate the system.

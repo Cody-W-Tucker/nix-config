@@ -30,7 +30,7 @@ The `update` script is defined as a `pkgs.writeShellApplication` in [packages/up
 6. **Push:** Pushes only after local activation succeeds.
 7. **NAS (optional):** With `update --nas [message]`, it then runs `git pull --ff-only && sudo nixos-rebuild switch` on the NAS over SSH. `ssh -t` lets its sudo prompt for a password.
 
-The workflow lives in [packages/update/package.nix](../packages/update/package.nix). A failed local build or activation leaves the commit in place but prevents the push. The NAS build happens after the push, so it can fail independently. Agents run `nix flake check` separately before handing off changes; `update` does not repeat it.
+The workflow lives in [packages/update/package.nix](../packages/update/package.nix). A failed local build or activation leaves the commit in place but prevents the push. The NAS build happens after the push, so it can fail independently. Agents choose change-specific validation separately; `update` does not run `nix flake check`.
 
 The script does **not** run `nix flake update`. Updating inputs is a separate operator choice.
 
@@ -131,7 +131,7 @@ A workflow runs on manual dispatch, every Sunday at 00:00 UTC (Saturday at 6:00 
 3. **Scheduled or Manual Update:** Non-PR runs require `NIX_SECRETS_READ` and run `nix flake update` [.github/workflows/update-flake-lock.yml57-85](../.github/workflows/update-flake-lock.yml#L57-L85)
 4. **PR Creation:** If changes are detected, the workflow opens or updates `update/flake-lock` authenticated with `NIX_SECRETS_READ` (with title `chore(flake): update inputs` and labels `dependencies`, `automated`, and `nix`), which immediately triggers the PR check jobs on the pull request without manual approval [.github/workflows/update-flake-lock.yml86-100](../.github/workflows/update-flake-lock.yml#L86-L100)
 
-`nix flake check` evaluates both hosts and runs the flake's `checks.x86_64-linux`: `formatting` (nixfmt), `statix` (lint rules in `statix.toml`), `deadnix` (unused bindings), `imports` (`check-imports` against the flake source), and `hindsight-retain` (memory-plugin tests). It does not test the update script's behavior. Agents run this before handoff; `update` builds the current host and does not repeat the flake check.
+`nix flake check` evaluates both hosts and package outputs and runs the flake's `checks.x86_64-linux`: `formatting` (nixfmt), `statix` (lint rules in `statix.toml`), `deadnix` (unused bindings), and `imports` (`check-imports` against the flake source). It does not build all packages or host closures or test the update script's behavior. Agents choose validation according to the change; `update` builds the current host and does not run the flake check.
 
 ### Garbage Collection
 

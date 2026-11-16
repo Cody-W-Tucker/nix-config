@@ -139,7 +139,8 @@
         pkgs.lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./packages)
       );
 
-      # Run by `nix flake check` (locally and in CI), alongside evaluating both hosts.
+      # Repository-wide checks; individual checks can also be built by name.
+      # Package and host outputs are evaluated by `nix flake check`, not built.
       checks.x86_64-linux =
         let
           lint =
@@ -159,9 +160,6 @@
             pkgs.deadnix
           ] "deadnix --fail --no-lambda-arg --no-lambda-pattern-names .";
           imports = lint "imports" [ pkgs.check-imports ] "check-imports .";
-          hindsight-retain = lint "hindsight-retain" [ pkgs.nodejs pkgs.git ] ''
-            node --test users/cody/harness/plugins/hindsight/opencode-retain.test.mjs
-          '';
         };
 
       # Builds the different systems

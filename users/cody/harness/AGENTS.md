@@ -19,3 +19,7 @@ Does not own general desktop behavior, shell defaults, host services, or system 
 - Duplicating MCP definitions across tools instead of keeping one user-session owner.
 - Hiding long shell behavior inside Nix strings when a script or plugin file would be clearer.
 - Moving command names, skill paths, or tool names that existing agents reference.
+
+## Focused Tests
+
+- When changing the OpenCode Hindsight retain plugin, run `nix shell nixpkgs#nodejs --command node --test users/cody/harness/plugins/hindsight/opencode-retain.test.mjs` from the repository root.
