@@ -1,6 +1,6 @@
 ---
 name: nixos-pitfalls-and-review
-description: NixOS module or configuration changes, diagnostics, recommendations, audits, and reviews; includes module semantics, source verification, wiring, validation, and network reachability.
+description: Use before NixOS/Nix module changes or audits that assert merged or upstream option semantics, trace complete NixOS/Home Manager argument wiring, report locked dependency versions with exact revisions and timestamps, validate builds, or diagnose network reachability.
 ---
 
 # NixOS Pitfalls And Review

@@ -24,10 +24,10 @@ nix eval --json .#nixosConfigurations.nas.config --apply 'c:
 
 ## Evidence Discipline
 
-- Before declaring an audit or evidence report complete, verify every acceptance criterion with direct source or evaluated evidence; explicitly mark anything unverified. When a criterion requires behavioral confirmation, run a focused runtime test; source inspection alone is insufficient.
-- Before citing a file, open and read it in the current session; grep/search output does not count. For exhaustive inventories, enumerate every relevant exact path and inspect every search hit and referenced file.
+- Before declaring an audit or evidence report complete, map every acceptance criterion to direct source or evaluated evidence and explicitly mark anything unverified. A behavioral criterion requires a focused runtime test; source inspection alone is insufficient.
+- Before citing a file, open and read it in the current session; grep/search output does not count. For exhaustive inventories, enumerate every relevant exact path instead of using wildcard summaries, and inspect every search hit and referenced file.
 - Verify claims about upstream options, NixOS behavior, and override/build semantics in authoritative documentation, source, or tests; search snippets are not evidence.
-- Count reads and checks as successful only when their status and output demonstrate success; on failure, inspect the error, correct the invocation, and rerun before concluding.
+- Validation status must be the validated command's status. Do not pipe through `head` or `tail` unless `pipefail` or `PIPESTATUS` preserves it. Report success only when both status and output demonstrate it; inspect failures, correct the invocation, and rerun.
 
 ## Change Validation
 
@@ -35,7 +35,7 @@ Identify the affected hosts and expected behavior, then choose the smallest chec
 
 1. For existing option values and package-list changes, evaluate the relevant merged values on each affected host; run a focused check when useful.
 2. For packages, scripts, generated configuration, and plugins, build and test the changed artifact or behavior directly when practical.
-3. For significant module wiring, new services, or changes spanning a host configuration, build the affected host closure when narrower checks cannot adequately catch likely build failures.
+3. For significant module wiring, new services, or host-spanning changes, build the affected host closure before declaring validation complete unless a narrower artifact build directly covers the likely failures; `nix flake check` or a dry-run is not a substitute.
 
 Use `nix flake check` when repository-wide validation is appropriate, such as broad refactors or flake-input changes. It evaluates both hosts and runs the declared checks; it does not build every package or host closure, activate a system, or prove runtime behavior. Individual checks can be run with `nix build .#checks.x86_64-linux.<name>`.
 
@@ -56,7 +56,7 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ### Editing
 
-- Keep narrowly scoped edits minimal: preserve unrelated lines and comments, and avoid repository-wide formatting.
+- Keep narrowly scoped edits minimal: preserve unrelated lines and comments, and avoid repository-wide formatting. Before summarizing Git state or claiming no unrelated files were touched, inspect status and the complete staged and unstaged diff for every modified or unmerged path; enumerate relevant changed files by exact path.
 
 ### Naming & Files
 
@@ -81,7 +81,7 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ## Tracing Configuration: Evaluate, Don't Scan
 
-The module system merges every file, so the evaluated config is the only complete answer to "what sets this" and "what is this set to". Ask it before reading module trees. Use Grep only for plain text (comments, strings inside scripts, docs). Replace `<host>` with `nas` or `beast`; each command takes about a second once the flake is cached.
+For any claim about effective Nix configuration—including presence, absence, conflicts, defaults, contributors, or host capability—evaluate the merged configuration before searching or reading module trees. Never infer effective state from imports or source assignments alone. Use Grep only for plain text (comments, strings inside scripts, docs). Replace `<host>` with `nas` or `beast`; each command takes about a second once the flake is cached.
 
 ```bash
 # Which files contribute definitions for an option

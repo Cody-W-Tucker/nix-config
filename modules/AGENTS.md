@@ -10,7 +10,7 @@ Does not own one-host facts or Home Manager/user preferences. Put those in `host
 - Keep host-specific choices in `hosts/`.
 - Keep user app configuration in `users/`, even when it supports a system service.
 - Put custom service integrations under `services/<name>/default.nix` once they grow past one file.
-- Keep `default.nix` files as assembly spines; split scripts, packages, patches, and runtime wiring into named files.
+- Keep `default.nix` files as assembly spines. Small declarations may stay; multi-step processing, scripts, packages, patches, and runtime workflows belong in named supporting files, not `default.nix`.
 - Declare secrets close to the consuming service, with quoted names for dashed keys.
 
 ## Profiles and Features
