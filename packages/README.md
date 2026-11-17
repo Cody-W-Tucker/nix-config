@@ -74,12 +74,6 @@ Pinned [lavish-axi](https://github.com/kunchenguid/lavish-axi) `v0.1.31` (Node >
 
 Pinned [acpx](https://github.com/openclaw/acpx) `v0.19.4` (Node >=22.13) from the npm registry via `buildNpmPackage` with a vendored `package-lock.json`. No pre-existing package in any pinned flake input, so it is packaged here. `dist/` ships prebuilt, so `dontNpmBuild` is set and `npmPackFlags = [ "--ignore-scripts" ]` keeps the install hook from running the upstream `prepack` tsdown rebuild.
 
-### `tokeneconomizer`
-
-Pinned [TokenEconomizer](https://github.com/microsoft/TokenEconomizer) (`0.1.0-unstable-2026-11-15`, `7042ea8`). Assembles the self-contained plugin bundle via `scripts/build_plugin.py` (which copies the stdlib-only `tokeneconomizer` Python package into `tokeneconomizer/lib/`), pins `python3` in the `te` and `te-hook` launchers, and exposes `bin/te`.
-
-- Wired into OpenCode and Claude Code via `users/cody/harness/plugins/tokeneconomizer` (`codyos.harness.plugins.tokeneconomizer`).
-
 ## Adding or changing a package
 
 1. Create `packages/<name>/package.nix` as a `callPackage` function, and `git add` it (flakes only see tracked files).

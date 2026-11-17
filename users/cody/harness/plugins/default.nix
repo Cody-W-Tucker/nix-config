@@ -81,7 +81,6 @@ in
     ./hindsight
     ./langfuse
     ./rtk
-    ./tokeneconomizer
   ];
 
   options.codyos.harness.plugins = lib.mkOption {
