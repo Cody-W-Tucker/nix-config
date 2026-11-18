@@ -16,7 +16,7 @@ Install via the NixOS installer and configure disks well enough to build a defau
 4. Copy your SSH key to the machine with `ssh-copy-id` and connect over SSH.
 5. Clone the main repo to `/etc/nixos` on the new machine.
 6. Move the generated machine config aside to `/etc/nixos-aside`.
-7. Copy the generated hardware / disk details from `/etc/nixos-aside` into a new directory under `modules/_legacy/hosts/` that matches the existing host pattern, then declare the host in `modules/hosts/` (see [`modules/README.md`](../../README.md#adding-a-host)).
+7. Copy the generated hardware / disk details from `/etc/nixos-aside` as `modules/hosts/_<host>-hardware.nix`, then declare the host in `modules/hosts/<host>.nix` (see [`modules/README.md`](../README.md#adding-a-host)).
 8. Commit and push the host definition from the parent machine so the main repo stays authoritative.
 9. Pull the updated main repo on the new machine before the first real rebuild or install.
 
@@ -50,6 +50,6 @@ unset GITHUB_TOKEN
 
 ## Notes
 
-Each host keeps machine hardware (disks, initrd/kernel modules, device quirks) in `hardware-configuration.nix` and host policy in `default.nix`, so hardware can be regenerated with `nixos-generate-config` without touching policy.
+Each host keeps machine hardware (disks, initrd/kernel modules, device quirks) in `_<host>-hardware.nix` and host policy in `<host>.nix`, so hardware can be regenerated with `nixos-generate-config` without touching policy.
 
 The first build will fail if the host is not already included in the private repo's `.sops.yaml` recipients or if `flake.lock` still pins `nixos-secrets` to an old SSH URL.

@@ -1,7 +1,7 @@
 {
   # Hermes runs as a Home Manager user service; the HM module tree
   # (modules/services/hermes-agent) is imported in the nas user's import list in
-  # den/hosts/nas.nix, because the position of that import in the single user
+  # modules/hosts/nas.nix, because the position of that import in the single user
   # definition affects home.packages order (and so the derivation).
   # This aspect carries the NixOS-level half: the state and CRM SQLite files are
   # exported by Restic's pre-backup step; remaining state is a direct Restic

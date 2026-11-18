@@ -2,8 +2,8 @@
 
 The flake exports exactly two NixOS configurations. They are declared with [Den](https://github.com/denful/den) in [`den/`](../den) (see [`den/README.md`](../den/README.md)) and re-exported by [`flake.nix`](../flake.nix):
 
-- `nixosConfigurations.beast` — [`den/hosts/beast.nix`](../den/hosts/beast.nix) composes [`hosts/beast`](../hosts/beast) with the desktop role and features, against `nixpkgs-unstable` and `home-manager`.
-- `nixosConfigurations.nas` — [`den/hosts/nas.nix`](../den/hosts/nas.nix) composes [`hosts/nas`](../hosts/nas) with the NAS role, against stable `nixpkgs` and `home-manager-stable`.
+- `nixosConfigurations.beast` — [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) holds the host, its machine facts and (via [`_beast-hardware.nix`](../modules/hosts/_beast-hardware.nix)) its hardware, with the desktop role and features, against `nixpkgs-unstable` and `home-manager`.
+- `nixosConfigurations.nas` — [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) holds the host, its machine facts and (via [`_nas-hardware.nix`](../modules/hosts/_nas-hardware.nix)) its hardware, with the NAS role, against stable `nixpkgs` and `home-manager-stable`.
 
 Both hosts share foundational modules under [`modules/system/`](../modules/system) (e.g. [`modules/system/base.nix`](../modules/system/base.nix)).
 

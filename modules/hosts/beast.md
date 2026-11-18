@@ -6,12 +6,12 @@ Central docs should point here instead of duplicating this host map.
 
 ## Layout
 
-Host policy (identity, features, network mounts, networking, Docker, and desktop `hardwareConfig`) lives in `default.nix`; machine hardware lives in `hardware-configuration.nix`.
+Host policy (identity, features, network mounts, networking, Docker, and desktop `hardwareConfig`) lives in the `den.aspects.beast` `nixos` block of `beast.nix`; machine hardware lives in `_beast-hardware.nix`.
 
 | Path          | Role                                                                                                                                       |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `default.nix` | Host policy: `codyos.*` features, kernel choice, NAS network mounts, networking (incl. Wake-on-LAN), `hardwareConfig` for Hyprland, Home Manager entry. |
-| `hardware-configuration.nix` | Hardware: root and EFI filesystems, initrd/kernel modules, MT7925 Wi-Fi/Bluetooth quirks. |
+| `beast.nix` | Host policy: `codyos.*` features, kernel choice, NAS network mounts, networking (incl. Wake-on-LAN), `hardwareConfig` for Hyprland, Home Manager entry. |
+| `_beast-hardware.nix` | Hardware: root and EFI filesystems, initrd/kernel modules, MT7925 Wi-Fi/Bluetooth quirks. |
 
 ## Hardware profile
 

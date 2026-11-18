@@ -78,18 +78,7 @@ in
 
     hosts = mkOption {
       type = types.attrsOf hostType;
-      default = {
-        nas = {
-          lan = "192.168.1.2";
-          tailscale = "100.81.249.65";
-        };
-        beast = {
-          lan = "192.168.1.3";
-          tailscale = "100.108.143.19";
-          mac = "60:cf:84:7a:a3:4a";
-        };
-      };
-      description = "Addresses of the machines in this flake, keyed by hostname.";
+      description = "Addresses of the machines in this flake, keyed by hostname (populated from the den host attributes in modules/roles/base.nix).";
     };
   };
 }

@@ -10,5 +10,5 @@ Does not own reusable services, shared desktop behavior, or user preferences. Pu
 - Compose modules; do not implement large services inline in a host file.
 - Keep user account behavior in `users/` unless the host is only selecting a profile.
 - Move duplicated host logic into `modules/` once a second host wants it.
-- Role selection, feature aspects, the nixpkgs/Home Manager pairing and Home Manager user wiring live in `den/` (`den/hosts/<host>.nix`), not here.
+- Role selection, feature aspects, the nixpkgs/Home Manager pairing and Home Manager user wiring live in `modules/hosts/<host>.nix` (den host + aspect), not here.
 - New host directories should read as machine facts and option-carrying `codyos.*` settings, not a private module tree.

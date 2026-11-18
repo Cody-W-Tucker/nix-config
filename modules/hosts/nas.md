@@ -6,13 +6,13 @@ Central docs should point here instead of duplicating this host map.
 
 ## Layout
 
-Host policy (identity, features, ZFS storage settings, networking, Home Manager) lives in `default.nix`; disks and kernel modules live in `hardware-configuration.nix`. The llama-swap inference catalog stays separate in `models.nix`.
+Host policy (identity, features, ZFS storage settings, networking, Home Manager) lives in the `den.aspects.nas` `nixos` block of `nas.nix`; disks and kernel modules live in `_nas-hardware.nix`. The llama-swap inference catalog stays separate in `_nas-models.nix`.
 
 | Path          | Role                                                                                                                                                                         |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default.nix` | Host policy: `codyos.*` features, ZFS pool/ARC, Btrfs auto-scrub, home bind mounts, networking, Tailscale subnet router, Docker, CUDA toolkit, Home Manager entry. ZFS snapshot policy lives in `modules/nas/backups.nix`. |
-| `hardware-configuration.nix` | Hardware: filesystems (Btrfs root, Btrfs appdata/projects/knowledge, ext4 media; all `noatime`) and initrd/kernel modules. |
-| `models.nix`  | `llama-swap` enablement, CUDA acceleration (Blackwell sm_120a), model catalog (chat, embedding, OCR, audio STT/TTS).                         |
+| `nas.nix` | Host policy: `codyos.*` features, ZFS pool/ARC, Btrfs auto-scrub, home bind mounts, networking, Tailscale subnet router, Docker, CUDA toolkit, Home Manager entry. ZFS snapshot policy lives in `modules/nas/backups.nix`. |
+| `_nas-hardware.nix` | Hardware: filesystems (Btrfs root, Btrfs appdata/projects/knowledge, ext4 media; all `noatime`) and initrd/kernel modules. |
+| `_nas-models.nix`  | `llama-swap` enablement, CUDA acceleration (Blackwell sm_120a), model catalog (chat, embedding, OCR, audio STT/TTS).                         |
 
 ## Hardware profile
 
