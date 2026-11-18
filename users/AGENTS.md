@@ -10,4 +10,5 @@ Does not own system services, hardware, networking, or host composition. Those b
 - Put role behavior in `desktop.nix`, `server.nix`, or a role subdirectory.
 - Keep GUI apps and desktop tools under the desktop role, not in core.
 - Do not hide NixOS services here unless Home Manager is the real owner.
+- Which role file a host's Home Manager user imports (and its `inputs`/`hardwareConfig` args) is set in `den/hosts/<host>.nix`.
 - Add new users as their own directory instead of special-casing Cody paths.

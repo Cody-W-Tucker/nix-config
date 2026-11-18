@@ -66,6 +66,7 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ### Module Structure
 
+- Den (`den/`) owns `nixosConfigurations`: per-host composition lives in `den/hosts/<host>.nix` and role/feature aspects in `den/aspects/`; see `den/README.md`. `den/` has no `default.nix` (it is loaded by `import-tree`).
 - Naming: `modules/{location}/{item}/default.nix` and file.
 - Keep `default.nix` short.
   - Use supporting files with self-explaining names if needed.
@@ -103,3 +104,4 @@ nix eval --json .#nixosConfigurations.<host>.config.home-manager.users.codyt.pro
 - For attribute-set options (`systemd.services`, `services.nginx.virtualHosts`), query the option itself to list every contributing file, then narrow with the specific attribute under `config`.
 - Values that are derivations or functions do not serialize; select a leaf (`.drvPath`, `.name`) or drop `--json`.
 - New files must be `git add`-ed before these commands can see them.
+- Hosts are assembled by Den, but `nixosConfigurations.<host>` evaluates to an ordinary NixOS system, so every command above is unchanged. Definition locations for options set from an aspect point at `den/` files (or Den-generated modules) rather than `hosts/`.

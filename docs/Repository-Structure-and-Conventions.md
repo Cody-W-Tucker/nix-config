@@ -8,7 +8,8 @@ The repository follows a functional decomposition strategy, ensuring that machin
 
 | Directory     | Purpose                                                            | Key Contents                                  |
 | ------------- | ------------------------------------------------------------------ | --------------------------------------------- |
-| `hosts/`      | Machine-specific entry points and hardware facts.                  | `beast/`, `nas.nix`                            |
+| `den/`        | Den host declarations, role/feature aspects, per-host wiring.      | `hosts.nix`, `hosts/`, `aspects/`             |
+| `hosts/`      | Machine-specific hardware facts and host policy.                   | `beast/`, `nas/`                              |
 | `modules/`    | Reusable NixOS system-level modules and services.                  | `system/`, `services/`, `desktop/`, `server/` |
 | `users/`      | Home Manager configurations.                                       | `cody/core.nix`, `cody/desktop.nix`, `cody/desktop/` |
 | `packages/`   | Custom derivations and system scripts.                             | `system-scripts/`, `kokoro/`                          |
@@ -31,8 +32,10 @@ flowchart LR
         PKGS["packages/ (custom)"]
         SECRETS["nixos-secrets (Private Flake)"]
     end
-    FLAKE --> HOSTS
-    HOSTS --> MODS
+    DEN["den/ (hosts + aspects)"]
+    FLAKE --> DEN
+    DEN --> HOSTS
+    DEN --> MODS
     HOSTS --> USERS
     MODS --> PKGS
     MODS --> SECRETS
@@ -75,8 +78,8 @@ modules/services/hermes-agent/
 
 Hosts compose two kinds of NixOS modules:
 
-- **Profiles** describe a machine role and are selected by import: `modules/desktop` and `modules/nas`.
-- **Features** are optional pieces that any host can switch on. Each declares `options.codyos.<name>.enable`, wraps its config in `lib.mkIf`, and is imported unconditionally from [modules/system/base.nix](../modules/system/base.nix). Hosts and profiles enable them:
+- **Profiles** describe a machine role: `modules/desktop` and `modules/nas`, selected through the Den aspects in [`den/aspects/`](../den/aspects) that host aspects include.
+- **Features** are optional pieces that any host can switch on. Each declares `options.codyos.<name>.enable`, wraps its config in `lib.mkIf`, and is imported unconditionally from [modules/system/base.nix](../modules/system/base.nix). Pure enable gates are set by aspects in [`den/aspects/features.nix`](../den/aspects/features.nix); hosts and profiles set the rest:
 
 ```nix
 codyos = {
