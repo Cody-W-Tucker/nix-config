@@ -17,11 +17,9 @@ in
   # ── Features ────────────────────────────────────────────────
   codyos = {
     docker.enable = true;
-    gaming.enable = true;
     hardware.nvidia.enable = true;
-    hardware.openrazer.enable = true;
-    paperless-scanning.enable = true;
   };
+  # gaming, openrazer and paperless-scanning are den aspects (den/hosts/beast.nix).
 
   # Kernel (hardware modules and quirks are in hardware-configuration.nix).
   boot.kernelPackages = pkgs.linuxPackages_latest;

@@ -5,6 +5,8 @@
       den.aspects.base
       den.aspects.nas-role
       den.aspects.hermes-agent
+      den.aspects.hindsight
+      den.aspects.opencode
     ];
 
     nixos =

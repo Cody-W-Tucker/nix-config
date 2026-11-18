@@ -31,6 +31,9 @@
     includes = [
       den.aspects.base
       den.aspects.desktop
+      den.aspects.gaming
+      den.aspects.openrazer
+      den.aspects.paperless-scanning
     ];
 
     nixos =

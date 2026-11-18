@@ -70,9 +70,8 @@ in
         watts = 123;
       };
     };
-    hindsight.enable = true;
-    opencode.enable = true; # web server for opencode
   };
+  # hindsight and opencode are den aspects (den/hosts/nas.nix).
 
   # Networking
   networking = {
