@@ -8,7 +8,7 @@
       den.aspects.miniflux-curator
     ];
     nixos.imports = [
-      ../_legacy/nas
+      ../server/_nas
       inputs.workflow.nixosModules.default
       inputs.vpn-confinement.nixosModules.default
     ];
