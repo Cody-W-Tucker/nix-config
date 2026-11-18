@@ -24,11 +24,11 @@
     ../hardware/nvidia.nix
     ../desktop/gaming
     ../desktop/hardware/openrazer
-    ../services/docker.nix
-    ../services/hindsight
-    ../services/nginx # provides mkNginxVhost to feature modules
-    ../services/opencode
-    ../services/paperless-scanning
+    ../../services/_docker.nix
+    ../../services/_hindsight.nix
+    ../../services/_nginx.nix # provides mkNginxVhost to feature modules
+    ../../services/_opencode.nix
+    ../../services/_paperless-scanning.nix
   ];
 
   # https://emudhra.we-have-a-problem.com/

@@ -33,7 +33,7 @@ in
     ./photos.nix
     ./samba.nix
     ./security.nix
-    ../services/syncthing.nix
+    ../../services/_syncthing.nix
     ./nginx-syncthing.nix
     ./tika.nix
     ./uptime-kuma.nix

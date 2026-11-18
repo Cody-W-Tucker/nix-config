@@ -30,7 +30,7 @@ in
       imports = [
         ../_legacy/users/cody/server.nix
         # Hermes HM module tree; its NixOS backup wiring is den.aspects.hermes-agent.
-        ../_legacy/services/hermes-agent
+        ../services/hermes-agent/_hm
         # Stable nixvim pairs with stable Home Manager.
         inputs.nixvim-stable.homeModules.nixvim
       ];
@@ -45,7 +45,7 @@ in
         # Machine facts for nas (disks and kernel modules are in _nas-hardware.nix).
         imports = [
           ./_nas-hardware.nix
-          ./_nas-models.nix
+          ../services/llama-swap/_nas-models.nix
         ];
         # ZFS storage (disks and kernel modules are in _nas-hardware.nix).
         boot = {

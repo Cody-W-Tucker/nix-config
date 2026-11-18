@@ -1,6 +1,6 @@
 {
   # Hermes runs as a Home Manager user service; the HM module tree
-  # (modules/services/hermes-agent) is imported in the nas user's import list in
+  # (modules/services/hermes-agent/_hm) is imported in the nas user's import list in
   # modules/hosts/nas.nix, because the position of that import in the single user
   # definition affects home.packages order (and so the derivation).
   # This aspect carries the NixOS-level half: the state and CRM SQLite files are

@@ -7,7 +7,7 @@
     ./hyprland.nix
     ./logging.nix
     ./printing.nix
-    ../services/syncthing.nix
+    ../../services/_syncthing.nix
     ./hardware/nvidia.nix
     ./hardware/wifi.nix
   ];

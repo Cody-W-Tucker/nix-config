@@ -9,7 +9,7 @@ let
 in
 {
   imports = [
-    ../services/automations/miniflux-curator
+    ../../services/automations/_miniflux-curator.nix
   ];
 
   sops = {
