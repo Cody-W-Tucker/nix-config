@@ -2,13 +2,13 @@
 
 {
   imports = [
-    ./audio
-    ./fonts.nix
-    ./hyprland.nix
-    ./logging.nix
-    ./printing.nix
-    ./hardware/nvidia.nix
-    ./hardware/wifi.nix
+    ./_audio.nix
+    ./_fonts.nix
+    ./_hyprland-system.nix
+    ./_logging.nix
+    ./_printing.nix
+    ./_nvidia-session.nix
+    ./_wifi.nix
   ];
 
   hardware.graphics.enable = true;

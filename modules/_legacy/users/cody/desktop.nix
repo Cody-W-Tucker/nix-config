@@ -27,7 +27,7 @@ in
 
   imports = [
     ./core.nix
-    ./desktop
+    ../../../desktop/_hm
     ./editor/nixvim/plugins/desktop.nix
     inputs.stylix.homeModules.stylix
   ];
