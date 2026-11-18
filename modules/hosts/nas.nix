@@ -20,17 +20,17 @@ in
       den.aspects.base
       den.aspects.nas-role
       den.aspects.hermes-agent
+      den.aspects.llama-swap
       den.aspects.hindsight
       den.aspects.opencode
     ];
 
-    # Nas's Home Manager role: server, Hermes HM tree and stable nixvim.
+    # Nas's Home Manager role: server and stable nixvim (Hermes' HM half comes from
+    # den.aspects.hermes-agent).
     provides.to-users.homeManager = {
       home.stateVersion = "25.11";
       imports = [
         ../_legacy/users/cody/server.nix
-        # Hermes HM module tree; its NixOS backup wiring is den.aspects.hermes-agent.
-        ../services/hermes-agent/_hm
         # Stable nixvim pairs with stable Home Manager.
         inputs.nixvim-stable.homeModules.nixvim
       ];
@@ -43,10 +43,8 @@ in
       in
       {
         # Machine facts for nas (disks and kernel modules are in _nas-hardware.nix).
-        imports = [
-          ./_nas-hardware.nix
-          ../services/llama-swap/_nas-models.nix
-        ];
+        # llama-swap and its model catalog are den.aspects.llama-swap.
+        imports = [ ./_nas-hardware.nix ];
         # ZFS storage (disks and kernel modules are in _nas-hardware.nix).
         boot = {
           kernelParams = [ "zfs.zfs_arc_max=8589934592" ]; # 8 GiB
@@ -148,7 +146,7 @@ in
         # Docker package
         virtualisation.docker.package = pkgs.docker_29;
 
-        # llama-swap (models.nix) and Hermes (modules/services/hermes-agent/runtime)
+        # llama-swap (_nas-models.nix) and Hermes (modules/services/hermes-agent/_hm/runtime)
         # put /run/current-system/sw/lib on LD_LIBRARY_PATH and may load CUDA
         # libraries from the toolkit there, so keep it installed on this host.
         environment.systemPackages = [ pkgs.cudaPackages.cudatoolkit ];
