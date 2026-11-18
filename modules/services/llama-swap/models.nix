@@ -210,9 +210,17 @@ in
   # Wrapper-backed audio models: file is null because the host replaces the
   # generated llama-server command with an OpenAI-compatible helper process.
   # Wrapper commands are built in default.nix using proxy.nix.
-  "whisper-medium" = {
+  # Primary STT: sherpa-onnx Parakeet TDT 0.6B v3 int8. Needs
+  # `services.llama-swap.parakeetModel`.
+  "parakeet-tdt-v3" = {
     file = null;
     ttl = 0; # Keep STT warm until another group explicitly evicts it.
+  };
+  # Fallback STT for clients when parakeet-tdt-v3 fails; unloads when idle
+  # to give its VRAM back.
+  "whisper-medium" = {
+    file = null;
+    ttl = 300;
   };
   "whisper-diarization" = {
     file = null;

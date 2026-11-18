@@ -48,11 +48,35 @@ let
   };
 
   # s1-mini Q4_K_M GGUF (superwhisper) used as the speech-to-text transcript
-  # normalizer (llama-dictate posts raw Whisper output to it).
+  # normalizer (llama-dictate posts raw STT output to it).
   s1Mini = pkgs.fetchurl {
     url = "https://huggingface.co/superwhisper/s1-mini-GGUF/resolve/34add00a48a2e5d24e5a4ee5405a99620a3a240c/s1-mini-q4_k_m.gguf";
     sha256 = "3b41ebe2502cbd03e811d5d16b022f5ab551eda58d62597d152f89535003c634";
   };
+
+  # sherpa-onnx export of NVIDIA Parakeet TDT 0.6B v3 (int8) for the
+  # parakeet-tdt-v3 STT endpoint. Pinned to an immutable commit; hashes are
+  # the Hugging Face LFS sha256 values.
+  parakeetTdtV3 =
+    let
+      rev = "ed5d745623472f97cfc2e6c2916ee248798fc5a8";
+      fetch =
+        name: sha256:
+        pkgs.fetchurl {
+          url = "https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/${rev}/${name}";
+          inherit sha256;
+        };
+    in
+    pkgs.linkFarm "sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8" {
+      "encoder.int8.onnx" =
+        fetch "encoder.int8.onnx" "1afbe69c1ffdabee94755f42e4daf1d93549131a3da11356bda84fcef0f2c479";
+      "decoder.int8.onnx" =
+        fetch "decoder.int8.onnx" "0222a86147299d4dee90edf95b6d13827edb42ad8b7c9cf0b2582f030937c0b5";
+      "joiner.int8.onnx" =
+        fetch "joiner.int8.onnx" "cbd02f3696e9944970111fb439d9c3fd365a80374565f13f2b9c7007d253fc98";
+      "tokens.txt" =
+        fetch "tokens.txt" "d58544679ea4bc6ac563d1f545eb7d474bd6cfa467f0a6e2c1dc1c7d37e3c35d";
+    };
 
   # Laya Q8_0 GGUF (SystemOne speech endpoint). Pinned to an immutable
   # commit; content hash guards byte-identity (449397600 bytes).
@@ -96,6 +120,7 @@ in
     # the host nixpkgs.config that pkgs.unstable inherits.
     serverPackage = pkgs.unstable.llama-cpp;
     ctranslate2Cpp = ctranslate2CppBlackwell;
+    parakeetModel = parakeetTdtV3;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     port = 8081;
     openFirewall = false;
@@ -115,6 +140,7 @@ in
       "qwen-3.6-35b-a3b"
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
+      "parakeet-tdt-v3"
       "whisper-medium"
       "whisper-diarization"
       "kokoro-82m"
@@ -122,9 +148,10 @@ in
       "laya"
     ];
     # laya stays on-demand (not preloaded): existing policy only keeps the
-    # whisper/s1-mini audio path warm; nothing here calls for laya at boot.
+    # STT/s1-mini audio path warm; nothing here calls for laya at boot.
+    # whisper-medium is an on-demand fallback and is not preloaded.
     preloadModels = [
-      "whisper-medium"
+      "parakeet-tdt-v3"
       "s1-mini"
     ];
     modelOverrides = {
@@ -161,13 +188,15 @@ in
       settings.matrix = {
         vars = {
           embed = "qwen3-embedding-0.6b";
+          stt = "parakeet-tdt-v3";
           whisper = "whisper-medium";
           kokoro = "kokoro-82m";
           normalize = "s1-mini";
           text = "qwen-3.5-9b";
         };
         sets = {
-          audio = "embed & whisper & kokoro & normalize";
+          # whisper-medium only stands in for parakeet as a fallback.
+          audio = "embed & (stt | whisper) & kokoro & normalize";
           text = "embed & text";
         };
       };

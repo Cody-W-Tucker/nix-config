@@ -35,6 +35,20 @@ let
       ]
     );
 
+  # sherpa-onnx speech recognition. Its onnxruntime gets the CUDA provider from
+  # the host-wide nixpkgs.config.cudaSupport; ffmpeg decodes uploaded audio.
+  mkSherpaPython =
+    pkgs:
+    pkgs.python313.withPackages (
+      ps: with ps; [
+        fastapi
+        numpy
+        python-multipart
+        sherpa-onnx
+        uvicorn
+      ]
+    );
+
   # Kokoro needs CUDA torch for GPU inference; the host-wide
   # nixpkgs.config.cudaSupport already provides it.
   mkKokoroPython =
@@ -81,6 +95,7 @@ in
     diarizationCache
     kokoroAssets
     mkWhisperPython
+    mkSherpaPython
     mkKokoroPython
     mkWhisperDiarizePython
     defaultCTranslate2Cpp

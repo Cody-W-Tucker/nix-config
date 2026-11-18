@@ -8,7 +8,7 @@ For navigation: Cody's Home Manager desktop role is entered through `users/cody/
 
 The public audio API is `llama-swap` at `http://nas:8081`:
 
-- `POST /v1/audio/transcriptions` with `model=whisper-medium` or `model=whisper-diarization`
+- `POST /v1/audio/transcriptions` with `model=parakeet-tdt-v3` (primary), `model=whisper-medium` (fallback), or `model=whisper-diarization`
 - `POST /v1/audio/speech` with `model=kokoro-82m`
 - `GET /v1/audio/voices` with optional `model=kokoro-82m`
 
@@ -22,7 +22,8 @@ The speech pipeline is built on three primary server-side components and two cli
 
 | Component                | Implementation     | Role                          | API Endpoint               |
 | ------------------------ | ------------------ | ----------------------------- | -------------------------- |
-| **Transcription Server** | `faster-whisper`   | STT using Whisper models      | `/v1/audio/transcriptions` |
+| **Transcription Server** | `sherpa-onnx`      | STT using Parakeet TDT v3     | `/v1/audio/transcriptions` |
+| **Fallback STT Server**  | `faster-whisper`   | STT using Whisper medium      | `/v1/audio/transcriptions` |
 | **Diarization Server**   | `whisperx`         | Speaker-aware STT             | `/v1/audio/transcriptions` |
 | **Kokoro TTS**           | `kokoro-82m`       | High-quality, fast TTS        | `/v1/audio/speech`         |
 | **llama-dictate**        | Shell Script       | Hold-to-talk global dictation | N/A (Client)               |
@@ -30,9 +31,18 @@ The speech pipeline is built on three primary server-side components and two cli
 
 ## Transcription Services
 
-### Faster-Whisper Server
+### Parakeet (sherpa-onnx) Server
 
-The primary transcription backend is an OpenAI-compatible FastAPI server wrapping `faster-whisper`[modules/services/llama-swap/faster-whisper-openai-server.py34-69](../modules/services/llama-swap/faster-whisper-openai-server.py#L34-L69)
+The primary transcription backend, `parakeet-tdt-v3`, is an OpenAI-compatible FastAPI server ([modules/services/llama-swap/sherpa-onnx-openai-server.py](../modules/services/llama-swap/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves the sherpa-onnx int8 export of NVIDIA Parakeet TDT 0.6B v3. `hosts/nas/models.nix` pins the model files to a Hugging Face commit and passes them in through `services.llama-swap.parakeetModel`.
+
+- **Provider**: CUDA, with 4 CPU threads for supporting work. The CUDA provider was tested on the NAS's RTX 5060; actual memory use alongside the other audio models should be monitored.
+- **Audio input**: Every upload is decoded with ffmpeg to 16 kHz mono, so WAV, Ogg/Opus, MP3, and M4A all work. Audio longer than 120 s is split at the quietest 100 ms frame near each boundary.
+- **Readiness**: The model loads and runs one silent decode before `/health` answers. That means `GET /upstream/parakeet-tdt-v3/health` returns only once the backend is warm.
+- **API surface**: `response_format` may be `json` (default), `text`, or `verbose_json` (`segments` is empty). `language`, `prompt`, and `temperature` are accepted but ignored, because Parakeet detects its 25 European languages itself. `task=translate` returns 422.
+
+### Faster-Whisper Server (fallback)
+
+`whisper-medium` is kept as an on-demand fallback. It is not preloaded, uses a 300 s idle TTL, and takes Parakeet's slot in the NAS audio matrix set. `llama-dictate` and `hermes-waybar-voice` retry with it once if Parakeet fails. It is an OpenAI-compatible FastAPI server wrapping `faster-whisper`[modules/services/llama-swap/faster-whisper-openai-server.py34-69](../modules/services/llama-swap/faster-whisper-openai-server.py#L34-L69)
 
 - **Hardware Acceleration**: It attempts to initialize on `cuda` and falls back to `cpu` if CUDA initialization fails [modules/services/llama-swap/faster-whisper-openai-server.py40-60](../modules/services/llama-swap/faster-whisper-openai-server.py#L40-L60)
 - **VAD Filtering**: Supports an optional VAD filter to remove silence from audio before transcription [modules/services/llama-swap/faster-whisper-openai-server.py30-31](../modules/services/llama-swap/faster-whisper-openai-server.py#L30-L31)
@@ -179,5 +189,6 @@ The core logic resides in `hermes-waybar-voice.py`. It uses `pysilero-vad` for l
 The service is configured via environment variables in the `hermes-waybar-voice` wrapper:
 
 - `HERMES_SPEECH_BASE_URL`: Points to the `llama-swap` STT/TTS port (default `8081`) [users/cody/desktop/waybar.nix21](../users/cody/desktop/waybar.nix#L21-L21)
-- `HERMES_TRANSCRIPTION_MODEL`: Defaults to `whisper-medium`[users/cody/desktop/waybar.nix23](../users/cody/desktop/waybar.nix#L23-L23)
+- `HERMES_TRANSCRIPTION_MODEL`: Set to `parakeet-tdt-v3` [users/cody/desktop/waybar.nix](../users/cody/desktop/waybar.nix)
+- `HERMES_TRANSCRIPTION_FALLBACK_MODEL`: Set to `whisper-medium`; tried once when the primary model fails or returns no text
 - `HERMES_SPEECH_VOICE`: Defaults to `af_heart` (Kokoro) [users/cody/desktop/waybar.nix25](../users/cody/desktop/waybar.nix#L25-L25)

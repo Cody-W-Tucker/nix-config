@@ -94,6 +94,7 @@ let
 
   # Build Python environments for audio wrapper services
   whisperPython = proxy.mkWhisperPython cfg.ctranslate2Cpp;
+  sherpaPython = proxy.mkSherpaPython pkgs;
   kokoroPython = proxy.mkKokoroPython pkgs;
   whisperDiarizePython = proxy.mkWhisperDiarizePython pkgs;
   whisperDiarizationPackage =
@@ -104,9 +105,23 @@ let
 
   # Build wrapper commands for audio models
   wrapperCommands = {
-    "whisper-medium" = {
+    "parakeet-tdt-v3" = lib.optionalAttrs (cfg.parakeetModel != null) {
       file = null;
       ttl = 0;
+      upstream.cmd = ''
+        ${sherpaPython}/bin/python3 ${./sherpa-onnx-openai-server.py} \
+          --host 127.0.0.1 \
+          --port ''${PORT} \
+          --model-dir ${cfg.parakeetModel} \
+          --model-id parakeet-tdt-v3 \
+          --provider cuda \
+          --num-threads 4 \
+          --ffmpeg ${lib.getExe pkgs.ffmpeg-headless}
+      '';
+    };
+    "whisper-medium" = {
+      file = null;
+      ttl = 300;
       upstream.cmd = ''
         ${whisperPython}/bin/python3 ${./faster-whisper-openai-server.py} \
           --host 127.0.0.1 \
@@ -251,6 +266,12 @@ in
       default = proxy.defaultCTranslate2Cpp;
       defaultText = lib.literalExpression "pkgs.ctranslate2";
       description = "ctranslate2 package used by the faster-whisper Python environment. Override for architecture-specific CUDA builds.";
+    };
+
+    parakeetModel = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = "Directory holding the sherpa-onnx Parakeet TDT int8 export (`encoder.int8.onnx`, `decoder.int8.onnx`, `joiner.int8.onnx`, `tokens.txt`) served as `parakeet-tdt-v3`.";
     };
 
     hfTokenPath = lib.mkOption {

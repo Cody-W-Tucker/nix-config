@@ -29,7 +29,10 @@ GATEWAY_AUTH_TOKEN = os.environ.get(
 )
 SPEECH_AUTH_TOKEN = os.environ.get("HERMES_API_TOKEN", "local-only")
 CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "grok-4.5")
-TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "whisper-medium")
+TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "parakeet-tdt-v3")
+TRANSCRIPTION_FALLBACK_MODEL = os.environ.get(
+    "HERMES_TRANSCRIPTION_FALLBACK_MODEL", "whisper-medium"
+)
 SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "kokoro-82m")
 SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "af_heart")
 MAX_MESSAGES = int(os.environ.get("HERMES_VOICE_MAX_MESSAGES", "24"))
@@ -554,28 +557,37 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
 
 def transcribe(path: Path) -> str | None:
     set_status("transcribing", "Hermes voice transcribing")
-    result = run_command_interruptibly(
-        [
-            "curl",
-            "-sS",
-            "-X",
-            "POST",
-            f"{SPEECH_BASE_URL}/v1/audio/transcriptions",
-            "-H",
-            f"Authorization: Bearer {SPEECH_AUTH_TOKEN}",
-            "-F",
-            f"model={TRANSCRIPTION_MODEL}",
-            "-F",
-            f"file=@{path};type=audio/wav",
-        ]
-    )
-    if result is None:
-        return None
-    payload = json.loads(result.stdout)
-    text = payload.get("text") if isinstance(payload, dict) else None
-    if not isinstance(text, str) or not text.strip():
-        return None
-    return text.strip()
+    models = [TRANSCRIPTION_MODEL]
+    if TRANSCRIPTION_FALLBACK_MODEL and TRANSCRIPTION_FALLBACK_MODEL != TRANSCRIPTION_MODEL:
+        models.append(TRANSCRIPTION_FALLBACK_MODEL)
+    for model in models:
+        try:
+            result = run_command_interruptibly(
+                [
+                    "curl",
+                    "-sS",
+                    "--fail",
+                    "-X",
+                    "POST",
+                    f"{SPEECH_BASE_URL}/v1/audio/transcriptions",
+                    "-H",
+                    f"Authorization: Bearer {SPEECH_AUTH_TOKEN}",
+                    "-F",
+                    f"model={model}",
+                    "-F",
+                    f"file=@{path};type=audio/wav",
+                ]
+            )
+            if result is None:
+                return None
+            payload = json.loads(result.stdout)
+        except (subprocess.CalledProcessError, json.JSONDecodeError) as err:
+            print(f"transcription with {model} failed: {err}", file=sys.stderr, flush=True)
+            continue
+        text = payload.get("text") if isinstance(payload, dict) else None
+        if isinstance(text, str) and text.strip():
+            return text.strip()
+    return None
 
 
 def chat(messages: list[dict[str, str]]) -> str | None:

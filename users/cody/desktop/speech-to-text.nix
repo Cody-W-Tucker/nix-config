@@ -36,9 +36,10 @@ let
       pathfile="/tmp/llama-dictate-recording.path"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
        api_url="http://nas:8081/v1/audio/transcriptions"
-       warmup_url="http://nas:8081/upstream/whisper-medium/health"
+       warmup_url="http://nas:8081/upstream/parakeet-tdt-v3/health"
        normalizer_warmup_url="http://nas:8081/upstream/s1-mini/health"
-       model="whisper-medium"
+       model="parakeet-tdt-v3"
+       fallback_model="whisper-medium"
       norm_url="http://nas:8081/v1/chat/completions"
 
        warm_model() {
@@ -185,7 +186,7 @@ let
       }
 
       normalize_text() {
-        # Normalize raw Whisper output through the s1-mini chat-completions
+        # Normalize the raw STT transcript through the s1-mini chat-completions
         # endpoint. s1-mini is a reasoning model, so the completion is
         # bounded with max_tokens and a deterministic temperature, and the
         # result is sanity-checked before use. On any failure (network
@@ -273,6 +274,17 @@ let
         ${wtypeFixedKeycodes}/bin/wtype "''${args[@]}"
       }
 
+      request_transcript() {
+        response="$(curl --silent --show-error --fail \
+          --max-time 120 \
+          -X POST "$api_url" \
+          -F "file=@$1;type=audio/wav" \
+          -F "model=$2" \
+          -F "language=en")" || return 1
+
+        printf '%s' "$response" | jq -r '.text // empty' | tr -s ' ' | sed 's/^ *//;s/ *$//'
+      }
+
       transcribe_and_type() {
         path="$1"
 
@@ -286,15 +298,11 @@ let
           return 1
         fi
 
-        response="$(curl --silent --show-error --fail \
-          --max-time 120 \
-          -X POST "$api_url" \
-          -F "file=@$path;type=audio/wav" \
-          -F "model=$model" \
-          -F "language=en")"
-
-        raw_text="$(printf '%s' "$response" | jq -r '.text // empty' | tr -s ' ')"
-        raw_text="$(printf '%s' "$raw_text" | sed 's/^ *//;s/ *$//')"
+        raw_text="$(request_transcript "$path" "$model" || true)"
+        if [ -z "$raw_text" ]; then
+          # Retry once on the faster-whisper backend if Parakeet fails.
+          raw_text="$(request_transcript "$path" "$fallback_model" || true)"
+        fi
 
         if [ -z "$raw_text" ]; then
           notify-send "Voice Input" "Transcription returned no text" -t 2000

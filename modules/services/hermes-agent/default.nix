@@ -244,7 +244,7 @@ in
           openai = {
             api_key = "local-only";
             base_url = "http://nas:8081/v1";
-            model = "whisper-medium";
+            model = "parakeet-tdt-v3";
           };
         };
         tts = {
