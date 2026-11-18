@@ -42,7 +42,7 @@
         imports = [
           # Unstable Home Manager pairs with nixpkgs-unstable.
           inputs.home-manager.nixosModules.home-manager
-          ../../hosts/beast
+          ../_legacy/hosts/beast
         ];
 
         home-manager = {
@@ -53,7 +53,7 @@
           users.${config.codyos.site.user.name} = {
             home.stateVersion = "25.05";
             imports = [
-              ../../users/cody/desktop.nix
+              ../_legacy/users/cody/desktop.nix
               inputs.nixos-secrets.homeModules.default
               inputs.nixvim.homeModules.nixvim
             ];

@@ -103,11 +103,11 @@
       inputs.home-manager.follows = "home-manager";
     };
     den = {
-      # Dendritic aspect library; owns nixosConfigurations (see den/).
+      # Dendritic aspect library; owns nixosConfigurations (see modules/README.md).
       url = "github:denful/den/v0.20.0";
     };
     import-tree = {
-      # Loads every module under den/.
+      # Loads every module under modules/ (paths containing `/_` are skipped).
       url = "github:vic/import-tree";
     };
     stevenblack = {
@@ -131,12 +131,12 @@
         inherit system;
         overlays = [ self.overlays.default ];
       };
-      # Den evaluates den/ and produces nixosConfigurations.
+      # Den evaluates modules/ and produces nixosConfigurations.
       denCfg =
         (inputs.nixpkgs.lib.evalModules {
           modules = [
             inputs.den.flakeModule
-            (inputs.import-tree ./den)
+            (inputs.import-tree ./modules)
           ];
           specialArgs = { inherit inputs; };
         }).config;
@@ -176,7 +176,7 @@
           imports = lint "imports" [ pkgs.check-imports ] "check-imports .";
         };
 
-      # Builds the different systems (declared in den/).
+      # Builds the different systems (declared in modules/hosts/).
       inherit (denCfg.flake) nixosConfigurations;
     };
 }

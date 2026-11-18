@@ -16,7 +16,7 @@ Install via the NixOS installer and configure disks well enough to build a defau
 4. Copy your SSH key to the machine with `ssh-copy-id` and connect over SSH.
 5. Clone the main repo to `/etc/nixos` on the new machine.
 6. Move the generated machine config aside to `/etc/nixos-aside`.
-7. Copy the generated hardware / disk details from `/etc/nixos-aside` into a new directory under `hosts/` that matches the existing host pattern, then declare the host in `den/` (see [`den/README.md`](../den/README.md#adding-a-host)).
+7. Copy the generated hardware / disk details from `/etc/nixos-aside` into a new directory under `modules/_legacy/hosts/` that matches the existing host pattern, then declare the host in `modules/hosts/` (see [`modules/README.md`](../../README.md#adding-a-host)).
 8. Commit and push the host definition from the parent machine so the main repo stays authoritative.
 9. Pull the updated main repo on the new machine before the first real rebuild or install.
 

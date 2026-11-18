@@ -88,7 +88,7 @@ let
 in
 {
   imports = [
-    ../../modules/services/llama-swap
+    ../../services/llama-swap
   ];
 
   sops.secrets."huggingface-read" = {

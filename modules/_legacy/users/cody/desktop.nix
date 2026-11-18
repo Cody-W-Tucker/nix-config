@@ -117,7 +117,7 @@ in
       };
     };
     # Wallpaper
-    image = ../../wallpapers/galaxy-waves.jpg;
+    image = ../../../../wallpapers/galaxy-waves.jpg;
   };
 
   home.packages = with pkgs; [

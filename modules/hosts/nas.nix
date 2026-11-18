@@ -15,7 +15,7 @@
         imports = [
           # Stable Home Manager pairs with stable nixpkgs.
           inputs.home-manager-stable.nixosModules.home-manager
-          ../../hosts/nas
+          ../_legacy/hosts/nas
         ];
 
         home-manager = {
@@ -25,9 +25,9 @@
           users.${config.codyos.site.user.name} = {
             home.stateVersion = "25.11";
             imports = [
-              ../../users/cody/server.nix
+              ../_legacy/users/cody/server.nix
               # Hermes HM module tree; its NixOS backup wiring is den.aspects.hermes-agent.
-              ../../modules/services/hermes-agent
+              ../_legacy/services/hermes-agent
               inputs.nixos-secrets.homeModules.default
               # Stable nixvim pairs with stable Home Manager.
               inputs.nixvim-stable.homeModules.nixvim
