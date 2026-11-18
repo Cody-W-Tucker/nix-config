@@ -48,6 +48,7 @@ in
       den.aspects.base
       den.aspects.desktop
       den.aspects.docker
+      den.aspects.nvidia
       den.aspects.gaming
       den.aspects.openrazer
       den.aspects.paperless-scanning
@@ -80,8 +81,7 @@ in
         # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | Storage: 2TB NVMe
 
         # ── Features ────────────────────────────────────────────────
-        codyos.hardware.nvidia.enable = true;
-        # docker, gaming, openrazer and paperless-scanning are den aspects (this file).
+        # nvidia, docker, gaming, openrazer and paperless-scanning are den aspects (this file).
 
         # Kernel (hardware modules and quirks are in _beast-hardware.nix).
         boot.kernelPackages = pkgs.linuxPackages_latest;

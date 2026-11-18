@@ -8,6 +8,8 @@ in
     instantiate = mkInstantiate inputs.nixpkgs.lib.nixosSystem;
     channel = "stable";
     localAi = true;
+    # nvidia-smi board power cap (watts); RTX 5060 LP min is 123 W.
+    nvidiaPowerLimit = 123;
     users.codyt = { };
     # Stable Home Manager pairs with stable nixpkgs.
     home-manager.module = inputs.home-manager-stable.nixosModules.home-manager;
@@ -19,6 +21,7 @@ in
     includes = [
       den.aspects.base
       den.aspects.nas-role
+      den.aspects.nvidia
       den.aspects.hermes-agent
       den.aspects.llama-swap
       den.aspects.hindsight
@@ -92,16 +95,7 @@ in
         };
 
         # ── Features ────────────────────────────────────────────────
-        codyos = {
-          hardware.nvidia = {
-            enable = true;
-            powerLimit = {
-              enable = true;
-              watts = 123;
-            };
-          };
-        };
-        # hindsight and opencode are den aspects (this file).
+        # nvidia, hindsight and opencode are den aspects (this file).
 
         # Networking
         networking = {

@@ -6,7 +6,9 @@
 | --- | --- |
 | `hosts/_instantiate.nix` | Shared `nixosSystem` wrapper (plain function, not a Den module): adds `system` and the `inputs`/`self` specialArgs. |
 | `hosts/<host>.nix` | The whole host: `den.hosts` entry (`instantiate` channel, `channel`, `lan`, `tailscale`, `mac`, `hardwareConfig`) and `den.aspects.<host>` (role/feature includes, machine facts in its `nixos` block, the Home Manager pairing and user imports). `hosts/_<host>-hardware.nix` and `_nas-models.nix` are imported by it. |
-| `roles/base.nix` | Shared baseline (`_legacy/system/base.nix`, `_legacy/hardware/baseline.nix`) and `codyos.site.hosts`, populated from the den host attributes. |
+| `base/base.nix`, `base/*.nix` | The `base` aspect and one aspect per concern it includes (nix, locale, networking, logging, shell, packages, scripts, overlays, sops, accounts, core-services, site, home-manager). `base/site.nix` declares `codyos.site` and fills `codyos.site.hosts` from the den host attributes. |
+| `hardware/*.nix` | `hardware-baseline` (included by base) and `nvidia` (included by hosts with an NVIDIA GPU; `nvidiaPowerLimit` host attribute = nvidia-smi power cap in watts, nas only). |
+| `users/codyt.nix` | The codyt aspect: `user` class (account, forwarded to `users.users.codyt`) and `homeManager`. |
 | `roles/desktop.nix`, `roles/nas-role.nix` | Role profiles (`_legacy/desktop`; `_legacy/nas` plus workflow and vpn-confinement). |
 | `roles/hermes-agent.nix` | NixOS-side Hermes backup wiring (nas only). |
 | `roles/features.nix` | Pure `codyos.<name>.enable` gates as includable aspects. |

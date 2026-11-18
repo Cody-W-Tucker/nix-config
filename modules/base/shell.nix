@@ -1,9 +1,6 @@
-# Shell configuration (zsh, starship)
-
-_:
-
 {
-  programs = {
+  # Shell configuration (zsh, starship).
+  den.aspects.shell.nixos.programs = {
     starship = {
       enable = true;
     };
