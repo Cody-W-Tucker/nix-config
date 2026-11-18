@@ -7,23 +7,23 @@
   imports = [
     inputs.sops-nix.nixosModules.sops
     inputs.nixos-secrets.nixosModules.default
-    ./scripts.nix
-    ./locale.nix
-    ./nix.nix
-    ./overlays.nix
-    ./users.nix
-    ./packages.nix
-    ./shell.nix
-    ./services.nix
-    ./networking.nix
-    ./logging.nix
-    ./site.nix
+    ./_scripts.nix
+    ./_locale.nix
+    ./_nix.nix
+    ./_overlays.nix
+    ./_users.nix
+    ./_packages.nix
+    ./_shell.nix
+    ./_services.nix
+    ./_networking.nix
+    ./_logging.nix
+    ./_site.nix
 
     # Opt-in feature option modules: always imported, inert until a host or profile
     # sets the matching codyos.*.enable option.
-    ../hardware/nvidia.nix
-    ../desktop/gaming
-    ../desktop/hardware/openrazer
+    ../hardware/_nvidia.nix
+    ../_legacy/desktop/gaming
+    ../_legacy/desktop/hardware/openrazer
   ];
 
   # https://emudhra.we-have-a-problem.com/
