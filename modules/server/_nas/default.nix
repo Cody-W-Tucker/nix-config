@@ -9,30 +9,6 @@ let
   inherit (config.codyos.site) domain;
 in
 {
-  imports = [
-    ./actual-budget.nix
-    ./dawarich.nix
-    ./home-assistant.nix
-    ./open-webui.nix
-    ./dns.nix
-    ./content.nix
-    ./excalidraw.nix
-    ./homepage-dashboard.nix
-    ./karakeep.nix
-    ./mealie.nix
-    ./monitoring.nix
-    ./nfs.nix
-    ./paperless.nix
-    ./paperless-gpt.nix
-    ./photos.nix
-    ./samba.nix
-    ./security.nix
-    ./nginx-syncthing.nix
-    ./tika.nix
-    ./uptime-kuma.nix
-    ./wake-beast.nix
-  ];
-
   # NAS services run in Docker (den.aspects.docker, included by the nas role;
   # oci-containers backend below).
   # Create the acme secret in sops

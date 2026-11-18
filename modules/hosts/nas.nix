@@ -20,9 +20,9 @@ in
   den.aspects.nas = {
     includes = [
       den.aspects.base
+      den.aspects.hermes-agent
       den.aspects.nas-role
       den.aspects.nvidia
-      den.aspects.hermes-agent
       den.aspects.llama-swap
       den.aspects.hindsight
       den.aspects.opencode
