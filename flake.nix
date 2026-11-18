@@ -106,6 +106,10 @@
       # Dendritic aspect library; owns nixosConfigurations (see den/).
       url = "github:denful/den/v0.20.0";
     };
+    import-tree = {
+      # Loads every module under den/.
+      url = "github:vic/import-tree";
+    };
     stevenblack = {
       # StevenBlack ads/malware blocklist, consumed directly as the upstream
       # Unbound include via packages.<system>.unbound (a generated local-zone
@@ -132,7 +136,7 @@
         (inputs.nixpkgs.lib.evalModules {
           modules = [
             inputs.den.flakeModule
-            ./den/hosts.nix
+            (inputs.import-tree ./den)
           ];
           specialArgs = { inherit inputs; };
         }).config;

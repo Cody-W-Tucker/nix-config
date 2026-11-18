@@ -1,48 +1,15 @@
 {
   config,
-  inputs,
   pkgs,
   ...
 }:
 
 let
   site = config.codyos.site;
-  hardwareConfig = {
-    # Controls the monitor layout for hyprland
-    workspace = [
-      {
-        workspace = "1";
-        monitor = "DP-1";
-        default = true;
-      }
-    ];
-    monitor = [
-      # Samsung Odyssey G65B: HDR output with SDR brightness tuned for the desktop.
-      {
-        output = "DP-1";
-        mode = "2560x1440@239.97";
-        position = "0x0";
-        vrr = 3;
-        bitdepth = 10;
-        cm = "hdr";
-        sdrbrightness = 1;
-        sdrsaturation = 1;
-        sdr_max_luminance = 340;
-      }
-    ];
-    # Suspend after 1 hour of idle
-    hypridle.suspendTimeout = 3600;
-  };
-
 in
 {
-  imports = [
-    # Shared modules
-    ../../modules/system/base.nix
-    ../../modules/hardware/baseline.nix
-    ../../modules/desktop
-    ./hardware-configuration.nix
-  ];
+  # Shared profiles and Home Manager wiring come from den/hosts/beast.nix.
+  imports = [ ./hardware-configuration.nix ];
 
   # ── Machine ─────────────────────────────────────────────────
   # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | Storage: 2TB NVMe
@@ -132,20 +99,4 @@ in
 
   # Should be the same as the version of NixOS you installed on this machine.
   system.stateVersion = "25.05"; # Did you read the comment?
-
-  # Home-manager configuration with hardware-specific settings
-  home-manager = {
-    extraSpecialArgs = {
-      inherit inputs;
-      inherit hardwareConfig;
-    };
-    users.${site.user.name} = {
-      home.stateVersion = "25.05";
-      imports = [
-        ../../users/cody/desktop.nix
-        inputs.nixos-secrets.homeModules.default
-        inputs.nixvim.homeModules.nixvim
-      ];
-    };
-  };
 }

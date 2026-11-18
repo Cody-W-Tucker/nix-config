@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   pkgs,
   ...
 }:
@@ -10,15 +9,10 @@ let
 in
 
 {
+  # Shared profiles and Home Manager wiring come from den/hosts/nas.nix.
   imports = [
-    ../../modules/system/base.nix
-    ../../modules/hardware/baseline.nix
-    ../../modules/nas
-    inputs.workflow.nixosModules.default
     ./hardware-configuration.nix
     ./models.nix
-    # VPN for media
-    inputs.vpn-confinement.nixosModules.default
   ];
 
   # ZFS storage (disks and kernel modules are in hardware-configuration.nix).
@@ -134,22 +128,6 @@ in
     nvidia-container-toolkit.enable = true;
     # Bluetooth support for Home Assistant (prepares for future controller)
     bluetooth.enable = true;
-  };
-
-  # Home-manager configuration
-  home-manager = {
-    extraSpecialArgs = {
-      inherit inputs;
-    };
-    users.${site.user.name} = {
-      home.stateVersion = "25.11";
-      imports = [
-        ../../users/cody/server.nix
-        ../../modules/services/hermes-agent
-        inputs.nixos-secrets.homeModules.default
-        inputs.nixvim-stable.homeModules.nixvim
-      ];
-    };
   };
 
   # Hermes runs as a Home Manager user service, so its backup wiring lives at

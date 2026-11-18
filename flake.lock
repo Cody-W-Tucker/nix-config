@@ -483,6 +483,21 @@
         "type": "github"
       }
     },
+    "import-tree": {
+      "locked": {
+        "lastModified": 1788467110,
+        "narHash": "sha256-ljEMTXP/rH0tOvDzc9gzwww6KcHRPRnEHzd9lK48V7s=",
+        "owner": "vic",
+        "repo": "import-tree",
+        "rev": "eb1b52eaecc57f7c136d07ae8a93e724dfecac46",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "import-tree",
+        "type": "github"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -755,6 +770,7 @@
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
         "home-manager-stable": "home-manager-stable",
+        "import-tree": "import-tree",
         "llm-agents": "llm-agents",
         "miniflux-curator": "miniflux-curator",
         "nextmeeting": "nextmeeting",
