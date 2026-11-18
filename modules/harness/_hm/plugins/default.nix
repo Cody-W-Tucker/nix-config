@@ -1,3 +1,4 @@
+{ localAi }:
 {
   config,
   lib,
@@ -78,7 +79,7 @@ let
 in
 {
   imports = [
-    ./hindsight
+    (import ./hindsight { inherit localAi; })
     ./langfuse
     ./rtk
   ];

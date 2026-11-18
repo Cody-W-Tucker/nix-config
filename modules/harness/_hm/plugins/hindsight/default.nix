@@ -4,12 +4,12 @@
 # prompt is answered with memories recalled from that bank and the shared user
 # bank. The Hindsight MCP server in ../../mcp.nix stays available for explicit
 # calls.
+{ localAi }:
 {
   config,
   inputs,
   lib,
   osConfig,
-  localAi,
   pkgs,
   ...
 }:

@@ -9,26 +9,22 @@
   # `host.home-manager.module` (set in modules/hosts/<host>.nix) and forwards every
   # user's `homeManager` class into home-manager.users.<name>. Den sets none of the
   # options below, so they live here.
-  den.aspects.home-manager.nixos =
-    { host, ... }:
-    {
-      home-manager = {
-        useGlobalPkgs = true;
-        useUserPackages = true;
-        backupFileExtension = "backup";
+  den.aspects.home-manager.nixos = {
+    home-manager = {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+      backupFileExtension = "backup";
 
-        sharedModules = [
-          inputs.sops-nix.homeModules.sops
-        ];
+      sharedModules = [
+        inputs.sops-nix.homeModules.sops
+      ];
 
-        # Arguments every Home Manager module may take (also during `imports`).
-        extraSpecialArgs = {
-          inherit inputs;
-          # Host fact for the harness modules.
-          inherit (host) localAi;
-        };
+      # Arguments every Home Manager module may take (also during `imports`).
+      extraSpecialArgs = {
+        inherit inputs;
       };
     };
+  };
 
   den.aspects.base.includes = [ den.aspects.home-manager ];
 

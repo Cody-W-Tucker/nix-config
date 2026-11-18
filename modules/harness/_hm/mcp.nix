@@ -1,6 +1,6 @@
+{ localAi }:
 {
   osConfig,
-  localAi,
   inputs,
   pkgs,
   lib,

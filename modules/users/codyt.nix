@@ -38,11 +38,11 @@
       den.aspects.user-git
       den.aspects.user-cli-tools
       den.aspects.nixvim
+      den.aspects.harness
     ];
 
     homeManager.imports = [
       inputs.nixos-secrets.homeModules.default
-      ../harness/_hm
     ];
   };
 }

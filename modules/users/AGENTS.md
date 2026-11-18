@@ -1,14 +1,14 @@
 # User Profiles
 
-Owns Home Manager profiles and the glue that exposes them to hosts.
+Owns the `codyt` user: the Den user aspect (`codyt.nix`, account + Home Manager profile) and the shared Home Manager aspects it includes (`shell.nix`, `git.nix`, `cli-tools.nix`; editor in `modules/editor/`, AI harness in `modules/harness/`).
 
-Does not own system services, hardware, networking, or host composition. Those belong in `modules/` or `hosts/`.
+Does not own system services, hardware, networking, or host composition. Those belong in `modules/` or `modules/hosts/`.
 
 ## Placement Rules
 
-- Put account defaults in the user's `core.nix`.
-- Put role behavior in `desktop.nix`, `server.nix`, or a role subdirectory.
-- Keep GUI apps and desktop tools under the desktop role, not in core.
+- Settings useful on every host go in an aspect under `modules/users/` that `codyt.nix` includes.
+- GUI apps and desktop tools belong to the desktop aspects in `modules/desktop/`, not here.
+- Host-specific user content is delivered by that host's aspects through `provides.to-users.homeManager` (e.g. `modules/hosts/<host>.nix`, `modules/desktop/*`, `den.aspects.opencode-remote`); `inputs` comes from `extraSpecialArgs` in `modules/base/home-manager.nix`, host facts (`channel`, `localAi`, `hardwareConfig`) are read from `host` in the aspect.
 - Do not hide NixOS services here unless Home Manager is the real owner.
-- Which role file a host's Home Manager user imports is set by `provides.to-users` in `modules/hosts/<host>.nix`; `inputs`, `hardwareConfig` and `localAi` args come from `modules/base/home-manager.nix`.
-- Add new users as their own directory instead of special-casing Cody paths.
+- Keep generated or app-owned state out of Nix unless it captures durable intent.
+- Add new users as their own aspect instead of special-casing Cody paths.

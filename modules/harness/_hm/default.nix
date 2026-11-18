@@ -1,9 +1,11 @@
+# Harness root module. `localAi` (host attribute, passed by den.aspects.harness) selects
+# whether the NAS-backed services are local; it is also used while resolving `imports`.
+{ localAi }:
 {
   inputs,
   pkgs,
   config,
   lib,
-  localAi,
   ...
 }:
 
@@ -17,8 +19,8 @@ in
     ./claude-code
     ./opencode
     ./context.nix
-    ./mcp.nix
-    ./plugins
+    (import ./mcp.nix { inherit localAi; })
+    (import ./plugins { inherit localAi; })
     ./skills
   ]
   ++

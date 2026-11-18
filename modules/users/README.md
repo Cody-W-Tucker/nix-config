@@ -1,31 +1,21 @@
 # Cody User Configuration
 
-This directory owns Home Manager configuration: shell defaults, desktop session, editor, knowledge tooling, and the local AI/operator harness entry points that run inside the user session.
-
-Use this README as the local map before editing files under `users/cody`. Central docs should point here instead of repeating implementation detail.
+This directory owns the `codyt` user aspect: the account and the Home Manager profile shared by every host. Desktop-session pieces live in `modules/desktop/`, the editor in `modules/editor/nixvim/`, and the local AI/operator harness in `modules/harness/`.
 
 ## Entry Points
 
-- `core.nix` — shared user account, shell, terminal, browser, navigation, and baseline program configuration.
-- `server.nix` — Cody's server-side user profile when a host does not need the desktop stack.
-- `desktop.nix` — imports the interactive desktop profile.
+- `codyt.nix` — user account (`user` class) and Home Manager profile; includes the aspects below.
+- `shell.nix` — zsh, fzf, yazi, eza, bat, zoxide, direnv (`user-shell`). Stylix colors for fzf/yazi apply only where the theming aspect imports Stylix (beast).
+- `git.nix` — git, delta, GitHub CLI, lazygit (`user-git`).
+- `cli-tools.nix` — small CLI packages, ripgrep and `$VISUAL` (`user-cli-tools`).
 
 ## Stack
 
-| Component                 | Tool                                                       | Configuration Location                                                                                                        |
-| ------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Shell                     | Zsh, Direnv, FZF, Eza, Bat, Zoxide, Ripgrep, Lazygit       | `core.nix`, `desktop/programs.nix`                                                                                            |
-| Terminal                  | Kitty                                                      | `core.nix`, `desktop.nix`                                                                                                     |
-| Browsers                  | Zen, Chromium                                              | `desktop/programs.nix`, `desktop/xdg.nix`                                                                                     |
-| File and navigation       | Yazi, Eza, Zoxide, FZF, Nautilus                           | `core.nix`, `desktop/programs.nix`, `desktop/default.nix`                                                                     |
-| Window manager/compositor | Hyprland                                                   | `desktop/hyprland.nix`, `desktop/hyprland/settings.nix`, `desktop/hyprland/autostart.nix`                                     |
-| Launcher                  | Rofi                                                       | `desktop/rofi.nix`, `desktop/packages/scripts/rofi-launcher.nix`, `desktop/packages/scripts/rofi-web-launcher.nix`            |
-| Status bar                | Waybar                                                     | `desktop/waybar.nix`                                                                                                          |
-| Notifications             | Notification center                                        | `desktop/notifications.nix`                                                                                                   |
-| Audio session             | PipeWire                                                   | `desktop/pipewire.nix`                                                                                                        |
-| Speech                    | Hold-to-dictate and voice-input pipeline                   | `desktop/speech-to-text.nix`, `desktop/notifications.nix`, `desktop/waybar.nix`                                               |
-| Editor                    | NixVim                                                     | `editor/nixvim/default.nix`, `editor/nixvim/keymaps.nix`, `editor/nixvim/plugins/` (the 99 plugin package lives in `plugins/99/`) |
-| Knowledge base            | Obsidian                                                   | `desktop/obsidian/default.nix`, `desktop/obsidian/hotkeys.nix`, `desktop/obsidian/plugin-data/`, `desktop/obsidian/snippets/` |
-| Knowledge tooling         | QMD MCP                                                    | `harness/mcp.nix`                                                                                                             |
-| AI/operator harness       | OpenCode, Claude Code, MCP, custom tools and skills        | `harness/default.nix`, `harness/mcp.nix`, `harness/opencode/`, `harness/claude-code/`                                         |
-| Desktop utilities         | Screenshots, OCR, clipboard, media helpers, file viewers   | `desktop/default.nix`, `desktop/xdg.nix`                                                                                      |
+| Component                 | Tool                                                 | Configuration Location                                    |
+| ------------------------- | ---------------------------------------------------- | --------------------------------------------------------- |
+| Shell                     | Zsh, Direnv, FZF, Eza, Bat, Zoxide, Ripgrep, Lazygit | `shell.nix`, `git.nix`, `cli-tools.nix`, `modules/desktop/programs.nix` |
+| Terminal                  | Kitty                                                | `modules/desktop/terminal.nix`                            |
+| Editor                    | NixVim                                               | `modules/editor/nixvim/nixvim.nix`, `_nixvim.nix`, `_keymaps.nix`, `_plugins/` (the 99 plugin package lives in `_plugins/99/`; desktop-only plugins in `desktop.nix`) |
+| Knowledge tooling         | QMD MCP                                              | `modules/harness/_hm/mcp.nix`                             |
+| AI/operator harness       | OpenCode, Claude Code, MCP, custom tools and skills  | `modules/harness/harness.nix`, `modules/harness/_hm/`      |
+| Desktop session           | Hyprland, Rofi, Waybar, Obsidian, speech, …          | `modules/desktop/`                                        |

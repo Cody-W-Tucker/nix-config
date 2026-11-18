@@ -6,7 +6,9 @@ Central docs should point here for harness implementation detail.
 
 ## Entry Points
 
-- `default.nix` — harness import root for the desktop profile.
+`harness.nix` is the Den aspect (it passes the host attribute `localAi` down); the module tree is `_hm/`, and the paths below are relative to it.
+
+- `default.nix` — harness import root; a function of `localAi`.
 - `mcp.nix` — user-session MCP server/client wiring.
 - `opencode/default.nix` — OpenCode user harness root.
 - `claude-code/default.nix` — Claude Code user harness and shared MCP integration.
