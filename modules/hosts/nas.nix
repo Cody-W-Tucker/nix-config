@@ -28,15 +28,10 @@ in
       den.aspects.opencode
     ];
 
-    # Nas's Home Manager role: server and stable nixvim (Hermes' HM half comes from
-    # den.aspects.hermes-agent).
+    # Nas's Home Manager role (Hermes' HM half comes from den.aspects.hermes-agent, nixvim
+    # from den.aspects.nixvim).
     provides.to-users.homeManager = {
       home.stateVersion = "25.11";
-      imports = [
-        ../users/_nas-extras.nix
-        # Stable nixvim pairs with stable Home Manager.
-        inputs.nixvim-stable.homeModules.nixvim
-      ];
     };
 
     nixos =

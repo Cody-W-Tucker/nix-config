@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ den, inputs, ... }:
 {
   # Cody's account. The `user` class forwards to users.users.codyt on every host; the Home
   # Manager profile applies on every host, and the role (desktop/server), editor and
@@ -30,8 +30,19 @@
         };
       };
 
+    # Home Manager profile shared by every host: shell, git, CLI tools, editor and the
+    # AI/operator harness. Role-specific content (desktop, server) and host-only extras
+    # come from the host aspects' provides.to-users.
+    includes = [
+      den.aspects.user-shell
+      den.aspects.user-git
+      den.aspects.user-cli-tools
+      den.aspects.nixvim
+    ];
+
     homeManager.imports = [
       inputs.nixos-secrets.homeModules.default
+      ../harness/_hm
     ];
   };
 }

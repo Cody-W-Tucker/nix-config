@@ -52,15 +52,13 @@ in
       den.aspects.gaming
       den.aspects.openrazer
       den.aspects.paperless-scanning
+      den.aspects.nixvim-desktop
+      den.aspects.opencode-remote
     ];
 
-    # Beast's Home Manager role: desktop, with unstable nixvim.
+    # Beast's Home Manager role (the desktop comes from den.aspects.desktop; nixvim from den.aspects.nixvim).
     provides.to-users.homeManager = {
       home.stateVersion = "25.05";
-      imports = [
-        ../users/_beast-extras.nix
-        inputs.nixvim.homeModules.nixvim
-      ];
     };
 
     nixos =
