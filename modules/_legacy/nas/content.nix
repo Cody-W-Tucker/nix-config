@@ -8,10 +8,6 @@ let
   inherit (config.codyos.site) domain;
 in
 {
-  imports = [
-    ../../services/automations/_miniflux-curator.nix
-  ];
-
   sops = {
     secrets = {
       "miniflux/ADMIN_PASSWORD" = { };

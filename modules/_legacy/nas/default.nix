@@ -33,16 +33,14 @@ in
     ./photos.nix
     ./samba.nix
     ./security.nix
-    ../../services/_syncthing.nix
     ./nginx-syncthing.nix
     ./tika.nix
     ./uptime-kuma.nix
     ./wake-beast.nix
   ];
 
-  # NAS services run in Docker (oci-containers backend below).
-  codyos.docker.enable = true;
-
+  # NAS services run in Docker (den.aspects.docker, included by the nas role;
+  # oci-containers backend below).
   # Create the acme secret in sops
   sops.secrets.cloudflare-api-email = { };
   sops.secrets.cloudflare-api-key = { };

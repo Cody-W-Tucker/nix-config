@@ -7,7 +7,6 @@
     ./hyprland.nix
     ./logging.nix
     ./printing.nix
-    ../../services/_syncthing.nix
     ./hardware/nvidia.nix
     ./hardware/wifi.nix
   ];
@@ -28,7 +27,7 @@
     gcr_3 # GNOME Keyring unlock prompt provider
   ];
 
-  # Syncthing ports come from modules/services/syncthing.nix.
+  # Syncthing comes from den.aspects.syncthing (modules/services/syncthing.nix).
   networking.firewall = {
     # Open firewall ports for KDE Connect discovery
     allowedTCPPortRanges = [
