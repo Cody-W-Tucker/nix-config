@@ -6,6 +6,11 @@
       den.aspects.docker
       den.aspects.syncthing
       den.aspects.miniflux-curator
+      den.aspects.backup-health
+      den.aspects.backups
+      den.aspects.binary-cache
+      den.aspects.langfuse
+      den.aspects.media
     ];
     nixos.imports = [
       ../server/_nas

@@ -1,0 +1,62 @@
+{
+  den.aspects.calibre.nixos =
+    {
+      pkgs,
+      config,
+      mkNginxVhost,
+      ...
+    }:
+
+    let
+      inherit (config.codyos.site) domain;
+    in
+    {
+      services = {
+        calibre-web = {
+          # Calibre web for reading Books (with Kobo sync support)
+          enable = true;
+          group = "media";
+          listen.port = 8083;
+          listen.ip = "127.0.0.1";
+          options.calibreLibrary = "/mnt/media/Books";
+          package = pkgs.calibre-web.overridePythonAttrs (oldAttrs: {
+            dependencies = oldAttrs.dependencies ++ oldAttrs.optional-dependencies.kobo;
+          });
+        };
+        calibre-server = {
+          # Calibre content server for Readarr metadata lookups
+          enable = true;
+          group = "media";
+          port = 7007;
+          libraries = [ "/mnt/media/Books" ];
+          openFirewall = true;
+          extraFlags = [ "--trusted-ips=127.0.0.1,::1" ];
+        };
+        nginx.virtualHosts = mkNginxVhost {
+          host = "books.${domain}";
+          port = config.services.calibre-web.listen.port;
+          locationExtraConfig = ''
+            # Kobo sync requires large headers
+            proxy_busy_buffers_size   1024k;
+            proxy_buffers   4 512k;
+            proxy_buffer_size   1024k;
+            proxy_set_header X-Scheme $scheme;
+          '';
+        };
+      };
+
+      # Open Port for kobo sync
+      networking.firewall.allowedTCPPorts = [ 8083 ];
+
+      nas.backups.sqlite = [
+        {
+          name = "calibre-web";
+          source = "/var/lib/calibre-web/app.db";
+        }
+        {
+          name = "calibre-library";
+          source = "/mnt/media/Books/metadata.db";
+        }
+      ];
+    };
+}

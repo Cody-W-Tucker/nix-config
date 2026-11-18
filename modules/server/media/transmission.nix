@@ -1,0 +1,147 @@
+{
+  den.aspects.transmission.nixos =
+    {
+      pkgs,
+      config,
+      inputs,
+      ...
+    }:
+
+    {
+      # VPN-specific Transmission wiring: confinement, WireGuard namespace,
+      # and Transmission service settings. Media directory creation lives in
+      # the parent media module (default.nix) since it is shared across
+      # services.
+      systemd.services.transmission.vpnConfinement = {
+        enable = true;
+        vpnNamespace = "wg";
+      };
+
+      # Get the encrypted file
+      sops.secrets."server-wg.conf" = {
+        sopsFile = inputs.nixos-secrets.paths.serverWireguardSopsFile;
+        mode = "0400"; # Only root can read
+      };
+
+      # Define VPN network namespace
+      vpnNamespaces.wg = {
+        enable = true;
+        wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
+        allowedIngress = [ "192.168.0.0/24" ];
+        # Host-side wg-br bridge address of FlareSolverr (running on the host
+        # network, see arr-stack.nix). The namespace OUTPUT kill switch drops
+        # new connections out the veth unless the destination is explicitly
+        # allowed here, so Prowlarr could not otherwise reach it at
+        # http://192.168.15.5:8191. Single /32 only — no subnet-wide egress.
+        allowedEgress = [ "192.168.15.5/32" ];
+        portMappings = [
+          {
+            from = 9091;
+            to = 9091;
+          }
+          # Prowlarr (confined to this namespace by arr-stack.nix): mapped on the
+          # host for LAN clients. Host-side consumers (nginx, Sonarr, Radarr, ...)
+          # reach it at the namespace address instead. Prowlarr's NixOS module has
+          # no dedicated port option; the servarr settings default is 9696.
+          {
+            from = 9696;
+            to = config.services.prowlarr.settings.server.port;
+          }
+          # Arr apps (confined to this namespace by arr-stack.nix): mapped on the
+          # host so nginx vhosts and LAN clients reach them at the namespace
+          # address. `from` is each module's default port; `to` reads the actual
+          # port from the module option.
+          {
+            from = 8989; # Sonarr
+            to = config.services.sonarr.settings.server.port;
+          }
+          {
+            from = 7878; # Radarr
+            to = config.services.radarr.settings.server.port;
+          }
+          {
+            from = 8787; # Readarr
+            to = config.services.readarr.settings.server.port;
+          }
+          {
+            from = 6767; # Bazarr
+            to = config.services.bazarr.listenPort;
+          }
+          {
+            from = 8686; # Lidarr
+            to = config.services.lidarr.settings.server.port;
+          }
+        ];
+        vpn.allowedTCPPorts = [ 60729 ];
+        vpn.allowedUDPPorts = [ 60729 ];
+      };
+
+      systemd.services.transmission = {
+        # Forces systemd to wait for /mnt/media to be mounted first
+        after = [
+          "mnt-media.device"
+          "mnt-media.mount"
+        ];
+        requires = [ "mnt-media.mount" ];
+      };
+
+      services.transmission = {
+        enable = true;
+        package = pkgs.transmission_4;
+        group = "media";
+        openRPCPort = true; # Allows Sonarr/Radarr to connect
+        settings = {
+          download-dir = "/mnt/media/Downloads";
+          incomplete-dir = "/mnt/media/Downloads/incomplete";
+          incomplete-dir-enabled = true;
+          umask = 2; # Group write permissions (so Sonarr/Radarr can move files)
+          dht-enabled = true;
+          encryption = 1; # Prefer encrypted peers
+          anti-brute-force-enabled = true;
+          anti-brute-force-threshold = 10;
+          blocklist-enabled = true;
+          blocklist-url = "https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz";
+          preallocation = 1;
+
+          # Limit Seeding
+          ratio-limit = 1.0;
+          ratio-limit-enabled = true;
+          idle-seeding-limit-enabled = true;
+          idle-seeding-limit = 30;
+
+          # Speed Limits (overnight)
+          speed-limit-up = 0;
+          speed-limit-up-enabled = true;
+          speed-limit-down = 0;
+          speed-limit-down-enabled = true;
+          download-queue-enabled = false;
+          download-queue-size = 10;
+
+          # Download Schedule (during the day)
+          alt-speed-enabled = true; # Enable alternative speed limits
+          alt-speed-down = 10240; # KB/s download during restricted hours
+          alt-speed-up = 1280; # KB/s upload during restricted hours
+          alt-speed-time-enabled = true; # Enable scheduled speed limit
+          alt-speed-time-begin = 480; # Start at 8:00 (8am), in minutes after midnight
+          alt-speed-time-end = 1380; # End at 23:00 (11pm), in minutes after midnight
+          alt-speed-time-day = 126; # Monday–Saturday only
+
+          # Speed tweaks
+          peer-limit-global = 200;
+          peer-limit-per-torrent = 60;
+          upload-slots-per-torrent = 8;
+
+          # VPN
+          rpc-whitelist-enabled = true;
+          rpc-whitelist = "192.168.15.1,192.168.15.5";
+          rpc-authentication-required = false;
+          rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
+
+          # Peer port matches the provider-forwarded port opened via
+          # vpnNamespaces.wg.vpn.allowedTCPPorts/allowedUDPPorts above. Randomization stays disabled
+          # (module default `peer-port-random-on-start = false`).
+          peer-port = 60729;
+        };
+      };
+    };
+}
