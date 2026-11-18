@@ -166,6 +166,22 @@
         "type": "github"
       }
     },
+    "den": {
+      "locked": {
+        "lastModified": 1794889876,
+        "narHash": "sha256-4RqSFoccwakuCWob78d28kUOjuHdhT1TVETLNaX8NdA=",
+        "owner": "denful",
+        "repo": "den",
+        "rev": "12b2146708a7bc96f26604ae6dd4fd1d0c0d4691",
+        "type": "github"
+      },
+      "original": {
+        "owner": "denful",
+        "ref": "v0.20.0",
+        "repo": "den",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -733,6 +749,7 @@
       "inputs": {
         "ai-usagebar": "ai-usagebar",
         "cognitive-assistant": "cognitive-assistant",
+        "den": "den",
         "flake-programs-sqlite": "flake-programs-sqlite",
         "googleworkspace-cli": "googleworkspace-cli",
         "hermes-agent": "hermes-agent",

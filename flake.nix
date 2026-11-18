@@ -102,6 +102,10 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       inputs.home-manager.follows = "home-manager";
     };
+    den = {
+      # Dendritic aspect library; owns nixosConfigurations (see den/).
+      url = "github:denful/den/v0.20.0";
+    };
     stevenblack = {
       # StevenBlack ads/malware blocklist, consumed directly as the upstream
       # Unbound include via packages.<system>.unbound (a generated local-zone
@@ -123,9 +127,15 @@
         inherit system;
         overlays = [ self.overlays.default ];
       };
-      specialArgs = {
-        inherit inputs self;
-      };
+      # Den evaluates den/ and produces nixosConfigurations.
+      denCfg =
+        (inputs.nixpkgs.lib.evalModules {
+          modules = [
+            inputs.den.flakeModule
+            ./den/hosts.nix
+          ];
+          specialArgs = { inherit inputs; };
+        }).config;
     in
     {
       # Official NixOS formatter with directory support
@@ -162,22 +172,7 @@
           imports = lint "imports" [ pkgs.check-imports ] "check-imports .";
         };
 
-      # Builds the different systems
-      nixosConfigurations = {
-        beast = inputs.nixpkgs-unstable.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = [
-            inputs.home-manager.nixosModules.home-manager
-            ./hosts/beast
-          ];
-        };
-        nas = inputs.nixpkgs.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = [
-            inputs.home-manager-stable.nixosModules.home-manager
-            ./hosts/nas
-          ];
-        };
-      };
+      # Builds the different systems (declared in den/).
+      inherit (denCfg.flake) nixosConfigurations;
     };
 }
