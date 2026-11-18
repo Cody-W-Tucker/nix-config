@@ -11,8 +11,8 @@ in
 {
   # Shared profiles and Home Manager wiring come from den/hosts/nas.nix.
   imports = [
-    ./hardware-configuration.nix
-    ./models.nix
+    ../../../hosts/_nas-hardware.nix
+    ../../../hosts/_nas-models.nix
   ];
 
   # ZFS storage (disks and kernel modules are in hardware-configuration.nix).

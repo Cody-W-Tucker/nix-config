@@ -1,7 +1,7 @@
 {
   "memoryFiles": ["AGENTS.md"],
   "nestedMemoryFiles": [
-    "modules/_legacy/hosts/AGENTS.md",
+    "modules/hosts/AGENTS.md",
     "modules/_legacy/AGENTS.md",
     "modules/_legacy/desktop/AGENTS.md",
     "modules/_legacy/services/automations/AGENTS.md",

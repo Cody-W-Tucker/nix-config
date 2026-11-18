@@ -9,7 +9,7 @@ let
 in
 {
   # Shared profiles and Home Manager wiring come from den/hosts/beast.nix.
-  imports = [ ./hardware-configuration.nix ];
+  imports = [ ../../../hosts/_beast-hardware.nix ];
 
   # ── Machine ─────────────────────────────────────────────────
   # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | Storage: 2TB NVMe
