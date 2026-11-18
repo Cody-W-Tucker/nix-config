@@ -1,5 +1,6 @@
 {
   osConfig,
+  localAi,
   inputs,
   pkgs,
   lib,
@@ -10,10 +11,7 @@ let
   deja = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu;
   dejaEmbedding = {
     DEJA_EMBED_URL = "http://${
-      if osConfig.networking.hostName == "nas" then
-        "127.0.0.1"
-      else
-        osConfig.codyos.site.hosts.nas.tailscale
+      if localAi then "127.0.0.1" else osConfig.codyos.site.hosts.nas.tailscale
     }:8081/v1/embeddings";
     DEJA_EMBED_MODEL = "qwen3-embedding-0.6b";
     DEJA_EMBED_QUERY_PREFIX = "Instruct: Given a search query, retrieve relevant passages that answer the query\nQuery: ";
@@ -53,7 +51,7 @@ in
       # Use the same NAS index and GPU backend as Hermes, without exposing a
       # network listener. On the NAS itself, run QMD directly.
       qmd =
-        if osConfig.networking.hostName == "nas" then
+        if localAi then
           {
             command = lib.getExe inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.qmd;
             args = [ "mcp" ];
@@ -75,7 +73,7 @@ in
           };
       hindsight = {
         url =
-          if osConfig.networking.hostName == "nas" then
+          if localAi then
             "http://127.0.0.1:8888/mcp/"
           else
             "http://${osConfig.codyos.site.hosts.nas.tailscale}:18083/mcp/";

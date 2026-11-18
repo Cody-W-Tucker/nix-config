@@ -9,6 +9,7 @@
   inputs,
   lib,
   osConfig,
+  localAi,
   pkgs,
   ...
 }:
@@ -17,7 +18,7 @@ let
   hindsightSource = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hindsight.src;
 
   apiUrl =
-    if osConfig.networking.hostName == "nas" then
+    if localAi then
       "http://127.0.0.1:8888"
     else
       "http://${osConfig.codyos.site.hosts.nas.tailscale}:18083";

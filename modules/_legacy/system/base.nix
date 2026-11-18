@@ -18,7 +18,6 @@
     ./networking.nix
     ./logging.nix
     ./site.nix
-    ../users/home.nix
 
     # Opt-in features: always imported, inert until a host or profile sets
     # the matching codyos.*.enable option.

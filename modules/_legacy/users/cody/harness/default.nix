@@ -3,7 +3,7 @@
   pkgs,
   config,
   lib,
-  osConfig,
+  localAi,
   ...
 }:
 
@@ -24,7 +24,7 @@ in
   ++
     lib.optionals
       (
-        osConfig.networking.hostName == "nas"
+        localAi
         && !(builtins.pathExists "${inputs.home-manager-stable}/modules/programs/pi-coding-agent.nix")
       )
       [

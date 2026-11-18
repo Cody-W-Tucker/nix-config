@@ -7,6 +7,10 @@ in
   den.hosts.x86_64-linux.beast = {
     instantiate = mkInstantiate inputs.nixpkgs-unstable.lib.nixosSystem;
     channel = "unstable";
+    localAi = false;
+    users.codyt = { };
+    # Unstable Home Manager pairs with nixpkgs-unstable.
+    home-manager.module = inputs.home-manager.nixosModules.home-manager;
     lan = "192.168.1.3";
     tailscale = "100.108.143.19";
     mac = "60:cf:84:7a:a3:4a";
@@ -48,10 +52,18 @@ in
       den.aspects.paperless-scanning
     ];
 
+    # Beast's Home Manager role: desktop, with unstable nixvim.
+    provides.to-users.homeManager = {
+      home.stateVersion = "25.05";
+      imports = [
+        ../_legacy/users/cody/desktop.nix
+        inputs.nixvim.homeModules.nixvim
+      ];
+    };
+
     nixos =
       {
         config,
-        host,
         pkgs,
         ...
       }:
@@ -60,8 +72,6 @@ in
       in
       {
         imports = [
-          # Unstable Home Manager pairs with nixpkgs-unstable.
-          inputs.home-manager.nixosModules.home-manager
           ./_beast-hardware.nix
         ];
 
@@ -151,21 +161,6 @@ in
 
         # Should be the same as the version of NixOS you installed on this machine.
         system.stateVersion = "25.05"; # Did you read the comment?
-
-        home-manager = {
-          extraSpecialArgs = {
-            inherit inputs;
-            inherit (host) hardwareConfig;
-          };
-          users.${config.codyos.site.user.name} = {
-            home.stateVersion = "25.05";
-            imports = [
-              ../_legacy/users/cody/desktop.nix
-              inputs.nixos-secrets.homeModules.default
-              inputs.nixvim.homeModules.nixvim
-            ];
-          };
-        };
       };
   };
 }
