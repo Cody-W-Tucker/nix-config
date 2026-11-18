@@ -58,7 +58,7 @@ in
     provides.to-users.homeManager = {
       home.stateVersion = "25.05";
       imports = [
-        ../_legacy/users/cody/desktop.nix
+        ../users/_beast-extras.nix
         inputs.nixvim.homeModules.nixvim
       ];
     };

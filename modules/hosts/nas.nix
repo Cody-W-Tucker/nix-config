@@ -33,7 +33,7 @@ in
     provides.to-users.homeManager = {
       home.stateVersion = "25.11";
       imports = [
-        ../_legacy/users/cody/server.nix
+        ../users/_nas-extras.nix
         # Stable nixvim pairs with stable Home Manager.
         inputs.nixvim-stable.homeModules.nixvim
       ];

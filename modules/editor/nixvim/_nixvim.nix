@@ -12,18 +12,18 @@
   lib.nixvim = lib.mkForce { };
 
   imports = [
-    ./keymaps.nix
-    ./plugins/gitsigns.nix
-    ./plugins/lsp.nix
-    ./plugins/none-ls.nix
-    ./plugins/conform.nix
-    ./plugins/cmp.nix
-    ./plugins/99
-    ./plugins/lualine.nix
-    ./plugins/telescope.nix
-    ./plugins/treesitter.nix
-    ./plugins/startup.nix
-    ./plugins/img-clip.nix
+    ./_keymaps.nix
+    ./_plugins/gitsigns.nix
+    ./_plugins/lsp.nix
+    ./_plugins/none-ls.nix
+    ./_plugins/conform.nix
+    ./_plugins/cmp.nix
+    ./_plugins/99
+    ./_plugins/lualine.nix
+    ./_plugins/telescope.nix
+    ./_plugins/treesitter.nix
+    ./_plugins/startup.nix
+    ./_plugins/img-clip.nix
   ];
 
   programs.nixvim = {

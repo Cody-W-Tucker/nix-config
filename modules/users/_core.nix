@@ -10,8 +10,8 @@
 
 {
   imports = [
-    ./editor/nixvim
-    ./harness
+    ../editor/nixvim/_nixvim.nix
+    ../harness/_hm
   ];
   home = {
     packages = with pkgs; [

@@ -14,8 +14,8 @@ in
   sops.secrets."opencode-password" = { };
 
   imports = [
-    ./core.nix
-    ./editor/nixvim/plugins/desktop.nix
+    ./_core.nix
+    ../editor/nixvim/_plugins/desktop.nix
   ];
 
   # The NAS OpenCode server uses HTTP Basic auth. Scope its secret to the
