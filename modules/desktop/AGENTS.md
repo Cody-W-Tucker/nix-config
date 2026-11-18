@@ -1,13 +1,11 @@
-# System Desktop Modules
+# Desktop Aspects
 
-Owns reusable system-level desktop plumbing.
+One file per desktop feature, owning both halves where a pair exists: `nixos` for system
+plumbing, `provides.to-users.homeManager` for the user's side (Home Manager). `desktop.nix` is the
+role aspect and includes the features; gaming and openrazer are opt-in and included by the host.
 
-Does not own Cody's Home Manager apps, editor settings, dotfiles, or user packages. Put those under `users/cody/desktop`.
-
-## Placement Rules
-
-- Put display, audio, printing, VPN, hardware, portals, logging, and desktop services here.
-- Keep app preferences and user-facing packages in Home Manager.
-- Keep host-specific hardware quirks in `hosts/` unless they are reusable.
-- Split focused desktop services into named files or subdirectories instead of growing one module.
-- Treat groups, udev, systemd, and daemon changes as system concerns owned here.
+- Non-module data and large single-class subtrees (`_hyprland/`, `_obsidian/`, `_scripts/`,
+  `_waybar/`, `_speech-to-text.nix`) are `_`-prefixed and imported by their aspect.
+- Per-host facts come from the den host (`host.hardwareConfig` for the Hyprland layout).
+- Theming (Stylix) is Home Manager only and lives in `theming.nix`.
+- Does not own the shared shell/git user environment or the editor (still under `_legacy/users/cody`).

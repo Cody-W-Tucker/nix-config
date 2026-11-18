@@ -9,9 +9,8 @@
 | `base/base.nix`, `base/*.nix` | The `base` aspect and one aspect per concern it includes (nix, locale, networking, logging, shell, packages, scripts, overlays, sops, accounts, core-services, site, home-manager). `base/site.nix` declares `codyos.site` and fills `codyos.site.hosts` from the den host attributes. |
 | `hardware/*.nix` | `hardware-baseline` (included by base) and `nvidia` (included by hosts with an NVIDIA GPU; `nvidiaPowerLimit` host attribute = nvidia-smi power cap in watts, nas only). |
 | `users/codyt.nix` | The codyt aspect: `user` class (account, forwarded to `users.users.codyt`) and `homeManager`. |
-| `roles/desktop.nix`, `roles/nas-role.nix` | Role profiles (`_legacy/desktop`; `_legacy/nas` plus workflow and vpn-confinement). |
+| `desktop/desktop.nix`, `roles/nas-role.nix` | Role profiles (desktop aspects under `desktop/`; `_legacy/nas` plus workflow and vpn-confinement). |
 | `roles/hermes-agent.nix` | NixOS-side Hermes backup wiring (nas only). |
-| `roles/features.nix` | Pure `codyos.<name>.enable` gates as includable aspects. |
 
 Machine facts (hardware import, mounts, networking, `stateVersion`, option-carrying `codyos.*` settings) live in the host aspect's `nixos` block in `hosts/<host>.nix`.
 

@@ -1,8 +1,10 @@
+# Hyprland settings (Lua config). `hardwareConfig` is the host's monitor/workspace layout,
+# passed in by the hyprland aspect from `host.hardwareConfig`.
+{ hardwareConfig }:
 {
   osConfig,
   config,
   lib,
-  hardwareConfig,
   pkgs,
   ...
 }:
@@ -343,7 +345,7 @@ in
       }
     ];
 
-    # Workspace and monitor set in flake.nix
+    # Workspace and monitor layout come from the host's hardwareConfig
     workspace_rule = hardwareConfig.workspace;
     inherit (hardwareConfig) monitor;
 

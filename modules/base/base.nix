@@ -23,13 +23,6 @@
     ];
 
     nixos = {
-      # Opt-in feature option modules for gaming and openrazer (migrated with the desktop
-      # slice): always imported, inert until the host includes the matching aspect.
-      imports = [
-        ../desktop/_gaming.nix
-        ../desktop/_openrazer.nix
-      ];
-
       # https://emudhra.we-have-a-problem.com/
       security.pki.caCertificateBlacklist = [
         "Comodo AAA Services root"

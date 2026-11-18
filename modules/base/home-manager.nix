@@ -24,10 +24,9 @@
         # Arguments every Home Manager module may take (also during `imports`).
         extraSpecialArgs = {
           inherit inputs;
-          # Host facts for the legacy Hyprland and harness modules.
+          # Host fact for the harness modules.
           inherit (host) localAi;
-        }
-        // lib.optionalAttrs (host ? hardwareConfig) { inherit (host) hardwareConfig; };
+        };
       };
     };
 
