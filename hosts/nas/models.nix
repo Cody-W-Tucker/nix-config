@@ -85,19 +85,6 @@ let
     sha256 = "c06528c5746d3bb8baa72a27938be95abbfd0b226f8471e8a9e365ed0bb066d2";
   };
 
-  # CTranslate2 uses its own CMake CUDA_ARCH_LIST setting and does not inherit nixpkgs cudaCapabilities.
-  # The bundled FindCUDA parser is too stale to accept CUDA_ARCH_LIST=12.0 for Blackwell,
-  # so we inject sm_120 directly via postPatch. CUDA/cuDNN come from the host-wide
-  # nixpkgs.config.cudaSupport.
-  ctranslate2CppBlackwell = pkgs.ctranslate2.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      # Bypass stale FindCUDA parser for Blackwell (sm_120): inject explicit
-      # compute_120/sm_120 gencode after the existing ARCH_FLAGS expansion.
-      for f in $(grep -rl 'list(APPEND CUDA_NVCC_FLAGS .*ARCH_FLAGS' .); do
-        sed -i '/list(APPEND CUDA_NVCC_FLAGS .*ARCH_FLAGS/a\  list(APPEND CUDA_NVCC_FLAGS "-gencode" "arch=compute_120,code=sm_120")' "$f"
-      done
-    '';
-  });
 in
 {
   imports = [
@@ -119,7 +106,6 @@ in
     # (upstream PR #29818) while the host stays on stable pkgs. CUDA comes from
     # the host nixpkgs.config that pkgs.unstable inherits.
     serverPackage = pkgs.unstable.llama-cpp;
-    ctranslate2Cpp = ctranslate2CppBlackwell;
     parakeetModel = parakeetTdtV3;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     port = 8081;
@@ -141,7 +127,6 @@ in
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
       "parakeet-tdt-v3"
-      "whisper-medium"
       "whisper-diarization"
       "kokoro-82m"
       "s1-mini"
@@ -149,7 +134,6 @@ in
     ];
     # laya stays on-demand (not preloaded): existing policy only keeps the
     # STT/s1-mini audio path warm; nothing here calls for laya at boot.
-    # whisper-medium is an on-demand fallback and is not preloaded.
     preloadModels = [
       "parakeet-tdt-v3"
       "s1-mini"
@@ -189,14 +173,12 @@ in
         vars = {
           embed = "qwen3-embedding-0.6b";
           stt = "parakeet-tdt-v3";
-          whisper = "whisper-medium";
           kokoro = "kokoro-82m";
           normalize = "s1-mini";
           text = "qwen-3.5-9b";
         };
         sets = {
-          # whisper-medium only stands in for parakeet as a fallback.
-          audio = "embed & (stt | whisper) & kokoro & normalize";
+          audio = "embed & stt & kokoro & normalize";
           text = "embed & text";
         };
       };

@@ -6,34 +6,11 @@
 
 let
   # Persistent paths for wrapper services
-  sharedFasterWhisperCache = "/var/cache/llama-swap/faster-whisper";
   diarizationEnrollmentDir = "/var/lib/llama-swap/diarization/enrollment";
   diarizationEmbeddingCache = "/var/lib/llama-swap/diarization/embedding-cache";
   diarizationCache = "/var/cache/llama-swap/whisperx";
 
   kokoroAssets = pkgs.kokoro-assets;
-
-  # Build Python environments with optional ctranslate2 override for specific CUDA architectures.
-  # The ctranslate2 package uses its own CMake CUDA_ARCH_LIST and does not inherit nixpkgs cudaCapabilities.
-  mkWhisperPython =
-    ctranslate2Cpp:
-    let
-      whisperScope = pkgs.python313.override {
-        packageOverrides = final: prev: {
-          ctranslate2 = prev.ctranslate2.override {
-            ctranslate2-cpp = ctranslate2Cpp;
-          };
-        };
-      };
-    in
-    whisperScope.withPackages (
-      ps: with ps; [
-        fastapi
-        faster-whisper
-        python-multipart
-        uvicorn
-      ]
-    );
 
   # sherpa-onnx speech recognition. Its onnxruntime gets the CUDA provider from
   # the host-wide nixpkgs.config.cudaSupport; ffmpeg decodes uploaded audio.
@@ -82,22 +59,15 @@ let
         whisperx
       ]
     );
-
-  # Default ctranslate2 without architecture-specific overrides. CUDA/cuDNN
-  # follow the host-wide nixpkgs.config.cudaSupport.
-  defaultCTranslate2Cpp = pkgs.ctranslate2;
 in
 {
   inherit
-    sharedFasterWhisperCache
     diarizationEnrollmentDir
     diarizationEmbeddingCache
     diarizationCache
     kokoroAssets
-    mkWhisperPython
     mkSherpaPython
     mkKokoroPython
     mkWhisperDiarizePython
-    defaultCTranslate2Cpp
     ;
 }

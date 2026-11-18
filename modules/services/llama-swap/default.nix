@@ -93,7 +93,6 @@ let
   settingsFormat = pkgs.formats.yaml { };
 
   # Build Python environments for audio wrapper services
-  whisperPython = proxy.mkWhisperPython cfg.ctranslate2Cpp;
   sherpaPython = proxy.mkSherpaPython pkgs;
   kokoroPython = proxy.mkKokoroPython pkgs;
   whisperDiarizePython = proxy.mkWhisperDiarizePython pkgs;
@@ -117,21 +116,6 @@ let
           --provider cuda \
           --num-threads 4 \
           --ffmpeg ${lib.getExe pkgs.ffmpeg-headless}
-      '';
-    };
-    "whisper-medium" = {
-      file = null;
-      ttl = 300;
-      upstream.cmd = ''
-        ${whisperPython}/bin/python3 ${./faster-whisper-openai-server.py} \
-          --host 127.0.0.1 \
-          --port ''${PORT} \
-          --model medium \
-          --model-id whisper-medium \
-          --device cuda \
-          --compute-type int8 \
-          --download-root ${proxy.sharedFasterWhisperCache} \
-          --vad-filter
       '';
     };
     "whisper-diarization" = {
@@ -261,13 +245,6 @@ in
       description = "llama.cpp package that provides the llama-server binary used by llama-swap.";
     };
 
-    ctranslate2Cpp = lib.mkOption {
-      type = lib.types.package;
-      default = proxy.defaultCTranslate2Cpp;
-      defaultText = lib.literalExpression "pkgs.ctranslate2";
-      description = "ctranslate2 package used by the faster-whisper Python environment. Override for architecture-specific CUDA builds.";
-    };
-
     parakeetModel = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
@@ -392,14 +369,12 @@ in
       # HF_HOME and XDG_CACHE_HOME subdirectories are writable at runtime.
       "d /var/cache/llama-swap 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
       "d /var/cache/llama-swap/huggingface 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
-      "d ${proxy.sharedFasterWhisperCache} 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
       "d ${proxy.diarizationCache} 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
       "d ${proxy.diarizationEnrollmentDir} 0750 ${cfg.modelOwner} ${cfg.modelGroup} - -"
       "d ${proxy.diarizationEmbeddingCache} 0750 ${cfg.modelOwner} ${cfg.modelGroup} - -"
     ];
 
     systemd.services.llama-swap.serviceConfig.ReadWritePaths = lib.mkAfter [
-      proxy.sharedFasterWhisperCache
       proxy.diarizationCache
       proxy.diarizationEnrollmentDir
       proxy.diarizationEmbeddingCache

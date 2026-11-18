@@ -216,12 +216,6 @@ in
     file = null;
     ttl = 0; # Keep STT warm until another group explicitly evicts it.
   };
-  # Fallback STT for clients when parakeet-tdt-v3 fails; unloads when idle
-  # to give its VRAM back.
-  "whisper-medium" = {
-    file = null;
-    ttl = 300;
-  };
   "whisper-diarization" = {
     file = null;
   };

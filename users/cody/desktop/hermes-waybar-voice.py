@@ -30,9 +30,6 @@ GATEWAY_AUTH_TOKEN = os.environ.get(
 SPEECH_AUTH_TOKEN = os.environ.get("HERMES_API_TOKEN", "local-only")
 CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "grok-4.5")
 TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "parakeet-tdt-v3")
-TRANSCRIPTION_FALLBACK_MODEL = os.environ.get(
-    "HERMES_TRANSCRIPTION_FALLBACK_MODEL", "whisper-medium"
-)
 SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "kokoro-82m")
 SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "af_heart")
 MAX_MESSAGES = int(os.environ.get("HERMES_VOICE_MAX_MESSAGES", "24"))
@@ -431,8 +428,12 @@ class PipewireAudioStream:
         self.reader: threading.Thread | None = None
 
     def __enter__(self) -> "PipewireAudioStream":
+        # --raw is required: when writing to stdout, pw-record otherwise wraps
+        # the stream in a Sun AU container (header plus big-endian samples),
+        # which the VAD reads as loud byte-swapped noise instead of speech.
         command = [
             "pw-record",
+            "--raw",
             "--target",
             "@DEFAULT_AUDIO_SOURCE@",
             "--rate",
@@ -511,6 +512,7 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
     clear_turn_cancel()
     set_status("listening", "Hermes voice listening")
     audio.drain()
+    VAD.reset()
     pre_roll: deque[bytes] = deque(maxlen=max(1, int(PRE_ROLL_SECONDS / FRAME_SECONDS)))
     speech_frames = 0
     frames: list[bytes] | None = None
@@ -557,36 +559,41 @@ def record_utterance(audio: PipewireAudioStream, path: Path) -> bool:
 
 def transcribe(path: Path) -> str | None:
     set_status("transcribing", "Hermes voice transcribing")
-    models = [TRANSCRIPTION_MODEL]
-    if TRANSCRIPTION_FALLBACK_MODEL and TRANSCRIPTION_FALLBACK_MODEL != TRANSCRIPTION_MODEL:
-        models.append(TRANSCRIPTION_FALLBACK_MODEL)
-    for model in models:
-        try:
-            result = run_command_interruptibly(
-                [
-                    "curl",
-                    "-sS",
-                    "--fail",
-                    "-X",
-                    "POST",
-                    f"{SPEECH_BASE_URL}/v1/audio/transcriptions",
-                    "-H",
-                    f"Authorization: Bearer {SPEECH_AUTH_TOKEN}",
-                    "-F",
-                    f"model={model}",
-                    "-F",
-                    f"file=@{path};type=audio/wav",
-                ]
-            )
-            if result is None:
-                return None
-            payload = json.loads(result.stdout)
-        except (subprocess.CalledProcessError, json.JSONDecodeError) as err:
-            print(f"transcription with {model} failed: {err}", file=sys.stderr, flush=True)
-            continue
-        text = payload.get("text") if isinstance(payload, dict) else None
-        if isinstance(text, str) and text.strip():
-            return text.strip()
+    try:
+        result = run_command_interruptibly(
+            [
+                "curl",
+                "-sS",
+                "--fail",
+                "-X",
+                "POST",
+                f"{SPEECH_BASE_URL}/v1/audio/transcriptions",
+                "-H",
+                f"Authorization: Bearer {SPEECH_AUTH_TOKEN}",
+                "-F",
+                f"model={TRANSCRIPTION_MODEL}",
+                "-F",
+                f"file=@{path};type=audio/wav",
+            ]
+        )
+        if result is None:
+            return None
+        payload = json.loads(result.stdout)
+    except (subprocess.CalledProcessError, json.JSONDecodeError) as err:
+        print(
+            f"transcription with {TRANSCRIPTION_MODEL} failed: {err}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return None
+    text = payload.get("text") if isinstance(payload, dict) else None
+    if isinstance(text, str) and text.strip():
+        return text.strip()
+    print(
+        f"transcription with {TRANSCRIPTION_MODEL} returned no text",
+        file=sys.stderr,
+        flush=True,
+    )
     return None
 
 

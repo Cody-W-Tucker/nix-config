@@ -39,7 +39,6 @@ let
        warmup_url="http://nas:8081/upstream/parakeet-tdt-v3/health"
        normalizer_warmup_url="http://nas:8081/upstream/s1-mini/health"
        model="parakeet-tdt-v3"
-       fallback_model="whisper-medium"
       norm_url="http://nas:8081/v1/chat/completions"
 
        warm_model() {
@@ -299,10 +298,6 @@ let
         fi
 
         raw_text="$(request_transcript "$path" "$model" || true)"
-        if [ -z "$raw_text" ]; then
-          # Retry once on the faster-whisper backend if Parakeet fails.
-          raw_text="$(request_transcript "$path" "$fallback_model" || true)"
-        fi
 
         if [ -z "$raw_text" ]; then
           notify-send "Voice Input" "Transcription returned no text" -t 2000

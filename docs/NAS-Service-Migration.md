@@ -16,7 +16,7 @@ Once validated and production traffic is cut over, server is decommissioned — 
 - Docker: docker 29, active (Actual MCP, Hermes agent, Excalidraw)
 - Imports: `modules/system/base.nix`, `modules/nas`, `vpn-confinement` (via input); full service stack under `modules/nas/`
 
-> **Historical note:** Early migration phases (2026-07-14) were executed against a GTX 1650. The GPU was later upgraded to an RTX 5060 (Blackwell). The `models.nix` Blackwell overrides (sm_120a CUDA arch, CTranslate2 postPatch) reflect the current hardware.
+> **Historical note:** Early migration phases (2026-07-14) were executed against a GTX 1650. The GPU was later upgraded to an RTX 5060 (Blackwell). The `models.nix` Blackwell settings (sm_120a CUDA arch) reflect the current hardware.
 
 ## Source (`server`) — Key Config
 

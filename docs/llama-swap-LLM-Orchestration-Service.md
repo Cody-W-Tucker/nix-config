@@ -17,7 +17,7 @@ Key features include:
 - **Command Generation**: The `mkModelCommand` function dynamically builds the `llama-server` CLI string, incorporating parameters like context size, batch size, and GPU layers [modules/services/llama-swap/default.nix128-162](../modules/services/llama-swap/default.nix#L128-L162)
 
 On NAS, the matrix router allows `qwen3-embedding-0.6b` to run alongside either
-the audio stack (`parakeet-tdt-v3` or its fallback `whisper-medium`, `s1-mini`,
+the audio stack (`parakeet-tdt-v3`, `s1-mini`,
 and `kokoro-82m`) or `qwen-3.5-9b`.
 The audio and 9B stacks do not coexist; other models run alone. An embedding
 request can therefore evict an isolated model such as the 35B. Only requested
