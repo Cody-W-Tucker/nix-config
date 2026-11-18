@@ -130,26 +130,6 @@ in
     bluetooth.enable = true;
   };
 
-  # Hermes runs as a Home Manager user service, so its backup wiring lives at
-  # the NixOS level here: the state and CRM SQLite files are consistently
-  # exported by Restic's pre-backup step, while remaining Hermes state is a
-  # direct Restic input (live *.db* files stay excluded centrally).
-  nas.backups.sqlite = [
-    {
-      name = "hermes";
-      source = "${site.user.home}/.local/share/hermes/state.db";
-      filename = "state.db";
-    }
-    {
-      name = "hermes";
-      source = "${site.user.home}/.local/share/hermes/crm/crm.db";
-      filename = "crm.db";
-    }
-  ];
-  nas.backups.dataDirectories = [
-    "${site.user.home}/.local/share/hermes"
-  ];
-
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
