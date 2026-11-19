@@ -4,6 +4,8 @@
     "modules/hosts/AGENTS.md",
     "modules/web/AGENTS.md",
     "modules/feeds/AGENTS.md",
+    "modules/backups/AGENTS.md",
+    "modules/ai/AGENTS.md",
     "modules/ai/hermes-agent/AGENTS.md",
     "modules/ai/llama-swap/AGENTS.md",
     "modules/users/AGENTS.md",

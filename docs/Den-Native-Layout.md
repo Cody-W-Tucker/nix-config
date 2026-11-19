@@ -119,6 +119,98 @@ Each directory has a README or AGENTS.md where there is something to know; the t
 - **Flake output**: a new file in `modules/flake/` defining `flake.<output>`.
 - New files must be `git add`-ed before Nix sees them.
 
+## Focused evaluation and tracing
+
+- **What does this aspect do with these inputs?** Evaluate a small fixture that supplies just the
+  dependencies it needs. The NFS example below uses Den's internal `aspects.resolve` against
+  the version pinned in `flake.lock`; treat this as a debugging recipe, not a production API.
+- **How did this aspect get here?** Trace the real host's Den composition and filter by aspect
+  chain and class. Keep non-contributing rows when investigating missing contributions.
+- **What did the real host get?** Query the specific merged option, for example
+  `nix eval --json .#nixosConfigurations.nas.config.services.nfs.server.enable`.
+  Repeat for `beast` when it is affected. No closure build is needed for that question.
+
+Run from the repository root. This uses the locked inputs and the flake's Git source snapshot;
+stage new files by name before expecting it to see them. Change the `--apply` selector to
+`'examples: examples.opencodeTrace'` to trace the OpenCode feature on both hosts instead of
+evaluating the NFS fixture. Neither view builds or activates a system.
+
+```bash
+nix eval --offline --no-write-lock-file --impure --json \
+  --apply 'examples: examples.nfsFixture' --expr "$(cat <<'NIX'
+let
+  f = builtins.getFlake (toString ./.);
+  inputs = f.inputs // { self = f; };
+  den = (inputs.nixpkgs.lib.evalModules {
+    modules = [ inputs.den.flakeModule (inputs.import-tree (f.outPath + "/modules")) ];
+    specialArgs = { inherit inputs; };
+  }).config.den;
+
+  fixture = inputs.nixpkgs.lib.nixosSystem {
+    system = "x86_64-linux";
+    modules = [
+      (den.lib.aspects.resolve "nixos" den.aspects.nfs.server)
+      ({ lib, ... }: {
+        options.codyos.site.lan.subnet = lib.mkOption { type = lib.types.str; };
+        config.codyos.site.lan.subnet = "192.0.2.0/24";
+      })
+    ];
+  };
+
+  trace = name: let
+    host = den.hosts.x86_64-linux.${name};
+    captured = den.lib.capture.captureWithPathsWith {
+      classes = [ "nixos" "homeManager" ];
+      root = den.lib.resolveEntity "host" { inherit host; };
+      ctx = { inherit host; };
+    };
+  in map (e: {
+    inherit (e) name class hasClass excluded replacedBy;
+    chain = e."aspect-chain";
+  }) (builtins.filter (e: e.name == "opencode" || builtins.elem "opencode" e."aspect-chain")
+    captured.entries);
+in {
+  nfsFixture = {
+    enabled = fixture.config.services.nfs.server.enable;
+    exportsUseFixtureSubnet = inputs.nixpkgs.lib.hasInfix "192.0.2.0/24"
+      fixture.config.services.nfs.server.exports;
+    port2049 = builtins.elem 2049 fixture.config.networking.firewall.allowedTCPPorts;
+  };
+  opencodeTrace = { nas = trace "nas"; beast = trace "beast"; };
+}
+NIX
+)"
+```
+
+Expect all three fixture fields to be `true`. In the trace, the contributing rows (`hasClass`
+and not `excluded`) show NAS's `opencode` NixOS contribution and Home Manager `to-users` route,
+while Beast gets the Home Manager route under `opencode.remote`. That explains composition, not
+merged option values or runtime behavior. If an input is not cached, rerun without `--offline`.
+
+### Den resolution graphs
+
+Start with filtered trace rows for a single aspect. For a visual explanation of a more complex
+route, [den-diagram](https://github.com/denful/den-diagram) renders the same Den capture as Mermaid.
+It is a separate library, not an input of CodyOS. See the [upstream wiring example](https://github.com/denful/den/blob/v0.20.0/docs/src/content/docs/tutorials/case-study-diagrams.mdx): pass the capture's `entries` and `ctxTrace` to `diagram.context`, then pass the graph to `diagram.toMermaid`. Keep the relevant classes and routing hops visible (for OpenCode, keep both `nixos` and `homeManager` and the `to-users` hop). This is a graph of configuration resolution, not runtime dependencies or health.
+
+### Declared host capabilities
+
+For planning or an audit, list the declared units and containers for `nas` or `beast`:
+
+```bash
+nix eval --json .#nixosConfigurations.nas.config --apply 'c:
+  let hm = c.home-manager.users.codyt; in
+  builtins.mapAttrs (_: builtins.attrNames) {
+    services = c.systemd.services;
+    timers = c.systemd.timers;
+    userServices = hm.systemd.user.services;
+    userTimers = hm.systemd.user.timers;
+    containers = c.virtualisation.oci-containers.containers;
+  }'
+```
+
+Confirm runtime availability on the affected host; declaration does not mean a unit is running.
+
 ## Migration history
 
 The tree was moved to this layout on branch `use-den` in slices 0–8: relocation of `den/`,

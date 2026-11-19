@@ -1,23 +1,10 @@
 # CodyOS
 
-You are assisting a user working on a NixOS system config using flakes. Full documentation is available at `docs/`.
+**CodyOS uses Den to compose NixOS and Home Manager by feature.** Start with the nearest existing `den.aspects.*` definition in `modules/`. Use `nixosConfigurations.<host>` for ordinary NixOS option evaluation and builds. See the [Den layout](docs/Den-Native-Layout.md) and [module map](modules/README.md).
 
 ## Capability Floor
 
-When planning new features. The evaluated config is the map of what each host can do.
-
-```bash
-# Declared capabilities for a host (nas or beast).
-nix eval --json .#nixosConfigurations.nas.config --apply 'c:
-  let hm = c.home-manager.users.codyt; in
-  builtins.mapAttrs (_: builtins.attrNames) {
-    services = c.systemd.services;
-    timers = c.systemd.timers;
-    userServices = hm.systemd.user.services;
-    userTimers = hm.systemd.user.timers;
-    containers = c.virtualisation.oci-containers.containers;
-  }'
-```
+When planning a feature or auditing what a host declares, use the [capability inventory](docs/Den-Native-Layout.md#declared-host-capabilities). For a known feature, query its specific setting instead.
 
 - Declared is not running. Confirm on the host itself with `systemctl` (`--user` for user units) before treating a capability as available.
 - When work needs a capability that is not on the floor, declare it in Nix first, then build on it.
@@ -31,11 +18,11 @@ nix eval --json .#nixosConfigurations.nas.config --apply 'c:
 
 ## Change Validation
 
-Identify the affected hosts and expected behavior, then choose the smallest checks that can provide meaningful evidence, in this order:
+Identify the aspect, affected hosts, and expected behavior. Choose the smallest check that can catch the likely failure:
 
-1. For existing option values and package-list changes, evaluate the relevant merged values on each affected host; run a focused check when useful.
-2. For packages, scripts, generated configuration, and plugins, build and test the changed artifact or behavior directly when practical.
-3. For significant module wiring, new services, or host-spanning changes, build the affected host closure before declaring validation complete unless a narrower artifact build directly covers the likely failures; `nix flake check` or a dry-run is not a substitute.
+- **Feature logic:** Evaluate an aspect in isolation with explicit fixture inputs when that answers the question or gives you a useful regression test. This does not prove that a real host selects it or gets the same result.
+- **Composition and settings:** Trace Den when the inclusion or routing is unclear. For a setting or package-list change, evaluate the relevant merged value on each affected host rather than building its closure by default.
+- **Artifacts and behavior:** Build and test the changed package, script, generated configuration, or plugin directly when practical. For significant wiring, new services, or changes spanning hosts, build the affected host closure if narrower checks do not cover the likely failures. A dry run or `nix flake check` is not a substitute for that build.
 
 Use `nix flake check` when repository-wide validation is appropriate, such as broad refactors or flake-input changes. It evaluates both hosts and runs the declared checks; it does not build every package or host closure, activate a system, or prove runtime behavior. Individual checks can be run with `nix build .#checks.x86_64-linux.<name>`.
 
@@ -66,13 +53,10 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ### Module Structure
 
-- `flake.nix` is inputs plus one `evalModules` over `inputs.den.flakeModule` and `import-tree ./modules`; its `.config.flake` is every flake output. Every non-underscore `.nix` under `modules/` is a flake-level Den module, organized by feature (no machine-role folders or aspects): hosts in `modules/hosts/<host>.nix` (they list the features they want), features in `modules/<feature>/` or a single `modules/<feature>.nix` (`graphical`, `apps`, `audio`, `ai`, `web`, `media`, `sync`, …), and non-host flake outputs (`overlays`, `packages`, `checks`, `formatter`) in `modules/flake/`. Features every host needs register themselves with `den.default.includes` (list them: `grep -rn 'den.default.includes' modules`, or the `nix eval` in `modules/README.md`); cross-host features use nested `den.aspects.<feature>.<side>`; one aspect may span several files. Plain NixOS/Home Manager modules, scripts and data live under `_` paths and are imported by their aspect. See `modules/README.md` and `docs/Den-Native-Layout.md`.
-- No `default.nix` outside `_` paths (`check-imports` enforces it).
-- Naming: new code follows `docs/Den-Native-Layout.md`.
-- Keep `default.nix` short.
-  - Use supporting files with self-explaining names if needed.
-  - Examples: `module.nix`, `package.nix` and `service.nix`.
-- Keep secrets declarations close to their consuming service
+- `modules/hosts/<host>.nix` owns machine facts and selects features. Feature aspects own the implementation, including the NixOS and Home Manager pieces and nested sides such as `nfs.server` and `nfs.client`.
+- Inclusion is the feature switch. A feature intended for every host registers itself through `den.default.includes`; otherwise select it on the hosts that need it.
+- `import-tree` loads flake-level modules under `modules/` and skips paths containing a `_`-prefixed segment. Keep plain modules, scripts, and data in those excluded paths and import them explicitly. Under `modules/`, `default.nix` is allowed only on excluded paths (`check-imports` enforces this).
+- Keep shared facts in `codyos.site` and secret declarations next to their consuming service. Non-host flake outputs live in `modules/flake/`.
 
 ### Flakes & Git
 
@@ -81,28 +65,7 @@ Once the changes have settled, the user will run the `update` script to build an
 - Never commit raw secrets (use SOPS-NIX.)
 - The user will need to add secrets via the sops edit command.
 
-## Tracing Configuration: Evaluate, Don't Scan
+## Finding and Verifying Configuration
 
-For any claim about effective Nix configuration—including presence, absence, conflicts, defaults, contributors, or host capability—evaluate the merged configuration before searching or reading module trees. Never infer effective state from imports or source assignments alone. Use Grep only for plain text (comments, strings inside scripts, docs). Replace `<host>` with `nas` or `beast`; each command takes about a second once the flake is cached.
-
-```bash
-# Which files contribute definitions for an option
-nix eval --json .#nixosConfigurations.<host>.options.networking.firewall.interfaces.definitionsWithLocations \
-  --apply 'map (d: d.file)'
-
-# The final merged value
-nix eval --json .#nixosConfigurations.<host>.config.services.nginx.enable
-
-# Where an option is declared (upstream module or a codyos.* option here)
-nix eval --json .#nixosConfigurations.<host>.options.codyos.site.domain.declarationPositions
-
-# Home Manager values for the primary user
-nix eval --json .#nixosConfigurations.<host>.config.home-manager.users.codyt.programs.opencode.settings.small_model
-```
-
-- An option that differs between hosts needs one query per host; do not infer one from the other.
-- Definition locations show contributors, not every consumer. Evaluate affected values on both hosts and inspect the contributing sources before judging impact.
-- For attribute-set options (`systemd.services`, `services.nginx.virtualHosts`), query the option itself to list every contributing file, then narrow with the specific attribute under `config`.
-- Values that are derivations or functions do not serialize; select a leaf (`.drvPath`, `.name`) or drop `--json`.
-- New files must be `git add`-ed before these commands can see them.
-- Hosts are assembled by Den, but `nixosConfigurations.<host>` evaluates to an ordinary NixOS system, so every command above is unchanged. Definition locations for options set from an aspect point at the `modules/<area>/*.nix` file that defines the aspect (or at Den-generated modules).
+- **Effective settings:** Use `nix eval` on the relevant merged option for each affected host. Search source to find definitions and consumers, not to decide what the host gets.
+- **Den composition:** Use the [working trace recipe](docs/Den-Native-Layout.md#focused-evaluation-and-tracing) (`den.lib.capture.captureWithPathsWith`) when an aspect's route to a host or user is unclear. If the route is easier to explain visually, use the [Den resolution graph](docs/Den-Native-Layout.md#den-resolution-graphs). Neither the trace nor the graph proves merged values or runtime behavior.

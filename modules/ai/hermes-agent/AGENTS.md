@@ -1,8 +1,9 @@
 # Hermes Agent Via Home Manager
 
-This directory is a Home Manager wrapper around
-`inputs.hermes-agent.homeManagerModules.default`, imported by
-the `hermes-agent` aspect (`hermes-agent.nix`, included from `modules/hosts/nas.nix`) into `home-manager.users.codyt`.
+`hermes-agent.nix` owns the Den aspect selected by NAS: its NixOS contribution
+imports the workflow module and registers backups; `provides.to-users.homeManager`
+imports `_hm/` for the host's users. `_hm/default.nix` owns the wrapper around
+`inputs.hermes-agent.homeManagerModules.default`.
 
 Treat it like an integration layer, not a standalone app.
 
@@ -16,7 +17,7 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 
 ## Scope
 
-- Hermes is configured only in Home Manager. There is no NixOS system-scope
+- The Hermes runtime is configured only in Home Manager. There is no NixOS system-scope
   instance: no `systemd.services.hermes-*`, no system user, no
   `systemd.tmpfiles.rules` at system level.
 - Upstream HM surfaces: `services.hermes-agent.{hermesHome, workingDirectory,
@@ -33,18 +34,21 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 
 ## High-Salience Heuristics
 
-- Keep `default.nix` as the integration spine and keep the main
+- Keep `_hm/default.nix` as the Home Manager integration spine and keep the main
   `services.hermes-agent = { ... };` block there.
 - Do not create local option blocks just to thread constants around. Use plain local values.
 - Prefer direct writes into upstream `services.hermes-agent.*` surfaces over local pass-through abstractions.
 - Prefer declarative overwrite over residual runtime state. `configFile` is set to upstream's rendered `settings`, so every activation replaces `config.yaml` whole and keys Nix no longer supplies do not linger.
-- Companion modules must stay user-scoped: `systemd.user.*`
+- Companion modules under `_hm/` must stay user-scoped: `systemd.user.*`
   (`runtime/default.nix`, `secrets/default.nix`), `home.activation.*`
   (`skills/*.nix`), and upstream document surfaces (`documents/default.nix`).
   No root-only constructs (`users.users`, system activation scripts) inside
-  this directory.
+  `_hm/`.
 
 ## Where Changes Go
+
+- `hermes-agent.nix`: host/user composition, system-side workflow import, and backup registration.
+- The paths below are relative to `_hm/`.
 
 - `default.nix`: upstream Hermes service settings, imports, top-level assembly
 - `plugins/<name>/default.nix`: plugin source, enablement, settings, and plugin-specific runtime wiring
@@ -68,6 +72,9 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
 - Hermes must see normal files under `${hermesHome}/skills`; malformed local skill dirs can shadow packaged skills and break loading.
 
 ## Debugging Order
+
+For a missing contribution, first check the Den include and the relevant class on NAS.
+For a runtime configuration issue, work through `_hm/` in this order:
 
 1. Is this defined in `default.nix` via upstream Hermes settings?
 2. Is it coming from runtime wiring under `runtime/`?
