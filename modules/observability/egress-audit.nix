@@ -1,99 +1,4 @@
 { den, ... }:
-let
-  # Ports that are routine for these hosts; anything else trips the
-  # "unusual egress port" alert. Tune here as false positives show up.
-  routinePorts = [
-    "22" # ssh / git
-    "53" # dns
-    "80"
-    "123" # ntp
-    "443"
-    "853" # dns-over-tls
-    "3478" # tailscale STUN
-    "41641" # tailscale direct
-    "21027" # syncthing discovery
-    "22000" # syncthing
-  ];
-  # Tailscale reaches peers from its own port 41641 to whatever port the peer
-  # got; those destination ports are arbitrary, so match on the source port.
-  routineSourcePorts = [ "41641" ];
-
-  # Grafana contact point (created in the Grafana UI) that egress alerts go to.
-  receiver = "Discord";
-
-  # Instant LogQL query → reduce → "> 0" threshold, the shape every egress
-  # alert shares. groupBy splits notifications so each message names its
-  # country/port/host instead of batching every instance into one (Discord
-  # truncates messages at 2000 characters).
-  lokiAlert =
-    {
-      uid,
-      title,
-      expr,
-      summary,
-      groupBy,
-    }:
-    {
-      inherit uid title;
-      notification_settings = {
-        inherit receiver;
-        group_by = [
-          "alertname"
-          "grafana_folder"
-        ]
-        ++ groupBy;
-      };
-      condition = "C";
-      data = [
-        {
-          refId = "A";
-          datasourceUid = "loki";
-          relativeTimeRange = {
-            from = 900;
-            to = 0;
-          };
-          model = {
-            refId = "A";
-            inherit expr;
-            queryType = "instant";
-            editorMode = "code";
-          };
-        }
-        {
-          refId = "B";
-          datasourceUid = "__expr__";
-          model = {
-            refId = "B";
-            type = "reduce";
-            expression = "A";
-            reducer = "last";
-          };
-        }
-        {
-          refId = "C";
-          datasourceUid = "__expr__";
-          model = {
-            refId = "C";
-            type = "threshold";
-            expression = "B";
-            conditions = [
-              {
-                evaluator = {
-                  type = "gt";
-                  params = [ 0 ];
-                };
-              }
-            ];
-          };
-        }
-      ];
-      noDataState = "OK";
-      execErrState = "Error";
-      for = "0s";
-      annotations.summary = summary;
-      labels.feature = "egress-audit";
-    };
-in
 {
   # Egress audit: record every new outbound connection, enrich it with the
   # destination country and ship it to Loki as job="egress".
@@ -102,8 +7,9 @@ in
   #                            to non-private addresses (host and forwarded/container
   #                            traffic); Fluent Bit parses them, plus Unbound query
   #                            logs and OpenSnitch events, into the egress stream.
+  #                            Internal names and destinations are dropped.
   #   egress-audit.opensnitch  per-process attribution (which program connected).
-  #   egress-audit.server      the Loki host: 30-day retention and Grafana alerts.
+  #   egress-audit.server      the Loki host: 30-day retention. Dashboard-only, no alerts.
   #
   # Shipping rides the logging.forward-* aspects (modules/observability/logging.nix).
   den.aspects.egress-audit.nixos =
@@ -114,9 +20,22 @@ in
       ...
     }:
     let
-      # Interpolation copies just this file to the store (toString would point
-      # into the whole flake source).
-      parser = "${./_egress-parse.lua}";
+      # DNS names that never leave the network; the parser drops their lookups
+      # (reverse lookups and single-label names are dropped as well).
+      internalSuffixes = [
+        config.codyos.site.domain
+        "in-addr.arpa"
+        "ip6.arpa"
+        "ts.net"
+        "home.arpa"
+        "local"
+        "lan"
+        "localhost"
+      ];
+      parser = pkgs.writeText "egress-parse.lua" ''
+        EGRESS_INTERNAL_SUFFIXES = { ${lib.concatMapStringsSep ", " (s: ''"${s}"'') internalSuffixes} }
+        ${builtins.readFile ./_egress-parse.lua}
+      '';
       geoDb = "${pkgs.dbip-country-lite}/share/dbip/dbip-country-lite.mmdb";
       logRule =
         family: set: prefix: flags:
@@ -203,6 +122,9 @@ in
       settings = {
         DefaultAction = "allow";
         InterceptUnknown = false;
+        # Upstream default flushes conntrack on start, which can cut live
+        # connections (SSH, sync) on every daemon restart.
+        Internal.FlushConnsOnStart = false;
         Server.Loggers = [
           {
             Name = "syslog";
@@ -214,53 +136,14 @@ in
     };
   };
 
-  # Loki-side retention and alerting for the egress stream. Alerts go to the
-  # `receiver` contact point above, one notification per country/port/host.
+  # Loki-side retention for the egress stream. Viewed through dashboards and
+  # Logs Drilldown only; no alert rules are provisioned.
   den.aspects.egress-audit.server.nixos = {
     services.loki.configuration.limits_config.retention_stream = [
       {
         selector = ''{job="egress"}'';
         priority = 1;
         period = "720h";
-      }
-    ];
-
-    services.grafana.provision.alerting.rules.settings.groups = [
-      {
-        orgId = 1;
-        name = "egress";
-        folder = "Egress audit";
-        interval = "15m";
-        rules = [
-          (lokiAlert {
-            uid = "egress-new-country";
-            title = "Egress to a new country";
-            expr = ''count by (host, country) (count_over_time({job="egress", country=~".+"}[15m])) unless count by (host, country) (count_over_time({job="egress", country=~".+"}[30d] offset 15m))'';
-            summary = "{{ $labels.host }} connected to {{ $labels.country }} for the first time in 30 days.";
-            groupBy = [
-              "host"
-              "country"
-            ];
-          })
-          (lokiAlert {
-            uid = "egress-unusual-port";
-            title = "Egress on an unusual port";
-            expr = ''sum by (host, dport, proto) (count_over_time({job="egress", source="nft"} | json | dport != "" and dport !~ "^(${builtins.concatStringsSep "|" routinePorts})$" and sport !~ "^(${builtins.concatStringsSep "|" routineSourcePorts})$" [15m]))'';
-            summary = "{{ $labels.host }} opened {{ $labels.proto }} connections to port {{ $labels.dport }}.";
-            groupBy = [
-              "host"
-              "proto"
-              "dport"
-            ];
-          })
-          (lokiAlert {
-            uid = "egress-volume-spike";
-            title = "Egress connection spike";
-            expr = ''sum by (host) (count_over_time({job="egress", source="nft"}[15m])) > 3 * (sum by (host) (count_over_time({job="egress", source="nft"}[7d] offset 15m)) / 672) and sum by (host) (count_over_time({job="egress", source="nft"}[15m])) > 500'';
-            summary = "{{ $labels.host }} opened more than 3x its usual number of outbound connections in 15 minutes.";
-            groupBy = [ "host" ];
-          })
-        ];
       }
     ];
   };

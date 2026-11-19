@@ -21,6 +21,17 @@
         overrideDevices = true;
         overrideFolders = true;
         guiAddress = lib.mkDefault "0.0.0.0:8384";
+        # syncthing-init PUTs this whole block, which resets unlisted options to
+        # Syncthing defaults; keep anything previously chosen in the GUI here.
+        settings.options = {
+          # Replace the built-in STUN list (which includes stun.miwifi.com, China).
+          stunServers = [
+            "stun.l.google.com:19302"
+            "stun1.l.google.com:19302"
+            "stun2.l.google.com:19302"
+          ];
+          urAccepted = -1; # usage reporting declined
+        };
         settings.devices = {
           "beast" = {
             id = "WS3XKRH-JILABRE-NLK2NU6-BGPXTOY-TOO2K75-UYEY7HB-KO7NKAC-I37UGQ3";

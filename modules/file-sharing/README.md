@@ -1,6 +1,6 @@
 # File sharing
 
-Samba and NFS share files on the LAN. Syncthing replicates the shared folder between NAS and Beast; `syncthing.nginx` adds the Tailscale-only management routes on NAS.
+Samba and NFS share files on the LAN. Syncthing replicates the shared folder between NAS and Beast; `syncthing.nginx` adds the Tailscale-only management routes on NAS. Syncthing's NAT-traversal STUN servers are pinned to Google's (`settings.options.stunServers`) instead of the built-in list, which includes a Xiaomi server in China.
 
 ## Samba
 

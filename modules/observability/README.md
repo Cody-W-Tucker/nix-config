@@ -42,8 +42,8 @@ Grafana has provisioned `Prometheus`, `Tempo` and `Loki` (uid `loki`) datasource
 | Aspect | Hosts | What it adds |
 | --- | --- | --- |
 | `egress-audit` | nas, beast | nftables table `inet egress-audit` logs each new connection to a non-private address: `egress-out:` for the host (with UID), `egress-fwd:` for forwarded/Docker traffic. Rate-limited to 50/s per rule. On the NAS, Unbound's own upstream lookups are skipped because its client queries are logged instead. |
-| `egress-audit.opensnitch` | beast | OpenSnitch in log-only mode (default allow, no prompts): each connection with the program path, command line, PID and the hostname it resolved. |
-| `egress-audit.server` | nas | Loki 30-day retention for the stream and three Grafana alert rules (folder "Egress audit"): new destination country per host vs. the previous 30 days, nft connections on non-routine ports, and a 3x connection spike vs. the 7-day average. |
+| `egress-audit.opensnitch` | nas, beast | OpenSnitch in log-only mode (default allow, no prompts, no conntrack flush on start): each connection with the program path, command line, PID and the hostname it resolved. |
+| `egress-audit.server` | nas | Loki 30-day retention for the stream. Dashboard-only: no alert rules. The three rules it used to provision (folder "Egress audit") stay in Grafana until deleted by hand. |
 
 Unbound query logging itself (`log-queries`, `log-local-actions`) lives in the `dns` aspect. Fluent Bit parses all of it with `_egress-parse.lua`, moves it from the journal stream to the `egress` tag, and adds `country`/`country_name` from the DB-IP country-lite database. Labels are `host`, `source` (`nft`, `opensnitch`, `dns`) and `country`; the remaining fields are JSON, for example:
 
@@ -53,7 +53,7 @@ Unbound query logging itself (`log-queries`, `log-local-actions`) lives in the `
 {job="egress", source="dns"} | json | action="always_nxdomain"
 ```
 
-The alert rules route to the `Discord` contact point, which is created in the Grafana UI. If you rename it, update `receiver` in `egress-audit.nix`, or Grafana will reject the rules. Each rule groups notifications by its own labels (host + country, host + port, host), so every Discord message names one finding. The unusual-port rule also ignores Tailscale peer traffic, which is sent from source port 41641.
+Internal traffic is dropped before shipping, from both the egress stream and the journal stream. That covers OpenSnitch events to LAN, Tailscale or loopback addresses (the same ranges as the nftables sets), and DNS lookups of the site domain, reverse lookups (`in-addr.arpa`, `ip6.arpa`), `ts.net`, `home.arpa`, `local`, `lan`, `localhost` and single-label names. The list is `internalSuffixes` in `egress-audit.nix`.
 
 There is no egress dashboard. To browse the stream, use Grafana's Logs Drilldown (`service_name=egress`), which breaks it down by label and JSON field (`country`, `dst`, `dport`, `path`, `qname`, ...).
 

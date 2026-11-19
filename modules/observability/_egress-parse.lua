@@ -10,6 +10,13 @@
 --   dns         Unbound log-queries / log-local-actions lines (NAS resolver)
 -- The rewrite_tag filter that follows moves records with `egress` set to the
 -- "egress" tag. Every other record passes through unchanged.
+--
+-- Internal traffic is dropped outright (not shipped anywhere): OpenSnitch
+-- events to private/Tailscale addresses, and DNS lookups of names in
+-- EGRESS_INTERNAL_SUFFIXES (defined by egress-audit.nix ahead of this file),
+-- reverse lookups and single-label names.
+
+local internal_suffixes = EGRESS_INTERNAL_SUFFIXES or {}
 
 local function nz(v)
   if v == nil or v == "" or v == "<nil>" then
@@ -20,6 +27,36 @@ end
 
 local function strip_dot(name)
   return (name:gsub("%.$", ""))
+end
+
+-- Same ranges as the nftables private4/private6 sets.
+local function is_private(ip)
+  if ip:find(":", 1, true) then
+    local l = ip:lower()
+    return l == "::1" or l:match("^f[cd]") ~= nil or l:match("^fe[89ab]") ~= nil or l:match("^ff") ~= nil
+  end
+  local a, b = ip:match("^(%d+)%.(%d+)%.")
+  a, b = tonumber(a), tonumber(b)
+  if not a then
+    return false
+  end
+  return a == 0 or a == 10 or a == 127 or a >= 224
+    or (a == 100 and b >= 64 and b <= 127)
+    or (a == 169 and b == 254)
+    or (a == 172 and b >= 16 and b <= 31)
+    or (a == 192 and b == 168)
+end
+
+local function is_internal_name(name)
+  if not name:find(".", 1, true) then
+    return true
+  end
+  for _, sfx in ipairs(internal_suffixes) do
+    if name == sfx or name:sub(-(#sfx + 1)) == "." .. sfx then
+      return true
+    end
+  end
+  return false
 end
 
 local function parse_nft(record, msg)
@@ -52,8 +89,8 @@ local function parse_opensnitch(record, msg)
   for k, v in msg:gmatch('(%u+)="([^"]*)"') do
     f[k] = v
   end
-  -- Loopback chatter is noise for an egress log.
-  if f.DST == nil or f.DST:match("^127%.") or f.DST == "::1" then
+  -- LAN, Tailscale and loopback traffic is not egress.
+  if f.DST == nil or is_private(f.DST) then
     return -1
   end
   record.egress = "opensnitch"
@@ -82,9 +119,13 @@ local function parse_unbound(record, msg)
       return 0
     end
   end
+  qname = strip_dot(qname)
+  if is_internal_name(qname) then
+    return -1
+  end
   record.egress = "dns"
   record.client = client
-  record.qname = strip_dot(qname)
+  record.qname = qname
   record.qtype = qtype
   if zone then
     record.action = action
