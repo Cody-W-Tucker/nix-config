@@ -1,7 +1,24 @@
 { den, ... }:
+let
+  loki = import ./_loki-endpoint.nix;
+  forwardJournal = host: port: lib: {
+    services.fluent-bit = {
+      enable = true;
+      settings.pipeline.outputs = lib.mkBefore [
+        {
+          name = "loki";
+          match = "journal";
+          inherit host port;
+          labels = "job=systemd-journal,host=$hostname,unit=$systemd_unit,level=$level";
+          line_format = "json";
+        }
+      ];
+    };
+  };
+in
 {
   # Host telemetry shared by every host: the node and smartctl exporters (scraped by the NAS
-  # Prometheus) and Fluent Bit shipping the systemd journal to the NAS Loki.
+  # Prometheus) and the journal input. Shipping requires an explicit forwarding aspect.
   # Host-specific inputs and outputs (e.g. NAS nginx logs) are appended by the
   # owning module; list settings concatenate after the shared entries (mkBefore).
   den.aspects.logging.nixos =
@@ -12,8 +29,6 @@
       ...
     }:
     let
-      # The NAS runs Loki itself; every other host ships to it by hostname.
-      lokiIsLocal = config.services.loki.enable;
       priorityToLevelScript = pkgs.writeText "fb-priority-to-level.lua" ''
         function priority_to_level(tag, timestamp, record)
           local map = {
@@ -41,7 +56,6 @@
         };
 
         fluent-bit = {
-          enable = true;
           settings = {
             service = {
               flush = 1;
@@ -65,16 +79,6 @@
                   call = "priority_to_level";
                 }
               ];
-              outputs = lib.mkBefore [
-                {
-                  name = "loki";
-                  match = "journal";
-                  host = if lokiIsLocal then "127.0.0.1" else "nas";
-                  port = if lokiIsLocal then config.services.loki.configuration.server.http_listen_port else 3090;
-                  labels = "job=systemd-journal,host=$hostname,unit=$systemd_unit,level=$level";
-                  line_format = "json";
-                }
-              ];
             };
           };
         };
@@ -85,6 +89,11 @@
         config.services.prometheus.exporters.smartctl.port
       ];
     };
+
+  den.aspects.logging.forward-to-nas.nixos = { lib, ... }: forwardJournal loki.host loki.port lib;
+  den.aspects.logging.forward-local.nixos =
+    { config, lib, ... }:
+    forwardJournal "127.0.0.1" config.services.loki.configuration.server.http_listen_port lib;
 
   # Desktop logging: the node exporter port is opened on tailscale0 so the NAS Prometheus can scrape it.
   den.aspects.logging.desktop.nixos =

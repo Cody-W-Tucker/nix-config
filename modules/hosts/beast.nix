@@ -53,6 +53,7 @@ in
       den.aspects.openrazer
       den.aspects.syncthing
       den.aspects.logging.desktop
+      den.aspects.logging.forward-to-nas
       den.aspects.speech-to-text
       den.aspects.project
       den.aspects.docker

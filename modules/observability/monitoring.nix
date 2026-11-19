@@ -1,4 +1,9 @@
+{ den, ... }:
+let
+  loki = import ./_loki-endpoint.nix;
+in
 {
+  den.aspects.monitoring.includes = [ den.aspects.logging.forward-local ];
   den.aspects.monitoring.nixos =
     {
       config,
@@ -221,7 +226,7 @@
             auth_enabled = false;
             server = {
               http_listen_address = "0.0.0.0";
-              http_listen_port = 3090;
+              http_listen_port = loki.port;
             };
 
             common = {
@@ -398,9 +403,9 @@
 
       systemd.services.prometheus-zfs-exporter.serviceConfig.DynamicUser = lib.mkForce false;
 
-      # Open port 3090 for Loki
+      # Open the Loki listener for explicitly configured senders.
       networking.firewall.allowedTCPPorts = [
-        3090
+        config.services.loki.configuration.server.http_listen_port
         9001
       ];
     };

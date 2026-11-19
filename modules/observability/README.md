@@ -12,7 +12,7 @@ Shared logging (`logging.nix`, every host) and the NAS-side monitoring stack (`m
 - Tempo for traces and OTLP ingestion.
 - Exporters for Nginx, SMART, GPU, and remote targets as configured.
 
-The node exporter (`9002`) and systemd journal shipping to Loki (Fluent Bit) are not defined here; they come from the shared `modules/observability/logging.nix`, which every host imports. `monitoring.nix` only appends the NAS-specific Fluent Bit input and output for the Nginx access log.
+The shared `logging` aspect configures the node and SMART exporters and the journal input. Journal forwarding is opt-in: NAS's `monitoring` aspect includes `logging.forward-local`; Beast selects `logging.forward-to-nas`. The monitoring aspect adds the NAS-specific Nginx access log route. The remote sender and NAS listener use `_loki-endpoint.nix` for the Loki port.
 
 Prometheus scrapes the server and selected `beast` metrics. Important endpoints and roles:
 
