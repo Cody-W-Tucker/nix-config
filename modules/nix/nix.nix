@@ -57,7 +57,6 @@
       };
 
       # Repo maintenance commands installed system-wide.
-      # For user-specific scripts, see modules/apps/_scripts/ (modules/apps/terminal.nix).
       environment.systemPackages = [
         pkgs.check-imports
         pkgs.update
@@ -74,6 +73,16 @@
         };
       };
     };
+
+  den.aspects.nix.homeManager.programs.zsh.shellAliases = {
+    pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
+    upgrade = ''
+      cd /etc/nixos &&
+      sudo nix flake update &&
+      sudo nixos-rebuild switch
+    '';
+    gcCleanup = "sudo nix-collect-garbage -d && nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
+  };
 
   den.default.includes = [ den.aspects.nix ];
 }

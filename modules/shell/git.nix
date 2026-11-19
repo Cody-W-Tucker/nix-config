@@ -13,6 +13,7 @@
       { osConfig, ... }:
       {
         programs = {
+          zsh.shellAliases.gg = "lazygit";
           delta = {
             enable = true;
             enableGitIntegration = true;

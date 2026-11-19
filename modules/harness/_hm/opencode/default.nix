@@ -64,6 +64,8 @@ in
     rm -f "${config.xdg.configHome}/opencode/plugins/herdr-agent-state.js"
   '';
 
+  programs.zsh.shellAliases.op = "opencode";
+
   programs.opencode = {
     enable = true;
     package = lib.mkDefault opencode;

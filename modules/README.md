@@ -58,3 +58,4 @@ Create `<area>/<feature>.nix` with `den.aspects.<feature> = { nixos = …; homeM
 - It has a server and a client side (or similar): one aspect per side, `den.aspects.<feature>.server` / `.client`, each included by the host that needs it. Including the parent does not include its children.
 - It outgrows one file: add more files that contribute to the **same** aspect (`den.aspects.<feature>` is merged across files, as in `graphical/` and `apps/`). Within one file, define each aspect class path once.
 - Supporting plain NixOS/Home Manager modules, scripts and data live under `_` names and are imported by the aspect.
+- Define shortcuts with the feature that supplies the command: `gg` with Git, `op` with the OpenCode harness, and `op-` with the remote client. Use `nix eval --json .#nixosConfigurations.<host>.config.home-manager.users.codyt.programs.zsh.shellAliases` for the merged alias list on a host.
