@@ -8,7 +8,7 @@
 | `hosts/<host>.nix` | The whole host: the `den.hosts` entry (`instantiate`, `channel`, `localAi`, `lan`, `tailscale`, `mac`, `hardwareConfig`, `home-manager.module`, users) and `den.aspects.<host>` (role/feature includes, `provides.to-users.homeManager`, machine facts in its `nixos` block). `_<host>-hardware.nix` is imported by it; `_instantiate.nix` is the shared `nixosSystem` wrapper (plain function). Host notes are `<host>.md`. |
 | `defaults.nix`, `site.nix`, `secrets.nix`, `nix/`, `shell/`, `networking/`, `observability/` | Features that register themselves in `den.default.includes`, plus `den.default.nixos` settings that belong to no feature (`defaults.nix`). `site.nix` declares `codyos.site` and fills `codyos.site.hosts` from den host attributes. |
 | `hardware/` | `hardware-baseline` (self-registered for every host) and `nvidia` (hosts with an NVIDIA GPU; `nvidiaPowerLimit` host attribute is the nvidia-smi cap in watts, nas only). |
-| `users/` | `codyt.nix` (the codyt aspect: `user` class account + `homeManager`) and the shared user aspects it includes (`shell`, `git`, `cli-tools`). |
+| `users/` | `codyt.nix` (the codyt aspect: `user` class account + `homeManager`) and the editor/harness aspects it includes. Shell, git and CLI tools are features in `shell/`. |
 | `desktop/` | `desktop.nix` role aspect plus one file per desktop feature (system and Home Manager halves together). Supporting HM modules/scripts under `_` names. |
 | `editor/nixvim/` | `nixvim.nix` (channel-aware nixvim aspect), `desktop.nix` (`nixvim-desktop`), `_nixvim.nix`, `_keymaps.nix`, `_plugins/`. |
 | `harness/` | AI/operator harness for the user (OpenCode, Claude Code, MCP, skills, plugins); HM tree in `_hm/`; `opencode-remote.nix`. |

@@ -4,16 +4,13 @@ This directory owns the `codyt` user aspect: the account and the Home Manager pr
 
 ## Entry Points
 
-- `codyt.nix` — user account (`user` class) and Home Manager profile; includes the aspects below.
-- `shell.nix` — zsh, fzf, yazi, eza, bat, zoxide, direnv (`user-shell`). Stylix colors for fzf/yazi apply only where the theming aspect imports Stylix (beast).
-- `git.nix` — git, delta, GitHub CLI, lazygit (`user-git`).
-- `cli-tools.nix` — small CLI packages, ripgrep and `$VISUAL` (`user-cli-tools`).
+- `codyt.nix` — user account (`user` class) and Home Manager profile; includes the editor and harness aspects. Shell, git and CLI tools live in `modules/shell/` and register on every host via `den.default`.
 
 ## Stack
 
 | Component                 | Tool                                                 | Configuration Location                                    |
 | ------------------------- | ---------------------------------------------------- | --------------------------------------------------------- |
-| Shell                     | Zsh, Direnv, FZF, Eza, Bat, Zoxide, Ripgrep, Lazygit | `shell.nix`, `git.nix`, `cli-tools.nix`, `modules/desktop/programs.nix` |
+| Shell                     | Zsh, Direnv, FZF, Eza, Bat, Zoxide, Ripgrep, Lazygit | `modules/shell/shell.nix`, `modules/shell/git.nix`, `modules/desktop/programs.nix` |
 | Terminal                  | Kitty                                                | `modules/desktop/terminal.nix`                            |
 | Editor                    | NixVim                                               | `modules/editor/nixvim/nixvim.nix`, `_nixvim.nix`, `_keymaps.nix`, `_plugins/` (the 99 plugin package lives in `_plugins/99/`; desktop-only plugins in `desktop.nix`) |
 | Knowledge tooling         | QMD MCP                                              | `modules/harness/_hm/mcp.nix`                             |
