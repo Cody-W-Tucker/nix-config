@@ -25,7 +25,8 @@ in
       INFERENCE_TEXT_MODEL = "qwen-3.5-9b";
       OCR_USE_LLM = "true";
       INFERENCE_IMAGE_MODEL = "qwen-3.5-4b";
-      INFERENCE_CONTEXT_LENGTH = "32768";
+      # Karakeep counts with o200k_base, not Qwen's tokenizer; leave headroom.
+      INFERENCE_CONTEXT_LENGTH = "24576";
       INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
 
       EMBEDDING_ENABLE_AUTO_INDEXING = "true";
