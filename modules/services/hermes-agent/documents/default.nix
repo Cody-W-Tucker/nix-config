@@ -78,6 +78,8 @@ in
         suffix = agentsDocument;
       };
       llm = improveLlm;
+      # Pause the scheduled improvement pass; the assistant and SOUL stay enabled.
+      improve.enable = false;
       # The daily pass analyzes new sessions and scores their outcomes,
       # which builds the baseline. It adopts and reverts nothing until this is
       # switched on, after the outcome backtest has set minSessions.
@@ -101,14 +103,16 @@ in
     # The pass shells out to git (commits after a session) and qmd (journal
     # notes after a session) for follow-up evidence. User units do not inherit
     # the login PATH; the `ca` wrapper prepends its own python and node.
-    systemd.user.services.ca-improve.Service.Environment = [
-      "PATH=${
-        lib.makeBinPath [
-          pkgs.git
-          qmd
-        ]
-      }"
-    ];
+    systemd.user.services.ca-improve = lib.mkIf config.services.cognitive-assistant.improve.enable {
+      Service.Environment = [
+        "PATH=${
+          lib.makeBinPath [
+            pkgs.git
+            qmd
+          ]
+        }"
+      ];
+    };
 
     # Same endpoint for manual runs from a login shell, such as
     # `ca improve-outcome --since 70d --dry-run`.
