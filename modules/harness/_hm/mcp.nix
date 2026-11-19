@@ -9,6 +9,9 @@
 }:
 let
   deja = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu;
+  hindsight = import ../../ai/_hindsight-endpoints.nix {
+    nasTailscale = osConfig.codyos.site.hosts.nas.tailscale;
+  };
   dejaEmbedding = {
     DEJA_EMBED_URL = "http://${
       if localAi then "127.0.0.1" else osConfig.codyos.site.hosts.nas.tailscale
@@ -72,11 +75,7 @@ in
             ];
           };
       hindsight = {
-        url =
-          if localAi then
-            "http://127.0.0.1:8888/mcp/"
-          else
-            "http://${osConfig.codyos.site.hosts.nas.tailscale}:18083/mcp/";
+        url = "${hindsight.api localAi}/mcp/";
       };
       exa = {
         url = "https://mcp.exa.ai/mcp";

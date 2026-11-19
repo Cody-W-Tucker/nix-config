@@ -10,6 +10,9 @@
     }:
     let
       inherit (config.codyos.site) domain;
+      endpoints = import ./_hindsight-endpoints.nix {
+        nasTailscale = config.codyos.site.hosts.nas.tailscale;
+      };
       packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
     in
     {
@@ -93,7 +96,7 @@
           Group = "hindsight";
           EnvironmentFile = config.sops.templates."hindsight-env".path;
           StateDirectory = "hindsight";
-          ExecStart = "${lib.getExe packages.hindsight} --host 127.0.0.1 --port 8888";
+          ExecStart = "${lib.getExe packages.hindsight} --host ${endpoints.localHost} --port ${toString endpoints.localPort}";
           Restart = "on-failure";
           RestartSec = 10;
           UMask = "0077";
@@ -109,13 +112,13 @@
         wantedBy = [ "multi-user.target" ];
         after = [ "hindsight.service" ];
         environment = {
-          HINDSIGHT_CP_DATAPLANE_API_URL = "http://127.0.0.1:8888";
+          HINDSIGHT_CP_DATAPLANE_API_URL = endpoints.local;
           NEXT_TELEMETRY_DISABLED = "1";
         };
         serviceConfig = {
           User = "hindsight";
           Group = "hindsight";
-          ExecStart = "${lib.getExe packages.hindsight-control-plane} --hostname 127.0.0.1 --port 9999 --api-url http://127.0.0.1:8888";
+          ExecStart = "${lib.getExe packages.hindsight-control-plane} --hostname 127.0.0.1 --port 9999 --api-url ${endpoints.local}";
           Restart = "on-failure";
           RestartSec = 10;
           UMask = "0077";
@@ -142,7 +145,7 @@
             listen = [
               {
                 addr = "0.0.0.0";
-                port = 18083;
+                port = endpoints.tailnetPort;
               }
             ];
             locations =
@@ -151,19 +154,19 @@
                   allow ${config.codyos.site.hosts.beast.tailscale};
                   deny all;
                   if ($http_origin != "") { return 403; }
-                  proxy_set_header Host 127.0.0.1:8888;
+                  proxy_set_header Host ${lib.removePrefix "http://" endpoints.local};
                   proxy_buffering off;
                   proxy_read_timeout 3600s;
                 '';
               in
               {
                 "= /mcp/" = {
-                  proxyPass = "http://127.0.0.1:8888";
+                  proxyPass = endpoints.local;
                   recommendedProxySettings = false;
                   extraConfig = beastOnlyProxy;
                 };
                 "~ ^/v1/default/banks/[^/]+/memories(/recall)?$" = {
-                  proxyPass = "http://127.0.0.1:8888";
+                  proxyPass = endpoints.local;
                   recommendedProxySettings = false;
                   extraConfig = beastOnlyProxy + ''
                     if ($request_method != POST) { return 405; }
@@ -174,6 +177,6 @@
           };
         };
 
-      networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 18083 ];
+      networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ endpoints.tailnetPort ];
     };
 }

@@ -18,10 +18,10 @@ let
   hindsightSource = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hindsight.src;
 
   apiUrl =
-    if localAi then
-      "http://127.0.0.1:8888"
-    else
-      "http://${osConfig.codyos.site.hosts.nas.tailscale}:18083";
+    (import ../../../../ai/_hindsight-endpoints.nix {
+      nasTailscale = osConfig.codyos.site.hosts.nas.tailscale;
+    }).api
+      localAi;
 
   # Map known repositories to the existing Hindsight banks; other projects
   # write to a bank named after their git root directory.
