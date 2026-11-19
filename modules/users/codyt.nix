@@ -1,9 +1,8 @@
-{ den, inputs, ... }:
+{ inputs, ... }:
 {
   # Cody's account. The `user` class forwards to users.users.codyt on every host; the Home
-  # Manager profile applies on every host, and the role (desktop/server), editor and
-  # per-host extras are delivered by the host aspects (provides.to-users in
-  # modules/hosts/<host>.nix).
+  # Manager profile applies on every host, and per-host extras are
+  # delivered by the host aspects (provides.to-users in modules/hosts/<host>.nix).
   den.aspects.codyt = {
     user =
       { pkgs, ... }:
@@ -30,15 +29,9 @@
         };
       };
 
-    # Home Manager profile shared by every host: editor and the
-    # AI/operator harness (shell, git and CLI tools register themselves via den.default,
-    # modules/shell/). Role-specific content (desktop, server) and host-only extras
-    # come from the host aspects' provides.to-users.
-    includes = [
-      den.aspects.nixvim
-      den.aspects.harness
-    ];
-
+    # Home Manager profile shared by every host. Features register themselves on every host via
+    # den.default (shell, git, nixvim, harness, ...); host-only extras come from the host
+    # aspects' provides.to-users.
     homeManager.imports = [
       inputs.nixos-secrets.homeModules.default
     ];

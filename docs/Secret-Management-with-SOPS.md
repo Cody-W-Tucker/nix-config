@@ -111,7 +111,7 @@ flowchart LR
     E2 --> V2
 ```
 
-Single-value secrets that are only consumed as env vars (`opencode-api-key`, `karakeep-api-key`) still use the `sops.templates` placeholder pattern above. The multiline pattern applies when several values travel together, e.g. the waybar voice widget extracts `API_SERVER_KEY` from the raw decrypted `hermes` secret [modules/desktop/_waybar/waybar.nix](../../modules/desktop/_waybar/waybar.nix)
+Single-value secrets that are only consumed as env vars (`opencode-api-key`, `karakeep-api-key`) still use the `sops.templates` placeholder pattern above. The multiline pattern applies when several values travel together, e.g. the waybar voice widget extracts `API_SERVER_KEY` from the raw decrypted `hermes` secret [modules/graphical/_waybar/waybar.nix](../../modules/graphical/_waybar/waybar.nix)
 
 ## Integration with Private Flake
 

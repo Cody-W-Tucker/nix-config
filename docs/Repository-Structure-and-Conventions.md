@@ -129,7 +129,7 @@ The repository contains `AGENTS.md` files scattered throughout the tree. These f
 ### Directory-Specific Guidance
 
 - **[`modules/hosts/AGENTS.md`](../modules/hosts/AGENTS.md)**: Keep host files to machine facts, role selection and wiring.
-- **[`modules/users/AGENTS.md`](../modules/users/AGENTS.md)**, **[`modules/desktop/AGENTS.md`](../modules/desktop/AGENTS.md)**, **[`modules/web/AGENTS.md`](../modules/web/AGENTS.md)**, **[`modules/harness/AGENTS.md`](../modules/harness/AGENTS.md)**: placement rules for each area, including declaring secrets close to the consuming service.
+- **[`modules/users/AGENTS.md`](../modules/users/AGENTS.md)**, **[`modules/graphical/AGENTS.md`](../modules/graphical/AGENTS.md)**, **[`modules/web/AGENTS.md`](../modules/web/AGENTS.md)**, **[`modules/harness/AGENTS.md`](../modules/harness/AGENTS.md)**: placement rules for each area, including declaring secrets close to the consuming service.
 - **[`modules/README.md`](../modules/README.md)**: the module tree overview, how to add a host or aspect.
 
 ---

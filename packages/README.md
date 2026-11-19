@@ -62,7 +62,7 @@ Kokoro TTS model files for the llama-swap `kokoro-82m` wrapper (`modules/ai/llam
 
 Pinned [Backpass](https://github.com/kunchenguid/backpass) `v0.1.31` (Node >=22.5) from the npm registry via `buildNpmPackage` with a vendored `package-lock.json`. The wrapper prefixes the nix-built `acpx` and `lavish-axi` onto `PATH` because Backpass shells out to both helpers resolved from `PATH`.
 
-- Only `backpass` is installed, in the desktop user environment (`modules/desktop/theming.nix`). `acpx` and `lavish-axi` are private runtime dependencies on the wrapper `PATH`, so `backpass` resolves both without `nix shell` and without installing either helper directly.
+- Only `backpass` is installed, in the desktop user environment (`modules/graphical/theming.nix`). `acpx` and `lavish-axi` are private runtime dependencies on the wrapper `PATH`, so `backpass` resolves both without `nix shell` and without installing either helper directly.
 
 ### `lavish-axi`
 

@@ -1,3 +1,4 @@
+{ den, ... }:
 {
   # AI/operator harness for the user: Claude Code, OpenCode client, shared MCP servers,
   # plugins and skills (the module tree is _hm). `localAi` (host attribute: true where
@@ -11,4 +12,6 @@
     {
       imports = [ (import ./_hm { inherit (host) localAi; }) ];
     };
+
+  den.default.includes = [ den.aspects.harness ];
 }

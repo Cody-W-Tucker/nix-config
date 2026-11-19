@@ -53,7 +53,7 @@ Good examples:
 
 - one service aspect such as `modules/documents/paperless.nix`
 - one hardware aspect such as `modules/hardware/nvidia.nix`
-- one desktop feature such as `modules/desktop/printing.nix`
+- one desktop feature such as `modules/printing.nix`
 
 Bad examples:
 

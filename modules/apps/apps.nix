@@ -1,7 +1,9 @@
 { inputs, ... }:
 {
-  # Everyday desktop applications and the small user services that go with them.
-  den.aspects.desktop-apps.provides.to-users.homeManager =
+  # Everyday desktop applications and the small user services that go with them. One aspect,
+  # `apps`, spans this directory: apps.nix (applications, browsers, Obsidian), terminal.nix
+  # (Kitty and the launcher scripts) and kdeconnect.nix.
+  den.aspects.apps.provides.to-users.homeManager =
     { pkgs, ... }:
     let
       # WORKAROUND: Hermes patches patchelf 0.15.2; patchelfUnstable already has the fix.
@@ -19,8 +21,33 @@
       inherit (hermesPackage) hermesDesktop;
     in
     {
-      # Cursor code editor from spacex SI
-      programs.cursor.enable = true;
+      imports = [
+        inputs.zen-browser.homeModules.beta
+        # Obsidian vault configuration (plugins, hotkeys, snippets); see _obsidian/README.md.
+        ./_obsidian
+      ];
+
+      programs = {
+        # Cursor code editor from spacex SI
+        cursor.enable = true;
+
+        # Zen Browser as the default browser.
+        zen-browser = {
+          enable = true;
+          setAsDefaultBrowser = true;
+        };
+
+        # Chromium (Chromecast flag) and OBS Studio for screen recording.
+        chromium = {
+          enable = true;
+          # Chromecast improvement
+          commandLineArgs = [ "--load-media-router-component-extension=1" ];
+        };
+        obs-studio = {
+          # Obs for screenrecording
+          enable = true;
+        };
+      };
 
       services = {
         tailscale-systray.enable = true;

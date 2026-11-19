@@ -1,6 +1,6 @@
 {
   # XDG user directories, document-viewer desktop entries and default applications.
-  den.aspects.xdg = {
+  den.aspects.graphical = {
     provides.to-users.homeManager =
       { pkgs, ... }:
       {

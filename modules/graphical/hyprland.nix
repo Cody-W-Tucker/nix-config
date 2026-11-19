@@ -2,7 +2,7 @@
   # Hyprland (UWSM + greetd autologin) and the user's Hyprland session, lock screen and idle
   # management. Needs the host attribute `hardwareConfig` (monitor/workspace layout and the
   # hypridle suspend timeout), which the aspect reads from `host` and passes down.
-  den.aspects.hyprland = {
+  den.aspects.graphical = {
     nixos =
       { config, lib, ... }:
       let
@@ -53,7 +53,11 @@
         dpms = action: ''hyprctl dispatch 'hl.dsp.dpms({action = "${action}"})''\''';
       in
       {
-        imports = [ (import ./_hyprland/settings.nix { inherit hardwareConfig; }) ];
+        imports = [
+          (import ./_hyprland/settings.nix { inherit hardwareConfig; })
+          # Waybar with the Hermes voice, AI usage and meeting modules.
+          ./_waybar/waybar.nix
+        ];
 
         home.packages = with pkgs; [
           # Workaround for Hyprland's Lua config provider rejecting the legacy

@@ -57,7 +57,7 @@
       };
 
       # Repo maintenance commands installed system-wide.
-      # For user-specific scripts, see modules/desktop/_scripts/ (modules/desktop/scripts.nix).
+      # For user-specific scripts, see modules/apps/_scripts/ (modules/apps/terminal.nix).
       environment.systemPackages = [
         pkgs.check-imports
         pkgs.update

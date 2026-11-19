@@ -2,7 +2,7 @@
 
 This page details the Speech-to-Text (STT) and Text-to-Speech (TTS) infrastructure within CodyOS. The system provides a unified pipeline for voice interaction, ranging from low-latency desktop dictation to a complex, VAD-enabled voice assistant integrated into the Waybar status bar. These services leverage local inference via `llama-swap` to provide OpenAI-compatible APIs for transcription and speech synthesis.
 
-For navigation: the desktop speech pieces are the `speech-to-text` aspect ([modules/desktop/speech-to-text.nix](../modules/desktop/speech-to-text.nix), script in [`_speech-to-text.nix`](../modules/desktop/_speech-to-text.nix)) and the Waybar voice client under [`modules/desktop/_waybar/`](../modules/desktop/_waybar)
+For navigation: the desktop speech pieces are the `speech-to-text` aspect ([modules/ai/speech-to-text.nix](../modules/ai/speech-to-text.nix), script in [`_speech-to-text.nix`](../modules/ai/_speech-to-text.nix)) and the Waybar voice client under [`modules/graphical/_waybar/`](../modules/graphical/_waybar)
 
 ## Public Audio API
 
@@ -150,9 +150,9 @@ curl -s http://nas:8081/v1/audio/transcriptions \
 
 ### llama-dictate
 
-`llama-dictate` is a desktop utility that provides global "hold-to-talk" functionality. It is bound to `SUPER+Escape` in Hyprland [modules/desktop/_hyprland/settings.nix](../modules/desktop/_hyprland/settings.nix)
+`llama-dictate` is a desktop utility that provides global "hold-to-talk" functionality. It is bound to `SUPER+Escape` in Hyprland [modules/graphical/_hyprland/settings.nix](../modules/graphical/_hyprland/settings.nix)
 
-- **Mechanism**: On `start`, it triggers a "warmup" request to ensure the model is loaded in `llama-swap` and begins recording via `pw-record`[modules/desktop/_speech-to-text.nix](../modules/desktop/_speech-to-text.nix) On `stop`, it kills the recorder, sends the WAV file to the local API, and pipes the resulting text into `wtype` to simulate keyboard input [modules/desktop/_speech-to-text.nix](../modules/desktop/_speech-to-text.nix)
+- **Mechanism**: On `start`, it triggers a "warmup" request to ensure the model is loaded in `llama-swap` and begins recording via `pw-record`[modules/ai/_speech-to-text.nix](../modules/ai/_speech-to-text.nix) On `stop`, it kills the recorder, sends the WAV file to the local API, and pipes the resulting text into `wtype` to simulate keyboard input [modules/ai/_speech-to-text.nix](../modules/ai/_speech-to-text.nix)
 
 ## Text-to-Speech Services
 
@@ -169,18 +169,18 @@ The `hermes-waybar-voice` system provides a sophisticated voice interface direct
 
 ### Implementation Details
 
-The core logic resides in `hermes-waybar-voice.py`. It uses `pysilero-vad` for local, low-latency voice detection [modules/desktop/_waybar/hermes-waybar-voice.py](../modules/desktop/_waybar/hermes-waybar-voice.py). The microphone is read with `pw-record --raw` so the VAD receives header-less 16 kHz little-endian s16 PCM; without `--raw`, `pw-record` writes a Sun AU stream (big-endian) to stdout, which the VAD cannot recognize as speech.
+The core logic resides in `hermes-waybar-voice.py`. It uses `pysilero-vad` for local, low-latency voice detection [modules/graphical/_waybar/hermes-waybar-voice.py](../modules/graphical/_waybar/hermes-waybar-voice.py). The microphone is read with `pw-record --raw` so the VAD receives header-less 16 kHz little-endian s16 PCM; without `--raw`, `pw-record` writes a Sun AU stream (big-endian) to stdout, which the VAD cannot recognize as speech.
 
 ### Key Functions
 
-- `ensure_runtime()`: Manages the XDG runtime directory for PID, lock, and session files [modules/desktop/_waybar/hermes-waybar-voice.py](../modules/desktop/_waybar/hermes-waybar-voice.py)
-- `waybar_status()`: Generates the JSON output for Waybar, including icons for different states (`` for listening, `` for speaking) [modules/desktop/_waybar/hermes-waybar-voice.py](../modules/desktop/_waybar/hermes-waybar-voice.py)
-- `stop_worker()`: Safely terminates the background voice worker and cleans up temporary session files [modules/desktop/_waybar/hermes-waybar-voice.py](../modules/desktop/_waybar/hermes-waybar-voice.py)
+- `ensure_runtime()`: Manages the XDG runtime directory for PID, lock, and session files [modules/graphical/_waybar/hermes-waybar-voice.py](../modules/graphical/_waybar/hermes-waybar-voice.py)
+- `waybar_status()`: Generates the JSON output for Waybar, including icons for different states (`` for listening, `` for speaking) [modules/graphical/_waybar/hermes-waybar-voice.py](../modules/graphical/_waybar/hermes-waybar-voice.py)
+- `stop_worker()`: Safely terminates the background voice worker and cleans up temporary session files [modules/graphical/_waybar/hermes-waybar-voice.py](../modules/graphical/_waybar/hermes-waybar-voice.py)
 
 ### Configuration
 
 The service is configured via environment variables in the `hermes-waybar-voice` wrapper:
 
-- `HERMES_SPEECH_BASE_URL`: Points to the `llama-swap` STT/TTS port (default `8081`) [modules/desktop/_waybar/waybar.nix](../modules/desktop/_waybar/waybar.nix)
-- `HERMES_TRANSCRIPTION_MODEL`: Set to `parakeet-tdt-v3` [modules/desktop/_waybar/waybar.nix](../modules/desktop/_waybar/waybar.nix)
-- `HERMES_SPEECH_VOICE`: Defaults to `af_heart` (Kokoro) [modules/desktop/_waybar/waybar.nix](../modules/desktop/_waybar/waybar.nix)
+- `HERMES_SPEECH_BASE_URL`: Points to the `llama-swap` STT/TTS port (default `8081`) [modules/graphical/_waybar/waybar.nix](../modules/graphical/_waybar/waybar.nix)
+- `HERMES_TRANSCRIPTION_MODEL`: Set to `parakeet-tdt-v3` [modules/graphical/_waybar/waybar.nix](../modules/graphical/_waybar/waybar.nix)
+- `HERMES_SPEECH_VOICE`: Defaults to `af_heart` (Kokoro) [modules/graphical/_waybar/waybar.nix](../modules/graphical/_waybar/waybar.nix)

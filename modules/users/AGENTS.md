@@ -6,9 +6,9 @@ Does not own system services, hardware, networking, or host composition. Those b
 
 ## Placement Rules
 
-- Settings useful on every host go in an aspect under `modules/users/` that `codyt.nix` includes.
-- GUI apps and desktop tools belong to the desktop aspects in `modules/desktop/`, not here.
-- Host-specific user content is delivered by that host's aspects through `provides.to-users.homeManager` (e.g. `modules/hosts/<host>.nix`, `modules/desktop/*`, `den.aspects.opencode.remote`); `inputs` comes from `extraSpecialArgs` in `modules/users/home-manager.nix`, host facts (`channel`, `localAi`, `hardwareConfig`) are read from `host` in the aspect.
+- Settings useful on every host go in an aspect under `modules/users/` that `codyt.nix` includes; a feature that belongs on every host registers itself in `den.default.includes` in its own file (shell, git, nixvim, harness).
+- GUI apps and desktop tools belong to the `graphical` and `apps` aspects (`modules/graphical/`, `modules/apps/`), not here.
+- Host-specific user content is delivered by that host's aspects through `provides.to-users.homeManager` (e.g. `modules/hosts/<host>.nix`, `modules/graphical/*`, `modules/apps/*`, `den.aspects.opencode.remote`); `inputs` comes from `extraSpecialArgs` in `modules/users/home-manager.nix`, host facts (`channel`, `localAi`, `hardwareConfig`) are read from `host` in the aspect.
 - Do not hide NixOS services here unless Home Manager is the real owner.
 - Keep generated or app-owned state out of Nix unless it captures durable intent.
 - Add new users as their own aspect instead of special-casing Cody paths.

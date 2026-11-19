@@ -86,5 +86,16 @@
       ];
     };
 
+  # Desktop logging: the node exporter port is opened on tailscale0 so the NAS Prometheus can scrape it.
+  den.aspects.logging.desktop.nixos =
+    { config, ... }:
+
+    {
+      # The shared node exporter is scraped by the NAS Prometheus over Tailscale.
+      networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+        config.services.prometheus.exporters.node.port
+      ];
+    };
+
   den.default.includes = [ den.aspects.logging ];
 }

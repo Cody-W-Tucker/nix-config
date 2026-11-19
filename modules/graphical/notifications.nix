@@ -1,6 +1,6 @@
 {
   # Notification center (SwayNC).
-  den.aspects.notifications = {
+  den.aspects.graphical = {
     provides.to-users.homeManager = {
       services.swaync = {
         enable = true;

@@ -45,13 +45,19 @@ in
 
   den.aspects.beast = {
     includes = [
-      den.aspects.desktop
-      den.aspects.docker
-      den.aspects.nvidia
+      den.aspects.graphical
+      den.aspects.apps
+      den.aspects.audio
+      den.aspects.printing
       den.aspects.gaming
       den.aspects.openrazer
+      den.aspects.syncthing
+      den.aspects.logging.desktop
+      den.aspects.speech-to-text
+      den.aspects.docker
+      den.aspects.nvidia
       den.aspects.paperless.scanner
-      den.aspects.nixvim-desktop
+      den.aspects.nixvim.desktop
       den.aspects.opencode.remote
       den.aspects.binary-cache.client
       den.aspects.nfs.client
@@ -59,7 +65,7 @@ in
       den.aspects.wake-on-lan.target
     ];
 
-    # Beast's Home Manager role (the desktop comes from den.aspects.desktop; nixvim from den.aspects.nixvim).
+    # Beast's Home Manager role (the desktop comes from den.aspects.graphical and den.aspects.apps; the editor from den.aspects.nixvim).
     provides.to-users.homeManager = {
       home.stateVersion = "25.05";
     };

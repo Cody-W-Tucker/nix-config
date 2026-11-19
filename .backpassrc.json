@@ -7,8 +7,8 @@
     "modules/ai/hermes-agent/AGENTS.md",
     "modules/ai/llama-swap/AGENTS.md",
     "modules/users/AGENTS.md",
-    "modules/desktop/AGENTS.md",
-    "modules/desktop/_obsidian/AGENTS.md",
+    "modules/graphical/AGENTS.md",
+    "modules/apps/_obsidian/AGENTS.md",
     "modules/harness/AGENTS.md"
   ],
   "nestedBudgetTokens": 2000,

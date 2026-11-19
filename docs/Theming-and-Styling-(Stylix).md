@@ -4,15 +4,15 @@ The CodyOS theming architecture is powered by **Stylix**, a declarative theming 
 
 ## Where To Look
 
-- `modules/desktop/theming.nix`: the `theming` aspect (Home Manager only): Stylix enablement, base16 scheme, GTK icon override, and shared desktop theme settings such as polarity, opacity, cursor, fonts, wallpaper, and target overrides [modules/desktop/theming.nix](../modules/desktop/theming.nix)
-- `modules/desktop/fonts.nix`: system-level font availability for the desktop profile (beast only; the headless NAS installs no fonts) [modules/desktop/fonts.nix](../modules/desktop/fonts.nix)
+- `modules/graphical/theming.nix`: the `theming` aspect (Home Manager only): Stylix enablement, base16 scheme, GTK icon override, and shared desktop theme settings such as polarity, opacity, cursor, fonts, wallpaper, and target overrides [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- `modules/graphical/theming.nix`: system-level font availability for the desktop profile (beast only; the headless NAS installs no fonts) [modules/graphical/theming.nix](../modules/graphical/theming.nix)
 
 ## Configuration Split
 
 The main thing to know is that the desktop theming surface is split across two layers:
 
-- `modules/desktop/theming.nix` is the `theming` aspect, delivered to the user through `provides.to-users.homeManager`; it owns the shared Stylix settings and imports the Stylix Home Manager module, so `config.lib.stylix` exists only where the desktop is installed.
-- Consumers elsewhere guard on it: `modules/shell/shell.nix` (yazi, fzf) checks `config.lib ? stylix`; `modules/desktop/_waybar/waybar.nix` and `modules/desktop/_hyprland/settings.nix` read the colors directly.
+- `modules/graphical/theming.nix` is the `theming` aspect, delivered to the user through `provides.to-users.homeManager`; it owns the shared Stylix settings and imports the Stylix Home Manager module, so `config.lib.stylix` exists only where the desktop is installed.
+- Consumers elsewhere guard on it: `modules/shell/shell.nix` (yazi, fzf) checks `config.lib ? stylix`; `modules/graphical/_waybar/waybar.nix` and `modules/graphical/_hyprland/settings.nix` read the colors directly.
 
 ## Application Integration and Data Flow
 
@@ -62,15 +62,15 @@ Yazi uses Stylix colors to theme its Git integration via custom Lua initializati
 
 #### 2. FZF (Fuzzy Finder)
 
-The Stylix `fzf` target is disabled (`stylix.targets.fzf.enable = false` in [modules/desktop/theming.nix](../modules/desktop/theming.nix)); `programs.fzf.colors` in `modules/shell/shell.nix` sets the palette itself from `config.lib.stylix.colors`, guarded by `lib.mkIf (config.lib ? stylix)` so hosts without Stylix skip it:
+The Stylix `fzf` target is disabled (`stylix.targets.fzf.enable = false` in [modules/graphical/theming.nix](../modules/graphical/theming.nix)); `programs.fzf.colors` in `modules/shell/shell.nix` sets the palette itself from `config.lib.stylix.colors`, guarded by `lib.mkIf (config.lib ? stylix)` so hosts without Stylix skip it:
 
 - `fg+` (Current match) and `pointer` use `base0D` [modules/shell/shell.nix](../modules/shell/shell.nix)
 - `prompt` uses `base03` [modules/shell/shell.nix](../modules/shell/shell.nix)
 
 #### 3. Terminal and Shell
 
-- **Kitty**: Automatically themed by Stylix, with a specific override in the desktop role [modules/desktop/theming.nix](../modules/desktop/theming.nix)
-- **Zsh**: The `autosuggestion.highlight` uses the Stylix palette directly [modules/desktop/theming.nix](../modules/desktop/theming.nix)
+- **Kitty**: Automatically themed by Stylix, with a specific override in the desktop role [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- **Zsh**: The `autosuggestion.highlight` uses the Stylix palette directly [modules/graphical/theming.nix](../modules/graphical/theming.nix)
 
 ## UI Component Configuration
 
@@ -79,8 +79,8 @@ Title: Desktop UI Component Mapping
 ```mermaid
 flowchart LR
     subgraph subGraph2 ["Code Entities"]
-        HYP_CODE["modules/desktop/hyprland.nix"]
-        WB_CODE["modules/desktop/_waybar/waybar.nix"]
+        HYP_CODE["modules/graphical/hyprland.nix"]
+        WB_CODE["modules/graphical/_waybar/waybar.nix"]
         PROG_CODE["modules/shell/shell.nix"]
     end
     subgraph subGraph1 ["Visual Components"]
@@ -107,8 +107,8 @@ flowchart LR
 
 While Stylix manages most of the environment, certain applications are excluded or handled manually:
 
-- **NixVim**: Stylix integration is disabled (`nixvim.enable = false`) to allow the editor's internal Catppuccin theme to handle specialized syntax highlighting [modules/desktop/theming.nix](../modules/desktop/theming.nix)
-- **GTK**: Icons are manually set to the Adwaita theme rather than letting Stylix determine the icon pack [modules/desktop/theming.nix](../modules/desktop/theming.nix)
-- **Waybar, Hyprlock, FZF**: Stylix targets are disabled because local config fully replaces them (`modules/desktop/_waybar/waybar.nix`, `modules/desktop/_hyprland/settings.nix`, `modules/shell/shell.nix`) [modules/desktop/theming.nix](../modules/desktop/theming.nix)
-- **Rofi**: Stylix still supplies colors, but its font is disabled (`rofi.fonts.enable = false`) because `modules/desktop/rofi.nix` sets its own [modules/desktop/theming.nix](../modules/desktop/theming.nix)
-- **Dconf**: The GNOME target is disabled, so `modules/desktop/theming.nix` sets the desktop color-scheme preference from Stylix polarity directly for applications that follow the system preference.
+- **NixVim**: Stylix integration is disabled (`nixvim.enable = false`) to allow the editor's internal Catppuccin theme to handle specialized syntax highlighting [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- **GTK**: Icons are manually set to the Adwaita theme rather than letting Stylix determine the icon pack [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- **Waybar, Hyprlock, FZF**: Stylix targets are disabled because local config fully replaces them (`modules/graphical/_waybar/waybar.nix`, `modules/graphical/_hyprland/settings.nix`, `modules/shell/shell.nix`) [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- **Rofi**: Stylix still supplies colors, but its font is disabled (`rofi.fonts.enable = false`) because `modules/graphical/launcher.nix` sets its own [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- **Dconf**: The GNOME target is disabled, so `modules/graphical/theming.nix` sets the desktop color-scheme preference from Stylix polarity directly for applications that follow the system preference.

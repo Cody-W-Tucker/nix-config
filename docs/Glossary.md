@@ -9,7 +9,7 @@ This page provides definitions for codebase-specific terms, jargon, and domain c
 | **Beast**   | The high-performance desktop workstation host (Intel i9-14900KF / NVIDIA 3070). | [modules/hosts/beast.nix](../modules/hosts/beast.nix) |
 | **NAS**     | The home lab / NAS host (Intel i5-14400F, NVIDIA GTX 1650) providing centralized services. | [modules/hosts/nas.nix](../modules/hosts/nas.nix)                                              |
 | **HomeHub** | The primary domain (`homehub.tv`) used for internal web services.               | [modules/web/homepage.nix](../modules/web/homepage.nix) |
-| **Stylix**  | The system-wide theming engine used to unify colors across CLI and GUI.         | [modules/desktop/theming.nix](../modules/desktop/theming.nix)                                                   |
+| **Stylix**  | The system-wide theming engine used to unify colors across CLI and GUI.         | [modules/graphical/theming.nix](../modules/graphical/theming.nix)                                                   |
 | **SOPS**    | Secrets Operations; used for encrypted secret management within the flake.      | [modules/secrets.nix](../modules/secrets.nix)                                                   |
 
 **Architecture Mapping: Infrastructure to Code**
@@ -83,7 +83,7 @@ flowchart LR
     LS --> LC
 ```
 
-Sources: [modules/ai/hermes-agent/_hm/default.nix](../modules/ai/hermes-agent/_hm/default.nix)[modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix)[modules/desktop/_hyprland/settings.nix](../modules/desktop/_hyprland/settings.nix)
+Sources: [modules/ai/hermes-agent/_hm/default.nix](../modules/ai/hermes-agent/_hm/default.nix)[modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix)[modules/graphical/_hyprland/settings.nix](../modules/graphical/_hyprland/settings.nix)
 
 ## Server & Media Jargon
 
@@ -95,8 +95,8 @@ Sources: [modules/ai/hermes-agent/_hm/default.nix](../modules/ai/hermes-agent/_h
 
 ## Desktop & Environment Terms
 
-- **Special Workspaces**: Hyprland "scratchpads" used for persistent background tasks like `special:ai`, `special:dev`, and `special:chat`. [modules/desktop/_hyprland/settings.nix](../modules/desktop/_hyprland/settings.nix)
-- **MainMod**: The primary modifier key for desktop shortcuts, defined as `SUPER` (Windows key). [modules/desktop/_hyprland/settings.nix](../modules/desktop/_hyprland/settings.nix)
-- **Focus-or-Run**: A custom script logic that either switches focus to an existing window of a specific class or launches the application if not found. [modules/desktop/_hyprland/settings.nix](../modules/desktop/_hyprland/settings.nix)
+- **Special Workspaces**: Hyprland "scratchpads" used for persistent background tasks like `special:ai`, `special:dev`, and `special:chat`. [modules/graphical/_hyprland/settings.nix](../modules/graphical/_hyprland/settings.nix)
+- **MainMod**: The primary modifier key for desktop shortcuts, defined as `SUPER` (Windows key). [modules/graphical/_hyprland/settings.nix](../modules/graphical/_hyprland/settings.nix)
+- **Focus-or-Run**: A custom script logic that either switches focus to an existing window of a specific class or launches the application if not found. [modules/graphical/_hyprland/settings.nix](../modules/graphical/_hyprland/settings.nix)
 - **Hermes Voice**: The Waybar module providing visual feedback for the voice-activated LLM interface (VAD, STT, TTS).
 

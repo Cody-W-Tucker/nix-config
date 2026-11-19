@@ -1,9 +1,27 @@
 { inputs, ... }:
 {
+  # Desktop fonts. fontDir also sets the Xwayland default core-font path.
+  den.aspects.graphical.nixos =
+    { pkgs, ... }:
+
+    {
+      fonts = {
+        fontDir.enable = true;
+        enableDefaultPackages = true;
+        packages = with pkgs; [
+          noto-fonts
+          font-awesome
+          nerd-fonts.meslo-lg
+          nerd-fonts.jetbrains-mono
+        ];
+      };
+    };
+
   # Stylix theming (Catppuccin Mocha, wallpaper, fonts, cursor) plus the GTK icon theme and
   # the GNOME dark-mode preference. Home Manager only: the Stylix module is imported here,
-  # so hosts without the desktop do not have `config.lib.stylix` (shell/shell.nix checks for it).
-  den.aspects.theming.provides.to-users.homeManager =
+  # so hosts without the graphical aspect do not have `config.lib.stylix` (shell/shell.nix
+  # checks for it).
+  den.aspects.graphical.provides.to-users.homeManager =
     { config, pkgs, ... }:
     {
       imports = [ inputs.stylix.homeModules.stylix ];

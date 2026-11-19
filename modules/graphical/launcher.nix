@@ -1,6 +1,6 @@
 {
   # Rofi launcher, themed from the Stylix palette.
-  den.aspects.rofi = {
+  den.aspects.graphical = {
     provides.to-users.homeManager =
       { config, pkgs, ... }:
 
@@ -171,4 +171,14 @@
         };
       };
   };
+
+  # Wi-Fi picker for the launcher (rofi-network-manager).
+  den.aspects.graphical.nixos =
+    { pkgs, ... }:
+    {
+      # Machine specific packages
+      environment.systemPackages = with pkgs; [
+        rofi-network-manager
+      ];
+    };
 }
