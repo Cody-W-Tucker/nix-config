@@ -25,10 +25,7 @@
     { config, pkgs, ... }:
     {
       imports = [ inputs.stylix.homeModules.stylix ];
-
       programs.zsh.autosuggestion.highlight = "fg=#${config.lib.stylix.colors.base04}";
-
-      # Styling and themes
       # The GNOME target is disabled, but apps still need its color preference.
       dconf.settings."org/gnome/desktop/interface".color-scheme =
         if config.stylix.polarity == "dark" then "prefer-dark" else "default";
@@ -91,7 +88,6 @@
             name = "Noto Color Emoji";
           };
         };
-        # Wallpaper
         image = ../../wallpapers/galaxy-waves.jpg;
       };
     };

@@ -48,7 +48,8 @@
           PAPERLESS_CONSUMER_RECURSIVE = "true";
           PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
           PAPERLESS_CONSUMER_POLLING = "1"; # Faster processing
-          # Reveres proxy stuff to get tika to work
+          # Paperless runs behind the nginx vhost below: publish the external
+          # URL and honor its X-Forwarded-* headers.
           PAPERLESS_URL = "https://paperless.${domain}";
           USE_X_FORWARD_HOST = "true";
           USE_X_FORWARD_PORT = "true";

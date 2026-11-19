@@ -182,7 +182,6 @@
   den.aspects.graphical.nixos =
     { pkgs, ... }:
     {
-      # Machine specific packages
       environment.systemPackages = with pkgs; [
         rofi-network-manager
       ];

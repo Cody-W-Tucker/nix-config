@@ -1,6 +1,6 @@
 # modules/ (Den tree)
 
-[Den](https://github.com/denful/den) (pinned in `flake.nix`) owns `nixosConfigurations`. Everything in this directory is a **flake-level module** (not a NixOS module), loaded by `import-tree ./modules` from `flake.nix`. import-tree skips every path containing `/_`: plain NixOS/Home Manager modules, package files, scripts and data live under `_` names and are imported explicitly by their aspect. Never leave a NixOS/HM module at a non-underscore path, and do not add a `default.nix` outside `_` paths (`check-imports` enforces the latter). Conventions and migration history: [`docs/Den-Native-Layout.md`](../docs/Den-Native-Layout.md).
+[Den](https://github.com/denful/den) (pinned in `flake.nix`) owns `nixosConfigurations`. Everything in this directory is a **flake-level module** (not a NixOS module), loaded by `import-tree ./modules` from `flake.nix`. import-tree skips every path containing `/_`: plain NixOS/Home Manager modules, package files, scripts and data live under `_` names and are imported explicitly by their aspect. Never leave a NixOS/HM module at a non-underscore path, and do not add a `default.nix` outside `_` paths (`check-imports` enforces the latter). Conventions: [`docs/Den-Native-Layout.md`](../docs/Den-Native-Layout.md).
 
 The tree is organized by **feature**, not by machine role: there is no `base`, `server` or `desktop` role. A host (`hosts/<host>.nix`) lists the features it wants; features that every host needs register themselves.
 

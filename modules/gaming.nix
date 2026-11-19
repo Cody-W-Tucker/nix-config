@@ -3,7 +3,6 @@
   den.aspects.gaming.nixos =
     { pkgs, ... }:
     {
-      # Gaming Configuration
       programs = {
         steam = {
           enable = true;
@@ -11,14 +10,10 @@
         };
         gamemode.enable = true;
       };
-
-      # Gaming specific packages
       environment.systemPackages = with pkgs; [
         gamescope-wsi
         prismlauncher # Minecraft launcher with native Linux support
       ];
-
-      # Performance Tweaks
       powerManagement.cpuFreqGovernor = "performance";
     };
 }

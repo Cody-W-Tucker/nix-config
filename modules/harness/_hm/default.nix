@@ -34,7 +34,6 @@ in
       ];
 
   home.packages = [
-    # Harness Packages
     pkgs.codex
     llmPkgs.cursor-agent
     llmPkgs.muse-code

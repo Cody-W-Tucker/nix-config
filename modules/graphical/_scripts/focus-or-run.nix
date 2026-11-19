@@ -50,10 +50,7 @@ pkgs.writeShellApplication {
 
       return 1
     }
-
-    # Get window address directly using hyprctl and jq
     WINDOW_ADDRESS=$(hyprctl clients -j | jq -r --arg a "$APP_CLASS" --arg key "$APP_KEY" 'first(.[] | select((try (.class | test("^(?:" + $a + ")$"; "i")) catch false) or (.class | ascii_downcase == ($key | ascii_downcase))) | .address) // empty')
-
     if [ -n "$WINDOW_ADDRESS" ]; then
       # Hyprland's Lua config provider rejects the legacy `hyprctl dispatch`
       # IPC syntax, so focus via an executed Lua dispatcher instead.

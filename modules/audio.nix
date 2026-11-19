@@ -80,7 +80,6 @@
         ladspaPath = "${deepfilternet}/lib/ladspa";
       in
       {
-        # DeepFilterNet denoising source
         xdg.configFile."pipewire/pipewire.conf.d/99-deepfilter.conf" = {
           text = builtins.toJSON {
             "context.modules" = [

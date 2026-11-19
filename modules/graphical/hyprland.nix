@@ -16,7 +16,6 @@
         };
       in
       {
-        # Enable the Hyprland Desktop Environment.
         programs.hyprland = {
           enable = true;
           withUWSM = true;
@@ -25,12 +24,10 @@
         security.pam.services = {
           # Let the first screen unlock also unlock the Login keyring after autologin.
           hyprlock.enableGnomeKeyring = true;
-          # Enable a keyring service for storing secrets
           greetd.enableGnomeKeyring = true;
           login.enableGnomeKeyring = true;
         };
 
-        # Use Greetd to launch Hyprland from TTY2
         services = {
           greetd = {
             enable = true;
@@ -90,7 +87,6 @@
 
         services = {
           cliphist = {
-            # Clipboard history
             enable = true;
             allowImages = true;
             extraOptions = [
@@ -101,7 +97,6 @@
             ];
           };
 
-          # Use the Hyprland Polkit
           hyprpolkitagent.enable = true;
           gnome-keyring = {
             enable = true;
@@ -111,7 +106,6 @@
             ];
           };
 
-          # Idle management
           hypridle = {
             enable = true;
             settings = {
@@ -126,7 +120,7 @@
               listener = [
                 {
                   timeout = 900; # 15min.
-                  on-timeout = lock; # Lock the session.
+                  on-timeout = lock;
                 }
                 {
                   timeout = 1800; # 30min.
@@ -142,7 +136,6 @@
           };
         };
 
-        # Lock screen
         programs.hyprlock = {
           enable = true;
           settings = {

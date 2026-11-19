@@ -48,7 +48,6 @@
         "media"
       ];
 
-      # NGINX
       services.nginx.virtualHosts = mkNginxVhost {
         host = "photos.${domain}";
         inherit (config.services.immich) port;

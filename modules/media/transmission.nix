@@ -16,14 +16,10 @@
         enable = true;
         vpnNamespace = "wg";
       };
-
-      # Get the encrypted file
       sops.secrets."server-wg.conf" = {
         sopsFile = inputs.nixos-secrets.paths.serverWireguardSopsFile;
         mode = "0400"; # Only root can read
       };
-
-      # Define VPN network namespace
       vpnNamespaces.wg = {
         enable = true;
         wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
@@ -102,14 +98,10 @@
           blocklist-enabled = true;
           blocklist-url = "https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz";
           preallocation = 1;
-
-          # Limit Seeding
           ratio-limit = 1.0;
           ratio-limit-enabled = true;
           idle-seeding-limit-enabled = true;
           idle-seeding-limit = 30;
-
-          # Speed Limits (overnight)
           speed-limit-up = 0;
           speed-limit-up-enabled = true;
           speed-limit-down = 0;
@@ -118,20 +110,16 @@
           download-queue-size = 10;
 
           # Download Schedule (during the day)
-          alt-speed-enabled = true; # Enable alternative speed limits
+          alt-speed-enabled = true;
           alt-speed-down = 10240; # KB/s download during restricted hours
           alt-speed-up = 1280; # KB/s upload during restricted hours
-          alt-speed-time-enabled = true; # Enable scheduled speed limit
+          alt-speed-time-enabled = true;
           alt-speed-time-begin = 480; # Start at 8:00 (8am), in minutes after midnight
           alt-speed-time-end = 1380; # End at 23:00 (11pm), in minutes after midnight
           alt-speed-time-day = 126; # Monday–Saturday only
-
-          # Speed tweaks
           peer-limit-global = 200;
           peer-limit-per-torrent = 60;
           upload-slots-per-torrent = 8;
-
-          # VPN
           rpc-whitelist-enabled = true;
           rpc-whitelist = "192.168.15.1,192.168.15.5";
           rpc-authentication-required = false;

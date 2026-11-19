@@ -91,8 +91,6 @@ let
   defaultModelCatalog = import ./models.nix;
   proxy = import ./proxy.nix { inherit pkgs; };
   settingsFormat = pkgs.formats.yaml { };
-
-  # Build Python environments for audio wrapper services
   sherpaPython = proxy.mkSherpaPython pkgs;
   kokoroPython = proxy.mkKokoroPython pkgs;
   whisperDiarizePython = proxy.mkWhisperDiarizePython pkgs;
@@ -101,8 +99,6 @@ let
       {
         python = whisperDiarizePython;
       };
-
-  # Build wrapper commands for audio models
   wrapperCommands = {
     "parakeet-tdt-v3" = lib.optionalAttrs (cfg.parakeetModel != null) {
       file = null;

@@ -31,7 +31,6 @@
         };
       };
 
-      # ── Open WebUI (local AI chat interface) ───────────────────────
       services = {
         open-webui = {
           enable = true;
@@ -51,18 +50,12 @@
             WEBUI_URL = "https://chat.${domain}";
             WEBUI_SECRET_KEY = "local-only";
             USE_CUDA_DOCKER = "true";
-
-            # Vector DB
             VECTOR_DB = "qdrant";
             QDRANT_URI = "http://localhost:6333";
             ENABLE_QDRANT_MULTITENANCY_MODE = "True";
             QDRANT_ON_DISK = "True";
-
-            # Content Extraction
             CONTENT_EXTRACTION_ENGINE = "tika";
             TIKA_SERVER_URL = "https://tika.${domain}";
-
-            # RAG
             ENABLE_RAG_HYBRID_SEARCH = "True";
 
             # Forward user info headers to the backend inference endpoint
@@ -83,11 +76,9 @@
           (mkNginxVhost {
             host = "qdrant.${domain}";
             locations = {
-              # HTTP API (REST API on port 6333)
               "/" = {
                 proxyPass = "http://localhost:6333";
               };
-              # gRPC API (on port 6334)
               "/grpc" = {
                 proxyPass = "http://localhost:6334";
                 extraConfig = ''

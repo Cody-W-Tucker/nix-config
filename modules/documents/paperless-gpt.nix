@@ -47,14 +47,12 @@
           PAPERLESS_BASE_URL = "http://127.0.0.1:28981";
           # Listen on port 28983 (same as previous paperless-ai for continuity)
           LISTEN_INTERFACE = ":28983";
-          # Use OpenAI-compatible provider
           LLM_PROVIDER = "openai";
           OPENAI_BASE_URL = "http://127.0.0.1:8081/v1";
           # llama-swap requires no API key, but the OpenAI client still wants a
           # token string — declarative dummy, not a secret.
           OPENAI_API_KEY = "sk-llama-swap";
           LLM_MODEL = "qwen-3.5-9b";
-          # LLM-based OCR using the dedicated GLM-OCR vision model.
           OCR_PROVIDER = "llm";
           VISION_LLM_PROVIDER = "openai";
           VISION_LLM_MODEL = "glm-ocr-f16";

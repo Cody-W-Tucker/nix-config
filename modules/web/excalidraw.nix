@@ -34,7 +34,7 @@
         host = "draw.${domain}";
         port = 2919;
         locationExtraConfig = ''
-          client_max_body_size 10M; # Allow uploads up to 10MB (adjust as needed)
+          client_max_body_size 10M;
         '';
       };
     };

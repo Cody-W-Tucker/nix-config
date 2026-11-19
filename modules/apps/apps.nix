@@ -30,21 +30,16 @@
       programs = {
         # Cursor code editor from spacex SI
         cursor.enable = true;
-
-        # Zen Browser as the default browser.
         zen-browser = {
           enable = true;
           setAsDefaultBrowser = true;
         };
-
-        # Chromium (Chromecast flag) and OBS Studio for screen recording.
         chromium = {
           enable = true;
           # Chromecast improvement
           commandLineArgs = [ "--load-media-router-component-extension=1" ];
         };
         obs-studio = {
-          # Obs for screenrecording
           enable = true;
         };
       };

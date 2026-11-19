@@ -5,7 +5,6 @@
 { pkgs }:
 
 let
-  # Persistent paths for wrapper services
   diarizationEnrollmentDir = "/var/lib/llama-swap/diarization/enrollment";
   diarizationEmbeddingCache = "/var/lib/llama-swap/diarization/embedding-cache";
   diarizationCache = "/var/cache/llama-swap/whisperx";

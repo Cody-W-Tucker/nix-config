@@ -91,9 +91,6 @@ the repo. A draft contract never authorizes execution.
   target evidence and its own contract/authority. A stored `adapted` record is
   not target-usefulness proof. Before live use of the example scope, remove
   placeholder services and unrelated pin/repo comparisons.
-- Read `docs/research-state.md` for the proposed research-continuation
-  experiment, later-use check, package-deployment transfer, and handoff. These
-  are guidance, not completed results or standing authorization.
 
 ## Reading a Packet
 
@@ -119,8 +116,8 @@ the repo. A draft contract never authorizes execution.
    a retained one. Check freshness (`collected_at` vs now) and note
    `superseded_by` before citing direction.
 2. **Ground direction.** Locate passages with the QMD MCP (`mcp__qmd__query`), then cite
-   direct reads. Supplied excerpts (e.g. the Thesis snapshot in the plan)
-   count only as timestamped snapshots until freshly re-read.
+   direct reads. Supplied excerpts count only as timestamped snapshots until
+   freshly re-read.
 3. **Separate observations from interpretations.** Packet rows are facts;
    the salience record's `interpretations` are Hermes judgment. Scores never
    establish intent or approve a proposal.
@@ -273,4 +270,3 @@ working object lives at
   new database — validate/store supplied records only.
 - No timer, cron, scheduler, dashboard, daemon, or background collection:
   scheduling stays absent until manual usefulness is shown.
-- Details: `docs/research-state.md`.

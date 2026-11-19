@@ -118,7 +118,6 @@
         # ── Features ────────────────────────────────────────────────
         # nvidia, hindsight and opencode are den aspects (this file).
 
-        # Networking
         networking = {
           hostName = "nas";
           hostId = "60f0861b";
@@ -147,8 +146,6 @@
             };
           };
         };
-
-        # Docker package
         virtualisation.docker.package = pkgs.docker_29;
 
         # llama-swap (_nas-models.nix) and Hermes (modules/ai/hermes-agent/_hm/runtime)
@@ -158,7 +155,6 @@
 
         hardware = {
           # NVIDIA GPU (RTX 5060)
-          # NVIDIA container toolkit for CUDA container access
           nvidia-container-toolkit.enable = true;
           # Bluetooth support for Home Assistant (prepares for future controller)
           bluetooth.enable = true;

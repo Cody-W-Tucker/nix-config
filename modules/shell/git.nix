@@ -28,7 +28,6 @@
             };
           };
           gh = {
-            # Enable GitHub CLI
             enable = true;
           };
           git = {

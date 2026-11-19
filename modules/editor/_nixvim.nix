@@ -100,7 +100,6 @@
           "FileType"
         ];
         pattern = [ "*.md" ];
-        # Uncomment to use with only markdown
         command = "setlocal spell spelllang=en_us";
       }
     ];
@@ -120,7 +119,6 @@
       trouble.enable = true;
       image.enable = true;
     };
-    # Set the leader key to <Space>
     globals.mapleader = " ";
     extraPlugins = with pkgs.vimPlugins; [ vim-pencil ];
     extraPackages = with pkgs; [

@@ -39,7 +39,6 @@
       }:
       {
         home = {
-          # Small command-line tools, and the default $VISUAL.
           packages = with pkgs; [
             fastfetch
             fd
@@ -55,7 +54,6 @@
         programs = {
           ripgrep.enable = true;
           yazi = {
-            # Yazi file viewer
             enable = true;
             enableZshIntegration = true;
             shellWrapperName = "rr";

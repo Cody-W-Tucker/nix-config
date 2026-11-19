@@ -53,7 +53,7 @@ Keep cross-host routing in the ingress layer, not inside unrelated service modul
 
 ### Immich
 
-`photos.nix` runs Immich at `photos.homehub.tv` with data under `/mnt/media/Photos`. The Immich user is placed in the `video` and `render` groups for hardware acceleration. The Nginx vhost is tuned for large uploads with a high body-size limit and extended proxy timeouts.
+`photos.nix` runs Immich at `photos.homehub.tv` with data under `/mnt/backup/photos`. The Immich user is placed in the `video` and `render` groups for hardware acceleration. The Nginx vhost is tuned for large uploads with a high body-size limit and extended proxy timeouts.
 
 ## Network services
 
@@ -73,7 +73,7 @@ Syncthing is a two-host mesh between `nas` and `beast`. The shared service modul
 | `nas-syncthing.homehub.tv` | `127.0.0.1:8384` | Local NAS Syncthing GUI |
 | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | Beast Syncthing GUI over Tailscale |
 
-The shared folder paths are host-specific: NAS uses `/mnt/media/Share`; beast uses `/mnt/backup/Share`.
+The shared folder path is `/mnt/backup/Share`, identical on every host that imports the module.
 
 Keep DNS and sync changes small and explicit. These services affect the rest of the LAN.
 

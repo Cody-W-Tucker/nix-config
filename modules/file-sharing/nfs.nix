@@ -8,7 +8,6 @@
     }:
 
     {
-      # ── NFS server ────────────────────────────────────────────────
       # Export only to Beast on the LAN.  Tailscale is NOT used for
       # these shares.
 

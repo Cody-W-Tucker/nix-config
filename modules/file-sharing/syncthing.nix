@@ -14,8 +14,6 @@
       ];
     in
     {
-
-      # Basic Syncthing service configuration
       services.syncthing = {
         enable = true;
         user = user.name;
@@ -23,7 +21,6 @@
         overrideDevices = true;
         overrideFolders = true;
         guiAddress = lib.mkDefault "0.0.0.0:8384";
-        # Shared Syncthing device definitions
         settings.devices = {
           "beast" = {
             id = "WS3XKRH-JILABRE-NLK2NU6-BGPXTOY-TOO2K75-UYEY7HB-KO7NKAC-I37UGQ3";
@@ -38,8 +35,6 @@
       # reachable over Tailscale only: the NAS nginx proxies beast-syncthing.${domain}
       # to Beast's Tailscale address, and nas-syncthing.${domain} to the NAS locally.
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8384 ];
-
-      # Ensure syncthing directories exist with proper permissions
       systemd.tmpfiles.rules = [
         "d /mnt 0755 root root - -"
         "d /mnt/backup 0755 ${user.name} users - -"

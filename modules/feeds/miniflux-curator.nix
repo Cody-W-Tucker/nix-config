@@ -123,8 +123,6 @@
           '';
           startAt = cfg.schedule;
         };
-
-        # Create dedicated user
         users.users.miniflux-curator = {
           isSystemUser = true;
           group = "miniflux-curator";
@@ -132,8 +130,6 @@
           createHome = true;
         };
         users.groups.miniflux-curator = { };
-
-        # Ensure working directory exists with proper permissions
         systemd.tmpfiles.rules = [
           "d /var/lib/miniflux-curator 0750 miniflux-curator miniflux-curator -"
         ];

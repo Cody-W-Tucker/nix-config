@@ -80,8 +80,6 @@
 
         # Kernel (hardware modules and quirks are in _beast-hardware.nix).
         boot.kernelPackages = pkgs.linuxPackages_latest;
-
-        # Networking
         networking = {
           hostName = "beast";
           networkmanager.settings.connection = {

@@ -32,18 +32,14 @@ in
         # suspend, which intermittently fails (NV_ERR_NO_MEMORY) and breaks resume.
         moduleParams.nvidia.NVreg_TemporaryFilePath = "/var/tmp";
       };
-
-      # NVIDIA GPU monitoring for Prometheus
       services.prometheus.exporters.nvidia-gpu = {
         enable = true;
         port = exporterPort;
       };
-
       # NVIDIA GPU exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
         config.services.prometheus.exporters.nvidia-gpu.port
       ];
-
       systemd.services = lib.optionalAttrs (host ? nvidiaPowerLimit) {
         nvidia-power-limit = {
           description = "Cap NVIDIA GPU board power (nvidia-smi -pl)";
@@ -60,11 +56,8 @@ in
           };
         };
       };
-
-      # Build apps with CUDA support
       nixpkgs.config.cudaSupport = true;
       # CUDA licences are covered by the global nixpkgs.config.allowUnfree (modules/nix/nix.nix).
-
       # CUDA binary cache to avoid building from source
       nix.settings = {
         extra-substituters = [

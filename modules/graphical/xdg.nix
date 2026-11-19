@@ -6,7 +6,6 @@
       {
         xdg = {
           userDirs = {
-            # Enable XDG user directories with custom folders
             enable = true;
             createDirectories = true;
             setSessionVariables = false;
@@ -52,56 +51,38 @@
           mimeApps = {
             enable = true;
             defaultApplications = {
-              # Images: PNG, JPEG, GIF, SVG, WebP
               "image/*" = "feh.desktop";
-
-              # Videos: MP4, WebM
               "video/*" = "mpv.desktop";
-
-              # Audio: MP3, OGG
               "audio/*" = "mpv.desktop";
-
-              # PDFs
               "application/pdf" = "org.pwmt.zathura.desktop";
-
-              # Microsoft Word documents: DOC, DOCX, DOCM, DOTX, DOTM
               "application/msword" = "doxx.desktop";
               "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "doxx.desktop";
               "application/vnd.ms-word.document.macroEnabled.12" = "doxx.desktop";
               "application/vnd.openxmlformats-officedocument.wordprocessingml.template" = "doxx.desktop";
               "application/vnd.ms-word.template.macroEnabled.12" = "doxx.desktop";
-
-              # Microsoft Excel spreadsheets: XLS, XLSX, XLSM, XLSB, XLTX, XLTM
               "application/vnd.ms-excel" = "xleak.desktop";
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "xleak.desktop";
               "application/vnd.ms-excel.sheet.macroEnabled.12" = "xleak.desktop";
               "application/vnd.ms-excel.sheet.binary.macroEnabled.12" = "xleak.desktop";
               "application/vnd.openxmlformats-officedocument.spreadsheetml.template" = "xleak.desktop";
               "application/vnd.ms-excel.template.macroEnabled.12" = "xleak.desktop";
-
-              # Text: HTML, CSS, JS, Markdown, JSON, plain text
               "text/*" = "nvim.desktop";
               "text/html" = "zen-beta.desktop";
               "application/json" = "nvim.desktop"; # JSON is technically not text/*
               "application/javascript" = "nvim.desktop"; # For explicit JS files
               "application/x-subrip" = "nvim.desktop"; # For .srt subtitle files
-
-              # Web URLs
               "x-scheme-handler/http" = "zen-beta.desktop";
               "x-scheme-handler/https" = "zen-beta.desktop";
             };
           };
         };
         home.packages = with pkgs; [
-          # Install the Applications
-          # list of stable packages go here
           feh # Image viewer
           zathura # PDF viewer
           mpv # Media player
           xleak # Excel spreadsheet viewer
           doxx # Word document viewer
         ];
-
       };
   };
 }

@@ -73,59 +73,37 @@ let
     # Move/resize windows with mainMod + LMB/RMB and dragging
     (mouseBind "${mainMod} + mouse:272" (lua "hl.dsp.window.drag()"))
     (mouseBind "${mainMod} + mouse:273" (lua "hl.dsp.window.resize()"))
-
     # Application launchers (focus existing window or run new)
     (execBind "${mainMod} + Q" terminal)
     (actionBind "${mainMod} + 0" (focusOrRun "zen-beta" browser))
-
-    # Web applications
     (execBind "${mainMod} + SHIFT + Return" "[workspace special:ai] ${webApp}=https://grok.com/")
     (execBind "${mainMod} + A" "${webApp}=https://chat.${domain}")
-
-    # Quick launch
     (execBind "${mainMod} + Tab" "rofi-launcher")
     (execBind "${mainMod} + V" "cliphist list | rofi -dmenu | cliphist decode | wl-copy")
     (execBind "${mainMod} + SHIFT + Tab" "web-search")
     (execBind "${mainMod} + BackSpace" "rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n \"{result}\" | wl-copy'")
-
-    # Screenshots
     (execBind "${mainMod} + S" "${lib.getExe screenshotOcrAction}")
     (execBind "${mainMod} + SHIFT + S" "${lib.getExe screenshotAction}")
-
-    # Color picker
     (execBind "${mainMod} + mouse:274" "${pkgs.lib.getExe pkgs.hyprpicker} -a")
-
-    # Window management
     (actionBind "${mainMod} + W" (lua "hl.dsp.window.close()"))
     (actionBind "${mainMod} + F" (
       lua ''hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" })''
     ))
-
-    # Workspace navigation
     (actionBind "${mainMod} + H" (lua ''hl.dsp.focus({ direction = "l" })''))
     (execBind "${mainMod} + SHIFT + H" "hyprnome --previous --move")
     (actionBind "${mainMod} + L" (lua ''hl.dsp.focus({ direction = "r" })''))
     (execBind "${mainMod} + SHIFT + L" "hyprnome --move")
-
     (execBind "${mainMod} + mouse_down" "hyprnome --previous")
     (execBind "${mainMod} + mouse_up" "hyprnome")
     (execBind "${mainMod} + SHIFT + mouse_down" "hyprnome --previous --move")
     (execBind "${mainMod} + SHIFT + mouse_up" "hyprnome --move")
-
-    # Special workspaces
     (actionBind "${mainMod} + Return" (lua ''hl.dsp.workspace.toggle_special("ai")''))
     (actionBind "${mainMod} + D" (lua ''hl.dsp.workspace.toggle_special("dev")''))
-    # agent runner
     (actionBind "${mainMod} + E" (lua ''hl.dsp.workspace.toggle_special("think")''))
     (actionBind "${mainMod} + Y" (lua ''hl.dsp.workspace.toggle_special("media")''))
-
     # Toggle waybar
     (execBind "${mainMod} + P" "pkill -SIGUSR1 waybar")
-
-    # Whisper dictation - toggle recording on/off
     (execBind "${mainMod} + Escape" "llama-dictate toggle")
-
-    # Whisper dictation - recover from orphaned recorder
     (execBind "${mainMod} + SHIFT + Escape" "llama-dictate recover")
   ];
 
@@ -186,8 +164,6 @@ let
       command = "playerctl previous";
     }
   ];
-
-  # workspaces
   # binds $mainMod + [shift +] {1..9} to [move to] workspace {1..9}
   workspaceBinds = builtins.concatLists (
     builtins.genList (
@@ -221,7 +197,6 @@ in
       end
     end)
   '';
-
   wayland.windowManager.hyprland.settings = {
     # Exposes the old `$mainMod` hyprlang variable as a Lua local
     mainMod = {
@@ -304,9 +279,7 @@ in
     };
 
     bind = binds ++ repeatingExecBinds ++ lockedExecBinds ++ workspaceBinds;
-
     window_rule = [
-      # Kitty
       {
         match.class = "^(kitty)$";
         no_blur = true;
