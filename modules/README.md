@@ -1,6 +1,6 @@
-# modules/ (Den tree; transitional)
+# modules/ (Den tree)
 
-[Den](https://github.com/denful/den) (pinned in `flake.nix`) owns `nixosConfigurations`. Everything in this directory is a flake-level module (not a NixOS module), loaded by `import-tree` from `flake.nix`. `import-tree ./modules` skips every path containing `/_`, so the old NixOS/Home Manager module tree lives in `_legacy/` (not loaded by import-tree; aspects import it explicitly) until later slices convert it. Never leave a NixOS/HM module at a non-underscore path, and do not add a `default.nix` outside `_` paths. Target layout: [`docs/Den-Native-Layout.md`](../docs/Den-Native-Layout.md).
+[Den](https://github.com/denful/den) (pinned in `flake.nix`) owns `nixosConfigurations`. Everything in this directory is a flake-level module (not a NixOS module), loaded by `import-tree` from `flake.nix`. `import-tree ./modules` skips every path containing `/_`, supporting NixOS/Home Manager modules live under `_` names and are imported explicitly by their aspects. Never leave a NixOS/HM module at a non-underscore path, and do not add a `default.nix` outside `_` paths. Target layout: [`docs/Den-Native-Layout.md`](../docs/Den-Native-Layout.md).
 
 | Path | Owns |
 | --- | --- |
@@ -9,14 +9,13 @@
 | `base/base.nix`, `base/*.nix` | The `base` aspect and one aspect per concern it includes (nix, locale, networking, logging, shell, packages, scripts, overlays, sops, accounts, core-services, site, home-manager). `base/site.nix` declares `codyos.site` and fills `codyos.site.hosts` from the den host attributes. |
 | `hardware/*.nix` | `hardware-baseline` (included by base) and `nvidia` (included by hosts with an NVIDIA GPU; `nvidiaPowerLimit` host attribute = nvidia-smi power cap in watts, nas only). |
 | `users/codyt.nix` | The codyt aspect: `user` class (account, forwarded to `users.users.codyt`) and `homeManager`. |
-| `desktop/desktop.nix`, `roles/nas-role.nix` | Role profiles (desktop aspects under `desktop/`; `_legacy/nas` plus workflow and vpn-confinement). |
-| `roles/hermes-agent.nix` | NixOS-side Hermes backup wiring (nas only). |
+| `desktop/desktop.nix`, `server/server.nix` | Role profiles: `desktop` and `server` include the per-feature / per-service aspects in their directories (server also imports the workflow and vpn-confinement NixOS modules). |
 
 Machine facts (hardware import, mounts, networking, `stateVersion`, option-carrying `codyos.*` settings) live in the host aspect's `nixos` block in `hosts/<host>.nix`.
 
 ## Rules that keep the build identical
 
-- The stable/unstable pairing is chosen per host in `modules/hosts/<host>.nix` (`instantiate`, `channel`) and `modules/hosts/<host>.nix`: beast uses `nixpkgs-unstable` + `home-manager` + `nixvim`; nas uses `nixpkgs` + `home-manager-stable` + `nixvim-stable`. The HM-version sniffs in `_legacy/users/cody/harness/` rely on this.
+- The stable/unstable pairing is chosen per host in `modules/hosts/<host>.nix` (`instantiate`, `channel`) and `modules/hosts/<host>.nix`: beast uses `nixpkgs-unstable` + `home-manager` + `nixvim`; nas uses `nixpkgs` + `home-manager-stable` + `nixvim-stable`. The HM-version sniffs in `harness/_hm/` rely on this.
 - Host aspect names must equal the `den.hosts` names (`beast`, `nas`), and those are also the `nixosConfigurations` names used by `update`, the nightly build and `lsp.nix`.
 - Home Manager is still wired by hand (not Den's HM battery, no den users). User module `imports` order affects `home.packages` order and so the derivation; keep all user imports for a host in one list.
 - Per-host data that Home Manager needs is a host attribute bridged to `home-manager.extraSpecialArgs` (e.g. `hardwareConfig` on beast).
@@ -30,4 +29,4 @@ Machine facts (hardware import, mounts, networking, `stateVersion`, option-carry
 
 ## Adding an aspect
 
-Create `roles/<name>.nix` with `den.aspects.<name>.nixos = { ... };` (a NixOS module; a function form gets `config`), then add `den.aspects.<name>` to a host aspect's `includes`. Leaf service modules stay plain NixOS/Home Manager modules under `_legacy/`; an aspect imports them.
+Create `<dir>/<name>.nix` with `den.aspects.<name>.nixos = { ... };` (a NixOS module; a function form gets `config`), then add `den.aspects.<name>` to a host aspect's `includes`. Supporting plain NixOS/Home Manager modules live under `_` names; the aspect imports them.

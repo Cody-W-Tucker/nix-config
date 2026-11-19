@@ -2,8 +2,7 @@
   "memoryFiles": ["AGENTS.md"],
   "nestedMemoryFiles": [
     "modules/hosts/AGENTS.md",
-    "modules/_legacy/AGENTS.md",
-    "modules/_legacy/desktop/AGENTS.md",
+    "modules/server/AGENTS.md",
     "modules/services/automations/AGENTS.md",
     "modules/services/hermes-agent/AGENTS.md",
     "modules/services/llama-swap/AGENTS.md",

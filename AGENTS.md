@@ -66,8 +66,8 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ### Module Structure
 
-- Den owns `nixosConfigurations`: every non-underscore `.nix` under `modules/` is a flake-level Den module (loaded by `import-tree ./modules`); per-host composition lives in `modules/hosts/<host>.nix`, role/feature aspects in `modules/roles/`; see `modules/README.md` and `docs/Den-Native-Layout.md`. The old NixOS/HM module tree is under `modules/_legacy/` (skipped by import-tree, imported explicitly) until the migration finishes. No `default.nix` outside `_` paths.
-- Naming (legacy, under `modules/_legacy/`): `{location}/{item}/default.nix` and file. New code follows `docs/Den-Native-Layout.md`.
+- Den owns `nixosConfigurations`: every non-underscore `.nix` under `modules/` is a flake-level Den module (loaded by `import-tree ./modules`); per-host composition lives in `modules/hosts/<host>.nix`, role aspects `modules/desktop/desktop.nix` and `modules/server/server.nix`; see `modules/README.md` and `docs/Den-Native-Layout.md`. No `default.nix` outside `_` paths.
+- Naming: new code follows `docs/Den-Native-Layout.md`.
 - Keep `default.nix` short.
   - Use supporting files with self-explaining names if needed.
   - Examples: `module.nix`, `package.nix` and `service.nix`.

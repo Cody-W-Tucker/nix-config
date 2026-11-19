@@ -6,7 +6,7 @@
   #    programs.opencode with the web server, and the user-level opencode-web service's
   #    EnvironmentFile. It reads the NixOS-rendered `opencode-env` template through
   #    `osConfig`, so the NixOS template and this list entry stay paired by construction.
-  # The shared Home Manager harness (modules/_legacy/users/cody/harness/opencode) appends
+  # The shared Home Manager harness (modules/harness/_hm/opencode) appends
   # the opencode-langfuse-env template to the same EnvironmentFile list.
   # Including this aspect is the switch; nas includes it.
   den.aspects.opencode = {

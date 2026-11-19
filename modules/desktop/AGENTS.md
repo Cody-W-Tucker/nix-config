@@ -8,4 +8,4 @@ role aspect and includes the features; gaming and openrazer are opt-in and inclu
   `_waybar/`, `_speech-to-text.nix`) are `_`-prefixed and imported by their aspect.
 - Per-host facts come from the den host (`host.hardwareConfig` for the Hyprland layout).
 - Theming (Stylix) is Home Manager only and lives in `theming.nix`.
-- Does not own the shared shell/git user environment or the editor (still under `_legacy/users/cody`).
+- Does not own the shared shell/git user environment or the editor (see `modules/users/`, `modules/editor/`).
