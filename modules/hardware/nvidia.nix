@@ -1,4 +1,11 @@
+let
+  exporterPort = 9835;
+in
 {
+  den.aspects.nvidia.prometheus-targets = { host, ... }: {
+    host = host.name;
+    ports.nvidia-gpu = exporterPort;
+  };
   # NVIDIA driver, CUDA, and GPU monitoring. Included by every host with an NVIDIA GPU.
   # nixpkgs.config.cudaSupport is host-wide (pkgs.unstable inherits it through the overlay).
   # A host that caps GPU board power sets the `nvidiaPowerLimit` host attribute (watts,
@@ -27,7 +34,10 @@
       };
 
       # NVIDIA GPU monitoring for Prometheus
-      services.prometheus.exporters.nvidia-gpu.enable = true;
+      services.prometheus.exporters.nvidia-gpu = {
+        enable = true;
+        port = exporterPort;
+      };
 
       # NVIDIA GPU exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [

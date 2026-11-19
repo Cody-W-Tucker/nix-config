@@ -1,6 +1,8 @@
 { den, ... }:
 let
   loki = import ./_loki-endpoint.nix;
+  nodePort = 9002;
+  diskPort = 9633;
   forwardJournal = host: port: lib: {
     services.fluent-bit = {
       enable = true;
@@ -46,11 +48,12 @@ in
         prometheus.exporters.node = {
           enable = true;
           enabledCollectors = lib.mkBefore [ "systemd" ];
-          port = 9002;
+          port = nodePort;
         };
 
         prometheus.exporters.smartctl = {
           enable = true;
+          port = diskPort;
           user = "root";
           group = "root";
         };
@@ -95,7 +98,16 @@ in
     { config, lib, ... }:
     forwardJournal "127.0.0.1" config.services.loki.configuration.server.http_listen_port lib;
 
-  # Desktop logging: the node exporter port is opened on tailscale0 so the NAS Prometheus can scrape it.
+  # Open and advertise the desktop exporter endpoints for remote scraping.
+  den.aspects.logging.desktop.prometheus-targets =
+    { host, ... }:
+    {
+      host = host.name;
+      ports = {
+        client = nodePort;
+        smartctl = diskPort;
+      };
+    };
   den.aspects.logging.desktop.nixos =
     { config, ... }:
 

@@ -1,19 +1,37 @@
 { den, ... }:
 let
   loki = import ./_loki-endpoint.nix;
+  inherit (den.lib.policy) pipe;
 in
 {
+  den.quirks.prometheus-targets.description = "Scrape endpoints advertised by selected exporter aspects.";
+  den.policies.collect-prometheus-targets = { host, ... }: [
+    (pipe.from "prometheus-targets" [ (pipe.collect ({ host, ... }: true)) ])
+  ];
+  den.schema.host.includes = [ den.policies.collect-prometheus-targets ];
+
   den.aspects.monitoring.includes = [ den.aspects.logging.forward-local ];
   den.aspects.monitoring.nixos =
     {
       config,
       lib,
       mkNginxVhost,
+      prometheus-targets,
       ...
     }:
 
     let
       inherit (config.codyos.site) domain;
+      advertised = lib.sort (a: b: a.host < b.host) prometheus-targets;
+      targetsFor =
+        job:
+        lib.concatMap (
+          target:
+          lib.optional (target.ports ? ${job}) {
+            targets = [ "${target.host}:${toString target.ports.${job}}" ];
+            labels.host = target.host;
+          }
+        ) advertised;
       resticBackup = config.services.restic.backups.nas-files;
       resticPasswordFile =
         if resticBackup.passwordFile == null then
@@ -131,14 +149,7 @@ in
             }
             {
               job_name = "client";
-              static_configs = [
-                {
-                  targets = [ "beast:9002" ];
-                  labels = {
-                    host = "beast";
-                  };
-                }
-              ];
+              static_configs = targetsFor "client";
             }
             {
               job_name = "smartctl";
@@ -149,30 +160,12 @@ in
                     host = "${config.networking.hostName}";
                   };
                 }
-                {
-                  targets = [ "beast:9633" ];
-                  labels = {
-                    host = "beast";
-                  };
-                }
-              ];
+              ]
+              ++ targetsFor "smartctl";
             }
             {
               job_name = "nvidia-gpu";
-              static_configs = [
-                {
-                  targets = [ "beast:9835" ];
-                  labels = {
-                    host = "beast";
-                  };
-                }
-                {
-                  targets = [ "nas:9835" ];
-                  labels = {
-                    host = "nas";
-                  };
-                }
-              ];
+              static_configs = targetsFor "nvidia-gpu";
             }
             {
               job_name = "nginx";

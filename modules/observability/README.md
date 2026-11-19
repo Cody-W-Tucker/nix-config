@@ -33,5 +33,4 @@ Prometheus scrapes the server and selected `beast` metrics. Important endpoints 
 
 Loki is configured as a single-binary filesystem-backed deployment with short retention. Nginx access logs are routed explicitly so both log and metric ingestion stay predictable.
 
-If adding a service, add the exporter and scrape target in the same module that owns the monitoring integration, then expose it in Grafana only when it is useful to operate.
-
+`logging.desktop` and `nvidia` advertise endpoints through Den's `prometheus-targets` pipe on hosts that select them. `monitoring.nix` collects those endpoints from same-system peers and owns the scrape jobs. No target is advertised merely because a host exists. Keep new exporter definitions and their advertisements together; Grafana still owns dashboard presentation.
