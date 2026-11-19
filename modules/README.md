@@ -13,7 +13,7 @@
 | `editor/nixvim/` | `nixvim.nix` (channel-aware nixvim aspect), `desktop.nix` (`nixvim-desktop`), `_nixvim.nix`, `_keymaps.nix`, `_plugins/`. |
 | `harness/` | AI/operator harness for the user (OpenCode, Claude Code, MCP, skills, plugins); HM tree in `_hm/`; `opencode-remote.nix`. |
 | `services/` | Cross-class services: `hermes-agent/`, `llama-swap/`, `opencode.nix`, `hindsight.nix`, `docker.nix`, `nginx.nix`, `syncthing.nix`, `paperless-scanning.nix`, `automations/`. |
-| `server/` | `server.nix` role aspect plus one aspect per NAS service (`media/`, `binary-cache/`, `langfuse/`, backups, monitoring, …). |
+| `server/` | `server.nix` role aspect plus one aspect per NAS service (`media/`, `langfuse/`, backups, monitoring, …). |
 
 Machine facts (hardware import, mounts, networking, `stateVersion`s, host-specific settings) live in the host aspect's `nixos` block in `hosts/<host>.nix`.
 

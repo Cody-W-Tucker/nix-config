@@ -40,7 +40,7 @@ Use native `sudo nixos-rebuild test --flake .#<host>` to build and activate the 
 
 ### NAS Binary Cache and Nightly Builds
 
-The NAS serves its store as a signed binary cache (Harmonia, port 5000, Tailscale only) and pre-builds every host at about 03:00 from GitHub `main` [modules/server/binary-cache](../modules/server/binary-cache). Beast lists it as its first substituter, so after a nightly run `update` on beast downloads over the LAN instead of compiling. The same job switches the NAS to `main` and also builds the pending `update/flake-lock` PR branch (build only), so merging that PR is already cached.
+The NAS serves its store as a signed binary cache (Harmonia, port 5000, Tailscale only) and pre-builds every host at about 03:00 from GitHub `main` [modules/nix/binary-cache.nix](../modules/nix/binary-cache.nix). Beast lists it as its first substituter, so after a nightly run `update` on beast downloads over the LAN instead of compiling. The same job switches the NAS to `main` and also builds the pending `update/flake-lock` PR branch (build only), so merging that PR is already cached.
 
 - Builds are GC-rooted under `/nix/var/nix/gcroots/nightly-build`.
 - Run it now: `sudo systemctl start nightly-build` on the NAS; logs via `journalctl -u nightly-build`.

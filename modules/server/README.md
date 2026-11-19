@@ -32,8 +32,8 @@ The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for servic
 | `langfuse/` | Langfuse LLM observability stack (web, worker, postgres, clickhouse, minio, redis), SOPS env file, Nginx ingress |
 | `actual-budget.nix`, `dawarich.nix`, `mealie.nix`, `home-assistant.nix`, `excalidraw.nix`, `open-webui.nix` | Individual apps |
 | `backups.nix`, `_backup-options.nix`, `backup-health.nix` | `nas.backups.*` options, Restic jobs, backup health metrics |
-| `binary-cache/` | Harmonia binary cache and the nightly build |
 | `security.nix` | Fail2Ban and server hardening |
+| (`../nix/binary-cache.nix`, `../nix/nightly-build.nix`) | Harmonia binary cache and the nightly build; server side included here, client side by beast |
 | `wake-beast.nix` | Declared but included nowhere (see AGENTS.md) |
 
 ## Ingress and domains

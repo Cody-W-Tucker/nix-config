@@ -53,6 +53,7 @@ in
       den.aspects.paperless-scanning
       den.aspects.nixvim-desktop
       den.aspects.opencode-remote
+      den.aspects.binary-cache.client
     ];
 
     # Beast's Home Manager role (the desktop comes from den.aspects.desktop; nixvim from den.aspects.nixvim).
@@ -63,7 +64,6 @@ in
     nixos =
       {
         config,
-        lib,
         pkgs,
         ...
       }:
@@ -83,18 +83,6 @@ in
 
         # Kernel (hardware modules and quirks are in _beast-hardware.nix).
         boot.kernelPackages = pkgs.linuxPackages_latest;
-
-        # ── Nix ─────────────────────────────────────────────────────
-        # The NAS pre-builds this host nightly and serves it over Tailscale
-        # (modules/server/binary-cache). mkOrder 400 keeps it ahead of the public caches (the shared nix feature uses mkBefore = 500).
-        nix.settings = {
-          extra-substituters = lib.mkOrder 400 [ "http://${site.hosts.nas.tailscale}:5000" ];
-          extra-trusted-public-keys = lib.mkOrder 400 [
-            "nas-cache-1:Uy5hdzmlVo4igOUVu0aZSZz6Y97QLF2ly2sJK21wLPg="
-          ];
-          # Give up on an unreachable NAS quickly and use the next cache.
-          connect-timeout = 5;
-        };
 
         # ── Drives ──────────────────────────────────────────────────
         # Native units keep unavailable NAS shares out of fstab-generator during

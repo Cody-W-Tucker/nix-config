@@ -10,7 +10,7 @@
       den.aspects.miniflux-curator
       den.aspects.backup-health
       den.aspects.backups
-      den.aspects.binary-cache
+      den.aspects.binary-cache.server
       den.aspects.langfuse
       den.aspects.actual-budget
       den.aspects.dawarich

@@ -1,6 +1,6 @@
 # Server (nas) services
 
-Owns the `server` role aspect (`server.nix`) and one `den.aspects.<service>` per self-hosted nas service, each a NixOS module in the aspect's `nixos` block. Multi-file services are a directory with an aspect file and `_` supporting files (`media/`, `langfuse/`, `binary-cache/`). `README.md` documents the services.
+Owns the `server` role aspect (`server.nix`) and one `den.aspects.<service>` per self-hosted nas service, each a NixOS module in the aspect's `nixos` block. Multi-file services are a directory with an aspect file and `_` supporting files (`media/`, `langfuse/`). `README.md` documents the services.
 
 Does not own one-host facts (those are in `modules/hosts/nas.md`/`nas.nix`) or Home Manager/user preferences (`modules/users/`, `modules/harness/`).
 

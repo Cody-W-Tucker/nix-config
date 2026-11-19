@@ -25,7 +25,7 @@ modules/
     beast.md, nas.md         # host notes
   # shared features, each registering itself in den.default.includes:
   defaults.nix site.nix secrets.nix  # no-feature settings; site facts; sops imports
-  nix/ shell/ networking/ observability/  # nix, shell, networking, logging aspects
+  nix/ shell/ networking/ observability/  # nix (incl. binary-cache), shell, networking, logging
   # (home-manager is in users/home-manager.nix)
   hardware/                  # baseline, nvidia
   users/                     # codyt.nix (account + HM profile) and shared user aspects
@@ -37,7 +37,7 @@ modules/
                              #   docker.nix, nginx.nix, syncthing.nix, paperless-scanning.nix,
                              #   automations/
   server/                    # `server` role + one aspect per NAS service
-                             #   (media/, binary-cache/, langfuse/, backups, monitoring, …)
+                             #   (media/, langfuse/, backups, monitoring, …)
 ```
 
 ## Conventions
