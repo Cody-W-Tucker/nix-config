@@ -4,19 +4,19 @@ This page details the networking architecture of CodyOS, covering system-level s
 
 ## System Networking and Security
 
-CodyOS utilizes a hardened networking stack by default. Base networking configuration is defined in `modules/base/networking.nix` and imported into the base system profile [modules/base/base.nix](../modules/base/base.nix)
+CodyOS utilizes a hardened networking stack by default. Base networking configuration is defined in `modules/networking/networking.nix` and registered for every host via `den.default.includes`
 
 ### Hardening and Firewall
 
-The system employs `nftables` as the primary firewall backend [modules/base/networking.nix](../modules/base/networking.nix) SSH access is strictly controlled via `services.openssh`:
+The system employs `nftables` as the primary firewall backend [modules/networking/networking.nix](../modules/networking/networking.nix) SSH access is strictly controlled via `services.openssh`:
 
-- **Authentication**: Password authentication is disabled in favor of SSH keys [modules/base/networking.nix](../modules/base/networking.nix)
-- **Root Access**: Root login is completely prohibited [modules/base/networking.nix](../modules/base/networking.nix)
-- **Brute Force Protection**: `fail2ban` is enabled to monitor and block malicious authentication attempts [modules/base/networking.nix](../modules/base/networking.nix)
+- **Authentication**: Password authentication is disabled in favor of SSH keys [modules/networking/networking.nix](../modules/networking/networking.nix)
+- **Root Access**: Root login is completely prohibited [modules/networking/networking.nix](../modules/networking/networking.nix)
+- **Brute Force Protection**: `fail2ban` is enabled to monitor and block malicious authentication attempts [modules/networking/networking.nix](../modules/networking/networking.nix)
 
 ### Host-Specific Configuration
 
-NetworkManager is enabled for every host in `modules/base/networking.nix`; individual hosts manage their own interface logic. For example, the `nas` host uses a declarative static LAN profile (`Wired connection 1` on `enp6s0` → `192.168.1.2/24`, gateway `192.168.1.1`) instead of DHCP [modules/hosts/nas.nix](../modules/hosts/nas.nix).
+NetworkManager is enabled for every host in `modules/networking/networking.nix`; individual hosts manage their own interface logic. For example, the `nas` host uses a declarative static LAN profile (`Wired connection 1` on `enp6s0` → `192.168.1.2/24`, gateway `192.168.1.1`) instead of DHCP [modules/hosts/nas.nix](../modules/hosts/nas.nix).
 
 ---
 
@@ -28,7 +28,7 @@ The repository supports two VPN technologies tailored for different use cases: m
 
 Tailscale is used for secure, zero-config point-to-point connectivity between hosts.
 
-- **Implementation**: Enabled for every host via `services.tailscale.enable` in the shared networking module [modules/base/networking.nix](../modules/base/networking.nix), alongside `networking.networkmanager.enable` [modules/base/networking.nix](../modules/base/networking.nix)
+- **Implementation**: Enabled for every host via `services.tailscale.enable` in the shared networking module [modules/networking/networking.nix](../modules/networking/networking.nix), alongside `networking.networkmanager.enable` [modules/networking/networking.nix](../modules/networking/networking.nix)
 - **Host-specific flags**: The `nas` adds subnet-router settings (`useRoutingFeatures = "server"`, `--advertise-routes`, `--accept-dns=false`) in [modules/hosts/nas.nix](../modules/hosts/nas.nix).
 
 ### Data Flow: VPN Services
@@ -44,8 +44,8 @@ flowchart LR
         BEAST["modules/hosts/beast.nix"]
     end
     subgraph SystemModules
-        BASE["modules/base/base.nix"]
-        NET["modules/base/networking.nix (Tailscale, NetworkManager)"]
+        BASE["den.default"]
+        NET["modules/networking/networking.nix (Tailscale, NetworkManager)"]
     end
     BASE --> NET
     NAS --> BASE

@@ -230,7 +230,7 @@ Keep DNS and sync changes small and explicit. These services affect the rest of 
 - Tempo for traces and OTLP ingestion.
 - Exporters for Nginx, SMART, GPU, and remote targets as configured.
 
-The node exporter (`9002`) and systemd journal shipping to Loki (Fluent Bit) are not defined here; they come from the shared `modules/base/logging.nix`, which every host imports. `monitoring.nix` only appends the NAS-specific Fluent Bit input and output for the Nginx access log.
+The node exporter (`9002`) and systemd journal shipping to Loki (Fluent Bit) are not defined here; they come from the shared `modules/observability/logging.nix`, which every host imports. `monitoring.nix` only appends the NAS-specific Fluent Bit input and output for the Nginx access log.
 
 Prometheus scrapes the server and selected `beast` metrics. Important endpoints and roles:
 

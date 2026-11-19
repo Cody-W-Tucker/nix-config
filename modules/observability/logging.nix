@@ -1,5 +1,6 @@
+{ den, ... }:
 {
-  # Host telemetry shared by every host: the node exporter (scraped by the NAS
+  # Host telemetry shared by every host: the node and smartctl exporters (scraped by the NAS
   # Prometheus) and Fluent Bit shipping the systemd journal to the NAS Loki.
   # Host-specific inputs and outputs (e.g. NAS nginx logs) are appended by the
   # owning module; list settings concatenate after the shared entries (mkBefore).
@@ -31,6 +32,12 @@
           enable = true;
           enabledCollectors = lib.mkBefore [ "systemd" ];
           port = 9002;
+        };
+
+        prometheus.exporters.smartctl = {
+          enable = true;
+          user = "root";
+          group = "root";
         };
 
         fluent-bit = {
@@ -72,5 +79,12 @@
           };
         };
       };
+
+      # smartctl exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).
+      networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+        config.services.prometheus.exporters.smartctl.port
+      ];
     };
+
+  den.default.includes = [ den.aspects.logging ];
 }

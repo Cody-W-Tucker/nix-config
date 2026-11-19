@@ -19,7 +19,6 @@ in
 
   den.aspects.nas = {
     includes = [
-      den.aspects.base
       den.aspects.hermes-agent
       den.aspects.server
       den.aspects.nvidia

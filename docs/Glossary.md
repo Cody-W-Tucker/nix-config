@@ -10,13 +10,13 @@ This page provides definitions for codebase-specific terms, jargon, and domain c
 | **NAS**     | The home lab / NAS host (Intel i5-14400F, NVIDIA GTX 1650) providing centralized services. | [modules/hosts/nas.nix](../modules/hosts/nas.nix)                                              |
 | **HomeHub** | The primary domain (`homehub.tv`) used for internal web services.               | [modules/server/homepage-dashboard.nix](../modules/server/homepage-dashboard.nix) |
 | **Stylix**  | The system-wide theming engine used to unify colors across CLI and GUI.         | [modules/desktop/theming.nix](../modules/desktop/theming.nix)                                                   |
-| **SOPS**    | Secrets Operations; used for encrypted secret management within the flake.      | [modules/base/sops.nix](../modules/base/sops.nix)                                                   |
+| **SOPS**    | Secrets Operations; used for encrypted secret management within the flake.      | [modules/secrets.nix](../modules/secrets.nix)                                                   |
 
 **Architecture Mapping: Infrastructure to Code**
 
 ```mermaid
 flowchart LR
-    B_Base["modules/base/base.nix"]
+    B_Base["den.default"]
     Nginx["services.nginx.virtualHosts"]
     subgraph subGraph1 ["Code Entity Space"]
         A_Code["modules/hosts/beast.nix"]

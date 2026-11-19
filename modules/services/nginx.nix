@@ -1,3 +1,4 @@
+{ den, ... }:
 {
   den.aspects.nginx.nixos =
     { lib, config, ... }:
@@ -71,4 +72,7 @@
           );
         };
     };
+
+  # nginx provides the mkNginxVhost module argument to every module on every host.
+  den.default.includes = [ den.aspects.nginx ];
 }

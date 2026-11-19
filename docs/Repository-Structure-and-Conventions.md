@@ -6,7 +6,7 @@ This page details the organizational standards, directory layout, and naming con
 
 | Directory     | Purpose                                                            | Key Contents                                  |
 | ------------- | ------------------------------------------------------------------ | --------------------------------------------- |
-| `modules/`    | The Den tree: hosts, aspects, flake outputs. Loaded by `import-tree`. | `hosts/`, `base/`, `hardware/`, `users/`, `desktop/`, `editor/`, `harness/`, `services/`, `server/`, `flake/` |
+| `modules/`    | The Den tree: hosts, aspects, flake outputs. Loaded by `import-tree`. | `hosts/`, `hardware/`, `users/`, `desktop/`, `editor/`, `harness/`, `services/`, `server/`, `flake/` |
 | `packages/`   | Custom derivations and system scripts, exposed by the shared overlay and as `packages.x86_64-linux`. | `update/`, `check-imports/`, `kokoro-assets/` |
 | `docs/`       | Longer operator notes and reference material.                      | this directory                                |
 | `.agents/`    | Knowledge base and guidance for AI agents.                         | `skills/`                                     |
@@ -60,13 +60,12 @@ modules/services/hermes-agent/
 
 ### 3. Roles, Aspects and Host Facts
 
-- **Roles** are aspects that include other aspects: `den.aspects.desktop` ([`modules/desktop/desktop.nix`](../modules/desktop/desktop.nix)), `den.aspects.server` ([`modules/server/server.nix`](../modules/server/server.nix)) and `den.aspects.base` ([`modules/base/base.nix`](../modules/base/base.nix)). Host aspects in [`modules/hosts/`](../modules/hosts) include the roles and features they want.
-- **Features** are aspects (`den.aspects.<name>` with `nixos` and/or `homeManager`). Including an aspect turns it on; there are no `codyos.<name>.enable` flags. Option-carrying `codyos.*` settings that remain are declared next to their consumer (e.g. `codyos.site` in [`modules/base/site.nix`](../modules/base/site.nix)).
+- **Roles** are aspects that include other aspects: `den.aspects.desktop` ([`modules/desktop/desktop.nix`](../modules/desktop/desktop.nix)), `den.aspects.server` ([`modules/server/server.nix`](../modules/server/server.nix)). Host aspects in [`modules/hosts/`](../modules/hosts) include the roles and features they want.
+- **Features** are aspects (`den.aspects.<name>` with `nixos` and/or `homeManager`). Including an aspect turns it on; there are no `codyos.<name>.enable` flags. Option-carrying `codyos.*` settings that remain are declared next to their consumer (e.g. `codyos.site` in [`modules/site.nix`](../modules/site.nix)).
 - **Host facts** (`channel`, `localAi`, `lan`, `tailscale`, `mac`, `hardwareConfig`, `nvidiaPowerLimit`) are attributes on the `den.hosts` entry and are read by aspects from the `host` context.
 
 ```nix
 den.aspects.beast.includes = [
-  den.aspects.base
   den.aspects.desktop
   den.aspects.nvidia
 ];
@@ -74,7 +73,7 @@ den.aspects.beast.includes = [
 
 ### 4. Site Facts ()
 
-Values shared across hosts live in one place, [modules/base/site.nix](../modules/base/site.nix):
+Values shared across hosts live in one place, [modules/site.nix](../modules/site.nix):
 
 | Option | Value |
 | --- | --- |

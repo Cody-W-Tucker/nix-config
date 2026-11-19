@@ -36,7 +36,7 @@ Keep package directory names in lowercase kebab-case; the directory name is the 
 
 ### `update` and `check-imports`
 
-Maintenance commands installed into the system environment by `modules/base/scripts.nix`.
+Maintenance commands installed into the system environment by `modules/nix/nix.nix`.
 
 - `update` formats the repo, runs `check-imports`, stages changes, and builds both hosts' system closures. Only after those succeed does it prompt for a commit message, commit, switch the current host, and push. A build failure leaves changes staged but prevents committing, switching, and pushing. An activation failure also prevents pushing. Agents run `nix flake check` separately; the human update path does not repeat it. `update.sh` owns the workflow; mocked gate tests run in `nix flake check`.
 - `check-imports [dir]` checks directories with a `default.nix` (under `/etc/nixos` by default) and reports `.nix` files that are present but not imported, plus imports that point at missing files. It also runs as the `imports` flake check.
@@ -77,7 +77,7 @@ Pinned [acpx](https://github.com/openclaw/acpx) `v0.19.4` (Node >=22.13) from th
 ## Adding or changing a package
 
 1. Create `packages/<name>/package.nix` as a `callPackage` function, and `git add` it (flakes only see tracked files).
-2. Use it as `pkgs.<name>` from the module that consumes it. For a system operator command, add it to `modules/base/scripts.nix`.
+2. Use it as `pkgs.<name>` from the module that consumes it. For a system operator command, add it to `modules/nix/nix.nix`.
 3. Build it: `nix build .#<name>`. For packages used on the NAS, also build the NAS variant, since it uses stable nixpkgs: `nix build --impure --expr '(builtins.getFlake "/etc/nixos").nixosConfigurations.nas.pkgs.<name>'`.
 
 Agent-facing packaging recipes live in `.agents/skills/nix-packaging/`. Do not copy those examples here; this README owns the local `packages/` tree and points agents/operators to the package files that actually ship.

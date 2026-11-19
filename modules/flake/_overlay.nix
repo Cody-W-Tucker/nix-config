@@ -1,4 +1,4 @@
-# Shared nixpkgs overlay, applied to every host via modules/base/overlays.nix.
+# Shared nixpkgs overlay, applied to every host via the nix feature (modules/nix/nix.nix).
 #
 # Local packages: every packages/<name>/package.nix becomes pkgs.<name>, called
 # with the host's own pkgs (so packages can depend on each other by name).

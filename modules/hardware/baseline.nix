@@ -1,3 +1,4 @@
+{ den, ... }:
 {
   # Shared hardware baseline: boot loader policy, redistributable firmware, Intel
   # microcode, and swap policy.
@@ -14,6 +15,9 @@
       # Include all firmware for devices like Bluetooth
       hardware.enableRedistributableFirmware = true;
 
+      # Firmware updates
+      services.fwupd.enable = true;
+
       hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
       # 32GB swap file to avoid OOM killer on low-memory workloads.
@@ -24,4 +28,6 @@
         }
       ];
     };
+
+  den.default.includes = [ den.aspects.hardware-baseline ];
 }

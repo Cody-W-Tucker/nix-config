@@ -16,7 +16,7 @@ The goals of this repo are:
 |- flake.nix           # flake inputs + evalModules over modules/ (outputs come from there)
 |- modules/            # the Den tree: hosts, aspects, flake outputs (see modules/README.md)
 |  |- hosts/           # one file per machine (den host + host aspect), hardware in _*-hardware.nix
-|  |- base/ hardware/  # shared baseline aspects
+|  |- nix/ shell/ networking/ observability/ hardware/  # shared feature aspects
 |  |- users/ desktop/ editor/ harness/   # user, desktop, editor and AI-harness aspects
 |  |- services/ server/                  # cross-class services; NAS role and its services
 |  `- flake/           # overlays, packages, checks, formatter
@@ -71,7 +71,7 @@ Shell config, editor config, CLI tools, and user applications usually belong in 
 
 ### Keep custom packages separate from modules
 
-Files that build derivations or wrappers are package definitions, not NixOS modules. Put them in `packages/<name>/package.nix`; the shared overlay exposes each one as `pkgs.<name>` (see `packages/README.md`). Modules that install them, such as `modules/base/scripts.nix`, stay under `modules/`.
+Files that build derivations or wrappers are package definitions, not NixOS modules. Put them in `packages/<name>/package.nix`; the shared overlay exposes each one as `pkgs.<name>` (see `packages/README.md`). Modules that install them, such as `modules/nix/nix.nix`, stay under `modules/`.
 
 ## Naming standards
 

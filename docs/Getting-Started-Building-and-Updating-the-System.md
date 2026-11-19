@@ -18,7 +18,7 @@ To test a configuration without applying it to the bootloader or the running sys
 The repository provides a centralized `update` script to standardize the deployment workflow. It checks imports, commits, builds and switches the current host, and pushes the change.
 
 **Implementation Detail:**
-The `update` script is defined as a `pkgs.writeShellApplication` in [packages/update/package.nix](../packages/update/package.nix) It is automatically included in the system path via the `environment.systemPackages` list in [modules/base/scripts.nix](../modules/base/scripts.nix)
+The `update` script is defined as a `pkgs.writeShellApplication` in [packages/update/package.nix](../packages/update/package.nix) It is automatically included in the system path via the `environment.systemPackages` list in [modules/nix/nix.nix](../modules/nix/nix.nix)
 
 **Workflow Logic:**
 
@@ -109,11 +109,11 @@ CodyOS uses `sops-nix` for secret management. Secrets are encrypted with Age key
 
 To access private resources, such as the `nixos-secrets` repository, the system configures GitHub access tokens via SOPS templates.
 
-**Implementation in `modules/base/nix.nix`:**
+**Implementation in `modules/nix/nix.nix`:**
 
-1. **Secret Declaration:** The system expects a secret named `github-nix-secrets-read`[modules/base/nix.nix](../modules/base/nix.nix)
-2. **Template Generation:** A configuration file `nix-access-tokens.conf` is generated, injecting the decrypted token into a format Nix understands: `access-tokens = github.com=${token}`[modules/base/nix.nix](../modules/base/nix.nix)
-3. **Nix Integration:** The system Nix configuration includes this generated file via `extraOptions`[modules/base/nix.nix](../modules/base/nix.nix)
+1. **Secret Declaration:** The system expects a secret named `github-nix-secrets-read`[modules/nix/nix.nix](../modules/nix/nix.nix)
+2. **Template Generation:** A configuration file `nix-access-tokens.conf` is generated, injecting the decrypted token into a format Nix understands: `access-tokens = github.com=${token}`[modules/nix/nix.nix](../modules/nix/nix.nix)
+3. **Nix Integration:** The system Nix configuration includes this generated file via `extraOptions`[modules/nix/nix.nix](../modules/nix/nix.nix)
 
 ---
 
@@ -136,7 +136,7 @@ A workflow runs on manual dispatch, every Sunday at 00:00 UTC (Saturday at 6:00 
 
 ### Garbage Collection
 
-To prevent the Nix store from consuming excessive disk space, automatic garbage collection is configured at the system level in [modules/base/nix.nix](../modules/base/nix.nix) It is set to run **weekly** and delete any generations older than **7 days**.
+To prevent the Nix store from consuming excessive disk space, automatic garbage collection is configured at the system level in [modules/nix/nix.nix](../modules/nix/nix.nix) It is set to run **weekly** and delete any generations older than **7 days**.
 
 ---
 
@@ -154,7 +154,7 @@ flowchart LR
         FLAKE_LOCK["flake.lock"]
         SOPS_SECRETS["sops.secrets"]
     end
-    subgraph subGraph1 ["Nix Config (modules/base/)"]
+    subgraph subGraph1 ["Nix Config (modules/nix/)"]
         NIX_SETTINGS["nix.nix (Settings)"]
         SYS_PKGS["packages.nix (Base PKGs)"]
     end

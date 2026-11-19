@@ -45,7 +45,6 @@ in
 
   den.aspects.beast = {
     includes = [
-      den.aspects.base
       den.aspects.desktop
       den.aspects.docker
       den.aspects.nvidia
@@ -64,6 +63,7 @@ in
     nixos =
       {
         config,
+        lib,
         pkgs,
         ...
       }:
@@ -86,10 +86,12 @@ in
 
         # ── Nix ─────────────────────────────────────────────────────
         # The NAS pre-builds this host nightly and serves it over Tailscale
-        # (modules/server/binary-cache). Its priority (30) puts it ahead of the public caches.
+        # (modules/server/binary-cache). mkOrder 400 keeps it ahead of the public caches (the shared nix feature uses mkBefore = 500).
         nix.settings = {
-          extra-substituters = [ "http://${site.hosts.nas.tailscale}:5000" ];
-          extra-trusted-public-keys = [ "nas-cache-1:Uy5hdzmlVo4igOUVu0aZSZz6Y97QLF2ly2sJK21wLPg=" ];
+          extra-substituters = lib.mkOrder 400 [ "http://${site.hosts.nas.tailscale}:5000" ];
+          extra-trusted-public-keys = lib.mkOrder 400 [
+            "nas-cache-1:Uy5hdzmlVo4igOUVu0aZSZz6Y97QLF2ly2sJK21wLPg="
+          ];
           # Give up on an unreachable NAS quickly and use the next cache.
           connect-timeout = 5;
         };

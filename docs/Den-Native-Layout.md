@@ -23,9 +23,10 @@ modules/
     _instantiate.nix         # shared nixosSystem wrapper (plain Nix function)
     _beast-hardware.nix, _nas-hardware.nix
     beast.md, nas.md         # host notes
-  base/                      # `base` aspect + one aspect per concern (nix, locale, networking,
-                             #   logging, shell, sops, packages, scripts, overlays, site,
-                             #   home-manager, accounts, core-services)
+  # shared features, each registering itself in den.default.includes:
+  defaults.nix site.nix secrets.nix  # no-feature settings; site facts; sops imports
+  nix/ shell/ networking/ observability/  # nix, shell, networking, logging aspects
+  # (home-manager is in users/home-manager.nix)
   hardware/                  # baseline, nvidia
   users/                     # codyt.nix (account + HM profile) and shared user aspects
   desktop/                   # `desktop` role + one file per feature, both halves together;
@@ -50,7 +51,7 @@ modules/
   declared in `modules/hosts/<h>.nix` and read by aspects through the `host` context argument,
   not by comparing `networking.hostName` strings.
 - **`codyos.site` is the consumer interface** for shared site facts: declared in
-  `modules/base/site.nix`, populated from host attributes, read as `config.codyos.site`
+  `modules/site.nix`, populated from host attributes, read as `config.codyos.site`
   (NixOS) or `osConfig.codyos.site` (Home Manager).
 - **Underscore = not a Den module.** import-tree skips any path containing `/_`. Every `.nix`
   that is not a flake-level module (package.nix, data files, script builders, large single-class
@@ -88,8 +89,8 @@ ordering-only difference. Old paths named in older notes map as follows:
 |---|---|
 | `den/hosts*.nix`, `hosts/<h>/default.nix` | `modules/hosts/<h>.nix` |
 | `hosts/<h>/hardware-configuration.nix`, `hosts/nas/models.nix` | `modules/hosts/_<h>-hardware.nix`, `modules/services/llama-swap/_nas-models.nix` |
-| `den/aspects/*` | dissolved into `base/`, `desktop/`, `server/`, `services/` |
-| `modules/system/*` | `modules/base/*` |
+| `den/aspects/*` | dissolved into the feature dirs, `desktop/`, `server/`, `services/` |
+| `modules/system/*` | `defaults.nix`, `nix/`, `shell/`, `networking/`, `observability/`, `secrets.nix`, `site.nix` |
 | `modules/nas/*` | `modules/server/*` |
 | `users/cody/desktop*` | `modules/desktop/*` |
 | `users/cody/{core,server}.nix` | `modules/users/*` and host `provides.to-users` |

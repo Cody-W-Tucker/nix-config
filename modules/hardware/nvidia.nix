@@ -53,7 +53,7 @@
 
       # Build apps with CUDA support
       nixpkgs.config.cudaSupport = true;
-      # CUDA licences are covered by the global nixpkgs.config.allowUnfree (base/nix.nix).
+      # CUDA licences are covered by the global nixpkgs.config.allowUnfree (modules/nix/nix.nix).
 
       # CUDA binary cache to avoid building from source
       nix.settings = {

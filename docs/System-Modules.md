@@ -1,10 +1,10 @@
 # System Modules
 
-The `modules/base/` directory contains the shared Den aspects (NixOS configuration) applied across all hosts in the CodyOS ecosystem. These modules define the foundational environment, including package manager behavior, core services, security, and networking.
+The the shared feature directories (`modules/nix/`, `modules/shell/`, `modules/networking/`, ...) directory contains the shared Den aspects (NixOS configuration) applied across all hosts in the CodyOS ecosystem. These modules define the foundational environment, including package manager behavior, core services, security, and networking.
 
 ## Overview of System Architecture
 
-The system configuration is designed to be modular, separating concerns like hardware firmware, Nix package manager settings, and background services. By centralizing these in `modules/base/`, the configuration ensures consistency between the `beast` workstation and the `nas` host.
+The system configuration is designed to be modular, separating concerns like hardware firmware, Nix package manager settings, and background services. By centralizing these in the shared feature directories (`modules/nix/`, `modules/shell/`, `modules/networking/`, ...), the configuration ensures consistency between the `beast` workstation and the `nas` host.
 
 ---
 
@@ -38,7 +38,7 @@ The system configuration is further divided into specialized areas covered in th
 
 ### [Base System Configuration](/Cody-W-Tucker/nix-config/3.1-base-system-configuration)
 
-Covers the fundamental environment setup defined by the `base` aspect (`modules/base/base.nix`) and the aspects it includes. This includes locale settings, the global `zsh` shell configuration, and the integration of `sops-nix` for system-level secret decryption. It also details how `home-manager` manages user environments; its NixOS module is added per host in `flake.nix` (unstable for beast, stable for nas).
+Covers the fundamental environment setup defined by the aspects registered in `den.default.includes`. This includes locale settings, the global `zsh` shell configuration, and the integration of `sops-nix` for system-level secret decryption. It also details how `home-manager` manages user environments; its NixOS module is added per host in `flake.nix` (unstable for beast, stable for nas).
 
 ### [Networking and VPN](/Cody-W-Tucker/nix-config/3.2-networking-and-vpn)
 

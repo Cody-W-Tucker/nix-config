@@ -1,3 +1,4 @@
+{ den, ... }:
 {
   # Network security services: hardened OpenSSH, fail2ban, nftables, NetworkManager,
   # Tailscale and the shared Tailscale hostname mapping.
@@ -42,4 +43,6 @@
         ${hosts.beast.tailscale} = [ "beast" ];
       };
     };
+
+  den.default.includes = [ den.aspects.networking ];
 }

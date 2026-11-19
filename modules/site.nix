@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  den,
+  lib,
+  ...
+}:
 let
   inherit (lib) mkOption types;
 
@@ -92,10 +97,12 @@ in
 
         hosts = mkOption {
           type = types.attrsOf hostType;
-          description = "Addresses of the machines in this flake, keyed by hostname (populated from the den host attributes in modules/base/site.nix).";
+          description = "Addresses of the machines in this flake, keyed by hostname (populated from the den host attributes in modules/site.nix).";
         };
       };
 
       config.codyos.site.hosts = lib.mkOptionDefault hostFacts;
     };
+
+  den.default.includes = [ den.aspects.site ];
 }

@@ -26,7 +26,7 @@
     };
   };
 
-  den.aspects.base.includes = [ den.aspects.home-manager ];
+  den.default.includes = [ den.aspects.home-manager ];
 
   # User aspects carry only user-scope content (homeManager, user); anything for the
   # host belongs to a host aspect. Adopt that Den 0.20 behaviour before 2027-01-01.

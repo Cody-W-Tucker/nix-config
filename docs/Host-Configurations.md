@@ -5,7 +5,7 @@ The flake exports exactly two NixOS configurations. They are declared with [Den]
 - `nixosConfigurations.beast` — [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) holds the host, its machine facts and (via [`_beast-hardware.nix`](../modules/hosts/_beast-hardware.nix)) its hardware, with the desktop role and features, against `nixpkgs-unstable` and `home-manager`.
 - `nixosConfigurations.nas` — [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) holds the host, its machine facts and (via [`_nas-hardware.nix`](../modules/hosts/_nas-hardware.nix)) its hardware, with the NAS role, against stable `nixpkgs` and `home-manager-stable`.
 
-Both hosts share foundational modules under [`modules/base/`](../modules/base) (e.g. [`modules/base/base.nix`](../modules/base/base.nix)).
+Both hosts share foundational features that register themselves in `den.default.includes` (e.g. [`modules/nix/nix.nix`](../modules/nix/nix.nix), [`modules/networking/networking.nix`](../modules/networking/networking.nix)).
 
 ## Beast — Desktop Workstation
 
