@@ -1,0 +1,391 @@
+{
+  den.aspects.monitoring.nixos =
+    {
+      config,
+      lib,
+      mkNginxVhost,
+      ...
+    }:
+
+    let
+      inherit (config.codyos.site) domain;
+    in
+    {
+      services = {
+        grafana = {
+          enable = true;
+          provision.enable = true;
+          settings = {
+            analytics.reporting_enabled = false;
+            security.secret_key = "SW2YcwTIb9zpOOhoPsMm"; # no secrets, but 26.05 needs a secret key to start.
+            server = {
+              # Listening Address
+              http_addr = "127.0.0.1";
+              # and Port
+              http_port = 3001;
+              # Grafana needs to know on which domain and URL it's running
+              domain = "monitoring.${domain}";
+              root_url = "https://monitoring.${domain}";
+            };
+          };
+          provision.datasources.settings = {
+            apiVersion = 1;
+            datasources = [
+              {
+                name = "Prometheus";
+                type = "prometheus";
+                url = "http://localhost:${toString config.services.prometheus.port}";
+              }
+              {
+                name = "Tempo";
+                type = "tempo";
+                uid = "tempo";
+                url = "http://localhost:${toString config.services.tempo.settings.server.http_listen_port}";
+              }
+            ];
+          };
+        };
+        prometheus = {
+          enable = true;
+          extraFlags = [ "--web.enable-remote-write-receiver" ];
+          port = 9001;
+          exporters = {
+            # node exporter: modules/observability/logging.nix
+            nginx = {
+              enable = true;
+              port = 9115;
+              scrapeUri = "http://127.0.0.1:9114/nginx_status";
+            };
+            nginxlog = {
+              enable = true;
+              group = "nginx";
+              settings = {
+                consul.enable = false;
+                namespaces = [
+                  {
+                    name = "nginxlog";
+                    format = ''$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'';
+                    source.files = [ "/var/log/nginx/access.log" ];
+                  }
+                ];
+              };
+            };
+            restic = {
+              enable = true;
+              repository = "/mnt/backup/backups/restic";
+              passwordFile = config.sops.secrets."restic-nas-password".path;
+              listenAddress = "127.0.0.1";
+              refreshInterval = 3600;
+              user = "root";
+              group = "root";
+            };
+            zfs = {
+              enable = true;
+              pools = [ "backup" ];
+              listenAddress = "127.0.0.1";
+              port = 9134;
+              user = "root";
+              group = "root";
+              extraFlags = [
+                "--collector.dataset-snapshot"
+                "--properties.dataset-snapshot=creation"
+                "--collector.pool"
+                "--properties.pool=health,allocated,free,size"
+                "--no-collector.dataset-filesystem"
+                "--no-collector.dataset-volume"
+              ];
+            };
+          };
+          scrapeConfigs = [
+            {
+              job_name = "server";
+              static_configs = [
+                {
+                  targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
+                  labels = {
+                    host = "${config.networking.hostName}";
+                  };
+                }
+              ];
+            }
+            {
+              job_name = "client";
+              static_configs = [
+                {
+                  targets = [ "beast:9002" ];
+                  labels = {
+                    host = "beast";
+                  };
+                }
+              ];
+            }
+            {
+              job_name = "smartctl";
+              static_configs = [
+                {
+                  targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.smartctl.port}" ];
+                  labels = {
+                    host = "${config.networking.hostName}";
+                  };
+                }
+                {
+                  targets = [ "beast:9633" ];
+                  labels = {
+                    host = "beast";
+                  };
+                }
+              ];
+            }
+            {
+              job_name = "nvidia-gpu";
+              static_configs = [
+                {
+                  targets = [ "beast:9835" ];
+                  labels = {
+                    host = "beast";
+                  };
+                }
+                {
+                  targets = [ "nas:9835" ];
+                  labels = {
+                    host = "nas";
+                  };
+                }
+              ];
+            }
+            {
+              job_name = "nginx";
+              static_configs = [
+                {
+                  targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.nginx.port}" ];
+                  labels = {
+                    host = "${config.networking.hostName}";
+                  };
+                }
+              ];
+            }
+            {
+              job_name = "nginx-logs";
+              static_configs = [
+                {
+                  targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.nginxlog.port}" ];
+                  labels = {
+                    host = "${config.networking.hostName}";
+                  };
+                }
+              ];
+            }
+            {
+              job_name = "restic";
+              static_configs = [
+                {
+                  targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.restic.port}" ];
+                  labels = {
+                    host = "${config.networking.hostName}";
+                  };
+                }
+              ];
+            }
+            {
+              job_name = "zfs-backup";
+              static_configs = [
+                {
+                  targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}" ];
+                  labels = {
+                    host = "nas";
+                  };
+                }
+              ];
+            }
+          ];
+        };
+        loki = {
+          enable = true;
+          configuration = {
+            auth_enabled = false;
+            server = {
+              http_listen_address = "0.0.0.0";
+              http_listen_port = 3090;
+            };
+
+            common = {
+              path_prefix = config.services.loki.dataDir;
+              storage.filesystem = {
+                chunks_directory = "${config.services.loki.dataDir}/chunks";
+                rules_directory = "${config.services.loki.dataDir}/rules";
+              };
+              replication_factor = 1;
+              ring = {
+                kvstore.store = "inmemory";
+                instance_addr = "127.0.0.1";
+              };
+            };
+
+            ingester = {
+              chunk_encoding = "snappy";
+              lifecycler = {
+                join_after = "0s"; # Added for quicker startup
+              };
+            };
+
+            limits_config = {
+              retention_period = "120h";
+              ingestion_burst_size_mb = 16;
+              reject_old_samples = true;
+              reject_old_samples_max_age = "12h";
+              split_queries_by_interval = "24h";
+            };
+
+            table_manager = {
+              retention_deletes_enabled = true;
+              retention_period = "120h";
+            };
+
+            compactor = {
+              retention_enabled = true;
+              compaction_interval = "10m";
+              working_directory = "${config.services.loki.dataDir}/compactor";
+              delete_request_cancel_period = "10m";
+              retention_delete_delay = "2h";
+              retention_delete_worker_count = 150;
+              delete_request_store = "filesystem";
+            };
+
+            schema_config.configs = [
+              {
+                from = "2024-01-01";
+                store = "tsdb";
+                object_store = "filesystem";
+                schema = "v13";
+                index = {
+                  prefix = "index_";
+                  period = "24h";
+                };
+              }
+            ];
+
+            query_range.cache_results = true;
+          };
+        };
+
+        tempo = {
+          enable = true;
+          settings = {
+            multitenancy_enabled = false;
+            stream_over_http_enabled = true;
+            server = {
+              http_listen_address = "127.0.0.1";
+              http_listen_port = 3200;
+              grpc_listen_port = 9096;
+            };
+            distributor.receivers.otlp.protocols = {
+              grpc.endpoint = "127.0.0.1:4327";
+              http.endpoint = "127.0.0.1:4328";
+            };
+            ingester = {
+              max_block_duration = "5m";
+              lifecycler = {
+                ring = {
+                  kvstore = {
+                    store = "inmemory";
+                  };
+                  replication_factor = 1;
+                };
+              };
+            };
+            memberlist = {
+              bind_addr = [ "127.0.0.1" ];
+              bind_port = 7946;
+            };
+            compactor.compaction = {
+              block_retention = "168h";
+              compacted_block_retention = "1h";
+            };
+            metrics_generator = {
+              ring = {
+                kvstore.store = "inmemory";
+                instance_addr = "127.0.0.1";
+              };
+              processor.local_blocks.filter_server_spans = false;
+              registry.external_labels = {
+                source = "tempo";
+                host = "${config.networking.hostName}";
+              };
+              storage = {
+                path = "/var/lib/tempo/generator/wal";
+                remote_write = [
+                  {
+                    url = "http://127.0.0.1:${toString config.services.prometheus.port}/api/v1/write";
+                    send_exemplars = true;
+                  }
+                ];
+              };
+              traces_storage.path = "/var/lib/tempo/generator/traces";
+            };
+            overrides.defaults.metrics_generator.processors = [
+              "local-blocks"
+              "service-graphs"
+              "span-metrics"
+            ];
+            storage.trace = {
+              backend = "local";
+              wal.path = "/var/lib/tempo/wal";
+              local.path = "/var/lib/tempo/traces";
+            };
+          };
+        };
+
+        # Journal shipping is shared with every host (modules/observability/logging.nix);
+        # the NAS adds its nginx access log.
+        fluent-bit.settings.pipeline = {
+          inputs = [
+            {
+              name = "tail";
+              tag = "nginx.access";
+              path = "/var/log/nginx/access.log";
+              read_from_head = false;
+            }
+          ];
+          outputs = [
+            {
+              name = "loki";
+              match = "nginx.access";
+              host = "127.0.0.1";
+              port = config.services.loki.configuration.server.http_listen_port;
+              labels = "job=nginx-access,host=${config.networking.hostName}";
+              line_format = "json";
+            }
+          ];
+        };
+
+        nginx.virtualHosts = mkNginxVhost {
+          host = "monitoring.${domain}";
+          port = config.services.grafana.settings.server.http_port;
+          proxyWebsockets = true;
+        };
+      };
+
+      # Grant Fluent Bit access to nginx logs; list unit options concatenate with
+      # the module's systemd-journal group.
+      systemd.services.fluent-bit.serviceConfig.SupplementaryGroups = [ "nginx" ];
+
+      # Restic exporter reads /mnt/backup/backups/restic as root; fail closed when storage is absent.
+      systemd.services.prometheus-restic-exporter = {
+        unitConfig = {
+          ConditionPathIsMountPoint = [ "/mnt/backup/backups" ];
+          RequiresMountsFor = [ "/mnt/backup/backups/restic" ];
+        };
+        serviceConfig = {
+          DynamicUser = lib.mkForce false;
+        };
+      };
+
+      systemd.services.prometheus-zfs-exporter.serviceConfig.DynamicUser = lib.mkForce false;
+
+      # Open port 3090 for Loki
+      networking.firewall.allowedTCPPorts = [
+        3090
+        9001
+      ];
+    };
+}

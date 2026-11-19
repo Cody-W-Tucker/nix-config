@@ -66,7 +66,9 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ### Module Structure
 
-- Naming: `modules/{location}/{item}/default.nix` and file.
+- `flake.nix` is inputs plus one `evalModules` over `inputs.den.flakeModule` and `import-tree ./modules`; its `.config.flake` is every flake output. Every non-underscore `.nix` under `modules/` is a flake-level Den module, organized by feature (no machine-role folders or aspects): hosts in `modules/hosts/<host>.nix` (they list the features they want), features in `modules/<feature>/` or a single `modules/<feature>.nix` (`graphical`, `apps`, `audio`, `ai`, `web`, `media`, `sync`, …), and non-host flake outputs (`overlays`, `packages`, `checks`, `formatter`) in `modules/flake/`. Features every host needs register themselves with `den.default.includes` (list them: `grep -rn 'den.default.includes' modules`, or the `nix eval` in `modules/README.md`); cross-host features use nested `den.aspects.<feature>.<side>`; one aspect may span several files. Plain NixOS/Home Manager modules, scripts and data live under `_` paths and are imported by their aspect. See `modules/README.md` and `docs/Den-Native-Layout.md`.
+- No `default.nix` outside `_` paths (`check-imports` enforces it).
+- Naming: new code follows `docs/Den-Native-Layout.md`.
 - Keep `default.nix` short.
   - Use supporting files with self-explaining names if needed.
   - Examples: `module.nix`, `package.nix` and `service.nix`.
@@ -92,7 +94,7 @@ nix eval --json .#nixosConfigurations.<host>.options.networking.firewall.interfa
 nix eval --json .#nixosConfigurations.<host>.config.services.nginx.enable
 
 # Where an option is declared (upstream module or a codyos.* option here)
-nix eval --json .#nixosConfigurations.<host>.options.codyos.docker.enable.declarationPositions
+nix eval --json .#nixosConfigurations.<host>.options.codyos.site.domain.declarationPositions
 
 # Home Manager values for the primary user
 nix eval --json .#nixosConfigurations.<host>.config.home-manager.users.codyt.programs.opencode.settings.small_model
@@ -103,3 +105,4 @@ nix eval --json .#nixosConfigurations.<host>.config.home-manager.users.codyt.pro
 - For attribute-set options (`systemd.services`, `services.nginx.virtualHosts`), query the option itself to list every contributing file, then narrow with the specific attribute under `config`.
 - Values that are derivations or functions do not serialize; select a leaf (`.drvPath`, `.name`) or drop `--json`.
 - New files must be `git add`-ed before these commands can see them.
+- Hosts are assembled by Den, but `nixosConfigurations.<host>` evaluates to an ordinary NixOS system, so every command above is unchanged. Definition locations for options set from an aspect point at the `modules/<area>/*.nix` file that defines the aspect (or at Den-generated modules).

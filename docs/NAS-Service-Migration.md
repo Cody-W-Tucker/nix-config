@@ -14,7 +14,7 @@ Once validated and production traffic is cut over, server is decommissioned — 
 - GPU: RTX 5060 (Blackwell, sm_120a), NVIDIA driver 595.71.05, 8 GB VRAM; 64 GB DDR5-6000 RAM
 - Tailscale: enabled, subnet router advertising `192.168.1.0/24`
 - Docker: docker 29, active (Actual MCP, Hermes agent, Excalidraw)
-- Imports: `modules/system/base.nix`, `modules/nas`, `vpn-confinement` (via input); full service stack under `modules/nas/`
+- Imports: `modules/base/base.nix`, `modules/server`, `vpn-confinement` (via input); full service stack under `modules/server/`
 
 > **Historical note:** Early migration phases (2026-07-14) were executed against a GTX 1650. The GPU was later upgraded to an RTX 5060 (Blackwell). The `models.nix` Blackwell settings (sm_120a CUDA arch) reflect the current hardware.
 

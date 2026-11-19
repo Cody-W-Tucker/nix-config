@@ -4,19 +4,19 @@ This page details the networking architecture of CodyOS, covering system-level s
 
 ## System Networking and Security
 
-CodyOS utilizes a hardened networking stack by default. Base networking configuration is defined in `modules/system/networking.nix` and imported into the base system profile [modules/system/base.nix18](../modules/system/base.nix#L18-L18)
+CodyOS utilizes a hardened networking stack by default. Base networking configuration is defined in `modules/networking/networking.nix` and registered for every host via `den.default.includes`
 
 ### Hardening and Firewall
 
-The system employs `nftables` as the primary firewall backend [modules/system/networking.nix28](../modules/system/networking.nix#L28-L28) SSH access is strictly controlled via `services.openssh`:
+The system employs `nftables` as the primary firewall backend [modules/networking/networking.nix](../modules/networking/networking.nix) SSH access is strictly controlled via `services.openssh`:
 
-- **Authentication**: Password authentication is disabled in favor of SSH keys [modules/system/networking.nix13](../modules/system/networking.nix#L13-L13)
-- **Root Access**: Root login is completely prohibited [modules/system/networking.nix15](../modules/system/networking.nix#L15-L15)
-- **Brute Force Protection**: `fail2ban` is enabled to monitor and block malicious authentication attempts [modules/system/networking.nix25](../modules/system/networking.nix#L25-L25)
+- **Authentication**: Password authentication is disabled in favor of SSH keys [modules/networking/networking.nix](../modules/networking/networking.nix)
+- **Root Access**: Root login is completely prohibited [modules/networking/networking.nix](../modules/networking/networking.nix)
+- **Brute Force Protection**: `fail2ban` is enabled to monitor and block malicious authentication attempts [modules/networking/networking.nix](../modules/networking/networking.nix)
 
 ### Host-Specific Configuration
 
-NetworkManager is enabled for every host in `modules/system/networking.nix`; individual hosts manage their own interface logic. For example, the `nas` host uses a declarative static LAN profile (`Wired connection 1` on `enp6s0` → `192.168.1.2/24`, gateway `192.168.1.1`) instead of DHCP [hosts/nas/default.nix91-110](../hosts/nas/default.nix#L91-L110).
+NetworkManager is enabled for every host in `modules/networking/networking.nix`; individual hosts manage their own interface logic. For example, the `nas` host uses a declarative static LAN profile (`Wired connection 1` on `enp6s0` → `192.168.1.2/24`, gateway `192.168.1.1`) instead of DHCP [modules/hosts/nas.nix](../modules/hosts/nas.nix).
 
 ---
 
@@ -28,8 +28,8 @@ The repository supports two VPN technologies tailored for different use cases: m
 
 Tailscale is used for secure, zero-config point-to-point connectivity between hosts.
 
-- **Implementation**: Enabled for every host via `services.tailscale.enable` in the shared networking module [modules/system/networking.nix37](../modules/system/networking.nix#L37-L37), alongside `networking.networkmanager.enable` [modules/system/networking.nix32](../modules/system/networking.nix#L32-L32)
-- **Host-specific flags**: The `nas` adds subnet-router settings (`useRoutingFeatures = "server"`, `--advertise-routes`, `--accept-dns=false`) in [hosts/nas/default.nix](../hosts/nas/default.nix).
+- **Implementation**: Enabled for every host via `services.tailscale.enable` in the shared networking module [modules/networking/networking.nix](../modules/networking/networking.nix), alongside `networking.networkmanager.enable` [modules/networking/networking.nix](../modules/networking/networking.nix)
+- **Host-specific flags**: The `nas` adds subnet-router settings (`useRoutingFeatures = "server"`, `--advertise-routes`, `--accept-dns=false`) in [modules/hosts/nas.nix](../modules/hosts/nas.nix).
 
 ### Data Flow: VPN Services
 
@@ -40,12 +40,12 @@ The following diagram illustrates how the Tailscale module is integrated into th
 ```mermaid
 flowchart LR
     subgraph HostConfigs
-        NAS["hosts/nas/default.nix"]
-        BEAST["hosts/beast/default.nix"]
+        NAS["modules/hosts/nas.nix"]
+        BEAST["modules/hosts/beast.nix"]
     end
     subgraph SystemModules
-        BASE["modules/system/base.nix"]
-        NET["modules/system/networking.nix (Tailscale, NetworkManager)"]
+        BASE["den.default"]
+        NET["modules/networking/networking.nix (Tailscale, NetworkManager)"]
     end
     BASE --> NET
     NAS --> BASE
@@ -61,7 +61,7 @@ A critical feature of the `nas` host is the isolation of the `transmission` bitt
 
 ### Namespace Configuration
 
-The namespace, named `wg`, is configured with a Wireguard configuration file managed by SOPS [modules/nas/media/transmission.nix](../modules/nas/media/transmission.nix)
+The namespace, named `wg`, is configured with a Wireguard configuration file managed by SOPS [modules/media/transmission.nix](../modules/media/transmission.nix)
 
 | Attribute          | Configuration    | Purpose                                   |
 | ------------------ | ---------------- | ----------------------------------------- |
@@ -81,13 +81,13 @@ The namespace, named `wg`, is configured with a Wireguard configuration file man
 
 The `transmission` service is confined to the `wg` namespace, ensuring its traffic only exits via the Wireguard tunnel.
 
-1. **Namespace Assignment**: The `vpnConfinement` option is applied to the `transmission` systemd service [modules/nas/media/transmission.nix](../modules/nas/media/transmission.nix)
-2. **RPC Binding**: Transmission is configured to bind its RPC/WebUI to `192.168.15.1`, which is the internal address within the namespace [modules/nas/media/transmission.nix](../modules/nas/media/transmission.nix)
-3. **Local Whitelisting**: To allow other services (like Sonarr/Radarr) to communicate with Transmission, the RPC whitelist includes the namespace gateway [modules/nas/media/transmission.nix](../modules/nas/media/transmission.nix)
+1. **Namespace Assignment**: The `vpnConfinement` option is applied to the `transmission` systemd service [modules/media/transmission.nix](../modules/media/transmission.nix)
+2. **RPC Binding**: Transmission is configured to bind its RPC/WebUI to `192.168.15.1`, which is the internal address within the namespace [modules/media/transmission.nix](../modules/media/transmission.nix)
+3. **Local Whitelisting**: To allow other services (like Sonarr/Radarr) to communicate with Transmission, the RPC whitelist includes the namespace gateway [modules/media/transmission.nix](../modules/media/transmission.nix)
 
 ### Service Isolation: Prowlarr and FlareSolverr
 
-The Arr stack — Prowlarr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is confined to the `wg` namespace [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix), so indexer and download-automation traffic exits through the VPN tunnel. FlareSolverr is the exception: it runs on the host network (see below).
+The Arr stack — Prowlarr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is confined to the `wg` namespace [modules/media/arr-stack.nix](../modules/media/arr-stack.nix), so indexer and download-automation traffic exits through the VPN tunnel. FlareSolverr is the exception: it runs on the host network (see below).
 
 - **Host-side access**: Services on the host reach a confined app at the namespace address `192.168.15.1:<port>` — the access path VPN-Confinement provides from the default namespace. Every Arr nginx vhost sets `proxyHost` to this address; ports are derived from each service's NixOS module option (`settings.server.port`, or `services.bazarr.listenPort` for Bazarr; Prowlarr's module has no dedicated `port` option and uses the servarr settings default).
 - **LAN access**: The mapped host ports (see table above) forward LAN clients into the namespace.
@@ -99,7 +99,7 @@ The Arr stack — Prowlarr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is c
 The five Arr applications are confined the same way as Prowlarr, with two consequences for host-side consumers:
 
 - **Host-side consumers** that talk to an Arr app directly (e.g. Jellyseerr → Sonarr/Radarr, Readarr → Calibre content server) must target the namespace address `192.168.15.1:<port>` instead of `127.0.0.1`. Where these addresses are runtime settings stored in the app's database, they must be updated through each app's web UI — they are not managed in this repo.
-- **Nginx vhosts** (`sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, `lidarr.homehub.tv`) keep working because each sets `proxyHost = "192.168.15.1"` [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix).
+- **Nginx vhosts** (`sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, `lidarr.homehub.tv`) keep working because each sets `proxyHost = "192.168.15.1"` [modules/media/arr-stack.nix](../modules/media/arr-stack.nix).
 
 ### Data Flow: Confined Service
 
@@ -149,13 +149,13 @@ The `nas` host acts as a gateway for various services, routing traffic via Nginx
 
 ### ACME and Cloudflare
 
-SSL certificates for `*.homehub.tv` are managed via the `homehub.tv` ACME host [modules/nas/media/default.nix195](../modules/nas/media/default.nix#L195-L195) Nginx is configured with `kTLS` (Kernel TLS) for performance [modules/nas/media/default.nix200](../modules/nas/media/default.nix#L200-L200)
+SSL certificates for `*.homehub.tv` are managed via the `homehub.tv` ACME host [modules/media/media.nix](../modules/media/media.nix) Nginx is configured with `kTLS` (Kernel TLS) for performance [modules/media/media.nix](../modules/media/media.nix)
 
 ### Proxy Configuration
 
 Services are exposed via subdomains. For example:
 
-- **Jellyfin**: `media.homehub.tv` proxies to `127.0.0.1:8096`[modules/nas/media/default.nix193-197](../modules/nas/media/default.nix#L193-L197)
-- **Calibre-Web**: `books.homehub.tv` proxies to `localhost:8083` with specific buffer tuning for Kobo synchronization [modules/nas/media/default.nix211-223](../modules/nas/media/default.nix#L211-L223)
-- **Prowlarr**: `prowlarr.homehub.tv` proxies to `192.168.15.1:9696` (Prowlarr runs in the wg namespace) [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix)
-- **Arr apps**: `sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, and `lidarr.homehub.tv` likewise proxy to `192.168.15.1:<port>` — the whole Arr stack is VPN-confined [modules/nas/media/arr-stack.nix](../modules/nas/media/arr-stack.nix)
+- **Jellyfin**: `media.homehub.tv` proxies to `127.0.0.1:8096`[modules/media/media.nix](../modules/media/media.nix)
+- **Calibre-Web**: `books.homehub.tv` proxies to `localhost:8083` with specific buffer tuning for Kobo synchronization [modules/media/media.nix](../modules/media/media.nix)
+- **Prowlarr**: `prowlarr.homehub.tv` proxies to `192.168.15.1:9696` (Prowlarr runs in the wg namespace) [modules/media/arr-stack.nix](../modules/media/arr-stack.nix)
+- **Arr apps**: `sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, and `lidarr.homehub.tv` likewise proxy to `192.168.15.1:<port>` — the whole Arr stack is VPN-confined [modules/media/arr-stack.nix](../modules/media/arr-stack.nix)

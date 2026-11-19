@@ -102,6 +102,14 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       inputs.home-manager.follows = "home-manager";
     };
+    den = {
+      # Dendritic aspect library; owns nixosConfigurations (see modules/README.md).
+      url = "github:denful/den/v0.20.0";
+    };
+    import-tree = {
+      # Loads every module under modules/ (paths containing `/_` are skipped).
+      url = "github:vic/import-tree";
+    };
     stevenblack = {
       # StevenBlack ads/malware blocklist, consumed directly as the upstream
       # Unbound include via packages.<system>.unbound (a generated local-zone
@@ -111,73 +119,18 @@
     };
   };
 
+  # Every output comes from the Den/flake-level modules under modules/ (paths containing
+  # `/_` are skipped): nixosConfigurations from modules/hosts/, the rest from modules/flake/.
+  # Den also publishes its own `denful` aspect export; it is not part of this flake's API.
   outputs =
-    inputs@{
-      self,
-      nixpkgs-unstable,
-      ...
-    }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs-unstable {
-        inherit system;
-        overlays = [ self.overlays.default ];
-      };
-      specialArgs = {
-        inherit inputs self;
-      };
-    in
-    {
-      # Official NixOS formatter with directory support
-      formatter.x86_64-linux = pkgs.nixfmt-tree;
-
-      # Shared overlay; adds local packages and pkgs.unstable (see overlays/default.nix).
-      overlays.default = import ./overlays { inherit inputs; };
-
-      # Every packages/<name>/ directory, as built by the overlay above.
-      packages.x86_64-linux = builtins.mapAttrs (name: _: pkgs.${name}) (
-        pkgs.lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./packages)
-      );
-
-      # Repository-wide checks; individual checks can also be built by name.
-      # Package and host outputs are evaluated by `nix flake check`, not built.
-      checks.x86_64-linux =
-        let
-          lint =
-            name: tools: command:
-            pkgs.runCommand "check-${name}" { nativeBuildInputs = tools; } ''
-              cd ${self}
-              ${command}
-              touch $out
-            '';
-        in
-        {
-          formatting = lint "formatting" [ pkgs.nixfmt pkgs.findutils ] ''
-            find . -name '*.nix' -type f -print0 | xargs -0 nixfmt --check
-          '';
-          statix = lint "statix" [ pkgs.statix ] "statix check --config statix.toml .";
-          deadnix = lint "deadnix" [
-            pkgs.deadnix
-          ] "deadnix --fail --no-lambda-arg --no-lambda-pattern-names .";
-          imports = lint "imports" [ pkgs.check-imports ] "check-imports .";
-        };
-
-      # Builds the different systems
-      nixosConfigurations = {
-        beast = inputs.nixpkgs-unstable.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = [
-            inputs.home-manager.nixosModules.home-manager
-            ./hosts/beast
-          ];
-        };
-        nas = inputs.nixpkgs.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = [
-            inputs.home-manager-stable.nixosModules.home-manager
-            ./hosts/nas
-          ];
-        };
-      };
-    };
+    inputs:
+    removeAttrs
+      (inputs.nixpkgs.lib.evalModules {
+        modules = [
+          inputs.den.flakeModule
+          (inputs.import-tree ./modules)
+        ];
+        specialArgs = { inherit inputs; };
+      }).config.flake
+      [ "denful" ];
 }

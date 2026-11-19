@@ -16,13 +16,24 @@ writeShellApplication {
   ];
   text = ''
     # Check for missing module imports in Nix configurations
-    # This script validates that all .nix files in directories with default.nix are properly imported
+    # This script validates that all .nix files in directories with default.nix are properly imported,
+    # and that no default.nix exists under modules/ outside `_` paths.
 
     set -euo pipefail
 
     # Defaults to the live repo; `nix flake check` passes the flake source.
     cd "''${1:-/etc/nixos}"
     error_count=0
+
+    # Den layout rule: every non-underscore .nix under modules/ is loaded by import-tree as a
+    # flake-level module, so a default.nix there is always a mistake (plain NixOS/Home Manager
+    # module trees live under `_` paths, where import-tree does not look).
+    if [[ -d modules ]]; then
+      while IFS= read -r stray; do
+        echo "Error: $stray is a default.nix outside a '_' path under modules/"
+        error_count=$((error_count + 1))
+      done < <(find modules -type f -name default.nix ! -path '*/_*' | sort)
+    fi
 
     # Find all default.nix files in the project
     mapfile -t defaults < <(find . -type f -name default.nix)

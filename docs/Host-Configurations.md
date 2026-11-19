@@ -1,24 +1,24 @@
 # Host Configurations
 
-The flake exports exactly two NixOS configurations, defined in [`flake.nix`](../flake.nix):
+The flake exports exactly two NixOS configurations. They are declared with [Den](https://github.com/denful/den) as flake-level modules under [`modules/hosts/`](../modules/hosts) (see [`modules/README.md`](../modules/README.md) and [`Den-Native-Layout.md`](Den-Native-Layout.md)); [`flake.nix`](../flake.nix) loads `modules/` with import-tree and exposes the result as the flake outputs:
 
-- `nixosConfigurations.beast` — evaluates [`hosts/beast`](../hosts/beast) against `nixpkgs-unstable`.
-- `nixosConfigurations.nas` — evaluates [`hosts/nas`](../hosts/nas) against stable `nixpkgs`, with `home-manager-stable`'s NixOS module in its module list (beast gets `home-manager`'s the same way).
+- `nixosConfigurations.beast` — [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) holds the host, its machine facts and (via [`_beast-hardware.nix`](../modules/hosts/_beast-hardware.nix)) its hardware, with the workstation features (`graphical`, `apps`, audio, gaming, …), against `nixpkgs-unstable` and `home-manager`.
+- `nixosConfigurations.nas` — [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) holds the host, its machine facts and (via [`_nas-hardware.nix`](../modules/hosts/_nas-hardware.nix)) its hardware, with the NAS service features, against stable `nixpkgs` and `home-manager-stable`.
 
-Both hosts share foundational modules under [`modules/system/`](../modules/system) (e.g. [`modules/system/base.nix`](../modules/system/base.nix)).
+Both hosts share foundational features that register themselves in `den.default.includes` (e.g. [`modules/nix/nix.nix`](../modules/nix/nix.nix), [`modules/networking/networking.nix`](../modules/networking/networking.nix)).
 
 ## Beast — Desktop Workstation
 
-- **Composition root:** [`hosts/beast/default.nix`](../hosts/beast/default.nix).
+- **Composition root:** [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) (den host entry, aspect includes and machine facts); hardware in [`_beast-hardware.nix`](../modules/hosts/_beast-hardware.nix); notes in [`modules/hosts/beast.md`](../modules/hosts/beast.md).
 - **Channel:** `nixpkgs-unstable` (see [`flake.nix`](../flake.nix)).
-- **Role:** Development, gaming, and local AI workloads.
+- **Purpose:** Development, gaming, and local AI workloads.
 
 ## NAS — Home Lab Server
 
-- **Composition root:** [`hosts/nas/default.nix`](../hosts/nas/default.nix), with host-local [`hosts/nas/models.nix`](../hosts/nas/models.nix).
-- **Host documentation:** [`hosts/nas/README.md`](../hosts/nas/README.md) — hardware profile, storage layout, networking, services, ZFS pool health.
+- **Composition root:** [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) (den host entry, aspect includes and machine facts); hardware in [`_nas-hardware.nix`](../modules/hosts/_nas-hardware.nix); the model catalog is [`modules/ai/llama-swap/_nas-models.nix`](../modules/ai/llama-swap/_nas-models.nix).
+- **Host documentation:** [`modules/hosts/nas.md`](../modules/hosts/nas.md) — hardware profile, storage layout, networking, services, ZFS pool health.
 - **Channel:** stable `nixpkgs` (`nixos-26.05`), paired with `home-manager-stable` (`release-26.05`).
-- **Role:** Central services host for the `homehub.tv` infrastructure. NAS service modules live under [`modules/nas/`](../modules/nas).
+- **Purpose:** Central services host for the `homehub.tv` infrastructure. Service aspects live in feature directories (`modules/web/`, `modules/feeds/`, `modules/observability/`, `modules/backups/`, `modules/ai/`, `modules/documents/`, `modules/media/`), all included by `modules/hosts/nas.nix`.
 
 ### Backup and snapshot health
 
@@ -32,5 +32,5 @@ Both hosts share foundational modules under [`modules/system/`](../modules/syste
 | ------------------- | ------------------------------------------------ | ---------------------------------------------------- |
 | **Nixpkgs channel** | `nixos-unstable`                                 | `nixos-26.05` (stable)                               |
 | **Home Manager**    | `home-manager` (unstable)                        | `home-manager-stable` (`release-26.05`)              |
-| **Composition root**| [`hosts/beast/default.nix`](../hosts/beast/default.nix) | [`hosts/nas/default.nix`](../hosts/nas/default.nix)  |
-| **Module scope**    | Desktop + AI modules under `modules/`            | NAS service modules under [`modules/nas/`](../modules/nas) |
+| **Composition root**| [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) | [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) |
+| **Module scope**    | `graphical` and `apps` aspects ([`modules/graphical/`](../modules/graphical), [`modules/apps/`](../modules/apps)), audio, gaming, AI client features | feature aspects included directly by [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) |

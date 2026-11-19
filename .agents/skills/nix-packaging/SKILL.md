@@ -30,7 +30,7 @@ packages/
     ...              # Helper files it needs (package-lock.json, patches)
 ```
 
-Do not add a `default.nix` wrapper. `overlays/default.nix` discovers every `packages/<name>/package.nix` with `lib.packagesFromDirectoryRecursive`, and `flake.nix` exports the same set as `packages.x86_64-linux`, so there is no list to maintain. The directory name becomes the attribute name, so check it does not shadow an existing nixpkgs package.
+Do not add a `default.nix` wrapper. `modules/flake/_overlay.nix` discovers every `packages/<name>/package.nix` with `lib.packagesFromDirectoryRecursive`, and `modules/flake/packages.nix` exports the same set as `packages.x86_64-linux`, so there is no list to maintain. The directory name becomes the attribute name, so check it does not shadow an existing nixpkgs package.
 
 ### `package.nix` template
 

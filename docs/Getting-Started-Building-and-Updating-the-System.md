@@ -18,7 +18,7 @@ To test a configuration without applying it to the bootloader or the running sys
 The repository provides a centralized `update` script to standardize the deployment workflow. It checks imports, commits, builds and switches the current host, and pushes the change.
 
 **Implementation Detail:**
-The `update` script is defined as a `pkgs.writeShellApplication` in [packages/update/package.nix](../packages/update/package.nix) It is automatically included in the system path via the `environment.systemPackages` list in [modules/system/scripts.nix](../modules/system/scripts.nix)
+The `update` script is defined as a `pkgs.writeShellApplication` in [packages/update/package.nix](../packages/update/package.nix) It is automatically included in the system path via the `environment.systemPackages` list in [modules/nix/nix.nix](../modules/nix/nix.nix)
 
 **Workflow Logic:**
 
@@ -40,11 +40,11 @@ Use native `sudo nixos-rebuild test --flake .#<host>` to build and activate the 
 
 ### NAS Binary Cache and Nightly Builds
 
-The NAS serves its store as a signed binary cache (Harmonia, port 5000, Tailscale only) and pre-builds every host at about 03:00 from GitHub `main` [modules/nas/binary-cache](../modules/nas/binary-cache/default.nix). Beast lists it as its first substituter, so after a nightly run `update` on beast downloads over the LAN instead of compiling. The same job switches the NAS to `main` and also builds the pending `update/flake-lock` PR branch (build only), so merging that PR is already cached.
+The NAS serves its store as a signed binary cache (Harmonia, port 5000, Tailscale only) and pre-builds every host at about 03:00 from GitHub `main` [modules/nix/binary-cache.nix](../modules/nix/binary-cache.nix). Beast lists it as its first substituter, so after a nightly run `update` on beast downloads over the LAN instead of compiling. The same job switches the NAS to `main` and also builds the pending `update/flake-lock` PR branch (build only), so merging that PR is already cached.
 
 - Builds are GC-rooted under `/nix/var/nix/gcroots/nightly-build`.
 - Run it now: `sudo systemctl start nightly-build` on the NAS; logs via `journalctl -u nightly-build`.
-- The signing key is the sops secret `nas-cache-signing-key`; its public half is pinned in [hosts/beast/default.nix](../hosts/beast/default.nix).
+- The signing key is the sops secret `nas-cache-signing-key`; its public half is pinned in [modules/hosts/beast.nix](../modules/hosts/beast.nix).
 - Because the nightly switch follows GitHub `main`, uncommitted edits made directly on the NAS are not deployed by it.
 
 ### Related Operator Shortcuts
@@ -64,10 +64,11 @@ A common failure mode in Nix flakes is adding a new `.nix` file to a directory b
 
 ### Validation Logic
 
-The script performs two primary checks:
+The script performs three checks:
 
 1. **Orphaned Files:** It finds all `.nix` files in a directory containing a `default.nix` and verifies they are referenced in that `default.nix`[packages/check-imports/package.nix](../packages/check-imports/package.nix)
 2. **Broken Links:** It verifies that every relative import (e.g., `./module.nix`) in a `default.nix` actually points to an existing file [packages/check-imports/package.nix](../packages/check-imports/package.nix)
+3. **Den layout:** Under `modules/`, a `default.nix` outside a `_` path is an error: every non-underscore `.nix` there is a flake-level Den module (see [Den-Native-Layout.md](Den-Native-Layout.md)). The first two checks therefore matter inside `_` subtrees that still use `default.nix`.
 
 ### Technical Implementation
 
@@ -108,11 +109,11 @@ CodyOS uses `sops-nix` for secret management. Secrets are encrypted with Age key
 
 To access private resources, such as the `nixos-secrets` repository, the system configures GitHub access tokens via SOPS templates.
 
-**Implementation in `modules/system/nix.nix`:**
+**Implementation in `modules/nix/nix.nix`:**
 
-1. **Secret Declaration:** The system expects a secret named `github-nix-secrets-read`[modules/system/nix.nix8](../modules/system/nix.nix#L8-L8)
-2. **Template Generation:** A configuration file `nix-access-tokens.conf` is generated, injecting the decrypted token into a format Nix understands: `access-tokens = github.com=${token}`[modules/system/nix.nix9-16](../modules/system/nix.nix#L9-L16)
-3. **Nix Integration:** The system Nix configuration includes this generated file via `extraOptions`[modules/system/nix.nix19-21](../modules/system/nix.nix#L19-L21)
+1. **Secret Declaration:** The system expects a secret named `github-nix-secrets-read`[modules/nix/nix.nix](../modules/nix/nix.nix)
+2. **Template Generation:** A configuration file `nix-access-tokens.conf` is generated, injecting the decrypted token into a format Nix understands: `access-tokens = github.com=${token}`[modules/nix/nix.nix](../modules/nix/nix.nix)
+3. **Nix Integration:** The system Nix configuration includes this generated file via `extraOptions`[modules/nix/nix.nix](../modules/nix/nix.nix)
 
 ---
 
@@ -135,7 +136,7 @@ A workflow runs on manual dispatch, every Sunday at 00:00 UTC (Saturday at 6:00 
 
 ### Garbage Collection
 
-To prevent the Nix store from consuming excessive disk space, automatic garbage collection is configured at the system level in [modules/system/nix.nix37-41](../modules/system/nix.nix#L37-L41) It is set to run **weekly** and delete any generations older than **7 days**.
+To prevent the Nix store from consuming excessive disk space, automatic garbage collection is configured at the system level in [modules/nix/nix.nix](../modules/nix/nix.nix) It is set to run **weekly** and delete any generations older than **7 days**.
 
 ---
 
@@ -153,7 +154,7 @@ flowchart LR
         FLAKE_LOCK["flake.lock"]
         SOPS_SECRETS["sops.secrets"]
     end
-    subgraph subGraph1 ["Nix Config (modules/system/)"]
+    subgraph subGraph1 ["Nix Config (modules/nix/)"]
         NIX_SETTINGS["nix.nix (Settings)"]
         SYS_PKGS["packages.nix (Base PKGs)"]
     end

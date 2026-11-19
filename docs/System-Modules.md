@@ -1,16 +1,16 @@
 # System Modules
 
-The `modules/system/` directory contains the shared NixOS configurations applied across all hosts in the CodyOS ecosystem. These modules define the foundational environment, including package manager behavior, core services, security, and networking.
+The shared feature directories (`modules/nix/`, `modules/shell/`, `modules/networking/`, ...) directory contains the shared Den aspects (NixOS configuration) applied across all hosts in the CodyOS ecosystem. These modules define the foundational environment, including package manager behavior, core services, security, and networking.
 
 ## Overview of System Architecture
 
-The system configuration is designed to be modular, separating concerns like hardware firmware, Nix package manager settings, and background services. By centralizing these in `modules/system/`, the configuration ensures consistency between the `beast` workstation and the `nas` host.
+The system configuration is designed to be modular, separating concerns like hardware firmware, Nix package manager settings, and background services. By centralizing these in the shared feature directories (`modules/nix/`, `modules/shell/`, `modules/networking/`, ...), the configuration ensures consistency between the `beast` workstation and the `nas` host.
 
 ---
 
 ## Nix Package Manager Configuration
 
-The `nix.nix` module manages the behavior of the Nix daemon and package fetching. It enforces the use of **Flakes** and ensures the system remains performant through automated maintenance.
+The `nix` aspect (`nix.nix`) manages the behavior of the Nix daemon and package fetching. It enforces the use of **Flakes** and ensures the system remains performant through automated maintenance.
 
 | Feature                   | Implementation            | Purpose                                                  |
 | ------------------------- | ------------------------- | -------------------------------------------------------- |
@@ -24,7 +24,7 @@ The `nix.nix` module manages the behavior of the Nix daemon and package fetching
 
 ## Core System Services
 
-Shared services are defined in `services.nix`, focusing on hardware health, firmware integrity, and CLI usability.
+Shared services are defined in `core-services.nix`, focusing on hardware health, firmware integrity, and CLI usability.
 
 - **Firmware Management**: The system enables `hardware.enableRedistributableFirmware` and uses `fwupd` for device firmware updates. The upstream `fwupd-refresh` service and its polkit permissions handle background refreshes.
 - **Hardware Monitoring**: The `prometheus.exporters.smartctl` service is enabled globally to expose storage health metrics for the monitoring stack.
@@ -38,7 +38,7 @@ The system configuration is further divided into specialized areas covered in th
 
 ### [Base System Configuration](/Cody-W-Tucker/nix-config/3.1-base-system-configuration)
 
-Covers the fundamental environment setup defined in `modules/system/base.nix`. This includes locale settings, the global `zsh` shell configuration, and the integration of `sops-nix` for system-level secret decryption. It also details how `home-manager` manages user environments; its NixOS module is added per host in `flake.nix` (unstable for beast, stable for nas).
+Covers the fundamental environment setup defined by the aspects registered in `den.default.includes`. This includes locale settings, the global `zsh` shell configuration, and the integration of `sops-nix` for system-level secret decryption. It also details how `home-manager` manages user environments; its NixOS module is added per host in `flake.nix` (unstable for beast, stable for nas).
 
 ### [Networking and VPN](/Cody-W-Tucker/nix-config/3.2-networking-and-vpn)
 
@@ -57,12 +57,12 @@ flowchart LR
     OUT_B["Beast Generation"]
     OUT_N["NAS Generation"]
     subgraph subGraph1 ["Host Definitions"]
-        H_BEAST["hosts/beast/default.nix"]
-        H_NAS["hosts/nas/default.nix"]
+        H_BEAST["modules/hosts/beast.nix"]
+        H_NAS["modules/hosts/nas.nix"]
     end
     subgraph subGraph0 ["Shared Modules"]
         M_NIX["nix.nix"]
-        M_SVC["services.nix"]
+        M_SVC["core-services.nix"]
         M_BASE["base.nix"]
     end
     M_NIX --> H_BEAST
