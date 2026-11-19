@@ -1,5 +1,5 @@
 {
-  # Apply the flake's shared overlay (see overlays/default.nix).
+  # Apply the flake's shared overlay (see modules/flake/_overlay.nix).
   den.aspects.overlays.nixos =
     { self, ... }:
     {

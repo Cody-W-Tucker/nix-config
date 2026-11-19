@@ -2,7 +2,7 @@
 
 This directory is a Home Manager wrapper around
 `inputs.hermes-agent.homeManagerModules.default`, imported by
-`hosts/nas/default.nix` into `home-manager.users.codyt`.
+the `hermes-agent` aspect (`hermes-agent.nix`, included from `modules/hosts/nas.nix`) into `home-manager.users.codyt`.
 
 Treat it like an integration layer, not a standalone app.
 

@@ -13,45 +13,47 @@ The goals of this repo are:
 
 ```text
 .
-|- flake.nix           # flake inputs and host wiring
-|- hosts/              # machine-specific config
-|- modules/            # reusable NixOS modules
-|- cody/               # Home Manager config for the primary user
-|- secrets/            # SOPS declarations and encrypted secrets
-|- .agents/            # internal agent/reference docs
-`- README.md           # notes for bringing up a new machine
+|- flake.nix           # flake inputs + evalModules over modules/ (outputs come from there)
+|- modules/            # the Den tree: hosts, aspects, flake outputs (see modules/README.md)
+|  |- hosts/           # one file per machine (den host + host aspect), hardware in _*-hardware.nix
+|  |- base/ hardware/  # shared baseline aspects
+|  |- users/ desktop/ editor/ harness/   # user, desktop, editor and AI-harness aspects
+|  |- services/ server/                  # cross-class services; NAS role and its services
+|  `- flake/           # overlays, packages, checks, formatter
+|- packages/           # custom packages (package.nix each), exposed by the overlay
+|- docs/               # operator notes and reference
+`- .agents/            # internal agent/reference docs
 ```
+
+The layout and conventions are described in `docs/Den-Native-Layout.md`.
 
 ## Hosts in this repo
 
-- `beast` - desktop workstation
-- `server` - media and homelab server (decommissioned; replaced by NAS)
+- `beast` - desktop workstation (nixpkgs-unstable)
+- `nas` - media and homelab server (stable nixpkgs)
 
 ## Core principles
 
 ### Keep host files thin
 
-Files in `hosts/` should mostly contain:
+`modules/hosts/<host>.nix` should mostly contain:
 
-- machine imports
-- boot and kernel settings
-- disks, mounts, and swap
-- hostname and machine networking
-- hardware-specific overrides
-- small host-only package additions
-- `system.stateVersion`
+- the `den.hosts` entry (channel pairing, host facts)
+- the aspect includes that select roles and features
+- machine facts in the host aspect's `nixos` block: boot and kernel settings, mounts, hostname and machine networking, hardware-specific overrides
+- `system.stateVersion` and `home.stateVersion`
 
-Do not put large reusable service definitions directly in a host file unless they are truly one-off to that machine.
+Hardware config lives in `modules/hosts/_<host>-hardware.nix`. Do not put large reusable service definitions in a host file unless they are truly one-off to that machine.
 
 ### Keep modules single-purpose
 
-Files in `modules/` should each own one feature, service, or tightly related concern.
+Aspect files in `modules/` should each own one feature, service, or tightly related concern.
 
 Good examples:
 
-- one service module such as `paperless.nix`
-- one hardware module such as `nvidia.nix`
-- one desktop feature such as `printing.nix`
+- one service aspect such as `modules/server/paperless.nix`
+- one hardware aspect such as `modules/hardware/nvidia.nix`
+- one desktop feature such as `modules/desktop/printing.nix`
 
 Bad examples:
 
@@ -59,18 +61,17 @@ Bad examples:
 - `extra.nix`
 - large modules that configure many unrelated features
 
-### Separate system config from user config
+### System and user config in one aspect
 
-- `modules/` and `hosts/` are for NixOS system configuration
-- `cody/` is for Home Manager user configuration
+An aspect file can carry both halves of a feature: `nixos` for system config and `homeManager` for the user's Home Manager config. Put each half in the class where it belongs.
 
-System services, filesystems, firewall rules, and hardware belong in NixOS.
+System services, filesystems, firewall rules, and hardware belong in `nixos`.
 
-Shell config, editor config, CLI tools, and user applications usually belong in Home Manager.
+Shell config, editor config, CLI tools, and user applications usually belong in `homeManager`.
 
 ### Keep custom packages separate from modules
 
-Files that build derivations or wrappers are package definitions, not NixOS modules. Put them in `packages/<name>/package.nix`; the shared overlay exposes each one as `pkgs.<name>` (see `packages/README.md`). Modules that install them, such as `modules/system/scripts.nix`, stay under `modules/`.
+Files that build derivations or wrappers are package definitions, not NixOS modules. Put them in `packages/<name>/package.nix`; the shared overlay exposes each one as `pkgs.<name>` (see `packages/README.md`). Modules that install them, such as `modules/base/scripts.nix`, stay under `modules/`.
 
 ## Naming standards
 
@@ -90,62 +91,38 @@ Avoid:
 
 Additional naming rules:
 
-- host files should match the hostname when practical
-- module names should match the feature or service they configure
-- importable directories should use `default.nix`
+- host files should match the hostname (`modules/hosts/<host>.nix`)
+- aspect names and file names should match the feature or service they configure
+- no `default.nix` outside `_` paths under `modules/` (enforced by `check-imports`); plain module trees under `_` paths may use a short `default.nix` spine
 - secret keys should be descriptive, for example `sops.secrets."paperless-password"`
 
 ## What belongs in each kind of file
 
 ### `flake.nix`
 
-Keep `flake.nix` focused on wiring:
+`flake.nix` holds only the inputs and the `evalModules` call that loads `modules/`. Flake outputs (`overlays`, `packages`, `checks`, `formatter`) are defined in `modules/flake/`, and `nixosConfigurations` come from `modules/hosts/`. Do not put logic in `flake.nix`.
 
-- flake inputs
-- shared package imports
-- `nixosConfigurations`
-- formatter and checks
-
-Avoid putting detailed service logic in `flake.nix`.
-
-### `hosts/*.nix`
+### `modules/hosts/*.nix`
 
 Expected contents:
 
-- imports of reusable modules
-- bootloader and initrd settings
-- filesystems and swap
-- hostname
-- hardware-specific settings
-- machine-local overrides
-- host `system.stateVersion`
+- the `den.hosts` entry and host aspect (includes, `provides.to-users.homeManager`)
+- machine facts: bootloader and initrd settings, filesystems and swap, hostname, hardware-specific settings, machine-local overrides
+- host `system.stateVersion` and `home.stateVersion`
 
-### `modules/**/*.nix`
+### `modules/**/*.nix` (outside `_` paths)
 
-Expected contents:
+Expected contents: a flake-level Den module defining `den.aspects.<name>` (or `flake.*` outputs in `modules/flake/`):
 
-- reusable NixOS config
-- service definitions
-- firewall rules related to that feature
-- nginx virtual hosts related to that feature
+- reusable NixOS config (`nixos`) and user config (`homeManager`)
+- service definitions, with firewall rules and nginx virtual hosts related to that feature
 - secrets declarations close to where they are used
 
 If a service exposes a port, prefer a local `let` binding when it makes the module easier to read.
 
-### `cody/**/*.nix`
+### `_`-prefixed files and directories
 
-Expected contents:
-
-- `home.packages`
-- `programs.*` configuration
-- shell aliases and session variables
-- user desktop configuration
-- user theming and editor setup
-- `home.stateVersion`
-
-### `default.nix`
-
-Prefer using `default.nix` as a simple import aggregator.
+Plain NixOS/Home Manager modules, package definitions, scripts and data. import-tree ignores them; the owning aspect imports them. A `default.nix` is only allowed here and should stay a simple import aggregator.
 
 Example:
 
@@ -230,8 +207,8 @@ If only one host uses it and the logic is simple, direct configuration is usuall
 
 ### Keep `stateVersion` local
 
-- `system.stateVersion` belongs in the host file
-- `home.stateVersion` belongs in the Home Manager user config
+- `system.stateVersion` belongs in the host aspect (`modules/hosts/<host>.nix`)
+- `home.stateVersion` belongs in the host's `provides.to-users.homeManager`
 
 Do not centralize these in a shared module.
 
@@ -286,22 +263,18 @@ When changing a service or host module, prefer a host build over relying only on
 
 ### Add a new service
 
-1. Create a new module in the appropriate category under `modules/`
+1. Create `modules/<area>/<service>.nix` defining `den.aspects.<service>` (for NAS services, `modules/server/<service>.nix`)
 2. Add secrets next to the service if needed
-3. Add nginx or firewall config in the same module when it is specific to that service
-4. Import the module through the relevant `default.nix` or host
-5. Enable or wire it in the target host
-6. Build the target host
+3. Add nginx or firewall config in the same file when it is specific to that service
+4. Include the aspect from a role or host aspect (`modules/server/server.nix`, `modules/hosts/<host>.nix`)
+5. `git add` the file and build the target host
 
 ### Add a new host
 
-1. Create a new file under `hosts/` named for the hostname
-2. Import shared modules and hardware modules
-3. Add filesystems, boot config, hostname, and host overrides
-4. Set a host-local `system.stateVersion`
-5. Register the host in `flake.nix`
-6. Build that host with `nixos-rebuild build --flake .#<host>`
-7. Update SOPS keys if the machine needs secrets
+1. Follow `modules/README.md` (Adding a host): `modules/hosts/<host>.nix` plus `_<host>-hardware.nix`
+2. Set host-local `system.stateVersion` and the host's `home.stateVersion`
+3. Build that host with `nixos-rebuild build --flake .#<host>`
+4. Update SOPS keys if the machine needs secrets
 
 ## Review checklist
 

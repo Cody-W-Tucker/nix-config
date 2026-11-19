@@ -86,7 +86,7 @@ in
 
         # ── Nix ─────────────────────────────────────────────────────
         # The NAS pre-builds this host nightly and serves it over Tailscale
-        # (modules/nas/binary-cache). Its priority (30) puts it ahead of the public caches.
+        # (modules/server/binary-cache). Its priority (30) puts it ahead of the public caches.
         nix.settings = {
           extra-substituters = [ "http://${site.hosts.nas.tailscale}:5000" ];
           extra-trusted-public-keys = [ "nas-cache-1:Uy5hdzmlVo4igOUVu0aZSZz6Y97QLF2ly2sJK21wLPg=" ];

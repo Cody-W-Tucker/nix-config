@@ -20,7 +20,7 @@ tools do not accept a bank parameter, so project-bank routing for Hermes is not
 configured.
 
 OpenCode and Claude Code auto-retain conversation text after turns and
-auto-recall on every prompt through `users/cody/harness/plugins/hindsight`. The
+auto-recall on every prompt through `modules/harness/_hm/plugins/hindsight`. The
 project bank is chosen by directory:
 
 - `/etc/nixos` uses `codyos`

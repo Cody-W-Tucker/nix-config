@@ -2,7 +2,7 @@
 
 This page details the Speech-to-Text (STT) and Text-to-Speech (TTS) infrastructure within CodyOS. The system provides a unified pipeline for voice interaction, ranging from low-latency desktop dictation to a complex, VAD-enabled voice assistant integrated into the Waybar status bar. These services leverage local inference via `llama-swap` to provide OpenAI-compatible APIs for transcription and speech synthesis.
 
-For navigation: Cody's Home Manager desktop role is entered through `users/cody/desktop.nix`, which imports `users/cody/desktop/`; the speech-specific implementation lives under that desktop directory [users/cody/desktop.nix9-13](../users/cody/desktop.nix#L9-L13)
+For navigation: the desktop speech pieces are the `speech-to-text` aspect ([modules/desktop/speech-to-text.nix](../modules/desktop/speech-to-text.nix), script in [`_speech-to-text.nix`](../modules/desktop/_speech-to-text.nix)) and the Waybar voice client under [`modules/desktop/_waybar/`](../modules/desktop/_waybar)
 
 ## Public Audio API
 
@@ -32,7 +32,7 @@ The speech pipeline is built on three primary server-side components and two cli
 
 ### Parakeet (sherpa-onnx) Server
 
-The primary transcription backend, `parakeet-tdt-v3`, is an OpenAI-compatible FastAPI server ([modules/services/llama-swap/sherpa-onnx-openai-server.py](../modules/services/llama-swap/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves the sherpa-onnx int8 export of NVIDIA Parakeet TDT 0.6B v3. `hosts/nas/models.nix` pins the model files to a Hugging Face commit and passes them in through `services.llama-swap.parakeetModel`.
+The primary transcription backend, `parakeet-tdt-v3`, is an OpenAI-compatible FastAPI server ([modules/services/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/services/llama-swap/_impl/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves the sherpa-onnx int8 export of NVIDIA Parakeet TDT 0.6B v3. `modules/services/llama-swap/_nas-models.nix` pins the model files to a Hugging Face commit and passes them in through `services.llama-swap.parakeetModel`.
 
 - **Provider**: CUDA, with 4 CPU threads for supporting work. The CUDA provider was tested on the NAS's RTX 5060; actual memory use alongside the other audio models should be monitored.
 - **Audio input**: Every upload is decoded with ffmpeg to 16 kHz mono, so WAV, Ogg/Opus, MP3, and M4A all work. Audio longer than 120 s is split at the quietest 100 ms frame near each boundary.
@@ -150,18 +150,18 @@ curl -s http://nas:8081/v1/audio/transcriptions \
 
 ### llama-dictate
 
-`llama-dictate` is a desktop utility that provides global "hold-to-talk" functionality. It is bound to `SUPER+Escape` in Hyprland [users/cody/desktop/hyprland/settings.nix82-86](../users/cody/desktop/hyprland/settings.nix#L82-L86)
+`llama-dictate` is a desktop utility that provides global "hold-to-talk" functionality. It is bound to `SUPER+Escape` in Hyprland [modules/desktop/_hyprland/settings.nix](../modules/desktop/_hyprland/settings.nix)
 
-- **Mechanism**: On `start`, it triggers a "warmup" request to ensure the model is loaded in `llama-swap` and begins recording via `pw-record`[users/cody/desktop/speech-to-text.nix201-211](../users/cody/desktop/speech-to-text.nix#L201-L211) On `stop`, it kills the recorder, sends the WAV file to the local API, and pipes the resulting text into `wtype` to simulate keyboard input [users/cody/desktop/speech-to-text.nix168-196](../users/cody/desktop/speech-to-text.nix#L168-L196)
+- **Mechanism**: On `start`, it triggers a "warmup" request to ensure the model is loaded in `llama-swap` and begins recording via `pw-record`[modules/desktop/_speech-to-text.nix](../modules/desktop/_speech-to-text.nix) On `stop`, it kills the recorder, sends the WAV file to the local API, and pipes the resulting text into `wtype` to simulate keyboard input [modules/desktop/_speech-to-text.nix](../modules/desktop/_speech-to-text.nix)
 
 ## Text-to-Speech Services
 
 ### Kokoro TTS Server
 
-The system uses Kokoro-82M for high-performance speech synthesis. The server includes a `_install_local_voice_provider` function that patches `huggingface_hub` to serve model weights and voice assets from the Nix store (`pkgs.kokoro`) instead of downloading them at runtime [modules/services/llama-swap/kokoro-openai-server.py38-105](../modules/services/llama-swap/kokoro-openai-server.py#L38-L105)
+The system uses Kokoro-82M for high-performance speech synthesis. The server includes a `_install_local_voice_provider` function that patches `huggingface_hub` to serve model weights and voice assets from the Nix store (`pkgs.kokoro`) instead of downloading them at runtime [modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py)
 
-- **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `nova`) to Kokoro-specific assets like `af_heart`[modules/services/llama-swap/kokoro-openai-server.py17-26](../modules/services/llama-swap/kokoro-openai-server.py#L17-L26)
-- **Offline Mode**: When `voices-dir` and `model-path` are provided via Nix, the server operates in a fully offline mode [modules/services/llama-swap/kokoro-openai-server.py167-182](../modules/services/llama-swap/kokoro-openai-server.py#L167-L182)
+- **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `nova`) to Kokoro-specific assets like `af_heart`[modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py)
+- **Offline Mode**: When `voices-dir` and `model-path` are provided via Nix, the server operates in a fully offline mode [modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py)
 
 ## Hermes Voice Assistant
 
@@ -169,18 +169,18 @@ The `hermes-waybar-voice` system provides a sophisticated voice interface direct
 
 ### Implementation Details
 
-The core logic resides in `hermes-waybar-voice.py`. It uses `pysilero-vad` for local, low-latency voice detection [users/cody/desktop/hermes-waybar-voice.py19-37](../users/cody/desktop/hermes-waybar-voice.py#L19-L37). The microphone is read with `pw-record --raw` so the VAD receives header-less 16 kHz little-endian s16 PCM; without `--raw`, `pw-record` writes a Sun AU stream (big-endian) to stdout, which the VAD cannot recognize as speech.
+The core logic resides in `hermes-waybar-voice.py`. It uses `pysilero-vad` for local, low-latency voice detection [modules/desktop/_waybar/hermes-waybar-voice.py](../modules/desktop/_waybar/hermes-waybar-voice.py). The microphone is read with `pw-record --raw` so the VAD receives header-less 16 kHz little-endian s16 PCM; without `--raw`, `pw-record` writes a Sun AU stream (big-endian) to stdout, which the VAD cannot recognize as speech.
 
 ### Key Functions
 
-- `ensure_runtime()`: Manages the XDG runtime directory for PID, lock, and session files [users/cody/desktop/hermes-waybar-voice.py64-66](../users/cody/desktop/hermes-waybar-voice.py#L64-L66)
-- `waybar_status()`: Generates the JSON output for Waybar, including icons for different states (`` for listening, `` for speaking) [users/cody/desktop/hermes-waybar-voice.py155-188](../users/cody/desktop/hermes-waybar-voice.py#L155-L188)
-- `stop_worker()`: Safely terminates the background voice worker and cleans up temporary session files [users/cody/desktop/hermes-waybar-voice.py190-210](../users/cody/desktop/hermes-waybar-voice.py#L190-L210)
+- `ensure_runtime()`: Manages the XDG runtime directory for PID, lock, and session files [modules/desktop/_waybar/hermes-waybar-voice.py](../modules/desktop/_waybar/hermes-waybar-voice.py)
+- `waybar_status()`: Generates the JSON output for Waybar, including icons for different states (`` for listening, `` for speaking) [modules/desktop/_waybar/hermes-waybar-voice.py](../modules/desktop/_waybar/hermes-waybar-voice.py)
+- `stop_worker()`: Safely terminates the background voice worker and cleans up temporary session files [modules/desktop/_waybar/hermes-waybar-voice.py](../modules/desktop/_waybar/hermes-waybar-voice.py)
 
 ### Configuration
 
 The service is configured via environment variables in the `hermes-waybar-voice` wrapper:
 
-- `HERMES_SPEECH_BASE_URL`: Points to the `llama-swap` STT/TTS port (default `8081`) [users/cody/desktop/waybar.nix21](../users/cody/desktop/waybar.nix#L21-L21)
-- `HERMES_TRANSCRIPTION_MODEL`: Set to `parakeet-tdt-v3` [users/cody/desktop/waybar.nix](../users/cody/desktop/waybar.nix)
-- `HERMES_SPEECH_VOICE`: Defaults to `af_heart` (Kokoro) [users/cody/desktop/waybar.nix25](../users/cody/desktop/waybar.nix#L25-L25)
+- `HERMES_SPEECH_BASE_URL`: Points to the `llama-swap` STT/TTS port (default `8081`) [modules/desktop/_waybar/waybar.nix](../modules/desktop/_waybar/waybar.nix)
+- `HERMES_TRANSCRIPTION_MODEL`: Set to `parakeet-tdt-v3` [modules/desktop/_waybar/waybar.nix](../modules/desktop/_waybar/waybar.nix)
+- `HERMES_SPEECH_VOICE`: Defaults to `af_heart` (Kokoro) [modules/desktop/_waybar/waybar.nix](../modules/desktop/_waybar/waybar.nix)

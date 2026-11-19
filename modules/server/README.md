@@ -4,8 +4,8 @@ This directory owns the shared service modules, currently deployed on the `nas` 
 
 ## Operating model
 
-- Host entry point: `hosts/nas/default.nix`
-- Module entry point: `modules/nas/default.nix`
+- Host entry point: `modules/hosts/nas.nix`
+- Module entry point: `modules/server/server.nix` (the `server` role aspect; it includes one aspect per service below)
 - Public interface: Nginx virtual hosts under `homehub.tv`
 - Certificate model: ACME DNS-01 through Cloudflare, with Nginx in the `acme` group
 - Remote access: Tailscale plus HTTPS subdomains
@@ -13,57 +13,55 @@ This directory owns the shared service modules, currently deployed on the `nas` 
 - Media library root: `/mnt/media` (flat category directories)
 - Main service group: `media`
 
-The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for service data. The optical drive mount is reserved for the Automatic Ripping Machine workflow.
+The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for service data.
 
 ## Module map
 
 | File | Owns |
 | --- | --- |
-| `default.nix` | Common server imports, ACME, Nginx defaults, cross-host proxying, Tika, firewall openings |
-| `media.nix` | Jellyfin, Navidrome, Calibre, Arr stack, Jellyseerr, Transmission, VPN confinement, media vhosts |
+| `server.nix` | `server` role: includes every service aspect; ACME, Nginx base config, firewall openings, OCI backend |
+| `media/` | `media.nix` (shared media group and directories) plus one aspect per service: Jellyfin, Navidrome, Calibre, Arr stack, Seerr, Transmission (VPN confinement), Audiobookshelf, Shelfmark |
 | `photos.nix` | Immich, photo storage, upload proxy tuning, photo backup job |
-| `paperless.nix` | Paperless-ngx, Tika integration, document consume behavior, document backup job |
-| `samba.nix` | LAN file shares and WSDD discovery |
-| `adguard.nix` | DNS filtering and local resolver integration |
+| `paperless.nix`, `paperless-gpt.nix`, `tika.nix` | Paperless-ngx, its LLM helper, and Apache Tika |
+| `samba.nix`, `nfs.nix` | LAN file shares, WSDD discovery, NFS |
+| `dns.nix` | DNS filtering and local resolver integration |
 | `nginx-syncthing.nix` | Syncthing web UI reverse proxy |
-| `monitoring.nix` | Prometheus, Grafana, Loki, Tempo, exporters, dashboards, scrape targets |
+| `monitoring.nix`, `uptime-kuma.nix` | Prometheus, Grafana, Loki, Tempo, exporters, dashboards, scrape targets; uptime checks |
 | `homepage-dashboard.nix` | Homepage layout and service links |
-| `content.nix` | RSS/content services |
-| `karakeep.nix` | Bookmark/read-it-later service |
+| `content.nix`, `karakeep.nix` | RSS/content services (Miniflux curator values), bookmark service |
 | `langfuse/` | Langfuse LLM observability stack (web, worker, postgres, clickhouse, minio, redis), SOPS env file, Nginx ingress |
-| `actual-budget.nix` | Personal finance service |
-| `arm.nix` | Automatic Ripping Machine container/service integration |
-| `ai-services.nix` | Open WebUI, Qdrant vector search, AI firewall ports |
-| `excalidraw.nix` | Excalidraw whiteboard service |
+| `actual-budget.nix`, `dawarich.nix`, `mealie.nix`, `home-assistant.nix`, `excalidraw.nix`, `open-webui.nix` | Individual apps |
+| `backups.nix`, `_backup-options.nix`, `backup-health.nix` | `nas.backups.*` options, Restic jobs, backup health metrics |
+| `binary-cache/` | Harmonia binary cache and the nightly build |
 | `security.nix` | Fail2Ban and server hardening |
+| `wake-beast.nix` | Declared but included nowhere (see AGENTS.md) |
 
 ## Ingress and domains
 
-Nginx is the single HTTPS entry point for local server services and selected services running elsewhere. `default.nix` sets the shared proxy behavior and wildcard certificate handling, then service modules add their own virtual hosts.
+Nginx is the single HTTPS entry point for local server services and selected services running elsewhere. `server.nix` sets the shared proxy behavior and wildcard certificate handling, then service modules add their own virtual hosts.
 
 Common service mappings:
 
 | Service | Domain | Port / target | Module |
 | --- | --- | --- | --- |
 | Homepage | `homehub.tv` | `8082` | `homepage-dashboard.nix` |
-| Jellyfin | `media.homehub.tv` | `8096` | `media.nix` |
-| Navidrome | `music.homehub.tv` | `4533` | `media.nix` |
-| Calibre-Web | `books.homehub.tv` | `8083` | `media.nix` |
+| Jellyfin | `media.homehub.tv` | `8096` | `media/` |
+| Navidrome | `music.homehub.tv` | `4533` | `media/` |
+| Calibre-Web | `books.homehub.tv` | `8083` | `media/` |
 | Paperless | `paperless.homehub.tv` | `28981` | `paperless.nix` |
 | Immich | `photos.homehub.tv` | `2283` | `photos.nix` |
 | Grafana | `monitoring.homehub.tv` | `3001` | `monitoring.nix` |
-| Tika | `tika.homehub.tv` | `9998` | `default.nix` |
+| Tika | `tika.homehub.tv` | `9998` | `tika.nix` |
 | Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `nginx-syncthing.nix` |
 | Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `nginx-syncthing.nix` |
 | Open WebUI | `chat.homehub.tv` | `8080` | `open-webui.nix` |
-| Qdrant REST | `qdrant.homehub.tv` | `6333` | `ai-services.nix` |
 | Langfuse | `langfuse.homehub.tv` | `3000` | `langfuse/` |
 
-`default.nix` also proxies selected `homehub.tv` subdomains to the `beast` workstation, including Qdrant. Keep that cross-host routing in the ingress layer, not inside unrelated service modules.
+Keep cross-host routing in the ingress layer, not inside unrelated service modules.
 
 ## Media stack
 
-`media.nix` owns the media library and automation stack.
+`media/` owns the media library and automation stack.
 
 ### Storage and permissions
 
@@ -114,7 +112,7 @@ Do not expose Transmission directly unless the network model is being deliberate
 
 ### Paperless and Tika
 
-`paperless.nix` runs Paperless-ngx at `paperless.homehub.tv`. Apache Tika is provided by `default.nix` and Paperless points to the local Tika endpoint for richer document extraction.
+`paperless.nix` runs Paperless-ngx at `paperless.homehub.tv`. Apache Tika is provided by `tika.nix` and Paperless points to the local Tika endpoint for richer document extraction.
 
 Paperless consume behavior is tuned for operator convenience:
 
@@ -166,7 +164,7 @@ The MinIO data directory is created world-writable because the Chainguard `minio
 
 ### Secrets
 
-No credentials are hardcoded. A single SOPS secret, `langfuse-env`, is injected as `--env-file` into every container (see `modules/nas/langfuse/langfuse-env.example` for the exact required keys and safe placeholders). The sops-nix-rendered file is read by the root-owned container units, matching the existing `paperless-gpt.nix` pattern. Add the secret for the `nas` host in the private secrets repo's `.sops.yaml` recipients, then populate it.
+No credentials are hardcoded. A single SOPS secret, `langfuse-env`, is injected as `--env-file` into every container (see `modules/server/langfuse/langfuse-env.example` for the exact required keys and safe placeholders). The sops-nix-rendered file is read by the root-owned container units, matching the existing `paperless-gpt.nix` pattern. Add the secret for the `nas` host in the private secrets repo's `.sops.yaml` recipients, then populate it.
 
 ### Networking and startup ordering
 
@@ -190,7 +188,7 @@ Follow the repo's existing ZFS-snapshot/backup pattern and include the `/mnt/app
 
 ### Update boundary
 
-Images are pinned in `modules/nas/langfuse/default.nix`:
+Images are pinned in `modules/server/langfuse/langfuse.nix`:
 
 - `langfuse` / `langfuse-worker`: `4.68.0` (both images use explicit matching tags)
 - `clickhouse-server`: `25.12`
@@ -232,7 +230,7 @@ Keep DNS and sync changes small and explicit. These services affect the rest of 
 - Tempo for traces and OTLP ingestion.
 - Exporters for Nginx, SMART, GPU, and remote targets as configured.
 
-The node exporter (`9002`) and systemd journal shipping to Loki (Fluent Bit) are not defined here; they come from the shared `modules/system/logging.nix`, which every host imports. `monitoring.nix` only appends the NAS-specific Fluent Bit input and output for the Nginx access log.
+The node exporter (`9002`) and systemd journal shipping to Loki (Fluent Bit) are not defined here; they come from the shared `modules/base/logging.nix`, which every host imports. `monitoring.nix` only appends the NAS-specific Fluent Bit input and output for the Nginx access log.
 
 Prometheus scrapes the server and selected `beast` metrics. Important endpoints and roles:
 
@@ -269,7 +267,7 @@ When adding or changing a server service:
 
 1. Put the implementation in the narrowest owning module.
 2. Add storage permissions with tmpfiles if another service must read or write the data.
-3. Add the Nginx vhost in the service module unless it is a cross-host proxy owned by `default.nix`.
+3. Add the Nginx vhost in the service module unless it is a cross-host proxy owned by `server.nix`.
 4. Keep secrets in SOPS and quote dashed secret names.
 5. Add dashboard and monitoring entries only if they help operate the service.
 6. For risky service or networking changes, dry-run the NAS build with `nixos-rebuild dry-run --flake .#nas`.

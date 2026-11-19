@@ -1,98 +1,80 @@
 # Repository Structure and Conventions
 
-This page details the organizational standards, directory layout, and naming conventions of the CodyOS repository. The structure is designed to maintain a clear separation between system-level NixOS configuration, user-level Home Manager settings, and reusable service modules while facilitating AI-assisted maintenance.
+This page details the organizational standards, directory layout, and naming conventions of the CodyOS repository. Everything that defines a machine is a [Den](https://github.com/denful/den) flake-level module under `modules/`; see [Den-Native-Layout.md](Den-Native-Layout.md) for the full tree and conventions.
 
 ## Top-Level Directory Layout
 
-The repository follows a functional decomposition strategy, ensuring that machine-specific facts are isolated from reusable logic.
-
 | Directory     | Purpose                                                            | Key Contents                                  |
 | ------------- | ------------------------------------------------------------------ | --------------------------------------------- |
-| `den/`        | Den host declarations, role/feature aspects, per-host wiring.      | `hosts.nix`, `hosts/`, `aspects/`             |
-| `hosts/`      | Machine-specific hardware facts and host policy.                   | `beast/`, `nas/`                              |
-| `modules/`    | Reusable NixOS system-level modules and services.                  | `system/`, `services/`, `desktop/`, `server/` |
-| `users/`      | Home Manager configurations.                                       | `cody/core.nix`, `cody/desktop.nix`, `cody/desktop/` |
-| `packages/`   | Custom derivations and system scripts.                             | `system-scripts/`, `kokoro/`                          |
-| `.agents/`    | Knowledge base and guidance for AI agents.                         | `skills/`, `AGENTS.md`                        |
+| `modules/`    | The Den tree: hosts, aspects, flake outputs. Loaded by `import-tree`. | `hosts/`, `base/`, `hardware/`, `users/`, `desktop/`, `editor/`, `harness/`, `services/`, `server/`, `flake/` |
+| `packages/`   | Custom derivations and system scripts, exposed by the shared overlay and as `packages.x86_64-linux`. | `update/`, `check-imports/`, `kokoro-assets/` |
+| `docs/`       | Longer operator notes and reference material.                      | this directory                                |
+| `.agents/`    | Knowledge base and guidance for AI agents.                         | `skills/`                                     |
 | `wallpapers/` | Wallpaper assets referenced by desktop configuration.              | Static image assets                           |
 
-### System Architecture Data Flow
+`flake.nix` holds only inputs and the `evalModules` call that turns `modules/` into the flake outputs.
 
-The following diagram illustrates how `flake.nix` wires these directories into a functional NixOS configuration.
+### System Architecture Data Flow
 
 **CodyOS Configuration Data Flow**
 
 ```mermaid
 flowchart LR
-    subgraph subGraph0 ["Code Entity Space"]
-        FLAKE["flake.nix"]
-        HOSTS["hosts/ (beast/nas)"]
-        MODS["modules/ (system/services)"]
-    USERS["users/ (home-manager roles)"]
-        PKGS["packages/ (custom)"]
-        SECRETS["nixos-secrets (Private Flake)"]
-    end
-    DEN["den/ (hosts + aspects)"]
-    FLAKE --> DEN
-    DEN --> HOSTS
-    DEN --> MODS
-    HOSTS --> USERS
-    MODS --> PKGS
-    MODS --> SECRETS
+    FLAKE["flake.nix (inputs)"] --> TREE["import-tree ./modules"]
+    TREE --> HOSTS["modules/hosts/ (beast, nas)"]
+    TREE --> ASPECTS["aspects: base, desktop, server, services, users, ..."]
+    TREE --> OUT["modules/flake/ (overlays, packages, checks, formatter)"]
+    HOSTS -->|includes| ASPECTS
+    ASPECTS --> PKGS["packages/ (via overlay)"]
+    ASPECTS --> SECRETS["nixos-secrets (private flake)"]
 ```
 
 ---
 
 ## Naming and File Conventions
 
-To ensure consistency across the codebase, the following rules are enforced:
-
 ### 1. Case and Format
 
-- **kebab-case:** All file and directory names must use lowercase kebab-case (e.g., `hardware-configuration.nix`, `homepage-dashboard.nix`) [CONTRIBUTING.md77-84](../CONTRIBUTING.md#L77-L84)
-- **Secret Keys:** Use quoted attribute names for secret keys containing dashes, such as `sops.secrets."paperless-password"`[AGENTS.md28-30](../AGENTS.md#L28-L30)
+- **kebab-case:** All file and directory names must use lowercase kebab-case (e.g., `homepage-dashboard.nix`) [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Secret Keys:** Use quoted attribute names for secret keys containing dashes, such as `sops.secrets."paperless-password"` [AGENTS.md](../AGENTS.md)
 
-### 2. The `default.nix` Pattern
+### 2. Underscore Paths and `default.nix`
 
-Importable directories should use a `default.nix` file as a "simple import aggregator" [CONTRIBUTING.md146-150](../CONTRIBUTING.md#L146-L150)
-
-For Cody's Home Manager profile, `users/cody/desktop.nix` is the desktop role entrypoint and it imports the `users/cody/desktop/` directory for the detailed module surface [users/cody/desktop.nix9-13](../users/cody/desktop.nix#L9-L13)
-
-- Keep `default.nix` short.
-- Move implementation details to sibling files like `package.nix`, `service.nix`, or `module.nix`[AGENTS.md34-37](../AGENTS.md#L34-L37)
-- **Example Structure:**
+- A non-underscore `.nix` under `modules/` is a flake-level Den module. Plain NixOS/Home Manager modules, package files and data live under `_` paths (import-tree skips any path containing `/_`) and are imported explicitly by their aspect.
+- No `default.nix` outside `_` paths. Inside `_` subtrees `default.nix` may remain a short import aggregator; `check-imports` verifies that sibling files are referenced from it.
+- Keep `default.nix` short; move implementation details to sibling files like `package.nix`, `service.nix`, or `module.nix` [AGENTS.md](../AGENTS.md)
+- **Example structure:**
 
 ```
 modules/services/hermes-agent/
-├── default.nix   # The "spine" that imports other files
-├── documents/    # Workspace documents and SOUL installation
-├── mcp/          # MCP server wiring
-├── package/      # Derivation logic
-├── runtime/      # Systemd and environment setup
-├── secrets/      # SOPS wiring
-├── skills/       # Managed and mutable skills
-└── toolsets/     # Tool exposure and trust boundaries
+├── hermes-agent.nix   # den.aspects.hermes-agent (flake-level module)
+└── _hm/               # plain Home Manager module tree
+    ├── default.nix    # the "spine" that imports the rest
+    ├── documents/     # Workspace documents and SOUL installation
+    ├── mcp/           # MCP server wiring
+    ├── runtime/       # Systemd and environment setup
+    ├── secrets/       # SOPS wiring
+    ├── skills/        # Managed and mutable skills
+    └── toolsets/      # Tool exposure and trust boundaries
 ```
 
-### 3. Profiles and `codyos.*` Features
+### 3. Roles, Aspects and Host Facts
 
-Hosts compose two kinds of NixOS modules:
-
-- **Profiles** describe a machine role: `modules/desktop` and `modules/nas`, selected through the Den aspects in [`den/aspects/`](../den/aspects) that host aspects include.
-- **Features** are optional pieces that any host can switch on. Each declares `options.codyos.<name>.enable`, wraps its config in `lib.mkIf`, and is imported unconditionally from [modules/system/base.nix](../modules/system/base.nix). Pure enable gates are set by aspects in [`den/aspects/features.nix`](../den/aspects/features.nix); hosts and profiles set the rest:
+- **Roles** are aspects that include other aspects: `den.aspects.desktop` ([`modules/desktop/desktop.nix`](../modules/desktop/desktop.nix)), `den.aspects.server` ([`modules/server/server.nix`](../modules/server/server.nix)) and `den.aspects.base` ([`modules/base/base.nix`](../modules/base/base.nix)). Host aspects in [`modules/hosts/`](../modules/hosts) include the roles and features they want.
+- **Features** are aspects (`den.aspects.<name>` with `nixos` and/or `homeManager`). Including an aspect turns it on; there are no `codyos.<name>.enable` flags. Option-carrying `codyos.*` settings that remain are declared next to their consumer (e.g. `codyos.site` in [`modules/base/site.nix`](../modules/base/site.nix)).
+- **Host facts** (`channel`, `localAi`, `lan`, `tailscale`, `mac`, `hardwareConfig`, `nvidiaPowerLimit`) are attributes on the `den.hosts` entry and are read by aspects from the `host` context.
 
 ```nix
-codyos = {
-  docker.enable = true;
-  hardware.nvidia.enable = true;
-};
+den.aspects.beast.includes = [
+  den.aspects.base
+  den.aspects.desktop
+  den.aspects.nvidia
+];
 ```
 
-Current features: `hardware.nvidia` (with `powerLimit`), `hardware.openrazer`, `gaming`, `docker`, `paperless-scanning`, `opencode`, `hindsight`, `wake-beast`.
+### 4. Site Facts ()
 
-### 4. Site Facts (`codyos.site`)
-
-Values shared across hosts live in one place, [modules/system/site.nix](../modules/system/site.nix):
+Values shared across hosts live in one place, [modules/base/site.nix](../modules/base/site.nix):
 
 | Option | Value |
 | --- | --- |
@@ -123,16 +105,15 @@ The `flake.nix` file categorizes inputs to balance system stability with the nee
 
 ### Input Tiers
 
-- **Stable (`nixpkgs`):** Tracks `nixos-25.11`. Primarily used for the `nas` host to ensure uptime and service reliability [flake.nix9-10](../flake.nix#L9-L10)
-- **Unstable (`nixpkgs-unstable`):** Tracks `nixos-unstable`. Used for the `beast` workstation to provide the latest Hyprland, AI tools, and kernel updates [flake.nix30-31](../flake.nix#L30-L31)
+- **Stable (`nixpkgs`):** Tracks `nixos-26.05`. Primarily used for the `nas` host to ensure uptime and service reliability [flake.nix](../flake.nix)
+- **Unstable (`nixpkgs-unstable`):** Tracks `nixos-unstable`. Used for the `beast` workstation to provide the latest Hyprland, AI tools, and kernel updates [flake.nix](../flake.nix)
 
 ### Key AI & Agent Inputs
 
 The repo integrates several specialized flakes for the local AI stack:
 
-- `hermes-agent`: The primary cognitive assistant runtime [flake.nix82-86](../flake.nix#L82-L86)
-- `rlm`: Recursive Language Model CLI [flake.nix87-90](../flake.nix#L87-L90)
-- `llm-agents`: A collection of AI tool pack derivations [flake.nix62-66](../flake.nix#L62-L66)
+- `hermes-agent`: The primary cognitive assistant runtime [flake.nix](../flake.nix)
+- `llm-agents`: A collection of AI tool pack derivations [flake.nix](../flake.nix)
 
 ---
 
@@ -140,34 +121,34 @@ The repo integrates several specialized flakes for the local AI stack:
 
 The repository contains `AGENTS.md` files scattered throughout the tree. These files serve as "in-situ" documentation for LLMs (like Claude or GPT-4) when they are operating within the codebase.
 
-### Global Rules [AGENTS.md24-46](../AGENTS.md#L24-L46)
+### Global Rules [AGENTS.md](../AGENTS.md)
 
 - **Git Tracking:** New files must be `git add`-ed before Nix flakes can see them.
 - **No Raw Secrets:** Never commit unencrypted secrets; use `sops-nix`.
-- **Sudo:** Agents are informed they do not have `sudo` access and cannot trigger a full system rebuild independently.
+- **Validation:** Evaluate merged configuration instead of scanning source; do not activate or switch without authorization.
 
 ### Directory-Specific Guidance
 
-- **`hosts/AGENTS.md`**: Directs agents to keep host files thin, focusing only on hardware facts and role selection [hosts/AGENTS.md7-14](../hosts/AGENTS.md#L7-L14)
-- **`modules/AGENTS.md`**: Instructs agents to keep reusable services here and to declare secrets close to the consuming service [modules/AGENTS.md7-15](../modules/AGENTS.md#L7-L15)
+- **[`modules/hosts/AGENTS.md`](../modules/hosts/AGENTS.md)**: Keep host files to machine facts, role selection and wiring.
+- **[`modules/users/AGENTS.md`](../modules/users/AGENTS.md)**, **[`modules/desktop/AGENTS.md`](../modules/desktop/AGENTS.md)**, **[`modules/server/AGENTS.md`](../modules/server/AGENTS.md)**, **[`modules/harness/AGENTS.md`](../modules/harness/AGENTS.md)**: placement rules for each area, including declaring secrets close to the consuming service.
+- **[`modules/README.md`](../modules/README.md)**: the module tree overview, how to add a host or aspect.
 
 ---
 
 ## Module Logic and Implementation
 
-Modules are designed to be single-purpose and self-contained. `default.nix` acts as the assembly spine, while runtime wiring, secrets, package overrides, MCP integrations, and related support surfaces live in sibling paths when the module grows.
+Modules are designed to be single-purpose and self-contained. an aspect file (or a `_` module tree with a short `default.nix` spine) assembles the module, while runtime wiring, secrets, package overrides, MCP integrations, and related support surfaces live in sibling paths when the module grows.
 
 ### Service Implementation Pattern
 
 ```mermaid
 flowchart TD
     subgraph subGraph0 ["Module: modules/services/hermes-agent"]
-        DEF["default.nix"]
+        DEF["hermes-agent.nix → _hm/default.nix"]
         DOC["documents/"]
         MCP["mcp/"]
         SEC["secrets/"]
         RUN["runtime/"]
-        PKG["package/"]
         SKL["skills/"]
         TOOL["toolsets/"]
     end
@@ -175,11 +156,10 @@ flowchart TD
     DEF --> MCP
     DEF --> SEC
     DEF --> RUN
-    DEF --> PKG
     DEF --> SKL
     DEF --> TOOL
 ```
 
 ### Nginx and Secrets Wiring
 
-For services like `hermes-agent`, the configuration is made fully declarative by writing the settings to a JSON file and forcing the activation script to overwrite the upstream `config.yaml`[modules/services/hermes-agent/default.nix56-62](../modules/services/hermes-agent/default.nix#L56-L62) Secrets are injected via `sops.templates`, allowing dynamic environment variables to be populated at runtime [modules/services/hermes-agent/default.nix55](../modules/services/hermes-agent/default.nix#L55-L55)
+For services like `hermes-agent`, the configuration is made fully declarative by writing the settings to a JSON file and forcing the activation script to overwrite the upstream `config.yaml`[modules/services/hermes-agent/_hm/default.nix](../modules/services/hermes-agent/_hm/default.nix) Secrets are injected via `sops.templates`, allowing dynamic environment variables to be populated at runtime [modules/services/hermes-agent/_hm/default.nix](../modules/services/hermes-agent/_hm/default.nix)

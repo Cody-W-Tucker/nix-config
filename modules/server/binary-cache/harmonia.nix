@@ -1,7 +1,7 @@
 {
   den.aspects.harmonia.nixos =
     # Harmonia serves the NAS's /nix/store as a signed binary cache.
-    # Clients: hosts/beast/default.nix (substituter + public key).
+    # Clients: modules/hosts/beast.nix (substituter + public key).
     { config, ... }:
 
     let

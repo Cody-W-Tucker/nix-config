@@ -79,7 +79,7 @@
           # The upstream entrypoint creates an in-container user from
           # PUID/PGID and drops privileges via gosu (root startup flow,
           # verified in entrypoint.sh at v1.3.15). PGID is the media
-          # group's GID, pinned in modules/nas/media/default.nix, so the
+          # group's GID, pinned in modules/server/media/media.nix, so the
           # container can write the setgid media directories.
           PUID = toString config.users.users.shelfmark.uid;
           PGID = toString config.users.groups.media.gid;
@@ -135,7 +135,7 @@
           "/mnt/media/Downloads:/mnt/media/Downloads"
           "/mnt/media/AudioBookShelf:/audiobooks"
         ];
-        # Host networking (same pattern as modules/nas/paperless-gpt.nix):
+        # Host networking (same pattern as modules/server/paperless-gpt.nix):
         # the container shares the host network namespace, so `ports`
         # publishing would be ignored and is dropped. Required so Shelfmark
         # can reach Prowlarr on the host loopback at http://localhost:9696.

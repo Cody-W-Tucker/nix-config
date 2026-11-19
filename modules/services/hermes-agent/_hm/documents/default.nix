@@ -87,7 +87,7 @@ in
       # Pi is always excluded upstream.
       improve.harnesses = [ ];
       # Reuse the read-capable project key the harnesses already trace with
-      # (users/cody/harness/opencode renders it in this Home Manager scope).
+      # (modules/harness/_hm/opencode renders it in this Home Manager scope).
       langfuse = {
         baseUrl = "https://langfuse.${osConfig.codyos.site.domain}";
         environmentFile = config.sops.templates."opencode-langfuse-env".path;

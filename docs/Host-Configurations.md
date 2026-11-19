@@ -1,24 +1,24 @@
 # Host Configurations
 
-The flake exports exactly two NixOS configurations. They are declared with [Den](https://github.com/denful/den) in [`den/`](../den) (see [`den/README.md`](../den/README.md)) and re-exported by [`flake.nix`](../flake.nix):
+The flake exports exactly two NixOS configurations. They are declared with [Den](https://github.com/denful/den) as flake-level modules under [`modules/hosts/`](../modules/hosts) (see [`modules/README.md`](../modules/README.md) and [`Den-Native-Layout.md`](Den-Native-Layout.md)); [`flake.nix`](../flake.nix) loads `modules/` with import-tree and exposes the result as the flake outputs:
 
 - `nixosConfigurations.beast` — [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) holds the host, its machine facts and (via [`_beast-hardware.nix`](../modules/hosts/_beast-hardware.nix)) its hardware, with the desktop role and features, against `nixpkgs-unstable` and `home-manager`.
 - `nixosConfigurations.nas` — [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) holds the host, its machine facts and (via [`_nas-hardware.nix`](../modules/hosts/_nas-hardware.nix)) its hardware, with the NAS role, against stable `nixpkgs` and `home-manager-stable`.
 
-Both hosts share foundational modules under [`modules/system/`](../modules/system) (e.g. [`modules/system/base.nix`](../modules/system/base.nix)).
+Both hosts share foundational modules under [`modules/base/`](../modules/base) (e.g. [`modules/base/base.nix`](../modules/base/base.nix)).
 
 ## Beast — Desktop Workstation
 
-- **Composition root:** [`den/hosts/beast.nix`](../den/hosts/beast.nix); machine facts in [`hosts/beast/default.nix`](../hosts/beast/default.nix).
+- **Composition root:** [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) (den host entry, aspect includes and machine facts); hardware in [`_beast-hardware.nix`](../modules/hosts/_beast-hardware.nix); notes in [`modules/hosts/beast.md`](../modules/hosts/beast.md).
 - **Channel:** `nixpkgs-unstable` (see [`flake.nix`](../flake.nix)).
 - **Role:** Development, gaming, and local AI workloads.
 
 ## NAS — Home Lab Server
 
-- **Composition root:** [`den/hosts/nas.nix`](../den/hosts/nas.nix); machine facts in [`hosts/nas/default.nix`](../hosts/nas/default.nix), with host-local [`hosts/nas/models.nix`](../hosts/nas/models.nix).
-- **Host documentation:** [`hosts/nas/README.md`](../hosts/nas/README.md) — hardware profile, storage layout, networking, services, ZFS pool health.
+- **Composition root:** [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) (den host entry, aspect includes and machine facts); hardware in [`_nas-hardware.nix`](../modules/hosts/_nas-hardware.nix); the model catalog is [`modules/services/llama-swap/_nas-models.nix`](../modules/services/llama-swap/_nas-models.nix).
+- **Host documentation:** [`modules/hosts/nas.md`](../modules/hosts/nas.md) — hardware profile, storage layout, networking, services, ZFS pool health.
 - **Channel:** stable `nixpkgs` (`nixos-26.05`), paired with `home-manager-stable` (`release-26.05`).
-- **Role:** Central services host for the `homehub.tv` infrastructure. NAS service modules live under [`modules/nas/`](../modules/nas).
+- **Role:** Central services host for the `homehub.tv` infrastructure. Service aspects live under [`modules/server/`](../modules/server).
 
 ### Backup and snapshot health
 
@@ -32,5 +32,5 @@ Both hosts share foundational modules under [`modules/system/`](../modules/syste
 | ------------------- | ------------------------------------------------ | ---------------------------------------------------- |
 | **Nixpkgs channel** | `nixos-unstable`                                 | `nixos-26.05` (stable)                               |
 | **Home Manager**    | `home-manager` (unstable)                        | `home-manager-stable` (`release-26.05`)              |
-| **Composition root**| [`den/hosts/beast.nix`](../den/hosts/beast.nix) | [`den/hosts/nas.nix`](../den/hosts/nas.nix)  |
-| **Module scope**    | Desktop + AI modules under `modules/`            | NAS service modules under [`modules/nas/`](../modules/nas) |
+| **Composition root**| [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) | [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) |
+| **Module scope**    | `desktop` role aspect ([`modules/desktop/`](../modules/desktop)) + AI | `server` role aspect ([`modules/server/`](../modules/server)) |

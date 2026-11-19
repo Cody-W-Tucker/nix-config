@@ -26,7 +26,7 @@ the same constructor.
   that local path in `codyos.harness.plugins.langfuse-observability.opencode.settings`.
 - Never touches the OpenCode npm cache.
 - Secrets are untouched: Langfuse credentials still come from the SOPS
-  `opencode-langfuse-env` template owned by `users/cody/harness/opencode/default.nix`.
+  `opencode-langfuse-env` template owned by `modules/harness/_hm/opencode/default.nix`.
 - Repeatable: activation skips `npm install` when the target matches the
   wrapper and contains the expected upstream version — no network on every
   activation.
@@ -42,7 +42,7 @@ When an upstream release loads successfully on the installed OpenCode version
 and emits spans to the local Langfuse instance (including the dependency and
 tracer fixes already present in 0.6.0):
 
-1. Delete `users/cody/harness/plugins/langfuse/opencode-plugin/` and `README.md`.
-2. Drop `home.activation.opencodeLangfusePlugin` in `users/cody/harness/plugins/langfuse/default.nix`.
+1. Delete `modules/harness/_hm/plugins/langfuse/opencode-plugin/` and `README.md`.
+2. Drop `home.activation.opencodeLangfusePlugin` in `modules/harness/_hm/plugins/langfuse/default.nix`.
 3. Restore the bare `@langfuse/opencode-observability-plugin@<fixed-version>`
    spec in `codyos.harness.plugins.langfuse-observability.opencode.settings`.

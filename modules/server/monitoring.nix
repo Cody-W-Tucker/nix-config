@@ -50,7 +50,7 @@
           extraFlags = [ "--web.enable-remote-write-receiver" ];
           port = 9001;
           exporters = {
-            # node exporter: modules/system/logging.nix
+            # node exporter: modules/base/logging.nix
             nginx = {
               enable = true;
               port = 9115;
@@ -335,7 +335,7 @@
           };
         };
 
-        # Journal shipping is shared with every host (modules/system/logging.nix);
+        # Journal shipping is shared with every host (modules/base/logging.nix);
         # the NAS adds its nginx access log.
         fluent-bit.settings.pipeline = {
           inputs = [

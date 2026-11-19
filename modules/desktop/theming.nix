@@ -2,7 +2,7 @@
 {
   # Stylix theming (Catppuccin Mocha, wallpaper, fonts, cursor) plus the GTK icon theme and
   # the GNOME dark-mode preference. Home Manager only: the Stylix module is imported here,
-  # so hosts without the desktop do not have `config.lib.stylix` (core.nix checks for it).
+  # so hosts without the desktop do not have `config.lib.stylix` (users/shell.nix checks for it).
   den.aspects.theming.provides.to-users.homeManager =
     { config, pkgs, ... }:
     {
@@ -32,7 +32,7 @@
           nixvim.enable = false;
           gnome.enable = false;
           kde.enable = false;
-          # Fully replaced by local config in waybar.nix, hyprland.nix and core.nix.
+          # Fully replaced by local config in _waybar/waybar.nix, _hyprland/settings.nix and users/shell.nix.
           waybar.enable = false;
           hyprlock.enable = false;
           fzf.enable = false;
