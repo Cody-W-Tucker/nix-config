@@ -1,8 +1,18 @@
 {
-  # Wake Beast (WoL) and wait for host availability. Declared but deliberately NOT
-  # included by any host or role (it was never enabled); include den.aspects.wake-beast
-  # from modules/hosts/nas.nix to turn it on. The unit is oneshot and has no wantedBy.
-  den.aspects.wake-beast.nixos =
+  # Wake-on-LAN, one feature with two sides:
+  #   .target: the machine being woken (beast) accepts magic packets on its NIC.
+  #   .waker:  a host that sends the packet and waits for the target to answer.
+  # The waker is declared but deliberately NOT included by any host or role (it was
+  # never enabled); include den.aspects.wake-on-lan.waker from modules/hosts/nas.nix
+  # to turn it on. Its unit is oneshot and has no wantedBy.
+  den.aspects.wake-on-lan.target.nixos = {
+    networking.interfaces.eno1.wakeOnLan = {
+      enable = true;
+      policy = [ "magic" ];
+    };
+  };
+
+  den.aspects.wake-on-lan.waker.nixos =
     { config, pkgs, ... }:
     let
       beastHost = config.codyos.site.hosts.beast.lan;

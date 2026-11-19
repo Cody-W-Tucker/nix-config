@@ -54,6 +54,9 @@ in
       den.aspects.nixvim-desktop
       den.aspects.opencode-remote
       den.aspects.binary-cache.client
+      den.aspects.nfs.client
+      den.aspects.samba.client
+      den.aspects.wake-on-lan.target
     ];
 
     # Beast's Home Manager role (the desktop comes from den.aspects.desktop; nixvim from den.aspects.nixvim).
@@ -62,14 +65,7 @@ in
     };
 
     nixos =
-      {
-        config,
-        pkgs,
-        ...
-      }:
-      let
-        site = config.codyos.site;
-      in
+      { pkgs, ... }:
       {
         imports = [
           ./_beast-hardware.nix
@@ -84,64 +80,12 @@ in
         # Kernel (hardware modules and quirks are in _beast-hardware.nix).
         boot.kernelPackages = pkgs.linuxPackages_latest;
 
-        # ── Drives ──────────────────────────────────────────────────
-        # Native units keep unavailable NAS shares out of fstab-generator during
-        # systemd re-execution: https://github.com/systemd/systemd/issues/44396
-        system.fsPackages = [
-          pkgs.nfs-utils
-          pkgs.cifs-utils
-        ];
-        systemd.mounts = [
-          {
-            what = "//${site.hosts.nas.lan}/PaperlessConsume";
-            where = "/mnt/paperless-consume";
-            type = "cifs";
-            options = "guest,uid=${toString config.ids.uids.scanner},gid=${toString config.ids.gids.scanner}";
-            mountConfig.TimeoutSec = "10s";
-          }
-          {
-            what = "${site.hosts.nas.lan}:/mnt/projects";
-            where = "${site.user.home}/Projects";
-            type = "nfs";
-            options = "noatime";
-            requires = [ "network-online.target" ];
-            after = [ "network-online.target" ];
-          }
-          {
-            what = "${site.hosts.nas.lan}:/mnt/knowledge";
-            where = "${site.user.home}/Knowledge";
-            type = "nfs";
-            options = "noatime";
-            requires = [ "network-online.target" ];
-            after = [ "network-online.target" ];
-          }
-        ];
-        systemd.automounts = [
-          {
-            where = "/mnt/paperless-consume";
-            wantedBy = [ "remote-fs.target" ];
-            automountConfig.TimeoutIdleSec = "60s";
-          }
-          {
-            where = "${site.user.home}/Projects";
-            wantedBy = [ "remote-fs.target" ];
-          }
-          {
-            where = "${site.user.home}/Knowledge";
-            wantedBy = [ "remote-fs.target" ];
-          }
-        ];
-        # Share folders (Documents, Music, …) are bind-mounted by syncthing.nix.
         # Networking
         networking = {
           hostName = "beast";
           networkmanager.settings.connection = {
             # MT7925 Bluetooth is more stable when NetworkManager does not power-save Wi-Fi.
             "wifi.powersave" = 2;
-          };
-          interfaces.eno1.wakeOnLan = {
-            enable = true;
-            policy = [ "magic" ];
           };
         };
 

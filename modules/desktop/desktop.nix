@@ -48,7 +48,7 @@
           gcr_3 # GNOME Keyring unlock prompt provider
         ];
 
-        # Syncthing comes from den.aspects.syncthing (modules/services/syncthing.nix).
+        # Syncthing comes from den.aspects.syncthing (modules/sync/syncthing.nix).
       };
   };
 }

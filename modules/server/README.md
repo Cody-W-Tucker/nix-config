@@ -23,18 +23,18 @@ The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for servic
 | `media/` | `media.nix` (shared media group and directories) plus one aspect per service: Jellyfin, Navidrome, Calibre, Arr stack, Seerr, Transmission (VPN confinement), Audiobookshelf, Shelfmark |
 | `photos.nix` | Immich, photo storage, upload proxy tuning, photo backup job |
 | `paperless.nix`, `paperless-gpt.nix`, `tika.nix` | Paperless-ngx, its LLM helper, and Apache Tika |
-| `samba.nix`, `nfs.nix` | LAN file shares, WSDD discovery, NFS |
-| `dns.nix` | DNS filtering and local resolver integration |
-| `nginx-syncthing.nix` | Syncthing web UI reverse proxy |
+| (`../file-sharing/samba.nix`, `../file-sharing/nfs.nix`) | LAN file shares, WSDD discovery, NFS; server sides (`samba.server`, `nfs.server`) included here, client sides by beast |
+| (`../networking/dns.nix`) | DNS filtering and local resolver integration (`den.aspects.dns`) |
+| (`../sync/syncthing.nix`, `syncthing.nginx`) | Syncthing web UI reverse proxy |
 | `monitoring.nix`, `uptime-kuma.nix` | Prometheus, Grafana, Loki, Tempo, exporters, dashboards, scrape targets; uptime checks |
 | `homepage-dashboard.nix` | Homepage layout and service links |
 | `content.nix`, `karakeep.nix` | RSS/content services (Miniflux curator values), bookmark service |
 | `langfuse/` | Langfuse LLM observability stack (web, worker, postgres, clickhouse, minio, redis), SOPS env file, Nginx ingress |
 | `actual-budget.nix`, `dawarich.nix`, `mealie.nix`, `home-assistant.nix`, `excalidraw.nix`, `open-webui.nix` | Individual apps |
 | `backups.nix`, `_backup-options.nix`, `backup-health.nix` | `nas.backups.*` options, Restic jobs, backup health metrics |
-| `security.nix` | Fail2Ban and server hardening |
+| (`../networking/networking.nix`, `networking.strict-fail2ban`) | Fail2Ban and server hardening |
 | (`../nix/binary-cache.nix`, `../nix/nightly-build.nix`) | Harmonia binary cache and the nightly build; server side included here, client side by beast |
-| `wake-beast.nix` | Declared but included nowhere (see AGENTS.md) |
+| (`../networking/wake-on-lan.nix`, `wake-on-lan.waker`) | Declared but included nowhere (see AGENTS.md) |
 
 ## Ingress and domains
 
@@ -52,8 +52,8 @@ Common service mappings:
 | Immich | `photos.homehub.tv` | `2283` | `photos.nix` |
 | Grafana | `monitoring.homehub.tv` | `3001` | `monitoring.nix` |
 | Tika | `tika.homehub.tv` | `9998` | `tika.nix` |
-| Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `nginx-syncthing.nix` |
-| Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `nginx-syncthing.nix` |
+| Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `../sync/syncthing.nix` |
+| Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `../sync/syncthing.nix` |
 | Open WebUI | `chat.homehub.tv` | `8080` | `open-webui.nix` |
 | Langfuse | `langfuse.homehub.tv` | `3000` | `langfuse/` |
 
@@ -123,7 +123,7 @@ Paperless consume behavior is tuned for operator convenience:
 
 ### Samba
 
-`samba.nix` provides LAN-only file sharing and WSDD discovery. Shares are limited to the local subnet and localhost.
+`modules/file-sharing/samba.nix` provides LAN-only file sharing and WSDD discovery. Shares are limited to the local subnet and localhost.
 
 | Share | Path | Purpose |
 | --- | --- | --- |
@@ -206,7 +206,7 @@ The server also owns core local-network utilities:
 - AdGuard is the LAN-facing filter and exposes its web UI on port `8000`.
 - Unbound is the local recursive resolver behind AdGuard and listens on `127.0.0.1:5335`.
 - DNS fallback is configured so the host can stay reachable during resolver bootstrap or local resolver failure.
-- `nginx-syncthing.nix` exposes Syncthing UIs through Nginx.
+- `modules/sync/syncthing.nix` (`syncthing.nginx`) exposes Syncthing UIs through Nginx.
 - Shared Syncthing service configuration may live under `modules/services/`; only server-specific proxying belongs here.
 
 Syncthing is a two-host mesh between `nas` and `beast`. The shared service module owns device and folder declarations; this directory owns the server-side reverse proxies.
@@ -257,7 +257,7 @@ If adding a service, add the exporter and scrape target in the same module that 
 
 - Keep the public attack surface behind Nginx unless a protocol requires direct LAN access.
 - Firewall openings are deliberate: HTTPS/HTTP for ingress plus required LAN services such as NFS/RPC.
-- Fail2Ban policy lives in `security.nix`.
+- Fail2Ban policy lives in `modules/networking/networking.nix` (`strict-fail2ban`).
 - VPN credentials and other secrets must stay in SOPS, close to the consuming service declaration.
 - New files must be git-tracked before flakes can see them.
 

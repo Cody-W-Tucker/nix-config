@@ -34,7 +34,7 @@ modules/
   editor/nixvim/             # nixvim aspects + _plugins/ (plain HM modules)
   harness/                   # AI/operator harness; _hm/ holds the HM module tree
   services/                  # hermes-agent/, llama-swap/, opencode.nix, hindsight.nix,
-                             #   docker.nix, nginx.nix, syncthing.nix, paperless-scanning.nix,
+                             #   docker.nix, nginx.nix, paperless-scanning.nix,
                              #   automations/
   server/                    # `server` role + one aspect per NAS service
                              #   (media/, langfuse/, backups, monitoring, …)

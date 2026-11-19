@@ -66,4 +66,4 @@ Kernel names (`sdX`, `nvmeXn1`) change between boots; the config mounts by UUID.
 - **Backups**: service-owned SQLite exports (plus Karakeep's catalog, captured assets and settings) stage on `backup/backups`; Restic includes those exports, Projects, Knowledge, Hermes, and Langfuse's MinIO objects. The shared module owns the Restic repository, PostgreSQL/ClickHouse dumps, and ZFS snapshot policy. Paperless originals live on the snapshotted `backup/documents` dataset, not the 8 TB media disk. Add `restic-nas-password` with `sops` before activation. No off-box copy or restore drill is configured; ZFS originals and the 8 TB media disk remain vulnerable to whole-NAS loss.
 - **Syncthing**: NAS↔beast share sync; GUI at `nas-syncthing.homehub.tv` (port 8384 is open on Tailscale only).
 - **Bluetooth**: Enabled for Home Assistant (future controller).
-- **Wake-on-LAN**: `wake-beast` service can wake the desktop.
+- **Wake-on-LAN**: `wake-beast` service (modules/networking/wake-on-lan.nix, `wake-on-lan.waker`; currently not included) can wake the desktop.
