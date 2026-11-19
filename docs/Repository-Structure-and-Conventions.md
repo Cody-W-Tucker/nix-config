@@ -35,7 +35,7 @@ flowchart LR
 
 ### 1. Case and Format
 
-- **kebab-case:** All file and directory names must use lowercase kebab-case (e.g., `homepage-dashboard.nix`) [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **kebab-case:** All file and directory names must use lowercase kebab-case (e.g., `uptime-kuma.nix`) [CONTRIBUTING.md](../CONTRIBUTING.md)
 - **Secret Keys:** Use quoted attribute names for secret keys containing dashes, such as `sops.secrets."paperless-password"` [AGENTS.md](../AGENTS.md)
 
 ### 2. Underscore Paths and `default.nix`
@@ -60,7 +60,7 @@ modules/services/hermes-agent/
 
 ### 3. Roles, Aspects and Host Facts
 
-- **Roles** are aspects that include other aspects: `den.aspects.desktop` ([`modules/desktop/desktop.nix`](../modules/desktop/desktop.nix)), `den.aspects.server` ([`modules/server/server.nix`](../modules/server/server.nix)). Host aspects in [`modules/hosts/`](../modules/hosts) include the roles and features they want.
+- **Roles** are aspects that include other aspects: `den.aspects.desktop` ([`modules/desktop/desktop.nix`](../modules/desktop/desktop.nix)). Host aspects in [`modules/hosts/`](../modules/hosts) include the role and features they want.
 - **Features** are aspects (`den.aspects.<name>` with `nixos` and/or `homeManager`). Including an aspect turns it on; there are no `codyos.<name>.enable` flags. Option-carrying `codyos.*` settings that remain are declared next to their consumer (e.g. `codyos.site` in [`modules/site.nix`](../modules/site.nix)).
 - **Host facts** (`channel`, `localAi`, `lan`, `tailscale`, `mac`, `hardwareConfig`, `nvidiaPowerLimit`) are attributes on the `den.hosts` entry and are read by aspects from the `host` context.
 
@@ -129,7 +129,7 @@ The repository contains `AGENTS.md` files scattered throughout the tree. These f
 ### Directory-Specific Guidance
 
 - **[`modules/hosts/AGENTS.md`](../modules/hosts/AGENTS.md)**: Keep host files to machine facts, role selection and wiring.
-- **[`modules/users/AGENTS.md`](../modules/users/AGENTS.md)**, **[`modules/desktop/AGENTS.md`](../modules/desktop/AGENTS.md)**, **[`modules/server/AGENTS.md`](../modules/server/AGENTS.md)**, **[`modules/harness/AGENTS.md`](../modules/harness/AGENTS.md)**: placement rules for each area, including declaring secrets close to the consuming service.
+- **[`modules/users/AGENTS.md`](../modules/users/AGENTS.md)**, **[`modules/desktop/AGENTS.md`](../modules/desktop/AGENTS.md)**, **[`modules/web/AGENTS.md`](../modules/web/AGENTS.md)**, **[`modules/harness/AGENTS.md`](../modules/harness/AGENTS.md)**: placement rules for each area, including declaring secrets close to the consuming service.
 - **[`modules/README.md`](../modules/README.md)**: the module tree overview, how to add a host or aspect.
 
 ---

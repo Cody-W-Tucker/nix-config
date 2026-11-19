@@ -45,7 +45,7 @@
     };
 
   # Opt-in (nas): stricter fail2ban than the shared default above. Not included
-  # by den.default; the server role includes it.
+  # by den.default; nas includes it.
   den.aspects.networking.strict-fail2ban.nixos =
     { config, ... }:
 

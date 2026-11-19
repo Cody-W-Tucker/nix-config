@@ -34,10 +34,10 @@ modules/
   editor/nixvim/             # nixvim aspects + _plugins/ (plain HM modules)
   harness/                   # AI/operator harness; _hm/ holds the HM module tree
   services/                  # hermes-agent/, llama-swap/, opencode.nix, hindsight.nix,
-                             #   docker.nix, nginx.nix, paperless-scanning.nix,
-                             #   automations/
-  server/                    # `server` role + one aspect per NAS service
-                             #   (media/, langfuse/, backups, monitoring, …)
+                             #   paperless-scanning.nix
+  web/ feeds/ containers/      # NAS ingress + web apps; miniflux; docker
+  observability/ backups/      # logging, monitoring; restic jobs
+  server/                    # NAS services not yet relocated (media/, langfuse/, paperless, tika, open-webui)
 ```
 
 ## Conventions
@@ -71,8 +71,8 @@ modules/
 - **Host**: see [`modules/README.md`](../modules/README.md#adding-a-host).
 - **Aspect**: create `modules/<area>/<name>.nix` with `den.aspects.<name> = { nixos = …; homeManager = …; };`
   and add `den.aspects.<name>` to a role or host aspect's `includes`.
-- **NAS service**: a new `modules/server/<service>.nix` defining `den.aspects.<service>.nixos`
-  (secrets, nginx vhost, firewall and backups next to it), included from `modules/server/server.nix`.
+- **NAS service**: a new `modules/web/<service>.nix` (or the feature directory it belongs to) defining `den.aspects.<service>.nixos`
+  (secrets, nginx vhost, firewall and backups next to it), included from `den.aspects.nas` in `modules/hosts/nas.nix`.
 - **Flake output**: a new file in `modules/flake/` defining `flake.<output>`.
 - New files must be `git add`-ed before Nix sees them.
 

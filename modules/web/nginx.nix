@@ -75,4 +75,95 @@
 
   # nginx provides the mkNginxVhost module argument to every module on every host.
   den.default.includes = [ den.aspects.nginx ];
+
+  # nginx.server: the NAS ingress. Wildcard ACME certificate for the site domain (DNS-01
+  # through Cloudflare), the nginx service with shared proxy settings, a localhost-only
+  # stub_status endpoint for the metrics exporter, and the HTTP/HTTPS firewall openings.
+  # Service aspects add their own virtual hosts through mkNginxVhost. Included by nas.
+  den.aspects.nginx.server.nixos =
+    {
+      config,
+      mkNginxVhost,
+      pkgs,
+      ...
+    }:
+    let
+      inherit (config.codyos.site) domain;
+    in
+    {
+      # Create the acme secret in sops
+      sops.secrets.cloudflare-api-email = { };
+      sops.secrets.cloudflare-api-key = { };
+
+      # Acme for SSL
+      security.acme = {
+        acceptTerms = true;
+        defaults = {
+          inherit (config.codyos.site.user) email;
+        };
+        certs.${domain} = {
+          inherit domain;
+          extraDomainNames = [ "*.${domain}" ];
+          dnsProvider = "cloudflare";
+          dnsResolver = "1.1.1.1:53";
+          dnsPropagationCheck = true;
+          credentialFiles = {
+            "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
+            "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets.cloudflare-api-key.path;
+          };
+        };
+      };
+
+      services.nginx = {
+        enable = true;
+        package = pkgs.nginxMainline;
+        recommendedTlsSettings = true;
+        recommendedOptimisation = true;
+        recommendedGzipSettings = true;
+        recommendedProxySettings = true;
+        # Enable access logging for Loki
+        appendHttpConfig = ''
+          proxy_headers_hash_max_size 1024;
+          proxy_headers_hash_bucket_size 128;
+
+          # Access log for Loki ingestion
+          access_log /var/log/nginx/access.log;
+        '';
+        # These services run on the NAS
+        virtualHosts =
+          # Internal status endpoint for metrics
+          mkNginxVhost {
+            host = "localhost";
+            forceSSL = false;
+            kTLS = false;
+            useACMEHost = null;
+            listen = [
+              {
+                addr = "127.0.0.1";
+                port = 9114;
+              }
+            ];
+            locations = {
+              "/nginx_status" = {
+                extraConfig = ''
+                  stub_status on;
+                  allow 127.0.0.1;
+                  deny all;
+                '';
+              };
+            };
+          };
+      };
+
+      users.users.nginx.extraGroups = [ "acme" ];
+
+      networking.firewall = {
+        enable = true;
+        allowPing = true;
+        allowedTCPPorts = [
+          80
+          443
+        ];
+      };
+    };
 }

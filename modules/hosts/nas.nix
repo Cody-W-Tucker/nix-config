@@ -20,7 +20,40 @@ in
   den.aspects.nas = {
     includes = [
       den.aspects.hermes-agent
-      den.aspects.server
+      # The former server role's includes, in their original order. Order is load-bearing:
+      # den concatenates included modules in reverse include order, so list-valued
+      # options (nas.backups.sqlite/dataDirectories, systemd.tmpfiles.rules) follow it.
+      # Reordering is safe functionally but changes the Restic job layout and tmpfiles.
+      den.aspects.nginx.server
+      den.aspects.docker
+      den.aspects.docker.oci-backend
+      den.aspects.syncthing
+      den.aspects.miniflux-curator
+      den.aspects.backup-health
+      den.aspects.backups
+      den.aspects.binary-cache.server
+      den.aspects.langfuse
+      den.aspects.actual-budget
+      den.aspects.dawarich
+      den.aspects.home-assistant
+      den.aspects.open-webui
+      den.aspects.dns
+      den.aspects.miniflux
+      den.aspects.excalidraw
+      den.aspects.homepage
+      den.aspects.karakeep
+      den.aspects.mealie
+      den.aspects.monitoring
+      den.aspects.nfs.server
+      den.aspects.paperless
+      den.aspects.paperless-gpt
+      den.aspects.photos
+      den.aspects.samba.server
+      den.aspects.networking.strict-fail2ban
+      den.aspects.syncthing.nginx
+      den.aspects.tika
+      den.aspects.uptime-kuma
+      den.aspects.media
       den.aspects.nvidia
       den.aspects.llama-swap
       den.aspects.hindsight

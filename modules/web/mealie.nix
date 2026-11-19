@@ -25,7 +25,7 @@
 
       warnings =
         lib.optional (cfg.enable && lib.versionAtLeast pkgs.mealie.version cfg.package.version)
-          "Stable mealie (${pkgs.mealie.version}) has caught up with the unstable pin (${cfg.package.version}); remove `services.mealie.package` from modules/server/mealie.nix.";
+          "Stable mealie (${pkgs.mealie.version}) has caught up with the unstable pin (${cfg.package.version}); remove `services.mealie.package` from modules/web/mealie.nix.";
 
       services.nginx.virtualHosts = mkNginxVhost {
         host = "mealie.${domain}";

@@ -1,5 +1,5 @@
 {
-  den.aspects.content.nixos =
+  den.aspects.miniflux.nixos =
     {
       mkNginxVhost,
       config,

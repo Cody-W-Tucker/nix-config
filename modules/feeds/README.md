@@ -1,11 +1,11 @@
-# Automations
+# Feeds and automations
 
 This directory contains reusable NixOS modules for scheduled jobs and system automations. Simple one-host tasks can also be defined directly in a host module.
 
 ## Layout
 
 ```text
-modules/services/automations/
+modules/feeds/
 ├── backup-photos/
 │   ├── default.nix      # service and timer config
 │   └── script.nix       # script package, when complex
@@ -52,7 +52,7 @@ in
 ## Pattern: longer script in a separate file
 
 ```nix
-# modules/services/automations/rotate-logs/script.nix
+# modules/feeds/rotate-logs/script.nix
 { pkgs }:
 
 pkgs.writeShellApplication {
@@ -83,7 +83,7 @@ pkgs.writeShellApplication {
 ```
 
 ```nix
-# modules/services/automations/rotate-logs/default.nix
+# modules/feeds/rotate-logs/default.nix
 { pkgs, ... }:
 
 let

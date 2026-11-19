@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, inputs, ... }:
 {
   # Media stack: one aspect per service in this directory, plus the shared base
   # directory tree and the media group they all use.
@@ -15,6 +15,11 @@
     ];
 
     nixos = {
+      # vpn-confinement declares vpnNamespaces and systemd.services.<name>.vpnConfinement;
+      # transmission.nix defines the wg namespace and arr-stack.nix confines its services
+      # in it, so the module is imported once here, by the aspect that includes both.
+      imports = [ inputs.vpn-confinement.nixosModules.default ];
+
       # Pin the media group GID so container PUID/PGID environment strings can
       # reference it at eval time: auto-assigned GIDs are not visible to the
       # module system (config.users.groups.<name>.gid stays null), which is

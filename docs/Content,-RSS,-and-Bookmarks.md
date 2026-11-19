@@ -8,7 +8,7 @@ Miniflux serves as the primary RSS feed aggregator. It is configured to run on a
 
 ### Configuration
 
-The service is configured with a cleanup frequency of 48 hours and allows private network integrations to facilitate communication with the `miniflux-curator`[modules/server/content.nix](../modules/server/content.nix) Admin credentials are managed securely via SOPS templates [modules/server/content.nix](../modules/server/content.nix)
+The service is configured with a cleanup frequency of 48 hours and allows private network integrations to facilitate communication with the `miniflux-curator`[modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix) Admin credentials are managed securely via SOPS templates [modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix)
 
 ## Karakeep Bookmark Manager
 
@@ -18,11 +18,11 @@ Karakeep is the central repository for bookmarks and serves as the "reference se
 
 Karakeep utilizes local models via `llama-swap` for several features:
 
-- **Summarization**: Uses `qwen-3.5-4b` for text inference [modules/server/karakeep.nix](../modules/server/karakeep.nix)
-- **Embeddings**: Uses `qwen3-embedding-0.6b` for semantic representation [modules/server/karakeep.nix](../modules/server/karakeep.nix)
-- **OCR**: Uses the `glm-ocr-f16` multimodal model for extracting text from images [modules/server/karakeep.nix](../modules/server/karakeep.nix)
+- **Summarization**: Uses `qwen-3.5-4b` for text inference [modules/web/karakeep.nix](../modules/web/karakeep.nix)
+- **Embeddings**: Uses `qwen3-embedding-0.6b` for semantic representation [modules/web/karakeep.nix](../modules/web/karakeep.nix)
+- **OCR**: Uses the `glm-ocr-f16` multimodal model for extracting text from images [modules/web/karakeep.nix](../modules/web/karakeep.nix)
 
-The service connects to the OpenAI-compatible API provided by `llama-swap` at `http://nas:8081/v1`[modules/server/karakeep.nix](../modules/server/karakeep.nix)
+The service connects to the OpenAI-compatible API provided by `llama-swap` at `http://nas:8081/v1`[modules/web/karakeep.nix](../modules/web/karakeep.nix)
 
 ## Miniflux Curator Automation
 
@@ -32,16 +32,16 @@ The `miniflux-curator` is a custom Python-based service that automatically manag
 
 The curator operates in a pipeline:
 
-1. **Reference Selection**: Fetches recent bookmarks from Karakeep and selects a tag-balanced set [modules/services/automations/miniflux-curator/curator.py](https://github.com/Cody-W-Tucker/miniflux-curator/blob/main/curator/main.py)
-2. **Embedding**: Generates embeddings for both the reference bookmarks and unread Miniflux entries using the `qwen3-embedding-0.6b` model [modules/server/content.nix](../modules/server/content.nix)
-3. **Similarity Calculation**: Calculates the `cosine_similarity` between entry vectors and reference vectors [modules/services/automations/miniflux-curator/curator.py](https://github.com/Cody-W-Tucker/miniflux-curator/blob/main/curator/main.py)
-4. **Auto-Marking**: Articles with a similarity score below the `autoMarkReadBelow` threshold (default 4.5) are marked as read [modules/server/content.nix](../modules/server/content.nix)
+1. **Reference Selection**: Fetches recent bookmarks from Karakeep and selects a tag-balanced set [modules/feeds/miniflux-curator.nix](https://github.com/Cody-W-Tucker/miniflux-curator/blob/main/curator/main.py)
+2. **Embedding**: Generates embeddings for both the reference bookmarks and unread Miniflux entries using the `qwen3-embedding-0.6b` model [modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix)
+3. **Similarity Calculation**: Calculates the `cosine_similarity` between entry vectors and reference vectors [modules/feeds/miniflux-curator.nix](https://github.com/Cody-W-Tucker/miniflux-curator/blob/main/curator/main.py)
+4. **Auto-Marking**: Articles with a similarity score below the `autoMarkReadBelow` threshold (default 4.5) are marked as read [modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix)
 
 ### Implementation Details
 
-- **State Tracking**: Uses a `state.json` file to track the `last_processed_id`, ensuring it only processes new entries [modules/services/automations/miniflux-curator/curator.py](https://github.com/Cody-W-Tucker/miniflux-curator/blob/main/curator/main.py)
-- **Title Normalization**: Implements complex regex logic in `normalize_title` to strip source chrome (e.g., " | The Verge") and extract quoted titles from attribution wrappers [modules/services/automations/miniflux-curator/curator.py](https://github.com/Cody-W-Tucker/miniflux-curator/blob/main/curator/main.py)
-- **Systemd Integration**: Runs as a `oneshot` service on a systemd timer (7:15 AM and 11:15 PM) [modules/server/content.nix](../modules/server/content.nix)
+- **State Tracking**: Uses a `state.json` file to track the `last_processed_id`, ensuring it only processes new entries [modules/feeds/miniflux-curator.nix](https://github.com/Cody-W-Tucker/miniflux-curator/blob/main/curator/main.py)
+- **Title Normalization**: Implements complex regex logic in `normalize_title` to strip source chrome (e.g., " | The Verge") and extract quoted titles from attribution wrappers [modules/feeds/miniflux-curator.nix](https://github.com/Cody-W-Tucker/miniflux-curator/blob/main/curator/main.py)
+- **Systemd Integration**: Runs as a `oneshot` service on a systemd timer (7:15 AM and 11:15 PM) [modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix)
 
 ### Logic Flow Diagram
 

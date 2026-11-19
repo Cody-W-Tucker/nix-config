@@ -1,12 +1,12 @@
-# Automations
+# Feeds and automations
 
-Owns reusable system-level scheduled jobs and automation services under `modules/services/automations`.
+Owns Miniflux and the miniflux-curator under `modules/feeds` (`miniflux.nix`: the reader plus the curator's values on nas; `miniflux-curator.nix`: the reusable curator module and its options), and the placement rules for reusable system-level scheduled jobs.
 
 Does not own one-host cron-like tasks unless they are reusable enough to become a module, and does not own user-session launchers or Home Manager tools.
 
 ## Placement Rules
 
-- Put each reusable automation in its own kebab-case directory with `default.nix` as the module entry point.
+- Put each reusable automation in its own kebab-case file (or directory with a `_` supporting tree) as one `den.aspects.<name>`; the generic examples in `README.md` predate the Den layout, so use an aspect file instead of `default.nix`.
 - Split longer scripts into nearby files such as `script.nix`; keep `default.nix` as the service/timer assembly point.
 - Define simple one-host automations in the host module instead of adding a new reusable module.
 - Keep secrets close to the consuming automation and use SOPS wiring rather than plaintext values.

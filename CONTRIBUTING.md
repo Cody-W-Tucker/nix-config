@@ -79,7 +79,7 @@ Use lowercase kebab-case almost everywhere.
 
 Examples:
 
-- `homepage-dashboard.nix`
+- `uptime-kuma.nix`
 - `hardware-configuration.nix`
 - `rofi-web-launcher.nix`
 
@@ -263,10 +263,10 @@ When changing a service or host module, prefer a host build over relying only on
 
 ### Add a new service
 
-1. Create `modules/<area>/<service>.nix` defining `den.aspects.<service>` (for NAS services, `modules/server/<service>.nix`)
+1. Create `modules/<area>/<service>.nix` defining `den.aspects.<service>` (for NAS web apps, `modules/web/<service>.nix`)
 2. Add secrets next to the service if needed
 3. Add nginx or firewall config in the same file when it is specific to that service
-4. Include the aspect from a role or host aspect (`modules/server/server.nix`, `modules/hosts/<host>.nix`)
+4. Include the aspect from a role or host aspect (`modules/hosts/<host>.nix`)
 5. `git add` the file and build the target host
 
 ### Add a new host

@@ -1,5 +1,5 @@
 {
-  den.aspects.homepage-dashboard.nixos =
+  den.aspects.homepage.nixos =
     {
       config,
       mkNginxVhost,

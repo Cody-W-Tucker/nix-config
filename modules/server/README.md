@@ -1,63 +1,6 @@
-# NAS modules
+# NAS modules (not yet relocated)
 
-This directory owns the shared service modules, currently deployed on the `nas` host. The NAS is the `homehub.tv` service hub: Nginx ingress, ACME certificates, media automation, photos, documents, file sharing, DNS filtering, Syncthing, and observability.
-
-## Operating model
-
-- Host entry point: `modules/hosts/nas.nix`
-- Module entry point: `modules/server/server.nix` (the `server` role aspect; it includes one aspect per service below)
-- Public interface: Nginx virtual hosts under `homehub.tv`
-- Certificate model: ACME DNS-01 through Cloudflare, with Nginx in the `acme` group
-- Remote access: Tailscale plus HTTPS subdomains
-- Shared service storage: `/mnt/media`
-- Media library root: `/mnt/media` (flat category directories)
-- Main service group: `media`
-
-The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for service data.
-
-## Module map
-
-| File | Owns |
-| --- | --- |
-| `server.nix` | `server` role: includes every service aspect; ACME, Nginx base config, firewall openings, OCI backend |
-| `media/` | `media.nix` (shared media group and directories) plus one aspect per service: Jellyfin, Navidrome, Calibre, Arr stack, Seerr, Transmission (VPN confinement), Audiobookshelf, Shelfmark |
-| `photos.nix` | Immich, photo storage, upload proxy tuning, photo backup job |
-| `paperless.nix`, `paperless-gpt.nix`, `tika.nix` | Paperless-ngx, its LLM helper, and Apache Tika |
-| (`../file-sharing/samba.nix`, `../file-sharing/nfs.nix`) | LAN file shares, WSDD discovery, NFS; server sides (`samba.server`, `nfs.server`) included here, client sides by beast |
-| (`../networking/dns.nix`) | DNS filtering and local resolver integration (`den.aspects.dns`) |
-| (`../sync/syncthing.nix`, `syncthing.nginx`) | Syncthing web UI reverse proxy |
-| `monitoring.nix`, `uptime-kuma.nix` | Prometheus, Grafana, Loki, Tempo, exporters, dashboards, scrape targets; uptime checks |
-| `homepage-dashboard.nix` | Homepage layout and service links |
-| `content.nix`, `karakeep.nix` | RSS/content services (Miniflux curator values), bookmark service |
-| `langfuse/` | Langfuse LLM observability stack (web, worker, postgres, clickhouse, minio, redis), SOPS env file, Nginx ingress |
-| `actual-budget.nix`, `dawarich.nix`, `mealie.nix`, `home-assistant.nix`, `excalidraw.nix`, `open-webui.nix` | Individual apps |
-| `backups.nix`, `_backup-options.nix`, `backup-health.nix` | `nas.backups.*` options, Restic jobs, backup health metrics |
-| (`../networking/networking.nix`, `networking.strict-fail2ban`) | Fail2Ban and server hardening |
-| (`../nix/binary-cache.nix`, `../nix/nightly-build.nix`) | Harmonia binary cache and the nightly build; server side included here, client side by beast |
-| (`../networking/wake-on-lan.nix`, `wake-on-lan.waker`) | Declared but included nowhere (see AGENTS.md) |
-
-## Ingress and domains
-
-Nginx is the single HTTPS entry point for local server services and selected services running elsewhere. `server.nix` sets the shared proxy behavior and wildcard certificate handling, then service modules add their own virtual hosts.
-
-Common service mappings:
-
-| Service | Domain | Port / target | Module |
-| --- | --- | --- | --- |
-| Homepage | `homehub.tv` | `8082` | `homepage-dashboard.nix` |
-| Jellyfin | `media.homehub.tv` | `8096` | `media/` |
-| Navidrome | `music.homehub.tv` | `4533` | `media/` |
-| Calibre-Web | `books.homehub.tv` | `8083` | `media/` |
-| Paperless | `paperless.homehub.tv` | `28981` | `paperless.nix` |
-| Immich | `photos.homehub.tv` | `2283` | `photos.nix` |
-| Grafana | `monitoring.homehub.tv` | `3001` | `monitoring.nix` |
-| Tika | `tika.homehub.tv` | `9998` | `tika.nix` |
-| Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `../sync/syncthing.nix` |
-| Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `../sync/syncthing.nix` |
-| Open WebUI | `chat.homehub.tv` | `8080` | `open-webui.nix` |
-| Langfuse | `langfuse.homehub.tv` | `3000` | `langfuse/` |
-
-Keep cross-host routing in the ingress layer, not inside unrelated service modules.
+Services still here: `media/`, `paperless.nix`, `paperless-gpt.nix`, `tika.nix`, `open-webui.nix`, `langfuse/`. Each is a `den.aspects.<service>` included directly by `modules/hosts/nas.nix`. Ingress, web apps, monitoring and backups are documented in `modules/web/README.md`, `modules/observability/README.md` and `modules/backups/README.md`.
 
 ## Media stack
 
@@ -104,11 +47,7 @@ Transmission is intentionally isolated in a WireGuard network namespace through 
 
 Do not expose Transmission directly unless the network model is being deliberately changed.
 
-## Photos, documents, and file sharing
-
-### Immich
-
-`photos.nix` runs Immich at `photos.homehub.tv` with data under `/mnt/media/Photos`. The Immich user is placed in the `video` and `render` groups for hardware acceleration. The Nginx vhost is tuned for large uploads with a high body-size limit and extended proxy timeouts.
+## Documents and file sharing
 
 ### Paperless and Tika
 
@@ -130,10 +69,6 @@ Paperless consume behavior is tuned for operator convenience:
 | `codytHome` | `/mnt/media/Share` | General personal storage |
 | `Music` | `/mnt/media/Music` | Music library management |
 | `PaperlessConsume` | `/var/lib/paperless/consume` | Document OCR drop zone |
-
-### Backups
-
-Photo and document data live on the `backup/photos` and `backup/documents` ZFS datasets, which `backups.nix` snapshots centrally. Service modules register their SQLite databases through `nas.backups.sqlite` for the Restic job in `backups.nix`; there are no per-service BorgBackup jobs.
 
 ## Langfuse
 
@@ -198,76 +133,3 @@ Images are pinned in `modules/server/langfuse/langfuse.nix`:
 
 For production, pin `postgres`/`redis` to a concrete patch and `minio` to a Chainguard digest rather than the rolling tag. The baseline was generated with compose2nix 0.3.3 from upstream `main` at inspection; re-run compose2nix against a new upstream compose and re-fold changes when upgrading major versions.
 
-## Network services
-
-The server also owns core local-network utilities:
-
-- `adguard.nix` handles AdGuard Home DNS filtering.
-- AdGuard is the LAN-facing filter and exposes its web UI on port `8000`.
-- Unbound is the local recursive resolver behind AdGuard and listens on `127.0.0.1:5335`.
-- DNS fallback is configured so the host can stay reachable during resolver bootstrap or local resolver failure.
-- `modules/sync/syncthing.nix` (`syncthing.nginx`) exposes Syncthing UIs through Nginx.
-- Shared Syncthing service configuration may live under `modules/services/`; only server-specific proxying belongs here.
-
-Syncthing is a two-host mesh between `nas` and `beast`. The shared service module owns device and folder declarations; this directory owns the server-side reverse proxies.
-
-| UI | Target | Notes |
-| --- | --- | --- |
-| `nas-syncthing.homehub.tv` | `127.0.0.1:8384` | Local NAS Syncthing GUI |
-| `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | Beast Syncthing GUI over Tailscale |
-
-The shared folder paths are host-specific: NAS uses `/mnt/media/Share`; beast uses `/mnt/backup/Share`.
-
-Keep DNS and sync changes small and explicit. These services affect the rest of the LAN.
-
-## Monitoring
-
-`monitoring.nix` owns the LGTM-style stack:
-
-- Prometheus for metrics.
-- Grafana at `monitoring.homehub.tv` for dashboards.
-- Loki for logs, including Nginx log ingestion.
-- Tempo for traces and OTLP ingestion.
-- Exporters for Nginx, SMART, GPU, and remote targets as configured.
-
-The node exporter (`9002`) and systemd journal shipping to Loki (Fluent Bit) are not defined here; they come from the shared `modules/observability/logging.nix`, which every host imports. `monitoring.nix` only appends the NAS-specific Fluent Bit input and output for the Nginx access log.
-
-Prometheus scrapes the server and selected `beast` metrics. Important endpoints and roles:
-
-| Component | Endpoint / port | Role |
-| --- | --- | --- |
-| Grafana | `3001` | Dashboard UI behind `monitoring.homehub.tv` |
-| Prometheus | `9001` | Metrics store and scrape scheduler |
-| Server node exporter | `9002` | Server host and systemd metrics |
-| Server Nginx exporter | `9115` | Nginx status metrics from the local stub status endpoint |
-| Server nginxlog exporter | `9117` | Nginx access-log metrics |
-| Loki | `3090` | Log storage and query backend |
-| Tempo | `3200` | Trace storage and query backend |
-| Tempo OTLP gRPC | `127.0.0.1:4327` | Trace ingest |
-| Tempo OTLP HTTP | `127.0.0.1:4328` | Trace ingest |
-| Beast node exporter | `beast:9002` | Remote host metrics |
-| Beast Nvidia GPU exporter | `beast:9835` | GPU metrics for AI workloads |
-| SMART exporters | host-specific | Drive health metrics |
-
-Loki is configured as a single-binary filesystem-backed deployment with short retention. Nginx access logs are routed explicitly so both log and metric ingestion stay predictable.
-
-If adding a service, add the exporter and scrape target in the same module that owns the monitoring integration, then expose it in Grafana only when it is useful to operate.
-
-## Security notes
-
-- Keep the public attack surface behind Nginx unless a protocol requires direct LAN access.
-- Firewall openings are deliberate: HTTPS/HTTP for ingress plus required LAN services such as NFS/RPC.
-- Fail2Ban policy lives in `modules/networking/networking.nix` (`strict-fail2ban`).
-- VPN credentials and other secrets must stay in SOPS, close to the consuming service declaration.
-- New files must be git-tracked before flakes can see them.
-
-## Change checklist
-
-When adding or changing a server service:
-
-1. Put the implementation in the narrowest owning module.
-2. Add storage permissions with tmpfiles if another service must read or write the data.
-3. Add the Nginx vhost in the service module unless it is a cross-host proxy owned by `server.nix`.
-4. Keep secrets in SOPS and quote dashed secret names.
-5. Add dashboard and monitoring entries only if they help operate the service.
-6. For risky service or networking changes, dry-run the NAS build with `nixos-rebuild dry-run --flake .#nas`.

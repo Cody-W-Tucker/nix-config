@@ -10,7 +10,7 @@ Host policy (identity, aspect includes, ZFS storage settings, networking, Home M
 
 | Path          | Role                                                                                                                                                                         |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `nas.nix` | Host policy: aspect includes, `provides.to-users` Home Manager settings, ZFS pool/ARC, Btrfs auto-scrub, home bind mounts, networking, Tailscale subnet router, Docker, CUDA toolkit, Home Manager settings. ZFS snapshot policy lives in `modules/server/backups.nix`. |
+| `nas.nix` | Host policy: aspect includes, `provides.to-users` Home Manager settings, ZFS pool/ARC, Btrfs auto-scrub, home bind mounts, networking, Tailscale subnet router, Docker, CUDA toolkit, Home Manager settings. ZFS snapshot policy lives in `modules/backups/backups.nix`. |
 | `_nas-hardware.nix` | Hardware: filesystems (Btrfs root, Btrfs appdata/projects/knowledge, ext4 media; all `noatime`) and initrd/kernel modules. |
 | `modules/services/llama-swap/_nas-models.nix` | Imported by the `llama-swap` aspect (not in this directory):  CUDA acceleration (Blackwell sm_120a), model catalog (chat, embedding, OCR, audio STT/TTS).                         |
 

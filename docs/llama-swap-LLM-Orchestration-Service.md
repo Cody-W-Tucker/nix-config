@@ -79,10 +79,10 @@ Services within the NixOS configuration consume `llama-swap` by pointing their A
 **Example: Karakeep Integration**
 The Karakeep bookmark service is configured to use `llama-swap` for summarization, embedding, and OCR:
 
-- **Base URL**: `http://nas:8081/v1`[modules/server/karakeep.nix](../modules/server/karakeep.nix)
-- **Chat Model**: `qwen-3.5-4b`[modules/server/karakeep.nix](../modules/server/karakeep.nix)
-- **OCR Model**: `glm-ocr-f16`[modules/server/karakeep.nix](../modules/server/karakeep.nix)
-- **Embedding Model**: `qwen3-embedding-0.6b`[modules/server/karakeep.nix](../modules/server/karakeep.nix)
+- **Base URL**: `http://nas:8081/v1`[modules/web/karakeep.nix](../modules/web/karakeep.nix)
+- **Chat Model**: `qwen-3.5-4b`[modules/web/karakeep.nix](../modules/web/karakeep.nix)
+- **OCR Model**: `glm-ocr-f16`[modules/web/karakeep.nix](../modules/web/karakeep.nix)
+- **Embedding Model**: `qwen3-embedding-0.6b`[modules/web/karakeep.nix](../modules/web/karakeep.nix)
 
 ### Code Entity Mapping
 

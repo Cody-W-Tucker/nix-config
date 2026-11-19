@@ -66,7 +66,7 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ### Module Structure
 
-- `flake.nix` is inputs plus one `evalModules` over `inputs.den.flakeModule` and `import-tree ./modules`; its `.config.flake` is every flake output. Every non-underscore `.nix` under `modules/` is a flake-level Den module: hosts in `modules/hosts/<host>.nix`, `modules/desktop/desktop.nix`, `modules/server/server.nix`, other aspects in `modules/{hardware,users,editor,harness,services}/`, and non-host flake outputs (`overlays`, `packages`, `checks`, `formatter`) in `modules/flake/`. Plain NixOS/Home Manager modules, scripts and data live under `_` paths and are imported by their aspect. See `modules/README.md` and `docs/Den-Native-Layout.md`.
+- `flake.nix` is inputs plus one `evalModules` over `inputs.den.flakeModule` and `import-tree ./modules`; its `.config.flake` is every flake output. Every non-underscore `.nix` under `modules/` is a flake-level Den module: hosts in `modules/hosts/<host>.nix`, `modules/desktop/desktop.nix`, other aspects in `modules/{hardware,users,editor,harness,web,feeds,backups,observability,services,server}/`, and non-host flake outputs (`overlays`, `packages`, `checks`, `formatter`) in `modules/flake/`. Plain NixOS/Home Manager modules, scripts and data live under `_` paths and are imported by their aspect. See `modules/README.md` and `docs/Den-Native-Layout.md`.
 - No `default.nix` outside `_` paths (`check-imports` enforces it).
 - Naming: new code follows `docs/Den-Native-Layout.md`.
 - Keep `default.nix` short.

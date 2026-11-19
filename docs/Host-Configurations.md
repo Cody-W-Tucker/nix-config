@@ -18,7 +18,7 @@ Both hosts share foundational features that register themselves in `den.default.
 - **Composition root:** [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) (den host entry, aspect includes and machine facts); hardware in [`_nas-hardware.nix`](../modules/hosts/_nas-hardware.nix); the model catalog is [`modules/services/llama-swap/_nas-models.nix`](../modules/services/llama-swap/_nas-models.nix).
 - **Host documentation:** [`modules/hosts/nas.md`](../modules/hosts/nas.md) — hardware profile, storage layout, networking, services, ZFS pool health.
 - **Channel:** stable `nixpkgs` (`nixos-26.05`), paired with `home-manager-stable` (`release-26.05`).
-- **Role:** Central services host for the `homehub.tv` infrastructure. Service aspects live under [`modules/server/`](../modules/server).
+- **Role:** Central services host for the `homehub.tv` infrastructure. Service aspects live in feature directories (`modules/web/`, `modules/feeds/`, `modules/observability/`, `modules/backups/`, `modules/server/`), all included by `modules/hosts/nas.nix`.
 
 ### Backup and snapshot health
 
@@ -33,4 +33,4 @@ Both hosts share foundational features that register themselves in `den.default.
 | **Nixpkgs channel** | `nixos-unstable`                                 | `nixos-26.05` (stable)                               |
 | **Home Manager**    | `home-manager` (unstable)                        | `home-manager-stable` (`release-26.05`)              |
 | **Composition root**| [`modules/hosts/beast.nix`](../modules/hosts/beast.nix) | [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) |
-| **Module scope**    | `desktop` role aspect ([`modules/desktop/`](../modules/desktop)) + AI | `server` role aspect ([`modules/server/`](../modules/server)) |
+| **Module scope**    | `desktop` role aspect ([`modules/desktop/`](../modules/desktop)) + AI | feature aspects included directly by [`modules/hosts/nas.nix`](../modules/hosts/nas.nix) |

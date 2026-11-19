@@ -8,7 +8,7 @@ This page provides definitions for codebase-specific terms, jargon, and domain c
 | ----------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Beast**   | The high-performance desktop workstation host (Intel i9-14900KF / NVIDIA 3070). | [modules/hosts/beast.nix](../modules/hosts/beast.nix) |
 | **NAS**     | The home lab / NAS host (Intel i5-14400F, NVIDIA GTX 1650) providing centralized services. | [modules/hosts/nas.nix](../modules/hosts/nas.nix)                                              |
-| **HomeHub** | The primary domain (`homehub.tv`) used for internal web services.               | [modules/server/homepage-dashboard.nix](../modules/server/homepage-dashboard.nix) |
+| **HomeHub** | The primary domain (`homehub.tv`) used for internal web services.               | [modules/web/homepage.nix](../modules/web/homepage.nix) |
 | **Stylix**  | The system-wide theming engine used to unify colors across CLI and GUI.         | [modules/desktop/theming.nix](../modules/desktop/theming.nix)                                                   |
 | **SOPS**    | Secrets Operations; used for encrypted secret management within the flake.      | [modules/secrets.nix](../modules/secrets.nix)                                                   |
 
@@ -21,7 +21,7 @@ flowchart LR
     subgraph subGraph1 ["Code Entity Space"]
         A_Code["modules/hosts/beast.nix"]
         B_Code["./modules/hosts/nas.nix"]
-        C_Code["modules/server/server.nix"]
+        C_Code["modules/web/nginx.nix"]
     end
     subgraph subGraph0 ["Natural Language Space"]
         A["The Beast (Workstation)"]
@@ -36,7 +36,7 @@ flowchart LR
     C_Code --> Nginx
 ```
 
-Sources:[modules/hosts/nas.nix](../modules/hosts/nas.nix)[modules/server/server.nix](../modules/server/server.nix)
+Sources:[modules/hosts/nas.nix](../modules/hosts/nas.nix)[modules/web/nginx.nix](../modules/web/nginx.nix)
 
 ## AI & Agent Domain Concepts
 
@@ -90,8 +90,8 @@ Sources: [modules/services/hermes-agent/_hm/default.nix](../modules/services/her
 - **Arr Suite**: Refers to the collection of media management tools: `Sonarr` (TV), `Radarr` (Movies), `Readarr` (Books), `Lidarr` (Music), and `Prowlarr` (Indexers). [modules/server/media/media.nix](../modules/server/media/media.nix)
 - **VPN Confinement**: A mechanism using network namespaces to force specific services (like `transmission`) to only communicate via a Wireguard interface. [modules/server/media/media.nix](../modules/server/media/media.nix)
 - **Kobo Sync**: A specialized configuration for `calibre-web` to allow e-readers to synchronize libraries over the network. [modules/server/media/media.nix](../modules/server/media/media.nix)
-- **Miniflux Curator**: A Python-based automation script that uses LLM embeddings to score RSS articles and auto-read low-score content. [modules/server/content.nix](../modules/server/content.nix)
-- **ACME/Cloudflare**: The automated pipeline for generating wildcard SSL certificates for `*.homehub.tv` using DNS-01 challenges. [modules/server/server.nix](../modules/server/server.nix)
+- **Miniflux Curator**: A Python-based automation script that uses LLM embeddings to score RSS articles and auto-read low-score content. [modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix)
+- **ACME/Cloudflare**: The automated pipeline for generating wildcard SSL certificates for `*.homehub.tv` using DNS-01 challenges. [modules/web/nginx.nix](../modules/web/nginx.nix)
 
 ## Desktop & Environment Terms
 
