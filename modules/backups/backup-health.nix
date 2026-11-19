@@ -72,6 +72,8 @@
       };
     in
     {
+      imports = [ ./_backup-options.nix ];
+
       systemd.tmpfiles.rules = [
         "d ${textfileDir} 0755 root root -"
         "d ${runDir} 0755 root root -"
@@ -89,10 +91,8 @@
         ${pkgs.coreutils}/bin/rm -f ${textfileDir}/nas_backup_restic-backups-nas-files.prom ${textfileDir}/nas_zfs_snapshots.prom
       '';
 
-      systemd.services."postgresqlBackup".serviceConfig = mkHealthHooks "postgresqlBackup";
-      systemd.services."langfuse-postgres-backup".serviceConfig =
-        mkHealthHooks "langfuse-postgres-backup";
-      systemd.services."langfuse-clickhouse-backup".serviceConfig =
-        mkHealthHooks "langfuse-clickhouse-backup";
+      systemd.services = lib.genAttrs config.nas.backups.healthJobs (job: {
+        serviceConfig = mkHealthHooks job;
+      });
     };
 }

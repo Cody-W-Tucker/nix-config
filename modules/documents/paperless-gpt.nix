@@ -10,6 +10,11 @@
       inherit (config.codyos.site) domain;
     in
     {
+      nas.backups.dataDirectories = [
+        "/var/lib/paperless-gpt/prompts"
+        "/var/lib/paperless-gpt/config"
+      ];
+
       # Env file supplying secrets the upstream container requires.
       # Expected format (plain KEY=VALUE lines):
       #   PAPERLESS_API_TOKEN=<token>   # authenticates to the Paperless API

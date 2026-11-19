@@ -2,6 +2,12 @@
 
 {
   options.nas.backups = {
+    healthJobs = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Backup systemd service names monitored by backup-health.";
+    };
+
     dataDirectories = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];

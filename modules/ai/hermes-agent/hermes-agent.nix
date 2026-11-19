@@ -6,7 +6,7 @@
   #    provides.to-users to the host's users; den test deadbugs/issue-692).
   #  - nixos: backup wiring. The state and CRM SQLite files are exported by Restic's
   #    pre-backup step; remaining state is a direct Restic input (live *.db* files stay
-  #    excluded centrally in modules/backups/backups.nix). nas.backups.* exists only
+  #    excluded below). nas.backups.* exists only
   #    on the nas host (modules/backups/), so include this on nas only.
   den.aspects.hermes-agent = {
     provides.to-users.homeManager.imports = [ ./_hm ];
@@ -20,6 +20,20 @@
         # Installs the workflow CLI (inputs.workflow.packages.*.workflowCli) system-wide;
         # the Home Manager half wires the same package into Hermes.
         imports = [ inputs.workflow.nixosModules.default ];
+
+        # Live databases and caches are not consistent Restic inputs.
+        services.restic.backups.nas-files.exclude =
+          map (suffix: "${site.user.home}/.local/share/hermes/${suffix}")
+            [
+              "audio_cache"
+              "cache"
+              "**/*.db"
+              "**/*.db-wal"
+              "**/*.db-shm"
+              "**/*.sqlite"
+              "**/*.sqlite-wal"
+              "**/*.sqlite-shm"
+            ];
 
         nas.backups.sqlite = [
           {

@@ -1,10 +1,26 @@
 { pkgs, ... }:
 
 {
+  nas.backups.healthJobs = [
+    "langfuse-postgres-backup"
+    "langfuse-clickhouse-backup"
+  ];
+
   nas.backups.dataDirectories = [
     "/mnt/appdata/langfuse/minio"
     "/mnt/backup/backups/langfuse"
   ];
+
+  systemd.services.restic-backups-nas-files.unitConfig = {
+    After = [
+      "langfuse-postgres-backup.service"
+      "langfuse-clickhouse-backup.service"
+    ];
+    Requires = [
+      "langfuse-postgres-backup.service"
+      "langfuse-clickhouse-backup.service"
+    ];
+  };
 
   systemd.services.langfuse-postgres-backup = {
     description = "Create a consistent Langfuse PostgreSQL dump";

@@ -21,8 +21,6 @@
         "/mnt/projects"
         "/mnt/knowledge"
         "/var/lib/acme"
-        "/var/lib/paperless-gpt/prompts"
-        "/var/lib/paperless-gpt/config"
         "/mnt/backup/backups/postgresql"
       ];
 
@@ -60,21 +58,13 @@
       imports = [ ./_backup-options.nix ];
 
       sops.secrets."restic-nas-password" = { };
+      nas.backups.healthJobs = [ "postgresqlBackup" ];
 
       services.restic.backups.nas-files = {
         initialize = true;
         inherit passwordFile repository;
         paths = fixedHostData ++ cfg.dataDirectories ++ stagedDirs;
         exclude = [
-          # A live RocksDB/SQLite file copy is not a consistent database backup.
-          "${config.codyos.site.user.home}/.local/share/hermes/audio_cache"
-          "${config.codyos.site.user.home}/.local/share/hermes/cache"
-          "${config.codyos.site.user.home}/.local/share/hermes/**/*.db"
-          "${config.codyos.site.user.home}/.local/share/hermes/**/*.db-wal"
-          "${config.codyos.site.user.home}/.local/share/hermes/**/*.db-shm"
-          "${config.codyos.site.user.home}/.local/share/hermes/**/*.sqlite"
-          "${config.codyos.site.user.home}/.local/share/hermes/**/*.sqlite-wal"
-          "${config.codyos.site.user.home}/.local/share/hermes/**/*.sqlite-shm"
           "*.in-progress"
         ];
         backupPrepareCommand = "${sqlitePrepare}";
@@ -89,13 +79,9 @@
       systemd.services.restic-backups-nas-files.unitConfig = {
         After = [
           "postgresqlBackup.service"
-          "langfuse-postgres-backup.service"
-          "langfuse-clickhouse-backup.service"
         ];
         Requires = [
           "postgresqlBackup.service"
-          "langfuse-postgres-backup.service"
-          "langfuse-clickhouse-backup.service"
         ];
         ConditionPathIsMountPoint = [
           "/mnt/projects"
