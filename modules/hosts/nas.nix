@@ -21,7 +21,7 @@ in
     includes = [
       den.aspects.base
       den.aspects.hermes-agent
-      den.aspects.nas-role
+      den.aspects.server
       den.aspects.nvidia
       den.aspects.llama-swap
       den.aspects.hindsight
