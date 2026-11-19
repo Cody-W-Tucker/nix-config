@@ -152,16 +152,6 @@ in
               method = "auto";
             };
           };
-          firewall = {
-            interfaces.tailscale0.allowedTCPPorts = [
-              # Hermes API — reachable only over Tailscale (Beast→NAS voice pipeline)
-              # Hermes Dashboard — remote web UI, authenticated via basic auth
-              8642
-              9119
-              # llama-swap router — reachable only over Tailscale
-              8081
-            ];
-          };
         };
 
         # Docker package

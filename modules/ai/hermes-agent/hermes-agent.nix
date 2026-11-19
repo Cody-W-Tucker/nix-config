@@ -21,6 +21,11 @@
         # the Home Manager half wires the same package into Hermes.
         imports = [ inputs.workflow.nixosModules.default ];
 
+        networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+          8642
+          9119
+        ];
+
         # Live databases and caches are not consistent Restic inputs.
         services.restic.backups.nas-files.exclude =
           map (suffix: "${site.user.home}/.local/share/hermes/${suffix}")
