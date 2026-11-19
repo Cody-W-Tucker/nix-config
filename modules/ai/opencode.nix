@@ -8,7 +8,7 @@
   #    `osConfig`, so the NixOS template and this list entry stay paired by construction.
   # The shared Home Manager harness (modules/harness/_hm/opencode) appends
   # the opencode-langfuse-env template to the same EnvironmentFile list.
-  # Including this aspect is the switch; nas includes it.
+  # Including this aspect is the switch; nas includes it, beast includes opencode.remote.
   den.aspects.opencode = {
     nixos =
       { config, mkNginxVhost, ... }:
@@ -61,4 +61,21 @@
         ];
       };
   };
+
+  # opencode.remote: beast's client for the NAS OpenCode server above. The server uses HTTP
+  # Basic auth; scope its secret to the explicit remote alias so regular `op` sessions remain
+  # local. Included by beast only.
+  den.aspects.opencode.remote.provides.to-users.homeManager =
+    { osConfig, config, ... }:
+    let
+      inherit (osConfig.codyos.site) domain;
+    in
+    {
+      sops.secrets."opencode-password" = { };
+
+      programs.zsh.shellAliases.op- = ''
+        OPENCODE_SERVER_PASSWORD="$(<${config.sops.secrets."opencode-password".path})" \
+        opencode --server https://opencode.${domain}
+      '';
+    };
 }

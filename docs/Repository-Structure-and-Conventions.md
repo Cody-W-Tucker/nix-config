@@ -46,7 +46,7 @@ flowchart LR
 - **Example structure:**
 
 ```
-modules/services/hermes-agent/
+modules/ai/hermes-agent/
 ├── hermes-agent.nix   # den.aspects.hermes-agent (flake-level module)
 └── _hm/               # plain Home Manager module tree
     ├── default.nix    # the "spine" that imports the rest
@@ -142,7 +142,7 @@ Modules are designed to be single-purpose and self-contained. an aspect file (or
 
 ```mermaid
 flowchart TD
-    subgraph subGraph0 ["Module: modules/services/hermes-agent"]
+    subgraph subGraph0 ["Module: modules/ai/hermes-agent"]
         DEF["hermes-agent.nix → _hm/default.nix"]
         DOC["documents/"]
         MCP["mcp/"]
@@ -161,4 +161,4 @@ flowchart TD
 
 ### Nginx and Secrets Wiring
 
-For services like `hermes-agent`, the configuration is made fully declarative by writing the settings to a JSON file and forcing the activation script to overwrite the upstream `config.yaml`[modules/services/hermes-agent/_hm/default.nix](../modules/services/hermes-agent/_hm/default.nix) Secrets are injected via `sops.templates`, allowing dynamic environment variables to be populated at runtime [modules/services/hermes-agent/_hm/default.nix](../modules/services/hermes-agent/_hm/default.nix)
+For services like `hermes-agent`, the configuration is made fully declarative by writing the settings to a JSON file and forcing the activation script to overwrite the upstream `config.yaml`[modules/ai/hermes-agent/_hm/default.nix](../modules/ai/hermes-agent/_hm/default.nix) Secrets are injected via `sops.templates`, allowing dynamic environment variables to be populated at runtime [modules/ai/hermes-agent/_hm/default.nix](../modules/ai/hermes-agent/_hm/default.nix)

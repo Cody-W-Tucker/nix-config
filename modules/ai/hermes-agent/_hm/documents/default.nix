@@ -37,7 +37,7 @@ let
     # Hermes Environment
 
     Hermes is running in a declarative NixOS environment with a Home Manager service.
-    Persistent configuration lives in `${nixosConfigRoot}/modules/services/hermes-agent`, and mutable runtime state lives under `${hermesHome}`.
+    Persistent configuration lives in `${nixosConfigRoot}/modules/ai/hermes-agent`, and mutable runtime state lives under `${hermesHome}`.
     You can inspect and edit the NixOS repo, but you cannot rebuild from here. Changes only persist when they are written back to the repo.
 
     # Environment

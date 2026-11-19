@@ -8,24 +8,24 @@ The `llama-swap` service is a specialized NixOS module designed to manage local 
 
 ### Core Components and Logic
 
-The service is defined in `modules/services/llama-swap/default.nix`. It uses a submodule system to define a structured model catalog where each model can specify its own hardware requirements and runtime parameters [modules/services/llama-swap/default.nix](../modules/services/llama-swap/default.nix)
+The service is defined in `modules/ai/llama-swap/default.nix`. It uses a submodule system to define a structured model catalog where each model can specify its own hardware requirements and runtime parameters [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
 
 Key features include:
 
-- **TTL-based Swapping**: Models are kept alive for a specified duration after their last request. This is configured via the `ttl` option [modules/services/llama-swap/default.nix](../modules/services/llama-swap/default.nix)
+- **TTL-based Swapping**: Models are kept alive for a specified duration after their last request. This is configured via the `ttl` option [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
 - **Hardware Acceleration**: CUDA comes from the host-wide `nixpkgs.config.cudaSupport` (set by `codyos.hardware.nvidia`); the module has no backend switch of its own [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix)
-- **Command Generation**: The `mkModelCommand` function dynamically builds the `llama-server` CLI string, incorporating parameters like context size, batch size, and GPU layers [modules/services/llama-swap/default.nix](../modules/services/llama-swap/default.nix)
+- **Command Generation**: The `mkModelCommand` function dynamically builds the `llama-server` CLI string, incorporating parameters like context size, batch size, and GPU layers [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
 
 On NAS, the matrix router allows `qwen3-embedding-0.6b` to run alongside either
 the audio stack (`parakeet-tdt-v3`, `s1-mini`,
 and `kokoro-82m`) or `qwen-3.5-9b`.
 The audio and 9B stacks do not coexist; other models run alone. An embedding
 request can therefore evict an isolated model such as the 35B. Only requested
-models load, and their normal idle TTLs still apply. See [the NAS model config](../modules/services/llama-swap/_nas-models.nix).
+models load, and their normal idle TTLs still apply. See [the NAS model config](../modules/ai/llama-swap/_nas-models.nix).
 
 ## Model Catalog and Types
 
-The model catalog is centralized in `modules/services/llama-swap/_impl/models.nix`. This file defines the hardware "footprint" for each model, ensuring they fit within the host's VRAM constraints [modules/services/llama-swap/_impl/models.nix](../modules/services/llama-swap/_impl/models.nix)
+The model catalog is centralized in `modules/ai/llama-swap/_impl/models.nix`. This file defines the hardware "footprint" for each model, ensuring they fit within the host's VRAM constraints [modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix)
 
 ### Supported Model Categories
 
@@ -37,7 +37,7 @@ The model catalog is centralized in `modules/services/llama-swap/_impl/models.ni
 | **TTS**        | `kokoro-82m`           | `ttl = 0`                        | Text-to-Speech generation.             |
 | **SystemOne**  | `laya`                 | passthrough only                 | Speech via `POST /upstream/laya/v1/systemone`. |
 
-Sources: [modules/services/llama-swap/_impl/models.nix](../modules/services/llama-swap/_impl/models.nix)
+Sources: [modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix)
 
 ### Laya SystemOne (passthrough, not chat completions)
 
@@ -47,7 +47,7 @@ verified first b-tag containing upstream SystemOne support via
 which registers `/v1/systemone`) or semantic `>= 0.6.0`.
 Until the locked nixpkgs `llama-cpp` reaches b11361, the NAS config keeps Laya
 disabled (no fetch artifact, no enabled model, no override) via a temporary
-`nativeSystemOneSupported` gate in `modules/services/llama-swap/_nas-models.nix`.
+`nativeSystemOneSupported` gate in `modules/ai/llama-swap/_nas-models.nix`.
 
 When enabled, clients must use `POST /upstream/laya/v1/systemone` (llama-swap v249
 passthrough selects Laya and forwards `/v1/systemone` unchanged). This
@@ -55,22 +55,22 @@ differs from chat completions: do not send it OpenAI chat payloads.
 
 ### Multimodal and Projector Support
 
-For models with vision capabilities, such as `glm-ocr-f16`, the catalog must specify an `mmprojFile`[modules/services/llama-swap/_impl/models.nix](../modules/services/llama-swap/_impl/models.nix) This projector file is passed to `llama-server` via the `--mmproj` flag [modules/services/llama-swap/default.nix](../modules/services/llama-swap/default.nix)
+For models with vision capabilities, such as `glm-ocr-f16`, the catalog must specify an `mmprojFile`[modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix) This projector file is passed to `llama-server` via the `--mmproj` flag [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
 
 ## Hardware Acceleration Backends
 
-`llama-swap` has no backend switch of its own. `serverPackage` defaults to `pkgs.llama-cpp`, and the Python wrappers use plain `torch`, so CUDA comes from the host-wide `nixpkgs.config.cudaSupport` set by `codyos.hardware.nvidia` [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix). The `nas` host (NVIDIA RTX 5060) uses `pkgs.unstable.llama-cpp`, which inherits that config through the overlay [modules/services/llama-swap/_nas-models.nix](../modules/services/llama-swap/_nas-models.nix).
+`llama-swap` has no backend switch of its own. `serverPackage` defaults to `pkgs.llama-cpp`, and the Python wrappers use plain `torch`, so CUDA comes from the host-wide `nixpkgs.config.cudaSupport` set by `codyos.hardware.nvidia` [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix). The `nas` host (NVIDIA RTX 5060) uses `pkgs.unstable.llama-cpp`, which inherits that config through the overlay [modules/ai/llama-swap/_nas-models.nix](../modules/ai/llama-swap/_nas-models.nix).
 
 ## Specialized TTS Wrappers
 
-Some models do not run directly in `llama-server` but instead use Python-based OpenAI-compatible wrappers. These are defined in the catalog by omitting the `file` attribute and providing a custom `upstream.cmd`[modules/services/llama-swap/default.nix](../modules/services/llama-swap/default.nix)
+Some models do not run directly in `llama-server` but instead use Python-based OpenAI-compatible wrappers. These are defined in the catalog by omitting the `file` attribute and providing a custom `upstream.cmd`[modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
 
 ### Kokoro TTS Server
 
 The `kokoro-openai-server.py` script provides an OpenAI-compatible `/v1/audio/speech` endpoint for the Kokoro model. It includes:
 
-- **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `echo`) to Kokoro-specific voices [modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py)
-- **Offline Support**: Patches `huggingface_hub` to serve model weights and voices from local Nix store paths rather than downloading them at runtime [modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py)
+- **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `echo`) to Kokoro-specific voices [modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py)
+- **Offline Support**: Patches `huggingface_hub` to serve model weights and voices from local Nix store paths rather than downloading them at runtime [modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py)
 
 ## Integration and Usage
 

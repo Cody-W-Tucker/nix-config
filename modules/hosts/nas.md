@@ -6,13 +6,13 @@ Central docs should point here instead of duplicating this host map.
 
 ## Layout
 
-Host policy (identity, aspect includes, ZFS storage settings, networking, Home Manager) lives in the `den.aspects.nas` `nixos` block of `nas.nix`; disks and kernel modules live in `_nas-hardware.nix`. The llama-swap inference catalog lives in `modules/services/llama-swap/_nas-models.nix`.
+Host policy (identity, aspect includes, ZFS storage settings, networking, Home Manager) lives in the `den.aspects.nas` `nixos` block of `nas.nix`; disks and kernel modules live in `_nas-hardware.nix`. The llama-swap inference catalog lives in `modules/ai/llama-swap/_nas-models.nix`.
 
 | Path          | Role                                                                                                                                                                         |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `nas.nix` | Host policy: aspect includes, `provides.to-users` Home Manager settings, ZFS pool/ARC, Btrfs auto-scrub, home bind mounts, networking, Tailscale subnet router, Docker, CUDA toolkit, Home Manager settings. ZFS snapshot policy lives in `modules/backups/backups.nix`. |
 | `_nas-hardware.nix` | Hardware: filesystems (Btrfs root, Btrfs appdata/projects/knowledge, ext4 media; all `noatime`) and initrd/kernel modules. |
-| `modules/services/llama-swap/_nas-models.nix` | Imported by the `llama-swap` aspect (not in this directory):  CUDA acceleration (Blackwell sm_120a), model catalog (chat, embedding, OCR, audio STT/TTS).                         |
+| `modules/ai/llama-swap/_nas-models.nix` | Imported by the `llama-swap` aspect (not in this directory):  CUDA acceleration (Blackwell sm_120a), model catalog (chat, embedding, OCR, audio STT/TTS).                         |
 
 ## Hardware profile
 

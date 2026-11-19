@@ -1,6 +1,6 @@
 # Web apps and NAS ingress
 
-Owns `nginx.nix` (`mkNginxVhost` on every host; `den.aspects.nginx.server`, the NAS ingress) and one `den.aspects.<service>` per self-hosted single-service web app, each a NixOS module in the aspect's `nixos` block. `README.md` documents the ingress and the domain map. The same rules apply to the other NAS service directories (`feeds/`, `observability/`, `backups/`, `server/`).
+Owns `nginx.nix` (`mkNginxVhost` on every host; `den.aspects.nginx.server`, the NAS ingress) and one `den.aspects.<service>` per self-hosted single-service web app, each a NixOS module in the aspect's `nixos` block. `README.md` documents the ingress and the domain map. The same rules apply to the other NAS service directories (`feeds/`, `observability/`, `backups/`, `ai/`, `documents/`, `media/`).
 
 Does not own one-host facts (those are in `modules/hosts/nas.md`/`nas.nix`) or Home Manager/user preferences (`modules/users/`, `modules/harness/`).
 

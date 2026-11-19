@@ -15,7 +15,7 @@
 
       # Native dump locations (PostgreSQL) are Restic inputs directly.
       # App-specific dumps owned by their service modules (e.g. Langfuse
-      # Postgres/ClickHouse under modules/server/langfuse) register via
+      # Postgres/ClickHouse under modules/ai/langfuse) register via
       # nas.backups.dataDirectories instead of being listed here.
       fixedHostData = [
         "/mnt/projects"

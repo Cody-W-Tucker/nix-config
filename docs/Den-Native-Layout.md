@@ -33,11 +33,10 @@ modules/
                              #   _hyprland/, _waybar/, _obsidian/, _scripts/, _speech-to-text.nix
   editor/nixvim/             # nixvim aspects + _plugins/ (plain HM modules)
   harness/                   # AI/operator harness; _hm/ holds the HM module tree
-  services/                  # hermes-agent/, llama-swap/, opencode.nix, hindsight.nix,
-                             #   paperless-scanning.nix
-  web/ feeds/ containers/      # NAS ingress + web apps; miniflux; docker
-  observability/ backups/      # logging, monitoring; restic jobs
-  server/                    # NAS services not yet relocated (media/, langfuse/, paperless, tika, open-webui)
+  ai/ documents/ media/      # llama-swap, hermes-agent, langfuse, hindsight, opencode(.remote),
+                             #   open-webui; paperless(.scanner), paperless-gpt, tika; media stack
+  web/ feeds/ containers/    # NAS ingress + web apps; miniflux; docker
+  observability/ backups/    # logging, monitoring; restic jobs
 ```
 
 ## Conventions
@@ -88,10 +87,10 @@ ordering-only difference. Old paths named in older notes map as follows:
 | Old | New |
 |---|---|
 | `den/hosts*.nix`, `hosts/<h>/default.nix` | `modules/hosts/<h>.nix` |
-| `hosts/<h>/hardware-configuration.nix`, `hosts/nas/models.nix` | `modules/hosts/_<h>-hardware.nix`, `modules/services/llama-swap/_nas-models.nix` |
-| `den/aspects/*` | dissolved into the feature dirs, `desktop/`, `server/`, `services/` |
+| `hosts/<h>/hardware-configuration.nix`, `hosts/nas/models.nix` | `modules/hosts/_<h>-hardware.nix`, `modules/ai/llama-swap/_nas-models.nix` |
+| `den/aspects/*` | dissolved into the feature dirs and `desktop/` |
 | `modules/system/*` | `defaults.nix`, `nix/`, `shell/`, `networking/`, `observability/`, `secrets.nix`, `site.nix` |
-| `modules/nas/*` | `modules/server/*` |
+| `modules/nas/*`, `modules/server/*`, `modules/services/*` | feature directories: `web/`, `feeds/`, `containers/`, `observability/`, `backups/`, `ai/`, `documents/`, `media/` |
 | `users/cody/desktop*` | `modules/desktop/*` |
 | `users/cody/{core,server}.nix` | `modules/users/*` and host `provides.to-users` |
 | `users/cody/editor/*`, `users/cody/harness/*` | `modules/editor/*`, `modules/harness/*` |

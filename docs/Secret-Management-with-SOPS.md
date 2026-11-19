@@ -52,8 +52,8 @@ Secrets are declared within the specific service module that requires them. This
 
 | Service          | Secret File Source              | Consumer                                                                                                                                                                            |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Wireguard**    | `serverWireguardSopsFile`       | `transmission` VPN namespace [modules/server/media/media.nix](../modules/server/media/media.nix)                        |
-| **Hermes Agent** | `hermes` + `hermes-dashboard` secrets, `hermes-agent-env`/`hermes-dashboard-env`/`hermes-env` templates | `hermes-agent.service`, `hermes-dashboard.service`[modules/services/hermes-agent/secrets/default.nix](../modules/services/hermes-agent/secrets/default.nix) |
+| **Wireguard**    | `serverWireguardSopsFile`       | `transmission` VPN namespace [modules/media/media.nix](../modules/media/media.nix)                        |
+| **Hermes Agent** | `hermes` + `hermes-dashboard` secrets, `hermes-agent-env`/`hermes-dashboard-env`/`hermes-env` templates | `hermes-agent.service`, `hermes-dashboard.service`[modules/ai/hermes-agent/secrets/default.nix](../modules/ai/hermes-agent/secrets/default.nix) |
 | **Miniflux**     | `miniflux-credentials` template | `miniflux.service`[modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix)                                   |
 
 ### 2. Dynamic Config via `sops.templates`
@@ -119,11 +119,11 @@ The `nixos-secrets` flake provides a standardized interface for accessing secret
 
 - **NixOS Module**: Provided by `den.aspects.secrets` (registered for every host) [modules/secrets.nix](../modules/secrets.nix)
 - **Home Manager Module**: Imported in host-specific user configs (e.g., `modules/hosts/nas.nix`) to handle user-level secrets [modules/hosts/nas.nix](../modules/hosts/nas.nix)
-- **Path Abstraction**: Modules reference paths like `inputs.nixos-secrets.paths.serverWireguardSopsFile` rather than hardcoding file strings [modules/server/media/media.nix](../modules/server/media/media.nix)
+- **Path Abstraction**: Modules reference paths like `inputs.nixos-secrets.paths.serverWireguardSopsFile` rather than hardcoding file strings [modules/media/media.nix](../modules/media/media.nix)
 
 ## Security Rules
 
 1. **Never Commit Raw Secrets**: No unencrypted sensitive data (API keys, passwords, private keys) may exist in the `nix-config` repository.
 2. **Permission Hardening**: Secrets are restricted to the minimum necessary users. For example, the `miniflux-curator` API key is owned specifically by the `miniflux-curator` user and group [modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix)
-3. **Restricted Mode**: Sensitive files like Wireguard configs are set to `mode = "0400"` to ensure only root can read the decrypted output in `/run/secrets/`[modules/server/media/media.nix](../modules/server/media/media.nix)
+3. **Restricted Mode**: Sensitive files like Wireguard configs are set to `mode = "0400"` to ensure only root can read the decrypted output in `/run/secrets/`[modules/media/media.nix](../modules/media/media.nix)
 

@@ -17,7 +17,7 @@
     # agent can call https://mealie.homehub.tv OpenAPI directly.
     sops.secrets."mealie-api-key" = { };
 
-    # OpenCode web basic-auth. Same sops key as modules/services/opencode
+    # OpenCode web basic-auth. Same sops key as modules/ai/opencode
     # (opencode-env). Hermes CLI attach reads OPENCODE_SERVER_PASSWORD.
     sops.secrets."opencode-password" = { };
 
@@ -107,7 +107,7 @@
       map
         (name: {
           assertion = config.systemd.user.services ? ${name};
-          message = "modules/services/hermes-agent/secrets: no such systemd user service is defined for this home: ${name}";
+          message = "modules/ai/hermes-agent/secrets: no such systemd user service is defined for this home: ${name}";
         })
         [
           "hermes-agent"

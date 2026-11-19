@@ -24,7 +24,7 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
   mcpServers, gateway.enable, backend.*}`, `systemd.user.services.{hermes-agent,
   hermes-backend}`, `home.activation.hermesAgentSetup`.
 - Hermes runs as the login user (codyt). Linger is enabled system-wide by
-  `modules/services/opencode.nix` (`users.users.codyt.linger`), so the
+  `modules/ai/opencode.nix` (`users.users.codyt.linger`), so the
   user units survive logout.
 - State: `hermesHome = ${config.xdg.dataHome}/hermes` (~/.local/share/hermes)
   and `workingDirectory = ${config.xdg.dataHome}/hermes/workspace`. Both are

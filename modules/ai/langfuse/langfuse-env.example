@@ -4,13 +4,13 @@
 #   sops edit <secrets-repo>/langfuse-env.env
 # then ensure the secret is registered for the `nas` host in the private
 # secrets repo's .sops.yaml recipients. The decrypted file is injected as
-# --env-file into all six Langfuse containers by modules/server/langfuse/default.nix.
+# --env-file into all six Langfuse containers by modules/ai/langfuse/langfuse.nix.
 #
 # EVERY value below is a SECRET and must NOT be committed. The tracked copy is
 # this .example file with placeholders.
 #
 # NOTE: NEXTAUTH_URL is intentionally NOT here — it is non-secret and lives
-# declaratively in modules/server/langfuse/default.nix (commonEnv) so web and
+# declaratively in modules/ai/langfuse/langfuse.nix (commonEnv) so web and
 # worker always agree and no key is shared between `environment` and the
 # env file.
 #

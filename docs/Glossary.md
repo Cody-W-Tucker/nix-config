@@ -83,13 +83,13 @@ flowchart LR
     LS --> LC
 ```
 
-Sources: [modules/services/hermes-agent/_hm/default.nix](../modules/services/hermes-agent/_hm/default.nix)[modules/services/llama-swap/_impl/models.nix](../modules/services/llama-swap/_impl/models.nix)[modules/desktop/_hyprland/settings.nix](../modules/desktop/_hyprland/settings.nix)
+Sources: [modules/ai/hermes-agent/_hm/default.nix](../modules/ai/hermes-agent/_hm/default.nix)[modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix)[modules/desktop/_hyprland/settings.nix](../modules/desktop/_hyprland/settings.nix)
 
 ## Server & Media Jargon
 
-- **Arr Suite**: Refers to the collection of media management tools: `Sonarr` (TV), `Radarr` (Movies), `Readarr` (Books), `Lidarr` (Music), and `Prowlarr` (Indexers). [modules/server/media/media.nix](../modules/server/media/media.nix)
-- **VPN Confinement**: A mechanism using network namespaces to force specific services (like `transmission`) to only communicate via a Wireguard interface. [modules/server/media/media.nix](../modules/server/media/media.nix)
-- **Kobo Sync**: A specialized configuration for `calibre-web` to allow e-readers to synchronize libraries over the network. [modules/server/media/media.nix](../modules/server/media/media.nix)
+- **Arr Suite**: Refers to the collection of media management tools: `Sonarr` (TV), `Radarr` (Movies), `Readarr` (Books), `Lidarr` (Music), and `Prowlarr` (Indexers). [modules/media/media.nix](../modules/media/media.nix)
+- **VPN Confinement**: A mechanism using network namespaces to force specific services (like `transmission`) to only communicate via a Wireguard interface. [modules/media/media.nix](../modules/media/media.nix)
+- **Kobo Sync**: A specialized configuration for `calibre-web` to allow e-readers to synchronize libraries over the network. [modules/media/media.nix](../modules/media/media.nix)
 - **Miniflux Curator**: A Python-based automation script that uses LLM embeddings to score RSS articles and auto-read low-score content. [modules/feeds/miniflux.nix](../modules/feeds/miniflux.nix)
 - **ACME/Cloudflare**: The automated pipeline for generating wildcard SSL certificates for `*.homehub.tv` using DNS-01 challenges. [modules/web/nginx.nix](../modules/web/nginx.nix)
 

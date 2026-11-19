@@ -11,10 +11,10 @@
 | `users/` | `codyt.nix` (the codyt aspect: `user` class account + `homeManager`) and the editor/harness aspects it includes. Shell, git and CLI tools are features in `shell/`. |
 | `desktop/` | `desktop.nix` role aspect plus one file per desktop feature (system and Home Manager halves together). Supporting HM modules/scripts under `_` names. |
 | `editor/nixvim/` | `nixvim.nix` (channel-aware nixvim aspect), `desktop.nix` (`nixvim-desktop`), `_nixvim.nix`, `_keymaps.nix`, `_plugins/`. |
-| `harness/` | AI/operator harness for the user (OpenCode, Claude Code, MCP, skills, plugins); HM tree in `_hm/`; `opencode-remote.nix`. |
-| `services/` | Cross-class services: `hermes-agent/`, `llama-swap/`, `opencode.nix`, `hindsight.nix`, `paperless-scanning.nix`. |
+| `harness/` | AI/operator harness for the user (OpenCode, Claude Code, MCP, skills, plugins); HM tree in `_hm/`. |
+| `ai/` | `llama-swap/`, `hermes-agent/`, `langfuse/` (dirs), `hindsight.nix`, `opencode.nix` (`opencode` server on nas, `opencode.remote` client on beast), `open-webui.nix`. |
+| `documents/`, `media/` | `paperless.nix` (`paperless` on nas, `paperless.scanner` on beast), `paperless-gpt.nix`, `tika.nix`; the media stack (`media.nix` plus one file per service; imports `vpn-confinement`). |
 | `web/`, `feeds/`, `containers/`, `observability/`, `backups/` | NAS ingress (`nginx`, `nginx.server`) and self-hosted web apps; Miniflux and its curator; `docker`/`docker.oci-backend`; monitoring and logging; Restic jobs and backup health. |
-| `server/` | NAS services not yet relocated (`media/`, `langfuse/`, paperless, tika, open-webui). |
 
 Machine facts (hardware import, mounts, networking, `stateVersion`s, host-specific settings) live in the host aspect's `nixos` block in `hosts/<host>.nix`.
 

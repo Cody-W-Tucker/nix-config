@@ -61,7 +61,7 @@ A critical feature of the `nas` host is the isolation of the `transmission` bitt
 
 ### Namespace Configuration
 
-The namespace, named `wg`, is configured with a Wireguard configuration file managed by SOPS [modules/server/media/transmission.nix](../modules/server/media/transmission.nix)
+The namespace, named `wg`, is configured with a Wireguard configuration file managed by SOPS [modules/media/transmission.nix](../modules/media/transmission.nix)
 
 | Attribute          | Configuration    | Purpose                                   |
 | ------------------ | ---------------- | ----------------------------------------- |
@@ -81,13 +81,13 @@ The namespace, named `wg`, is configured with a Wireguard configuration file man
 
 The `transmission` service is confined to the `wg` namespace, ensuring its traffic only exits via the Wireguard tunnel.
 
-1. **Namespace Assignment**: The `vpnConfinement` option is applied to the `transmission` systemd service [modules/server/media/transmission.nix](../modules/server/media/transmission.nix)
-2. **RPC Binding**: Transmission is configured to bind its RPC/WebUI to `192.168.15.1`, which is the internal address within the namespace [modules/server/media/transmission.nix](../modules/server/media/transmission.nix)
-3. **Local Whitelisting**: To allow other services (like Sonarr/Radarr) to communicate with Transmission, the RPC whitelist includes the namespace gateway [modules/server/media/transmission.nix](../modules/server/media/transmission.nix)
+1. **Namespace Assignment**: The `vpnConfinement` option is applied to the `transmission` systemd service [modules/media/transmission.nix](../modules/media/transmission.nix)
+2. **RPC Binding**: Transmission is configured to bind its RPC/WebUI to `192.168.15.1`, which is the internal address within the namespace [modules/media/transmission.nix](../modules/media/transmission.nix)
+3. **Local Whitelisting**: To allow other services (like Sonarr/Radarr) to communicate with Transmission, the RPC whitelist includes the namespace gateway [modules/media/transmission.nix](../modules/media/transmission.nix)
 
 ### Service Isolation: Prowlarr and FlareSolverr
 
-The Arr stack — Prowlarr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is confined to the `wg` namespace [modules/server/media/arr-stack.nix](../modules/server/media/arr-stack.nix), so indexer and download-automation traffic exits through the VPN tunnel. FlareSolverr is the exception: it runs on the host network (see below).
+The Arr stack — Prowlarr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is confined to the `wg` namespace [modules/media/arr-stack.nix](../modules/media/arr-stack.nix), so indexer and download-automation traffic exits through the VPN tunnel. FlareSolverr is the exception: it runs on the host network (see below).
 
 - **Host-side access**: Services on the host reach a confined app at the namespace address `192.168.15.1:<port>` — the access path VPN-Confinement provides from the default namespace. Every Arr nginx vhost sets `proxyHost` to this address; ports are derived from each service's NixOS module option (`settings.server.port`, or `services.bazarr.listenPort` for Bazarr; Prowlarr's module has no dedicated `port` option and uses the servarr settings default).
 - **LAN access**: The mapped host ports (see table above) forward LAN clients into the namespace.
@@ -99,7 +99,7 @@ The Arr stack — Prowlarr, Sonarr, Radarr, Readarr, Bazarr, and Lidarr — is c
 The five Arr applications are confined the same way as Prowlarr, with two consequences for host-side consumers:
 
 - **Host-side consumers** that talk to an Arr app directly (e.g. Jellyseerr → Sonarr/Radarr, Readarr → Calibre content server) must target the namespace address `192.168.15.1:<port>` instead of `127.0.0.1`. Where these addresses are runtime settings stored in the app's database, they must be updated through each app's web UI — they are not managed in this repo.
-- **Nginx vhosts** (`sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, `lidarr.homehub.tv`) keep working because each sets `proxyHost = "192.168.15.1"` [modules/server/media/arr-stack.nix](../modules/server/media/arr-stack.nix).
+- **Nginx vhosts** (`sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, `lidarr.homehub.tv`) keep working because each sets `proxyHost = "192.168.15.1"` [modules/media/arr-stack.nix](../modules/media/arr-stack.nix).
 
 ### Data Flow: Confined Service
 
@@ -149,13 +149,13 @@ The `nas` host acts as a gateway for various services, routing traffic via Nginx
 
 ### ACME and Cloudflare
 
-SSL certificates for `*.homehub.tv` are managed via the `homehub.tv` ACME host [modules/server/media/media.nix](../modules/server/media/media.nix) Nginx is configured with `kTLS` (Kernel TLS) for performance [modules/server/media/media.nix](../modules/server/media/media.nix)
+SSL certificates for `*.homehub.tv` are managed via the `homehub.tv` ACME host [modules/media/media.nix](../modules/media/media.nix) Nginx is configured with `kTLS` (Kernel TLS) for performance [modules/media/media.nix](../modules/media/media.nix)
 
 ### Proxy Configuration
 
 Services are exposed via subdomains. For example:
 
-- **Jellyfin**: `media.homehub.tv` proxies to `127.0.0.1:8096`[modules/server/media/media.nix](../modules/server/media/media.nix)
-- **Calibre-Web**: `books.homehub.tv` proxies to `localhost:8083` with specific buffer tuning for Kobo synchronization [modules/server/media/media.nix](../modules/server/media/media.nix)
-- **Prowlarr**: `prowlarr.homehub.tv` proxies to `192.168.15.1:9696` (Prowlarr runs in the wg namespace) [modules/server/media/arr-stack.nix](../modules/server/media/arr-stack.nix)
-- **Arr apps**: `sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, and `lidarr.homehub.tv` likewise proxy to `192.168.15.1:<port>` — the whole Arr stack is VPN-confined [modules/server/media/arr-stack.nix](../modules/server/media/arr-stack.nix)
+- **Jellyfin**: `media.homehub.tv` proxies to `127.0.0.1:8096`[modules/media/media.nix](../modules/media/media.nix)
+- **Calibre-Web**: `books.homehub.tv` proxies to `localhost:8083` with specific buffer tuning for Kobo synchronization [modules/media/media.nix](../modules/media/media.nix)
+- **Prowlarr**: `prowlarr.homehub.tv` proxies to `192.168.15.1:9696` (Prowlarr runs in the wg namespace) [modules/media/arr-stack.nix](../modules/media/arr-stack.nix)
+- **Arr apps**: `sonarr.homehub.tv`, `radarr.homehub.tv`, `readarr.homehub.tv`, `bazarr.homehub.tv`, and `lidarr.homehub.tv` likewise proxy to `192.168.15.1:<port>` — the whole Arr stack is VPN-confined [modules/media/arr-stack.nix](../modules/media/arr-stack.nix)

@@ -43,7 +43,7 @@ in
   # Langfuse env for the opencode-web user service: systemd services don't run
   # interactive shells, so the zsh sourcing above doesn't cover it; merge the
   # SOPS template as an EnvironmentFile (listOf merges by concatenation with
-  # modules/services/opencode.nix). Harmless where the service is
+  # modules/ai/opencode.nix). Harmless where the service is
   # not enabled.
   systemd.user.services.opencode-web.Service.EnvironmentFile = [
     config.sops.templates."opencode-langfuse-env".path

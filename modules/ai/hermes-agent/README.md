@@ -34,7 +34,7 @@ The Home Manager module turns declarative service settings into a running
 - The dashboard is upstream's `systemd.user.services.hermes-backend` unit in
   `backend.mode = "dashboard"` (host 0.0.0.0, port 9119, `--skip-build`).
 - Logout survival is provided by `users.users.codyt.linger = true` in
-  `modules/services/opencode.nix`.
+  `modules/ai/opencode.nix`.
 - Shutdown has an extended grace period (`TimeoutStopSec`) so the agent can
   persist state cleanly.
 - State is single-user: upstream applies `UMask = 0077` and user-only modes

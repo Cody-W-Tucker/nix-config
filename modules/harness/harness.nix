@@ -4,7 +4,7 @@
   # llama-swap, Hindsight and QMD run on the host itself) is read from `host` here and
   # handed down; modules use it to choose local vs NAS endpoints.
   #
-  # The OpenCode client config pairs with modules/services/opencode.nix: both contribute
+  # The OpenCode client config pairs with modules/ai/opencode.nix: both contribute
   # to systemd.user.services.opencode-web.Service.EnvironmentFile (listOf, concatenated).
   den.aspects.harness.homeManager =
     { host, ... }:

@@ -16,7 +16,7 @@ Wrapper upstream ports are dynamically assigned by `llama-swap` (`${PORT}` templ
 
 ## Architecture Overview
 
-The speech pipeline is built on three primary server-side components and two client-side scripts. All servers are managed by `llama-swap`, which handles model lifecycle and hardware acceleration [modules/services/llama-swap/default.nix](../modules/services/llama-swap/default.nix)
+The speech pipeline is built on three primary server-side components and two client-side scripts. All servers are managed by `llama-swap`, which handles model lifecycle and hardware acceleration [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
 
 ### Speech Service Components
 
@@ -32,7 +32,7 @@ The speech pipeline is built on three primary server-side components and two cli
 
 ### Parakeet (sherpa-onnx) Server
 
-The primary transcription backend, `parakeet-tdt-v3`, is an OpenAI-compatible FastAPI server ([modules/services/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/services/llama-swap/_impl/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves the sherpa-onnx int8 export of NVIDIA Parakeet TDT 0.6B v3. `modules/services/llama-swap/_nas-models.nix` pins the model files to a Hugging Face commit and passes them in through `services.llama-swap.parakeetModel`.
+The primary transcription backend, `parakeet-tdt-v3`, is an OpenAI-compatible FastAPI server ([modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves the sherpa-onnx int8 export of NVIDIA Parakeet TDT 0.6B v3. `modules/ai/llama-swap/_nas-models.nix` pins the model files to a Hugging Face commit and passes them in through `services.llama-swap.parakeetModel`.
 
 - **Provider**: CUDA, with 4 CPU threads for supporting work. The CUDA provider was tested on the NAS's RTX 5060; actual memory use alongside the other audio models should be monitored.
 - **Audio input**: Every upload is decoded with ffmpeg to 16 kHz mono, so WAV, Ogg/Opus, MP3, and M4A all work. Audio longer than 120 s is split at the quietest 100 ms frame near each boundary.
@@ -158,10 +158,10 @@ curl -s http://nas:8081/v1/audio/transcriptions \
 
 ### Kokoro TTS Server
 
-The system uses Kokoro-82M for high-performance speech synthesis. The server includes a `_install_local_voice_provider` function that patches `huggingface_hub` to serve model weights and voice assets from the Nix store (`pkgs.kokoro`) instead of downloading them at runtime [modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py)
+The system uses Kokoro-82M for high-performance speech synthesis. The server includes a `_install_local_voice_provider` function that patches `huggingface_hub` to serve model weights and voice assets from the Nix store (`pkgs.kokoro`) instead of downloading them at runtime [modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py)
 
-- **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `nova`) to Kokoro-specific assets like `af_heart`[modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py)
-- **Offline Mode**: When `voices-dir` and `model-path` are provided via Nix, the server operates in a fully offline mode [modules/services/llama-swap/kokoro-openai-server.py](../modules/services/llama-swap/kokoro-openai-server.py)
+- **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `nova`) to Kokoro-specific assets like `af_heart`[modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py)
+- **Offline Mode**: When `voices-dir` and `model-path` are provided via Nix, the server operates in a fully offline mode [modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py)
 
 ## Hermes Voice Assistant
 

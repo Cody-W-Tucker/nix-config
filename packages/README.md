@@ -47,12 +47,12 @@ Use `check-imports` when adding or moving Nix modules. For an uncommitted local 
 
 Pinned [crm.cli](https://github.com/dzhng/crm.cli) `v0.3.10`. No upstream flake. The GitHub `bun build --compile` binaries omit `@libsql/linux-x64-gnu`, so this wraps `bun run src/cli.ts` with a fixed-output `bun install`.
 
-- Wired into Hermes via `modules/services/hermes-agent/skills/business` `extraPackages`.
+- Wired into Hermes via `modules/ai/hermes-agent/skills/business` `extraPackages`.
 - Database path is `CRM_DB` (Hermes unit: `$HERMES_HOME/crm/crm.db`), not this derivation.
 
 ### `kokoro-assets`
 
-Kokoro TTS model files for the llama-swap `kokoro-82m` wrapper (`modules/services/llama-swap/proxy.nix`).
+Kokoro TTS model files for the llama-swap `kokoro-82m` wrapper (`modules/ai/llama-swap/proxy.nix`).
 
 - A `runCommand` derivation assembles `kokoro-v1_0.pth`, the model config, and selected voice profiles into one store path.
 - Fetches from HuggingFace with fixed hashes, so the runtime gets a reproducible model directory.

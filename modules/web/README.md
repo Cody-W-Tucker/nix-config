@@ -21,7 +21,7 @@ The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for servic
 | `containers/docker.nix` | `docker` and `docker.oci-backend` |
 | `observability/`, `backups/` | Monitoring, uptime checks; Restic jobs and backup health |
 | `file-sharing/`, `networking/`, `sync/`, `nix/` | `samba.server`, `nfs.server`; `dns`, `strict-fail2ban`; `syncthing`, `syncthing.nginx`; `binary-cache.server` |
-| `server/` | Services not yet moved: media, paperless, tika, langfuse, open-webui |
+| `ai/`, `documents/`, `media/` | llama-swap, hermes-agent, langfuse, opencode, open-webui; paperless, paperless-gpt, tika; the media stack |
 
 ## Ingress and domains
 
@@ -32,17 +32,17 @@ Common service mappings:
 | Service | Domain | Port / target | Module |
 | --- | --- | --- | --- |
 | Homepage | `homehub.tv` | `8082` | `homepage.nix` |
-| Jellyfin | `media.homehub.tv` | `8096` | `../server/media/` |
-| Navidrome | `music.homehub.tv` | `4533` | `../server/media/` |
-| Calibre-Web | `books.homehub.tv` | `8083` | `../server/media/` |
-| Paperless | `paperless.homehub.tv` | `28981` | `../server/paperless.nix` |
+| Jellyfin | `media.homehub.tv` | `8096` | `../media/` |
+| Navidrome | `music.homehub.tv` | `4533` | `../media/` |
+| Calibre-Web | `books.homehub.tv` | `8083` | `../media/` |
+| Paperless | `paperless.homehub.tv` | `28981` | `../documents/paperless.nix` |
 | Immich | `photos.homehub.tv` | `2283` | `photos.nix` |
 | Grafana | `monitoring.homehub.tv` | `3001` | `../observability/monitoring.nix` |
-| Tika | `tika.homehub.tv` | `9998` | `../server/tika.nix` |
+| Tika | `tika.homehub.tv` | `9998` | `../documents/tika.nix` |
 | Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `../sync/syncthing.nix` |
 | Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `../sync/syncthing.nix` |
-| Open WebUI | `chat.homehub.tv` | `8080` | `../server/open-webui.nix` |
-| Langfuse | `langfuse.homehub.tv` | `3000` | `../server/langfuse/` |
+| Open WebUI | `chat.homehub.tv` | `8080` | `../ai/open-webui.nix` |
+| Langfuse | `langfuse.homehub.tv` | `3000` | `../ai/langfuse/` |
 
 Keep cross-host routing in the ingress layer, not inside unrelated service modules.
 

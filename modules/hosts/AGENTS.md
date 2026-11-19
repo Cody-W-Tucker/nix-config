@@ -2,7 +2,7 @@
 
 Owns machine entry points and host-local facts.
 
-Does not own reusable services, shared desktop behavior, or user preferences. Put those in aspects under `modules/` (`nix/`, `shell/`, `desktop/`, `web/`, `feeds/`, `server/`, `services/`, `users/`) and include them from the host aspect.
+Does not own reusable services, shared desktop behavior, or user preferences. Put those in aspects under `modules/` (`nix/`, `shell/`, `desktop/`, `web/`, `feeds/`, `ai/`, `documents/`, `media/`, `users/`) and include them from the host aspect.
 
 ## Placement Rules
 
