@@ -24,8 +24,9 @@ If a change makes it harder to tell which of those owns the behavior, it is prob
   settings, environment, environmentFiles, documents, hermesHomeFiles,
   mcpServers, gateway.enable, backend.*}`, `systemd.user.services.{hermes-agent,
   hermes-backend}`, `home.activation.hermesAgentSetup`.
-- Hermes runs as the login user (codyt). `hermes-agent.nix` enables linger so
-  its user units survive logout; OpenCode independently requires it too.
+- Hermes runs as the login user (codyt). `hermes-agent.nix` enables linger
+  (`provides.to-users.user.linger`) so its user units survive logout; OpenCode
+  independently requires it too.
 - State: `hermesHome = ${config.xdg.dataHome}/hermes` (~/.local/share/hermes)
   and `workingDirectory = ${config.xdg.dataHome}/hermes/workspace`. Both are
   created and populated by upstream's `hermes-agent-setup` activation.

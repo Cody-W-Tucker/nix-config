@@ -1,7 +1,8 @@
 {
   # OpenCode web server (nas): one aspect, two halves.
-  #  - nixos: the password secret and its systemd EnvironmentFile template, linger so the
-  #    user's services survive logout, and the nginx vhost.
+  #  - nixos: the password secret and its systemd EnvironmentFile template, and the nginx
+  #    vhost.
+  #  - user (through provides.to-users): linger so the user's services survive logout.
   #  - homeManager (delivered to the including host's users through provides.to-users):
   #    programs.opencode with the web server, and the user-level opencode-web service's
   #    EnvironmentFile. It reads the NixOS-rendered `opencode-env` template through
@@ -39,9 +40,6 @@
           owner = config.codyos.site.user.name;
         };
 
-        # Allow codyt's services to linger after logout
-        users.users.${config.codyos.site.user.name}.linger = true;
-
         # OpenCode nginx virtual host
         services.nginx.virtualHosts = mkNginxVhost {
           host = "opencode.${domain}";
@@ -70,6 +68,9 @@
           osConfig.sops.templates."opencode-env".path
         ];
       };
+
+    # Allow the user's services (opencode-web) to linger after logout.
+    provides.to-users.user.linger = true;
   };
 
   # opencode.remote: beast's client for the NAS OpenCode server above. The server uses HTTP

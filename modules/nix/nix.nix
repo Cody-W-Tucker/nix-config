@@ -1,21 +1,17 @@
 { den, inputs, ... }:
 {
   # Nix itself: package manager settings (unfree, flakes, caches, GitHub access
-  # token, GC), the shared overlay, repo maintenance commands and command-not-found.
+  # token, GC), repo maintenance commands and command-not-found. The shared overlay is
+  # `nix.overlay` below.
   den.aspects.nix.nixos =
     {
       config,
       lib,
       pkgs,
-      self,
       ...
     }:
     {
       nixpkgs.config.allowUnfree = true;
-
-      # The flake's shared overlay (see modules/flake/_overlay.nix); the packages
-      # themselves live in packages/<name>/ and reach pkgs through it.
-      nixpkgs.overlays = [ self.overlays.default ];
 
       sops.secrets."github-nix-secrets-read" = { };
       sops.templates."nix-access-tokens.conf" = {
@@ -85,4 +81,16 @@
   };
 
   den.default.includes = [ den.aspects.nix ];
+
+  # The flake's shared overlay (see modules/flake/_overlay.nix); the packages themselves
+  # live in packages/<name>/ and reach pkgs through it. A host-level setting, so it is on
+  # the host schema rather than den.default (which also walks every user). Home Manager
+  # uses the host's pkgs (useGlobalPkgs), so users get it too.
+  den.aspects.nix.overlay.nixos =
+    { self, ... }:
+    {
+      nixpkgs.overlays = [ self.overlays.default ];
+    };
+
+  den.schema.host.includes = [ den.aspects.nix.overlay ];
 }

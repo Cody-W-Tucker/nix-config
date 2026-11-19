@@ -1,18 +1,12 @@
-{ den, inputs, ... }:
-let
-  mkInstantiate = import ./_instantiate.nix { inherit inputs; };
-in
+{ den, ... }:
 {
-  # nas tracks stable nixpkgs (with stable Home Manager and nixvim).
+  # nas tracks stable nixpkgs (with stable Home Manager and nixvim; see channels.nix).
   den.hosts.x86_64-linux.nas = {
-    instantiate = mkInstantiate inputs.nixpkgs.lib.nixosSystem;
     channel = "stable";
     localAi = true;
     # nvidia-smi board power cap (watts); RTX 5060 LP min is 123 W.
     nvidiaPowerLimit = 123;
     users.codyt = { };
-    # Stable Home Manager pairs with stable nixpkgs.
-    home-manager.module = inputs.home-manager-stable.nixosModules.home-manager;
     lan = "192.168.1.2";
     tailscale = "100.81.249.65";
   };

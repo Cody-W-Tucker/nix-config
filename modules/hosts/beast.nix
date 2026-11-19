@@ -1,16 +1,10 @@
-{ den, inputs, ... }:
-let
-  mkInstantiate = import ./_instantiate.nix { inherit inputs; };
-in
+{ den, ... }:
 {
-  # beast tracks nixpkgs-unstable (with unstable Home Manager and nixvim).
+  # beast tracks nixpkgs-unstable (with unstable Home Manager and nixvim; see channels.nix).
   den.hosts.x86_64-linux.beast = {
-    instantiate = mkInstantiate inputs.nixpkgs-unstable.lib.nixosSystem;
     channel = "unstable";
     localAi = false;
     users.codyt = { };
-    # Unstable Home Manager pairs with nixpkgs-unstable.
-    home-manager.module = inputs.home-manager.nixosModules.home-manager;
     lan = "192.168.1.3";
     tailscale = "100.108.143.19";
     mac = "60:cf:84:7a:a3:4a";

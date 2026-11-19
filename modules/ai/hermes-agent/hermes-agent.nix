@@ -10,6 +10,8 @@
   #    on the nas host (modules/backups/), so include this on nas only.
   den.aspects.hermes-agent = {
     provides.to-users.homeManager.imports = [ ./_hm ];
+    # Hermes runs as user services; linger keeps them up after logout.
+    provides.to-users.user.linger = true;
 
     nixos =
       { config, ... }:
@@ -20,8 +22,6 @@
         # Installs the workflow CLI (inputs.workflow.packages.*.workflowCli) system-wide;
         # the Home Manager half wires the same package into Hermes.
         imports = [ inputs.workflow.nixosModules.default ];
-
-        users.users.${site.user.name}.linger = true;
 
         networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
           (import ./_endpoint.nix).port

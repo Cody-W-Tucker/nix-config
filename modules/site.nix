@@ -16,6 +16,20 @@ let
     }
     // lib.optionalAttrs (host ? mac) { inherit (host) mac; }
   ) config.den.hosts.x86_64-linux;
+
+  # The primary user is the Den user entity (den.hosts.<system>.<host>.users), so the account
+  # name is declared once. Every host has the same single user today; with more than one,
+  # set codyos.site.user.name explicitly.
+  userNames = lib.unique (
+    lib.concatMap (host: map (user: user.userName) (lib.attrValues host.users)) (
+      lib.attrValues config.den.hosts.x86_64-linux
+    )
+  );
+  primaryUserName =
+    if lib.length userNames == 1 then
+      lib.head userNames
+    else
+      throw "codyos.site.user.name: den hosts declare users ${toString userNames}; set it explicitly.";
 in
 {
   # Site-wide facts shared by every host: the primary user, the public domain,
@@ -55,7 +69,8 @@ in
         user = {
           name = mkOption {
             type = types.str;
-            default = "codyt";
+            default = primaryUserName;
+            defaultText = lib.literalMD "the single Den user entity across `den.hosts` (`codyt`)";
             description = "Primary user account name.";
           };
           email = mkOption {

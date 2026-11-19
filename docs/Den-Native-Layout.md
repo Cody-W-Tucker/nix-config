@@ -21,6 +21,8 @@ modules/
   hosts/
     beast.nix, nas.nix       # den.hosts.x86_64-linux.<h> (channel pairing, facts) and
                              #   den.aspects.<h> (feature includes, provides.to-users, machine facts)
+    channels.nix             # den.schema.host `channel` -> instantiate, home-manager.module,
+                             #   nixvimModule
     _instantiate.nix         # shared nixosSystem wrapper (plain Nix function)
     _beast-hardware.nix, _nas-hardware.nix
     beast.md, nas.md         # host notes
@@ -81,11 +83,13 @@ Each directory has a README or AGENTS.md where there is something to know; the t
 - **Inclusion replaces enable flags.** A host including `den.aspects.<x>` (or the aspect being in
   `den.default.includes`) turns the feature on; there are no `codyos.<x>.enable` gates.
 - **Per-host facts live on the host** (`den.hosts.x86_64-linux.<h>.<attr>`: `channel`, `localAi`,
-  `lan`, `tailscale`, `mac`, `hardwareConfig`, `nvidiaPowerLimit`, `home-manager.module`),
-  declared in `modules/hosts/<h>.nix` and read by aspects through the `host` context argument,
+  `lan`, `tailscale`, `mac`, `hardwareConfig`, `nvidiaPowerLimit`), declared in
+  `modules/hosts/<h>.nix` (`instantiate`, `home-manager.module` and `nixvimModule` are derived
+  from `channel` in `modules/hosts/channels.nix`) and read by aspects through the `host` context argument,
   not by comparing `networking.hostName` strings.
 - **`codyos.site` is the consumer interface** for shared site facts: declared in
-  `modules/site.nix`, populated from host attributes, read as `config.codyos.site`
+  `modules/site.nix`, populated from host attributes (`user.name` from the Den user entity in
+  `den.hosts.*.users`), read as `config.codyos.site`
   (NixOS) or `osConfig.codyos.site` (Home Manager).
 - **Underscore = not a Den module.** import-tree skips any path containing `/_`. Every `.nix`
   that is not a flake-level module (package.nix, data files, script builders, large single-class
@@ -94,7 +98,7 @@ Each directory has a README or AGENTS.md where there is something to know; the t
 - **No `default.nix` outside `_` paths.** `check-imports` (see `packages/check-imports/README.md`)
   enforces this and, inside `_` subtrees that still use `default.nix`, that sibling files are
   referenced from it.
-- **Stable/unstable pairing is a host fact**: beast = nixpkgs-unstable + home-manager + nixvim;
+- **Stable/unstable pairing is one host fact** (`channel`, mapped in `modules/hosts/channels.nix`): beast = nixpkgs-unstable + home-manager + nixvim;
   nas = nixpkgs + home-manager-stable + nixvim-stable.
 - **Host names `beast` and `nas` are load-bearing** (`update`, `nightly-build.nix`, `lsp.nix`).
 - **Include order matters for list-valued options**: Den concatenates included modules in

@@ -56,7 +56,6 @@
 
         # Auto-curator for cleaning up low-relevance articles
         miniflux-curator = {
-          enable = true;
           minifluxUrl = "http://localhost:7777";
           apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
           karakeepUrl = "https://karakeep.${domain}";

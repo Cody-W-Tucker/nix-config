@@ -14,9 +14,8 @@
     in
 
     {
+      # Including this aspect is the switch; the values are set by den.aspects.miniflux.
       options.services.miniflux-curator = {
-        enable = lib.mkEnableOption "Miniflux auto-curator service";
-
         minifluxUrl = lib.mkOption {
           type = lib.types.str;
           default = "http://localhost:7777";
@@ -94,7 +93,7 @@
         };
       };
 
-      config = lib.mkIf cfg.enable {
+      config = {
         systemd.services.miniflux-curator = {
           description = "Miniflux RSS Auto-Curator";
           serviceConfig = {

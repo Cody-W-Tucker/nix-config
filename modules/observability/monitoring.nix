@@ -206,7 +206,7 @@ in
                 {
                   targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}" ];
                   labels = {
-                    host = "nas";
+                    host = "${config.networking.hostName}";
                   };
                 }
               ];
