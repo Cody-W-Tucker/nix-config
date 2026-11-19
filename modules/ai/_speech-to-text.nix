@@ -4,6 +4,8 @@
 }:
 
 let
+  endpoint = import ./llama-swap/_endpoint.nix;
+  baseUrl = "http://${endpoint.host}:${toString endpoint.port}";
   # WORKAROUND: wtype 0.5 still uses control-range codes for mixed text/key commands.
   # https://github.com/atx/wtype/issues/71
   # https://github.com/atx/wtype/pull/74
@@ -35,11 +37,11 @@ let
       pidfile="/tmp/llama-dictate-recording.pid"
       pathfile="/tmp/llama-dictate-recording.path"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-       api_url="http://nas:8081/v1/audio/transcriptions"
-       warmup_url="http://nas:8081/upstream/parakeet-tdt-v3/health"
-       normalizer_warmup_url="http://nas:8081/upstream/s1-mini/health"
+       api_url="${baseUrl}/v1/audio/transcriptions"
+       warmup_url="${baseUrl}/upstream/parakeet-tdt-v3/health"
+       normalizer_warmup_url="${baseUrl}/upstream/s1-mini/health"
        model="parakeet-tdt-v3"
-      norm_url="http://nas:8081/v1/chat/completions"
+      norm_url="${baseUrl}/v1/chat/completions"
 
        warm_model() {
          # Ask llama-swap to bring up both backends without sending fake requests.

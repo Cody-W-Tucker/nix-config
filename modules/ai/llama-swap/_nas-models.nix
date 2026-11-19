@@ -109,7 +109,7 @@ in
     serverPackage = pkgs.unstable.llama-cpp;
     parakeetModel = parakeetTdtV3;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
-    port = 8081;
+    inherit (import ./_endpoint.nix) port;
     openFirewall = false;
     modelOwner = config.codyos.site.user.name;
     modelGroup = "users";

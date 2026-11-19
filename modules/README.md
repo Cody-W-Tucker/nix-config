@@ -19,7 +19,7 @@ The tree is organized by **feature**, not by machine role: there is no `base`, `
 | `audio.nix`, `printing.nix`, `gaming.nix` | Standalone single-file features that a workstation host includes. |
 | `file-sharing/`, `containers/` | `syncthing` (and `syncthing.nginx`), `nfs.server` / `nfs.client`, and `samba.server`; `docker` (and `docker.oci-backend`). Paperless owns its own SMB scanner handoff. |
 | `networking/`, `nix/` | Networking (`dns`, `wake-on-lan.target`); the Nix daemon and `binary-cache` (`.server` / `.client`) and the nightly build. |
-| `ai/` | `llama-swap/`, `hermes-agent/`, `langfuse/` (dirs), `hindsight.nix`, `opencode.nix` (`opencode` server on nas, `opencode.remote` client on beast), `open-webui.nix`, `speech-to-text.nix` (the client of the NAS llama-swap speech endpoints). |
+| `ai/` | `llama-swap/`, `hermes-agent/` (including Beast's `hermes-voice-client`), `langfuse/` (dirs), `hindsight.nix`, `opencode.nix` (`opencode` server on nas, `opencode.remote` client on beast), `open-webui.nix`, `speech-to-text.nix` (the client of the NAS llama-swap speech endpoints). |
 | `documents/`, `media/` | `paperless.nix` (`paperless` on nas, `paperless.scanner` on beast), `paperless-gpt.nix`, `tika.nix`; the media stack (`media.nix` plus one file per service; imports `vpn-confinement`). |
 | `web/`, `feeds/`, `observability/`, `backups/` | NAS ingress (`nginx`, `nginx.server`) and self-hosted web apps; Miniflux and its curator; monitoring, uptime and logging (`logging`, `logging.desktop`); Restic jobs and backup health. |
 

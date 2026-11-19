@@ -86,7 +86,7 @@ in
       environment = {
         API_SERVER_ENABLED = "true";
         API_SERVER_HOST = "0.0.0.0";
-        API_SERVER_PORT = "8642";
+        API_SERVER_PORT = toString (import ../_endpoint.nix).port;
         # Satisfies tools.browser_tool_install._chromium_installed without a
         # Playwright cache write into the immutable hermes-agent-env.
         AGENT_BROWSER_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";

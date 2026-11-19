@@ -1,8 +1,12 @@
+{ den, ... }:
 {
   # Hyprland (UWSM + greetd autologin) and the user's Hyprland session, lock screen and idle
   # management. Needs the host attribute `hardwareConfig` (monitor/workspace layout and the
   # hypridle suspend timeout), which the aspect reads from `host` and passes down.
   den.aspects.graphical = {
+    # Waybar always renders the Hermes voice button; route its client and secret together.
+    includes = [ den.aspects.hermes-voice-client ];
+
     nixos =
       { config, lib, ... }:
       let

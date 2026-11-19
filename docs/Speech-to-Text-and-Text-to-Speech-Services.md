@@ -169,13 +169,13 @@ The `hermes-waybar-voice` system provides a sophisticated voice interface direct
 
 ### Implementation Details
 
-The core logic resides in `hermes-waybar-voice.py`. It uses `pysilero-vad` for local, low-latency voice detection [modules/graphical/_waybar/hermes-waybar-voice.py](../modules/graphical/_waybar/hermes-waybar-voice.py). The microphone is read with `pw-record --raw` so the VAD receives header-less 16 kHz little-endian s16 PCM; without `--raw`, `pw-record` writes a Sun AU stream (big-endian) to stdout, which the VAD cannot recognize as speech.
+The graphical aspect includes the Hermes voice client; Waybar owns the button, while Hermes owns the [client script](../modules/ai/hermes-agent/_voice/hermes-waybar-voice.py). It uses `pysilero-vad` for local, low-latency voice detection. The microphone is read with `pw-record --raw` so the VAD receives header-less 16 kHz little-endian s16 PCM; without `--raw`, `pw-record` writes a Sun AU stream (big-endian) to stdout, which the VAD cannot recognize as speech.
 
 ### Key Functions
 
-- `ensure_runtime()`: Manages the XDG runtime directory for PID, lock, and session files [modules/graphical/_waybar/hermes-waybar-voice.py](../modules/graphical/_waybar/hermes-waybar-voice.py)
-- `waybar_status()`: Generates the JSON output for Waybar, including icons for different states (`` for listening, `` for speaking) [modules/graphical/_waybar/hermes-waybar-voice.py](../modules/graphical/_waybar/hermes-waybar-voice.py)
-- `stop_worker()`: Safely terminates the background voice worker and cleans up temporary session files [modules/graphical/_waybar/hermes-waybar-voice.py](../modules/graphical/_waybar/hermes-waybar-voice.py)
+- `ensure_runtime()`: Manages the XDG runtime directory for PID, lock, and session files.
+- `waybar_status()`: Generates the JSON output for Waybar, including icons for different states (`` for listening, `` for speaking).
+- `stop_worker()`: Terminates the background voice worker and cleans up temporary session files.
 
 ### Configuration
 

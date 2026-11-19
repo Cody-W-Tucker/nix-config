@@ -24,7 +24,7 @@
         users.users.${site.user.name}.linger = true;
 
         networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
-          8642
+          (import ./_endpoint.nix).port
           9119
         ];
 

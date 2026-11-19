@@ -17,33 +17,7 @@ let
         buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.sqlite ];
       });
   aiUsagebarCmd = lib.getExe aiUsagebar;
-  hermesVoicePython = pkgs.python3.withPackages (ps: [ ps.pysilero-vad ]);
-  hermesVoice = pkgs.writeShellApplication {
-    name = "hermes-waybar-voice";
-    runtimeInputs = [
-      pkgs.curl
-      pkgs.gnused
-      pkgs.mpv
-      pkgs.pipewire
-    ];
-    text = ''
-      export HERMES_BASE_URL="http://nas:8642"
-      export HERMES_SPEECH_BASE_URL="http://nas:8081"
-      # The hermes secret is env-named KEY=value lines; extract API_SERVER_KEY.
-      HERMES_API_TOKEN="$(sed -n 's/^API_SERVER_KEY=//p' ${config.sops.secrets."hermes".path})"
-      export HERMES_API_TOKEN
-      export HERMES_TRANSCRIPTION_MODEL="parakeet-tdt-v3"
-      export HERMES_SPEECH_MODEL="kokoro-82m"
-      export HERMES_SPEECH_VOICE="af_heart"
-      exec ${hermesVoicePython}/bin/python ${./hermes-waybar-voice.py} "$@"
-    '';
-  };
-  hermesVoiceRepair = pkgs.writeShellApplication {
-    name = "hermes-waybar-repair";
-    text = ''
-      exec ${hermesVoiceCmd} cleanup
-    '';
-  };
+  hermesVoice = import ../../ai/hermes-agent/_voice/client.nix { inherit config lib pkgs; };
   hermesVoiceCmd = lib.getExe hermesVoice;
   favorite_apps = {
     "zen-beta" = "🞋";
@@ -59,11 +33,8 @@ let
   };
 in
 {
-  sops.secrets."hermes" = { };
-
   home.packages = [
     aiUsagebar
-    hermesVoiceRepair
   ];
 
   programs.waybar = {
