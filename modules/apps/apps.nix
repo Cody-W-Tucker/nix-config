@@ -2,7 +2,7 @@
 {
   # Everyday desktop applications and the small user services that go with them. One aspect,
   # `apps`, spans this directory: apps.nix (applications, browsers, Obsidian), terminal.nix
-  # (Kitty and the project script) and kdeconnect.nix.
+  # (Kitty) and kdeconnect.nix.
   den.aspects.apps.provides.to-users.homeManager =
     { pkgs, ... }:
     let

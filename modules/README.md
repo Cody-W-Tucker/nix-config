@@ -15,7 +15,8 @@ The tree is organized by **feature**, not by machine role: there is no `base`, `
 | `users/` | `codyt.nix` (the codyt aspect: `user` class account + `homeManager`) and `home-manager.nix` (shared Home Manager options). |
 | `shell/`, `editor/`, `harness/` | The user's shell and git, NixVim (`nixvim`, `nixvim.desktop`; `_nixvim.nix`, `_keymaps.nix`, `_plugins/`), and the AI/operator harness (HM tree in `_hm/`). |
 | `graphical/` | `den.aspects.graphical`: the Wayland desktop session on a workstation, one aspect over several files (`session.nix`, `hyprland.nix` + Waybar, `launcher.nix`, `notifications.nix`, `xdg.nix`, `theming.nix`). |
-| `apps/` | `den.aspects.apps`: the user's desktop applications, one aspect over `apps.nix`, `terminal.nix` and `kdeconnect.nix` (`_obsidian/`, `_scripts/`). |
+| `apps/` | `den.aspects.apps`: the user's desktop applications, one aspect over `apps.nix`, `terminal.nix` and `kdeconnect.nix` (`_obsidian/`). |
+| `development/` | `project`, the Nix template CLI selected on Beast. |
 | `audio.nix`, `printing.nix`, `gaming.nix` | Standalone single-file features that a workstation host includes. |
 | `file-sharing/`, `containers/` | `syncthing` (and `syncthing.nginx`), `nfs.server` / `nfs.client`, and `samba.server`; `docker` (and `docker.oci-backend`). Paperless owns its own SMB scanner handoff. |
 | `networking/`, `nix/` | Networking (`dns`, `wake-on-lan.target`); the Nix daemon and `binary-cache` (`.server` / `.client`) and the nightly build. |

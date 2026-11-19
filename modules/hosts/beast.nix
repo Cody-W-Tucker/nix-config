@@ -54,6 +54,7 @@ in
       den.aspects.syncthing
       den.aspects.logging.desktop
       den.aspects.speech-to-text
+      den.aspects.project
       den.aspects.docker
       den.aspects.nvidia
       den.aspects.paperless.scanner
