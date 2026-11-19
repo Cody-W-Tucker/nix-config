@@ -21,6 +21,8 @@
         # the Home Manager half wires the same package into Hermes.
         imports = [ inputs.workflow.nixosModules.default ];
 
+        users.users.${site.user.name}.linger = true;
+
         networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
           8642
           9119
