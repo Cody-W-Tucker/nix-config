@@ -14,6 +14,14 @@ let
           labels = "job=systemd-journal,host=$hostname,unit=$systemd_unit,level=$level";
           line_format = "json";
         }
+        # Connection records split out of the journal by egress-audit.nix.
+        {
+          name = "loki";
+          match = "egress";
+          inherit host port;
+          labels = "job=egress,host=$hostname,source=$egress,country=$country";
+          line_format = "json";
+        }
       ];
     };
   };

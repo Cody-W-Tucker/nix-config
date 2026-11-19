@@ -48,6 +48,8 @@
       den.aspects.syncthing
       den.aspects.logging.desktop
       den.aspects.logging.forward-to-nas
+      den.aspects.egress-audit
+      den.aspects.egress-audit.opensnitch
       den.aspects.speech-to-text
       den.aspects.project
       den.aspects.docker

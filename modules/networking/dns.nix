@@ -45,6 +45,11 @@
             # local-zone always_nxdomain fragment and included directly.
             include = [ "${inputs.stevenblack.packages.${pkgs.stdenv.hostPlatform.system}.unbound}/hosts" ];
 
+            # One journal line per client query and per blocklist hit; the
+            # egress-audit aspect ships them to Loki as job="egress", source="dns".
+            log-queries = true;
+            log-local-actions = true;
+
             harden-glue = true;
             harden-dnssec-stripped = true;
             use-caps-for-id = false;

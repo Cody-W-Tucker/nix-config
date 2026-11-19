@@ -38,6 +38,8 @@
       den.aspects.karakeep
       den.aspects.mealie
       den.aspects.monitoring
+      den.aspects.egress-audit
+      den.aspects.egress-audit.server
       den.aspects.nfs.server
       den.aspects.paperless
       den.aspects.paperless-gpt

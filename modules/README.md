@@ -22,7 +22,7 @@ The tree is organized by **feature**, not by machine role: there is no `base`, `
 | `networking/`, `nix/` | Networking (`dns`, `wake-on-lan.target`); the Nix daemon, `nix.overlay` (the flake overlay, included through `den.schema.host.includes`, not `den.default`) and `binary-cache` (`.server` / `.client`) and the nightly build. |
 | `ai/` | `llama-swap/`, `hermes-agent/` (including Beast's `hermes-voice-client`), `langfuse/` (dirs), `hindsight.nix`, `opencode.nix` (`opencode` server on nas, `opencode.remote` client on beast), `open-webui.nix`, `speech-to-text.nix` (the client of the NAS llama-swap speech endpoints). |
 | `documents/`, `media/` | `paperless.nix` (`paperless` on nas, `paperless.scanner` on beast), `paperless-gpt.nix`, `tika.nix`; the media stack (`media.nix` plus one file per service; imports `vpn-confinement`). |
-| `web/`, `feeds/`, `observability/`, `backups/` | NAS ingress (`nginx`, `nginx.server`) and self-hosted web apps; Miniflux and its curator; monitoring, uptime and logging (`logging`, `logging.desktop`); Restic jobs and backup health. |
+| `web/`, `feeds/`, `observability/`, `backups/` | NAS ingress (`nginx`, `nginx.server`) and self-hosted web apps; Miniflux and its curator; monitoring, uptime and logging (`logging`, `logging.desktop`), and the outbound-connection audit (`egress-audit`, `.opensnitch`, `.server`); Restic jobs and backup health. |
 
 Machine facts (hardware import, mounts, networking, `stateVersion`s, host-specific settings) live in the host aspect's `nixos` block in `hosts/<host>.nix`.
 

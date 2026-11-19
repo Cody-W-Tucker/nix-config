@@ -79,6 +79,12 @@ in
                 uid = "tempo";
                 url = "http://localhost:${toString config.services.tempo.settings.server.http_listen_port}";
               }
+              {
+                name = "Loki";
+                type = "loki";
+                uid = "loki";
+                url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}";
+              }
             ];
           };
         };
