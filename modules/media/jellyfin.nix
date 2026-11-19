@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Jellyfin = {
+        group = "Consume";
+        order = 10;
+        card = {
+          icon = "jellyfin";
+          href = "https://media.${domain}";
+          description = "Media Server";
+        };
+      };
+
       systemd.services.jellyfin.environment.LIBVA_DRIVER_NAME = "nvidia";
 
       users.users.jellyfin.extraGroups = [

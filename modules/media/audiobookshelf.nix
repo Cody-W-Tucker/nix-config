@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Audiobookshelf = {
+        group = "Consume";
+        order = 40;
+        card = {
+          href = "https://audiobooks.${domain}";
+          icon = "audiobookshelf";
+          description = "Audiobook and Podcast Server";
+        };
+      };
+
       services.audiobookshelf = {
         enable = true;
         group = "media";

@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.ExcaliDraw = {
+        group = "Tools";
+        order = 40;
+        card = {
+          href = "https://draw.${domain}";
+          icon = "excalidraw";
+          description = "Whiteboard";
+        };
+      };
+
       virtualisation.oci-containers.containers.excalidraw = {
         image = "excalidraw/excalidraw:latest";
         environment = {

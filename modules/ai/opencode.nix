@@ -16,6 +16,16 @@
         inherit (config.codyos.site) domain;
       in
       {
+        codyos.homepage.cards.OpenCode = {
+          group = "Tools";
+          order = 20;
+          card = {
+            href = "https://opencode.${domain}";
+            icon = "opencode";
+            description = "OpenCode Web";
+          };
+        };
+
         # OpenCode password secret
         sops.secrets."opencode-password" = {
           owner = config.codyos.site.user.name;

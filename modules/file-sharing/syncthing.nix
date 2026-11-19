@@ -99,6 +99,26 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.NASSyncthing = {
+        group = "Network";
+        order = 20;
+        card = {
+          href = "https://nas-syncthing.${domain}";
+          icon = "syncthing";
+          description = "File Synchronization - NAS";
+        };
+      };
+
+      codyos.homepage.cards.BeastSyncthing = {
+        group = "Network";
+        order = 30;
+        card = {
+          href = "https://beast-syncthing.${domain}";
+          icon = "syncthing";
+          description = "File Synchronization - Beast";
+        };
+      };
+
       services.nginx = {
         upstreams = {
           nas_syncthing = {

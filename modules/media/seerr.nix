@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Jellyseerr = {
+        group = "Collect";
+        order = 10;
+        card = {
+          icon = "jellyseerr";
+          href = "https://request.${domain}";
+          description = "Request Media Service";
+        };
+      };
+
       services.seerr.enable = true;
 
       services.nginx.virtualHosts = mkNginxVhost {

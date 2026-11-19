@@ -17,6 +17,16 @@
           resticBackup.passwordFile;
     in
     {
+      codyos.homepage.cards.Grafana = {
+        group = "Network";
+        order = 10;
+        card = {
+          href = "https://monitoring.${domain}";
+          icon = "grafana";
+          description = "Logging & Dashboard";
+        };
+      };
+
       services = {
         grafana = {
           enable = true;

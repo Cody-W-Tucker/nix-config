@@ -11,6 +11,26 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Open-WebUI = {
+        group = "Business";
+        order = 10;
+        card = {
+          href = "https://chat.${domain}";
+          icon = "open-webui";
+          description = "AI Chat Interface";
+        };
+      };
+
+      codyos.homepage.cards.Qdrant = {
+        group = "Tools";
+        order = 30;
+        card = {
+          href = "https://qdrant.${domain}/dashboard";
+          icon = "https://qdrant.${domain}/dashboard/favicon.ico";
+          description = "Vector DB";
+        };
+      };
+
       # ── Open WebUI (local AI chat interface) ───────────────────────
       services = {
         open-webui = {

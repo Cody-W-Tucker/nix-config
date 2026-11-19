@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Karakeep = {
+        group = "Tools";
+        order = 60;
+        card = {
+          href = "https://karakeep.${domain}";
+          icon = "karakeep";
+          description = "Bookmark Manager";
+        };
+      };
+
       services.karakeep = {
         enable = true;
         # Stable 26.05 karakeep is 0.32.0 built on nodejs 24.21, which aborts workers

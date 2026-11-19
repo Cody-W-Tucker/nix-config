@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.ActualBudget = {
+        group = "Tools";
+        order = 50;
+        card = {
+          href = "https://budget.${domain}";
+          icon = "https://budget.${domain}/favicon.ico";
+          description = "Personal Budget";
+        };
+      };
+
       services.nginx.virtualHosts = mkNginxVhost {
         host = "budget.${domain}";
         port = config.services.actual.settings.port;

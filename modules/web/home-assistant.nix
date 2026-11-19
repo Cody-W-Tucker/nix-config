@@ -11,6 +11,26 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.MusicAssistant = {
+        group = "Consume";
+        order = 30;
+        card = {
+          href = "https://music-assistant.${domain}";
+          icon = "music-assistant";
+          description = "Music Management";
+        };
+      };
+
+      codyos.homepage.cards.HomeAssistant = {
+        group = "Network";
+        order = 40;
+        card = {
+          href = "https://home-assistant.${domain}";
+          icon = "home-assistant";
+          description = "Home Automation";
+        };
+      };
+
       services.music-assistant = {
         enable = true;
         openFirewall = true;

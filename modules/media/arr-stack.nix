@@ -40,6 +40,56 @@
         );
     in
     {
+      codyos.homepage.cards.Sonarr = {
+        group = "Manage";
+        order = 10;
+        card = {
+          href = "https://sonarr.${domain}";
+          icon = "sonarr";
+          description = "Tv Show Search";
+        };
+      };
+
+      codyos.homepage.cards.Radarr = {
+        group = "Manage";
+        order = 20;
+        card = {
+          href = "https://radarr.${domain}";
+          icon = "radarr";
+          description = "Movie Search";
+        };
+      };
+
+      codyos.homepage.cards.Readarr = {
+        group = "Manage";
+        order = 30;
+        card = {
+          href = "https://readarr.${domain}";
+          icon = "readarr";
+          description = "Book Search";
+        };
+      };
+
+      codyos.homepage.cards.Lidarr = {
+        group = "Manage";
+        order = 50;
+        card = {
+          href = "https://lidarr.${domain}";
+          icon = "lidarr";
+          description = "Music Search";
+        };
+      };
+
+      codyos.homepage.cards.Bazarr = {
+        group = "Manage";
+        order = 60;
+        card = {
+          href = "https://bazarr.${domain}";
+          icon = "bazarr";
+          description = "Subtitle Search";
+        };
+      };
+
       # The Arr-stack services run inside the wg VPN namespace (declared in
       # transmission.nix) so their traffic exits through the VPN. FlareSolverr is
       # the exception: it runs on the host network and Prowlarr reaches it at the

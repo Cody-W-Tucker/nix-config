@@ -11,6 +11,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.CalibreWeb = {
+        group = "Consume";
+        order = 50;
+        card = {
+          href = "https://books.${domain}";
+          icon = "calibre";
+          description = "Ebook Reader Software";
+        };
+      };
+
       services = {
         calibre-web = {
           # Calibre web for reading Books (with Kobo sync support)

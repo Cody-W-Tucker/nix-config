@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Miniflux = {
+        group = "Consume";
+        order = 60;
+        card = {
+          href = "https://rss.${domain}";
+          icon = "miniflux";
+          description = "RSS Reader";
+        };
+      };
+
       sops = {
         secrets = {
           "miniflux/ADMIN_PASSWORD" = { };

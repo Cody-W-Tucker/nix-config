@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.UptimeKuma = {
+        group = "Tools";
+        order = 70;
+        card = {
+          href = "https://uptime.${domain}";
+          icon = "uptime-kuma";
+          description = "Uptime Monitoring";
+        };
+      };
+
       services.uptime-kuma = {
         enable = true;
         settings = {

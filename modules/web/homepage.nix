@@ -1,13 +1,61 @@
+{ den, ... }:
+let
+  groups = [
+    "Business"
+    "Tools"
+    "Consume"
+    "Collect"
+    "Manage"
+    "Network"
+  ];
+in
 {
+  # Let services declare cards without selecting or enabling the dashboard.
+  den.default.includes = [ den.aspects.homepage.cards ];
+  den.aspects.homepage.cards.nixos =
+    { lib, ... }:
+    let
+      inherit (lib) mkOption types;
+    in
+    {
+      options.codyos.homepage.cards = mkOption {
+        default = { };
+        description = "Dashboard cards contributed by included service aspects.";
+        type = types.attrsOf (
+          types.submodule {
+            options = {
+              group = mkOption { type = types.enum groups; };
+              order = mkOption {
+                type = types.int;
+                default = 100;
+              };
+              card = mkOption { type = types.attrsOf types.str; };
+            };
+          }
+        );
+      };
+    };
+
   den.aspects.homepage.nixos =
     {
       config,
+      lib,
       mkNginxVhost,
       ...
     }:
 
     let
       inherit (config.codyos.site) domain;
+      cards = config.codyos.homepage.cards;
+      names = builtins.attrNames cards;
+      byOrder = a: b: cards.${a}.order < cards.${b}.order;
+      sections = lib.concatMap (
+        group:
+        let
+          members = lib.sort byOrder (builtins.filter (name: cards.${name}.group == group) names);
+        in
+        lib.optional (members != [ ]) { ${group} = map (name: { ${name} = cards.${name}.card; }) members; }
+      ) groups;
     in
     {
 
@@ -82,251 +130,7 @@
               };
             }
           ];
-          services = [
-            {
-              Business = [
-                {
-                  Open-WebUI = {
-                    href = "https://chat.${domain}";
-                    icon = "open-webui";
-                    description = "AI Chat Interface";
-                  };
-                }
-                {
-                  Langfuse = {
-                    href = "https://langfuse.${domain}";
-                    icon = "https://langfuse.${domain}/favicon.ico";
-                    description = "LLM Observability";
-                  };
-                }
-                {
-                  LlamaSwap = {
-                    href = "http://nas:8081";
-                    icon = "ollama";
-                    description = "LLM Model Router";
-                  };
-                }
-              ];
-            }
-            {
-              Tools = [
-                {
-                  Hindsight = {
-                    href = "https://memory.${domain}";
-                    icon = "https://memory.${domain}/favicon.ico";
-                    description = "Agent Memory";
-                  };
-                }
-                {
-                  OpenCode = {
-                    href = "https://opencode.${domain}";
-                    icon = "opencode";
-                    description = "OpenCode Web";
-                  };
-                }
-                {
-                  Qdrant = {
-                    href = "https://qdrant.${domain}/dashboard";
-                    icon = "https://qdrant.${domain}/dashboard/favicon.ico";
-                    description = "Vector DB";
-                  };
-                }
-                {
-                  ExcaliDraw = {
-                    href = "https://draw.${domain}";
-                    icon = "excalidraw";
-                    description = "Whiteboard";
-                  };
-                }
-                {
-                  ActualBudget = {
-                    href = "https://budget.${domain}";
-                    icon = "https://budget.${domain}/favicon.ico";
-                    description = "Personal Budget";
-                  };
-                }
-                {
-                  Karakeep = {
-                    href = "https://karakeep.${domain}";
-                    icon = "karakeep";
-                    description = "Bookmark Manager";
-                  };
-                }
-                {
-                  UptimeKuma = {
-                    href = "https://uptime.${domain}";
-                    icon = "uptime-kuma";
-                    description = "Uptime Monitoring";
-                  };
-                }
-              ];
-            }
-            {
-              Consume = [
-                {
-                  Jellyfin = {
-                    icon = "jellyfin";
-                    href = "https://media.${domain}";
-                    description = "Media Server";
-                  };
-                }
-                {
-                  Navidrome = {
-                    href = "https://music.${domain}";
-                    icon = "navidrome";
-                    description = "Music Server";
-                  };
-                }
-                {
-                  MusicAssistant = {
-                    href = "https://music-assistant.${domain}";
-                    icon = "music-assistant";
-                    description = "Music Management";
-                  };
-                }
-                {
-                  Audiobookshelf = {
-                    href = "https://audiobooks.${domain}";
-                    icon = "audiobookshelf";
-                    description = "Audiobook and Podcast Server";
-                  };
-                }
-                {
-                  CalibreWeb = {
-                    href = "https://books.${domain}";
-                    icon = "calibre";
-                    description = "Ebook Reader Software";
-                  };
-                }
-                {
-                  Miniflux = {
-                    href = "https://rss.${domain}";
-                    icon = "miniflux";
-                    description = "RSS Reader";
-                  };
-                }
-              ];
-            }
-            {
-              Collect = [
-                {
-                  Jellyseerr = {
-                    icon = "jellyseerr";
-                    href = "https://request.${domain}";
-                    description = "Request Media Service";
-                  };
-                }
-                {
-                  Photos = {
-                    href = "https://photos.${domain}";
-                    icon = "immich";
-                    description = "Photo Management";
-                  };
-                }
-                {
-                  Dawarich = {
-                    href = "https://tracker.${domain}";
-                    icon = "dawarich";
-                    description = "Location Tracking";
-                  };
-                }
-                {
-                  Paperless = {
-                    href = "https://paperless.${domain}";
-                    icon = "paperless";
-                    description = "Document Management";
-                  };
-                }
-                {
-                  PaperlessGPT = {
-                    href = "https://paperless-gpt.${domain}";
-                    icon = "https://paperless-gpt.${domain}/favicon.ico";
-                    description = "AI Document Assistant";
-                  };
-                }
-              ];
-            }
-            {
-              Manage = [
-                {
-                  Sonarr = {
-                    href = "https://sonarr.${domain}";
-                    icon = "sonarr";
-                    description = "Tv Show Search";
-                  };
-                }
-                {
-                  Radarr = {
-                    href = "https://radarr.${domain}";
-                    icon = "radarr";
-                    description = "Movie Search";
-                  };
-                }
-                {
-                  Readarr = {
-                    href = "https://readarr.${domain}";
-                    icon = "readarr";
-                    description = "Book Search";
-                  };
-                }
-                {
-                  Shelfmark = {
-                    href = "https://shelfmark.${domain}";
-                    icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/shelfmark.png";
-                    description = "Audiobook Search";
-                  };
-                }
-                {
-                  Lidarr = {
-                    href = "https://lidarr.${domain}";
-                    icon = "lidarr";
-                    description = "Music Search";
-                  };
-                }
-                {
-                  Bazarr = {
-                    href = "https://bazarr.${domain}";
-                    icon = "bazarr";
-                    description = "Subtitle Search";
-                  };
-                }
-
-              ];
-            }
-            {
-              Network = [
-                {
-                  Grafana = {
-                    href = "https://monitoring.${domain}";
-                    icon = "grafana";
-                    description = "Logging & Dashboard";
-                  };
-                }
-                {
-                  NASSyncthing = {
-                    href = "https://nas-syncthing.${domain}";
-                    icon = "syncthing";
-                    description = "File Synchronization - NAS";
-                  };
-                }
-                {
-                  BeastSyncthing = {
-                    href = "https://beast-syncthing.${domain}";
-                    icon = "syncthing";
-                    description = "File Synchronization - Beast";
-                  };
-                }
-                {
-                  HomeAssistant = {
-                    href = "https://home-assistant.${domain}";
-                    icon = "home-assistant";
-                    description = "Home Automation";
-                  };
-                }
-              ];
-            }
-
-          ];
+          services = sections;
         };
       };
     };

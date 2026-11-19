@@ -11,6 +11,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Dawarich = {
+        group = "Collect";
+        order = 30;
+        card = {
+          href = "https://tracker.${domain}";
+          icon = "dawarich";
+          description = "Location Tracking";
+        };
+      };
+
       # Secret must be populated via `sops set` (or equivalent). The file is
       # expected to contain the raw secret key base string (a single line of
       # 128+ hex characters, as produced by `rails secret`).

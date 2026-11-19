@@ -12,6 +12,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Langfuse = {
+        group = "Business";
+        order = 20;
+        card = {
+          href = "https://langfuse.${domain}";
+          icon = "https://langfuse.${domain}/favicon.ico";
+          description = "LLM Observability";
+        };
+      };
+
       imports = [
         ./_review-queue.nix
         ./_backups.nix

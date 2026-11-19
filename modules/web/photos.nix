@@ -11,6 +11,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.Photos = {
+        group = "Collect";
+        order = 20;
+        card = {
+          href = "https://photos.${domain}";
+          icon = "immich";
+          description = "Photo Management";
+        };
+      };
+
       services.immich = {
         enable = true;
         # Pull Immich from nixpkgs-unstable while the NAS host stays on stable.

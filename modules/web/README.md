@@ -25,6 +25,8 @@ The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for servic
 
 ## Ingress and domains
 
+The Homepage dashboard gathers `codyos.homepage.cards` from the service aspects selected on its host. Declare a card beside the aspect that owns its reachable URL, with `group`, optional `order`, and a `card` containing its URL (`href`), icon, and description. Lower order values appear first within a group. Publishing a card does not enable Homepage, and it does not publish across hosts.
+
 Nginx is the single HTTPS entry point for local server services and selected services running elsewhere. `nginx.server` (`nginx.nix`) sets the shared proxy behavior and wildcard certificate handling, then service modules add their own virtual hosts.
 
 Common service mappings:

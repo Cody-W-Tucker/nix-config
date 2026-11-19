@@ -16,6 +16,16 @@
       packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
     in
     {
+      codyos.homepage.cards.Hindsight = {
+        group = "Tools";
+        order = 10;
+        card = {
+          href = "https://memory.${domain}";
+          icon = "https://memory.${domain}/favicon.ico";
+          description = "Agent Memory";
+        };
+      };
+
       # Same opencode-api-key the Hermes home uses, rendered for the system unit.
       sops.secrets."opencode-api-key" = { };
       sops.templates."hindsight-env" = {

@@ -18,6 +18,16 @@
       port = 8084;
     in
     {
+      codyos.homepage.cards.Shelfmark = {
+        group = "Manage";
+        order = 40;
+        card = {
+          href = "https://shelfmark.${domain}";
+          icon = "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/shelfmark.png";
+          description = "Audiobook Search";
+        };
+      };
+
       users.users.shelfmark = {
         isSystemUser = true;
         group = "shelfmark";

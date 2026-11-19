@@ -10,6 +10,16 @@
       inherit (config.codyos.site) domain;
     in
     {
+      codyos.homepage.cards.PaperlessGPT = {
+        group = "Collect";
+        order = 50;
+        card = {
+          href = "https://paperless-gpt.${domain}";
+          icon = "https://paperless-gpt.${domain}/favicon.ico";
+          description = "AI Document Assistant";
+        };
+      };
+
       nas.backups.dataDirectories = [
         "/var/lib/paperless-gpt/prompts"
         "/var/lib/paperless-gpt/config"

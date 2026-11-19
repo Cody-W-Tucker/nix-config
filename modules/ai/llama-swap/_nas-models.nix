@@ -86,8 +86,19 @@ let
     sha256 = "c06528c5746d3bb8baa72a27938be95abbfd0b226f8471e8a9e365ed0bb066d2";
   };
 
+  endpoint = import ./_endpoint.nix;
 in
 {
+  codyos.homepage.cards.LlamaSwap = {
+    group = "Business";
+    order = 30;
+    card = {
+      href = "http://${endpoint.host}:${toString endpoint.port}";
+      icon = "ollama";
+      description = "LLM Model Router";
+    };
+  };
+
   imports = [
     ./_impl
   ];
@@ -109,7 +120,7 @@ in
     serverPackage = pkgs.unstable.llama-cpp;
     parakeetModel = parakeetTdtV3;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
-    inherit (import ./_endpoint.nix) port;
+    inherit (endpoint) port;
     openFirewall = false;
     modelOwner = config.codyos.site.user.name;
     modelGroup = "users";

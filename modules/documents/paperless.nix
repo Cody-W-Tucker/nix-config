@@ -11,6 +11,16 @@
       port = 28981;
     in
     {
+      codyos.homepage.cards.Paperless = {
+        group = "Collect";
+        order = 40;
+        card = {
+          href = "https://paperless.${domain}";
+          icon = "paperless";
+          description = "Document Management";
+        };
+      };
+
       services.samba.settings.PaperlessConsume = {
         "path" = "/var/lib/paperless/consume";
         "browseable" = "yes";
