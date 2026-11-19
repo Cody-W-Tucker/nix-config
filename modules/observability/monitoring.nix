@@ -9,6 +9,12 @@
 
     let
       inherit (config.codyos.site) domain;
+      resticBackup = config.services.restic.backups.nas-files;
+      resticPasswordFile =
+        if resticBackup.passwordFile == null then
+          throw "The Restic exporter requires nas-files.passwordFile"
+        else
+          resticBackup.passwordFile;
     in
     {
       services = {
@@ -72,8 +78,8 @@
             };
             restic = {
               enable = true;
-              repository = "/mnt/backup/backups/restic";
-              passwordFile = config.sops.secrets."restic-nas-password".path;
+              inherit (resticBackup) repository;
+              passwordFile = resticPasswordFile;
               listenAddress = "127.0.0.1";
               refreshInterval = 3600;
               user = "root";
@@ -373,7 +379,7 @@
       systemd.services.prometheus-restic-exporter = {
         unitConfig = {
           ConditionPathIsMountPoint = [ "/mnt/backup/backups" ];
-          RequiresMountsFor = [ "/mnt/backup/backups/restic" ];
+          RequiresMountsFor = [ resticBackup.repository ];
         };
         serviceConfig = {
           DynamicUser = lib.mkForce false;
