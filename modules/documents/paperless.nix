@@ -11,6 +11,17 @@
       port = 28981;
     in
     {
+      services.samba.settings.PaperlessConsume = {
+        "path" = "/var/lib/paperless/consume";
+        "browseable" = "yes";
+        "read only" = "no";
+        "guest ok" = "yes";
+        "force user" = "paperless";
+        "force group" = "paperless";
+        "create mask" = "0664";
+        "directory mask" = "2775";
+      };
+
       sops.secrets."paperless-password" = { };
 
       services.paperless = {
@@ -65,7 +76,7 @@
 
   # paperless.scanner: beast's document scanner. scanbd reacts to the scanner button, scans
   # to PDF, and a timer delivers queued scans to the NAS Paperless consume share (cifs mount
-  # from samba.client). Included by beast.
+  # owned by this scanner aspect). Included by beast.
   den.aspects.paperless.scanner.nixos =
     {
       config,
@@ -74,6 +85,7 @@
       ...
     }:
     let
+      site = config.codyos.site;
       scan = pkgs.writeShellScript "paperless-scan" ''
         set -eu
         umask 077
@@ -163,6 +175,26 @@
       '';
     in
     {
+      # Native units keep unavailable NAS shares out of fstab-generator during
+      # systemd re-execution: https://github.com/systemd/systemd/issues/44396
+      system.fsPackages = [ pkgs.cifs-utils ];
+      systemd.mounts = [
+        {
+          what = "//${site.hosts.nas.lan}/PaperlessConsume";
+          where = "/mnt/paperless-consume";
+          type = "cifs";
+          options = "guest,uid=${toString config.ids.uids.scanner},gid=${toString config.ids.gids.scanner}";
+          mountConfig.TimeoutSec = "10s";
+        }
+      ];
+      systemd.automounts = [
+        {
+          where = "/mnt/paperless-consume";
+          wantedBy = [ "remote-fs.target" ];
+          automountConfig.TimeoutIdleSec = "60s";
+        }
+      ];
+
       hardware.sane.enable = true;
 
       users.users.scanner = {

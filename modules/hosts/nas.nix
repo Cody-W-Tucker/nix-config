@@ -85,7 +85,7 @@ in
 
         # ── User bind mounts ─────────────────────────────────────────
         # Bind NAS-local Projects and Knowledge Btrfs subvolumes into the user's
-        # home. The Share folders (Documents, Music, …) come from modules/sync/syncthing.nix.
+        # home. The Share folders (Documents, Music, …) come from modules/file-sharing/syncthing.nix.
         fileSystems."${site.user.home}/Projects" = {
           device = "/mnt/projects";
           fsType = "none";

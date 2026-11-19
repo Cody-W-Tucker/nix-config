@@ -61,7 +61,6 @@ in
       den.aspects.opencode.remote
       den.aspects.binary-cache.client
       den.aspects.nfs.client
-      den.aspects.samba.client
       den.aspects.wake-on-lan.target
     ];
 

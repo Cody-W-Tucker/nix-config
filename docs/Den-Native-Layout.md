@@ -34,7 +34,7 @@ modules/
   apps/                      # den.aspects.apps: desktop applications, terminal, KDE Connect
   audio.nix printing.nix gaming.nix            # standalone single-file features
   hardware/nvidia.nix openrazer.nix            # hardware-specific opt-ins
-  sync/ file-sharing/ containers/              # syncthing; nfs, samba; docker
+  file-sharing/ containers/                    # syncthing, nfs, samba; docker
   ai/ documents/ media/                        # llama-swap, hermes-agent, langfuse, hindsight,
                                                #   opencode(.remote), open-webui, speech-to-text;
                                                #   paperless(.scanner), paperless-gpt, tika; media stack
@@ -250,5 +250,5 @@ Old paths named in older notes map as follows:
 | `modules/editor/nixvim/*` (`nixvim-desktop`) | `modules/editor/nixvim.nix` (`nixvim`, `nixvim.desktop`), `_nixvim.nix`, `_keymaps.nix`, `_plugins/` |
 | `modules/base/*`, `den.aspects.base` | `defaults.nix`, `nix/`, `shell/`, `networking/`, `hardware/baseline.nix`, `secrets.nix`, `users/` (each self-registering) |
 | `modules/server/server.nix`, `den.aspects.server` | `web/nginx.nix` (`nginx.server`), `containers/docker.nix` (`docker.oci-backend`); nas includes the features directly |
-| `modules/services/*` | `ai/`, `containers/`, `sync/`, `file-sharing/`, `documents/` |
+| `modules/services/*` | `ai/`, `containers/`, `file-sharing/`, `documents/` |
 | `overlays/default.nix`, flake.nix outputs | `modules/flake/*` |

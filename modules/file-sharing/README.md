@@ -1,6 +1,6 @@
 # File sharing
 
-`samba.server`/`samba.client` and `nfs.server`/`nfs.client`: LAN file sharing between nas (server sides) and beast (client sides).
+Samba and NFS share files on the LAN. Syncthing replicates the shared folder between NAS and Beast; `syncthing.nginx` adds the Tailscale-only management routes on NAS.
 
 ## Samba
 
@@ -8,7 +8,6 @@
 
 | Share | Path | Purpose |
 | --- | --- | --- |
-| `codytHome` | `/mnt/media/Share` | General personal storage |
+| `codytHome` | `/mnt/backup/Share` | General personal storage |
 | `Music` | `/mnt/media/Music` | Music library management |
-| `PaperlessConsume` | `/var/lib/paperless/consume` | Document OCR drop zone |
-
+| `PaperlessConsume` | `/var/lib/paperless/consume` | Document OCR drop zone; [Paperless](../documents/paperless.nix) owns the export and Beast's scanner mount |

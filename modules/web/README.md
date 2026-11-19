@@ -20,7 +20,7 @@ The host uses NVMe for the OS and a large HDD mounted at `/mnt/media` for servic
 | `feeds/` | Miniflux and the miniflux-curator |
 | `containers/docker.nix` | `docker` and `docker.oci-backend` |
 | `observability/`, `backups/` | Monitoring, uptime checks; Restic jobs and backup health |
-| `file-sharing/`, `networking/`, `sync/`, `nix/` | `samba.server`, `nfs.server`; `dns`, `strict-fail2ban`; `syncthing`, `syncthing.nginx`; `binary-cache.server` |
+| `file-sharing/`, `networking/`, `nix/` | `samba.server`, `nfs.server`, `syncthing`, `syncthing.nginx`; `dns`, `strict-fail2ban`; `binary-cache.server` |
 | `ai/`, `documents/`, `media/` | llama-swap, hermes-agent, langfuse, opencode, open-webui; paperless, paperless-gpt, tika; the media stack |
 
 ## Ingress and domains
@@ -39,8 +39,8 @@ Common service mappings:
 | Immich | `photos.homehub.tv` | `2283` | `photos.nix` |
 | Grafana | `monitoring.homehub.tv` | `3001` | `../observability/monitoring.nix` |
 | Tika | `tika.homehub.tv` | `9998` | `../documents/tika.nix` |
-| Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `../sync/syncthing.nix` |
-| Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `../sync/syncthing.nix` |
+| Syncthing UI | `nas-syncthing.homehub.tv` | `8384` | `../file-sharing/syncthing.nix` |
+| Beast Syncthing UI | `beast-syncthing.homehub.tv` | `100.108.143.19:8384` | `../file-sharing/syncthing.nix` |
 | Open WebUI | `chat.homehub.tv` | `8080` | `../ai/open-webui.nix` |
 | Langfuse | `langfuse.homehub.tv` | `3000` | `../ai/langfuse/` |
 
@@ -61,8 +61,8 @@ The NAS also relies on these local-network utilities:
 - AdGuard is the LAN-facing filter and exposes its web UI on port `8000`.
 - Unbound is the local recursive resolver behind AdGuard and listens on `127.0.0.1:5335`.
 - DNS fallback is configured so the host can stay reachable during resolver bootstrap or local resolver failure.
-- `modules/sync/syncthing.nix` (`syncthing.nginx`) exposes Syncthing UIs through Nginx.
-- The shared Syncthing configuration and its `syncthing.nginx` reverse proxy are in `modules/sync/syncthing.nix`.
+- `modules/file-sharing/syncthing.nix` (`syncthing.nginx`) exposes Syncthing UIs through Nginx.
+- The shared Syncthing configuration and its `syncthing.nginx` reverse proxy are in `modules/file-sharing/syncthing.nix`.
 
 Syncthing is a two-host mesh between `nas` and `beast`. The shared service module owns device and folder declarations; `syncthing.nginx` owns the server-side reverse proxies.
 
