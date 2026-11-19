@@ -60,6 +60,9 @@
         ];
 
         home.packages = with pkgs; [
+          wttrbar # Waybar weather
+          playerctl # Hyprland and Waybar media controls
+          wl-clipboard # Wayland clipboard bindings
           # Workaround for Hyprland's Lua config provider rejecting the legacy
           # `hyprctl dispatch` IPC syntax that hyprnome's vendored hyprland-rs
           # emits. Patches workspace/move/special dispatching to run `hyprctl eval`
@@ -82,6 +85,18 @@
         };
 
         services = {
+          cliphist = {
+            # Clipboard history
+            enable = true;
+            allowImages = true;
+            extraOptions = [
+              "-max-dedupe-search"
+              "10"
+              "-max-items"
+              "50"
+            ];
+          };
+
           # Use the Hyprland Polkit
           hyprpolkitagent.enable = true;
           gnome-keyring = {

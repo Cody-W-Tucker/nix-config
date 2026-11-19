@@ -17,10 +17,13 @@
       ];
     };
 
-    provides.to-users.homeManager.services.kdeconnect = {
-      # Connect phone to computer
-      enable = true;
-      indicator = true;
+    provides.to-users.homeManager = { pkgs, ... }: {
+      home.packages = [ pkgs.kdePackages.kpeople ];
+      services.kdeconnect = {
+        # Connect phone to computer
+        enable = true;
+        indicator = true;
+      };
     };
   };
 }

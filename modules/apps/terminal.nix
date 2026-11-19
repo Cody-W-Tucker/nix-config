@@ -1,14 +1,11 @@
 {
   # Kitty terminal (the default $TERMINAL) with its shell aliases, and the small user scripts
-  # (focus-or-run, project, rofi launchers).
+  # (project).
   den.aspects.apps.provides.to-users.homeManager =
     { pkgs, ... }:
     let
       scriptNames = [
-        ./_scripts/focus-or-run.nix
         ./_scripts/project.nix
-        ./_scripts/rofi-launcher.nix
-        ./_scripts/rofi-web-launcher.nix
       ];
     in
     {

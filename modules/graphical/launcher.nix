@@ -5,6 +5,12 @@
       { config, pkgs, ... }:
 
       {
+        home.packages = map (script: pkgs.callPackage script { }) [
+          ./_scripts/focus-or-run.nix
+          ./_scripts/rofi-launcher.nix
+          ./_scripts/rofi-web-launcher.nix
+        ];
+
         programs.rofi = {
           enable = true;
           plugins = [

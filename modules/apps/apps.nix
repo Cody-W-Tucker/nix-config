@@ -2,7 +2,7 @@
 {
   # Everyday desktop applications and the small user services that go with them. One aspect,
   # `apps`, spans this directory: apps.nix (applications, browsers, Obsidian), terminal.nix
-  # (Kitty and the launcher scripts) and kdeconnect.nix.
+  # (Kitty and the project script) and kdeconnect.nix.
   den.aspects.apps.provides.to-users.homeManager =
     { pkgs, ... }:
     let
@@ -54,18 +54,6 @@
 
         # Bluetooth AVRCP bridge for MPRIS media controls
         mpris-proxy.enable = true;
-
-        cliphist = {
-          # Clipboard history
-          enable = true;
-          allowImages = true;
-          extraOptions = [
-            "-max-dedupe-search"
-            "10"
-            "-max-items"
-            "50"
-          ];
-        };
       };
 
       home.packages = with pkgs; [
@@ -99,13 +87,9 @@
         nixd # Nix daemon for development
         gcalcli # Google Calendar CLI tool
         feishin # Desktop app music player
-        wttrbar # Weather bar for Waybar
         vesktop # Discord client
         rustdesk-flutter # Remote support into customer machines (public RustDesk servers)
-        kdePackages.kpeople # Contact integration for KDE Connect SMS
-        playerctl # MPRIS cli; also provides playerctld D-Bus activation
         tuxedo # TUI for tasks
-        wl-clipboard # Clipboard manager for Wayland
         imagemagick # Image manipulation tools
         libsecret # Secret management library
       ];
