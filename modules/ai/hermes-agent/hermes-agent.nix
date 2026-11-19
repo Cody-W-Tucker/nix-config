@@ -7,7 +7,7 @@
   #  - nixos: backup wiring. The state and CRM SQLite files are exported by Restic's
   #    pre-backup step; remaining state is a direct Restic input (live *.db* files stay
   #    excluded centrally in modules/backups/backups.nix). nas.backups.* exists only
-  #    on hosts with the nas role, so include this on nas only.
+  #    on the nas host (modules/backups/), so include this on nas only.
   den.aspects.hermes-agent = {
     provides.to-users.homeManager.imports = [ ./_hm ];
 

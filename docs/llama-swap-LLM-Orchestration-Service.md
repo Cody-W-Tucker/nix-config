@@ -8,13 +8,13 @@ The `llama-swap` service is a specialized NixOS module designed to manage local 
 
 ### Core Components and Logic
 
-The service is defined in `modules/ai/llama-swap/default.nix`. It uses a submodule system to define a structured model catalog where each model can specify its own hardware requirements and runtime parameters [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
+The service module is `modules/ai/llama-swap/_impl/default.nix` (imported by the `llama-swap` aspect in `modules/ai/llama-swap/llama-swap.nix`). It uses a submodule system to define a structured model catalog where each model can specify its own hardware requirements and runtime parameters [modules/ai/llama-swap/_impl/default.nix](../modules/ai/llama-swap/_impl/default.nix)
 
 Key features include:
 
-- **TTL-based Swapping**: Models are kept alive for a specified duration after their last request. This is configured via the `ttl` option [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
+- **TTL-based Swapping**: Models are kept alive for a specified duration after their last request. This is configured via the `ttl` option [modules/ai/llama-swap/_impl/default.nix](../modules/ai/llama-swap/_impl/default.nix)
 - **Hardware Acceleration**: CUDA comes from the host-wide `nixpkgs.config.cudaSupport` (set by `codyos.hardware.nvidia`); the module has no backend switch of its own [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix)
-- **Command Generation**: The `mkModelCommand` function dynamically builds the `llama-server` CLI string, incorporating parameters like context size, batch size, and GPU layers [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
+- **Command Generation**: The `mkModelCommand` function dynamically builds the `llama-server` CLI string, incorporating parameters like context size, batch size, and GPU layers [modules/ai/llama-swap/_impl/default.nix](../modules/ai/llama-swap/_impl/default.nix)
 
 On NAS, the matrix router allows `qwen3-embedding-0.6b` to run alongside either
 the audio stack (`parakeet-tdt-v3`, `s1-mini`,
@@ -55,7 +55,7 @@ differs from chat completions: do not send it OpenAI chat payloads.
 
 ### Multimodal and Projector Support
 
-For models with vision capabilities, such as `glm-ocr-f16`, the catalog must specify an `mmprojFile`[modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix) This projector file is passed to `llama-server` via the `--mmproj` flag [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
+For models with vision capabilities, such as `glm-ocr-f16`, the catalog must specify an `mmprojFile`[modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix) This projector file is passed to `llama-server` via the `--mmproj` flag [modules/ai/llama-swap/_impl/default.nix](../modules/ai/llama-swap/_impl/default.nix)
 
 ## Hardware Acceleration Backends
 
@@ -63,14 +63,14 @@ For models with vision capabilities, such as `glm-ocr-f16`, the catalog must spe
 
 ## Specialized TTS Wrappers
 
-Some models do not run directly in `llama-server` but instead use Python-based OpenAI-compatible wrappers. These are defined in the catalog by omitting the `file` attribute and providing a custom `upstream.cmd`[modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)
+Some models do not run directly in `llama-server` but instead use Python-based OpenAI-compatible wrappers. These are defined in the catalog by omitting the `file` attribute and providing a custom `upstream.cmd`[modules/ai/llama-swap/_impl/default.nix](../modules/ai/llama-swap/_impl/default.nix)
 
 ### Kokoro TTS Server
 
 The `kokoro-openai-server.py` script provides an OpenAI-compatible `/v1/audio/speech` endpoint for the Kokoro model. It includes:
 
-- **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `echo`) to Kokoro-specific voices [modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py)
-- **Offline Support**: Patches `huggingface_hub` to serve model weights and voices from local Nix store paths rather than downloading them at runtime [modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py)
+- **Voice Mapping**: Maps standard OpenAI voice names (e.g., `alloy`, `echo`) to Kokoro-specific voices [modules/ai/llama-swap/_impl/kokoro-openai-server.py](../modules/ai/llama-swap/_impl/kokoro-openai-server.py)
+- **Offline Support**: Patches `huggingface_hub` to serve model weights and voices from local Nix store paths rather than downloading them at runtime [modules/ai/llama-swap/_impl/kokoro-openai-server.py](../modules/ai/llama-swap/_impl/kokoro-openai-server.py)
 
 ## Integration and Usage
 

@@ -2,7 +2,7 @@
   # Wake-on-LAN, one feature with two sides:
   #   .target: the machine being woken (beast) accepts magic packets on its NIC.
   #   .waker:  a host that sends the packet and waits for the target to answer.
-  # The waker is declared but deliberately NOT included by any host or role (it was
+  # The waker is declared but deliberately NOT included by any host (it was
   # never enabled); include den.aspects.wake-on-lan.waker from modules/hosts/nas.nix
   # to turn it on. Its unit is oneshot and has no wantedBy.
   den.aspects.wake-on-lan.target.nixos = {

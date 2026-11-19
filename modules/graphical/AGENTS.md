@@ -13,7 +13,7 @@ includes `den.aspects.graphical` once.
 
 Applications live in `modules/apps/`; audio, printing and gaming are standalone features in
 `modules/`. A host lists the features it wants (see `modules/hosts/beast.nix`); there is no
-desktop role.
+desktop role aspect.
 
 - Non-module data and large single-class subtrees (`_hyprland/`, `_waybar/`) are `_`-prefixed
   and imported by their aspect.

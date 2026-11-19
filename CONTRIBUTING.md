@@ -16,9 +16,9 @@ The goals of this repo are:
 |- flake.nix           # flake inputs + evalModules over modules/ (outputs come from there)
 |- modules/            # the Den tree: hosts, aspects, flake outputs (see modules/README.md)
 |  |- hosts/           # one file per machine (den host + host aspect), hardware in _*-hardware.nix
-|  |- nix/ shell/ networking/ observability/ hardware/  # shared feature aspects
-|  |- users/ desktop/ editor/ harness/   # user, desktop, editor and AI-harness aspects
-|  |- services/ server/                  # cross-class services; NAS role and its services
+|  |- nix/ shell/ networking/ observability/ hardware/ users/ editor/ harness/  # features every host gets
+|  |- graphical/ apps/ audio.nix printing.nix gaming.nix       # workstation features
+|  |- ai/ web/ feeds/ documents/ media/ containers/ backups/ sync/ file-sharing/  # service features
 |  `- flake/           # overlays, packages, checks, formatter
 |- packages/           # custom packages (package.nix each), exposed by the overlay
 |- docs/               # operator notes and reference
@@ -39,7 +39,7 @@ The layout and conventions are described in `docs/Den-Native-Layout.md`.
 `modules/hosts/<host>.nix` should mostly contain:
 
 - the `den.hosts` entry (channel pairing, host facts)
-- the aspect includes that select roles and features
+- the aspect includes that list the features the host wants
 - machine facts in the host aspect's `nixos` block: boot and kernel settings, mounts, hostname and machine networking, hardware-specific overrides
 - `system.stateVersion` and `home.stateVersion`
 
@@ -266,7 +266,7 @@ When changing a service or host module, prefer a host build over relying only on
 1. Create `modules/<area>/<service>.nix` defining `den.aspects.<service>` (for NAS web apps, `modules/web/<service>.nix`)
 2. Add secrets next to the service if needed
 3. Add nginx or firewall config in the same file when it is specific to that service
-4. Include the aspect from a role or host aspect (`modules/hosts/<host>.nix`)
+4. Include the aspect from the host aspect (`modules/hosts/<host>.nix`), or, if every host needs it, register it with `den.default.includes` in its own file
 5. `git add` the file and build the target host
 
 ### Add a new host

@@ -65,7 +65,7 @@ in
       den.aspects.wake-on-lan.target
     ];
 
-    # Beast's Home Manager role (the desktop comes from den.aspects.graphical and den.aspects.apps; the editor from den.aspects.nixvim).
+    # Beast's Home Manager profile (the desktop comes from den.aspects.graphical and den.aspects.apps; the editor from den.aspects.nixvim).
     provides.to-users.homeManager = {
       home.stateVersion = "25.05";
     };

@@ -1,6 +1,6 @@
 # System Modules
 
-The the shared feature directories (`modules/nix/`, `modules/shell/`, `modules/networking/`, ...) directory contains the shared Den aspects (NixOS configuration) applied across all hosts in the CodyOS ecosystem. These modules define the foundational environment, including package manager behavior, core services, security, and networking.
+The shared feature directories (`modules/nix/`, `modules/shell/`, `modules/networking/`, ...) directory contains the shared Den aspects (NixOS configuration) applied across all hosts in the CodyOS ecosystem. These modules define the foundational environment, including package manager behavior, core services, security, and networking.
 
 ## Overview of System Architecture
 

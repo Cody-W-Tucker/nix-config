@@ -3,7 +3,7 @@
   # gvfs, basic desktop packages), the Wayland session environment, and the NVIDIA session
   # variables. One aspect, `graphical`, spans this directory: session.nix, hyprland.nix (+
   # waybar), launcher.nix (rofi, Wi-Fi picker), notifications.nix, xdg.nix and theming.nix.
-  # The host includes `den.aspects.graphical`; there is no desktop role.
+  # The host includes `den.aspects.graphical`; there is no desktop role aspect.
   den.aspects.graphical.nixos =
     { pkgs, ... }:
     {

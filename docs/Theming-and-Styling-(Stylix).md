@@ -4,14 +4,14 @@ The CodyOS theming architecture is powered by **Stylix**, a declarative theming 
 
 ## Where To Look
 
-- `modules/graphical/theming.nix`: the `theming` aspect (Home Manager only): Stylix enablement, base16 scheme, GTK icon override, and shared desktop theme settings such as polarity, opacity, cursor, fonts, wallpaper, and target overrides [modules/graphical/theming.nix](../modules/graphical/theming.nix)
-- `modules/graphical/theming.nix`: system-level font availability for the desktop profile (beast only; the headless NAS installs no fonts) [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- `modules/graphical/theming.nix`: the `graphical` aspect's theming file (Stylix part is Home Manager only): Stylix enablement, base16 scheme, GTK icon override, and shared desktop theme settings such as polarity, opacity, cursor, fonts, wallpaper, and target overrides [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- The same file also sets system-level font availability for the workstation (beast only; the headless NAS installs no fonts)
 
 ## Configuration Split
 
 The main thing to know is that the desktop theming surface is split across two layers:
 
-- `modules/graphical/theming.nix` is the `theming` aspect, delivered to the user through `provides.to-users.homeManager`; it owns the shared Stylix settings and imports the Stylix Home Manager module, so `config.lib.stylix` exists only where the desktop is installed.
+- `modules/graphical/theming.nix` contributes to the `graphical` aspect (Home Manager half, delivered through `provides.to-users.homeManager`); it owns the shared Stylix settings and imports the Stylix Home Manager module, so `config.lib.stylix` exists only on hosts that include `graphical`.
 - Consumers elsewhere guard on it: `modules/shell/shell.nix` (yazi, fzf) checks `config.lib ? stylix`; `modules/graphical/_waybar/waybar.nix` and `modules/graphical/_hyprland/settings.nix` read the colors directly.
 
 ## Application Integration and Data Flow
@@ -69,7 +69,7 @@ The Stylix `fzf` target is disabled (`stylix.targets.fzf.enable = false` in [mod
 
 #### 3. Terminal and Shell
 
-- **Kitty**: Automatically themed by Stylix, with a specific override in the desktop role [modules/graphical/theming.nix](../modules/graphical/theming.nix)
+- **Kitty**: Automatically themed by Stylix, with a specific override in the graphical theming [modules/graphical/theming.nix](../modules/graphical/theming.nix)
 - **Zsh**: The `autosuggestion.highlight` uses the Stylix palette directly [modules/graphical/theming.nix](../modules/graphical/theming.nix)
 
 ## UI Component Configuration

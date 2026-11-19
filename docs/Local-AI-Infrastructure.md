@@ -42,7 +42,7 @@ flowchart LR
 `llama-swap` is the central orchestration service that manages the lifecycle of LLM processes. It exposes an OpenAI-compatible endpoint that dynamically launches `llama-server` instances based on the requested model.
 
 - **Model Management:** Models are defined in a central catalog [modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix) Each entry specifies `gpuLayers`, `contextSize`, and `ttl` (Time-To-Live).
-- **TTL-Based Swapping:** The service keeps a model resident in VRAM for a specified `ttl` duration [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix) Once the idle timer expires, the process is killed to free resources.
+- **TTL-Based Swapping:** The service keeps a model resident in VRAM for a specified `ttl` duration [modules/ai/llama-swap/_impl/default.nix](../modules/ai/llama-swap/_impl/default.nix) Once the idle timer expires, the process is killed to free resources.
 - **Acceleration Backends:** Supports `cuda` (default for NAS)
 - **Vision/OCR Support:** Multimodal models like `glm-ocr-f16` utilize a `mmprojFile` to handle image inputs [modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix)
 
@@ -55,7 +55,7 @@ For details, see [llama-swap: LLM Orchestration Service](/Cody-W-Tucker/nix-conf
 The system provides a low-latency voice pipeline for desktop interaction, primarily consumed by the `hermes-waybar-voice` assistant and the `llama-dictate` script.
 
 - **STT Pipeline:** Primary STT is `parakeet-tdt-v3`: Nixpkgs `sherpa-onnx` running NVIDIA Parakeet TDT 0.6B v3 int8 on CUDA, wrapped in an OpenAI-compatible server ([modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py)). There is no STT fallback model; speaker-aware transcription is served separately by `whisper-diarization`.
-- **TTS Pipeline:** Supports Kokoro-82M for high-quality speech synthesis via an OpenAI-compatible API [modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py)
+- **TTS Pipeline:** Supports Kokoro-82M for high-quality speech synthesis via an OpenAI-compatible API [modules/ai/llama-swap/_impl/kokoro-openai-server.py](../modules/ai/llama-swap/_impl/kokoro-openai-server.py)
 - **Integration:** These services are configured as the primary STT/TTS providers for the `hermes-agent`[modules/ai/hermes-agent/_hm/default.nix](../modules/ai/hermes-agent/_hm/default.nix)
 
 For details, see [Speech-to-Text and Text-to-Speech Services](/Cody-W-Tucker/nix-config/5.2-speech-to-text-and-text-to-speech-services).
@@ -93,9 +93,9 @@ The following table maps conceptual infrastructure components to their implement
 | System Name        | Implementation File                                                                                                                                                                      | Key Function/Attribute                                                                               |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **Model Catalog**  | [modules/ai/llama-swap/_impl/models.nix](../modules/ai/llama-swap/_impl/models.nix)                                               | Attribute set of model configs                                                                       |
-| **Orchestrator**   | [modules/ai/llama-swap/default.nix](../modules/ai/llama-swap/default.nix)                                             | `mkModelCommand`[128-162](../128-162)         |
+| **Orchestrator**   | [modules/ai/llama-swap/_impl/default.nix](../modules/ai/llama-swap/_impl/default.nix)                                             | `mkModelCommand`[128-162](../128-162)         |
 | **STT Server**     | [modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py)       | `transcriptions` endpoint |
-| **Kokoro TTS**     | [modules/ai/llama-swap/kokoro-openai-server.py](../modules/ai/llama-swap/kokoro-openai-server.py) | `speech` endpoint, voice mapping [17-26](../17-26)       |
+| **Kokoro TTS**     | [modules/ai/llama-swap/_impl/kokoro-openai-server.py](../modules/ai/llama-swap/_impl/kokoro-openai-server.py) | `speech` endpoint, voice mapping [17-26](../17-26)       |
 | **NVIDIA Config**  | [modules/hardware/nvidia.nix](../modules/hardware/nvidia.nix)                                                                     | `codyos.hardware.nvidia`, `hardware.nvidia.open` |
 
 ### Service Consumption Diagram

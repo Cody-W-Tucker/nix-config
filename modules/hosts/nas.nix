@@ -20,7 +20,7 @@ in
   den.aspects.nas = {
     includes = [
       den.aspects.hermes-agent
-      # The former server role's includes, in their original order. Order is load-bearing:
+      # The NAS service features, in the order of the former server role. Order is load-bearing:
       # den concatenates included modules in reverse include order, so list-valued
       # options (nas.backups.sqlite/dataDirectories, systemd.tmpfiles.rules) follow it.
       # Reordering is safe functionally but changes the Restic job layout and tmpfiles.
@@ -60,7 +60,7 @@ in
       den.aspects.opencode
     ];
 
-    # Nas's Home Manager role (Hermes' HM half comes from den.aspects.hermes-agent, nixvim
+    # Nas's Home Manager profile (Hermes' HM half comes from den.aspects.hermes-agent, nixvim
     # from den.aspects.nixvim).
     provides.to-users.homeManager = {
       home.stateVersion = "25.11";

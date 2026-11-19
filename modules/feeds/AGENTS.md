@@ -6,8 +6,8 @@ Does not own one-host cron-like tasks unless they are reusable enough to become 
 
 ## Placement Rules
 
-- Put each reusable automation in its own kebab-case file (or directory with a `_` supporting tree) as one `den.aspects.<name>`; the generic examples in `README.md` predate the Den layout, so use an aspect file instead of `default.nix`.
-- Split longer scripts into nearby files such as `script.nix`; keep `default.nix` as the service/timer assembly point.
+- Put each reusable automation in its own kebab-case file (or directory with a `_` supporting tree) as one `den.aspects.<name>`, included by the host that runs it.
+- Split longer scripts into nearby `_` files such as `_script.nix`; there is no `default.nix` outside `_` paths.
 - Define simple one-host automations in the host module instead of adding a new reusable module.
 - Keep secrets close to the consuming automation and use SOPS wiring rather than plaintext values.
 - Prefer native `systemd.services` and `systemd.timers` options over ad hoc cron-style glue.
@@ -20,4 +20,4 @@ Does not own one-host cron-like tasks unless they are reusable enough to become 
 - Long-running or stateful work is modeled as a fragile oneshot without clear working directory, state path, or persistence behavior.
 - Data-integrity jobs miss runs because the timer does not use `Persistent = true` where catch-up matters.
 
-See `README.md` for examples, common options, and operating commands.
+See `README.md` for operating commands.
