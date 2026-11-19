@@ -54,9 +54,8 @@ let
     sha256 = "3b41ebe2502cbd03e811d5d16b022f5ab551eda58d62597d152f89535003c634";
   };
 
-  # sherpa-onnx export of NVIDIA Parakeet TDT 0.6B v3 (int8) for the
-  # parakeet-tdt-v3 STT endpoint. Pinned to an immutable commit; hashes are
-  # the Hugging Face LFS sha256 values.
+  # FP16 encoder avoids the CPU-only dynamic INT8 matrix multiplications on
+  # CUDA; retain the existing INT8 decoder and joiner. Both exports are pinned.
   parakeetTdtV3 =
     let
       rev = "ed5d745623472f97cfc2e6c2916ee248798fc5a8";
@@ -67,9 +66,11 @@ let
           inherit sha256;
         };
     in
-    pkgs.linkFarm "sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8" {
-      "encoder.int8.onnx" =
-        fetch "encoder.int8.onnx" "1afbe69c1ffdabee94755f42e4daf1d93549131a3da11356bda84fcef0f2c479";
+    pkgs.linkFarm "sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-fp16" {
+      "encoder.fp16.onnx" = pkgs.fetchurl {
+        url = "https://huggingface.co/ako101/parakeet-tdt-0.6b-v3-sherpa-onnx-fp16/resolve/960f38997f4d70341fbd1ffc1de61a226c959cf8/encoder.fp16.onnx";
+        sha256 = "27afafcc1c39ee031e4f06f9a99433b3757c8b8b6c20d55166df1538bf8440d0";
+      };
       "decoder.int8.onnx" =
         fetch "decoder.int8.onnx" "0222a86147299d4dee90edf95b6d13827edb42ad8b7c9cf0b2582f030937c0b5";
       "joiner.int8.onnx" =

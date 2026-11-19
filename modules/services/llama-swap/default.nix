@@ -248,7 +248,7 @@ in
     parakeetModel = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
-      description = "Directory holding the sherpa-onnx Parakeet TDT int8 export (`encoder.int8.onnx`, `decoder.int8.onnx`, `joiner.int8.onnx`, `tokens.txt`) served as `parakeet-tdt-v3`.";
+      description = "Directory holding the sherpa-onnx Parakeet TDT export (`encoder.fp16.onnx`, `decoder.int8.onnx`, `joiner.int8.onnx`, `tokens.txt`) served as `parakeet-tdt-v3`.";
     };
 
     hfTokenPath = lib.mkOption {

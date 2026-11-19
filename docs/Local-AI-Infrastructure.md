@@ -54,7 +54,7 @@ For details, see [llama-swap: LLM Orchestration Service](/Cody-W-Tucker/nix-conf
 
 The system provides a low-latency voice pipeline for desktop interaction, primarily consumed by the `hermes-waybar-voice` assistant and the `llama-dictate` script.
 
-- **STT Pipeline:** Primary STT is `parakeet-tdt-v3`: Nixpkgs `sherpa-onnx` running NVIDIA Parakeet TDT 0.6B v3 int8 on CUDA, wrapped in an OpenAI-compatible server ([modules/services/llama-swap/sherpa-onnx-openai-server.py](../modules/services/llama-swap/sherpa-onnx-openai-server.py)). There is no STT fallback model; speaker-aware transcription is served separately by `whisper-diarization`.
+- **STT Pipeline:** Primary STT is `parakeet-tdt-v3`: Nixpkgs `sherpa-onnx` running NVIDIA Parakeet TDT 0.6B v3 with an FP16 encoder and INT8 decoder/joiner on CUDA, wrapped in an OpenAI-compatible server ([modules/services/llama-swap/sherpa-onnx-openai-server.py](../modules/services/llama-swap/sherpa-onnx-openai-server.py)). There is no STT fallback model; speaker-aware transcription is served separately by `whisper-diarization`.
 - **TTS Pipeline:** Supports Kokoro-82M for high-quality speech synthesis via an OpenAI-compatible API [modules/services/llama-swap/kokoro-openai-server.py38-105](../modules/services/llama-swap/kokoro-openai-server.py#L38-L105)
 - **Integration:** These services are configured as the primary STT/TTS providers for the `hermes-agent`[modules/services/hermes-agent/default.nix96-113](../modules/services/hermes-agent/default.nix#L96-L113)
 

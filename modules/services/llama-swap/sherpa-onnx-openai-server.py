@@ -47,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def make_recognizer(model_dir: Path, provider: str, num_threads: int):
     return sherpa_onnx.OfflineRecognizer.from_transducer(
-        encoder=str(model_dir / "encoder.int8.onnx"),
+        encoder=str(model_dir / "encoder.fp16.onnx"),
         decoder=str(model_dir / "decoder.int8.onnx"),
         joiner=str(model_dir / "joiner.int8.onnx"),
         tokens=str(model_dir / "tokens.txt"),

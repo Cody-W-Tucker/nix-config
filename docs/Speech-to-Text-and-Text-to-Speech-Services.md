@@ -32,7 +32,7 @@ The speech pipeline is built on three primary server-side components and two cli
 
 ### Parakeet (sherpa-onnx) Server
 
-The primary transcription backend, `parakeet-tdt-v3`, is an OpenAI-compatible FastAPI server ([modules/services/llama-swap/sherpa-onnx-openai-server.py](../modules/services/llama-swap/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves the sherpa-onnx int8 export of NVIDIA Parakeet TDT 0.6B v3. `hosts/nas/models.nix` pins the model files to a Hugging Face commit and passes them in through `services.llama-swap.parakeetModel`.
+The primary transcription backend, `parakeet-tdt-v3`, is an OpenAI-compatible FastAPI server ([modules/services/llama-swap/sherpa-onnx-openai-server.py](../modules/services/llama-swap/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves NVIDIA Parakeet TDT 0.6B v3 with a natively exported FP16 encoder and INT8 decoder/joiner. `hosts/nas/models.nix` pins the model files to Hugging Face commits and passes them in through `services.llama-swap.parakeetModel`. The FP16 encoder avoids the dynamic INT8 encoder's CPU fallback for matrix multiplications with the CUDA execution provider.
 
 - **Provider**: CUDA, with 4 CPU threads for supporting work. The CUDA provider was tested on the NAS's RTX 5060; actual memory use alongside the other audio models should be monitored.
 - **Audio input**: Every upload is decoded with ffmpeg to 16 kHz mono, so WAV, Ogg/Opus, MP3, and M4A all work. Audio longer than 120 s is split at the quietest 100 ms frame near each boundary.

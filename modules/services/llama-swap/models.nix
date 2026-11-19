@@ -210,7 +210,7 @@ in
   # Wrapper-backed audio models: file is null because the host replaces the
   # generated llama-server command with an OpenAI-compatible helper process.
   # Wrapper commands are built in default.nix using proxy.nix.
-  # Primary STT: sherpa-onnx Parakeet TDT 0.6B v3 int8. Needs
+  # Primary STT: sherpa-onnx Parakeet TDT 0.6B v3. Needs
   # `services.llama-swap.parakeetModel`.
   "parakeet-tdt-v3" = {
     file = null;
