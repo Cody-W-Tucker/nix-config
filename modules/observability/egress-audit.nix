@@ -4,10 +4,11 @@
   # destination country and ship it to Loki as job="egress".
   #
   #   egress-audit             every selecting host: nftables logs new connections
-  #                            to non-private addresses (host and forwarded/container
-  #                            traffic); Fluent Bit parses them, plus Unbound query
-  #                            logs and OpenSnitch events, into the egress stream.
-  #                            Internal names and destinations are dropped.
+  #                            to non-private addresses (forwarded/container traffic,
+  #                            and host traffic unless OpenSnitch runs); Fluent Bit
+  #                            parses them, plus Unbound query logs and OpenSnitch
+  #                            events, into the egress stream. Internal names and
+  #                            destinations are dropped.
   #   egress-audit.opensnitch  per-process attribution (which program connected).
   #   egress-audit.server      the Loki host: 30-day retention. Dashboard-only, no alerts.
   #
@@ -45,6 +46,18 @@
       skipResolver = lib.optionalString config.services.unbound.enable ''
         meta l4proto { tcp, udp } th dport { 53, 853 } meta skuid unbound return
       '';
+      # OpenSnitch (egress-audit.opensnitch) records the same host connections
+      # with the program attached, so the kernel log only covers host traffic
+      # where it is absent. Routed traffic never reaches OpenSnitch.
+      logHostTraffic = !config.services.opensnitch.enable;
+      outputChain = ''
+        chain output {
+          type filter hook output priority filter + 10; policy accept;
+          ${skipResolver}
+          ${logRule "ip" "private4" "egress-out" " flags skuid"}
+          ${logRule "ip6" "private6" "egress-out" " flags skuid"}
+        }
+      '';
     in
     {
       networking.nftables.tables.egress-audit = {
@@ -60,13 +73,7 @@
             elements = { ::1/128, fc00::/7, fe80::/10, ff00::/8 }
           }
 
-          chain output {
-            type filter hook output priority filter + 10; policy accept;
-            ${skipResolver}
-            ${logRule "ip" "private4" "egress-out" " flags skuid"}
-            ${logRule "ip6" "private6" "egress-out" " flags skuid"}
-          }
-
+          ${lib.optionalString logHostTraffic outputChain}
           # Docker containers and other routed traffic never pass the output hook.
           chain forward {
             type filter hook forward priority filter + 10; policy accept;
@@ -76,7 +83,7 @@
         '';
       };
       # The build-time ruleset check has no /etc/passwd entry for the resolver user.
-      networking.nftables.preCheckRuleset = lib.mkIf config.services.unbound.enable ''
+      networking.nftables.preCheckRuleset = lib.mkIf (logHostTraffic && config.services.unbound.enable) ''
         sed 's/skuid unbound/skuid root/g' -i ruleset.conf
       '';
 

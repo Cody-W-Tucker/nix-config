@@ -41,11 +41,11 @@ Grafana has provisioned `Prometheus`, `Tempo` and `Loki` (uid `loki`) datasource
 
 | Aspect | Hosts | What it adds |
 | --- | --- | --- |
-| `egress-audit` | nas, beast | nftables table `inet egress-audit` logs each new connection to a non-private address: `egress-out:` for the host (with UID), `egress-fwd:` for forwarded/Docker traffic. Rate-limited to 50/s per rule. On the NAS, Unbound's own upstream lookups are skipped because its client queries are logged instead. |
+| `egress-audit` | nas, beast | nftables table `inet egress-audit` logs each new connection to a non-private address: `egress-fwd:` for forwarded/Docker traffic, and `egress-out:` for the host's own traffic (with UID) only on hosts without OpenSnitch, which records the same connections with the program attached. Rate-limited to 50/s per rule. Unbound's own upstream lookups are skipped (in both nftables and OpenSnitch) because its client queries are logged instead. |
 | `egress-audit.opensnitch` | nas, beast | OpenSnitch in log-only mode (default allow, no prompts, no conntrack flush on start): each connection with the program path, command line, PID and the hostname it resolved. |
 | `egress-audit.server` | nas | Loki 30-day retention for the stream. Dashboard-only: no alert rules. The three rules it used to provision (folder "Egress audit") stay in Grafana until deleted by hand. |
 
-Unbound query logging itself (`log-queries`, `log-local-actions`) lives in the `dns` aspect. Fluent Bit parses all of it with `_egress-parse.lua`, moves it from the journal stream to the `egress` tag, and adds `country`/`country_name` from the DB-IP country-lite database. Labels are `host`, `source` (`nft`, `opensnitch`, `dns`) and `country`; the remaining fields are JSON, for example:
+Unbound query logging itself (`log-queries`, `log-local-actions`) lives in the `dns` aspect. Fluent Bit parses all of it with `_egress-parse.lua`, moves it from the journal stream to the `egress` tag, and adds `country`/`country_name` from the DB-IP country-lite database. Labels are `host`, `source` (`nft`, `opensnitch`, `dns`) and `country`. Each line holds only the parsed fields as JSON. The original message, the raw syslog line and the journal metadata are dropped, so `pid`, `uid` and `path` always describe the connecting program, not the logging daemon. IPv6 addresses are in compressed form for every source. OpenSnitch's resolved hostname is `remote_host`, because a field name starting with `dst` breaks the country lookup. For example:
 
 ```logql
 {job="egress", source="opensnitch"} | json | path=~".*/curl"
@@ -57,6 +57,6 @@ Internal traffic is dropped before shipping, from both the egress stream and the
 
 There is no egress dashboard. To browse the stream, use Grafana's Logs Drilldown (`service_name=egress`), which breaks it down by label and JSON field (`country`, `dst`, `dport`, `path`, `qname`, ...).
 
-Limits: services confined to the WireGuard namespace show up only as traffic to the VPN endpoint, and anyone with root on a host can turn off its logging.
+Limits: services confined to the WireGuard namespace show up only as traffic to the VPN endpoint, and anyone with root on a host can turn off its logging. Host traffic on OpenSnitch hosts is recorded only while `opensnitchd` runs, because it fails open.
 
 `logging.desktop` and `nvidia` advertise endpoints through Den's `prometheus-targets` pipe on hosts that select them. `monitoring.nix` collects those endpoints from same-system peers and owns the scrape jobs. No target is advertised merely because a host exists. Keep new exporter definitions and their advertisements together; Grafana still owns dashboard presentation.
