@@ -14,7 +14,7 @@ Central docs should point here for harness implementation detail.
 - `claude-code/default.nix` — Claude Code user harness and shared MCP integration.
 - `context.nix` — shared environment instructions.
 - `plugins/default.nix` — shared plugins for OpenCode and Claude Code (`codyos.harness.plugins`), including `hindsight` (OpenCode 2 memory plugin + Claude Code UserPromptSubmit and Stop hooks, recalling from and retaining to the project's Hindsight bank), `langfuse` (OpenCode 0.6.0 wrapper + pinned Claude Code 1.2.2 Stop/SessionEnd hook reading `LANGFUSE_*` from the zsh-sourced `opencode-langfuse-env` SOPS template), and `rtk` (OpenCode plugin + Claude Code `PreToolUse` Bash rewrite hook + shared context).
-- `skills/default.nix` — shared skills for every harness, including the deja-search, gnhf and no-mistakes skills from their pinned packages.
+- `skills/default.nix` — shared desktop skill installer. `mcp.nix` and `coding-tools.nix` contribute the package-pinned Déjà, GNHF, and no-mistakes skills with their tools.
 - `programs.mcp.servers` in `mcp.nix` is the one MCP list. Claude Code and OpenCode take it through `enableMcpIntegration`. Leave out `type`: each consumer derives it from `url`.
 - Pi reads the same server list from `~/.pi/agent/mcp.json` and the shared instructions from `~/.pi/agent/AGENTS.md`. Home Manager manages these files; existing unmanaged files may need to be moved before activation. NAS imports the unstable Pi module until its stable Home Manager includes it.
 - All harnesses use the shared QMD MCP connection. On other hosts it starts QMD over SSH on the NAS, using the same index and GPU backend as Hermes; NAS sessions run QMD locally. SSH requires noninteractive access to the NAS.
@@ -32,7 +32,7 @@ Central docs should point here for harness implementation detail.
 | Agent runtime surface | OpenCode, Claude Code                        | `opencode/default.nix`, `claude-code/default.nix`                                                                  |
 | Knowledge and logging | Karakeep and QMD MCP servers                 | `mcp.nix`                                                                                                          |
 | Shared plugins        | Hindsight, Langfuse, RTK                     | `plugins/default.nix`, `plugins/hindsight/`, `plugins/langfuse/`, `plugins/rtk/`                                   |
-| Shared skills         | Cognitive, Deja, GNHF, Humanizer, etc.       | `skills/default.nix`                                                                                               |
+| Shared skills         | Deja, GNHF, Humanizer, etc.                  | `skills/default.nix`                                                                                               |
 
 ## Layout Notes
 
@@ -40,6 +40,8 @@ Central docs should point here for harness implementation detail.
 - `opencode/agents/*/skills/` contains skills that belong to a specific agent family.
 - `plugins/` contains shared plugins. Modules add entries to `codyos.harness.plugins`; `plugins/default.nix` wires them into OpenCode (`~/.config/opencode/plugins/` and `settings.plugins`), Claude Code (`programs.claude-code.plugins` and `settings.hooks`), `home.packages`, and shared context.
 - `skills/` contains the shared skills. Modules add entries to `codyos.harness.skills`; `skills/default.nix` writes them to `~/.claude/skills` (Claude Code) and `~/.agents/skills` (Codex, Pi). OpenCode reads both directories.
+- The Cognitive Assistant skill pack is managed by [Hermes](../ai/hermes-agent/README.md#skills), not the shared coding harness.
+- Tool skills belong to the feature that exposes the tool. For example, the Google Workspace aspect ships the same selected skills with `gws` on the desktop and in Hermes. Repo-authored or vendored skill folders can live in the [skill catalog](../../skills/README.md).
 - `opencode/tools/` contains OpenCode-only tool plugins packaged for the user session.
 
 RLM-related behavior is surfaced through the harness and OpenCode tooling rather than a separate top-level user area. Recursive language-model execution and CLI multiplexing for the desktop are represented here through the relevant tool or module files.

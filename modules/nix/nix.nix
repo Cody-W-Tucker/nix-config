@@ -56,7 +56,6 @@
       environment.systemPackages = [
         pkgs.check-imports
         pkgs.update
-        (import "${inputs.workflow}/packages.nix" { inherit pkgs; }).researchState
       ];
 
       # Enables prompts to install missing packages when running commands

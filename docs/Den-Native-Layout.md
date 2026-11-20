@@ -78,6 +78,9 @@ Each directory has a README or AGENTS.md where there is something to know; the t
   only once. Den places the pieces of a multi-file aspect ahead of include-ordered features, so
   list-valued options such as `environment.systemPackages` can come out in a different order than
   a one-file aspect would give; the sets are the same.
+- **Tool skills follow the capability.** Contribute the skill where the aspect exposes its tool;
+  use the same package pin for upstream skills. The [catalog](../skills/README.md) stores skill
+  content, not a second list of features a host must select.
 - **`modules/defaults.nix` is only for settings with no feature**, and stays small. Anything
   with a name of its own gets a feature file that registers itself.
 - **Inclusion replaces enable flags.** A host including `den.aspects.<x>` (or the aspect being in

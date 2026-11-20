@@ -22,6 +22,7 @@ in
     (import ./mcp.nix { inherit localAi; })
     (import ./plugins { inherit localAi; })
     ./skills
+    ./coding-tools.nix
   ]
   ++
     lib.optionals
@@ -43,14 +44,7 @@ in
     # remote that Beast's herdr-app reaches over SSH; both use this pinned hc.
     llmPkgs.herdr-core
 
-    # Memory and Session Management
-    llmPkgs.deja-vu # session search across all agents
-    pkgs.sqlite # Deja Vu reads OpenCode and Hermes session databases with sqlite3.
-
-    # Git and Code Review
     llmPkgs.tuicr
-    llmPkgs.gnhf
-    llmPkgs.no-mistakes # Git push gate: runs an AI-driven validation pipeline, then opens a clean PR.
 
     llmPkgs.spec-kit
     llmPkgs.backlog-md

@@ -1,13 +1,9 @@
-{
-  inputs,
-  pkgs,
-  ...
-}:
+{ den, inputs, ... }:
 
 let
   googleWorkspaceSkillsRoot = inputs.googleworkspace-cli + "/skills";
 
-  # Upstream ships ~45 gws-* skills; Hermes gets only these.
+  # Expose only the Workspace capabilities we use, on either side of the aspect.
   gwsSkillNames = [
     "gws-shared"
     "gws-calendar"
@@ -23,7 +19,7 @@ let
   ];
 
   # Triage defaults to the inbox instead of every unread message.
-  gmailTriageSkillDir = pkgs.writeTextDir "SKILL.md" (
+  gmailTriageText =
     builtins.replaceStrings
       [
         "description: \"Gmail: Show unread inbox summary (sender, subject, date).\""
@@ -51,24 +47,47 @@ let
         "gws gmail +triage --query 'in:inbox' --format json | jq '.[].subject'"
         "gws gmail +triage --query 'in:inbox' --labels"
       ]
-      (builtins.readFile (googleWorkspaceSkillsRoot + "/gws-gmail-triage/SKILL.md"))
-  );
+      (builtins.readFile (googleWorkspaceSkillsRoot + "/gws-gmail-triage/SKILL.md"));
 
-  patchedSkillDirs.gws-gmail-triage = gmailTriageSkillDir;
-
-  googleWorkspaceSkills = pkgs.linkFarm "hermes-agent-google-workspace-skills" (
-    map (name: {
-      name = "tools/${name}";
-      path = patchedSkillDirs.${name} or (googleWorkspaceSkillsRoot + "/${name}");
-    }) gwsSkillNames
-  );
+  skillDirs =
+    pkgs:
+    pkgs.lib.genAttrs gwsSkillNames (
+      name:
+      if name == "gws-gmail-triage" then
+        pkgs.writeTextDir "SKILL.md" gmailTriageText
+      else
+        googleWorkspaceSkillsRoot + "/${name}"
+    );
+  cli = pkgs: inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.gws;
 in
 {
-  codyos.hermes-agent.skills.skillPacks = [
-    {
-      name = "google-workspace-tools";
-      root = googleWorkspaceSkills;
-      mode = "managed";
-    }
-  ];
+  den.aspects.google-workspace = {
+    desktop.provides.to-users.homeManager =
+      { pkgs, lib, ... }:
+      {
+        home.packages = [ (cli pkgs) ];
+        codyos.harness.skills = lib.mapAttrs (_: toString) (skillDirs pkgs);
+      };
+
+    # Hermes also adds extraPackages to the user's packages, so the desktop
+    # harness on the same host can use this CLI and should see the same skills.
+    hermes.includes = [ den.aspects.google-workspace.desktop ];
+    hermes.provides.to-users.homeManager =
+      { pkgs, lib, ... }:
+      {
+        services.hermes-agent.extraPackages = [ (cli pkgs) ];
+        codyos.hermes-agent.skills.skillPacks = [
+          {
+            name = "google-workspace-tools";
+            root = pkgs.linkFarm "hermes-agent-google-workspace-skills" (
+              lib.mapAttrsToList (name: path: {
+                name = "tools/${name}";
+                inherit path;
+              }) (skillDirs pkgs)
+            );
+            mode = "managed";
+          }
+        ];
+      };
+  };
 }

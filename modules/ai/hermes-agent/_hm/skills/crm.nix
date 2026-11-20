@@ -13,6 +13,9 @@ let
   ];
 in
 {
+  services.hermes-agent.extraPackages = [ pkgs.crm-cli ];
+  codyos.harness.skills.crm-cli = crmSkill;
+
   codyos.hermes-agent.skills.skillPacks = [
     {
       name = "crm-tools";

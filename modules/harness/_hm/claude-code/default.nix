@@ -14,7 +14,10 @@ in
     enable = true;
     package = llmPkgs.claude-code;
     enableMcpIntegration = true;
-    settings.env.CLAUDE_CODE_SUBAGENT_MODEL = "claude-opus-5-5";
+    settings = {
+      env.CLAUDE_CODE_SUBAGENT_MODEL = "claude-opus-5-5";
+      syncClaudeAiSkills = false;
+    };
   }
   # Guard: Home Manager release-26.05 (NAS) lacks this option. Drop the guard
   # once the NAS is on a Home Manager release that has it.

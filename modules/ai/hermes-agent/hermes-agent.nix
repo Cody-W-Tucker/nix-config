@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ den, inputs, ... }:
 {
   # Hermes agent: one aspect, two halves. Include it on a host to get both.
   #  - homeManager: the Hermes Home Manager module tree (_hm), delivered to every user of
@@ -9,6 +9,10 @@
   #    excluded below). nas.backups.* exists only
   #    on the nas host (modules/backups/), so include this on nas only.
   den.aspects.hermes-agent = {
+    includes = [
+      den.aspects.google-workspace.hermes
+      den.aspects.research-state.hermes
+    ];
     provides.to-users.homeManager.imports = [ ./_hm ];
     # Hermes runs as user services; linger keeps them up after logout.
     provides.to-users.user.linger = true;

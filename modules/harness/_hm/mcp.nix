@@ -43,6 +43,13 @@ in
 {
   home.sessionVariables = dejaEmbedding;
 
+  # Ship the CLI and its instructions with this harness's session-search integration.
+  home.packages = [
+    deja
+    pkgs.sqlite
+  ];
+  codyos.harness.skills.deja-search = "${deja.src}/skills/deja-search";
+
   sops.secrets.karakeep-api-key = { };
 
   # Global MCP tools for all agents

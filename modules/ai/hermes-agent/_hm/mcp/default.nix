@@ -42,6 +42,23 @@ let
 in
 {
   config = {
+    # The Déjà skill also supports CLI workflows. QMD is available over MCP;
+    # keep its existing CLI available without adding a redundant skill.
+    services.hermes-agent.extraPackages = [
+      deja
+      pkgs.sqlite
+      qmd
+    ];
+    codyos.hermes-agent.skills.skillPacks = [
+      {
+        name = "deja-search";
+        root = pkgs.linkFarm "hermes-deja-search-skills" {
+          "tools/deja-search" = "${deja.src}/skills/deja-search";
+        };
+        mode = "managed";
+      }
+    ];
+
     # Default profile only: expose selected servers so unrelated MCP schemas
     # and tools never enter its prompt surface.
     services.hermes-agent.mcpServers = {

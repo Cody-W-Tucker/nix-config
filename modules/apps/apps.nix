@@ -1,8 +1,9 @@
-{ inputs, ... }:
+{ den, inputs, ... }:
 {
   # Everyday desktop applications and the small user services that go with them. One aspect,
   # `apps`, spans this directory: apps.nix (applications, browsers, Obsidian), terminal.nix
   # (Kitty) and kdeconnect.nix.
+  den.aspects.apps.includes = [ den.aspects.google-workspace.desktop ];
   den.aspects.apps.provides.to-users.homeManager =
     { pkgs, ... }:
     let
@@ -52,7 +53,6 @@
       };
 
       home.packages = with pkgs; [
-        inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
         # Hermes Desktop: stay on native Wayland and the NVIDIA hardware path.
         # Vulkan is not compatible with Chromium's native Wayland ozone backend;
         # without this flag, Electron can repeatedly lose its GPU process. Hermes

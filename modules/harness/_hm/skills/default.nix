@@ -1,13 +1,11 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
 }:
 
 let
-  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   skills = config.codyos.harness.skills;
 
   # Same value handling as Home Manager's per-tool skills options: a string is
@@ -32,7 +30,6 @@ in
 {
   imports = [
     ./humanizer
-    ./cognitive
     ./make-native
     ./untangle-codebase
   ];
@@ -48,12 +45,6 @@ in
   };
 
   config = {
-    codyos.harness.skills = {
-      deja-search = "${llmPkgs.deja-vu.src}/skills/deja-search";
-      gnhf = "${llmPkgs.gnhf}/lib/node_modules/gnhf/skills/gnhf";
-      no-mistakes = "${llmPkgs.no-mistakes.src}/skills/no-mistakes/SKILL.md";
-    };
-
     # Claude Code reads only ~/.claude/skills. Codex and Pi read only
     # ~/.agents/skills. OpenCode reads both and resolves the identical copies
     # by name, so it needs no skills option of its own.

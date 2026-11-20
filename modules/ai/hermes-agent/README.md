@@ -90,7 +90,7 @@ changed document or setting applies on the next process restart
 
 ## Skills
 
-Skills are Markdown-based capability packs copied into `${hermesHome}/skills` by Home Manager activation scripts (`home.activation.*`, running as the user).
+Skills are Markdown-based capability packs, either read from the Nix store or seeded into `${hermesHome}/skills`. A tool feature contributes its skill with the CLI or MCP integration; the skills module handles installation.
 
 Skills use Hermes' documented configuration rather than a custom sync script:
 
@@ -110,9 +110,11 @@ Current packs:
 
 - `cognitive-assistant` (mutable): every Cognitive Assistant skill.
 - `hermes-humanizer` (mutable): the upstream humanizer skill.
-- `crm-tools` and `google-workspace-tools` (managed): the CRM CLI skill and an allowlist of 11 `gws-*` skills (`skills/business/`). Gmail triage is patched to default to `in:inbox`.
-- `knowledge-tools` (managed): the `research-state` skill. QMD search uses the `qmd` MCP server instead of a skill.
-- `workflow` (managed): skills from the workflow input.
+- `crm-tools` (managed): the pinned CRM CLI skill from `skills/crm.nix`.
+- `google-workspace-tools` (managed): the Google Workspace aspect's allowlist of 11 `gws-*` skills. Gmail triage defaults to `in:inbox`.
+- `knowledge-tools` (managed): the `research-state` aspect's skill, authored in the shared catalog. QMD search uses MCP instead of a skill.
+- `workflow` (managed): `verified-work-run` from the pinned workflow input.
+- `deja-search` (managed): the pinned Déjà skill, paired with the CLI and MCP server in `mcp/default.nix`.
 
 ## Toolsets
 

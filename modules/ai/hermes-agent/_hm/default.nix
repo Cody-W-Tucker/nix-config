@@ -9,7 +9,6 @@
 
 let
   inherit (osConfig.codyos.site) domain;
-  workflowPackage = inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}.workflowCli;
   hermesCommon = import "${inputs.hermes-agent}/nix/moduleCommon.nix" { inherit lib; };
 in
 {
@@ -81,7 +80,6 @@ in
         libopus
         nix
         python3Minimal
-        workflowPackage
       ];
       environment = {
         API_SERVER_ENABLED = "true";

@@ -4,8 +4,7 @@ _: {
     ./exclusions.nix
     ./cognitive-assistant.nix
     ./humanizer.nix
-    ./business
-    ./knowledge
+    ./crm.nix
     ./workflow
   ];
 }
