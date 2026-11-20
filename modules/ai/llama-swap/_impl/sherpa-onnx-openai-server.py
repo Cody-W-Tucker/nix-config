@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """OpenAI-compatible transcription server backed by sherpa-onnx.
 
-Serves an offline NeMo transducer (Parakeet TDT) behind llama-swap. The
+Serves Fluid Speech Pro in clean mode behind llama-swap. The
 request/response shape matches the faster-whisper wrapper it replaces so
 existing clients only need to change the model id.
 """
@@ -47,10 +47,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def make_recognizer(model_dir: Path, provider: str, num_threads: int):
     return sherpa_onnx.OfflineRecognizer.from_transducer(
-        encoder=str(model_dir / "encoder.fp16.onnx"),
-        decoder=str(model_dir / "decoder.int8.onnx"),
-        joiner=str(model_dir / "joiner.int8.onnx"),
-        tokens=str(model_dir / "tokens.txt"),
+        encoder=str(model_dir / "encoder-model.clean.int8.onnx"),
+        decoder=str(model_dir / "decoder.clean.int8.onnx"),
+        joiner=str(model_dir / "joiner.clean.int8.onnx"),
+        tokens=str(model_dir / "vocab.txt"),
         num_threads=num_threads,
         sample_rate=SAMPLE_RATE,
         feature_dim=128,
@@ -170,7 +170,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         temperature: str | None = Form(default=None),
         task: str | None = Form(default=None),
     ):
-        # Parakeet TDT v3 detects its 25 European languages itself and has no
+        # Fluid Speech Pro detects its 25 European languages itself and has no
         # prompt or sampling controls; accept and ignore those fields.
         del model, prompt, temperature
 

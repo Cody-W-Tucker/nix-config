@@ -100,17 +100,18 @@ let
         python = whisperDiarizePython;
       };
   wrapperCommands = {
-    "parakeet-tdt-v3" = lib.optionalAttrs (cfg.parakeetModel != null) {
+    "fluid-speech-pro-clean" = lib.optionalAttrs (cfg.fluidSpeechModel != null) {
       file = null;
       ttl = 0;
       upstream.cmd = ''
         ${sherpaPython}/bin/python3 ${./sherpa-onnx-openai-server.py} \
           --host 127.0.0.1 \
           --port ''${PORT} \
-          --model-dir ${cfg.parakeetModel} \
-          --model-id parakeet-tdt-v3 \
+          --model-dir ${cfg.fluidSpeechModel} \
+          --model-id fluid-speech-pro-clean \
           --provider cuda \
           --num-threads 4 \
+          --max-chunk-seconds 30 \
           --ffmpeg ${lib.getExe pkgs.ffmpeg-headless}
       '';
     };
@@ -241,10 +242,10 @@ in
       description = "llama.cpp package that provides the llama-server binary used by llama-swap.";
     };
 
-    parakeetModel = lib.mkOption {
+    fluidSpeechModel = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
-      description = "Directory holding the sherpa-onnx Parakeet TDT export (`encoder.fp16.onnx`, `decoder.int8.onnx`, `joiner.int8.onnx`, `tokens.txt`) served as `parakeet-tdt-v3`.";
+      description = "Directory holding the Fluid Speech Pro clean-mode ONNX graphs, external weights, and vocabulary, served as `fluid-speech-pro-clean`.";
     };
 
     hfTokenPath = lib.mkOption {

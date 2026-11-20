@@ -38,9 +38,9 @@ let
       pathfile="/tmp/llama-dictate-recording.path"
       runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
        api_url="${baseUrl}/v1/audio/transcriptions"
-       warmup_url="${baseUrl}/upstream/parakeet-tdt-v3/health"
+       warmup_url="${baseUrl}/upstream/fluid-speech-pro-clean/health"
        normalizer_warmup_url="${baseUrl}/upstream/s1-mini/health"
-       model="parakeet-tdt-v3"
+       model="fluid-speech-pro-clean"
       norm_url="${baseUrl}/v1/chat/completions"
 
        warm_model() {

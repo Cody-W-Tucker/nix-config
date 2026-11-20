@@ -210,9 +210,8 @@ in
   # Wrapper-backed audio models: file is null because the host replaces the
   # generated llama-server command with an OpenAI-compatible helper process.
   # Wrapper commands are built in default.nix using proxy.nix.
-  # Primary STT: sherpa-onnx Parakeet TDT 0.6B v3. Needs
-  # `services.llama-swap.parakeetModel`.
-  "parakeet-tdt-v3" = {
+  # Primary STT: Fluid Speech Pro clean mode. Needs `services.llama-swap.fluidSpeechModel`.
+  "fluid-speech-pro-clean" = {
     file = null;
     ttl = 0; # Keep STT warm until another group explicitly evicts it.
   };

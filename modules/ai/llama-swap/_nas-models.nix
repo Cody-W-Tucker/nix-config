@@ -54,30 +54,32 @@ let
     sha256 = "3b41ebe2502cbd03e811d5d16b022f5ab551eda58d62597d152f89535003c634";
   };
 
-  # FP16 encoder avoids the CPU-only dynamic INT8 matrix multiplications on
-  # CUDA; retain the existing INT8 decoder and joiner. Both exports are pinned.
-  parakeetTdtV3 =
+  # Fluid Speech Pro by FluidVoice (CC BY 4.0). Keep the external weights
+  # beside the clean graphs, under the exact filenames embedded in the graphs.
+  fluidSpeechProClean =
     let
-      rev = "ed5d745623472f97cfc2e6c2916ee248798fc5a8";
+      rev = "fa588e9f87f1b9ad0ca2e2d8f7eaf84dc3803581";
       fetch =
         name: sha256:
         pkgs.fetchurl {
-          url = "https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/${rev}/${name}";
+          url = "https://huggingface.co/FluidVoice-Labs/fluid-speech-pro-onnx/resolve/${rev}/${name}";
           inherit sha256;
         };
     in
-    pkgs.linkFarm "sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-fp16" {
-      "encoder.fp16.onnx" = pkgs.fetchurl {
-        url = "https://huggingface.co/ako101/parakeet-tdt-0.6b-v3-sherpa-onnx-fp16/resolve/960f38997f4d70341fbd1ffc1de61a226c959cf8/encoder.fp16.onnx";
-        sha256 = "27afafcc1c39ee031e4f06f9a99433b3757c8b8b6c20d55166df1538bf8440d0";
-      };
-      "decoder.int8.onnx" =
-        fetch "decoder.int8.onnx" "0222a86147299d4dee90edf95b6d13827edb42ad8b7c9cf0b2582f030937c0b5";
-      "joiner.int8.onnx" =
-        fetch "joiner.int8.onnx" "cbd02f3696e9944970111fb439d9c3fd365a80374565f13f2b9c7007d253fc98";
-      "tokens.txt" =
-        fetch "tokens.txt" "d58544679ea4bc6ac563d1f545eb7d474bd6cfa467f0a6e2c1dc1c7d37e3c35d";
-    };
+    pkgs.linkFarm "fluid-speech-pro-clean-int8" (
+      lib.mapAttrs fetch {
+        "encoder-model.clean.int8.onnx" =
+          "cc9ffaba4d01f3ba4ca276aa7d8b38719266522b426ee093d7f60513823f5b2b";
+        "encoder-model.int8.onnx.data" = "d2f8bfbb1fa399f207cde85aa3fabee0d67f6730cb31cbf31832c10de69f9c3c";
+        "decoder.clean.int8.onnx" = "38b69847defd184b0b4924d161b70cf9b454a2ba2cdf776226f74acc519a7d84";
+        "decoder.int8.onnx.data" = "632c3cbf59d3e52d2f7f4dda3bf8e28c045f7a3bb3dbef0f44529ba63926efaa";
+        "joiner.clean.int8.onnx" = "397e03c1de42926dc09a82ad0db3c65de92fb3600141bf5f0ab430a4161962f6";
+        "joiner.int8.onnx.data" = "7473427ab99417fae8cf7025ba11507cb5dcc223194bae2f79064dde0936d0af";
+        "vocab.txt" = "d58544679ea4bc6ac563d1f545eb7d474bd6cfa467f0a6e2c1dc1c7d37e3c35d";
+        LICENSE = "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411";
+        NOTICE = "fb46bca8b337792a755ec6c77e0e33ebd27d181f46540e4b88382d179942625c";
+      }
+    );
 
   # Laya Q8_0 GGUF (SystemOne speech endpoint). Pinned to an immutable
   # commit; content hash guards byte-identity (449397600 bytes).
@@ -118,7 +120,7 @@ in
     # (upstream PR #29818) while the host stays on stable pkgs. CUDA comes from
     # the host nixpkgs.config that pkgs.unstable inherits.
     serverPackage = pkgs.unstable.llama-cpp;
-    parakeetModel = parakeetTdtV3;
+    fluidSpeechModel = fluidSpeechProClean;
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     inherit (endpoint) port;
     openFirewall = false;
@@ -138,7 +140,7 @@ in
       "qwen-3.6-35b-a3b"
       "qwen3-embedding-0.6b"
       "glm-ocr-f16"
-      "parakeet-tdt-v3"
+      "fluid-speech-pro-clean"
       "whisper-diarization"
       "kokoro-82m"
       "s1-mini"
@@ -147,7 +149,7 @@ in
     # laya stays on-demand (not preloaded): existing policy only keeps the
     # STT/s1-mini audio path warm; nothing here calls for laya at boot.
     preloadModels = [
-      "parakeet-tdt-v3"
+      "fluid-speech-pro-clean"
       "s1-mini"
     ];
     modelOverrides = {
@@ -184,7 +186,7 @@ in
       settings.matrix = {
         vars = {
           embed = "qwen3-embedding-0.6b";
-          stt = "parakeet-tdt-v3";
+          stt = "fluid-speech-pro-clean";
           kokoro = "kokoro-82m";
           normalize = "s1-mini";
           text = "qwen-3.5-9b";

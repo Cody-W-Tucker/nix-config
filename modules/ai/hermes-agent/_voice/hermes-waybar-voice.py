@@ -29,7 +29,7 @@ GATEWAY_AUTH_TOKEN = os.environ.get(
 )
 SPEECH_AUTH_TOKEN = os.environ.get("HERMES_API_TOKEN", "local-only")
 CHAT_MODEL = os.environ.get("HERMES_CHAT_MODEL", "grok-4.5")
-TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "parakeet-tdt-v3")
+TRANSCRIPTION_MODEL = os.environ.get("HERMES_TRANSCRIPTION_MODEL", "fluid-speech-pro-clean")
 SPEECH_MODEL = os.environ.get("HERMES_SPEECH_MODEL", "kokoro-82m")
 SPEECH_VOICE = os.environ.get("HERMES_SPEECH_VOICE", "af_heart")
 MAX_MESSAGES = int(os.environ.get("HERMES_VOICE_MAX_MESSAGES", "24"))

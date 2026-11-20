@@ -54,7 +54,7 @@ For details, see [llama-swap: LLM Orchestration Service](/Cody-W-Tucker/nix-conf
 
 The system provides a low-latency voice pipeline for desktop interaction, primarily consumed by the `hermes-waybar-voice` assistant and the `llama-dictate` script.
 
-- **STT Pipeline:** Primary STT is `parakeet-tdt-v3`: Nixpkgs `sherpa-onnx` running NVIDIA Parakeet TDT 0.6B v3 with an FP16 encoder and INT8 decoder/joiner on CUDA, wrapped in an OpenAI-compatible server ([modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py)). There is no STT fallback model; speaker-aware transcription is served separately by `whisper-diarization`.
+- **STT Pipeline:** Primary STT is `fluid-speech-pro-clean`: `sherpa-onnx` running Fluid Speech Pro's clean-mode INT8 export on CUDA, wrapped in an OpenAI-compatible server ([modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py)). There is no STT fallback model; speaker-aware transcription is served separately by `whisper-diarization`.
 - **TTS Pipeline:** Supports Kokoro-82M for high-quality speech synthesis via an OpenAI-compatible API [modules/ai/llama-swap/_impl/kokoro-openai-server.py](../modules/ai/llama-swap/_impl/kokoro-openai-server.py)
 - **Integration:** These services are configured as the primary STT/TTS providers for the `hermes-agent`[modules/ai/hermes-agent/_hm/default.nix](../modules/ai/hermes-agent/_hm/default.nix)
 
@@ -78,7 +78,7 @@ For details, see [Beast AI Stack: Open-WebUI and Qdrant](/Cody-W-Tucker/nix-conf
 
 The NAS exposes **llama-swap directly** at `127.0.0.1:8081` (see `modules/ai/llama-swap/_nas-models.nix`); every consumer hits llama-swap's OpenAI-compatible `/v1` API on the internal loopback endpoint.
 
-- **Local routes:** Every enabled `services.llama-swap.enabledModels` entry is served directly under its llama-swap model id (`qwen3.5-0.8b`, `qwen-3.5-4b`, `qwen3-embedding-0.6b`, `glm-ocr-f16`, `parakeet-tdt-v3`, `whisper-diarization`, `kokoro-82m`).
+- **Local routes:** Every enabled `services.llama-swap.enabledModels` entry is served directly under its llama-swap model id (`qwen3.5-0.8b`, `qwen-3.5-4b`, `qwen3-embedding-0.6b`, `glm-ocr-f16`, `fluid-speech-pro-clean`, `whisper-diarization`, `kokoro-82m`).
 - **No gateway auth:** llama-swap requires no API key. Gateway clients (Karakeep, Paperless-GPT, the Miniflux curator) use a declarative dummy `OPENAI_API_KEY` to satisfy OpenAI-client env plumbing — no secret material is involved.
 - **Direct internal clients (`127.0.0.1:8081/v1`):** Hermes STT/TTS, desktop speech-to-text, the Waybar helper, the Miniflux curator, Karakeep, and Paperless-GPT reach llama-swap directly on the NAS host.
 - **OpenCode observability:** OpenCode (including the web service) loads `@langfuse/opencode-observability-plugin@0.5.2` for LLM tracing. Its `LANGFUSE_*` credentials come from the `opencode-langfuse-env` SOPS template (modules/ai/llama-swap/_nas-models.nix): the secret's env-file payload plus a declarative `LANGFUSE_BASE_URL`, exposed as a codyt-owned `0400` EnvironmentFile.

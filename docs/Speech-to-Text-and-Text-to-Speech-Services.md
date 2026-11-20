@@ -8,7 +8,7 @@ For navigation: the desktop speech pieces are the `speech-to-text` aspect ([modu
 
 The public audio API is `llama-swap` at `http://nas:8081`:
 
-- `POST /v1/audio/transcriptions` with `model=parakeet-tdt-v3` (general STT) or `model=whisper-diarization` (speaker-aware STT)
+- `POST /v1/audio/transcriptions` with `model=fluid-speech-pro-clean` (general STT) or `model=whisper-diarization` (speaker-aware STT)
 - `POST /v1/audio/speech` with `model=kokoro-82m`
 - `GET /v1/audio/voices` with optional `model=kokoro-82m`
 
@@ -22,7 +22,7 @@ The speech pipeline is built on three primary server-side components and two cli
 
 | Component                | Implementation     | Role                          | API Endpoint               |
 | ------------------------ | ------------------ | ----------------------------- | -------------------------- |
-| **Transcription Server** | `sherpa-onnx`      | STT using Parakeet TDT v3     | `/v1/audio/transcriptions` |
+| **Transcription Server** | `sherpa-onnx`      | STT using Fluid Speech Pro in clean mode | `/v1/audio/transcriptions` |
 | **Diarization Server**   | `whisperx`         | Speaker-aware STT             | `/v1/audio/transcriptions` |
 | **Kokoro TTS**           | `kokoro-82m`       | High-quality, fast TTS        | `/v1/audio/speech`         |
 | **llama-dictate**        | Shell Script       | Hold-to-talk global dictation | N/A (Client)               |
@@ -30,16 +30,16 @@ The speech pipeline is built on three primary server-side components and two cli
 
 ## Transcription Services
 
-### Parakeet (sherpa-onnx) Server
+### Fluid Speech Pro (sherpa-onnx) Server
 
-The primary transcription backend, `parakeet-tdt-v3`, is an OpenAI-compatible FastAPI server ([modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves NVIDIA Parakeet TDT 0.6B v3 with a natively exported FP16 encoder and INT8 decoder/joiner. `modules/ai/llama-swap/_nas-models.nix` pins the model files to Hugging Face commits and passes them in through `services.llama-swap.parakeetModel`. The FP16 encoder avoids the dynamic INT8 encoder's CPU fallback for matrix multiplications with the CUDA execution provider.
+The primary transcription backend, `fluid-speech-pro-clean`, is an OpenAI-compatible FastAPI server ([modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py](../modules/ai/llama-swap/_impl/sherpa-onnx-openai-server.py)) around the Nixpkgs `sherpa-onnx` Python bindings. It serves [Fluid Speech Pro by FluidVoice](https://huggingface.co/FluidVoice-Labs/fluid-speech-pro-onnx) (CC BY 4.0) with INT8 clean-mode graphs. Clean mode removes fillers and some repeated words, so this is not a verbatim transcript. `modules/ai/llama-swap/_nas-models.nix` pins the graphs and external weight files and passes them in through `services.llama-swap.fluidSpeechModel`.
 
 - **Provider**: CUDA, with 4 CPU threads for supporting work. The CUDA provider was tested on the NAS's RTX 5060; actual memory use alongside the other audio models should be monitored.
-- **Audio input**: Every upload is decoded with ffmpeg to 16 kHz mono, so WAV, Ogg/Opus, MP3, and M4A all work. Audio longer than 120 s is split at the quietest 100 ms frame near each boundary.
-- **Readiness**: The model loads and runs one silent decode before `/health` answers. That means `GET /upstream/parakeet-tdt-v3/health` returns only once the backend is warm.
-- **API surface**: `response_format` may be `json` (default), `text`, or `verbose_json` (`segments` is empty). `language`, `prompt`, and `temperature` are accepted but ignored, because Parakeet detects its 25 European languages itself. `task=translate` returns 422.
+- **Audio input**: Every upload is decoded with ffmpeg to 16 kHz mono, so WAV, Ogg/Opus, MP3, and M4A all work. Audio longer than 30 s is split at the quietest 100 ms frame near each boundary.
+- **Readiness**: The model loads and runs one silent decode before `/health` answers. That means `GET /upstream/fluid-speech-pro-clean/health` returns only once the backend is warm.
+- **API surface**: `response_format` may be `json` (default), `text`, or `verbose_json` (`segments` is empty). `language` does not force recognition in a particular language; Fluid detects its 25 European languages itself. `prompt` and `temperature` are ignored. `task=translate` returns 422.
 
-There is no STT fallback model. `llama-dictate` and `hermes-waybar-voice` send audio only to `parakeet-tdt-v3`; an empty result means no speech was decoded.
+There is no STT fallback model. `llama-dictate` and `hermes-waybar-voice` send audio to `fluid-speech-pro-clean`; an empty result means no speech was decoded.
 
 ### WhisperX Diarization Server
 
@@ -182,5 +182,5 @@ The graphical aspect includes the Hermes voice client; Waybar owns the button, w
 The service is configured via environment variables in the `hermes-waybar-voice` wrapper:
 
 - `HERMES_SPEECH_BASE_URL`: Points to the `llama-swap` STT/TTS port (default `8081`) [modules/graphical/_waybar/waybar.nix](../modules/graphical/_waybar/waybar.nix)
-- `HERMES_TRANSCRIPTION_MODEL`: Set to `parakeet-tdt-v3` [modules/graphical/_waybar/waybar.nix](../modules/graphical/_waybar/waybar.nix)
+- `HERMES_TRANSCRIPTION_MODEL`: Set to `fluid-speech-pro-clean` by [the voice client](../modules/ai/hermes-agent/_voice/client.nix)
 - `HERMES_SPEECH_VOICE`: Defaults to `af_heart` (Kokoro) [modules/graphical/_waybar/waybar.nix](../modules/graphical/_waybar/waybar.nix)
