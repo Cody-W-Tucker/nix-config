@@ -10,7 +10,7 @@ Host policy (identity, aspect includes, network mounts, networking, Docker, and 
 
 | Path          | Role                                                                                                                                       |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `beast.nix` | Host policy: aspect includes, kernel choice, NAS network mounts, networking (incl. Wake-on-LAN), `hardwareConfig` for Hyprland, Home Manager settings (`provides.to-users`). |
+| `beast.nix` | Host policy: aspect includes, kernel choice, NAS network mounts, networking, `hardwareConfig` for Hyprland, Home Manager settings (`provides.to-users`). |
 | `_beast-hardware.nix` | Hardware: root and EFI filesystems, initrd/kernel modules, MT7925 Wi-Fi/Bluetooth quirks. |
 
 ## Hardware profile
@@ -22,7 +22,7 @@ Host policy (identity, aspect includes, network mounts, networking, Docker, and 
 | RAM       | 16GB DDR5 6000                                                 |
 | Storage   | 2TB NVMe root (`ext4`); EFI system partition on vfat.          |
 | Kernel    | Latest Linux kernel via `pkgs.linuxPackages_latest`.           |
-| NIC       | `eno1` with magic-packet Wake-on-LAN (NAS can wake this host). |
+| NIC       | `eno1` (wired). Unused while beast is on Wi-Fi; Wake-on-LAN was removed until it is wired again. |
 | Razer     | OpenRazer + Polychromatic (`modules/hardware/openrazer.nix`). Effects synced across devices; daemon restores last lighting on login. |
 
 The host is tuned for CUDA inference on demand, software development, 4K/high-refresh desktop use, and gaming. Always-on AI chat/RAG and agent runtime live on the NAS; beast supplies heavier GPU-backed models when awake.

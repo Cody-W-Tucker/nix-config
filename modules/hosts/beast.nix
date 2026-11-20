@@ -59,7 +59,6 @@
       den.aspects.opencode.remote
       den.aspects.binary-cache.client
       den.aspects.nfs.client
-      den.aspects.wake-on-lan.target
     ];
 
     # Beast's Home Manager profile (the desktop comes from den.aspects.graphical and den.aspects.apps; the editor from den.aspects.nixvim).
