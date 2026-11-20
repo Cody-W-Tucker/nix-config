@@ -17,5 +17,6 @@ in
 {
   programs.opencode.context = context;
   programs.claude-code.context = context;
+  programs.codex.context = context;
   programs.pi-coding-agent.context = context;
 }

@@ -17,6 +17,7 @@ in
 {
   imports = [
     ./claude-code
+    ./codex
     ./opencode
     ./context.nix
     (import ./mcp.nix { inherit localAi; })
@@ -35,7 +36,6 @@ in
       ];
 
   home.packages = [
-    pkgs.codex
     llmPkgs.cursor-agent
     llmPkgs.muse-code
     llmPkgs.grok

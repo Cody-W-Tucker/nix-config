@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
@@ -7,6 +8,7 @@
 
 let
   skills = config.codyos.harness.skills;
+  catalog = "${inputs.self}/skills";
 
   # Same value handling as Home Manager's per-tool skills options: a string is
   # the SKILL.md text; a path is either a skill directory or its SKILL.md.
@@ -28,12 +30,6 @@ let
       lib.nameValuePair ".agents/skills/${name}/SKILL.md" { text = content; };
 in
 {
-  imports = [
-    ./humanizer
-    ./make-native
-    ./untangle-codebase
-  ];
-
   options.codyos.harness.skills = lib.mkOption {
     type = lib.types.attrsOf (lib.types.either lib.types.lines lib.types.path);
     default = { };
@@ -45,6 +41,12 @@ in
   };
 
   config = {
+    codyos.harness.skills = {
+      humanizer = "${catalog}/writing/humanizer";
+      make-native = "${catalog}/coding/make-native";
+      untangle-codebase = "${catalog}/coding/untangle-codebase";
+    };
+
     # Claude Code reads only ~/.claude/skills. Codex and Pi read only
     # ~/.agents/skills. OpenCode reads both and resolves the identical copies
     # by name, so it needs no skills option of its own.
