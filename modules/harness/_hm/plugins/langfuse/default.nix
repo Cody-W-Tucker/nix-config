@@ -84,4 +84,6 @@ in
     opencode.settings = pluginPath;
     claudeCode.plugin = claudePlugin;
   };
+
+  programs.claude-code.settings.env.CC_LANGFUSE_CAPTURE_IMAGES = "false";
 }

@@ -1,0 +1,46 @@
+name: "Docs"
+on:
+  push:
+    branches: [main]
+    paths: ["docs/**", ".github/workflows/docs.yml"]
+  pull_request:
+    paths: ["docs/**", ".github/workflows/docs.yml"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build the book
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      # Use the mdBook from the locked nixpkgs-unstable (the same one the flake's `docs` check
+      # uses), without evaluating the flake itself: its private inputs need a token.
+      - name: Build
+        run: |
+          rev=$(jq -r '.nodes[.nodes.root.inputs."nixpkgs-unstable"].locked.rev' flake.lock)
+          nix shell "github:NixOS/nixpkgs/$rev#mdbook" --command mdbook build docs
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: docs/book
+
+  deploy:
+    name: Publish to GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

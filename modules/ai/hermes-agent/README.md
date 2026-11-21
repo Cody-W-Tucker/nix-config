@@ -65,7 +65,8 @@ also supports writing remembered notes.
 
 Hermes uses the native Hindsight memory provider, not Hindsight MCP. It points
 at the NAS-local server and the `cody` bank. Automatic retain and recall are
-disabled; the native tools are available for deliberate use. Holographic
+enabled (`auto_retain`, `auto_recall` in `_hm/plugins/hindsight/default.nix`),
+with `memory_mode = "hybrid"`. Holographic
 state is not migrated or deleted when the provider changes.
 
 ## Documents and identity

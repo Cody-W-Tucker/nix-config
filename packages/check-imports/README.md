@@ -12,4 +12,4 @@ Two rules:
    is allowed.
 2. **Den layout.** No `default.nix` under `modules/` outside a `_` path. Every
    non-underscore `.nix` under `modules/` is loaded by import-tree as a flake-level Den
-   module; see `docs/Den-Native-Layout.md`.
+   module; see `modules/AGENTS.md`.

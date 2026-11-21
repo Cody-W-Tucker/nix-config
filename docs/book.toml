@@ -1,0 +1,23 @@
+[book]
+title = "CodyOS"
+description = "How the CodyOS NixOS configuration is put together, and how to run it."
+authors = ["Cody W Tucker"]
+language = "en"
+src = "src"
+
+[build]
+# A SUMMARY entry without a page is an error, not a silently created stub.
+create-missing = false
+
+# Links that leave docs/src (../../modules/...) become GitHub links; dead ones fail the build.
+[preprocessor.source-links]
+command = "bash source-links.sh"
+
+[output.html]
+site-url = "/nix-config/"
+git-repository-url = "https://github.com/Cody-W-Tucker/nix-config"
+edit-url-template = "https://github.com/Cody-W-Tucker/nix-config/edit/main/docs/{path}"
+default-theme = "light"
+preferred-dark-theme = "navy"
+additional-js = ["mermaid-init.js"]
+additional-css = ["diagrams.css"]

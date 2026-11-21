@@ -59,10 +59,10 @@ Keep cross-host routing in the ingress layer, not inside unrelated service modul
 
 The NAS also relies on these local-network utilities:
 
-- `modules/networking/dns.nix` (`dns`) handles AdGuard Home DNS filtering.
-- AdGuard is the LAN-facing filter and exposes its web UI on port `8000`.
-- Unbound is the local recursive resolver behind AdGuard and listens on `127.0.0.1:5335`.
-- DNS fallback is configured so the host can stay reachable during resolver bootstrap or local resolver failure.
+- `modules/networking/dns.nix` (`dns`) runs Unbound as the recursive resolver on port `53` for the LAN, Tailscale, containers and local processes. There is no AdGuard and no web UI.
+- Unbound answers every `homehub.tv` name with the NAS's LAN address and blocks the StevenBlack ads/malware list (`always_nxdomain`).
+- Every client query and blocklist hit is logged to the journal; `egress-audit` ships them to Loki as `job="egress"`, `source="dns"`.
+- The NAS resolves through itself only (`127.0.0.1`, `::1`); there is no fallback resolver, so name resolution on the NAS depends on Unbound running.
 - `modules/file-sharing/syncthing.nix` (`syncthing.nginx`) exposes Syncthing UIs through Nginx.
 - The shared Syncthing configuration and its `syncthing.nginx` reverse proxy are in `modules/file-sharing/syncthing.nix`.
 

@@ -1,13 +1,20 @@
 # CodyOS
 
-**CodyOS uses Den to compose NixOS and Home Manager by feature.** Start with the nearest existing `den.aspects.*` definition in `modules/`. Use `nixosConfigurations.<host>` for ordinary NixOS option evaluation and builds. See the [Den layout](docs/Den-Native-Layout.md) and [module map](modules/README.md).
+**CodyOS uses Den to compose NixOS and Home Manager by feature.** Start with the nearest existing `den.aspects.*` definition in `modules/`. Use `nixosConfigurations.<host>` for ordinary NixOS option evaluation and builds. See the [Den conventions](modules/AGENTS.md), [module map](modules/README.md) and the [Den layout](docs/src/den-native-layout.md) overview.
 
 ## Capability Floor
 
-When planning a feature or auditing what a host declares, use the [capability inventory](docs/Den-Native-Layout.md#declared-host-capabilities). For a known feature, query its specific setting instead.
+When planning a feature or auditing what a host declares, use the [capability inventory](modules/AGENTS.md#declared-host-capabilities). For a known feature, query its specific setting instead.
 
 - Declared is not running. Confirm on the host itself with `systemctl` (`--user` for user units) before treating a capability as available.
 - When work needs a capability that is not on the floor, declare it in Nix first, then build on it.
+
+## Docs Are the Baseline
+
+`docs/src/` maps the system as the user meets it: what they press, open or run, and what they then see. That is the agreed baseline. The code, Hindsight and deja hold everything beneath it: implementation, decisions and their reasons, benchmarks, history.
+
+- When a report is vague ("this is slow", "this works differently"), read the feature's page for what normal is first, then recall its history (Hindsight, deja, and `git log` on the aspect's files), then check the host. The page, the aspect and that history are three views of one feature; the file paths and aspect name join them.
+- When a change alters what the user experiences, update that feature's page in the same change, following [Writing these docs](docs/src/writing-docs.md#what-a-page-records). Record only what is specific to this system and visible to the user; omit general knowledge, config recaps and the reasons for choices. Never invent a behavior or a number.
 
 ## Evidence Discipline
 
@@ -68,4 +75,4 @@ Once the changes have settled, the user will run the `update` script to build an
 ## Finding and Verifying Configuration
 
 - **Effective settings:** Use `nix eval` on the relevant merged option for each affected host. Search source to find definitions and consumers, not to decide what the host gets.
-- **Den composition:** Use the [working trace recipe](docs/Den-Native-Layout.md#focused-evaluation-and-tracing) (`den.lib.capture.captureWithPathsWith`) when an aspect's route to a host or user is unclear. If the route is easier to explain visually, use the [Den resolution graph](docs/Den-Native-Layout.md#den-resolution-graphs). Neither the trace nor the graph proves merged values or runtime behavior.
+- **Den composition:** Use the [working trace recipe](modules/AGENTS.md#focused-evaluation-and-tracing) (`den.lib.capture.captureWithPathsWith`) when an aspect's route to a host or user is unclear. If the route is easier to explain visually, use the [Den resolution graph](modules/AGENTS.md#den-resolution-graphs). Neither the trace nor the graph proves merged values or runtime behavior.

@@ -21,11 +21,11 @@ The goals of this repo are:
 |  |- ai/ web/ feeds/ documents/ media/ containers/ backups/ sync/ file-sharing/  # service features
 |  `- flake/           # overlays, packages, checks, formatter
 |- packages/           # custom packages (package.nix each), exposed by the overlay
-|- docs/               # operator notes and reference
+|- docs/               # the documentation site (mdBook)
 `- .agents/            # internal agent/reference docs
 ```
 
-The layout and conventions are described in `docs/Den-Native-Layout.md`.
+The layout is described in `docs/src/den-native-layout.md`; the conventions are in `modules/AGENTS.md`.
 
 ## Hosts in this repo
 

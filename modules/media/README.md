@@ -19,7 +19,7 @@ The shared media tree lives under `/mnt/media` with flat category directories:
 ## Consumption
 
 - Jellyfin serves video at `media.homehub.tv` and runs with access to the `media` group.
-- Hardware transcoding uses the Intel iGPU; keep the Jellyfin user in `render` and `video` when changing acceleration settings.
+- Hardware transcoding uses the NVIDIA GPU (the NAS's i5-14400F has no iGPU): `jellyfin.nix` sets `LIBVA_DRIVER_NAME=nvidia`. Keep the Jellyfin user in `render` and `video` when changing acceleration settings; the acceleration method itself is chosen in Jellyfin's dashboard.
 - Navidrome serves `/mnt/media/Music` at `music.homehub.tv`.
 - Calibre-Web provides the reader/Kobo-facing web layer, backed by Calibre Server and the books directory.
 

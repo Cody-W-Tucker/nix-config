@@ -22,5 +22,7 @@ in
       pkgs.deadnix
     ] "deadnix --fail --no-lambda-arg --no-lambda-pattern-names .";
     imports = lint "imports" [ pkgs.check-imports ] "check-imports .";
+    # The docs site builds, and its links to repository files point at real files.
+    docs = lint "docs" [ pkgs.mdbook pkgs.jq ] ''mdbook build docs --dest-dir "$TMPDIR/book"'';
   };
 }
