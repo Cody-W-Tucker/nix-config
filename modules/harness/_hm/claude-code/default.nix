@@ -15,7 +15,7 @@ in
     package = llmPkgs.claude-code;
     enableMcpIntegration = true;
     settings = {
-      env.CLAUDE_CODE_SUBAGENT_MODEL = "claude-opus-5-5";
+      env.CLAUDE_CODE_SUBAGENT_MODEL = "sonnet";
       syncClaudeAiSkills = false;
     };
   }
