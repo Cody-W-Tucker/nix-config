@@ -27,4 +27,4 @@ Does not own note content, generated vault state, or general knowledge-base agen
 - Hotkeys, snippets, or common plugins drift across vaults.
 - Vault paths or note formats move casually and break agent-facing workflows.
 
-See `README.md` for structure, change procedures, and option-search notes.
+Use Home Manager option search for `programs.obsidian`. Nested Obsidian app settings such as `vimMode` are freeform keys; look for existing patterns here rather than in the option index.

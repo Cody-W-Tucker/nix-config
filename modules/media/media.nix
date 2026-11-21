@@ -1,7 +1,5 @@
 { den, inputs, ... }:
 {
-  # Media stack: one aspect per service in this directory, plus the shared base
-  # directory tree and the media group they all use.
   den.aspects.media = {
     includes = [
       den.aspects.arr-stack
@@ -20,24 +18,13 @@
       # in it, so the module is imported once here, by the aspect that includes both.
       imports = [ inputs.vpn-confinement.nixosModules.default ];
 
-      # Pin the media group GID so container PUID/PGID environment strings can
-      # reference it at eval time: auto-assigned GIDs are not visible to the
-      # module system (config.users.groups.<name>.gid stays null), which is
-      # what previously forced hardcoded literals like PGID = "983". Scoped
-      # to the NAS media stack rather than the base accounts aspect because
-      # that is shared with hosts whose group-id space cannot be
-      # verified here; a static GID forced on all of them could collide. On
-      # this host 983 matches the GID already assigned at runtime (verified
-      # via getent), so activation is a no-op.
+      # Containers need the existing NAS media GID at evaluation time.
+      # An auto-assigned GID is only available at runtime.
       users.groups.media.gid = 983;
 
-      # Base media directory tree. Shared by Transmission (downloads),
-      # the *arr stack (library consumption), and related media services.
-      # Base directory is owned by root to avoid unsafe path transitions
-      # when subdirectories are owned by different users.
+      # Keep the parent root-owned to avoid unsafe ownership transitions.
       systemd.tmpfiles.rules = [
         "d /mnt/media 0755 root root - -"
-        # Flat media category directories with setgid for group inheritance
         "d /mnt/media/AudioBookShelf 2775 root media - -"
         "d /mnt/media/Books 2775 root media - -"
         "d /mnt/media/Channels 2775 root media - -"

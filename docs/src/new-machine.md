@@ -15,7 +15,7 @@ A new machine joins as a Den host: a host file and a hardware file in `modules/h
 2. Copy the hardware details from `/etc/nixos-aside` to `modules/hosts/_<host>-hardware.nix`.
 3. Create `modules/hosts/<host>.nix` from [`beast.nix`](../../modules/hosts/beast.nix) or [`nas.nix`](../../modules/hosts/nas.nix):
    - `den.hosts.x86_64-linux.<host>`: `channel` (`"stable"` or `"unstable"`), `users.codyt = { }`, `lan`, `tailscale`.
-   - `den.aspects.<host>`: `includes` (the features beyond [what every host gets](shared-features.md)), `provides.to-users.homeManager.home.stateVersion`, and a `nixos` block that imports the hardware file and sets `networking.hostName`.
+   - `den.aspects.<host>`: `includes`, `provides.to-users.homeManager.home.stateVersion`, and a `nixos` block that imports the hardware file and sets `networking.hostName`.
 4. Commit and push the two files **from beast**, so the main repo stays the source of truth. Then pull on the new machine.
 
 ## 3. Give it access to secrets
@@ -53,8 +53,8 @@ After this activation, `update` works without a token ([Building and updating](g
 
 ## Changing it
 
-| To change | Edit |
-| --- | --- |
-| The host's features and facts | `modules/hosts/<host>.nix` |
-| Hardware | `modules/hosts/_<host>-hardware.nix` (regenerate with `nixos-generate-config`) |
-| Channel → nixpkgs, Home Manager, nixvim | [`channels.nix`](../../modules/hosts/channels.nix) |
+| To change                               | Edit                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| The host's features and facts           | `modules/hosts/<host>.nix`                                                     |
+| Hardware                                | `modules/hosts/_<host>-hardware.nix` (regenerate with `nixos-generate-config`) |
+| Channel → nixpkgs, Home Manager, nixvim | [`channels.nix`](../../modules/hosts/channels.nix)                             |

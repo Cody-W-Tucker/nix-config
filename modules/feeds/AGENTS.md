@@ -20,4 +20,4 @@ Does not own one-host cron-like tasks unless they are reusable enough to become 
 - Long-running or stateful work is modeled as a fragile oneshot without clear working directory, state path, or persistence behavior.
 - Data-integrity jobs miss runs because the timer does not use `Persistent = true` where catch-up matters.
 
-See `README.md` for operating commands.
+See [Feeds and bookmarks](../../docs/src/feeds-and-bookmarks.md) for operating commands.

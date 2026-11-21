@@ -29,12 +29,7 @@
 
       sops.secrets."langfuse-env" = { };
 
-      # Persistent data — explicit bind mounts under /mnt/appdata/langfuse, not
-      # opaque named volumes. Ownership matches each image's runtime UID:
-      #   postgres -> 999:999   clickhouse -> 101:101   redis -> 999:999
-      #   minio -> world-writable: the Chainguard minio runtime UID is
-      #                image-dependent; 0777 keeps it writable regardless. Tighten
-      #                to the image UID (see `docker inspect`) after first run.
+      # The Chainguard MinIO runtime UID is image-dependent.
       systemd.tmpfiles.rules = [
         "d /mnt/appdata/langfuse 0755 root root -"
         "d /mnt/appdata/langfuse/postgres 0700 999 999 -"
@@ -44,10 +39,8 @@
         "d /mnt/appdata/langfuse/minio 0777 root root -"
       ];
 
-      # Isolated docker network. compose2nix cannot encode health-based depends_on;
-      # we use systemd After/Requires (see containers' dependsOn + this network
-      # unit) and rely on Langfuse's own retry/backoff for cross-service readiness.
-      # Residual behavior is documented in the NAS README "Langfuse" section.
+      # Container startup order does not guarantee dependency readiness.
+      # Langfuse retries while its dependencies initialize.
       systemd.services =
         (lib.genAttrs
           (map (n: "docker-${n}") [

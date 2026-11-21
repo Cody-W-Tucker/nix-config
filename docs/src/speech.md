@@ -1,6 +1,6 @@
 # Speech to text and text to speech
 
-On beast: dictation into any window, and a spoken conversation with [Hermes](hermes.md). The NAS does recognition and synthesis; any machine at home can use the same models over HTTP.
+On beast: dictation into any window, and a spoken conversation with Hermes. The NAS does recognition and synthesis; any machine at home can use the same models over HTTP.
 
 ## Dictation
 
@@ -32,6 +32,8 @@ curl -s http://nas:8081/v1/audio/transcriptions -F file=@meeting.wav \
 ```
 
 `whisper-diarization` takes one recording at a time and answers a second request with `503`.
+
+When building the speaker cache, the server logs a warning for each segment shorter than 0.3 seconds and skips it. The build still succeeds if it has at least one usable speaker label.
 
 ## Changing it
 

@@ -103,11 +103,9 @@
       inputs.home-manager.follows = "home-manager";
     };
     den = {
-      # Dendritic aspect library; owns nixosConfigurations (see modules/README.md).
       url = "github:denful/den/v0.20.0";
     };
     import-tree = {
-      # Loads every module under modules/ (paths containing `/_` are skipped).
       url = "github:vic/import-tree";
     };
     stevenblack = {

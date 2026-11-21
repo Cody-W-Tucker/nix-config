@@ -15,7 +15,7 @@ Create new Nix packages or update existing ones, with language-specific examples
 4. Capture the working implementation and dependencies in `packages/<package-name>/`, following the language-specific guidance below. Preserve the successful check so it can be repeated against the packaged output.
 5. Make the package visible to the flake: `git add` the new directory. The shared overlay exposes it as `pkgs.<package-name>` and as the flake output `.#<package-name>` automatically.
 6. Build with `nix build .#<package-name>`, fix any packaging failures, and replay the focused behavioral check against the resulting package, not the scratch implementation. A successful development-shell experiment does not prove a sandboxed Nix build succeeds; a successful build alone does not prove the required behavior works.
-7. Integrate the tested package into its consumers and validate the affected host values or behavior as appropriate. If the NAS uses it, also build it against the NAS's stable nixpkgs (see `packages/README.md`). Report what passed and anything unverified.
+7. Integrate the tested package into its consumers and validate the affected host values or behavior as appropriate. If the NAS uses it, also build it against the NAS's stable nixpkgs (see `packages/AGENTS.md`). Report what passed and anything unverified.
 
 Use the simplest execution tool that provides evidence; Code Mode, a persistent REPL, and a VM are not prerequisites. Temporary Nix shells provide dependencies, not isolation from the user's files or services; keep experiments scoped and avoid production side effects. For straightforward version bumps or known packaging patterns, skip a separate prototype and use focused build-and-test checks directly.
 

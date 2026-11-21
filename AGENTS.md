@@ -1,6 +1,6 @@
 # CodyOS
 
-**CodyOS uses Den to compose NixOS and Home Manager by feature.** Start with the nearest existing `den.aspects.*` definition in `modules/`. Use `nixosConfigurations.<host>` for ordinary NixOS option evaluation and builds. See the [Den conventions](modules/AGENTS.md), [module map](modules/README.md) and the [Den layout](docs/src/den-native-layout.md) overview.
+**CodyOS uses Den to compose NixOS and Home Manager by feature.** Start with the nearest existing `den.aspects.*` definition in `modules/`. Use `nixosConfigurations.<host>` for ordinary NixOS option evaluation and builds. See the [Den conventions](modules/AGENTS.md) and the [Den layout](docs/src/den-native-layout.md) overview.
 
 ## Capability Floor
 
@@ -15,6 +15,7 @@ When planning a feature or auditing what a host declares, use the [capability in
 
 - When a report is vague ("this is slow", "this works differently"), read the feature's page for what normal is first, then recall its history (Hindsight, deja, and `git log` on the aspect's files), then check the host. The page, the aspect and that history are three views of one feature; the file paths and aspect name join them.
 - When a change alters what the user experiences, update that feature's page in the same change, following [Writing these docs](docs/src/writing-docs.md#what-a-page-records). Record only what is specific to this system and visible to the user; omit general knowledge, config recaps and the reasons for choices. Never invent a behavior or a number.
+- Keep operator guidance in `docs/` and durable editing rules in the nearest `AGENTS.md`. Keep local READMEs for temporary workarounds with a removal condition, not permanent feature maps. Keep source comments for non-obvious constraints, not inline usage guides.
 
 ## Evidence Discipline
 
@@ -68,7 +69,6 @@ Once the changes have settled, the user will run the `update` script to build an
 ### Flakes & Git
 
 - New files must be git-tracked or flakes won't see them
-- When code changes invalidate local docs or package notes, update the affected documentation in the same change.
 - Never commit raw secrets (use SOPS-NIX.)
 - The user will need to add secrets via the sops edit command.
 

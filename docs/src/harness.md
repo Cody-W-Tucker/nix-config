@@ -17,11 +17,17 @@ Commands that an agent runs appear prefixed with `rtk`, which shortens long outp
 
 Every client sees the same MCP servers: `deja` (past sessions), `hindsight` (memory), `qmd` (your Markdown notes), `karakeep` (bookmarks), `exa` (web), `context7` (library docs), `gh_grep` (GitHub code), `nixos-option-search`. On beast, `qmd` runs on the NAS and fails when the NAS is unreachable; the others keep working.
 
-After `update`, run `deja embed` on each host so that new sessions are searchable.
+For semantic search across past sessions, run `deja doctor` on each host, then run `deja embed` if the vector index is missing or stale. Embedding sends redacted session text to the NAS. Search by exact terms still works without embeddings.
+
+## Herdr
+
+In Herdr on beast, add the NAS under *Settings → Machines* to open its agent terminals over SSH. After `update` changes Herdr, run `hc server restart` on the NAS. Running terminals survive the restart.
 
 ## Memory
 
 Claude Code and OpenCode add relevant memories before each prompt (not for prompts under five characters) and save each turn. Each repository has its own bank (`/etc/nixos` → `codyos`); `cody` holds what applies everywhere. To turn off one half in OpenCode, start it with `HINDSIGHT_AUTO_RECALL=false` or `HINDSIGHT_AUTO_RETAIN=false`. Calls are traced to [Langfuse](ai-tools.md).
+
+For remote OpenCode, those flags go on the NAS server process, not on `op-`. Do not paste credentials into chat: automatic memory can include prompt and response text. Pi and Codex can use Hindsight through MCP but do not run the automatic memory hooks.
 
 ## Changing it
 
@@ -30,7 +36,7 @@ Claude Code and OpenCode add relevant memories before each prompt (not for promp
 | To change | Edit |
 | --- | --- |
 | MCP servers | [`mcp.nix`](../../modules/harness/_hm/mcp.nix) |
-| Skills | [`skills/default.nix`](../../modules/harness/_hm/skills/default.nix), or a folder in [`skills/`](../../skills/README.md) |
+| Skills | [`skills/default.nix`](../../modules/harness/_hm/skills/default.nix), or a folder in the [skill catalog](../../skills/) |
 | Memory behavior, banks | [`plugins/hindsight/`](../../modules/harness/_hm/plugins/hindsight/default.nix) |
 | Claude Code | [`claude-code/default.nix`](../../modules/harness/_hm/claude-code/default.nix) |
 | OpenCode | [`opencode/default.nix`](../../modules/harness/_hm/opencode/default.nix) |

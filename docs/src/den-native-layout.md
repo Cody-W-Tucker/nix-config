@@ -62,4 +62,4 @@ flowchart TD
     out -- "overlay turns into pkgs.&lt;name&gt;" --> pkgs
 ```
 
-Files under a `_` path are plain NixOS or Home Manager modules, loaded only when their aspect imports them. The [module map](../../modules/README.md) lists every directory; the conventions and the agent recipes for tracing are in [`modules/AGENTS.md`](../../modules/AGENTS.md).
+Files under a `_` path are loaded only when the owning aspect imports them. For editing conventions and tracing recipes, see [`modules/AGENTS.md`](../../modules/AGENTS.md).

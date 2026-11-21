@@ -6,7 +6,6 @@
 
 - [Building and updating](getting-started.md)
 - [The Den layout](den-native-layout.md)
-- [What every host gets](shared-features.md)
 - [Checks and standards](checks.md)
 - [Installing a new machine](new-machine.md)
 - [Secrets](secrets.md)
@@ -14,22 +13,16 @@
 
 # Desktop
 
-- [The desktop (Hyprland)](desktop.md)
-- [Desktop apps](apps.md)
-- [Theming](theming.md)
+- [Desktop Env](desktop.md)
+- [Desktop Apps](apps.md)
 - [Sound, printing, gaming and hardware](hardware.md)
-
-# Terminal and editor
-
-- [Shell and Git](shell.md)
-- [Neovim (nixvim)](nixvim.md)
 
 # AI
 
 - [Speech to text and text to speech](speech.md)
-- [Hermes assistant](hermes.md)
 - [AI coding tools](harness.md)
 - [AI tools](ai-tools.md)
+- [Hermes](hermes.md)
 
 # Home services
 

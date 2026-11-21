@@ -1,22 +1,6 @@
-# Langfuse observability plugin for OpenCode and Claude Code.
-#
-# Credentials come from the SOPS `opencode-langfuse-env` template that
-# ../opencode/default.nix renders and sources into interactive zsh
-# (LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_BASE_URL).
-#
-# TEMPORARY workaround for upstream Langfuse OpenCode plugin bug:
+# WORKAROUND: OpenCode's Bun runtime fails to initialize SynchronizedRef in Langfuse 0.6.0.
 # https://github.com/langfuse/opencode-observability-plugin/issues/55
-#
-# Upstream 0.6.0 fixes the former dependency and tracer-order failures, but on
-# OpenCode 2.1.1 its Effect.runSync(SynchronizedRef.make(...)) expression
-# produces an undefined ref. This wrapper replaces only that constructor with
-# SynchronizedRef.makeUnsafe(...), which has the same intended initial state.
-#
-# REMOVAL CONDITION: delete `opencode-plugin/` and `README.md`, and replace
-# `opencode.settings = pluginPath;` with the bare
-# `@langfuse/opencode-observability-plugin@<fixed-version>` spec once it loads
-# successfully on the installed OpenCode version and emits spans to the local
-# Langfuse instance.
+# REVIEW-BY: 2026-12-15; see README.md for the removal test.
 {
   config,
   lib,
@@ -25,11 +9,6 @@
 }:
 
 let
-  # Checked-in wrapper (./opencode-plugin/package.json + ./opencode-plugin/index.ts)
-  # that depends on the exact upstream 0.6.0 tarball. patch-synchronized-ref.cjs
-  # replaces the one failing initialization expression. index.ts is the OpenCode V2
-  # entrypoint (selected via package.json `main`) and only re-exports the upstream
-  # default export.
   wrapperSrc = ./opencode-plugin;
 
   pluginPath = "${config.xdg.configHome}/opencode/plugins/langfuse-observability";

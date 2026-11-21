@@ -1,13 +1,6 @@
 { den, inputs, ... }:
 {
-  # Hermes agent: one aspect, two halves. Include it on a host to get both.
-  #  - homeManager: the Hermes Home Manager module tree (_hm), delivered to every user of
-  #    the including host through provides.to-users (Den delivers an included aspect's
-  #    provides.to-users to the host's users; den test deadbugs/issue-692).
-  #  - nixos: backup wiring. The state and CRM SQLite files are exported by Restic's
-  #    pre-backup step; remaining state is a direct Restic input (live *.db* files stay
-  #    excluded below). nas.backups.* exists only
-  #    on the nas host (modules/backups/), so include this on nas only.
+  # Include only on the NAS: this aspect needs nas.backups.*.
   den.aspects.hermes-agent = {
     includes = [
       den.aspects.google-workspace.hermes
@@ -23,8 +16,6 @@
         site = config.codyos.site;
       in
       {
-        # Installs the workflow CLI (inputs.workflow.packages.*.workflowCli) system-wide;
-        # the Home Manager half wires the same package into Hermes.
         imports = [ inputs.workflow.nixosModules.default ];
 
         networking.firewall.interfaces.tailscale0.allowedTCPPorts = [

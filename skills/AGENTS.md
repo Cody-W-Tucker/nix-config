@@ -1,4 +1,4 @@
-# Skill catalog
+# Skill catalog instructions
 
 Store agent instructions as complete `<category>/<skill-id>/SKILL.md` directories.
 Keep supporting files in the same directory. To import from another repository,

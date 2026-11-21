@@ -1,6 +1,3 @@
-# Repository layout
+# CodyOS
 
-- [`flake.nix`](./flake.nix) — flake inputs and the one `evalModules` call that turns `modules/` into the flake outputs.
-- [`modules/`](./modules) — the [Den](https://github.com/denful/den) tree, loaded by import-tree and organized by feature (no role folders): [`hosts/`](./modules/hosts) (beast, nas, each listing its features), features every host gets ([`nix/`](./modules/nix), [`shell/`](./modules/shell), [`networking/`](./modules/networking), [`observability/`](./modules/observability), [`hardware/`](./modules/hardware), [`users/`](./modules/users), [`editor/`](./modules/editor), [`harness/`](./modules/harness)), the workstation features ([`graphical/`](./modules/graphical), [`apps/`](./modules/apps), `audio`, `printing`, `gaming`), the NAS and AI features ([`ai/`](./modules/ai), [`web/`](./modules/web), [`feeds/`](./modules/feeds), [`documents/`](./modules/documents), [`media/`](./modules/media), [`containers/`](./modules/containers), [`backups/`](./modules/backups), [`file-sharing/`](./modules/file-sharing)) and [`flake/`](./modules/flake) (overlay, packages, checks, formatter). See [`modules/README.md`](./modules/README.md).
-- [`packages/`](./packages) — custom packages and scripts, exposed through the shared overlay.
-- [`docs/`](./docs) — the documentation site ([published](https://cody-w-tucker.github.io/nix-config/)); start with [`docs/src/den-native-layout.md`](./docs/src/den-native-layout.md).
+[Read the book](https://cody-w-tucker.github.io/nix-config/) or [browse its source](docs/src/index.md). Repository instructions are in [AGENTS.md](AGENTS.md).

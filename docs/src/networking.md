@@ -10,7 +10,7 @@ At home, the NAS answers the `homehub.tv` names. Away, Tailscale makes the home 
 | Away | Join Tailscale. The NAS routes the whole LAN, so LAN addresses and `homehub.tv` URLs work as at home. |
 | SSH | `ssh nas`, keys only. From Kitty, use `ssh-` so yanks reach the local clipboard. |
 
-Only over Tailscale: the Syncthing UIs, the Hermes dashboard (`nas:9119`), the NAS build cache.
+Only over Tailscale: the Syncthing UIs, the [Hermes dashboard](hermes.md#open-the-dashboard), the NAS build cache.
 
 On the NAS, five failed SSH logins ban an address for 24 h, growing with each repeat up to 7 days. LAN addresses are never banned. Beast uses fail2ban defaults.
 

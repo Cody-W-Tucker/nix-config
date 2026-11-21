@@ -23,6 +23,8 @@ On a pull request, the full `nix flake check` runs only when the `NIX_SECRETS_RE
 
 New files must be `git add`ed before Nix sees them.
 
+Run `check-imports [repo-root]` after moving Nix modules. It defaults to `/etc/nixos` and reports missing sibling imports, references to nonexistent files, and `default.nix` files outside excluded `_` paths under `modules/`.
+
 ## Changing it
 
 | To change | Edit |

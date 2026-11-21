@@ -187,13 +187,7 @@ let
       }
 
       normalize_text() {
-        # Normalize the raw STT transcript through the s1-mini chat-completions
-        # endpoint. s1-mini is a reasoning model, so the completion is
-        # bounded with max_tokens and a deterministic temperature, and the
-        # result is sanity-checked before use. On any failure (network
-        # error, timeout, malformed/empty response, leaked or runaway
-        # reasoning output) this prints nothing, so the caller can fall
-        # back to the raw transcript.
+        # Print nothing on failure so the caller can use the raw transcript.
         text="$1"
         system_prompt="You are a text normalizer for speech-to-text transcripts. The input begins with a control line specifying the styling, structure, and context settings; clean the transcript to match those settings and output only the cleaned text."
 

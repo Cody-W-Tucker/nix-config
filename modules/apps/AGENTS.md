@@ -4,5 +4,4 @@
 `apps.nix` (everyday applications, Zen and Chromium, OBS, Obsidian), `terminal.nix` (Kitty)
 and `kdeconnect.nix` (phone integration plus its firewall ports).
 
-- `_obsidian/` (vault config, see its README) contains plain modules
-  imported by the aspect.
+- `_obsidian/` contains plain Home Manager modules imported by the aspect.

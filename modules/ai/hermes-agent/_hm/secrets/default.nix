@@ -40,18 +40,7 @@
       '';
     };
 
-    # sops-nix renders these via its `sops-nix` user service, triggered by its
-    # HM activation entry `home.activation."sops-nix"` and again at user-unit
-    # start. Upstream's hermesAgentSetup (which merges environmentFiles into
-    # ${hermesHome}/.env) is pinned after the sops-nix activation entry below,
-    # so the rendered files exist by then.
-    # Values never enter the Nix store. 0600, owned by the HM user.
-    # NOTE: pinned sops-nix home-manager templates module (rev fbf75929,
-    # modules/home-manager/templates.nix) defines no restartUnits option, so
-    # after a secret rotation the consuming units (hermes-agent /
-    # hermes-backend) must still be restarted to re-read the rotated
-    # EnvironmentFiles / .env; the Unit.After ordering below only guarantees
-    # start ordering, not pickup of rotated values.
+    # The Home Manager templates lack restartUnits; ordering does not reload secrets.
     sops.templates."hermes-agent-env" = {
       content = config.sops.placeholder."hermes";
       mode = "0600";

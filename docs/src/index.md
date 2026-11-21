@@ -1,57 +1,43 @@
-# CodyOS
+# AI is the next forcing function
 
-CodyOS is a self-improving operating system for one person across two machines: **beast**, the desktop, and **the NAS**, the home server behind `*.homehub.tv`. It learns from prior attempts and real results, and it uses that learning in the next change. A human approves every change before it runs.
+We're building a self-improving operating system with declarative NixOS as its base.
 
-## Three views of every feature
+Before cell phones, the most valuable thing to know was a phone number.
 
-Each feature exists three times, and the three are connected:
+Carrying around an infinite Rolodex pushed us to hold more abstract, higher-value knowledge. Each shift forced the brain to take on harder problems, and that increase IQ and opened new capability.
+
+Until now computers aren't capable of becoming the new form of Rolodex or GPS we've needed to accommodate the lower value cognitive aspects.
+
+## The loop
+
+Tell your agent what you notice, **Agents figure it out.**
+
+1. **You notice something**, in a few words: "dictation feels slow".
+2. **An agent collects the noise.** It reads how things should work, recalls the history, and checks the machine.
+3. **It proposes a change that respects the situation.**
+4. **You apply it** with [`update`](getting-started.md). It commits, switches, and pushes.
+5. **The change becomes history.** Agents [extracts decisions automatically](harness.md#memory).
+
+The next prompt about that feature starts from all three views.
 
 ```mermaid
 flowchart LR
-    why["<b>Why</b><br/>Hindsight memories<br/>deja sessions<br/>git commits"]
-    what["<b>What</b><br/>the Den aspect<br/>modules/…/feature.nix"]
+    why["<b>Why</b><br/>Memories<br/>Chat sessions<br/>git commits"]
+    what["<b>What</b><br/>Features<br/>Capabilities"]
     how["<b>How it is experienced</b><br/>the page in this book"]
     why --- what --- how
     how -. "Changing it names the files" .-> what
     what -. "file path and aspect name<br/>are the search keys" .-> why
 ```
 
-- **What** is the feature as declared: one [Den aspect](den-native-layout.md) that holds its system part, user part, secrets and agent skill. Den can trace which aspect put something on a machine.
-- **Why** is everything that led to it. `git log -- <file>` gives the commits. Hindsight holds the distilled decisions and reasons, deja the full sessions. Search them with the aspect name or the file path.
-- **How it is experienced** is this book: what you press, open or run, and what then happens. It is the baseline for "this seems wrong".
+[Claude Code, OpenCode, Codex and Pi](harness.md) kept in sync with the same tools, mcp, and memory. Cross agent session search lets every harness read the other's sessions.
 
-From any one view you can reach the other two. A page's *Changing it* table names the aspect's files; the files are the keys for the history. No index joins the three yet: the link is the shared file paths and names.
+## How it works
 
-## The loop
-
-1. **You notice something**, in a few words: "dictation is slow".
-2. **An agent collects the three views.** It reads the page for what normal is, recalls the history, and checks the machine: [metrics, logs and outbound connections](monitoring.md).
-3. **It proposes a change** to the aspect and, if what you see changes, to the page. [Checks](checks.md) run.
-4. **You apply it** with [`update`](getting-started.md). It commits, switches, and pushes. Agents do not activate a system on their own.
-5. **The change becomes history.** The commit records it. Claude Code and OpenCode [save each turn to Hindsight](harness.md#memory) automatically. Sessions become searchable in deja after you run `deja embed`.
-
-The next prompt about that feature starts from all three views.
-
-## What keeps it safe
-
-These are the rules from the self-improving OS design, and where each one is real here:
-
-| Rule | Here |
-| --- | --- |
-| All configuration is declared | Both machines are built from this repository and its locked inputs. |
-| Every change traces to intent | Each `update` is a Git commit with your message; the agent session behind it is in memory. |
-| No irreversible damage | Each switch is a new NixOS generation; older ones stay in the boot menu for at least 7 days. [Backups](backups.md) run nightly, on the NAS only. |
-| Observable | Grafana shows what each machine runs, logs and connects to. Nothing alerts yet. |
-| A human gate on changes | Agents propose diffs; you run `update`. |
-
-## The pieces
-
-**Agents.** [Claude Code, OpenCode, Codex and Pi](harness.md) run on both machines with one set of tools and memory. [Hermes](hermes.md) is the always-on assistant on the NAS, by voice, Telegram, Discord or terminal. [Dictation](speech.md) types into any window on beast.
-
-**Local models.** The NAS's graphics card runs the models behind dictation, voice, [bookmark summaries and the feed curator](feeds-and-bookmarks.md), [document OCR](documents.md) and memory search. [AI tools](ai-tools.md) covers chat, memory and tracing.
-
-**Daily use.** [Web apps](web-apps.md), [media](media.md), [documents](documents.md) and [shared files](file-sharing.md); the [desktop](desktop.md), [apps](apps.md), [theme](theming.md), [shell](shell.md) and [editor](nixvim.md).
-
-**Upkeep.** Each night the NAS builds both machines and updates itself; each week a pull request updates the inputs ([what runs without you](getting-started.md#what-runs-without-you)). [Networking](networking.md) reaches home from anywhere.
-
-Host notes (hardware, disks, pools): [`beast.md`](../../modules/hosts/beast.md), [`nas.md`](../../modules/hosts/nas.md). How pages are written: [Writing these docs](writing-docs.md).
+| Rule                          | Here                                                                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| All configuration is declared | Each computer is a list of features, one [Den aspect](den-native-layout.md) per feature built.                                  |
+| Every change traces to intent | Agent [memory](harness.md#memory) holds the distilled decisions and reasons behind every commit.                                |
+| No irreversible damage        | Each switch is a new NixOS generation; older ones stay in the boot menu for at least 7 days. Backups run nightly. |
+| Observable                    | Documentation records ideal User Experience (UX), [Monitoring tools](monitoring.md) ensures UX.                                 |
+| A human gate on changes       | Agents propose diffs; you run `update`.                                                                                         |

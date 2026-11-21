@@ -1,33 +1,21 @@
 # Backups
 
-The NAS backs itself up every night and snapshots its storage pool. Both copies live on the NAS's own `backup` pool; there is no off-site copy.
+The NAS keeps Restic backups and ZFS snapshots on the local backup pool. These are not off-site copies. Losing the NAS can mean losing both the original and its backup.
 
-## What is protected
+## Check the last backup
 
-| Data | Method | Retention |
-| --- | --- | --- |
-| Projects, Knowledge, certificates, every service database and registered data directory | Restic, nightly 05:00 | 7 daily, 4 weekly, 6 monthly |
-| `backup/photos`, `backup/documents`, `backup/Share`, `backup/backups` | ZFS snapshots (UTC) only | 7 daily, 4 weekly, 3 monthly |
+On the NAS, run `systemctl status restic-backups-nas-files.service` to see the result of the 05:00 Restic job. For details, run `journalctl -u restic-backups-nas-files.service`. If the backup pool is not mounted, the job skips the run. The [backup panels](monitoring.md) stay empty while the disk is unmounted.
 
-## Checking it
-
-Open the [NAS Backups dashboard](https://monitoring.homehub.tv/d/nas-backups). It shows Restic repository health and snapshot age (refreshed hourly), the three nightly database dumps, each ZFS snapshot, and the pool's health and capacity. A dump is green if it succeeded within 26 h. An empty panel means the job is not reporting, not that it is healthy; a monthly snapshot stays pending until its first run. Nothing alerts; check the dashboard.
-
-## When something is red
-
-1. On the NAS, run `systemctl status <unit>` and `journalctl -u <unit>`. Units: `restic-backups-nas-files`, `postgresqlBackup`, `langfuse-postgres-backup`, `langfuse-clickhouse-backup`. If Restic stopped on a missing SQLite file, the error names the file.
-2. If the panel is stale rather than failed, check that `/mnt/backup/backups` is mounted, and check the `nas_backup_*.prom` files in `/var/lib/node-exporter-textfile/`.
-3. Correct the cause.
-4. Run `systemctl start <unit>`. Confirm the dashboard updates.
-
-## Restoring
-
-No restore procedure is written yet. Restic repository: `/mnt/backup/backups/restic`, password in the SOPS secret `restic-nas-password`. Snapshot data is in each dataset's snapshots.
+| What you need back | Where to look |
+| --- | --- |
+| Projects, Knowledge, Hermes state or application database exports | Restic at `/mnt/backup/backups/restic` |
+| Immich originals, Paperless originals or an older version of the shared folder | `zfs list -t snapshot -r backup` on the NAS |
+| The media library on `/mnt/media` | Not covered by these jobs |
 
 ## Changing it
 
 | To change | Edit |
 | --- | --- |
-| Back up a service's SQLite or data directory | `nas.backups.sqlite` / `nas.backups.dataDirectories` in that service's file. Options: [`_backup-options.nix`](../../modules/backups/_backup-options.nix) |
-| Schedule, retention, fixed paths, ZFS snapshots | [`backups.nix`](../../modules/backups/backups.nix) |
-| Health-checked jobs (`nas.backups.healthJobs`) | [`backup-health.nix`](../../modules/backups/backup-health.nix) |
+| Restic schedule, repository or ZFS snapshot coverage | [`backups.nix`](../../modules/backups/backups.nix) |
+| Backup health reporting | [`backup-health.nix`](../../modules/backups/backup-health.nix) |
+| Data backed up for an app | The app's aspect; see the [backup instructions](../../modules/backups/AGENTS.md) |

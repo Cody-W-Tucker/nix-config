@@ -19,6 +19,10 @@ The AI work runs on the NAS's graphics card.
 
 The curator compares each unread article with your bookmarks. Topics you bookmark stay unread; topics you never bookmark are marked read.
 
+## Check or run the curator
+
+On the NAS, run `systemctl list-timers miniflux-curator.timer` to see its last and next runs. Run `sudo systemctl start miniflux-curator.service` to score unread articles now. Read the result with `journalctl -u miniflux-curator.service`. With `dryRun` on, the journal shows what the curator would mark without changing article status.
+
 ## Changing it
 
 | To change | Edit |

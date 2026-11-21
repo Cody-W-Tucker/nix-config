@@ -1,11 +1,11 @@
 # Den conventions
 
-Rules and recipes for agents working in `modules/`. The human-facing overview is [The Den layout](../docs/src/den-native-layout.md); the per-directory table is [`README.md`](README.md).
+Rules and recipes for agents working in `modules/`. The human-facing overview is [The Den layout](../docs/src/den-native-layout.md).
 
 ## Conventions
 
 - **An underscore means "not a Den module".** import-tree loads every `.nix` file except those under a `_` path. Those hold plain NixOS and Home Manager modules, hardware files, packages and data, and their aspect imports them. `default.nix` is allowed only under `_` paths (`check-imports` enforces this).
-- **Every-host features include themselves** with `den.default.includes = [ den.aspects.<feature> ];` in their own file. Host files never list them. List them with the command in [`README.md`](README.md).
+- **Every-host features include themselves** with `den.default.includes = [ den.aspects.<feature> ];` in their own file. Host files never list them. To find their declarations, use `rg 'den.default.includes' modules`.
 - **A cross-host feature is one file with one aspect per side:** `nfs.server` / `nfs.client`, `paperless` / `paperless.scanner`, `opencode` / `opencode.remote`. Each host includes its side. Including a parent does not include its children.
 - **An aspect is the unit of inclusion; a file is the unit of reading.** Make a separate aspect only when a host includes it alone. Keep files at roughly 30–250 lines. One aspect can span a directory (`graphical/`, `apps/`). In one file, define each class path (`nixos`, `provides.to-users.homeManager`) once.
 - **Host facts live on the host:** `channel`, `localAi`, `lan`, `tailscale`, `mac`, `hardwareConfig`, `nvidiaPowerLimit` in `den.hosts.x86_64-linux.<host>`. Aspects read them through the `host` argument, never by comparing `networking.hostName`. `channel` alone selects stable or unstable nixpkgs, Home Manager and nixvim (`channels.nix`).
@@ -15,6 +15,7 @@ Rules and recipes for agents working in `modules/`. The human-facing overview is
 - **`modules/defaults.nix`** holds only settings that belong to no feature.
 - **Include order matters for list-valued options:** Den concatenates in reverse include order.
 - **The host names `beast` and `nas` are load-bearing:** `update`, `nightly-build.nix` and `_plugins/lsp.nix` name them.
+- **Keep state versions host-local:** `system.stateVersion` in the host's `nixos` block and `home.stateVersion` in its `provides.to-users.homeManager` block.
 - **Flake outputs** are `flake.<output>` definitions in `modules/flake/`. There is no flake-parts.
 
 To add a feature, create `modules/<area>/<feature>.nix` defining `den.aspects.<feature>`, then include it in each host that needs it, or in `den.default.includes`. To add a host, see [`new-machine.md`](../docs/src/new-machine.md).
