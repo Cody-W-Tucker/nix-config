@@ -25,7 +25,7 @@
 | Nix, Bash, Dockerfile, Markdown | ✓ | ✓ |
 | CSS, Tailwind, HTML, TypeScript/JavaScript, Astro, Python, Zig | ✓ | |
 
-Saving reformats supported files: Nix and YAML on both hosts, web files and Python on beast. In Nix files, hover and completion show the options of both hosts and of this repo (`codyos.*`). Markdown opens with spell check and rendered headings; pasted images are saved in `assets/`. The gutter marks changed lines, and the current line shows its blame.
+Saving reformats supported files: Nix and YAML on both hosts, web files and Python on beast. In Nix files, hover and completion show the options of both hosts and of this repo (`codyos.*`). Markdown opens with spell check, soft wrap, and rendered headings; pasted images are saved in `assets/`. The gutter marks changed lines, and the current line shows its blame.
 
 ## Over SSH
 

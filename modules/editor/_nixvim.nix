@@ -102,6 +102,16 @@
         pattern = [ "*.md" ];
         command = "setlocal spell spelllang=en_us";
       }
+      {
+        # vim-pencil only wraps once initialized; SoftPencil forces soft
+        # line wrap (display-only, no inserted line breaks).
+        event = [ "FileType" ];
+        pattern = [
+          "markdown"
+          "mkd"
+        ];
+        command = "SoftPencil";
+      }
     ];
     plugins = {
       csvview.enable = true;
