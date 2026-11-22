@@ -83,11 +83,15 @@ jobs:
         if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
         run: |
           nix flake update
+      # The PR is opened with GITHUB_TOKEN, which does not trigger the PR
+      # checks above, so check the updated lock here before opening it.
+      - name: Flake check
+        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
+        run: nix flake check --print-build-logs
       - name: Create Pull Request if changes exist
         id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.NIX_SECRETS_READ }}
           commit-message: "chore(flake): update inputs"
           title: "chore(flake): update inputs"
           body: |
