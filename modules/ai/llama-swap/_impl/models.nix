@@ -67,6 +67,7 @@ in
   "qwen-3.5-9b" = {
     file = "qwen3.5-9b-nvfp4.gguf";
     mmprojFile = null;
+    ttl = 300;
     contextSize = 32768;
     extraArgs = [
       "--reasoning"
@@ -104,6 +105,7 @@ in
   "qwen-3.6-35b-a3b" = {
     file = "qwen3.6-35b-a3b-nvfp4.gguf";
     contextSize = 262144;
+    ttl = 300;
     batchSize = 2048;
     ubatchSize = 1024;
     extraArgs = [
