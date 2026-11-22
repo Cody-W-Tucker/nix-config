@@ -119,12 +119,86 @@
             plugins = {
               git = pkgs.yaziPlugins.git;
               piper = pkgs.yaziPlugins.piper;
+              # Neither is in nixpkgs.
+              whatchanged = pkgs.fetchFromGitHub {
+                owner = "WhoSowSee";
+                repo = "whatchanged.yazi";
+                rev = "52e3b31030a50b2f62a60ec43e5a7c496cdb424f";
+                hash = "sha256-MDPqaqUzz4eqfdZKFHh75BhSMA1kiYK4lEm6CucuEsw=";
+              };
+              vscode-git-gutter =
+                pkgs.fetchFromGitHub {
+                  owner = "ShikherVerma";
+                  repo = "yazi-plugins";
+                  rev = "88bccaf7141362d8eec20df3531dd3caf06f8911";
+                  hash = "sha256-PuywfE4D+l6MD8OL4B+2YQy+xGaCeCdxE6d0Xc9HVJc=";
+                }
+                + "/vscode-git-gutter.yazi";
+            };
+            keymap.mgr.prepend_keymap = [
+              {
+                on = [
+                  "<A-g>"
+                  "a"
+                ];
+                run = "plugin whatchanged";
+                desc = "Toggle git changes";
+              }
+              {
+                on = [
+                  "<A-g>"
+                  "r"
+                ];
+                run = "plugin whatchanged refresh";
+                desc = "Refresh git changes";
+              }
+              {
+                on = [
+                  "<A-g>"
+                  "v"
+                ];
+                run = "plugin whatchanged preview";
+                desc = "Toggle diff / file content";
+              }
+              {
+                on = [
+                  "<A-g>"
+                  "s"
+                ];
+                run = "plugin whatchanged staged";
+                desc = "Show staged changes";
+              }
+              {
+                on = [
+                  "<A-g>"
+                  "w"
+                ];
+                run = "plugin whatchanged unstaged";
+                desc = "Show unstaged changes";
+              }
+            ];
+            settings.mgr = {
+              ratio = [
+                1
+                2
+                5
+              ];
             };
             # Render markdown in the preview pane instead of showing its source. This is
             # piper's documented glow recipe, with only `-s` changed to the Stylix style
             # above: piper pipes a command's output into the pane, passing the pane width
-            # as `$w` and the hovered file as `$1`.
+            # as `$w` and the hovered file as `$1`. Yazi uses the first matching previewer,
+            # so whatchanged's view (a `search://` listing) comes first and markdown comes
+            # before the gutter's catch-all `text/*`.
             settings.plugin.prepend_previewers = [
+              {
+                url = "search://*";
+                run = "whatchanged";
+              }
+              {
+                url = "search://*/";
+                run = "whatchanged";
+              }
               {
                 url = "*.md";
                 run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${glowStyle} "$1"'';
@@ -132,6 +206,10 @@
               {
                 url = "*.markdown";
                 run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${glowStyle} "$1"'';
+              }
+              {
+                mime = "text/*";
+                run = "vscode-git-gutter";
               }
             ];
             settings.plugin.prepend_fetchers = [
@@ -159,6 +237,7 @@
               '')
               + ''
                 require("git"):setup()
+                require("whatchanged"):setup()
               '';
           };
           bat = {
