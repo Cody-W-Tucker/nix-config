@@ -105,6 +105,7 @@ let
     (execBind "${mainMod} + P" "pkill -SIGUSR1 waybar")
     (execBind "${mainMod} + Escape" "llama-dictate toggle")
     (execBind "${mainMod} + SHIFT + Escape" "llama-dictate recover")
+    (execBind "${mainMod} + CTRL + Escape" "llama-dictate fix")
   ];
 
   # Multimedia keys for volume, mic, and LCD brightness (bindel: locked + repeating)

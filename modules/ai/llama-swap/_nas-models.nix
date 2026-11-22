@@ -121,6 +121,12 @@ in
     # the host nixpkgs.config that pkgs.unstable inherits.
     serverPackage = pkgs.unstable.llama-cpp;
     fluidSpeechModel = fluidSpeechProClean;
+    speechHistory = {
+      enable = true;
+      port = endpoint.speechHistoryPort;
+      # Promote learned rules here with `llama-dictate vocabulary`.
+      vocabulary = ./_speech-vocabulary.json;
+    };
     hfTokenPath = config.sops.secrets."huggingface-read".path;
     inherit (endpoint) port;
     openFirewall = false;

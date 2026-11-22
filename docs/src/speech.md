@@ -9,13 +9,27 @@ On beast: dictation into any window, and a spoken conversation with Hermes. The 
 
 A short sentence appears almost at once. The NAS's graphics card holds the speech models or a chat model, not both. After a large chat model has run (Open WebUI, Paperless-GPT OCR), the first dictation takes a few seconds longer while the speech models load again. If nothing is typed, no speech was recognized. `SUPER + Shift + Escape` resets a stuck dictation.
 
+### Teaching it words
+
+When a word comes out wrong, press `SUPER + Ctrl + Escape`. The last dictation opens in a box; fix it and press Enter. A notification shows what was learned, and from the next transcription on the fix applies to everything recognized on the NAS, Hermes voice included.
+
+Only short swaps teach anything ("Nix OS" → "NixOS"); a rewritten sentence teaches nothing. A swap between two ordinary words ("their" → "there") is never applied on its own, because it would be wrong elsewhere; it is only noted.
+
+| Command | Shows or does |
+| --- | --- |
+| `llama-dictate vocabulary` | Every rule in effect, in the format of the vocabulary file |
+| `llama-dictate suggestions` | Ordinary-word swaps noted but not applied |
+| `llama-dictate forget "Nix OS"` | Stops applying a learned rule |
+
+Learned rules live on the NAS. To make them part of the system, so a rebuilt NAS starts with them, run `llama-dictate vocabulary > modules/ai/llama-swap/_speech-vocabulary.json` in the repository and commit it. A rule in that file comes back after `forget`; remove it from the file instead.
+
 ## Talking to Hermes
 
 Click the voice button on Waybar and speak. When you stop, Hermes answers aloud in a sentence or two; it does not hear itself while it speaks. Left-click during a reply interrupts it. Right-click pauses and keeps the conversation. Middle-click starts a new one.
 
 ## Over HTTP
 
-OpenAI-style endpoints on `http://nas:8081/v1`. Audio is deleted after transcription.
+OpenAI-style endpoints on `http://nas:8081/v1`. Every Fluid transcription, from any client, is kept on the NAS with its text and the vocabulary fixes applied to it; the audio is deleted after 30 days, the text is kept and backed up. If that history service is down, transcription still works, without the fixes.
 
 ```bash
 # Speech to text
@@ -41,5 +55,7 @@ When building the speaker cache, the server logs a warning for each segment shor
 | --- | --- |
 | Dictation keys | [`_hyprland/settings.nix`](../../modules/graphical/_hyprland/settings.nix) |
 | Dictation behavior | [`_speech-to-text.nix`](../../modules/ai/_speech-to-text.nix) |
+| Declared vocabulary | [`_speech-vocabulary.json`](../../modules/ai/llama-swap/_speech-vocabulary.json) |
+| How fixes are learned and applied | [`speech-history.py`](../../modules/ai/llama-swap/_impl/speech-history.py) |
 | Voice button: model, voice, endpoint | [`_voice/client.nix`](../../modules/ai/hermes-agent/_voice/client.nix) |
 | The speech models | [`_nas-models.nix`](../../modules/ai/llama-swap/_nas-models.nix) |

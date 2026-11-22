@@ -6,6 +6,7 @@
 let
   endpoint = import ./llama-swap/_endpoint.nix;
   baseUrl = "http://${endpoint.host}:${toString endpoint.port}";
+  historyUrl = "http://${endpoint.host}:${toString endpoint.speechHistoryPort}";
   # WORKAROUND: wtype 0.5 still uses control-range codes for mixed text/key commands.
   # https://github.com/atx/wtype/issues/71
   # https://github.com/atx/wtype/pull/74
@@ -31,6 +32,7 @@ let
       pkgs.jq
       pkgs.libnotify
       pkgs.pipewire
+      pkgs.rofi
       wtypeFixedKeycodes
     ];
     text = ''
@@ -42,6 +44,8 @@ let
        normalizer_warmup_url="${baseUrl}/upstream/s1-mini/health"
        model="fluid-speech-pro-clean"
       norm_url="${baseUrl}/v1/chat/completions"
+      history_url="${historyUrl}"
+      transcription_id=""
 
        warm_model() {
          # Ask llama-swap to bring up both backends without sending fake requests.
@@ -270,14 +274,50 @@ let
       }
 
       request_transcript() {
-        response="$(curl --silent --show-error --fail \
+        # Prints the response JSON; .id is set when the NAS recorded it in speech-history.
+        curl --silent --show-error --fail \
           --max-time 120 \
           -X POST "$api_url" \
           -F "file=@$1;type=audio/wav" \
           -F "model=$2" \
-          -F "language=en")" || return 1
+          -F "language=en"
+      }
 
-        printf '%s' "$response" | jq -r '.text // empty' | tr -s ' ' | sed 's/^ *//;s/ *$//'
+      apply_history() {
+        # Record the normalized text against the transcription and apply the
+        # vocabulary rules again, since s1-mini may reintroduce a misspelling.
+        # Print nothing on failure so the caller types the text it has.
+        [ -n "$transcription_id" ] || return 1
+        jq -n --arg text "$1" '{text: $text}' \
+          | curl --silent --show-error --fail --max-time 5 \
+              -X POST "$history_url/transcriptions/$transcription_id/final" \
+              -H "Content-Type: application/json" -d @- \
+          | jq -r '.text // empty'
+      }
+
+      fix_last() {
+        last="$(curl --silent --show-error --fail --max-time 5 "$history_url/last")" || {
+          notify-send "Voice Input" "No dictation to fix" -t 2000
+          return 1
+        }
+        id="$(printf '%s' "$last" | jq -r '.id')"
+        # rofi edits one line; corrections are compared word by word, so
+        # flattening line breaks loses nothing.
+        text="$(printf '%s' "$last" | jq -r '.text' | tr '\n' ' ' | tr -s ' ' | sed 's/^ *//;s/ *$//')"
+        corrected="$(rofi -dmenu -p "Fix" -filter "$text" -l 0 < /dev/null)" || return 0
+        [ -n "$corrected" ] && [ "$corrected" != "$text" ] || return 0
+
+        result="$(jq -n --arg text "$corrected" '{text: $text}' \
+          | curl --silent --show-error --fail --max-time 5 \
+              -X POST "$history_url/transcriptions/$id/correction" \
+              -H "Content-Type: application/json" -d @-)" || {
+          notify-send "Voice Input" "Could not save the correction" -t 3000
+          return 1
+        }
+        summary="$(printf '%s' "$result" | jq -r '
+          [(.learned[] | "Learned: \(.from) → \(.to)"),
+           (.pending[] | "Noted (common words): \(.from) → \(.to)")] | join("\n")')"
+        notify-send "Voice Input" "''${summary:-Saved; no word-level fix found}" -t 4000
       }
 
       transcribe_and_type() {
@@ -293,7 +333,9 @@ let
           return 1
         fi
 
-        raw_text="$(request_transcript "$path" "$model" || true)"
+        response="$(request_transcript "$path" "$model" || true)"
+        raw_text="$(printf '%s' "$response" | jq -r '.text // empty' 2>/dev/null | tr -s ' ' | sed 's/^ *//;s/ *$//')"
+        transcription_id="$(printf '%s' "$response" | jq -r '.id // empty' 2>/dev/null)"
 
         if [ -z "$raw_text" ]; then
           notify-send "Voice Input" "Transcription returned no text" -t 2000
@@ -306,6 +348,11 @@ let
 
         if [ -z "$cleaned" ]; then
           cleaned="$raw_text"
+        fi
+
+        final="$(apply_history "$cleaned" || true)"
+        if [ -n "$final" ]; then
+          cleaned="$final"
         fi
 
         # Type the cleaned transcript with one wtype process. Every internal
@@ -359,8 +406,24 @@ let
         recover)
           recover_recording || true
           ;;
+        fix)
+          fix_last || exit 1
+          ;;
+        vocabulary)
+          # Active rules in the format of llama-swap/_speech-vocabulary.json.
+          curl --silent --show-error --fail "$history_url/vocabulary" | jq .
+          ;;
+        suggestions)
+          # Common-word corrections that are never applied automatically.
+          curl --silent --show-error --fail "$history_url/suggestions" | jq .
+          ;;
+        forget)
+          [ -n "''${2:-}" ] || { printf 'usage: llama-dictate forget <from>\n' >&2; exit 1; }
+          curl --silent --show-error --fail -X DELETE -G "$history_url/vocabulary" \
+            --data-urlencode "from=$2" | jq .
+          ;;
         *)
-          printf 'usage: llama-dictate <start|stop|toggle|recover>\n' >&2
+          printf 'usage: llama-dictate <start|stop|toggle|recover|fix|vocabulary|suggestions|forget FROM>\n' >&2
           exit 1
           ;;
       esac

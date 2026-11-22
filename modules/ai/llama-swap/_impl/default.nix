@@ -92,6 +92,8 @@ let
   proxy = import ./proxy.nix { inherit pkgs; };
   settingsFormat = pkgs.formats.yaml { };
   sherpaPython = proxy.mkSherpaPython pkgs;
+  speechHistoryDir = "/var/lib/llama-swap/speech-history";
+  speechHistoryUrl = "http://127.0.0.1:${toString cfg.speechHistory.port}";
   kokoroPython = proxy.mkKokoroPython pkgs;
   whisperDiarizePython = proxy.mkWhisperDiarizePython pkgs;
   whisperDiarizationPackage =
@@ -112,7 +114,7 @@ let
           --provider cuda \
           --num-threads 4 \
           --max-chunk-seconds 30 \
-          --ffmpeg ${lib.getExe pkgs.ffmpeg-headless}
+          --ffmpeg ${lib.getExe pkgs.ffmpeg-headless}${lib.optionalString cfg.speechHistory.enable " \\\n  --history-url ${speechHistoryUrl}"}
       '';
     };
     "whisper-diarization" = {
@@ -248,6 +250,22 @@ in
       description = "Directory holding the Fluid Speech Pro clean-mode ONNX graphs, external weights, and vocabulary, served as `fluid-speech-pro-clean`.";
     };
 
+    speechHistory = {
+      enable = lib.mkEnableOption "the speech-history service, which records every Fluid transcription (audio kept 30 days) and applies and learns vocabulary rules";
+
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 8092;
+        description = "Port of the speech-history service.";
+      };
+
+      vocabulary = lib.mkOption {
+        type = lib.types.nullOr lib.types.path;
+        default = null;
+        description = "Declared vocabulary rules (JSON list of `{from, to}`), applied alongside rules learned at runtime.";
+      };
+    };
+
     hfTokenPath = lib.mkOption {
       type = lib.types.str;
       default = "";
@@ -369,6 +387,11 @@ in
       "d ${proxy.diarizationCache} 0755 ${cfg.modelOwner} ${cfg.modelGroup} - -"
       "d ${proxy.diarizationEnrollmentDir} 0750 ${cfg.modelOwner} ${cfg.modelGroup} - -"
       "d ${proxy.diarizationEmbeddingCache} 0750 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+    ]
+    ++ lib.optionals cfg.speechHistory.enable [
+      "d ${speechHistoryDir} 0750 ${cfg.modelOwner} ${cfg.modelGroup} - -"
+      # systemd-tmpfiles-clean deletes recordings older than 30 days.
+      "d ${speechHistoryDir}/audio 0750 ${cfg.modelOwner} ${cfg.modelGroup} 30d -"
     ];
 
     systemd.services.llama-swap.serviceConfig.ReadWritePaths = lib.mkAfter [
@@ -376,5 +399,39 @@ in
       proxy.diarizationEnrollmentDir
       proxy.diarizationEmbeddingCache
     ];
+
+    systemd.services.speech-history = lib.mkIf cfg.speechHistory.enable {
+      description = "Speech transcript history and vocabulary";
+      wantedBy = [ "multi-user.target" ];
+      before = [ "llama-swap.service" ];
+      serviceConfig = {
+        ExecStart = lib.escapeShellArgs (
+          [
+            (lib.getExe pkgs.python3)
+            "${./speech-history.py}"
+            "--host"
+            "0.0.0.0"
+            "--port"
+            (toString cfg.speechHistory.port)
+            "--state-dir"
+            speechHistoryDir
+            "--common-words"
+            "${pkgs.scowl}/share/dict/wamerican.50"
+          ]
+          ++ lib.optionals (cfg.speechHistory.vocabulary != null) [
+            "--vocabulary"
+            "${cfg.speechHistory.vocabulary}"
+          ]
+        );
+        User = cfg.modelOwner;
+        Group = cfg.modelGroup;
+        Restart = "on-failure";
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateTmp = true;
+        NoNewPrivileges = true;
+        ReadWritePaths = [ speechHistoryDir ];
+      };
+    };
   };
 }

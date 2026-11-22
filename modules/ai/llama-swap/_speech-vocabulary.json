@@ -1,0 +1,6 @@
+[
+  { "from": "Nix OS", "to": "NixOS" },
+  { "from": "Hypoland", "to": "Hyprland" },
+  { "from": "Lamaswap", "to": "llama-swap" },
+  { "from": "LlamaSwap", "to": "llama-swap" }
+]

@@ -8,19 +8,21 @@ existing clients only need to change the model id.
 
 import argparse
 import asyncio
+import base64
+import json
 import logging
 import subprocess
 import threading
 import time
+import urllib.request
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 import numpy as np
 import sherpa_onnx
 import uvicorn
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import JSONResponse, PlainTextResponse
-
 
 logger = logging.getLogger("sherpa-onnx-openai-server")
 
@@ -42,7 +44,34 @@ def build_parser() -> argparse.ArgumentParser:
         default=120.0,
         help="Split longer audio near the quietest point before this length.",
     )
+    parser.add_argument(
+        "--history-url",
+        help="speech-history service that records each transcription and applies vocabulary rules.",
+    )
     return parser
+
+
+def record_history(url: str, model_id: str, client: str, filename: str, audio: bytes, text: str):
+    """Return (id, text with vocabulary rules), or (None, text) if history is unavailable."""
+    body = json.dumps(
+        {
+            "model": model_id,
+            "client": client,
+            "text": text,
+            "audio": base64.b64encode(audio).decode(),
+            "audio_ext": Path(filename or "").suffix.lstrip("."),
+        }
+    ).encode()
+    req = urllib.request.Request(
+        f"{url}/transcriptions", body, {"Content-Type": "application/json"}
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=2) as resp:
+            result = json.load(resp)
+        return result["id"], result["text"]
+    except Exception as exc:  # history must never break transcription
+        logger.warning("speech-history unavailable: %s", exc)
+        return None, text
 
 
 def make_recognizer(model_dir: Path, provider: str, num_threads: int):
@@ -127,7 +156,9 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         started = time.monotonic()
-        app.state.recognizer = make_recognizer(args.model_dir, args.provider, args.num_threads)
+        app.state.recognizer = make_recognizer(
+            args.model_dir, args.provider, args.num_threads
+        )
         # Run one decode before /health succeeds so llama-swap only routes
         # requests once the provider session is initialised and warm.
         transcribe_samples(np.zeros(SAMPLE_RATE, dtype=np.float32))
@@ -162,6 +193,7 @@ def create_app(args: argparse.Namespace) -> FastAPI:
     @app.post("/audio/transcriptions")
     @app.post("/v1/audio/transcriptions")
     async def transcriptions(
+        request: Request,
         file: UploadFile = File(...),
         language: str | None = Form(default=None),
         model: str | None = Form(default=None),
@@ -175,7 +207,9 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         del model, prompt, temperature
 
         if task not in (None, "transcribe"):
-            raise HTTPException(status_code=422, detail="Only task=transcribe is supported")
+            raise HTTPException(
+                status_code=422, detail="Only task=transcribe is supported"
+            )
 
         audio_bytes = await file.read()
         if not audio_bytes:
@@ -183,11 +217,29 @@ def create_app(args: argparse.Namespace) -> FastAPI:
 
         samples = await asyncio.to_thread(decode_audio, args.ffmpeg, audio_bytes)
         duration = len(samples) / SAMPLE_RATE
-        text = await asyncio.to_thread(transcribe_samples, samples) if len(samples) else ""
+        text = (
+            await asyncio.to_thread(transcribe_samples, samples) if len(samples) else ""
+        )
+
+        transcription_id = None
+        if args.history_url and text:
+            transcription_id, text = await asyncio.to_thread(
+                record_history,
+                args.history_url,
+                args.model_id,
+                request.headers.get("user-agent", ""),
+                file.filename,
+                audio_bytes,
+                text,
+            )
 
         if response_format == "text":
             return PlainTextResponse(text)
         body = {"text": text}
+        if transcription_id:
+            # Not part of the OpenAI shape; dictation uses it to attach its
+            # normalized text and later corrections to this transcription.
+            body["id"] = transcription_id
         if language:
             body["language"] = language
         if response_format == "verbose_json":
