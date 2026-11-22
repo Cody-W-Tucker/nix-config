@@ -37,11 +37,70 @@
         lib,
         ...
       }:
+      let
+        # glow has no Stylix target and ignores its own `glow.yml`, so the preview's
+        # palette can only arrive as a style file on the command line. A style file
+        # replaces glamour's built-in style rather than merging with it, so alongside the
+        # Stylix colours this carries the few markers glamour would otherwise drop:
+        # without them ordered lists lose their `1.`, bullets and task boxes disappear,
+        # `---` renders as nothing and bold reads as plain text.
+        themed = config.lib ? stylix;
+        glowStyle =
+          if themed then
+            (pkgs.formats.json { }).generate "glow-stylix.json" (
+              let
+                inherit (config.lib.stylix) colors;
+              in
+              {
+                document.color = "#${colors.base05}";
+                heading = {
+                  block_suffix = "\n";
+                  bold = true;
+                };
+                h1.color = "#${colors.base08}";
+                h2.color = "#${colors.base09}";
+                h3.color = "#${colors.base0A}";
+                h4.color = "#${colors.base0B}";
+                h5.color = "#${colors.base0D}";
+                h6.color = "#${colors.base0E}";
+                strong.bold = true;
+                emph.italic = true;
+                strikethrough.crossed_out = true;
+                item.block_prefix = "• ";
+                enumeration.block_prefix = ". ";
+                task = {
+                  ticked = "[x] ";
+                  unticked = "[ ] ";
+                };
+                block_quote = {
+                  color = "#${colors.base03}";
+                  indent = 1;
+                  indent_token = "│ ";
+                };
+                hr = {
+                  color = "#${colors.base03}";
+                  format = "\n────────\n";
+                };
+                code.color = "#${colors.base0B}";
+                link = {
+                  color = "#${colors.base0D}";
+                  underline = true;
+                };
+                link_text.color = "#${colors.base0C}";
+                code_block.margin = 2;
+              }
+            )
+          else
+            "dark";
+      in
       {
+        xdg.configFile = lib.optionalAttrs themed { "glow/stylix.json".source = glowStyle; };
+
         home = {
           packages = with pkgs; [
             fastfetch
             fd
+            glow # renders the markdown preview in yazi
             tree
             unzip
             zip
@@ -57,7 +116,24 @@
             enable = true;
             enableZshIntegration = true;
             shellWrapperName = "rr";
-            plugins.git = pkgs.yaziPlugins.git;
+            plugins = {
+              git = pkgs.yaziPlugins.git;
+              piper = pkgs.yaziPlugins.piper;
+            };
+            # Render markdown in the preview pane instead of showing its source. This is
+            # piper's documented glow recipe, with only `-s` changed to the Stylix style
+            # above: piper pipes a command's output into the pane, passing the pane width
+            # as `$w` and the hovered file as `$1`.
+            settings.plugin.prepend_previewers = [
+              {
+                url = "*.md";
+                run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${glowStyle} "$1"'';
+              }
+              {
+                url = "*.markdown";
+                run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${glowStyle} "$1"'';
+              }
+            ];
             settings.plugin.prepend_fetchers = [
               {
                 id = "git";

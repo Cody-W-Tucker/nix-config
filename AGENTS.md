@@ -52,6 +52,7 @@ Once the changes have settled, the user will run the `update` script to build an
 ### Editing
 
 - Keep narrowly scoped edits minimal: preserve unrelated lines and comments, and avoid repository-wide formatting. Before summarizing Git state or claiming no unrelated files were touched, inspect status and the complete staged and unstaged diff for every modified or unmerged path; enumerate relevant changed files by exact path.
+- **For a nice-to-have, take the upstream default.** Configure a small convenience the way its own documentation does, and theme it only through a configuration surface the tool already supports — Home Manager generating that file is fine, and it should carry Stylix colours rather than literals. Do not write a wrapper, patch, package or post-processing step to close a cosmetic gap: report the gap and leave it. The user asks explicitly when a nice-to-have is worth more than that.
 
 ### Naming & Files
 
