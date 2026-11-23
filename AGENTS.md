@@ -26,20 +26,17 @@ When planning a feature or auditing what a host declares, use the [capability in
 
 ## Change Validation
 
-Identify the aspect, affected hosts, and expected behavior. Choose the smallest check that can catch the likely failure:
+Verify only what the change can affect. Start with the smallest check that can catch the likely failure, and stop when it gives enough evidence. For a prose-only edit, reviewing the diff may be enough; don't run Nix checks just because the repo uses Nix. For Nix changes, choose the relevant check:
 
 - **Feature logic:** Evaluate an aspect in isolation with explicit fixture inputs when that answers the question or gives you a useful regression test. This does not prove that a real host selects it or gets the same result.
 - **Composition and settings:** Trace Den when the inclusion or routing is unclear. For a setting or package-list change, evaluate the relevant merged value on each affected host rather than building its closure by default.
 - **Artifacts and behavior:** Build and test the changed package, script, generated configuration, or plugin directly when practical. For significant wiring, new services, or changes spanning hosts, build the affected host closure if narrower checks do not cover the likely failures. A dry run or `nix flake check` is not a substitute for that build.
 
-Use `nix flake check` when repository-wide validation is appropriate, such as broad refactors or flake-input changes. It evaluates both hosts and runs the declared checks; it does not build every package or host closure, activate a system, or prove runtime behavior. Individual checks can be run with `nix build .#checks.x86_64-linux.<name>`.
+`nix flake check` is not a default or required final step. Use it only when the change needs repository-wide validation, as a broad refactor or flake-input change might. If only one declared check is relevant, run `nix build .#checks.x86_64-linux.<name>` instead.
 
 Run focused behavioral checks where possible, and report what passed and what remains unverified. Evaluation can run from either host, but claims about actual hardware, services, secrets, or network behavior require evidence from the affected host. Do not activate, switch, or run `nixos-rebuild test` without the user's authorization. If a check fails, inspect the error and address it; do not claim validation that was not performed.
 
 ```bash
-# Repository-wide evaluation and declared checks. Stage new files first.
-nix flake check
-
 # Example: build an affected package or host without activation.
 nix build --no-link .#update
 nix build --no-link .#nixosConfigurations.nas.config.system.build.toplevel
