@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.backup-health ];
+
   den.aspects.backup-health.nixos =
     {
       config,

@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.miniflux ];
+
   den.aspects.miniflux.nixos =
     {
       mkNginxVhost,

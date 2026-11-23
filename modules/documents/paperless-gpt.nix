@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.paperless-gpt ];
+
   den.aspects.paperless-gpt.nixos =
     {
       mkNginxVhost,

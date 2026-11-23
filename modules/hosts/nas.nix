@@ -1,4 +1,3 @@
-{ den, ... }:
 {
   # nas tracks stable nixpkgs (with stable Home Manager and nixvim; see channels.nix).
   den.hosts.x86_64-linux.nas = {
@@ -12,53 +11,6 @@
   };
 
   den.aspects.nas = {
-    includes = [
-      den.aspects.hermes-agent
-      # The NAS service features, in the order of the former server role. Order is load-bearing:
-      # den concatenates included modules in reverse include order, so list-valued
-      # options (nas.backups.sqlite/dataDirectories, systemd.tmpfiles.rules) follow it.
-      # Reordering is safe functionally but changes the Restic job layout and tmpfiles.
-      den.aspects.nginx.server
-      den.aspects.docker
-      den.aspects.docker.oci-backend
-      den.aspects.syncthing
-      den.aspects.miniflux-curator
-      den.aspects.backup-health
-      den.aspects.backups
-      den.aspects.binary-cache.server
-      den.aspects.langfuse
-      den.aspects.actual-budget
-      den.aspects.dawarich
-      den.aspects.home-assistant
-      den.aspects.open-webui
-      den.aspects.dns
-      den.aspects.miniflux
-      den.aspects.excalidraw
-      den.aspects.homepage
-      den.aspects.karakeep
-      den.aspects.mealie
-      den.aspects.monitoring
-      den.aspects.egress-audit
-      den.aspects.egress-audit.opensnitch
-      den.aspects.egress-audit.server
-      den.aspects.nfs.server
-      den.aspects.paperless
-      den.aspects.paperless-gpt
-      den.aspects.photos
-      den.aspects.samba.server
-      den.aspects.networking.strict-fail2ban
-      den.aspects.syncthing.nginx
-      den.aspects.tika
-      den.aspects.uptime-kuma
-      den.aspects.media
-      den.aspects.nvidia
-      den.aspects.llama-swap
-      den.aspects.hindsight
-      den.aspects.opencode
-    ];
-
-    # Nas's Home Manager profile (Hermes' HM half comes from den.aspects.hermes-agent, nixvim
-    # from den.aspects.nixvim).
     provides.to-users.homeManager = {
       home.stateVersion = "25.11";
     };
@@ -117,9 +69,6 @@
             ];
           };
         };
-
-        # ── Features ────────────────────────────────────────────────
-        # nvidia, hindsight and opencode are den aspects (this file).
 
         networking = {
           hostName = "nas";

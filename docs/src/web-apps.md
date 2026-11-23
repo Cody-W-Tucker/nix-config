@@ -25,7 +25,7 @@ Devices that use the NAS as their DNS server get ad and malware domains blocked 
 
 | To change | Edit |
 | --- | --- |
-| Add an app | A new file in [`modules/web/`](../../modules/web); include its aspect in [`nas.nix`](../../modules/hosts/nas.nix). The file declares its own vhost and Homepage card. |
+| Add an app | A new file in [`modules/web/`](../../modules/web). Add the app's aspect to `den.aspects.nas.includes` and declare its vhost and Homepage card in that file. |
 | Homepage layout and widgets | [`homepage.nix`](../../modules/web/homepage.nix) |
 | An app, its vhost or its card | The app's file, for example [`karakeep.nix`](../../modules/web/karakeep.nix) |
 | Unbound, blocklist, local zone | [`dns.nix`](../../modules/networking/dns.nix) |

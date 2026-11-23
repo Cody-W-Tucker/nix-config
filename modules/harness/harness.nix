@@ -1,5 +1,7 @@
 { den, ... }:
 {
+  den.aspects.beast.includes = [ den.aspects.harness.browse ];
+
   # AI/operator harness for the user: Claude Code, OpenCode client, shared MCP servers,
   # plugins and skills (the module tree is _hm). `localAi` (host attribute: true where
   # llama-swap, Hindsight and QMD run on the host itself) is read from `host` here and

@@ -1,5 +1,11 @@
-{ den, inputs, ... }:
 {
+  den,
+  inputs,
+  ...
+}:
+{
+  den.aspects.nas.includes = [ den.aspects.media ];
+
   den.aspects.media = {
     includes = [
       den.aspects.arr-stack

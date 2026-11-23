@@ -6,7 +6,7 @@ Does not own one-host cron-like tasks unless they are reusable enough to become 
 
 ## Placement Rules
 
-- Put each reusable automation in its own kebab-case file (or directory with a `_` supporting tree) as one `den.aspects.<name>`, included by the host that runs it.
+- Put each reusable automation in its own kebab-case file (or directory with a `_` supporting tree) as one `den.aspects.<name>`, and add it to `den.aspects.<host>.includes` in the same file.
 - Split longer scripts into nearby `_` files such as `_script.nix`; there is no `default.nix` outside `_` paths.
 - Define simple one-host automations in the host module instead of adding a new reusable module.
 - Keep secrets close to the consuming automation and use SOPS wiring rather than plaintext values.

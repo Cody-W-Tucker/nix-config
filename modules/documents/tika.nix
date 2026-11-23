@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.tika ];
+
   den.aspects.tika.nixos =
     { config, mkNginxVhost, ... }:
 

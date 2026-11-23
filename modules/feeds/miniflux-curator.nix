@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.miniflux-curator ];
+
   den.aspects.miniflux-curator.nixos =
     {
       config,

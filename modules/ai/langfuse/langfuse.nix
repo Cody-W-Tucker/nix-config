@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.langfuse ];
+
   den.aspects.langfuse.nixos =
     {
       config,

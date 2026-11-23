@@ -1,5 +1,7 @@
 { den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.nginx.server ];
+
   den.aspects.nginx.nixos =
     { lib, config, ... }:
 

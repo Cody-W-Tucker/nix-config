@@ -10,6 +10,8 @@ let
   ];
 in
 {
+  den.aspects.nas.includes = [ den.aspects.homepage ];
+
   # Let services declare cards without selecting or enabling the dashboard.
   den.default.includes = [ den.aspects.homepage.cards ];
   den.aspects.homepage.cards.nixos =

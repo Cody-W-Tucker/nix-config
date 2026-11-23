@@ -1,7 +1,11 @@
+{ den, ... }:
 let
   exporterPort = 9835;
 in
 {
+  den.aspects.beast.includes = [ den.aspects.nvidia ];
+  den.aspects.nas.includes = [ den.aspects.nvidia ];
+
   den.aspects.nvidia.prometheus-targets = { host, ... }: {
     host = host.name;
     ports.nvidia-gpu = exporterPort;

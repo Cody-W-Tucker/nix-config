@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.hindsight ];
+
   den.aspects.hindsight.nixos =
     {
       config,

@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.home-assistant ];
+
   den.aspects.home-assistant.nixos =
     {
       config,

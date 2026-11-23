@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.mealie ];
+
   den.aspects.mealie.nixos =
     {
       config,

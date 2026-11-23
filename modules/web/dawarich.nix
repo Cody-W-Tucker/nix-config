@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.dawarich ];
+
   den.aspects.dawarich.nixos =
     {
       config,

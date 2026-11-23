@@ -1,5 +1,7 @@
 { den, ... }:
 {
+  den.aspects.beast.includes = [ den.aspects.nixvim.desktop ];
+
   # NixVim editor for the user, with the nixvim Home Manager module that pairs with the
   # host's Home Manager: unstable nixvim on unstable hosts (beast), nixvim-stable on stable
   # ones (nas). `host.nixvimModule` is derived from the host's `channel`

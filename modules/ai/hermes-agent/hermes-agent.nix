@@ -1,5 +1,11 @@
-{ den, inputs, ... }:
 {
+  den,
+  inputs,
+  ...
+}:
+{
+  den.aspects.nas.includes = [ den.aspects.hermes-agent ];
+
   # Include only on the NAS: this aspect needs nas.backups.*.
   den.aspects.hermes-agent = {
     includes = [

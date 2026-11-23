@@ -1,5 +1,8 @@
 { den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.binary-cache.server ];
+  den.aspects.beast.includes = [ den.aspects.binary-cache.client ];
+
   # Binary cache for the other hosts: the NAS serves its store over Tailscale
   # and pre-builds every host from `main` each night (nightly-build.nix), so
   # `update` on beast is a LAN download instead of an internet download or a

@@ -27,6 +27,11 @@ let
   };
 in
 {
+  den.aspects.beast.includes = [
+    den.aspects.logging.desktop
+    den.aspects.logging.forward-to-nas
+  ];
+
   # Host telemetry shared by every host: the node and smartctl exporters (scraped by the NAS
   # Prometheus) and the journal input. Shipping requires an explicit forwarding aspect.
   # Host-specific inputs and outputs (e.g. NAS nginx logs) are appended by the

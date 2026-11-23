@@ -1,5 +1,7 @@
 { den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.networking.strict-fail2ban ];
+
   # Network security services: hardened OpenSSH, fail2ban, nftables, NetworkManager,
   # Tailscale and the shared Tailscale hostname mapping.
   den.aspects.networking.nixos =

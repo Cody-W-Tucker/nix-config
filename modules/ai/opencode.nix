@@ -1,4 +1,11 @@
+{ den, ... }:
 {
+  den.aspects.beast.includes = [
+    den.aspects.opencode.desktop
+    den.aspects.opencode.remote
+  ];
+  den.aspects.nas.includes = [ den.aspects.opencode ];
+
   # OpenCode web server (nas): one aspect, two halves.
   #  - nixos: the password secret and its systemd EnvironmentFile template, and the nginx
   #    vhost.

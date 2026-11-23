@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.open-webui ];
+
   den.aspects.open-webui.nixos =
     {
       config,

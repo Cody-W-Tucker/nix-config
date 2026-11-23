@@ -1,4 +1,3 @@
-{ den, ... }:
 {
   # beast tracks nixpkgs-unstable (with unstable Home Manager and nixvim; see channels.nix).
   den.hosts.x86_64-linux.beast = {
@@ -38,32 +37,6 @@
   };
 
   den.aspects.beast = {
-    includes = [
-      den.aspects.graphical
-      den.aspects.apps
-      den.aspects.audio
-      den.aspects.printing
-      den.aspects.gaming
-      den.aspects.openrazer
-      den.aspects.syncthing
-      den.aspects.logging.desktop
-      den.aspects.logging.forward-to-nas
-      den.aspects.egress-audit
-      den.aspects.egress-audit.opensnitch
-      den.aspects.speech-to-text
-      den.aspects.project
-      den.aspects.docker
-      den.aspects.nvidia
-      den.aspects.paperless.scanner
-      den.aspects.nixvim.desktop
-      den.aspects.opencode.desktop
-      den.aspects.opencode.remote
-      den.aspects.harness.browse
-      den.aspects.binary-cache.client
-      den.aspects.nfs.client
-    ];
-
-    # Beast's Home Manager profile (the desktop comes from den.aspects.graphical and den.aspects.apps; the editor from den.aspects.nixvim).
     provides.to-users.homeManager = {
       home.stateVersion = "25.05";
     };
@@ -77,9 +50,6 @@
 
         # ── Machine ─────────────────────────────────────────────────
         # Main home desktop workstation: CPU: i9-14900kf | GPU: Nvidia 3070 | Storage: 2TB NVMe
-
-        # ── Features ────────────────────────────────────────────────
-        # nvidia, docker, gaming, openrazer and paperless.scanner are den aspects (this file).
 
         # Kernel (hardware modules and quirks are in _beast-hardware.nix).
         boot.kernelPackages = pkgs.linuxPackages_latest;

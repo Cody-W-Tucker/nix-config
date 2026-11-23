@@ -1,5 +1,15 @@
 { den, ... }:
 {
+  den.aspects.beast.includes = [
+    den.aspects.egress-audit
+    den.aspects.egress-audit.opensnitch
+  ];
+  den.aspects.nas.includes = [
+    den.aspects.egress-audit
+    den.aspects.egress-audit.opensnitch
+    den.aspects.egress-audit.server
+  ];
+
   # Egress audit: record every new outbound connection, enrich it with the
   # destination country and ship it to Loki as job="egress".
   #

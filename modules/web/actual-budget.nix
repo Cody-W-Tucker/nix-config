@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.actual-budget ];
+
   den.aspects.actual-budget.nixos =
     {
       config,

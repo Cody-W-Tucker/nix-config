@@ -1,4 +1,8 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.nfs.server ];
+  den.aspects.beast.includes = [ den.aspects.nfs.client ];
+
   # NFS: the NAS exports its project and knowledge trees to the LAN; beast mounts them.
 
   den.aspects.nfs.server.nixos =

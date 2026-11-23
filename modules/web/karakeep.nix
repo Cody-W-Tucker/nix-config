@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.karakeep ];
+
   den.aspects.karakeep.nixos =
     {
       config,

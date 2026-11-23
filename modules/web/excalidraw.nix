@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.excalidraw ];
+
   den.aspects.excalidraw.nixos =
     {
       config,

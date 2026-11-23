@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.beast.includes = [ den.aspects.openrazer ];
+
   # OpenRazer driver and Polychromatic. Including the aspect turns it on.
   den.aspects.openrazer = {
     nixos =

@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.beast.includes = [ den.aspects.printing ];
+
   # Printing: CUPS with the Canon driver, Avahi for printer discovery.
   den.aspects.printing = {
     nixos =

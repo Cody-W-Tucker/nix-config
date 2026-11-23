@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.photos ];
+
   den.aspects.photos.nixos =
     {
       config,

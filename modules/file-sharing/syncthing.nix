@@ -1,4 +1,11 @@
+{ den, ... }:
 {
+  den.aspects.beast.includes = [ den.aspects.syncthing ];
+  den.aspects.nas.includes = [
+    den.aspects.syncthing
+    den.aspects.syncthing.nginx
+  ];
+
   den.aspects.syncthing.nixos =
     { config, lib, ... }:
 

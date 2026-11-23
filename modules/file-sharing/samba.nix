@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.samba.server ];
+
   # Samba: the NAS shares folders over SMB (plus WSDD discovery).
 
   den.aspects.samba.server.nixos =

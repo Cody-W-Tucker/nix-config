@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.beast.includes = [ den.aspects.gaming ];
+
   # Steam, gamescope, gamemode and gaming performance tweaks. Including the aspect turns it on.
   den.aspects.gaming.nixos =
     { pkgs, ... }:

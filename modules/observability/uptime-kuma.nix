@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.nas.includes = [ den.aspects.uptime-kuma ];
+
   den.aspects.uptime-kuma.nixos =
     {
       config,

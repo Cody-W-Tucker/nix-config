@@ -2,7 +2,7 @@
 {
   # Cody's account. The `user` class forwards to users.users.codyt on every host; the Home
   # Manager profile applies on every host, and per-host extras are
-  # delivered by the host aspects (provides.to-users in modules/hosts/<host>.nix).
+  # delivered by feature aspects through provides.to-users.
   den.aspects.codyt = {
     # primary-user: isNormalUser plus the wheel and networkmanager groups.
     # user-shell: zsh as the login shell, with programs.zsh enabled on the host and in Home
@@ -32,8 +32,8 @@
     };
 
     # Home Manager profile shared by every host. Features register themselves on every host via
-    # den.default (shell, git, nixvim, harness, ...); host-only extras come from the host
-    # aspects' provides.to-users.
+    # den.default (shell, git, nixvim, harness, ...); host-specific extras come from
+    # the feature aspects' provides.to-users.
     homeManager.imports = [
       inputs.nixos-secrets.homeModules.default
     ];

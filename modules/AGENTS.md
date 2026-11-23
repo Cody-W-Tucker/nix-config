@@ -6,19 +6,20 @@ Rules and recipes for agents working in `modules/`. The human-facing overview is
 
 - **An underscore means "not a Den module".** import-tree loads every `.nix` file except those under a `_` path. Those hold plain NixOS and Home Manager modules, hardware files, packages and data, and their aspect imports them. `default.nix` is allowed only under `_` paths (`check-imports` enforces this).
 - **Every-host features include themselves** with `den.default.includes = [ den.aspects.<feature> ];` in their own file. Host files never list them. To find their declarations, use `rg 'den.default.includes' modules`.
-- **A cross-host feature is one file with one aspect per side:** `nfs.server` / `nfs.client`, `paperless` / `paperless.scanner`, `opencode` / `opencode.remote`. Each host includes its side. Including a parent does not include its children.
-- **An aspect is the unit of inclusion; a file is the unit of reading.** Make a separate aspect only when a host includes it alone. Keep files at roughly 30–250 lines. One aspect can span a directory (`graphical/`, `apps/`). In one file, define each class path (`nixos`, `provides.to-users.homeManager`) once.
-- **Host facts live on the host:** `channel`, `localAi`, `lan`, `tailscale`, `mac`, `hardwareConfig`, `nvidiaPowerLimit` in `den.hosts.x86_64-linux.<host>`. Aspects read them through the `host` argument, never by comparing `networking.hostName`. `channel` alone selects stable or unstable nixpkgs, Home Manager and nixvim (`channels.nix`).
+- **Fixed host selection belongs in the owning feature file:** `den.aspects.<host>.includes = [ den.aspects.<feature> ];`. Keep `den.schema` for typed facts and global policies, such as the Prometheus target collector, not for testing `host.name` to select features.
+- **A cross-host feature is one file with one aspect per side:** `nfs.server` / `nfs.client`, `paperless` / `paperless.scanner`, `opencode` / `opencode.remote`. Select each side in the feature file. Including a parent does not include its children.
+- **An aspect is the unit of inclusion; a file is the unit of reading.** Make a separate aspect only when it needs to be included independently. Keep files at roughly 30–250 lines. One aspect can span a directory (`graphical/`, `apps/`). Group a feature's `includes`, `nixos`, and `provides.to-users.homeManager` contributions under one aspect definition per file, using only the paths it needs. `provides.to-users.homeManager` routes the feature's Home Manager settings to the host's users.
+- **Host facts live on the host:** `channel`, `localAi`, `lan`, `tailscale`, `mac`, `hardwareConfig`, `nvidiaPowerLimit` in `den.hosts.x86_64-linux.<host>`. Use a plain aspect attrset when no Den context is needed. Request `host` to read host facts and `user` only when the aspect actually needs user context; don't infer host facts from `networking.hostName`. `channel` alone selects stable or unstable nixpkgs, Home Manager and nixvim (`channels.nix`).
 - **Shared facts are in `codyos.site`** (`modules/site.nix`): domain, user, LAN and per-host addresses.
 - **A service keeps everything next to it:** secrets, nginx vhost, firewall rules, Homepage card and backup paths.
 - **Agent skills ship with their tool**, in the aspect that installs the tool.
 - **`modules/defaults.nix`** holds only settings that belong to no feature.
-- **Include order matters for list-valued options:** Den concatenates in reverse include order.
+- **Keep feature selection independent of include order.** When order matters to a service, enforce it on the affected option, not on the host include.
 - **The host names `beast` and `nas` are load-bearing:** `update`, `nightly-build.nix` and `_plugins/lsp.nix` name them.
 - **Keep state versions host-local:** `system.stateVersion` in the host's `nixos` block and `home.stateVersion` in its `provides.to-users.homeManager` block.
 - **Flake outputs** are `flake.<output>` definitions in `modules/flake/`. There is no flake-parts.
 
-To add a feature, create `modules/<area>/<feature>.nix` defining `den.aspects.<feature>`, then include it in each host that needs it, or in `den.default.includes`. To add a host, see [`new-machine.md`](../docs/src/new-machine.md).
+To add a feature, create `modules/<area>/<feature>.nix` defining `den.aspects.<feature>` and register it in the same file. To add a host, see [`new-machine.md`](../docs/src/new-machine.md).
 
 ## Focused evaluation and tracing
 
@@ -77,7 +78,7 @@ NIX
 )"
 ```
 
-All three fixture fields are `true`. In the trace, the contributing rows (`hasClass` and not `excluded`) show two routes: the NAS gets `opencode` for NixOS and the Home Manager `to-users` route; beast gets the Home Manager route under `opencode.remote`. If an input is not cached, rerun without `--offline`.
+All three fixture fields are `true`. In the trace, look for contributing rows (`hasClass` and not `excluded`): `opencode` for NixOS and Home Manager on the NAS, and the Home Manager routes for `opencode.remote` and `opencode.desktop` on beast. If an input is not cached, rerun without `--offline`.
 
 ### Den resolution graphs
 

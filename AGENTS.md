@@ -59,8 +59,8 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ### Module Structure
 
-- `modules/hosts/<host>.nix` owns machine facts and selects features. Feature aspects own the implementation, including the NixOS and Home Manager pieces and nested sides such as `nfs.server` and `nfs.client`.
-- Inclusion is the feature switch. A feature intended for every host registers itself through `den.default.includes`; otherwise select it on the hosts that need it.
+- `modules/hosts/<host>.nix` owns machine facts and host-local settings. Feature files own selection and implementation, including the NixOS and Home Manager pieces and nested sides such as `nfs.server` and `nfs.client`.
+- Inclusion is the feature switch. In the owning feature file, use `den.aspects.<host>.includes = [ den.aspects.<feature> ];` for a named host or `den.default.includes` for a shared feature. Use the schema for typed facts and global policies, not for fixed host selection.
 - `import-tree` loads flake-level modules under `modules/` and skips paths containing a `_`-prefixed segment. Keep plain modules, scripts, and data in those excluded paths and import them explicitly. Under `modules/`, `default.nix` is allowed only on excluded paths (`check-imports` enforces this).
 - Keep shared facts in `codyos.site` and secret declarations next to their consuming service. Non-host flake outputs live in `modules/flake/`.
 

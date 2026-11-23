@@ -1,4 +1,7 @@
+{ den, ... }:
 {
+  den.aspects.beast.includes = [ den.aspects.audio ];
+
   # Audio: PipeWire (ALSA/Pulse/WirePlumber Bluetooth tuning), rtkit, BlueZ and Blueman, plus the user's DeepFilterNet noise-canceling source.
   den.aspects.audio = {
     nixos =
