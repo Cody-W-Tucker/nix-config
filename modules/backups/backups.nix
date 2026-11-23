@@ -42,7 +42,7 @@
             dotCommand = ".backup ${sqliteFileArg}";
           in
           ''
-            ${pkgs.coreutils}/bin/install -d -m 0700 ${lib.escapeShellArg destDir}
+            ${pkgs.coreutils}/bin/install -d -m 0700 ${lib.escapeShellArg destDir} ${lib.escapeShellArg (dirOf dest)}
             if [ ! -f ${lib.escapeShellArg s.source} ]; then
               printf 'restic-sqlite-prepare: error: %s missing, refusing to back up %s/%s\n' ${lib.escapeShellArg s.source} ${lib.escapeShellArg s.name} ${lib.escapeShellArg s.filename} >&2
               exit 1

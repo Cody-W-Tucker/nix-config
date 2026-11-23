@@ -29,7 +29,7 @@
             filename = lib.mkOption {
               type = lib.types.str;
               default = "database.db";
-              description = "Staged export filename inside /mnt/backup/backups/<name>/. Use a non-default value when one service owns several SQLite files (e.g. Hermes state.db and crm.db).";
+              description = "Staged export path relative to /mnt/backup/backups/<name>/; may contain subdirectories. Use a non-default value when one service owns several SQLite files (e.g. Hermes mirrors its own layout).";
             };
           };
         }
