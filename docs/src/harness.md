@@ -15,9 +15,15 @@ Commands that an agent runs appear prefixed with `rtk`, which shortens long outp
 
 ## Shared tools
 
-Every client sees the same MCP servers: `deja` (past sessions), `hindsight` (memory), `qmd` (your Markdown notes), `karakeep` (bookmarks), `exa` (web), `context7` (library docs), `gh_grep` (GitHub code), `nixos-option-search`. On beast, `qmd` runs on the NAS and fails when the NAS is unreachable; the others keep working.
+All clients share these MCP servers: `deja` (past sessions), `hindsight` (memory), `qmd` (your Markdown notes), `karakeep` (bookmarks), `exa` (web), `context7` (library docs), `gh_grep` (GitHub code), `nixos-option-search`. On beast, `qmd` runs on the NAS and fails when the NAS is unreachable; the others keep working.
 
 For semantic search across past sessions, run `deja doctor` on each host, then run `deja embed` if the vector index is missing or stale. Embedding sends redacted session text to the NAS. Search by exact terms still works without embeddings.
+
+## Browse on beast
+
+`op` on beast can use your Chromium profile through Browse. `op-` runs on the NAS and doesn't have access to it. After `update`, add [Browse from the Chrome Web Store](https://chromewebstore.google.com/detail/mfnicocicmmlkpjnaffgihfjhdgjkdjg) in the profile you want to use. Run `browse pair`, then enter the code under **Browse → Options → Pair with a code**. Run `browse status` to check the connection.
+
+Browse uses the sites you're already signed in to. It works in tabs it opens or tabs you lend it from the toolbar.
 
 ## Herdr
 
