@@ -56,6 +56,7 @@
       den.aspects.nvidia
       den.aspects.paperless.scanner
       den.aspects.nixvim.desktop
+      den.aspects.opencode.desktop
       den.aspects.opencode.remote
       den.aspects.harness.browse
       den.aspects.binary-cache.client

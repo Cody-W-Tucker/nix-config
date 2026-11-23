@@ -9,7 +9,7 @@
   #    `osConfig`, so the NixOS template and this list entry stay paired by construction.
   # The shared Home Manager harness (modules/harness/_hm/opencode) appends
   # the opencode-langfuse-env template to the same EnvironmentFile list.
-  # Including this aspect is the switch; nas includes it, beast includes opencode.remote.
+  # Including this aspect is the switch; only nas includes it.
   den.aspects.opencode = {
     nixos =
       { config, mkNginxVhost, ... }:
@@ -88,5 +88,11 @@
         OPENCODE_SERVER_PASSWORD="$(<${config.sops.secrets."opencode-password".path})" \
         opencode --server https://opencode.${domain}
       '';
+    };
+
+  den.aspects.opencode.desktop.provides.to-users.homeManager =
+    { pkgs, ... }:
+    {
+      home.packages = [ pkgs.opencode-desktop ];
     };
 }

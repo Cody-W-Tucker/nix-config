@@ -4,6 +4,8 @@ Claude Code, OpenCode, Codex and Pi run on both hosts with one shared set of MCP
 
 ## Starting a client
 
+On beast, open **OpenCode** from the app launcher for the local desktop app.
+
 | Command | Starts |
 | --- | --- |
 | `claude` | Claude Code |
@@ -46,4 +48,4 @@ For remote OpenCode, those flags go on the NAS server process, not on `op-`. Do 
 | Memory behavior, banks | [`plugins/hindsight/`](../../modules/harness/_hm/plugins/hindsight/default.nix) |
 | Claude Code | [`claude-code/default.nix`](../../modules/harness/_hm/claude-code/default.nix) |
 | OpenCode | [`opencode/default.nix`](../../modules/harness/_hm/opencode/default.nix) |
-| The NAS OpenCode server, `op-` | [`modules/ai/opencode.nix`](../../modules/ai/opencode.nix) |
+| OpenCode Desktop, the NAS server, `op-` | [`modules/ai/opencode.nix`](../../modules/ai/opencode.nix) |
