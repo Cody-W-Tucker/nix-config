@@ -227,7 +227,21 @@ in
           auto_thread = true; # Isolate each conversation in a thread
           reactions = true; # Emoji reactions for processing state
           free_response_channels = [ ]; # Channels that respond without @mention
-          home_channel = "1502095470334578779"; # hermes-home (text)
+        };
+        # The home channel shape `/sethome` writes. Hermes reads it only from
+        # `platforms.<name>`, as a mapping; `/sethome` itself cannot stick
+        # because activation replaces config.yaml.
+        platforms = {
+          discord.home_channel = {
+            platform = "discord";
+            chat_id = "1502095470334578779"; # hermes-home (text)
+            name = "hermes-home";
+          };
+          telegram.home_channel = {
+            platform = "telegram";
+            chat_id = "8369015005"; # Cody Tucker DM
+            name = "Cody Tucker";
+          };
         };
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";

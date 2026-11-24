@@ -46,9 +46,11 @@ in
           ".config/qmd"
         ];
         binds = [
+          # The live checkout `update` applies. Hermes changes CodyOS in its
+          # own clone under Projects (see documents/default.nix).
           {
             src = "/etc/nixos";
-            readonly = false;
+            readonly = true;
           }
           {
             src = "${config.home.homeDirectory}/Projects";

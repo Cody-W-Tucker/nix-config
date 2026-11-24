@@ -37,6 +37,12 @@ Claude Code and OpenCode add relevant memories before each prompt (not for promp
 
 For remote OpenCode, those flags go on the NAS server process, not on `op-`. Do not paste credentials into chat: automatic memory can include prompt and response text. Pi and Codex can use Hindsight through MCP but do not run the automatic memory hooks.
 
+## Inbox
+
+When an agent keeps running into something on the system, such as a missing tool or a recurring error, it posts a one-line note to the **#inbox** channel in Discord: what got in the way, where, the evidence, and the change that would remove it. The note ends with the agent and host that sent it. Hermes does not answer these notes. To hand one to Hermes, see [Have Hermes change CodyOS](hermes.md#have-hermes-change-codyos).
+
+To post a note yourself, run `inbox "<note>"`.
+
 ## Changing it
 
 `update` overwrites `~/.config/opencode` and the skill folders, so edit these files instead. All under [`modules/harness/_hm/`](../../modules/harness/_hm):
@@ -45,6 +51,7 @@ For remote OpenCode, those flags go on the NAS server process, not on `op-`. Do 
 | --- | --- |
 | MCP servers | [`mcp.nix`](../../modules/harness/_hm/mcp.nix) |
 | Skills | [`skills/default.nix`](../../modules/harness/_hm/skills/default.nix), or a folder in the [skill catalog](../../skills/) |
+| Inbox command and when agents use it | [`inbox/`](../../modules/harness/_hm/inbox/default.nix) |
 | Memory behavior, banks | [`plugins/hindsight/`](../../modules/harness/_hm/plugins/hindsight/default.nix) |
 | Claude Code | [`claude-code/default.nix`](../../modules/harness/_hm/claude-code/default.nix) |
 | OpenCode | [`opencode/default.nix`](../../modules/harness/_hm/opencode/default.nix) |

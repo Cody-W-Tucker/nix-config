@@ -20,6 +20,7 @@ in
     ./codex
     ./opencode
     ./context.nix
+    ./inbox
     (import ./mcp.nix { inherit localAi; })
     (import ./plugins { inherit localAi; })
     ./skills
