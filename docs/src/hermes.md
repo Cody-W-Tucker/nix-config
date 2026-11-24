@@ -12,7 +12,9 @@ Cron results and cross-platform messages go to the `#hermes-home` Discord channe
 
 ## Apply a configuration change
 
-Make lasting settings changes in Nix. The next activation replaces edits made through `hermes config set` or the dashboard. Check the service on the NAS with `systemctl status hermes-agent hermes-backend` and its log with `journalctl -u hermes-agent`.
+Make changes to Nix-managed settings in Nix. Activation restores those settings and preserves settings Hermes manages, including skill toggles. Check the service on the NAS with `systemctl status hermes-agent hermes-backend` and its log with `journalctl -u hermes-agent`.
+
+If you remove a key from Nix, remove it from the live configuration too. Activation does not delete keys omitted from Nix.
 
 After rotating a Hermes secret and applying the new configuration, restart the affected system unit if needed: `sudo systemctl restart hermes-agent` for agent credentials or `sudo systemctl restart hermes-backend` for the dashboard.
 
@@ -39,6 +41,30 @@ The long-lived credential stays outside Hermes. `gws` in the terminal uses a sho
 
 To check Gmail access without sending anything, ask Hermes to run `gws gmail users labels list --params '{"userId":"me"}'` in its terminal. A successful token refresh alone does not verify that the terminal can use Gmail.
 
+## Manage skills
+
+Open **Skills** in the Hermes dashboard, or enter `/skills` in a chat. Install and enable skills in Hermes; a CodyOS update does not reinstall them.
+
+To start the default profile with only CodyOS tool skills, use the starter files after the NAS update. Stop Hermes before moving its skill library. This keeps a copy of the old library and leaves chats, memory, and named profiles alone. Scheduled jobs that reference an archived skill need that skill restored before they can use it again.
+
+```bash
+sudo systemctl stop hermes-agent hermes-backend
+sudo -u hermes bash -eu -c '
+  cd /var/lib/hermes/.hermes
+  for pack in cli deja google-workspace; do
+    test -d "/etc/hermes/starter-skills/$pack"
+  done
+  archive=$(mktemp -d ./skills-backup.XXXXXXXX)
+  install -d -m 2770 "$archive/starter"
+  cp -rL --no-preserve=mode,ownership /etc/hermes/starter-skills/*/. "$archive/starter/"
+  if [ -d skills ]; then mv -- skills "$archive/"; fi
+  mv -- "$archive/starter" skills
+  touch .no-bundled-skills
+'
+```
+
+If the copy succeeds, start `hermes-agent` and `hermes-backend` again. Open **Skills** to check the starter list. Hermes can also include its own essential skills.
+
 ## Changing it
 
 | To change | Edit |
@@ -50,4 +76,4 @@ To check Gmail access without sending anything, ask Hermes to run `gws gmail use
 | Terminal filesystem and network access | [`plugins/bubblewrap/default.nix`](../../modules/ai/hermes-agent/_nixos/plugins/bubblewrap/default.nix), [`egress/default.nix`](../../modules/ai/hermes-agent/_nixos/egress/default.nix) |
 | Google Workspace token refresh | [`_gws-token/`](../../modules/ai/_gws-token) |
 | Secrets | [`secrets/default.nix`](../../modules/ai/hermes-agent/_nixos/secrets/default.nix) |
-| Installed skills or per-platform tool access | [`skills/`](../../modules/ai/hermes-agent/_nixos/skills), [`toolsets/`](../../modules/ai/hermes-agent/_nixos/toolsets) |
+| Per-platform tool access | [`toolsets/`](../../modules/ai/hermes-agent/_nixos/toolsets) |

@@ -12,8 +12,10 @@ or dashboard.
 - `runtime/`, `secrets/`, and `plugins/` own unit, secret and plugin wiring.
   `documents/` compiles the living SOUL before startup; do not also install
   `SOUL.md` via `hermesHomeFiles`.
-- `skills/` separates declarative external skill packs from mutable seeded
-  skills. `toolsets/` limits what each platform sees, not what the OS permits.
+- Hermes owns installed skills and their enable/disable state. Tool features
+  can publish starter files under `/etc/hermes/starter-skills` for manual import;
+  do not seed or reconcile the active skill library on activation.
+- `toolsets/` limits what each platform sees, not what the OS permits.
 - `plugins/bubblewrap/` controls terminal mounts and `egress/` controls the
   system user's network access. Add terminal mounts through
   `codyos.hermes-agent.sandbox.binds`; upstream replaces rather than merges

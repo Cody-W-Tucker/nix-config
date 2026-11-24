@@ -74,18 +74,14 @@ in
       { pkgs, lib, ... }:
       {
         imports = [ ./_gws-token ];
-        codyos.hermes-agent.skills.skillPacks = [
-          {
-            name = "google-workspace-tools";
-            root = pkgs.linkFarm "hermes-agent-google-workspace-skills" (
+        environment.etc."hermes/starter-skills/google-workspace".source =
+          pkgs.linkFarm "hermes-google-workspace-starter-skills"
+            (
               lib.mapAttrsToList (name: path: {
                 name = "tools/${name}";
                 inherit path;
               }) (skillDirs pkgs)
             );
-            mode = "managed";
-          }
-        ];
       };
   };
 }

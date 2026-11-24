@@ -8,7 +8,6 @@
 
 let
   mealiePort = toString config.services.mealie.port;
-  hermesCommon = import "${inputs.hermes-agent}/nix/moduleCommon.nix" { inherit lib; };
 in
 {
   imports = [
@@ -20,7 +19,6 @@ in
     ./secrets
     ./documents
     ./toolsets
-    ./skills
     ./dashboard
   ];
 
@@ -48,15 +46,6 @@ in
       # is its .hermes. Upstream needs workingDirectory set explicitly before
       # it installs `documents`; this is its own default.
       workingDirectory = "${config.services.hermes-agent.stateDir}/workspace";
-      # Install the rendered settings as the whole config.yaml on every
-      # activation. Upstream's default deep-merges them into the file on disk,
-      # which keeps keys Nix no longer supplies: removed MCP servers stayed live.
-      configFile =
-        (hermesCommon.mkConfigFiles {
-          inherit pkgs;
-          cfg = config.services.hermes-agent;
-          inherit (config.services.hermes-agent) workingDirectory;
-        }).generated;
       extraDependencyGroups = [
         "edge-tts"
         "firecrawl"
@@ -92,6 +81,9 @@ in
         config.sops.templates."hermes-agent-env".path
       ];
       settings = {
+        # Retire the former Nix-store catalog. Leave enable/disable choices
+        # to Hermes: the upstream merge preserves keys not declared here.
+        skills.external_dirs = [ ];
         model = {
           default = "gpt-6.1-terra";
           provider = "openai-codex";
@@ -148,8 +140,6 @@ in
             };
           };
         };
-        # Preferences that were set at runtime and lived only in config.yaml.
-        # They are declared here because the file is now replaced whole.
         telemetry.shared_metrics = {
           enabled = false;
           send = false;
@@ -224,9 +214,7 @@ in
           reactions = true; # Emoji reactions for processing state
           free_response_channels = [ ]; # Channels that respond without @mention
         };
-        # The home channel shape `/sethome` writes. Hermes reads it only from
-        # `platforms.<name>`, as a mapping; `/sethome` itself cannot stick
-        # because activation replaces config.yaml.
+        # The home channel shape `/sethome` writes. Nix owns these channels.
         platforms = {
           discord.home_channel = {
             platform = "discord";
