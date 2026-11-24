@@ -33,7 +33,7 @@ Every hour the NAS files new bookmarks in Karakeep, newest first, once Karakeep 
 | `ai-duplicate` tag | Nearly the same as an older bookmark. |
 | `ai-svc:<service>` tag and *Agency: \<service\>* list | Worth inspecting for that Agency service. |
 | `ai-kind:method` / `ai-kind:capability` tag | Teaches a method / is something to install or call. |
-| *CodyOS: candidates* list | Worth evaluating for this system. |
+| *CodyOS: candidates* list | Shows something CodyOS could adopt or adapt and what it would improve. Review candidates before adopting them. |
 
 `svc:` and `svc-kind:` tags are different: a harvest agent put them there after reading the source.
 

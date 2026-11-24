@@ -48,7 +48,7 @@ in
       };
       codyos = {
         type = "noul";
-        instructions = "Is this worth evaluating as a tool, service or practice for a self-hosted NixOS home server and desktop run with local models and AI agents?";
+        instructions = "Does this bookmark give enough evidence to identify a specific tool, capability, or practice that would advance at least one CodyOS goal: self-hosted services, composable system capabilities, local model use, or agents testing changes before a human approves deployment? Answer yes only if you can identify both what CodyOS could adopt or adapt and what it would improve. A design pattern can qualify without anything to install. Sharing the same topics is not enough. A yes flags a candidate for review, not a recommendation to adopt it.";
       };
     };
     learnFromTeacher = true;
