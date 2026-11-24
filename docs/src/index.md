@@ -4,7 +4,7 @@ We're building a self-improving operating system with declarative NixOS as its b
 
 Before cell phones, the most valuable thing to know was a phone number.
 
-Carrying around an infinite Rolodex pushed us to hold more abstract, higher-value knowledge. Each shift forced the brain to take on harder problems, and that increase IQ and opened new capability.
+Carrying around an infinite Rolodex pushed us to hold more abstract, higher-value knowledge. Each shift forced the brain to take on harder problems, and that increased IQ and opened new capability.
 
 Until now computers haven't been capable of becoming the new form of Rolodex so we can offload the *now* lower value abstractions.
 
