@@ -8,21 +8,25 @@
 
   # Include only on the NAS: this aspect needs nas.backups.*.
   den.aspects.hermes-agent = {
-    includes = [
-      den.aspects.google-workspace.hermes
-      den.aspects.research-state.hermes
-    ];
-    provides.to-users.homeManager.imports = [ ./_hm ];
-    # Hermes runs as user services; linger keeps them up after logout.
-    provides.to-users.user.linger = true;
+    includes = [ den.aspects.google-workspace.hermes ];
+    # Cody serves QMD over loopback; local tools read the Hermes session path.
+    provides.to-users.homeManager.imports = [ ./_bridge ];
 
     nixos =
       { config, lib, ... }:
       let
         site = config.codyos.site;
+        hermesHome = "${config.services.hermes-agent.stateDir}/.hermes";
       in
       {
-        imports = [ inputs.workflow.nixosModules.default ];
+        imports = [
+          inputs.workflow.nixosModules.default
+          ./_nixos
+        ];
+
+        # Cody reads Hermes's state: deja indexes its sessions, and beast
+        # fetches its CodyOS branches over SSH.
+        users.users.${site.user.name}.extraGroups = [ config.services.hermes-agent.group ];
 
         networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
           (import ./_endpoint.nix).port
@@ -30,33 +34,38 @@
         ];
 
         # Live databases and caches are not consistent Restic inputs.
-        services.restic.backups.nas-files.exclude =
-          map (suffix: "${site.user.home}/.local/share/hermes/${suffix}")
-            [
-              "audio_cache"
-              "cache"
-              "**/*.db"
-              "**/*.db-wal"
-              "**/*.db-shm"
-              "**/*.sqlite"
-              "**/*.sqlite-wal"
-              "**/*.sqlite-shm"
-            ];
+        services.restic.backups.nas-files.exclude = map (suffix: "${hermesHome}/${suffix}") [
+          "audio_cache"
+          "cache"
+          "**/*.db"
+          "**/*.db-wal"
+          "**/*.db-shm"
+          "**/*.sqlite"
+          "**/*.sqlite-wal"
+          "**/*.sqlite-shm"
+        ];
 
-        # Exports mirror the layout under hermesHome, so a restore copies each
-        # file back to the same relative path. A listed database that no longer
-        # exists fails the backup run; remove it here when Hermes drops it.
-        nas.backups.sqlite =
+        # Keep the CRM export's existing name even though the live database is
+        # outside the agent's hidden profile directory.
+        nas.backups.sqlite = [
+          {
+            name = "hermes";
+            source = "${config.services.hermes-agent.stateDir}/crm/crm.db";
+            filename = "crm/crm.db";
+          }
+        ]
+        ++
+          # Other exports mirror the layout under hermesHome. A missing database
+          # fails the backup run; remove its entry when Hermes drops it.
           map
             (rel: {
               name = "hermes";
-              source = "${site.user.home}/.local/share/hermes/${rel}";
+              source = "${hermesHome}/${rel}";
               filename = rel;
             })
             (
               [
                 "state.db"
-                "crm/crm.db"
                 "kanban.db"
                 "shared-state.db"
                 "memory_store.db"
@@ -82,7 +91,9 @@
                   ]
             );
         nas.backups.dataDirectories = [
-          "${site.user.home}/.local/share/hermes"
+          hermesHome
+          "${config.services.hermes-agent.stateDir}/cognitive-assistant"
+          config.services.hermes-agent.workingDirectory
         ];
       };
   };

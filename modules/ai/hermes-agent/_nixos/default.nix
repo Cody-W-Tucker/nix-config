@@ -1,5 +1,4 @@
 {
-  osConfig,
   config,
   inputs,
   lib,
@@ -8,14 +7,14 @@
 }:
 
 let
-  inherit (osConfig.codyos.site) domain;
+  mealiePort = toString config.services.mealie.port;
   hermesCommon = import "${inputs.hermes-agent}/nix/moduleCommon.nix" { inherit lib; };
 in
 {
   imports = [
-    inputs.hermes-agent.homeManagerModules.default
-    inputs.cognitive-assistant.homeManagerModules.cognitive-assistant
+    inputs.hermes-agent.nixosModules.default
     ./runtime
+    ./egress
     ./plugins
     ./mcp
     ./secrets
@@ -26,15 +25,13 @@ in
   ];
 
   config = {
-    # Upstream renamed this option: puts the `hermes` CLI into user packages
-    # (was `addToSystemPackages`).
-    programs.hermes-agent.enable = true;
-    # Login shells inherit the same home the user units use.
-    # Without this, an unwrapped `hermes` CLI writes ~/.hermes instead.
-    home.sessionVariables.HERMES_HOME = config.services.hermes-agent.hermesHome;
+    codyos.hermes-agent.egress.loopbackPorts = [
+      8081 # Local models and speech
+      config.services.mealie.port
+    ];
+
     services.hermes-agent = {
       enable = true;
-      gateway.enable = true;
       # WORKAROUND: Hermes patches 0.15.2, but patchelfUnstable already has the fix.
       # https://github.com/NousResearch/hermes-agent/issues
       # REVIEW-BY: 2026-12-15
@@ -47,11 +44,10 @@ in
           }
         );
       };
-      # User-scoped persistent state: HERMES_HOME and the agent workspace both
-      # live under the user's XDG data directory. Upstream's HM activation
-      # creates both directories and merges config/secrets/documents into them.
-      hermesHome = "${config.xdg.dataHome}/hermes";
-      workingDirectory = "${config.xdg.dataHome}/hermes/workspace";
+      # The system user `hermes` owns stateDir (/var/lib/hermes): HERMES_HOME
+      # is its .hermes. Upstream needs workingDirectory set explicitly before
+      # it installs `documents`; this is its own default.
+      workingDirectory = "${config.services.hermes-agent.stateDir}/workspace";
       # Install the rendered settings as the whole config.yaml on every
       # activation. Upstream's default deep-merges them into the file on disk,
       # which keeps keys Nix no longer supplies: removed MCP servers stayed live.
@@ -89,7 +85,7 @@ in
         # Playwright cache write into the immutable hermes-agent-env.
         AGENT_BROWSER_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";
         VOICE_TOOLS_OPENAI_KEY = "local-only";
-        MEALIE_BASE_URL = "https://mealie.${domain}";
+        MEALIE_BASE_URL = "http://127.0.0.1:${mealiePort}";
       };
       environmentFiles = [
         config.sops.templates."hermes-env".path
@@ -249,13 +245,15 @@ in
         };
         voice = {
           auto_tts = false;
+          # Desktop must relay audio through Hermes: the speech URLs are NAS-local.
+          client_direct = false;
         };
         stt = {
           enabled = true;
           provider = "openai";
           openai = {
             api_key = "local-only";
-            base_url = "http://nas:8081/v1";
+            base_url = "http://127.0.0.1:8081/v1";
             model = "fluid-speech-pro-clean";
           };
         };
@@ -263,7 +261,7 @@ in
           provider = "openai";
           openai = {
             api_key = "local-only";
-            base_url = "http://nas:8081/v1";
+            base_url = "http://127.0.0.1:8081/v1";
             model = "kokoro-82m";
             voice = "af_heart";
           };
@@ -296,10 +294,6 @@ in
         checkpoints = {
           enabled = true;
           max_snapshots = 50;
-        };
-        capabilities.file_modifier = {
-          enabled = true;
-          allowed_paths = [ "/etc/nixos/*" ];
         };
       };
     };

@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   inputs,
   ...
@@ -74,7 +73,8 @@ in
     };
   };
 
-  home.activation.hermesHindsightPlugin = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
-    $DRY_RUN_CMD ln -sfn ${hindsightPlugin} ${config.services.hermes-agent.hermesHome}/plugins/hindsight
+  systemd.services.hermes-agent.preStart = ''
+    ln -sfn ${hindsightPlugin} ${config.services.hermes-agent.stateDir}/.hermes/plugins/hindsight
   '';
+  codyos.hermes-agent.egress.loopbackPorts = [ 8888 ];
 }

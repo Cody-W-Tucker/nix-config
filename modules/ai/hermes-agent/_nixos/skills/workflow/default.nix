@@ -5,7 +5,6 @@ let
 in
 {
   services.hermes-agent.extraPackages = [ workflowCli ];
-  codyos.harness.skills.verified-work-run = skill;
 
   codyos.hermes-agent.skills.skillPacks = [
     {

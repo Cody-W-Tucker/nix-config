@@ -39,13 +39,13 @@ For an older night, restore `/mnt/backup/backups/<app>` from Restic first, then 
 
 ### Hermes
 
-Hermes keeps its databases in `~/.local/share/hermes`. Each export in `/mnt/backup/backups/hermes/` has the same relative path, for example `profiles/research/state.db`. The other Hermes files are in Restic under `/home/codyt/.local/share/hermes`.
+Hermes keeps its databases in `/var/lib/hermes/.hermes`. Each export in `/mnt/backup/backups/hermes/` has the same relative path, for example `profiles/research/state.db`. Restic stores the other Hermes files under `/var/lib/hermes`; for snapshots from before the system service migration, look under `/home/codyt/.local/share/hermes`.
 
-1. Stop Hermes: `systemctl --user stop hermes-agent hermes-backend`.
+1. Stop Hermes: `sudo systemctl stop hermes-agent hermes-backend`.
 2. Move the live database and its `-wal` and `-shm` files aside.
-3. Copy the export to the same path under `~/.local/share/hermes`.
-4. Run `sudo chown codyt:users` on the copied file.
-5. Start Hermes: `systemctl --user start hermes-agent hermes-backend`.
+3. Copy the export to the same path under `/var/lib/hermes/.hermes`. For `crm/crm.db`, use `/var/lib/hermes/crm/crm.db` instead.
+4. Run `sudo chown hermes:hermes` on the copied file.
+5. Start Hermes: `sudo systemctl start hermes-agent hermes-backend`.
 
 ## Bring back from a ZFS snapshot
 

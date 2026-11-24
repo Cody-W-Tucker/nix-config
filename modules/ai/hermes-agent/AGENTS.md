@@ -1,83 +1,25 @@
-# Hermes Agent Via Home Manager
+# Hermes on the NAS
 
-`hermes-agent.nix` owns the Den aspect selected by NAS: its NixOS contribution
-imports the workflow module and registers backups; `provides.to-users.homeManager`
-imports `_hm/` for the host's users. `_hm/default.nix` owns the wrapper around
-`inputs.hermes-agent.homeManagerModules.default`.
+`hermes-agent.nix` owns the Den aspect and backups. `_nixos/default.nix`
+wraps the pinned upstream NixOS module. QMD runs as Cody via `_bridge/`;
+`_nixos/mcp/` runs read-only deja search as Cody with the `hermes` group.
+Neither mounts his home into Hermes. Do not reintroduce a Home Manager gateway
+or dashboard.
 
-Treat it like an integration layer, not a standalone app.
+- `services.hermes-agent.stateDir` belongs to the `hermes` system user.
+  Upstream installs `config.yaml` and `.env` into `${stateDir}/.hermes` at
+  activation; put lasting settings in Nix, not in that file at runtime.
+- `runtime/`, `secrets/`, and `plugins/` own unit, secret and plugin wiring.
+  `documents/` compiles the living SOUL before startup; do not also install
+  `SOUL.md` via `hermesHomeFiles`.
+- `skills/` separates declarative external skill packs from mutable seeded
+  skills. `toolsets/` limits what each platform sees, not what the OS permits.
+- `plugins/bubblewrap/` controls terminal mounts and `egress/` controls the
+  system user's network access. Add terminal mounts through
+  `codyos.hermes-agent.sandbox.binds`; upstream replaces rather than merges
+  lists in `settings`. Check the system units as well as the terminal when
+  changing a trust boundary: MCP, gateway tools and cron are not all terminal
+  commands.
 
-The main failure mode is drift between:
-
-- upstream Hermes settings
-- local wrapper logic
-- mutable state under `${hermesHome}` (user-scoped XDG state)
-
-If a change makes it harder to tell which of those owns the behavior, it is probably the wrong shape.
-
-## Scope
-
-- The Hermes runtime is configured only in Home Manager. There is no NixOS system-scope
-  instance: no `systemd.services.hermes-*`, no system user, no
-  `systemd.tmpfiles.rules` at system level.
-- Upstream HM surfaces: `services.hermes-agent.{hermesHome, workingDirectory,
-  settings, environment, environmentFiles, documents, hermesHomeFiles,
-  mcpServers, gateway.enable, backend.*}`, `systemd.user.services.{hermes-agent,
-  hermes-backend}`, `home.activation.hermesAgentSetup`.
-- Hermes runs as the login user (codyt). `hermes-agent.nix` enables linger
-  (`provides.to-users.user.linger`) so its user units survive logout; OpenCode
-  independently requires it too.
-- State: `hermesHome = ${config.xdg.dataHome}/hermes` (~/.local/share/hermes)
-  and `workingDirectory = ${config.xdg.dataHome}/hermes/workspace`. Both are
-  created and populated by upstream's `hermes-agent-setup` activation.
-  Login shells get the same path via `home.sessionVariables.HERMES_HOME`.
-
-## High-Salience Heuristics
-
-- Keep `_hm/default.nix` as the Home Manager integration spine and keep the main
-  `services.hermes-agent = { ... };` block there.
-- Do not create local option blocks just to thread constants around. Use plain local values.
-- Prefer direct writes into upstream `services.hermes-agent.*` surfaces over local pass-through abstractions.
-- Prefer declarative overwrite over residual runtime state. `configFile` is set to upstream's rendered `settings`, so every activation replaces `config.yaml` whole and keys Nix no longer supplies do not linger.
-- Companion modules under `_hm/` must stay user-scoped: `systemd.user.*`
-  (`runtime/default.nix`, `secrets/default.nix`), `home.activation.*`
-  (`skills/*.nix`), and upstream document surfaces (`documents/default.nix`).
-  No root-only constructs (`users.users`, system activation scripts) inside
-  `_hm/`.
-
-## Where Changes Go
-
-- `hermes-agent.nix`: host/user composition, linger, system-side workflow import, and backup registration.
-- The paths below are relative to `_hm/`.
-
-- `default.nix`: upstream Hermes service settings, imports, top-level assembly
-- `plugins/<name>/default.nix`: plugin source, enablement, settings, and plugin-specific runtime wiring
-- `runtime/default.nix`: shared `systemd.user.services.hermes-agent` wiring and user tmpfiles
-- `mcp/default.nix`: MCP server wiring
-- `secrets/default.nix`: Hermes-owned SOPS secrets, the `hermes-env` /
-  `hermes-agent-env` / `hermes-dashboard-env` templates, and the backend's
-  dashboard env wiring
-- `documents/default.nix`: workspace documents, plus the living SOUL and its
-  daily improvement pass via `services.cognitive-assistant` (never
-  `hermesHomeFiles."SOUL.md"`, which would overwrite the link)
-- `toolsets/`: platform tool exposure and trust boundaries
-- `skills/`: managed vs mutable skill packaging via user activation scripts
-
-## Expensive Mistakes
-
-- `config.yaml` is replaced on every activation. Runtime edits (`hermes config set`,
-  settings panes, `hermes mcp add`) do not survive; put the setting in Nix.
-- If a change widens filesystem access or tool access, treat that as a trust-boundary change, not a convenience edit.
-- Hermes identity comes from `${hermesHome}/SOUL.md`, not from workspace `AGENTS.md`.
-- Hermes must see normal files under `${hermesHome}/skills`; malformed local skill dirs can shadow packaged skills and break loading.
-
-## Debugging Order
-
-For a missing contribution, first check the Den include and the relevant class on NAS.
-For a runtime configuration issue, work through `_hm/` in this order:
-
-1. Is this defined in `default.nix` via upstream Hermes settings?
-2. Is it coming from runtime wiring under `runtime/`?
-3. Is it a user activation under `skills/`?
-4. Is mutable state under `${hermesHome}` preserving or shadowing something?
-5. Is a toolset narrowing behavior on this surface?
+Check Den routing and merged settings before debugging the live service.
+Gateway and dashboard diagnostics use system `journalctl`, not `--user`.

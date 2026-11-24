@@ -18,4 +18,4 @@ A new host decrypts only after its SSH host key is a recipient. Its first build 
 | To change | Edit |
 | --- | --- |
 | sops-nix setup on every host | [`secrets.nix`](../../modules/secrets.nix) |
-| A service's secrets | That service's own file. Multi-value example: [`_hm/secrets/default.nix`](../../modules/ai/hermes-agent/_hm/secrets/default.nix) |
+| A service's secrets | That service's own file. Multi-value example: [`_nixos/secrets/default.nix`](../../modules/ai/hermes-agent/_nixos/secrets/default.nix) |

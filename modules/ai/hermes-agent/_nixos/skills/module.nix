@@ -7,7 +7,7 @@
 
 let
   cfg = config.codyos.hermes-agent.skills;
-  inherit (config.services.hermes-agent) hermesHome;
+  hermesHome = "${config.services.hermes-agent.stateDir}/.hermes";
   packsIn = mode: lib.filter (pack: pack.mode == mode) cfg.skillPacks;
 in
 {
@@ -53,7 +53,8 @@ in
       packsIn "managed"
     );
 
-    home.activation.hermesAgentSkills = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
+    # Runs as the hermes user before each start, so copied skills are its own.
+    systemd.services.hermes-agent.preStart = ''
       mkdir -p "${hermesHome}/skills"
       ${lib.concatMapStrings (pack: ''
         ${pkgs.coreutils}/bin/cp -rL --update=none --no-preserve=mode,ownership \

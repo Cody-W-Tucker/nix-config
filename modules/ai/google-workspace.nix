@@ -69,13 +69,11 @@ in
         codyos.harness.skills = lib.mapAttrs (_: toString) (skillDirs pkgs);
       };
 
-    # Hermes also adds extraPackages to the user's packages, so the desktop
-    # harness on the same host can use this CLI and should see the same skills.
     hermes.includes = [ den.aspects.google-workspace.desktop ];
-    hermes.provides.to-users.homeManager =
+    hermes.nixos =
       { pkgs, lib, ... }:
       {
-        services.hermes-agent.extraPackages = [ (cli pkgs) ];
+        imports = [ ./_gws-token ];
         codyos.hermes-agent.skills.skillPacks = [
           {
             name = "google-workspace-tools";

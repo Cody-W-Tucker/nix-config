@@ -21,9 +21,10 @@ let
   '';
 in
 {
-  home.activation.hermesHomeAssistantPlugin = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
-    $DRY_RUN_CMD ln -sfn ${homeAssistantPlugin} ${config.services.hermes-agent.hermesHome}/plugins/homeassistant
+  systemd.services.hermes-agent.preStart = ''
+    ln -sfn ${homeAssistantPlugin} ${config.services.hermes-agent.stateDir}/.hermes/plugins/homeassistant
   '';
+  codyos.hermes-agent.egress.loopbackPorts = [ 8123 ];
   services.hermes-agent = {
     extraPlugins = lib.mkOrder 900 [ homeAssistantPlugin ];
     # HASS_TOKEN comes from the existing Hermes SOPS secret.

@@ -1,12 +1,10 @@
 {
-  osConfig,
   config,
   lib,
   pkgs,
   ...
 }:
 let
-  inherit (osConfig.codyos.site) domain;
   officialPlugins = pkgs.fetchFromGitHub {
     owner = "NousResearch";
     repo = "hermes-official-plugins";
@@ -79,13 +77,14 @@ let
   );
 in
 {
-  home.activation.hermesLangfusePlugin = lib.hm.dag.entryAfter [ "hermesAgentSetup" ] ''
-    $DRY_RUN_CMD ln -sfn ${langfusePlugin} ${config.services.hermes-agent.hermesHome}/plugins/langfuse
+  systemd.services.hermes-agent.preStart = ''
+    ln -sfn ${langfusePlugin} ${config.services.hermes-agent.stateDir}/.hermes/plugins/langfuse
   '';
+  codyos.hermes-agent.egress.loopbackPorts = [ 3030 ];
   services.hermes-agent = {
     extraPlugins = lib.mkOrder 1000 [ langfusePlugin ];
-    environment.HERMES_LANGFUSE_BASE_URL = "https://langfuse.${domain}";
+    environment.HERMES_LANGFUSE_BASE_URL = "http://127.0.0.1:3030";
   };
-  systemd.user.services.hermes-agent.Service.Environment = [ "PYTHONPATH=${hermesPythonPath}" ];
-  systemd.user.services.hermes-backend.Service.Environment = [ "PYTHONPATH=${hermesPythonPath}" ];
+  systemd.services.hermes-agent.environment.PYTHONPATH = hermesPythonPath;
+  systemd.services.hermes-backend.environment.PYTHONPATH = hermesPythonPath;
 }

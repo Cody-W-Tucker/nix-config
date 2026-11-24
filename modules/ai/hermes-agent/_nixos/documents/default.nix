@@ -2,24 +2,20 @@
   config,
   inputs,
   lib,
-  osConfig,
   pkgs,
   ...
 }:
 
 let
   nixosConfigRoot = "/etc/nixos";
-  codyosClone = "${config.home.homeDirectory}/Projects/codyos";
+  cfg = config.services.hermes-agent;
+  hermesHome = "${cfg.stateDir}/.hermes";
+  codyosClone = "${cfg.workingDirectory}/codyos";
   artifacts = inputs.cognitive-assistant.lib.artifacts;
   inherit (artifacts) operational existential;
-  inherit (config.services.hermes-agent) hermesHome;
-  qmd = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.qmd;
-  # The improvement pass judges sessions with the local model: transcripts
-  # never leave the NAS. One outcome prompt can reach ~15K tokens.
-  improveLlm = {
-    baseUrl = "http://127.0.0.1:8081/v1";
-    model = "qwen-3.6-35b-a3b";
-  };
+  ca = inputs.cognitive-assistant.packages.${pkgs.stdenv.hostPlatform.system}.ca;
+  # The living SOUL's lineage: bootstrap plus records learned in use.
+  caHome = "${cfg.stateDir}/cognitive-assistant";
   existentialProfileFile = pkgs.writeText "hermes-existential-human-profile.md" (
     builtins.readFile existential.humanProfile
   );
@@ -37,14 +33,15 @@ let
   agentsDocument = ''
     # Hermes Environment
 
-    Hermes is running in a declarative NixOS environment with a Home Manager service.
+    Hermes runs on the NAS as the `hermes` system user, from a declarative NixOS configuration.
     Persistent configuration lives in `${nixosConfigRoot}/modules/ai/hermes-agent`, and mutable runtime state lives under `${hermesHome}`.
+    You reach the internet, but not this host's other services, the LAN, the tailnet or SSH, apart from the local services your tools are configured for. Cody's notes reach you through the QMD MCP server, not as files.
     `${nixosConfigRoot}` is the live CodyOS checkout. It is read-only to you: read it to see what is deployed, never edit it. You cannot rebuild or apply changes from here.
 
     # Changing CodyOS
 
     Make CodyOS changes in your own clone, `${codyosClone}`, with your normal file tools. Cody applies them; you only propose them.
-    You have no network. The clone's `origin` is `${nixosConfigRoot}`, the configuration deployed on this host, so fetching it needs none. Pass `--offline` to `nix` commands.
+    The clone's `origin` is `${nixosConfigRoot}`, the configuration deployed on this host. Pass `--offline` to `nix` commands: the inputs are already in the store.
 
     1. `git fetch origin && git switch -c inbox/<short-slug> origin/main`. One branch per request; never commit to `main`.
     2. Read the repo's `AGENTS.md` and the nearest one to the files you change, and follow them.
@@ -61,6 +58,20 @@ let
     Use `nix shell` only when a required tool or runtime is missing.
     Do not use `nix shell` for standard Unix utilities that are typically available, such as `bash`, `coreutils`, `grep`, `sed`, `awk`, or `git`.
   '';
+  soulPrefix = pkgs.writeText "ca-soul-prefix.md" ''
+    ${brevityInstructions}
+
+    ${builtins.readFile ../plugins/advanced-delegation/delegation-instructions.md}
+  '';
+  soulSuffix = pkgs.writeText "ca-soul-suffix.md" agentsDocument;
+  gitConfig = (pkgs.formats.gitIni { }).generate "hermes-gitconfig" {
+    user = {
+      name = "Hermes";
+      email = "hermes@${config.networking.hostName}";
+    };
+    safe.directory = nixosConfigRoot;
+    init.defaultBranch = "main";
+  };
 in
 
 {
@@ -76,64 +87,27 @@ in
 
     # Hermes loads its primary identity from HERMES_HOME/SOUL.md, not from the
     # workspace documents directory. That file is the Cognitive Assistant's
-    # living SOUL: on activation `ca soul compile` builds
+    # living SOUL: before each start `ca soul compile` builds
     # prefix + bootstrap SOUL + records learned in use + suffix under
-    # ~/.local/share/cognitive-assistant/soul and `ca soul link` points
+    # CA_HOME/soul (a no-op when nothing changed) and `ca soul link` points
     # SOUL.md at it. Do not also declare SOUL.md in hermesHomeFiles: upstream
-    # would install a regular file over the link.
-    services.cognitive-assistant = {
-      enable = true;
-      inherit hermesHome;
-      soul = {
-        prefix = ''
-          ${brevityInstructions}
-
-          ${builtins.readFile ../plugins/advanced-delegation/delegation-instructions.md}
-        '';
-        suffix = agentsDocument;
+    # would install a regular file over the link. Cognitive Assistant's module
+    # for this is Home Manager only; its improvement pass stays off.
+    systemd.tmpfiles.rules = [ "d ${caHome} 2770 ${cfg.user} ${cfg.group} - -" ];
+    systemd.services.hermes-agent = {
+      environment = {
+        CA_HOME = caHome;
+        # The terminal does not inherit access to arbitrary dotfiles in HOME.
+        GIT_CONFIG_GLOBAL = gitConfig;
       };
-      llm = improveLlm;
-      # Pause the scheduled improvement pass; the assistant and SOUL stay enabled.
-      improve.enable = false;
-      # The daily pass analyzes new sessions and scores their outcomes,
-      # which builds the baseline. It adopts and reverts nothing until this is
-      # switched on, after the outcome backtest has set minSessions.
-      improve.auto = true;
-      # Sessions come from Langfuse, which every harness traces into from both
-      # hosts. Empty reads all supported harnesses (Hermes, Claude, OpenCode);
-      # Pi is always excluded upstream.
-      improve.harnesses = [ ];
-      # Reuse the read-capable project key the harnesses already trace with
-      # (modules/harness/_hm/opencode renders it in this Home Manager scope).
-      langfuse = {
-        baseUrl = "https://langfuse.${osConfig.codyos.site.domain}";
-        environmentFile = config.sops.templates."opencode-langfuse-env".path;
-      };
-      # Per-night bound on local-model work: at most this many sessions are
-      # analyzed, and at most this many outcome-scored. Hermes goes first so
-      # the auto verdict keeps getting data; the backlog waits for later runs.
-      improve.maxSessions = 40;
-    };
-
-    # The pass shells out to git (commits after a session) and qmd (journal
-    # notes after a session) for follow-up evidence. User units do not inherit
-    # the login PATH; the `ca` wrapper prepends its own python and node.
-    systemd.user.services.ca-improve = lib.mkIf config.services.cognitive-assistant.improve.enable {
-      Service.Environment = [
-        "PATH=${
-          lib.makeBinPath [
-            pkgs.git
-            qmd
-          ]
-        }"
-      ];
-    };
-
-    # Same endpoint for manual runs from a login shell, such as
-    # `ca improve-outcome --since 70d --dry-run`.
-    home.sessionVariables = {
-      CA_LLM_BASE_URL = improveLlm.baseUrl;
-      CA_LLM_MODEL = improveLlm.model;
+      preStart = lib.mkAfter ''
+        ${ca}/bin/ca soul compile --prefix-file ${soulPrefix} --suffix-file ${soulSuffix} --reason activation
+        ${ca}/bin/ca soul link ${hermesHome}
+        if [ ! -e ${codyosClone} ]; then
+          ${lib.getExe pkgs.git} clone --no-local ${nixosConfigRoot} ${codyosClone} || \
+            echo "Hermes could not seed its CodyOS clone; other tasks remain available" >&2
+        fi
+      '';
     };
   };
 }
