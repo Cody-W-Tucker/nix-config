@@ -71,6 +71,7 @@ in
     package = lib.mkDefault opencode;
     enableMcpIntegration = true;
     settings = {
+      shell = import ../runtime.nix { inherit inputs lib pkgs; };
       # The langfuse module contributes its own entry to this list. Keep its
       # patched 0.5.2 directory plugin until upstream resolves the 0.6.0
       # SynchronizedRef initialization failure on OpenCode 2.1.1.

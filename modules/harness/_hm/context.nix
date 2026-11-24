@@ -1,5 +1,5 @@
 let
-  context = ''
+  context = shellContext: ''
     # Delegation
 
     Use subagents when they would help, especially for independent work that can run in parallel. Give each subagent a self-contained task with the relevant context, constraints, and expected result. Review and verify its work; you remain responsible for the outcome.
@@ -15,7 +15,22 @@ let
 
     Unless otherwise stated, you are operating in a NixOS system.
 
+    ${shellContext}
+
+    If direnv blocks the `.envrc` or reports that it failed to load, stop and report the problem. Do not run `direnv allow` yourself or silently use the default tools.
+    If there is no `.envrc` and the project has a flake dev shell, use `nix develop --command <command>` unless the project documents a different entry point.
+  '';
+  managed = context ''
+    The harness uses Bash and provides `python3`, `node`, and standard CLI tools. Do not assume project dependencies are installed.
+
+    Set the shell tool's working directory to the project directory. The harness loads its `.envrc` automatically before running each command. If a command changes to another project directory, use `direnv exec . <command>` there or start a new tool call in that directory.
+
+    For a missing one-off tool with no project environment, use `nix shell nixpkgs#<package> --command <tool>` instead of installing it globally.
+  '';
+  minimal = context ''
     This is a minimal environment. Do not assume system-wide installations of languages or external tools.
+
+    If direnv finds a project `.envrc` in the working directory or a parent, run project commands there with `direnv exec . <command>`.
 
     If a command fails due to a missing tool, retry using `nix shell` with the appropriate package.
     Do NOT use `nix shell` for standard Unix utilities that are typically available (e.g., bash, coreutils, grep, sed, awk, git).
@@ -26,8 +41,8 @@ let
   '';
 in
 {
-  programs.opencode.context = context;
-  programs.claude-code.context = context;
-  programs.codex.context = context;
-  programs.pi-coding-agent.context = context;
+  programs.opencode.context = managed;
+  programs.claude-code.context = managed;
+  programs.pi-coding-agent.context = managed;
+  programs.codex.context = minimal;
 }

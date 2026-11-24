@@ -15,7 +15,10 @@ in
     package = llmPkgs.claude-code;
     enableMcpIntegration = true;
     settings = {
-      env.CLAUDE_CODE_SUBAGENT_MODEL = "sonnet";
+      env = {
+        CLAUDE_CODE_SUBAGENT_MODEL = "sonnet";
+        CLAUDE_CODE_SHELL = import ../runtime.nix { inherit inputs lib pkgs; };
+      };
       syncClaudeAiSkills = false;
     };
   }

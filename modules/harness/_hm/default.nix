@@ -12,6 +12,10 @@
 let
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   piLangfuseDir = "${config.home.homeDirectory}/.pi/agent/langfuse-plugin";
+  piShell = {
+    shellPath = import ./runtime.nix { inherit inputs lib pkgs; };
+  };
+  hasConfigMerger = lib.hm.generators ? mkImpureConfigMerger;
 in
 
 {
@@ -54,7 +58,28 @@ in
   programs.pi-coding-agent = {
     enable = true;
     package = llmPkgs.pi;
+  }
+  // lib.optionalAttrs hasConfigMerger {
+    mutableSettings = true;
+    settings = piShell;
   };
+
+  # WORKAROUND: The NAS imports Pi from unstable HM, but stable lacks its config merger.
+  # https://github.com/nix-community/home-manager/pull/9654
+  # REVIEW-BY: 2027-01-15. The fallback switches itself off once HM has the merger.
+  home.activation.piShellSettings = lib.mkIf (!hasConfigMerger) (
+    lib.hm.dag.entryAfter [ "linkGeneration" ] (
+      (import "${inputs.home-manager}/modules/lib/generators.nix" { inherit lib; }).mkImpureConfigMerger {
+        inherit pkgs;
+        format = "json";
+        empty = "{}";
+        mode = "600";
+        path = "${config.programs.pi-coding-agent.configDir}/settings.json";
+        staticSettings = (pkgs.formats.json { }).generate "pi-shell.json" piShell;
+        jqOperation = "$dynamic * $static";
+      }
+    )
+  );
 
   # Pi discovers this entrypoint globally; dependencies live outside the
   # extension directory so their own files are not discovered as extensions.

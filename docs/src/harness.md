@@ -15,6 +15,14 @@ On beast, open **OpenCode** from the app launcher for the local desktop app.
 
 Commands that an agent runs appear prefixed with `rtk`, which shortens long output. OpenCode never updates itself; new versions arrive with `update`.
 
+## Shared agent runtime
+
+OpenCode, Claude Code, and Pi share a Nix-managed runtime for agent commands on both hosts. It provides Bash, Python, Node.js, and common command-line tools independently of the login shell. Fix a missing or broken baseline tool in the shared runtime rather than in each harness.
+
+The runtime loads the approved `.envrc` for each command's working directory. Project tools take precedence over the shared defaults. Codex runs outside the shared runtime and uses `direnv exec` to enter project environments.
+
+If direnv blocks a file, review and approve it on the host where the agent runs. Then retry the command.
+
 ## Shared tools
 
 All clients share these MCP servers: `deja` (past sessions), `hindsight` (memory), `qmd` (your Markdown notes), `karakeep` (bookmarks), `exa` (web), `context7` (library docs), `gh_grep` (GitHub code), `nixos-option-search`. On beast, `qmd` runs on the NAS and fails when the NAS is unreachable; the others keep working.
@@ -55,4 +63,6 @@ To post a note yourself, run `inbox "<note>"`.
 | Memory behavior, banks | [`plugins/hindsight/`](../../modules/harness/_hm/plugins/hindsight/default.nix) |
 | Claude Code | [`claude-code/default.nix`](../../modules/harness/_hm/claude-code/default.nix) |
 | OpenCode | [`opencode/default.nix`](../../modules/harness/_hm/opencode/default.nix) |
+| Shared agent runtime and baseline tools | [`runtime.nix`](../../modules/harness/_hm/runtime.nix) |
+| How agents enter project environments | [`context.nix`](../../modules/harness/_hm/context.nix) |
 | OpenCode Desktop, the NAS server, `op-` | [`modules/ai/opencode.nix`](../../modules/ai/opencode.nix) |
