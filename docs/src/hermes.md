@@ -37,6 +37,8 @@ Once Google Workspace is authorized, ask Hermes to triage your inbox, reply to a
 
 The long-lived credential stays outside Hermes. `gws` in the terminal uses a short-lived access token; any command in that terminal can read it while it is valid. If `gws` reports no access token and `systemctl status hermes-gws-token.timer` says the unit is missing, finish enrollment above. If the timer exists, check `journalctl -u hermes-gws-token` for refresh errors.
 
+To check Gmail access without sending anything, ask Hermes to run `gws gmail users labels list --params '{"userId":"me"}'` in its terminal. A successful token refresh alone does not verify that the terminal can use Gmail.
+
 ## Changing it
 
 | To change | Edit |

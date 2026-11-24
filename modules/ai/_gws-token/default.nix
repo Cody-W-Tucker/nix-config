@@ -13,8 +13,11 @@ let
   enrolled = builtins.pathExists encryptedCredentials;
   credentials = config.sops.secrets."hermes-gws-oauth".path;
   tokenDir = "/run/hermes-gws";
+  cacheDir = "/run/hermes-gws-cache";
   token = "${tokenDir}/access-token";
   wrapper = pkgs.writeShellScriptBin "gws" ''
+    # gws creates its discovery cache before calling any Google API.
+    export GOOGLE_WORKSPACE_CLI_CONFIG_DIR=${cacheDir}
     if [[ ''${1-} == --help || ''${1-} == --version ]]; then
       exec ${lib.getExe gws} "$@"
     fi
@@ -34,8 +37,19 @@ in
       src = tokenDir;
       readonly = true;
     }
+    {
+      src = cacheDir;
+      readonly = false;
+    }
   ];
-  systemd.tmpfiles.rules = [ "d ${tokenDir} 0750 root ${cfg.group} - -" ];
+  systemd.tmpfiles.rules = [
+    "d ${tokenDir} 0750 root ${cfg.group} - -"
+    "d ${cacheDir} 0700 ${cfg.user} ${cfg.group} - -"
+  ];
+
+  # Bubblewrap inherits the unit's read-only mounts under ProtectSystem=strict.
+  systemd.services.hermes-agent.serviceConfig.ReadWritePaths = [ cacheDir ];
+  systemd.services.hermes-backend.serviceConfig.ReadWritePaths = [ cacheDir ];
 
   sops.secrets."hermes-gws-oauth" = lib.mkIf enrolled {
     sopsFile = encryptedCredentials;
