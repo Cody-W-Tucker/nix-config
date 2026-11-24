@@ -64,5 +64,5 @@ To post a note yourself, run `inbox "<note>"`.
 | Claude Code | [`claude-code/default.nix`](../../modules/harness/_hm/claude-code/default.nix) |
 | OpenCode | [`opencode/default.nix`](../../modules/harness/_hm/opencode/default.nix) |
 | Shared agent runtime and baseline tools | [`runtime.nix`](../../modules/harness/_hm/runtime.nix) |
-| How agents enter project environments | [`context.nix`](../../modules/harness/_hm/context.nix) |
+| How agents delegate to lower-cost models and enter project environments | [`context.nix`](../../modules/harness/_hm/context.nix) |
 | OpenCode Desktop, the NAS server, `op-` | [`modules/ai/opencode.nix`](../../modules/ai/opencode.nix) |
