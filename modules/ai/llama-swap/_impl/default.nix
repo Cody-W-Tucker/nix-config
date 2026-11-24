@@ -236,6 +236,8 @@ let
   ) selectedModels;
 in
 {
+  imports = [ ./laya.nix ];
+
   options.services.llama-swap = {
     serverPackage = lib.mkOption {
       type = lib.types.package;

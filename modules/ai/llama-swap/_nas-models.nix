@@ -81,13 +81,6 @@ let
       }
     );
 
-  # Laya Q8_0 GGUF (SystemOne speech endpoint). Pinned to an immutable
-  # commit; content hash guards byte-identity (449397600 bytes).
-  laya = pkgs.fetchurl {
-    url = "https://huggingface.co/ggml-org/Laya-GGUF/resolve/22265007700297ba9e128297e82540cf28c5d7d4/Laya-Q8_0.gguf";
-    sha256 = "c06528c5746d3bb8baa72a27938be95abbfd0b226f8471e8a9e365ed0bb066d2";
-  };
-
   endpoint = import ./_endpoint.nix;
 in
 {
@@ -100,10 +93,6 @@ in
       description = "LLM Model Router";
     };
   };
-
-  imports = [
-    ./_impl
-  ];
 
   sops.secrets."huggingface-read" = {
     owner = config.codyos.site.user.name;
@@ -150,10 +139,7 @@ in
       "whisper-diarization"
       "kokoro-82m"
       "s1-mini"
-      "laya"
     ];
-    # laya stays on-demand (not preloaded): existing policy only keeps the
-    # STT/s1-mini audio path warm; nothing here calls for laya at boot.
     preloadModels = [
       "fluid-speech-pro-clean"
       "s1-mini"
@@ -179,9 +165,6 @@ in
       };
       "qwen-3.6-35b-a3b" = {
         file = toString qwen36Base;
-      };
-      "laya" = {
-        file = toString laya;
       };
     };
     # Embeddings can coexist with either audio or the 9B, without requiring

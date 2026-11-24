@@ -13,6 +13,7 @@
       imports = [
         ./_impl
         ./_nas-models.nix
+        ./_nas-classifiers.nix
       ];
 
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
@@ -25,6 +26,11 @@
         {
           name = "speech-history";
           source = "/var/lib/llama-swap/speech-history/history.sqlite";
+        }
+        # Classifier labels; trained heads can be refit from them.
+        {
+          name = "laya-labels";
+          source = "/var/lib/laya/labels.sqlite";
         }
       ];
     };
