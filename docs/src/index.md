@@ -6,7 +6,7 @@ Before cell phones, the most valuable thing to know was a phone number.
 
 Carrying around an infinite Rolodex pushed us to hold more abstract, higher-value knowledge. Each shift forced the brain to take on harder problems, and that increase IQ and opened new capability.
 
-Until now computers aren't capable of becoming the new form of Rolodex or GPS we've needed to accommodate the lower value cognitive aspects.
+Until now computers haven't been capable of becoming the new form of Rolodex so we can offload the *now* lower value abstractions.
 
 ## The loop
 
