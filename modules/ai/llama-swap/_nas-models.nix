@@ -82,6 +82,76 @@ let
     );
 
   endpoint = import ./_endpoint.nix;
+
+  modelFiles = {
+    "qwen-3.5-4b" = {
+      file = toString qwen35_4b;
+      mmprojFile = toString qwen35_4bMmproj;
+    };
+    "qwen-3.5-9b" = {
+      # Text-only (catalog sets no projector); the 4B endpoint serves vision.
+      file = toString qwen35_9bBase;
+    };
+    "qwen3-embedding-0.6b" = {
+      file = toString qwen3Embedding;
+    };
+    "glm-ocr-f16" = {
+      file = toString glmOcrF16;
+      mmprojFile = toString glmOcrMmproj;
+    };
+    "s1-mini" = {
+      file = toString s1Mini;
+    };
+    "qwen-3.6-35b-a3b" = {
+      file = toString qwen36Base;
+    };
+  };
+
+  # The RTX 5060's 8151 MiB less room for other processes and CUDA contexts that
+  # outlive a released lease (Laya keeps ~300 MiB).
+  vramBudget = 7800;
+  # MiB measured with nvidia-smi on 2026-11-24 with each model loaded on its own,
+  # rounded up. `keep` is the eviction cost: higher stays loaded longer.
+  gpu = {
+    "fluid-speech-pro-clean" = {
+      vram = 1450;
+      keep = 100;
+    };
+    "s1-mini" = {
+      vram = 1450;
+      keep = 100;
+    };
+    "kokoro-82m" = {
+      vram = 500;
+      keep = 50;
+    };
+    "qwen3-embedding-0.6b" = {
+      vram = 2100;
+      keep = 30;
+    };
+    "qwen-3.5-9b" = {
+      vram = 4650;
+      keep = 10;
+    };
+    "qwen-3.5-4b" = {
+      vram = 5300;
+      keep = 10;
+    };
+    "glm-ocr-f16" = {
+      vram = 7400;
+      keep = 5;
+    };
+    # These fill whatever is free (the 35B fits experts to free VRAM; diarization
+    # was not measured), so they run alone.
+    "qwen-3.6-35b-a3b" = {
+      vram = vramBudget;
+      keep = 10;
+    };
+    "whisper-diarization" = {
+      vram = vramBudget;
+      keep = 5;
+    };
+  };
 in
 {
   codyos.homepage.cards.LlamaSwap = {
@@ -144,48 +214,21 @@ in
       "fluid-speech-pro-clean"
       "s1-mini"
     ];
-    modelOverrides = {
-      "qwen-3.5-4b" = {
-        file = toString qwen35_4b;
-        mmprojFile = toString qwen35_4bMmproj;
-      };
-      "qwen-3.5-9b" = {
-        # Text-only (catalog sets no projector); the 4B endpoint serves vision.
-        file = toString qwen35_9bBase;
-      };
-      "qwen3-embedding-0.6b" = {
-        file = toString qwen3Embedding;
-      };
-      "glm-ocr-f16" = {
-        file = toString glmOcrF16;
-        mmprojFile = toString glmOcrMmproj;
-      };
-      "s1-mini" = {
-        file = toString s1Mini;
-      };
-      "qwen-3.6-35b-a3b" = {
-        file = toString qwen36Base;
-      };
-    };
-    # Embeddings can coexist with either audio or the 9B, without requiring
-    # audio and the 9B to fit together. Unlisted models run alone, keeping
-    # the 35B's GPU budget and unmeasured combinations conservative.
+    # Any models whose declared VRAM fits the card may run together; to make room,
+    # llama-swap evicts the cheapest set: OCR, then text/vision models, Laya,
+    # embeddings, and dictation last.
     settings.routing.router = {
-      use = "matrix";
-      settings.matrix = {
-        vars = {
-          embed = "qwen3-embedding-0.6b";
-          stt = "fluid-speech-pro-clean";
-          kokoro = "kokoro-82m";
-          normalize = "s1-mini";
-          text = "qwen-3.5-9b";
-        };
-        sets = {
-          audio = "embed & stt & kokoro & normalize";
-          text = "embed & text";
-        };
-      };
+      use = "capacity";
+      settings.capacity.pools.vram = vramBudget;
     };
+    modelOverrides = lib.recursiveUpdate modelFiles (
+      lib.mapAttrs (_: fit: {
+        upstream = {
+          capacities.vram = fit.vram;
+          evict_cost = fit.keep;
+        };
+      }) gpu
+    );
   };
 
   systemd.services.llama-swap.serviceConfig = {

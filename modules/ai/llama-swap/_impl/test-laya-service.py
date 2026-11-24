@@ -172,6 +172,73 @@ class LayaTest(unittest.TestCase):
         self.assertEqual(registered["route"], "review")
         self.assertEqual(ad_hoc["route"], "auto")
 
+    def test_cpu_fallback_moves_to_the_gpu_when_it_frees_up(self):
+        made = []
+
+        def agent(device):
+            made.append(device)
+            a = SimpleNamespace(vega=SimpleNamespace(heads={}), calibration=None)
+            a.predict = lambda state, qs: {"answers": {}}
+            return a
+
+        service = laya.DecisionService(self.root, registry(), None, None, "", device="cuda")
+        with patch.dict(sys.modules, {"vegaml.policy": SimpleNamespace(load_policy=Mock())}), \
+                patch.object(laya, "new_agent", side_effect=agent), \
+                patch.object(laya, "training_device", side_effect=["cpu", "cuda"]), \
+                patch.object(laya.time, "monotonic", side_effect=[1000.0, 1100.0, 1400.0]):
+            for _ in range(3):
+                service.vega("s", {"first": Q}, None)
+        self.assertEqual(made, ["cpu", "cuda"])
+
+    def test_gpu_needs_the_lease_and_is_given_back_when_it_ends(self):
+        made, freed = [], Mock()
+
+        def agent(device):
+            made.append(device)
+            a = SimpleNamespace(vega=SimpleNamespace(heads={}), calibration=None)
+            a.predict = lambda state, qs: {"answers": {}}
+            return a
+
+        lease = Mock()
+        lease.acquire.return_value = True
+        service = laya.DecisionService(self.root, registry(), None, None, "", device="cuda", lease=lease)
+        with patch.dict(sys.modules, {"vegaml.policy": SimpleNamespace(load_policy=Mock())}), \
+                patch.object(laya, "new_agent", side_effect=agent), patch.object(laya, "free_gpu", freed), \
+                patch.object(laya, "training_device", return_value="cuda"):
+            service.vega("s", {"first": Q}, None)
+            self.assertEqual(service.served_on, "cuda")
+            lease.acquire.return_value = False  # evicted: the next read moves to the CPU
+            service.vega("s", {"first": Q}, None)
+        self.assertEqual(made, ["cuda", "cpu"])
+        freed.assert_called_once()
+
+    def test_lease_loads_the_placeholder_and_reads_running_models(self):
+        seen = []
+
+        class Fake(BaseHTTPRequestHandler):
+            def log_message(self, *_):
+                pass
+
+            def do_GET(self):
+                seen.append(self.path)
+                body = json.dumps({"running": [{"model": "laya-gpu", "state": "ready"}]}).encode() \
+                    if self.path == "/running" else b"ok"
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+        with ThreadingHTTPServer(("127.0.0.1", 0), Fake) as server:
+            threading.Thread(target=server.serve_forever, daemon=True).start()
+            url = f"http://127.0.0.1:{server.server_port}"
+            self.assertTrue(laya.Lease(url, "laya-gpu").acquire())
+            self.assertTrue(laya.Lease(url, "laya-gpu").held())
+            self.assertFalse(laya.Lease(url, "laya-train-gpu").held())
+            server.shutdown()
+        self.assertEqual(seen[0], "/upstream/laya-gpu/")
+        self.assertFalse(laya.Lease("http://127.0.0.1:9", "x").acquire(timeout=2))
+        self.assertTrue(laya.Lease().acquire())
+
     def trainer(self, reg):
         agent = Mock(vega=SimpleNamespace(heads={}, features=Mock(return_value=[1.0]),
                                           engine=SimpleNamespace(decide=Mock(return_value={}))), device="cpu")

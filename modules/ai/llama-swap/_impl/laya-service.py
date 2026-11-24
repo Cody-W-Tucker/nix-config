@@ -6,8 +6,9 @@ with a source (human > imported > teacher). Each classifier names the sources it
 """
 
 import argparse
-from contextlib import closing
+from contextlib import closing, contextmanager
 from datetime import datetime
+import gc
 import hashlib
 import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -21,6 +22,8 @@ import sqlite3
 import sys
 import tempfile
 import threading
+import time
+import urllib.request
 from urllib.parse import urlsplit
 
 
@@ -167,6 +170,7 @@ def versions(folder):
 
 REVISION = "6aee375845724d2cca21d5fd5c043a028dbc1b48"
 GPU_FREE_BYTES = int(2.5 * 1024 ** 3)
+GPU_RETRY_SECONDS = 300
 
 
 def new_agent(device="cpu"):
@@ -193,6 +197,63 @@ def training_device():
 def serving_device(requested):
     """Where Vega reads to serve: CUDA when asked for and the card has room, otherwise CPU."""
     return training_device() if requested == "cuda" else "cpu"
+
+
+class Lease:
+    """A GPU lease from llama-swap: a placeholder model whose declared VRAM stands for Vega's.
+
+    Loading it makes llama-swap's capacity router evict cheaper models to make room; any
+    request to it restarts its idle timer. Without a URL the GPU needs no lease."""
+
+    def __init__(self, url=None, model=None):
+        self.url = url.rstrip("/") if url else None
+        self.model = model
+
+    def acquire(self, timeout=60):
+        if not self.url:
+            return True
+        try:
+            with closing(urllib.request.urlopen(f"{self.url}/upstream/{self.model}/", timeout=timeout)) as r:
+                return r.status == 200
+        except OSError as exc:
+            logging.info("no GPU lease from llama-swap: %s", exc)
+            return False
+
+    def held(self):
+        if not self.url:
+            return True
+        try:
+            with closing(urllib.request.urlopen(f"{self.url}/running", timeout=5)) as r:
+                running = json.load(r).get("running", [])
+        except (OSError, ValueError):
+            return False
+        return any(m.get("model") == self.model and m.get("state") == "ready" for m in running)
+
+    @contextmanager
+    def holding(self, every=120):
+        """Keep the lease renewed for a long job; yields whether it was granted."""
+        granted, done = self.acquire(), threading.Event()
+
+        def renew():
+            while not done.wait(every):
+                self.acquire()
+
+        if granted and self.url:
+            threading.Thread(target=renew, daemon=True).start()
+        try:
+            yield granted
+        finally:
+            done.set()
+
+
+def free_gpu():
+    gc.collect()
+    try:
+        import torch
+
+        torch.cuda.empty_cache()
+    except Exception:
+        pass
 
 
 def business_hours(now):
@@ -254,7 +315,7 @@ def split_rows(rows, calibrate_on=("human",)):
     return fit, calibrate
 
 
-def train(root, registry, cache_dir, small=200, now=None, device="cpu"):
+def train(root, registry, cache_dir, small=200, now=None, device="cpu", lease=None):
     """Refit classifiers with enough new labels. During business hours, only refits needing at
     most `small` uncached reads run; larger ones wait for an evening or weekend run."""
     if not (root / "labels.sqlite").exists():
@@ -302,7 +363,9 @@ def train(root, registry, cache_dir, small=200, now=None, device="cpu"):
                     continue
                 logging.info("refitting Laya classifier %s with %d new reads", name, pending)
                 try:
-                    fit_policy(agent, fit, calibrate, spec["questions"], folder / f"policy-{latest}", device)
+                    with (lease or Lease()).holding() as leased:
+                        fit_policy(agent, fit, calibrate, spec["questions"], folder / f"policy-{latest}",
+                                   device if leased else "cpu")
                 except ValueError as exc:
                     logging.warning("could not fit Laya classifier %s at version %d: %s", name, latest, exc)
                 cache.mark(key, pairs)
@@ -320,7 +383,7 @@ def fit_policy(agent, fit, calibrate, questions, target, device="cpu"):
 
     if target.exists():
         return
-    reader = agent(training_device())
+    reader = agent(serving_device(device))
     reader.vega.heads.clear()
     reader.calibration = None
     report = reader.fit(fit, questions=questions, calibrate=False)
@@ -364,9 +427,10 @@ def teacher_label(answer, q, threshold):
 
 
 class DecisionService:
-    def __init__(self, root, registry, teacher_url, default_teacher, api_key, device="cpu"):
+    def __init__(self, root, registry, teacher_url, default_teacher, api_key, device="cpu", lease=None):
         self.root = root
         self.device = device
+        self.lease = lease or Lease()
         self.registry = registry
         self.teacher_url = urlsplit(teacher_url) if teacher_url else None
         if self.teacher_url and not (self.teacher_url.scheme == "https" or (
@@ -378,6 +442,7 @@ class DecisionService:
         self.write_lock = threading.Lock()
         self.teacher_slots = threading.BoundedSemaphore(4)
         self.agent = None
+        self.served_on, self.checked = None, 0.0
         self.policies = {}  # classifier -> (policy path, heads, calibration)
 
     def heads(self, agent, name):
@@ -402,12 +467,47 @@ class DecisionService:
         self.policies[name] = (latest, heads, calibration)
         return heads, calibration
 
+    def place(self):
+        """The device for the next read. The GPU needs a renewed lease and room on the card;
+        a CPU fallback retries the GPU every few minutes."""
+        if self.device != "cuda":
+            return "cpu"
+        now = time.monotonic()
+        if self.served_on == "cpu" and now - self.checked < GPU_RETRY_SECONDS:
+            return "cpu"
+        if not self.lease.acquire():
+            self.checked = now
+            return "cpu"
+        if self.served_on == "cuda":
+            return "cuda"
+        self.checked = now
+        return training_device()
+
+    def leave_gpu(self):
+        if self.served_on == "cuda":
+            self.agent, self.served_on, self.policies = None, None, {}
+            free_gpu()
+
+    def watch_lease(self, every=15):
+        """Give the GPU back once llama-swap evicts the lease or it expires while idle."""
+        def loop():
+            while True:
+                time.sleep(every)
+                if self.served_on == "cuda" and not self.lease.held():
+                    with self.lock:
+                        if self.served_on == "cuda" and not self.lease.held():
+                            logging.info("GPU lease ended; Vega leaves the GPU")
+                            self.leave_gpu()
+
+        threading.Thread(target=loop, daemon=True).start()
+
     def vega(self, state, questions, name):
         with self.lock:
-            if self.agent is None:
-                device = serving_device(self.device)
+            device = self.place()
+            if self.agent is None or device != self.served_on:
+                self.leave_gpu()
                 logging.info("Vega serves on %s", device)
-                self.agent = new_agent(device)
+                self.agent, self.served_on, self.policies = new_agent(device), device, {}
             agent = self.agent
             heads, calibration = self.heads(agent, name)
             agent.vega.heads.clear()
@@ -549,7 +649,10 @@ def main():
                         help="most uncached reads a refit may need during business hours")
     parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu",
                         help="where Vega serves and is calibrated; cuda falls back to cpu when the card is full")
+    parser.add_argument("--lease-url", help="llama-swap that grants GPU leases")
+    parser.add_argument("--lease-model", help="llama-swap placeholder model that holds the lease")
     args = parser.parse_args()
+    lease = Lease(args.lease_url, args.lease_model)
     os.umask(0o077)
     logging.basicConfig(level=logging.INFO)
     registry = load_registry(args.classifiers)
@@ -563,14 +666,15 @@ def main():
             parser.error(str(exc))
         print(f"Saved {changed} {args.source} example(s).")
     elif args.mode == "train":
-        train(args.state_dir, registry, args.cache_dir, args.small_refit, device=args.device)
+        train(args.state_dir, registry, args.cache_dir, args.small_refit, device=args.device, lease=lease)
     else:
         with closing(connect(args.state_dir)) as db, db:
             pass  # The nightly backup expects the label store to exist.
         with ThreadingHTTPServer(("127.0.0.1", args.port), Handler) as server:
             server.service = DecisionService(args.state_dir, registry, args.teacher_url,
                                              args.default_teacher, os.environ.get("OPENCODE_GO_API_KEY", ""),
-                                             args.device)
+                                             args.device, lease)
+            server.service.watch_lease()
             server.slots = threading.BoundedSemaphore(4)
             server.serve_forever()
 

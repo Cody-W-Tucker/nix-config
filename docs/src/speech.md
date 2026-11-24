@@ -7,7 +7,7 @@ On beast: dictation into any window, and a spoken conversation with Hermes. The 
 1. Press `SUPER + Escape` and speak.
 2. Press `SUPER + Escape` again. The text is typed at the cursor, cleaned of fillers ("um", "uh") and some repeated words. Language is detected automatically (25 European languages).
 
-A short sentence appears almost at once. The NAS's graphics card holds the speech models or a chat model, not both. After a large chat model has run (Open WebUI, Paperless-GPT OCR), the first dictation takes a few seconds longer while the speech models load again. If nothing is typed, no speech was recognized. `SUPER + Shift + Escape` resets a stuck dictation.
+A short sentence appears almost at once. The speech models stay on the NAS's graphics card alongside smaller models, and are the last to make room. After a model that needs the whole card has run (the 35B in Open WebUI, Paperless-GPT OCR) or the vision model, the first dictation takes a few seconds longer while the speech models load again. If nothing is typed, no speech was recognized. `SUPER + Shift + Escape` resets a stuck dictation.
 
 ### Teaching it words
 

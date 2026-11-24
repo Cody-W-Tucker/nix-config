@@ -7,6 +7,12 @@
 let
   cfg = config.services.laya;
   endpoint = import ../_endpoint.nix;
+  # Serving and training each hold their own lease, so both are counted when both run.
+  leases = {
+    laya-gpu = 2300;
+    laya-train-gpu = 2600;
+  };
+  lease = model: "--lease-url http://127.0.0.1:${toString endpoint.port} --lease-model ${model}";
   registry = pkgs.writeText "laya-classifiers.json" (builtins.toJSON cfg.classifiers);
   run = python: "${python}/bin/python3 ${./laya-service.py} --classifiers ${registry}";
   command = run pkgs.laya-vega;
@@ -110,7 +116,23 @@ in
       restartUnits = [ "laya.service" ];
     };
 
-    # Peer dispatch does not hold a slot in the GPU matrix.
+    # Laya's GPU lease: an empty llama-swap model that declares Vega's VRAM, so the
+    # capacity router counts it and evicts it like any model. Laya loads it before
+    # reading on the GPU and drops to the CPU once it is gone (evicted or idle).
+    services.llama-swap.enabledModels = builtins.attrNames leases;
+    services.llama-swap.modelOverrides = lib.mapAttrs (_: vram: {
+      file = null;
+      ttl = 600;
+      upstream = {
+        cmd = "${pkgs.python3}/bin/python3 -m http.server \${PORT} --bind 127.0.0.1 --directory ${pkgs.emptyDirectory}";
+        checkEndpoint = "/";
+        unlisted = true;
+        capacities.vram = vram;
+        evict_cost = 20;
+      };
+    }) leases;
+
+    # Peer dispatch holds no capacity; the lease above does.
     services.llama-swap.settings.peers.vega = {
       proxy = "http://127.0.0.1:${toString endpoint.layaPort}";
       models = [ "laya" ];
@@ -127,7 +149,7 @@ in
         EnvironmentFile = config.sops.templates."laya-env".path;
         ExecStart = lib.concatStringsSep " " (
           [
-            "${gpu} serve --device cuda --port ${toString endpoint.layaPort}"
+            "${gpu} serve --device cuda ${lease "laya-gpu"} --port ${toString endpoint.layaPort}"
             "--teacher-url https://opencode.ai/inference/go/systemone/v1/systemone"
           ]
           ++ lib.optional (cfg.defaultTeacher != null) "--default-teacher ${cfg.defaultTeacher}"
@@ -144,7 +166,7 @@ in
       serviceConfig = sandbox // {
         Type = "oneshot";
         # Large refits wait for evenings and weekends in the NAS's local time.
-        ExecStart = "${gpu} train --device cuda";
+        ExecStart = "${gpu} train --device cuda ${lease "laya-train-gpu"}";
         PrivateDevices = false;
         Nice = 15;
         CPUQuota = "200%";

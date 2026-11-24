@@ -199,9 +199,8 @@ in
       "1.1"
       "--repeat-last-n"
       "256"
+      # Only K is quantized: llama.cpp refuses a quantized V cache without flash attention.
       "--cache-type-k"
-      "q8_0"
-      "--cache-type-v"
       "q8_0"
       # Upstream GLM-OCR guidance requires --fit off to prevent memory auto-adjustment
       # from interfering with model-specific parameters.
