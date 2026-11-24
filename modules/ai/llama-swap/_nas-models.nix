@@ -121,9 +121,10 @@ let
       vram = 1450;
       keep = 100;
     };
+    # Text-to-speech is rare and reloads in about a second, so it makes room for Laya.
     "kokoro-82m" = {
       vram = 500;
-      keep = 50;
+      keep = 15;
     };
     "qwen3-embedding-0.6b" = {
       vram = 2100;
@@ -215,8 +216,8 @@ in
       "s1-mini"
     ];
     # Any models whose declared VRAM fits the card may run together; to make room,
-    # llama-swap evicts the cheapest set: OCR, then text/vision models, Laya,
-    # embeddings, and dictation last.
+    # llama-swap evicts the cheapest set: OCR, then text/vision models, text-to-speech,
+    # Laya, embeddings, and speech-to-text last.
     settings.routing.router = {
       use = "capacity";
       settings.capacity.pools.vram = vramBudget;

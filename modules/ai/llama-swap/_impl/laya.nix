@@ -9,7 +9,7 @@ let
   endpoint = import ../_endpoint.nix;
   # Serving and training each hold their own lease, so both are counted when both run.
   leases = {
-    laya-gpu = 2300;
+    laya-gpu = 2600;
     laya-train-gpu = 2600;
   };
   lease = model: "--lease-url http://127.0.0.1:${toString endpoint.port} --lease-model ${model}";

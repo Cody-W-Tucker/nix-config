@@ -26,6 +26,9 @@
 
       systemd.services.karakeep-triage = {
         description = "Group and classify Karakeep bookmarks";
+        # A run can take a while; switching must not restart it and wait for it to finish.
+        # The next timer run picks up the new version.
+        restartIfChanged = false;
         after = [
           "karakeep-web.service"
           "llama-swap.service"

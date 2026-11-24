@@ -47,8 +47,11 @@ in
               bridge.deja.port
             ]
           } } meta skuid != { root, ${owner}, ${user} } reject with tcp reset
-          meta skuid != ${user} return
+          # Kernel-generated traffic such as IPv6 neighbor discovery has no socket UID.
+          meta skuid ${user} jump hermes-output
+        }
 
+        chain hermes-output {
           # The gateway/dashboard may reply to clients that connected inbound.
           ct direction reply ct state established accept
           ip daddr 127.0.0.1 tcp dport { ${ports (lib.unique cfg.loopbackPorts)} } accept
@@ -64,7 +67,7 @@ in
     };
     # The build-time ruleset check has no /etc/passwd entry for the hermes user.
     networking.nftables.preCheckRuleset = ''
-      sed -e 's/skuid != ${user}/skuid != 65534/g' \
+      sed -e 's/skuid ${user} jump/skuid 65534 jump/g' \
           -e 's/skuid != { root, ${owner}, ${user} }/skuid != { 0, 1000, 65534 }/g' -i ruleset.conf
     '';
 

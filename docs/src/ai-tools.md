@@ -17,7 +17,7 @@ If Langfuse still shows errors after startup, check `journalctl -u docker-langfu
 
 ## Local models
 
-Open WebUI, dictation, Hermes, Karakeep, Paperless-GPT, the feed curator and Hindsight search all use the models on the NAS's graphics card, at `http://nas:8081/v1` (OpenAI-compatible, no key). A model loads on its first request and unloads when idle, so the first answer after a pause takes a few seconds. Models share the card's memory: any that fit stay loaded together, and when a new one needs room the least important go first: OCR, then the chat and vision models, Laya, embeddings, and dictation last. The 35B, OCR and diarization each need the whole card. `curl -s http://nas:8081/v1/models` lists them; `journalctl -u llama-swap -f` on the NAS shows loads and errors.
+Open WebUI, dictation, Hermes, Karakeep, Paperless-GPT, the feed curator and Hindsight search all use the models on the NAS's graphics card, at `http://nas:8081/v1` (OpenAI-compatible, no key). A model loads on its first request and unloads when idle, so the first answer after a pause takes a few seconds. Models share the card's memory: any that fit stay loaded together, and when a new one needs room the least important go first: OCR, then the chat and vision models, text-to-speech, Laya, embeddings, and speech-to-text last. The 35B, OCR and diarization each need the whole card. `curl -s http://nas:8081/v1/models` lists them; `journalctl -u llama-swap -f` on the NAS shows loads and errors.
 
 If a multimodal GGUF rejects images with `image input is not supported`, check that its matching projector is installed under `/srv/llama-swap/models` and selected in the NAS model configuration.
 

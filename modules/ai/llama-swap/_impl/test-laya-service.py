@@ -84,6 +84,20 @@ class LayaTest(unittest.TestCase):
         conn.assert_not_called()
         self.assertEqual(answers["second"]["source"], "unresolved")
 
+    def test_teacher_identifies_laya_to_opencode_go(self):
+        service = laya.DecisionService(self.root, registry(),
+                                       "https://opencode.ai/inference/go/systemone/v1/systemone", "jev-1.14", "k")
+        answer = {"type": "choice", "choice": "no", "confidence": 0.9}
+        with patch.object(laya.http.client, "HTTPSConnection") as connection:
+            conn = connection.return_value
+            conn.getresponse.return_value = Mock(status=200, read=Mock(return_value=laya.encode({"answers": {"first": answer}})))
+            self.assertEqual(service.teacher("A fixture", {"first": Q}, "jev-1.14"), {"first": answer})
+        method, path, body, headers = conn.request.call_args.args
+        self.assertEqual((method, path), ("POST", "/inference/go/systemone/v1/systemone"))
+        self.assertEqual(json.loads(body)["model"], "jev-1.14")
+        self.assertEqual(headers["User-Agent"], "codyos-laya/1")
+        self.assertEqual(headers["Authorization"], "Bearer k")
+
     def test_confident_fallback_labels_train_when_enabled(self):
         service = self.make(registry(learnFromTeacher=True))
         service.decide(self.request)
