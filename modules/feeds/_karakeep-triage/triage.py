@@ -1,23 +1,34 @@
 """Group Karakeep bookmarks by meaning and file them with Laya's classifiers.
 
 Pass 1 embeds each bookmark locally and clusters the collection: clusters become `ai-topic:`
-tags and near-identical bookmarks get `ai-duplicate`. Pass 2 asks Laya's `service-routing`
-and `bookmark-kind` classifiers about each bookmark and files the answers as `ai-svc:`,
-`ai-kind:` tags and the `Agency: <service>` and `CodyOS: candidates` lists.
+tags and near-identical bookmarks get `ai-duplicate`. Pass 2 asks Laya's `bookmark-route`
+classifier for each bookmark's one destination and files it as an `ai-svc:` tag and
+`Agency: <service>` list, or the `CodyOS: candidates` list.
 
 Karakeep writes only ever add. A later different answer is logged in the state database,
 never removed from Karakeep.
+
+A bookmark no one was sure of (Jev answered, but not confidently) gets `ai-route:unsure`.
+
+The service and CodyOS lists are the user's to curate. A bookmark they added to or took out of
+any list goes to Laya as their label: the one list it is now in, or `none` if it is in none.
+A bookmark in several lists has no single route and teaches nothing until one is left. The
+user's labelled bookmarks are not asked again; entries triage made and the user left alone
+teach nothing.
 """
 
 import argparse
+from collections import Counter
 from contextlib import closing
 from datetime import datetime, timezone
 import hashlib
 import json
 import logging
+import http.client
 import math
 import os
 from pathlib import Path
+import socket
 import sqlite3
 import sys
 import time
@@ -27,6 +38,9 @@ import urllib.request
 
 SERVICE_LIST = "Agency: {}"
 CODYOS_LIST = "CodyOS: candidates"
+ROUTE = "bookmark-route"
+CODYOS, NONE = "codyos", "none"
+UNSURE = "ai-route:unsure"
 DUPLICATE = 0.97  # cosine similarity at which two bookmarks are treated as the same source
 TEXT_LIMIT = 4000
 
@@ -65,6 +79,9 @@ def connect(path):
         CREATE TABLE IF NOT EXISTS answers (id TEXT PRIMARY KEY, at TEXT, answers TEXT);
         CREATE TABLE IF NOT EXISTS filed (id TEXT, target TEXT, at TEXT, PRIMARY KEY (id, target));
         CREATE TABLE IF NOT EXISTS changes (id TEXT, at TEXT, question TEXT, old TEXT, new TEXT);
+        CREATE TABLE IF NOT EXISTS curated (id TEXT, list TEXT, label INTEGER, at TEXT,
+                                            PRIMARY KEY (id, list));
+        CREATE TABLE IF NOT EXISTS routed (id TEXT PRIMARY KEY, route TEXT, at TEXT);
         CREATE TABLE IF NOT EXISTS topics (id INTEGER PRIMARY KEY, name TEXT, centroid BLOB, created TEXT,
                                            saved_after TEXT);
     """)
@@ -91,14 +108,25 @@ def embed_text(state):
 
 
 def label(answer):
-    """True/False from a Laya answer, or None when neither Vega nor the fallback was sure."""
+    """The route from a Laya answer, or None when neither Vega nor the fallback was sure."""
     if not isinstance(answer, dict) or answer.get("source") == "unresolved":
         return None
-    if isinstance(answer.get("label"), bool):
+    if isinstance(answer.get("label"), str):
         return answer["label"]
-    if answer.get("source") == "vega" and isinstance(answer.get("noul"), (int, float)):
-        return answer["noul"] >= 0.5
+    if answer.get("source") == "vega" and isinstance(answer.get("choice"), str):
+        return answer["choice"]
     return None
+
+
+def who(answer):
+    """Who settled a route answer: vega, jev, unsure (Jev answered without confidence) or
+    unreached (Jev was needed but busy, down or timed out)."""
+    source = answer.get("source") if isinstance(answer, dict) else None
+    if source == "vega":
+        return "vega"
+    if source == "fallback":
+        return "jev"
+    return "unreached" if not isinstance(answer, dict) or answer.get("fallback") is None else "unsure"
 
 
 def reached(answers):
@@ -110,31 +138,115 @@ def reached(answers):
 
 def targets(answers):
     """Tags and lists for one bookmark's answers ({classifier: {question: answer}})."""
-    tags, lists = [], []
-    for service, answer in sorted(answers.get("service-routing", {}).items()):
-        if label(answer):
-            tags.append(f"ai-svc:{service}")
-            lists.append(SERVICE_LIST.format(service))
-    kind = answers.get("bookmark-kind", {})
-    for qid in ("method", "capability"):
-        if label(kind.get(qid)):
-            tags.append(f"ai-kind:{qid}")
-    if label(kind.get("codyos")):
-        lists.append(CODYOS_LIST)
-    return tags, lists
+    answer = answers.get(ROUTE, {}).get("route")
+    if who(answer) == "unsure":
+        return [UNSURE], []
+    route = label(answer)
+    if route == CODYOS:
+        return [], [CODYOS_LIST]
+    if isinstance(route, str) and route != NONE:
+        return [f"ai-svc:{route}"], [SERVICE_LIST.format(route)]
+    return [], []
 
 
-def fetch_bookmarks(karakeep):
+def route_lists(services):
+    """Each list the user curates, and the route its membership stands for."""
+    lists = {SERVICE_LIST.format(s): s for s in services}
+    lists[CODYOS_LIST] = CODYOS
+    return lists
+
+
+def routes_from_lists(members, touched, sent):
+    """The user's labels to send: {bookmark: route}, the one list each touched bookmark is in, or
+    `none` when it is in none. Bookmarks in several lists, and unchanged labels, are skipped."""
+    out = {}
+    for bid in touched:
+        routes = members.get(bid, set())
+        if len(routes) > 1:
+            continue
+        route = next(iter(routes), NONE)
+        if sent.get(bid) != route:
+            out[bid] = route
+    return out
+
+
+def fetch_bookmarks(karakeep, path="/api/v1/bookmarks"):
     bookmarks, cursor = [], None
     while True:
         query = {"limit": 100, "includeContent": "false"}
         if cursor:
             query["cursor"] = cursor
-        page = karakeep.call("GET", "/api/v1/bookmarks", query=query)
+        page = karakeep.call("GET", path, query=query)
         bookmarks += page["bookmarks"]
         cursor = page.get("nextCursor")
         if not cursor:
             return bookmarks
+
+
+class UnixConnection(http.client.HTTPConnection):
+    def __init__(self, path, timeout=60):
+        super().__init__("localhost", timeout=timeout)
+        self.socket_path = path
+
+    def connect(self):
+        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.sock.settimeout(self.timeout)
+        self.sock.connect(self.socket_path)
+
+
+def send_labels(path, items):
+    """Human labels to Laya's feedback socket; returns how many it saved."""
+    conn = UnixConnection(path)
+    try:
+        conn.request("POST", "/v1/feedback", json.dumps({"items": items}), {"Content-Type": "application/json"})
+        response = conn.getresponse()
+        body = response.read()
+        if response.status != 200:
+            raise ValueError(f"Laya refused the labels: HTTP {response.status} {body[:200]!r}")
+        return json.loads(body)["saved"]
+    finally:
+        conn.close()
+
+
+def curate(db, filer, karakeep, lists, states, laya_socket, dry_run):
+    """Send the lists' routes to Laya as labels (see the module docstring)."""
+    members, touched, marks = {}, set(), []
+    for name, route in lists.items():
+        if name not in filer.known():
+            continue
+        inside = {b["id"] for b in fetch_bookmarks(karakeep, f"/api/v1/lists/{filer.list_id(name)}/bookmarks")}
+        filed = {bid for (bid,) in db.execute("SELECT id FROM filed WHERE target = ?", ("list:" + name,))}
+        for bid in inside:
+            members.setdefault(bid, set()).add(route)
+        # Added by the user, or an entry triage made that they took out.
+        edited = (inside - filed) | (filed - inside)
+        touched |= edited
+        marks += [(bid, name, int(bid in inside), now()) for bid in edited]
+    # Bookmarks the user edited on an earlier run stay theirs.
+    touched |= {bid for (bid,) in db.execute("SELECT DISTINCT id FROM curated")}
+    sent = dict(db.execute("SELECT id, route FROM routed"))
+    # Deleted bookmarks are not labels; ones still awaiting a summary wait for it.
+    labels = routes_from_lists(members, touched & states.keys(), sent)
+    if not labels:
+        return set()
+    if dry_run:
+        for bid, route in sorted(labels.items()):
+            print(json.dumps({"bookmark": bid, "label": route}))
+        return set(labels)
+    if not laya_socket:
+        logging.warning("%d list edits not sent: no Laya feedback socket", len(labels))
+        return set()
+    items = [{"classifier": ROUTE, "state": states[bid], "gold": {"route": route}} for bid, route in labels.items()]
+    try:
+        saved = send_labels(laya_socket, items)
+    except (OSError, ValueError, KeyError) as exc:
+        logging.warning("list edits not sent to Laya; retrying next run: %s", exc)
+        return set()
+    db.executemany("INSERT OR REPLACE INTO routed VALUES (?, ?, ?)", [(b, r, now()) for b, r in labels.items()])
+    db.executemany("INSERT OR REPLACE INTO curated VALUES (?, ?, ?, ?)", marks)
+    db.commit()
+    logging.info("sent %d list edits to Laya as your labels (%d changed)", len(labels), saved)
+    return set(labels)
 
 
 def embed(db, llama, model, states, batch=32):
@@ -235,11 +347,8 @@ def duplicates(ids, vectors, created):
 
 
 def classify(laya, state):
-    answers = {}
-    for name in ("service-routing", "bookmark-kind"):
-        out = laya.call("POST", "/v1/systemone", {"model": "laya", "classifier": name, "state": state})
-        answers[name] = out["answers"]
-    return answers
+    out = laya.call("POST", "/v1/systemone", {"model": "laya", "classifier": ROUTE, "state": state})
+    return {ROUTE: out["answers"]}
 
 
 def record_answers(db, bid, answers):
@@ -262,10 +371,25 @@ class Filer:
         self.db, self.karakeep, self.dry_run = db, karakeep, dry_run
         self.lists = None
 
-    def list_id(self, name):
+    def known(self):
         if self.lists is None:
             self.lists = {l["name"]: l["id"] for l in self.karakeep.call("GET", "/api/v1/lists")["lists"]}
-        if name not in self.lists:
+        return self.lists
+
+    def ensure(self, names):
+        """Every list triage files into exists, so the user can curate it before anything lands."""
+        missing = [n for n in names if n not in self.known()]
+        if self.dry_run:
+            for name in missing:
+                print(json.dumps({"create list": name}))
+            return
+        for name in missing:
+            self.list_id(name)
+        if missing:
+            logging.info("created lists: %s", ", ".join(missing))
+
+    def list_id(self, name):
+        if name not in self.known():
             icon = "🛠️" if name == CODYOS_LIST else "📂"
             self.lists[name] = self.karakeep.call("POST", "/api/v1/lists", {"name": name, "icon": icon})["id"]
         return self.lists[name]
@@ -300,6 +424,11 @@ def run(args, token):
         created = {b["id"]: b.get("createdAt", "") for b in bookmarks}
         logging.info("%d bookmarks, %d ready to triage", len(bookmarks), len(states))
 
+        # The lists become Laya's labels.
+        lists = route_lists(args.services)
+        filer.ensure(lists)
+        labelled = curate(db, filer, karakeep, lists, states, args.laya_feedback, args.dry_run)
+
         # Pass 1: local grouping over the whole collection; --ids only limits what is filed.
         wanted = set(args.ids or states)
         if states:
@@ -313,16 +442,18 @@ def run(args, token):
             for bid in duplicates(ids, vectors, created) & wanted:
                 filer.file(bid, tags=["ai-duplicate"])
 
-        # Pass 2: Laya, newest unclassified first, including bookmarks Jev never answered.
+        # Pass 2: Laya, newest unrouted first, including bookmarks Jev never answered. Bookmarks
+        # the user has labelled are not asked.
         if args.ids:
             queue = [bid for bid in args.ids if bid in states]
         else:
             seen = {bid for bid, answers in db.execute("SELECT id, answers FROM answers")
-                    if reached(json.loads(answers))}
+                    if ROUTE in (a := json.loads(answers)) and reached(a)}
+            seen |= labelled | {bid for (bid,) in db.execute("SELECT id FROM routed")}
             queue = sorted((bid for bid in states if bid not in seen), key=created.get, reverse=True)
         office = datetime.now().weekday() < 5 and 8 <= datetime.now().hour < 17
         limit = args.office_limit if office and not args.ids else args.limit
-        failures = 0
+        failures, tally = 0, Counter()
         for bid in queue[:limit]:
             try:
                 answers = classify(llama, states[bid])
@@ -334,12 +465,14 @@ def run(args, token):
                     break
                 continue
             failures = 0
+            tally[who(answers[ROUTE].get("route"))] += 1
             if not args.dry_run:
                 record_answers(db, bid, answers)
                 db.commit()
             tags, lists = targets(answers)
             filer.file(bid, tags, lists)
-        logging.info("classified up to %d of %d waiting bookmarks", min(limit, len(queue)), len(queue))
+        logging.info("routed %d of %d waiting bookmarks: vega %d, jev %d, unsure %d, unreached %d",
+                     sum(tally.values()), len(queue), *(tally[k] for k in ("vega", "jev", "unsure", "unreached")))
 
 
 def main():
@@ -359,6 +492,9 @@ def main():
     parser.add_argument("--dry-run", action="store_true",
                         help="print the Karakeep writes instead of making them; Laya is still asked")
     parser.add_argument("--ids", nargs="+", help="classify only these bookmark IDs")
+    parser.add_argument("--services", nargs="*", default=[],
+                        help="service-routing question IDs; each gets an `Agency: <id>` list")
+    parser.add_argument("--laya-feedback", help="Laya's feedback socket for the user's list edits")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     credentials = os.environ.get("CREDENTIALS_DIRECTORY")

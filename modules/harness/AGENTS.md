@@ -21,7 +21,3 @@ The Den aspect is `harness.nix`; the module tree below is `_hm/` (paths in these
 - Duplicating MCP definitions across tools instead of keeping one user-session owner.
 - Hiding long shell behavior inside Nix strings when a script or plugin file would be clearer.
 - Moving command names, skill paths, or tool names that existing agents reference.
-
-## Focused Tests
-
-- When changing the OpenCode Hindsight memory plugin, run `nix shell nixpkgs#nodejs --command node --test modules/harness/_hm/plugins/hindsight/opencode-memory.test.mjs` from the repository root.

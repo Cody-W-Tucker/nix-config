@@ -2,10 +2,15 @@
 {
   den.aspects.nas.includes = [ den.aspects.karakeep-triage ];
 
-  # Files Karakeep bookmarks by topic (local embeddings) and by Laya's service-routing and
-  # bookmark-kind classifiers. Writes to Karakeep only add tags and list entries.
+  # Files Karakeep bookmarks by topic (local embeddings) and by Laya's bookmark-route
+  # classifier. Writes to Karakeep only add tags and list entries.
   den.aspects.karakeep-triage.nixos =
-    { config, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       python = pkgs.python3.withPackages (ps: [
         ps.numpy
@@ -41,7 +46,21 @@
           StateDirectory = "karakeep-triage";
           StateDirectoryMode = "0700";
           LoadCredential = "karakeep-api-key:${config.sops.secrets."karakeep-api-key".path}";
-          ExecStart = "${triage}/bin/karakeep-triage";
+          ExecStart = lib.concatStringsSep " " (
+            [
+              "${triage}/bin/karakeep-triage"
+              "--laya-feedback ${config.services.laya.feedbackSocket}"
+              "--services"
+            ]
+            ++ builtins.attrNames (
+              removeAttrs config.services.laya.classifiers.bookmark-route.questions.route.criteria [
+                "codyos"
+                "none"
+              ]
+            )
+          );
+          # List contents reach Laya as labels.
+          SupplementaryGroups = [ "laya-feedback" ];
           TimeoutStartSec = "2h";
           Nice = 10;
           ProtectSystem = "strict";

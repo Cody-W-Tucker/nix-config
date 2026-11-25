@@ -10,6 +10,7 @@ import argparse
 from contextlib import closing, contextmanager
 from datetime import datetime
 import gc
+import grp
 import hashlib
 import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -19,6 +20,7 @@ import os
 from pathlib import Path
 import pickle
 import re
+import socketserver
 import sqlite3
 import sys
 import tempfile
@@ -643,6 +645,50 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200, body)
 
 
+class FeedbackHandler(Handler):
+    """Human labels, on a socket only the feedback group can open: `{"items": [{classifier,
+    state, gold}, ...]}`, the same items `laya-feedback` reads."""
+    timeout = 60
+
+    def do_GET(self):
+        self.reply(404, {})
+
+    def do_POST(self):
+        if self.path != "/v1/feedback":
+            self.reply(404, {})
+            return
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            if not 0 < length <= MAX_IMPORT:
+                self.reply(413, {"error": "invalid body size"})
+                return
+            items = json.loads(self.rfile.read(length)).get("items")
+            if not isinstance(items, list):
+                raise ValueError("expected a list of items")
+            service = self.server.service
+            with service.write_lock:
+                changed = feedback(service.root, service.registry, items, "human")
+        except (ValueError, AttributeError, RecursionError) as exc:
+            self.reply(400, {"error": f"invalid feedback: {exc}"})
+            return
+        self.reply(200, {"saved": changed})
+
+
+class UnixServer(socketserver.ThreadingUnixStreamServer):
+    daemon_threads = True
+
+    def __init__(self, path, group, service):
+        Path(path).unlink(missing_ok=True)
+        super().__init__(path, FeedbackHandler)
+        os.chown(path, -1, grp.getgrnam(group).gr_gid)
+        os.chmod(path, 0o660)
+        self.service = service
+
+    def get_request(self):
+        request, _ = super().get_request()
+        return request, ("local", 0)  # BaseHTTPRequestHandler expects a host and port.
+
+
 def read_items(data):
     """One JSON object, or JSON Lines for bulk imports."""
     try:
@@ -668,6 +714,8 @@ def main():
                         help="where Vega serves and is calibrated; cuda falls back to cpu when the card is full")
     parser.add_argument("--lease-url", help="llama-swap that grants GPU leases")
     parser.add_argument("--lease-model", help="llama-swap placeholder model that holds the lease")
+    parser.add_argument("--feedback-socket", help="Unix socket that takes human labels")
+    parser.add_argument("--feedback-group", default="laya-feedback", help="group allowed to open it")
     args = parser.parse_args()
     lease = Lease(args.lease_url, args.lease_model)
     os.umask(0o077)
@@ -693,6 +741,9 @@ def main():
                                              args.device, lease)
             server.service.watch_lease()
             server.slots = threading.BoundedSemaphore(4)
+            if args.feedback_socket:
+                labels = UnixServer(args.feedback_socket, args.feedback_group, server.service)
+                threading.Thread(target=labels.serve_forever, daemon=True).start()
             server.serve_forever()
 
 

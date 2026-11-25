@@ -18,8 +18,8 @@ let
     account-management = "client reporting, commitments, scope decisions and renewal";
     workflow-enablement = "one recurring client job run as an agent workflow inside the client's own tools";
   };
-  # Vega distils Jev: Jev's confident answers, imports and any human labels all train it, and
-  # a fifth of bookmarks is held out to check that Vega agrees with them before it answers alone.
+  # Vega distils Jev and the user's Karakeep list edits: both train it, and a fifth of bookmarks
+  # is held out to check Vega against them before it answers alone.
   distill = {
     learnFromTeacher = true;
     calibrateOn = [
@@ -31,29 +31,15 @@ let
   };
 in
 {
-  # A saved bookmark (title, url, type, Karakeep summary) is the state. One yes/no question
-  # per service; harvest ledgers label only the services that triaged it.
-  services.laya.classifiers.service-routing = distill // {
-    questions = lib.mapAttrs (_: job: {
-      type = "noul";
-      instructions = "Is this saved source worth inspecting as a method, tool or worked example for an agency service that delivers ${job}?";
-    }) services;
-  };
-
-  # Same bookmark state: what kind of source it is, and whether CodyOS should evaluate it.
-  services.laya.classifiers.bookmark-kind = distill // {
-    questions = {
-      method = {
-        type = "noul";
-        instructions = "Does this source teach a method, process or worked example a practitioner could follow?";
-      };
-      capability = {
-        type = "noul";
-        instructions = "Is this source a tool, library, service, model or agent skill that could be installed or called?";
-      };
-      codyos = {
-        type = "noul";
-        instructions = "Does this bookmark give enough evidence to identify a specific tool, capability, or practice that would advance at least one CodyOS goal: self-hosted services, composable system capabilities, local model use, or agents testing changes before a human approves deployment? Answer yes only if you can identify both what CodyOS could adopt or adapt and what it would improve. A design pattern can qualify without anything to install. Sharing the same topics is not enough. A yes flags a candidate for review, not a recommendation to adopt it.";
+  # A saved bookmark (title, url, type, Karakeep summary) is the state. One choice per bookmark,
+  # so Vega either routes it alone or the whole bookmark goes to Jev. CodyOS is one more route.
+  services.laya.classifiers.bookmark-route = distill // {
+    questions.route = {
+      type = "choice";
+      instructions = "Which one destination is this saved source most worth inspecting for, as a method, tool or worked example? Each agency service is named by the job it delivers. Choose the single best fit. Answer none if no destination clearly fits; sharing a topic is not enough.";
+      criteria = services // {
+        codyos = "CodyOS, a self-hosted personal operating system: a specific tool, capability or practice it could adopt or adapt to improve its self-hosted services, composable system capabilities, local model use, or agents testing changes before a human approves deployment";
+        none = "no destination clearly fits";
       };
     };
   };

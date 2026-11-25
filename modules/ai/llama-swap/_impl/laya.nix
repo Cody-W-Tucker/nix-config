@@ -48,6 +48,12 @@ let
 in
 {
   options.services.laya = {
+    feedbackSocket = lib.mkOption {
+      type = lib.types.str;
+      default = "/run/laya/feedback.sock";
+      readOnly = true;
+      description = "Socket that saves human labels; members of the `laya-feedback` group can write to it.";
+    };
     defaultTeacher = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = "jev-1.14";
@@ -109,8 +115,11 @@ in
     users.users.laya = {
       isSystemUser = true;
       group = "laya";
+      extraGroups = [ "laya-feedback" ];
     };
     users.groups.laya = { };
+    # Services that may save labels as the user's own join this group.
+    users.groups.laya-feedback = { };
     environment.systemPackages = [ feedback ];
 
     # Same opencode-api-key Hermes and Hindsight use, rendered for this unit.
@@ -157,11 +166,14 @@ in
           [
             "${gpu} serve --device cuda ${lease "laya-gpu"} --port ${toString endpoint.layaPort}"
             "--teacher-url https://opencode.ai/inference/go/systemone/v1/systemone"
+            "--feedback-socket ${cfg.feedbackSocket} --feedback-group laya-feedback"
           ]
           ++ lib.optional (cfg.defaultTeacher != null) "--default-teacher ${cfg.defaultTeacher}"
         );
         Restart = "on-failure";
         PrivateDevices = false;
+        RuntimeDirectory = "laya";
+        RuntimeDirectoryMode = "0755";
       };
     };
 
