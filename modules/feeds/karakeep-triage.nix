@@ -2,8 +2,8 @@
 {
   den.aspects.nas.includes = [ den.aspects.karakeep-triage ];
 
-  # Files Karakeep bookmarks by topic (local embeddings) and by Laya's bookmark-route
-  # classifier. Writes to Karakeep only add tags and list entries.
+  # Files Karakeep bookmarks into lists by Laya's bookmark-route classifier.
+  # Writes to Karakeep only add list entries and the `ai-route:unsure` tag.
   den.aspects.karakeep-triage.nixos =
     {
       config,
@@ -12,12 +12,8 @@
       ...
     }:
     let
-      python = pkgs.python3.withPackages (ps: [
-        ps.numpy
-        ps.scikit-learn
-      ]);
       triage = pkgs.writeShellScriptBin "karakeep-triage" ''
-        exec ${python}/bin/python3 -I ${./_karakeep-triage/triage.py} "$@"
+        exec ${pkgs.python3}/bin/python3 -I ${./_karakeep-triage/triage.py} "$@"
       '';
     in
     {
@@ -30,7 +26,7 @@
       users.groups.karakeep-triage = { };
 
       systemd.services.karakeep-triage = {
-        description = "Group and classify Karakeep bookmarks";
+        description = "Classify Karakeep bookmarks";
         # A run can take a while; switching must not restart it and wait for it to finish.
         # The next timer run picks up the new version.
         restartIfChanged = false;

@@ -1,9 +1,7 @@
-"""Group Karakeep bookmarks by meaning and file them with Laya's classifiers.
+"""File Karakeep bookmarks into lists with Laya's classifiers.
 
-Pass 1 embeds each bookmark locally and clusters the collection: clusters become `ai-topic:`
-tags and near-identical bookmarks get `ai-duplicate`. Pass 2 asks Laya's `bookmark-route`
-classifier for each bookmark's one destination and files it as an `ai-svc:` tag and
-`Agency: <service>` list, or the `CodyOS: candidates` list.
+Laya's `bookmark-route` classifier picks each bookmark's one destination, and the bookmark is
+filed to that `Agency: <service>` list or the `CodyOS: candidates` list.
 
 Karakeep writes only ever add. A later different answer is logged in the state database,
 never removed from Karakeep.
@@ -21,11 +19,9 @@ import argparse
 from collections import Counter
 from contextlib import closing
 from datetime import datetime, timezone
-import hashlib
 import json
 import logging
 import http.client
-import math
 import os
 from pathlib import Path
 import socket
@@ -41,7 +37,6 @@ CODYOS_LIST = "CodyOS: candidates"
 ROUTE = "bookmark-route"
 CODYOS, NONE = "codyos", "none"
 UNSURE = "ai-route:unsure"
-DUPLICATE = 0.97  # cosine similarity at which two bookmarks are treated as the same source
 TEXT_LIMIT = 4000
 
 
@@ -75,15 +70,12 @@ class Http:
 def connect(path):
     db = sqlite3.connect(path)
     db.executescript("""
-        CREATE TABLE IF NOT EXISTS vectors (id TEXT PRIMARY KEY, digest TEXT, vector BLOB);
         CREATE TABLE IF NOT EXISTS answers (id TEXT PRIMARY KEY, at TEXT, answers TEXT);
         CREATE TABLE IF NOT EXISTS filed (id TEXT, target TEXT, at TEXT, PRIMARY KEY (id, target));
         CREATE TABLE IF NOT EXISTS changes (id TEXT, at TEXT, question TEXT, old TEXT, new TEXT);
         CREATE TABLE IF NOT EXISTS curated (id TEXT, list TEXT, label INTEGER, at TEXT,
                                             PRIMARY KEY (id, list));
         CREATE TABLE IF NOT EXISTS routed (id TEXT PRIMARY KEY, route TEXT, at TEXT);
-        CREATE TABLE IF NOT EXISTS topics (id INTEGER PRIMARY KEY, name TEXT, centroid BLOB, created TEXT,
-                                           saved_after TEXT);
     """)
     return db
 
@@ -101,10 +93,6 @@ def state_of(bookmark):
     if not (state.get("summary") or state.get("text")):
         return None
     return state
-
-
-def embed_text(state):
-    return "\n".join(str(state[k]) for k in ("title", "summary", "text") if state.get(k))
 
 
 def label(answer):
@@ -145,7 +133,7 @@ def targets(answers):
     if route == CODYOS:
         return [], [CODYOS_LIST]
     if isinstance(route, str) and route != NONE:
-        return [f"ai-svc:{route}"], [SERVICE_LIST.format(route)]
+        return [], [SERVICE_LIST.format(route)]
     return [], []
 
 
@@ -249,103 +237,6 @@ def curate(db, filer, karakeep, lists, states, laya_socket, dry_run):
     return set(labels)
 
 
-def embed(db, llama, model, states, batch=32):
-    import numpy as np
-
-    stale = []
-    for bid, state in states.items():
-        digest = hashlib.sha256(embed_text(state).encode()).hexdigest()
-        row = db.execute("SELECT digest FROM vectors WHERE id = ?", (bid,)).fetchone()
-        if not row or row[0] != digest:
-            stale.append((bid, digest, embed_text(state)))
-    for i in range(0, len(stale), batch):
-        chunk = stale[i:i + batch]
-        out = llama.call("POST", "/v1/embeddings", {"model": model, "input": [t for _, _, t in chunk]})
-        for (bid, digest, _), item in zip(chunk, sorted(out["data"], key=lambda d: d["index"])):
-            v = np.asarray(item["embedding"], dtype=np.float32)
-            v /= np.linalg.norm(v) or 1.0
-            db.execute("INSERT OR REPLACE INTO vectors VALUES (?, ?, ?)", (bid, digest, v.tobytes()))
-        db.commit()
-    logging.info("embedded %d new or changed bookmarks", len(stale))
-    ids = [bid for bid in states]
-    rows = dict(db.execute("SELECT id, vector FROM vectors").fetchall())
-    return ids, np.stack([np.frombuffer(rows[bid], dtype=np.float32) for bid in ids])
-
-
-def name_topic(llama, model, states):
-    """A short topic name from the local chat model, given a cluster's most central bookmarks."""
-    lines = "\n".join("- " + " | ".join(str(s.get(k, ""))[:limit] for k, limit in
-                                        (("title", 100), ("summary", 160)) if s.get(k)) for s in states)
-    out = llama.call("POST", "/v1/chat/completions", {
-        "model": model, "temperature": 0, "max_tokens": 20,
-        "chat_template_kwargs": {"enable_thinking": False},
-        "messages": [{"role": "user", "content": "These saved bookmarks share one topic. Reply with only "
-                      "a short lowercase topic name of 1 to 4 words.\n\n" + lines}]})
-    name = out["choices"][0]["message"]["content"].strip().strip("\"'`.").lower()
-    return " ".join(name.split())[:40] or None
-
-
-def new_topics(db, llama, model, ids, vectors, states, saved_after):
-    """Cluster bookmarks that fit no topic yet into new named topics."""
-    import numpy as np
-    from sklearn.cluster import KMeans
-
-    k = max(2, round(math.sqrt(len(ids) / 2)))
-    fit = KMeans(k, n_init=4, random_state=0).fit(vectors)
-    centroids = fit.cluster_centers_ / np.linalg.norm(fit.cluster_centers_, axis=1, keepdims=True)
-    made = 0
-    for c, centroid in enumerate(centroids):
-        members = np.where(fit.labels_ == c)[0]
-        central = members[np.argsort(-(vectors[members] @ centroid))][:10]
-        name = name_topic(llama, model, [states[ids[i]] for i in central])
-        if name:
-            db.execute("INSERT INTO topics (name, centroid, created, saved_after) VALUES (?, ?, ?, ?)",
-                       (name, centroid.astype(np.float32).tobytes(), now(), saved_after))
-            made += 1
-    db.commit()
-    logging.info("opened %d new topics from %d bookmarks", made, len(ids))
-
-
-def topics(db, llama, model, ids, vectors, states, created, fits, reseed):
-    """Each bookmark's nearest topic when it is similar enough. Topics stay fixed once named so
-    their tags stay meaningful; bookmarks saved since topics were last opened that fit none
-    open new topics once `reseed` gather."""
-    import numpy as np
-
-    def load():
-        rows = db.execute("SELECT name, centroid FROM topics").fetchall()
-        if not rows:
-            return [], np.zeros((0, vectors.shape[1]), dtype=np.float32)
-        return [r[0] for r in rows], np.stack([np.frombuffer(r[1], dtype=np.float32) for r in rows])
-
-    names, centroids = load()
-    best = (vectors @ centroids.T).max(1) if names else np.zeros(len(ids))
-    (since,) = db.execute("SELECT max(saved_after) FROM topics").fetchone()
-    loose = np.array([i for i in np.where(best < fits)[0] if not since or created[ids[i]] > since], dtype=int)
-    if len(loose) >= reseed:
-        # Later reseeds only consider bookmarks saved after the newest one clustered here.
-        new_topics(db, llama, model, [ids[i] for i in loose], vectors[loose], states,
-                   max(created[ids[i]] for i in loose))
-        names, centroids = load()
-    if not names:
-        return {}
-    similarity = vectors @ centroids.T
-    nearest = similarity.argmax(1)
-    return {bid: "ai-topic:" + names[n] for bid, n, s in zip(ids, nearest, similarity.max(1)) if s >= fits}
-
-
-def duplicates(ids, vectors, created):
-    """Each bookmark that nearly matches an older one."""
-    similarity = vectors @ vectors.T
-    found = set()
-    for i, bid in enumerate(ids):
-        for j in (similarity[i] >= DUPLICATE).nonzero()[0]:
-            if j != i and created[ids[j]] < created[bid]:
-                found.add(bid)
-                break
-    return found
-
-
 def classify(laya, state):
     out = laya.call("POST", "/v1/systemone", {"model": "laya", "classifier": ROUTE, "state": state})
     return {ROUTE: out["answers"]}
@@ -429,20 +320,7 @@ def run(args, token):
         filer.ensure(lists)
         labelled = curate(db, filer, karakeep, lists, states, args.laya_feedback, args.dry_run)
 
-        # Pass 1: local grouping over the whole collection; --ids only limits what is filed.
-        wanted = set(args.ids or states)
-        if states:
-            ids, vectors = embed(db, llama, args.embed_model, states)
-            found = topics(db, llama, args.topic_model, ids, vectors, states, created,
-                           args.topic_similarity, args.new_topic_after)
-            for bid, topic in found.items():
-                if bid in wanted and not db.execute(
-                        "SELECT 1 FROM filed WHERE id = ? AND target LIKE 'ai-topic:%'", (bid,)).fetchone():
-                    filer.file(bid, tags=[topic])
-            for bid in duplicates(ids, vectors, created) & wanted:
-                filer.file(bid, tags=["ai-duplicate"])
-
-        # Pass 2: Laya, newest unrouted first, including bookmarks Jev never answered. Bookmarks
+        # Laya, newest unrouted first, including bookmarks Jev never answered. Bookmarks
         # the user has labelled are not asked.
         if args.ids:
             queue = [bid for bid in args.ids if bid in states]
@@ -480,15 +358,9 @@ def main():
     parser.add_argument("--state-dir", default=os.environ.get("STATE_DIRECTORY", "/var/lib/karakeep-triage"))
     parser.add_argument("--karakeep-url", default="http://127.0.0.1:3005")
     parser.add_argument("--llama-url", default="http://127.0.0.1:8081")
-    parser.add_argument("--embed-model", default="qwen3-embedding-0.6b")
     parser.add_argument("--limit", type=int, default=400, help="bookmarks to classify per run")
     parser.add_argument("--office-limit", type=int, default=50,
                         help="bookmarks to classify per run on weekdays from 8 to 5")
-    parser.add_argument("--topic-model", default="qwen-3.5-9b", help="local chat model that names topics")
-    parser.add_argument("--topic-similarity", type=float, default=0.6,
-                        help="cosine similarity a bookmark needs to its topic's centre")
-    parser.add_argument("--new-topic-after", type=int, default=200,
-                        help="bookmarks that fit no topic before new topics are opened")
     parser.add_argument("--dry-run", action="store_true",
                         help="print the Karakeep writes instead of making them; Laya is still asked")
     parser.add_argument("--ids", nargs="+", help="classify only these bookmark IDs")

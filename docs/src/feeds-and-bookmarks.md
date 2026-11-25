@@ -25,25 +25,23 @@ On the NAS, run `systemctl list-timers miniflux-curator.timer` to see its last a
 
 ## Sorted bookmarks
 
-Every hour the NAS files new bookmarks in Karakeep, newest first, once Karakeep has summarized them. It adds tags and list entries and never removes any. A bookmark Jev could not be reached for is tried again on a later run.
+Every hour the NAS files new bookmarks in Karakeep, newest first, once Karakeep has summarized them. It adds list entries and the `ai-route:unsure` tag, and never removes any. A bookmark Jev could not be reached for is tried again on a later run.
 
 | In Karakeep | Means |
 | --- | --- |
-| `ai-topic:<name>` tag | The bookmark's topic. Topics are named by `qwen-3.5-9b` when they are first opened and keep their names. |
-| `ai-duplicate` tag | Nearly the same as an older bookmark. |
-| `ai-svc:<service>` tag and *Agency: \<service\>* list | Most worth inspecting for that Agency service. |
+| *Agency: \<service\>* list | Most worth inspecting for that Agency service. |
 | *CodyOS: candidates* list | Most worth inspecting for something CodyOS could adopt or adapt. Review candidates before adopting them. |
 | `ai-route:unsure` tag | Jev was not confident where it belongs. |
 
 `svc:` and `svc-kind:` tags are different: a harvest agent put them there after reading the source.
 
-Each bookmark gets at most one of these lists; one that fits none gets neither. Bookmarks filed before November 25, 2026 may be in several lists and may carry `ai-kind:` tags from the earlier classifiers.
+Each bookmark gets at most one of these lists; one that fits none gets neither. Bookmarks filed before November 25, 2026 may be in several lists and may carry `ai-kind:` tags from the earlier classifiers. `ai-topic:`, `ai-svc:` and `ai-duplicate` tags on older bookmarks are left over from before November 25, 2026; the lists replace them.
 
 Every *Agency* list and *CodyOS: candidates* exists from the first run, even while empty. The lists are yours to curate: once you add a bookmark to a list or take one out, the next run teaches Vega the one list it is now in, or `none` if it is in none, as your own answer, and that bookmark is not sorted again. A bookmark in several lists teaches nothing until only one is left. Entries you leave alone teach nothing. The NAS never puts back a bookmark you took out, and the tags are not read back.
 
 A bookmark tagged `ai-route:unsure` is one Jev answered without confidence, so it is in no list. These are the most useful ones to file by hand.
 
-The `ai-svc` and CodyOS answers come from the [local classifiers](ai-tools.md#local-classifiers). Where Vega is unsure, the bookmark's title, link and summary go to Jev on OpenCode Go. On weekdays from 8 am to 5 pm a run sorts at most 50 bookmarks, otherwise 400, so the first pass over the whole collection takes about a night. A bookmark that is not tagged yet is still waiting.
+The list answers come from the [local classifiers](ai-tools.md#local-classifiers). Where Vega is unsure, the bookmark's title, link and summary go to Jev on OpenCode Go. On weekdays from 8 am to 5 pm a run sorts at most 50 bookmarks, otherwise 400, so the first pass over the whole collection takes about a night. A bookmark in no list and without `ai-route:unsure` fits none, or is still waiting.
 
 On the NAS, `sudo systemctl start karakeep-triage` runs it now, and `journalctl -u karakeep-triage` shows each run, ending with how many bookmarks Vega routed on its own, how many went to Jev, how many Jev was unsure of, and how many could not reach Jev and wait for the next run.
 
