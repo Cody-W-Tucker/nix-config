@@ -401,6 +401,14 @@ def fit_policy(agent, fit, calibrate, questions, target, device="cpu"):
     serving.vega.heads.update(reader.vega.heads)
     report = dict(report, calibration=serving.calibrate(calibrate, questions))
     band = report["calibration"]["band"] or {}
+    held = getattr(serving.calibration, "report", None)
+    for qid, q in sorted((k, v["band"]) for k, v in (held.items() if isinstance(held, dict) else ())
+                         if isinstance(v, dict) and isinstance(v.get("band"), dict)):
+        best = q.get("best_achievable") or {}
+        logging.info("Laya classifier %s question %s: %s on %s held-out labels%s", target.parent.name[:12], qid,
+                     "certified" if q.get("reachable", True) else "not certified", q.get("n"),
+                     "" if q.get("reachable", True) else ", best %.3f precision at %.0f%% sent to Jev" % (
+                         best.get("precision_lb", 0.0), 100 * best.get("review_rate", 1.0)))
     if not any(band.get(qid) is not None for qid in report["serving"]):
         logging.info("Laya classifier %s reached no certified band", target.parent.name[:12])
         return

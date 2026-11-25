@@ -101,6 +101,13 @@ def label(answer):
     return None
 
 
+def reached(answers):
+    """False when Jev was needed for a question but never answered (busy, down or timed out), so
+    the bookmark is asked again. An answer Jev gave but was unsure of stays as it is."""
+    return not any(isinstance(a, dict) and a.get("source") == "unresolved" and a.get("fallback") is None
+                   for qs in answers.values() for a in qs.values())
+
+
 def targets(answers):
     """Tags and lists for one bookmark's answers ({classifier: {question: answer}})."""
     tags, lists = [], []
@@ -306,11 +313,12 @@ def run(args, token):
             for bid in duplicates(ids, vectors, created) & wanted:
                 filer.file(bid, tags=["ai-duplicate"])
 
-        # Pass 2: Laya, newest unclassified first.
+        # Pass 2: Laya, newest unclassified first, including bookmarks Jev never answered.
         if args.ids:
             queue = [bid for bid in args.ids if bid in states]
         else:
-            seen = {bid for (bid,) in db.execute("SELECT id FROM answers")}
+            seen = {bid for bid, answers in db.execute("SELECT id, answers FROM answers")
+                    if reached(json.loads(answers))}
             queue = sorted((bid for bid in states if bid not in seen), key=created.get, reverse=True)
         office = datetime.now().weekday() < 5 and 8 <= datetime.now().hour < 17
         limit = args.office_limit if office and not args.ids else args.limit
