@@ -154,6 +154,17 @@ class LayaTest(unittest.TestCase):
         self.assertEqual(laya.split_rows(stored), ([{"state": "a", "gold": {"first": "yes"}}],
                                                    [{"state": "a", "gold": {"second": "no"}}]))
 
+    def test_a_share_of_states_holds_out_teacher_labels_and_the_rest_fit(self):
+        stored = [(json.dumps(f"state {i}"), json.dumps({"first": "yes"}), json.dumps({"first": "teacher"}))
+                  for i in range(1000)]
+        fit, calibrate = laya.split_rows(stored, ["teacher"], 0.2)
+        self.assertEqual(len(fit) + len(calibrate), 1000)
+        self.assertTrue(150 < len(calibrate) < 250)
+        self.assertFalse({r["state"] for r in fit} & {r["state"] for r in calibrate})
+        self.assertEqual(laya.split_rows(stored, ["teacher"], 0.2), (fit, calibrate))
+        self.assertEqual(laya.split_rows(stored, ["teacher"]), ([], [{"state": s, "gold": {"first": "yes"}}
+                                                                    for s in (f"state {i}" for i in range(1000))]))
+
     def test_heads_are_cached_per_classifier(self):
         reg = registry()
         for name in ("test", "another"):

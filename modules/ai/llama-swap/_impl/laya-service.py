@@ -2,7 +2,8 @@
 
 Named classifiers come from the Nix-rendered registry. Their labels are stored per question
 with a source (human > imported > teacher). Each classifier names the sources it calibrates on
-(`calibrateOn`, human by default); the rest fit the heads.
+(`calibrateOn`, human by default) and the share of states held out for it
+(`calibrationShare`, all by default); the rest fit the heads.
 """
 
 import argparse
@@ -301,12 +302,19 @@ class ReadCache:
         self.db.executemany("INSERT OR IGNORE INTO seen VALUES (?, ?, ?)", [(key, i, q) for i, q in pairs])
 
 
-def split_rows(rows, calibrate_on=("human",)):
-    """Labels from the calibration sources are held out to calibrate; the rest fit the heads."""
+def held_out(state_text, share):
+    """True for a fixed `share` of states, so a state stays on the same side across refits."""
+    return share >= 1 or int(hashlib.sha256(state_text.encode()).hexdigest()[:8], 16) < share * 2 ** 32
+
+
+def split_rows(rows, calibrate_on=("human",), share=1.0):
+    """In the held-out share of states, labels from the calibration sources calibrate; every
+    other label fits the heads."""
     fit, calibrate = [], []
-    for state, gold, sources in rows:
-        state, gold, sources = json.loads(state), json.loads(gold), json.loads(sources)
-        held = {k: v for k, v in gold.items() if sources.get(k) in calibrate_on}
+    for state_text, gold, sources in rows:
+        state, gold, sources = json.loads(state_text), json.loads(gold), json.loads(sources)
+        hold = held_out(state_text, share)
+        held = {k: v for k, v in gold.items() if hold and sources.get(k) in calibrate_on}
         other = {k: v for k, v in gold.items() if k not in held}
         if other:
             fit.append({"state": state, "gold": other})
@@ -345,7 +353,8 @@ def train(root, registry, cache_dir, small=200, now=None, device="cpu", lease=No
                 if sum(r[0] > previous for r in rows) < NEW_ROWS:
                     continue
                 calibrate_on = spec.get("calibrateOn", ["human"])
-                fit, calibrate = split_rows(reversed([r[2:] for r in rows]), calibrate_on)
+                fit, calibrate = split_rows(reversed([r[2:] for r in rows]), calibrate_on,
+                                            spec.get("calibrationShare", 1.0))
                 pairs = [(r[1], q) for r in rows for q in json.loads(r[3])]
                 if len(calibrate) < spec["minConfirmed"]:
                     # Not an attempt: the labels that arrived meanwhile still count toward the next one.

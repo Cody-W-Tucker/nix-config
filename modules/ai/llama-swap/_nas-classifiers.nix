@@ -18,25 +18,30 @@ let
     account-management = "client reporting, commitments, scope decisions and renewal";
     workflow-enablement = "one recurring client job run as an agent workflow inside the client's own tools";
   };
+  # Vega distils Jev: Jev's confident answers, imports and any human labels all train it, and
+  # a fifth of bookmarks is held out to check that Vega agrees with them before it answers alone.
+  distill = {
+    learnFromTeacher = true;
+    calibrateOn = [
+      "human"
+      "imported"
+      "teacher"
+    ];
+    calibrationShare = 0.2;
+  };
 in
 {
   # A saved bookmark (title, url, type, Karakeep summary) is the state. One yes/no question
   # per service; harvest ledgers label only the services that triaged it.
-  services.laya.classifiers.service-routing = {
+  services.laya.classifiers.service-routing = distill // {
     questions = lib.mapAttrs (_: job: {
       type = "noul";
       instructions = "Is this saved source worth inspecting as a method, tool or worked example for an agency service that delivers ${job}?";
     }) services;
-    learnFromTeacher = true;
-    # Harvest agents read each imported source in full; the fallback sees only the summary.
-    calibrateOn = [
-      "human"
-      "imported"
-    ];
   };
 
   # Same bookmark state: what kind of source it is, and whether CodyOS should evaluate it.
-  services.laya.classifiers.bookmark-kind = {
+  services.laya.classifiers.bookmark-kind = distill // {
     questions = {
       method = {
         type = "noul";
@@ -51,6 +56,5 @@ in
         instructions = "Does this bookmark give enough evidence to identify a specific tool, capability, or practice that would advance at least one CodyOS goal: self-hosted services, composable system capabilities, local model use, or agents testing changes before a human approves deployment? Answer yes only if you can identify both what CodyOS could adopt or adapt and what it would improve. A design pattern can qualify without anything to install. Sharing the same topics is not enough. A yes flags a candidate for review, not a recommendation to adopt it.";
       };
     };
-    learnFromTeacher = true;
   };
 }

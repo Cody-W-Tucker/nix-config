@@ -83,10 +83,16 @@ in
                 lib.types.enum [
                   "human"
                   "imported"
+                  "teacher"
                 ]
               );
               default = [ "human" ];
               description = "Label sources held out to calibrate Vega; labels from the other sources fit its heads.";
+            };
+            calibrationShare = lib.mkOption {
+              type = lib.types.numbers.between 0.05 1;
+              default = 1.0;
+              description = "Share of states (fixed by a hash of each state) whose `calibrateOn` labels are held out; in the rest they fit the heads. Below 1 lets one source both fit and calibrate.";
             };
             minConfirmed = lib.mkOption {
               type = lib.types.ints.positive;
