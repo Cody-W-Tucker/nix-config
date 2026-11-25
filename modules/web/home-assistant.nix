@@ -70,6 +70,7 @@
         enable = true;
         extraComponents = [
           "music_assistant"
+          "zha"
           # Google TV / Chromecast built-in: power, apps, remote (PIN pair in HA UI)
           "androidtv_remote"
           "cast"
