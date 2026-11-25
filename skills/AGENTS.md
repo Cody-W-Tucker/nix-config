@@ -1,9 +1,8 @@
 # Skill catalog instructions
 
-Store agent instructions as complete `<category>/<skill-id>/SKILL.md` directories.
-Keep supporting files in the same directory. To import from another repository,
-copy the whole selected folder and record the upstream URL, commit, and source
-path in the commit message. Keep upstream licenses and review scripts as code.
+Keep only skills authored here as complete `<category>/<skill-id>/SKILL.md`
+directories, with supporting files alongside them. Fetch third-party skills from
+their pinned upstream sources rather than copying them into this catalog.
 
 Adding a folder does not load it anywhere. The Den feature that makes a tool
 available points its existing harness adapter at the folder or pack. A skill

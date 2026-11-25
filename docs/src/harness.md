@@ -29,6 +29,8 @@ All clients share these MCP servers: `deja` (past sessions), `hindsight` (memory
 
 For semantic search across past sessions, run `deja doctor` on each host, then run `deja embed` if the vector index is missing or stale. Embedding sends redacted session text to the NAS. Search by exact terms still works without embeddings.
 
+Ask an agent to write or refine a project vision to use the shared `vision` skill. It drafts from repository history and opens a review board for your decisions. The board runs through `npx`, which downloads `lavish-axi` when needed.
+
 ## Browse on beast
 
 `op` on beast can use your Chromium profile through Browse. `op-` runs on the NAS and doesn't have access to it. After `update`, add [Browse from the Chrome Web Store](https://chromewebstore.google.com/detail/mfnicocicmmlkpjnaffgihfjhdgjkdjg) in the profile you want to use. Run `browse pair`, then enter the code under **Browse → Options → Pair with a code**. Run `browse status` to check the connection.
@@ -58,7 +60,8 @@ To post a note yourself, run `inbox "<note>"`.
 | To change | Edit |
 | --- | --- |
 | MCP servers | [`mcp.nix`](../../modules/harness/_hm/mcp.nix) |
-| Skills | [`skills/default.nix`](../../modules/harness/_hm/skills/default.nix), or a folder in the [skill catalog](../../skills/) |
+| Shared third-party skills | [`skills/default.nix`](../../modules/harness/_hm/skills/default.nix) |
+| Locally authored skills | A folder in [`skills/`](../../skills/) |
 | Inbox command and when agents use it | [`inbox/`](../../modules/harness/_hm/inbox/default.nix) |
 | Memory behavior, banks | [`plugins/hindsight/`](../../modules/harness/_hm/plugins/hindsight/default.nix) |
 | Claude Code | [`claude-code/default.nix`](../../modules/harness/_hm/claude-code/default.nix) |
