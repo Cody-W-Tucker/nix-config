@@ -114,11 +114,13 @@
           ripgrep.enable = true;
           yazi = {
             enable = true;
+            # whatchanged requires Yazi 26.8.15 or newer, including on stable hosts.
+            package = pkgs.unstable.yazi;
             enableZshIntegration = true;
             shellWrapperName = "rr";
             plugins = {
-              git = pkgs.yaziPlugins.git;
-              piper = pkgs.yaziPlugins.piper;
+              git = pkgs.unstable.yaziPlugins.git;
+              piper = pkgs.unstable.yaziPlugins.piper;
               # Neither is in nixpkgs.
               whatchanged = pkgs.fetchFromGitHub {
                 owner = "WhoSowSee";
