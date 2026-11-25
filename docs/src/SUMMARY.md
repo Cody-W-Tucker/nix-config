@@ -9,7 +9,6 @@
 - [Checks and standards](checks.md)
 - [Installing a new machine](new-machine.md)
 - [Secrets](secrets.md)
-- [Writing these docs](writing-docs.md)
 
 # Desktop
 

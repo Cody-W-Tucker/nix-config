@@ -2,6 +2,8 @@
 
 The book is built with mdBook from `docs/src/`. A push to `main` publishes it to GitHub Pages.
 
+User requests and prompts are the main source of what to put in these documentations, not the code itself. How we got here and what we want is more important than just recapitulating what the code says.
+
 ## What a page records
 
 A page records the system **as the user meets it**: what to press, open or run, and what then happens on screen. That is the map. The code, Hindsight and deja hold everything below it: the implementation, the decisions and their reasons, benchmarks, history.
@@ -9,7 +11,7 @@ A page records the system **as the user meets it**: what to press, open or run, 
 Apply two tests to each sentence:
 
 1. **Is it specific to this system?** Delete general knowledge that a capable NixOS user or a model already has: what Grafana or SSH is, standard LSP keys, what direnv does.
-2. **Does the user experience it?** Delete what only the code experiences: option values, port lists, config tables, reasons for a choice. The *Changing it* table links the files for that.
+2. **Does the user experience it?** Delete what only the code experiences: option values, port lists, config tables, reasons for a choice. The _Changing it_ table links the files for that.
 
 Keep custom keybinds, addresses, commands that exist only here, flows that cross machines, and results that look like a fault but are intended.
 
@@ -34,11 +36,11 @@ flowchart LR
 
 ## Page shape
 
-| Section | Content |
-| --- | --- |
-| *(intro)* | One or two sentences: what the user gets, and on which host |
+| Section       | Content                                                                |
+| ------------- | ---------------------------------------------------------------------- |
+| _(intro)_     | One or two sentences: what the user gets, and on which host            |
 | Task sections | Actions and their results: keys, commands, URLs, and what then appears |
-| Changing it | "To change" → file |
+| Changing it   | "To change" → file                                                     |
 
 Normal behavior is stated implicitly, as the result of an action: "Press `SUPER + Escape` again. The text is typed at the cursor, without fillers." Do not add a separate list of what is normal. A result that the user could mistake for a fault (a delay, a missing item) belongs in the description of the action that causes it.
 
@@ -59,7 +61,7 @@ ASD-STE100 writing rules for a technical reader:
 - **Add a page:** create `docs/src/<name>.md` (kebab-case), list it in `SUMMARY.md`, `git add` it. An unlisted page is not published. A listed page without a file fails the build.
 - **Link to a page:** `[Secrets](secrets.md)`, or with a heading anchor.
 - **Link to a repo file:** a path relative to `docs/src/`, for example `../../modules/hosts/nas.nix`. The build rewrites it to a GitHub link and fails if the file does not exist.
-- **Diagrams:** ```` ```mermaid ```` blocks.
+- **Diagrams:** ` ```mermaid ` blocks.
 - **Preview:** `nix shell nixpkgs#mdbook nixpkgs#jq --command mdbook serve docs --open`.
 - **Check:** `nix build .#checks.x86_64-linux.docs` (also part of `nix flake check`).
 - **Publish:** [`.github/workflows/docs.yml`](../../.github/workflows/docs.yml) builds on pull requests and deploys on push to `main`. It takes mdBook from the locked `nixpkgs-unstable` revision without evaluating the flake.
