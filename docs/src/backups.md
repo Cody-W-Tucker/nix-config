@@ -8,7 +8,7 @@ On the NAS, run `systemctl status restic-backups-nas-files.service` to see the r
 
 | What you need back | Where to look |
 | --- | --- |
-| Projects, Knowledge, Hermes, Karakeep assets, Langfuse objects | Restic, 7 daily, 4 weekly and 6 monthly snapshots |
+| Projects, Knowledge, Hermes, Karakeep assets, Langfuse objects, Vaultwarden keys and attachments | Restic, 7 daily, 4 weekly and 6 monthly snapshots |
 | An app database, last night's copy | `/mnt/backup/backups/<app>/` on the NAS |
 | An app database, an older night | Restic, under `/mnt/backup/backups/<app>` |
 | PostgreSQL databases (Hindsight, Immich, LiteLLM, Miniflux, Dawarich) | `/mnt/backup/backups/postgresql/all.sql.zstd`, one dump of all databases. It loads whole into an empty PostgreSQL server. |

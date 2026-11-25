@@ -16,6 +16,7 @@ The NAS's web apps, each at `https://<name>.homehub.tv` with a valid certificate
 | Music Assistant | [music-assistant.homehub.tv](https://music-assistant.homehub.tv) | Music players |
 | Excalidraw | [draw.homehub.tv](https://draw.homehub.tv) | Whiteboard |
 | Immich | [photos.homehub.tv](https://photos.homehub.tv) | Photos and video |
+| Vaultwarden | [vault.homehub.tv](https://vault.homehub.tv) | Passwords. See [Passwords](passwords.md). |
 
 Each app has its own accounts. Karakeep has sign-ups disabled (`DISABLE_SIGNUPS`).
 

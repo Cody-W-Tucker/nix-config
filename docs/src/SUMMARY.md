@@ -26,6 +26,7 @@
 # Home services
 
 - [Web apps](web-apps.md)
+- [Passwords (Vaultwarden)](passwords.md)
 - [Media](media.md)
 - [Documents (Paperless)](documents.md)
 - [Feeds and bookmarks](feeds-and-bookmarks.md)
