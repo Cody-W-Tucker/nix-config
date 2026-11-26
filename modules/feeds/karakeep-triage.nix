@@ -3,7 +3,7 @@
   den.aspects.nas.includes = [ den.aspects.karakeep-triage ];
 
   # Files Karakeep bookmarks into lists by Laya's bookmark-route classifier.
-  # Writes to Karakeep only add list entries and the `ai-route:unsure` tag.
+  # Writes to Karakeep only add list entries and the `ai-route:unsure` and `ai-codyos:unsure` tags.
   den.aspects.karakeep-triage.nixos =
     {
       config,
@@ -49,10 +49,7 @@
               "--services"
             ]
             ++ builtins.attrNames (
-              removeAttrs config.services.laya.classifiers.bookmark-route.questions.route.criteria [
-                "codyos"
-                "none"
-              ]
+              removeAttrs config.services.laya.classifiers.bookmark-route.questions.route.criteria [ "none" ]
             )
           );
           # List contents reach Laya as labels.

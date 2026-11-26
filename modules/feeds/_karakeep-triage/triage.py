@@ -1,18 +1,20 @@
 """File Karakeep bookmarks into lists with Laya's classifiers.
 
-Laya's `bookmark-route` classifier picks each bookmark's one destination, and the bookmark is
-filed to that `Agency: <service>` list or the `CodyOS: candidates` list.
+Laya's `bookmark-route` classifier asks two independent questions about each bookmark: `route`,
+the one agency service it serves (filed to that `Agency: <service>` list), and `codyos`, whether
+CodyOS could borrow from it (filed to the `CodyOS: candidates` list).
 
 Karakeep writes only ever add. A later different answer is logged in the state database,
 never removed from Karakeep.
 
-A bookmark no one was sure of (Jev answered, but not confidently) gets `ai-route:unsure`.
+A question no one was sure of (Jev answered, but not confidently) gets its unsure tag:
+`ai-route:unsure` or `ai-codyos:unsure`.
 
 The service and CodyOS lists are the user's to curate. A bookmark they added to or took out of
-any list goes to Laya as their label: the one list it is now in, or `none` if it is in none.
-A bookmark in several lists has no single route and teaches nothing until one is left. The
-user's labelled bookmarks are not asked again; entries triage made and the user left alone
-teach nothing.
+an Agency list goes to Laya as their `route` label: the one Agency list it is now in, or `none`
+if it is in none. One in several Agency lists teaches no route until one is left. Adding it to
+or taking it out of the CodyOS list labels `codyos` yes or no. The user's labelled bookmarks are
+not asked again; entries triage made and the user left alone teach nothing.
 """
 
 import argparse
@@ -35,8 +37,9 @@ import urllib.request
 SERVICE_LIST = "Agency: {}"
 CODYOS_LIST = "CodyOS: candidates"
 ROUTE = "bookmark-route"
-CODYOS, NONE = "codyos", "none"
-UNSURE = "ai-route:unsure"
+QUESTIONS = ("route", "codyos")
+NONE = "none"
+UNSURE = {qid: f"ai-{qid}:unsure" for qid in QUESTIONS}
 TEXT_LIMIT = 4000
 
 
@@ -96,13 +99,17 @@ def state_of(bookmark):
 
 
 def label(answer):
-    """The route from a Laya answer, or None when neither Vega nor the fallback was sure."""
-    if not isinstance(answer, dict) or answer.get("source") == "unresolved":
+    """The label from a Laya answer (a choice or a yes/no), or None when neither Vega nor the
+    fallback was sure."""
+    if not isinstance(answer, dict):
         return None
-    if isinstance(answer.get("label"), str):
-        return answer["label"]
-    if answer.get("source") == "vega" and isinstance(answer.get("choice"), str):
-        return answer["choice"]
+    if answer.get("source") == "fallback":
+        return answer.get("label")
+    if answer.get("source") == "vega":
+        if isinstance(answer.get("choice"), str):
+            return answer["choice"]
+        if isinstance(answer.get("noul"), (int, float)):
+            return answer["noul"] >= 0.5
     return None
 
 
@@ -117,44 +124,52 @@ def who(answer):
     return "unreached" if not isinstance(answer, dict) or answer.get("fallback") is None else "unsure"
 
 
-def reached(answers):
-    """False when Jev was needed for a question but never answered (busy, down or timed out), so
-    the bookmark is asked again. An answer Jev gave but was unsure of stays as it is."""
-    return not any(isinstance(a, dict) and a.get("source") == "unresolved" and a.get("fallback") is None
-                   for qs in answers.values() for a in qs.values())
+def answered(answers):
+    """True once every current question has an answer and Jev answered every one it was needed
+    for. Busy, down or timed out leaves the bookmark to be asked again; an answer Jev gave but
+    was unsure of stays as it is. Answers from before a question existed are asked again."""
+    route = answers.get(ROUTE, {})
+    return all(isinstance(route.get(qid), dict) for qid in QUESTIONS) and not any(
+        isinstance(a, dict) and a.get("source") == "unresolved" and a.get("fallback") is None
+        for qs in answers.values() for a in qs.values())
 
 
 def targets(answers):
     """Tags and lists for one bookmark's answers ({classifier: {question: answer}})."""
-    answer = answers.get(ROUTE, {}).get("route")
-    if who(answer) == "unsure":
-        return [UNSURE], []
-    route = label(answer)
-    if route == CODYOS:
-        return [], [CODYOS_LIST]
+    asked = answers.get(ROUTE, {})
+    tags = [UNSURE[qid] for qid in QUESTIONS if who(asked.get(qid)) == "unsure"]
+    lists = []
+    route = label(asked.get("route"))
     if isinstance(route, str) and route != NONE:
-        return [], [SERVICE_LIST.format(route)]
-    return [], []
+        lists.append(SERVICE_LIST.format(route))
+    if label(asked.get("codyos")) is True:
+        lists.append(CODYOS_LIST)
+    return tags, lists
 
 
 def route_lists(services):
-    """Each list the user curates, and the route its membership stands for."""
-    lists = {SERVICE_LIST.format(s): s for s in services}
-    lists[CODYOS_LIST] = CODYOS
+    """Each list the user curates: the question its membership answers, and the answer."""
+    lists = {SERVICE_LIST.format(s): ("route", s) for s in services}
+    lists[CODYOS_LIST] = ("codyos", True)
     return lists
 
 
-def routes_from_lists(members, touched, sent):
-    """The user's labels to send: {bookmark: route}, the one list each touched bookmark is in, or
-    `none` when it is in none. Bookmarks in several lists, and unchanged labels, are skipped."""
+def gold_from_lists(members, touched, sent):
+    """The user's labels to send: {bookmark: gold}, for each question whose lists the user
+    touched. `route` is the one Agency list the bookmark is in, or `none` when it is in none,
+    and is skipped while it is in several. `codyos` is whether it is in the CodyOS list.
+    Labels already sent are skipped."""
     out = {}
-    for bid in touched:
-        routes = members.get(bid, set())
-        if len(routes) > 1:
-            continue
-        route = next(iter(routes), NONE)
-        if sent.get(bid) != route:
-            out[bid] = route
+    for bid, questions in touched.items():
+        has = members.get(bid, {})
+        gold = {}
+        routes = has.get("route", set())
+        if "route" in questions and len(routes) <= 1:
+            gold["route"] = next(iter(routes), NONE)
+        if "codyos" in questions:
+            gold["codyos"] = True in has.get("codyos", set())
+        if gold and sent.get(bid) != json.dumps(gold, sort_keys=True):
+            out[bid] = gold
     return out
 
 
@@ -198,39 +213,44 @@ def send_labels(path, items):
 
 def curate(db, filer, karakeep, lists, states, laya_socket, dry_run):
     """Send the lists' routes to Laya as labels (see the module docstring)."""
-    members, touched, marks = {}, set(), []
-    for name, route in lists.items():
+    members, touched, marks = {}, {}, []
+    for name, (qid, value) in lists.items():
         if name not in filer.known():
             continue
         inside = {b["id"] for b in fetch_bookmarks(karakeep, f"/api/v1/lists/{filer.list_id(name)}/bookmarks")}
         filed = {bid for (bid,) in db.execute("SELECT id FROM filed WHERE target = ?", ("list:" + name,))}
         for bid in inside:
-            members.setdefault(bid, set()).add(route)
+            members.setdefault(bid, {}).setdefault(qid, set()).add(value)
         # Added by the user, or an entry triage made that they took out.
         edited = (inside - filed) | (filed - inside)
-        touched |= edited
+        for bid in edited:
+            touched.setdefault(bid, set()).add(qid)
         marks += [(bid, name, int(bid in inside), now()) for bid in edited]
-    # Bookmarks the user edited on an earlier run stay theirs.
-    touched |= {bid for (bid,) in db.execute("SELECT DISTINCT id FROM curated")}
+    # Lists the user edited on an earlier run stay theirs.
+    for bid, name in db.execute("SELECT id, list FROM curated"):
+        if name in lists:
+            touched.setdefault(bid, set()).add(lists[name][0])
+    # The gold last sent for each bookmark, as sorted JSON.
     sent = dict(db.execute("SELECT id, route FROM routed"))
     # Deleted bookmarks are not labels; ones still awaiting a summary wait for it.
-    labels = routes_from_lists(members, touched & states.keys(), sent)
+    labels = gold_from_lists(members, {b: q for b, q in touched.items() if b in states}, sent)
     if not labels:
         return set()
     if dry_run:
-        for bid, route in sorted(labels.items()):
-            print(json.dumps({"bookmark": bid, "label": route}))
+        for bid, gold in sorted(labels.items()):
+            print(json.dumps({"bookmark": bid, "label": gold}))
         return set(labels)
     if not laya_socket:
         logging.warning("%d list edits not sent: no Laya feedback socket", len(labels))
         return set()
-    items = [{"classifier": ROUTE, "state": states[bid], "gold": {"route": route}} for bid, route in labels.items()]
+    items = [{"classifier": ROUTE, "state": states[bid], "gold": gold} for bid, gold in labels.items()]
     try:
         saved = send_labels(laya_socket, items)
     except (OSError, ValueError, KeyError) as exc:
         logging.warning("list edits not sent to Laya; retrying next run: %s", exc)
         return set()
-    db.executemany("INSERT OR REPLACE INTO routed VALUES (?, ?, ?)", [(b, r, now()) for b, r in labels.items()])
+    db.executemany("INSERT OR REPLACE INTO routed VALUES (?, ?, ?)",
+                   [(b, json.dumps(g, sort_keys=True), now()) for b, g in labels.items()])
     db.executemany("INSERT OR REPLACE INTO curated VALUES (?, ?, ?, ?)", marks)
     db.commit()
     logging.info("sent %d list edits to Laya as your labels (%d changed)", len(labels), saved)
@@ -326,7 +346,7 @@ def run(args, token):
             queue = [bid for bid in args.ids if bid in states]
         else:
             seen = {bid for bid, answers in db.execute("SELECT id, answers FROM answers")
-                    if ROUTE in (a := json.loads(answers)) and reached(a)}
+                    if answered(json.loads(answers))}
             seen |= labelled | {bid for (bid,) in db.execute("SELECT id FROM routed")}
             queue = sorted((bid for bid in states if bid not in seen), key=created.get, reverse=True)
         office = datetime.now().weekday() < 5 and 8 <= datetime.now().hour < 17
@@ -343,14 +363,17 @@ def run(args, token):
                     break
                 continue
             failures = 0
-            tally[who(answers[ROUTE].get("route"))] += 1
+            for qid in QUESTIONS:
+                tally[qid, who(answers[ROUTE].get(qid))] += 1
             if not args.dry_run:
                 record_answers(db, bid, answers)
                 db.commit()
             tags, lists = targets(answers)
             filer.file(bid, tags, lists)
-        logging.info("routed %d of %d waiting bookmarks: vega %d, jev %d, unsure %d, unreached %d",
-                     sum(tally.values()), len(queue), *(tally[k] for k in ("vega", "jev", "unsure", "unreached")))
+        logging.info("asked about %d of %d waiting bookmarks", sum(tally.values()) // len(QUESTIONS), len(queue))
+        for qid in QUESTIONS:
+            logging.info("%s: vega %d, jev %d, unsure %d, unreached %d", qid,
+                         *(tally[qid, k] for k in ("vega", "jev", "unsure", "unreached")))
 
 
 def main():

@@ -16,7 +16,7 @@ let
     influencer-marketing = "paid, gifted or affiliate creator placements with disclosure and tracked outcomes";
     marketing-strategy = "a sequenced marketing plan built on market, competitor and customer evidence";
     account-management = "client reporting, commitments, scope decisions and renewal";
-    workflow-enablement = "one recurring client job run as an agent workflow inside the client's own tools";
+    workflow-enablement = "one of a client's recurring business jobs run as an agent workflow inside the client's own tools; not tooling for running one's own servers, models or agents";
   };
   # Vega distils Jev and the user's Karakeep list edits: both train it, and a fifth of bookmarks
   # is held out to check Vega against them before it answers alone.
@@ -31,16 +31,20 @@ let
   };
 in
 {
-  # A saved bookmark (title, url, type, Karakeep summary) is the state. One choice per bookmark,
-  # so Vega either routes it alone or the whole bookmark goes to Jev. CodyOS is one more route.
+  # A saved bookmark (title, url, type, Karakeep summary) is the state. Two independent
+  # questions: the one agency service it serves, and whether CodyOS could borrow from it.
+  # Vega answers each alone or sends it to Jev.
   services.laya.classifiers.bookmark-route = distill // {
     questions.route = {
       type = "choice";
-      instructions = "Which one destination is this saved source most worth inspecting for, as a method, tool or worked example? Each agency service is named by the job it delivers. Choose the single best fit. Answer none if no destination clearly fits; sharing a topic is not enough.";
+      instructions = "Which one agency service is this saved source most worth inspecting for, as a method, tool or worked example for delivering that service to a client? Each service is named by the job it delivers for a client. Choose the single best fit. Answer none if no service clearly fits; sharing a topic is not enough.";
       criteria = services // {
-        codyos = "CodyOS, a self-hosted personal operating system: a specific tool, capability or practice it could adopt or adapt to improve its self-hosted services, composable system capabilities, local model use, or agents testing changes before a human approves deployment";
-        none = "no destination clearly fits";
+        none = "no agency service clearly fits";
       };
+    };
+    questions.codyos = {
+      type = "noul";
+      instructions = "Could CodyOS adopt or adapt something specific from this saved source? CodyOS is a self-hosted personal operating system: self-hosted services, composable system capabilities, local models, and agents that test changes before a human approves deployment. Answer yes only if you can name both what CodyOS would borrow (a tool, capability or practice; a design pattern counts with nothing to install) and what it would improve. Sharing a topic is not enough. Yes means worth reviewing, not worth adopting. Answer regardless of whether it also fits an agency service.";
     };
   };
 }
