@@ -25,7 +25,7 @@ On the NAS, run `systemctl list-timers miniflux-curator.timer` to see its last a
 
 ## Sorted bookmarks
 
-Every hour the NAS files new bookmarks in Karakeep, newest first, once Karakeep has summarized them. It adds list entries and the `ai-route:unsure` and `ai-codyos:unsure` tags, and never removes any. A bookmark Jev could not be reached for is tried again on a later run.
+At half past each hour the NAS files new bookmarks in Karakeep, newest first, once Karakeep has summarized them. It adds list entries and the `ai-route:unsure` and `ai-codyos:unsure` tags, and never removes any. A bookmark Jev could not be reached for is tried again on a later run.
 
 | In Karakeep | Means |
 | --- | --- |

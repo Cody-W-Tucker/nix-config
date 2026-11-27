@@ -66,7 +66,7 @@
       systemd.timers.karakeep-triage = {
         wantedBy = [ "timers.target" ];
         timerConfig = {
-          OnCalendar = "hourly";
+          OnCalendar = "*-*-* *:30:00";
           Persistent = true;
           RandomizedDelaySec = "5m";
         };
