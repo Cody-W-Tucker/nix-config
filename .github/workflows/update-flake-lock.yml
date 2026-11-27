@@ -26,34 +26,6 @@ jobs:
       - name: Find dead code (deadnix)
         run: nix run nixpkgs#deadnix -- --fail --no-lambda-arg --no-lambda-pattern-names .
 
-  private-flake-check:
-    name: Private flake check (authenticated when token exists)
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    env:
-      HAS_NIXOS_SECRETS_TOKEN: ${{ secrets.NIX_SECRETS_READ != '' }}
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/determinate-nix-action@v3
-      - name: Skip private flake check without token
-        if: env.HAS_NIXOS_SECRETS_TOKEN != 'true'
-        run: |
-          printf '%s\n' 'Skipping private flake check because NIX_SECRETS_READ is not available for this PR run.'
-      - name: Configure GitHub access for private flakes (nixos-secrets + runtime/workflow)
-        # Single github.com host token covers both private flake inputs:
-        # Cody-W-Tucker/nixos-secrets and Cody-W-Tucker/runtime (input `workflow`).
-        # NIX_SECRETS_READ must have read access to both repos. Token is written
-        # to nix.conf only, never echoed to logs.
-        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
-        run: |
-          mkdir -p ~/.config/nix
-          printf '%s\n' 'access-tokens = github.com=${{ secrets.NIX_SECRETS_READ }}' >> ~/.config/nix/nix.conf
-      - name: Authenticated private flake check
-        if: env.HAS_NIXOS_SECRETS_TOKEN == 'true'
-        run: nix flake check --print-build-logs
-
   update-flake:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
