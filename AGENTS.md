@@ -76,7 +76,7 @@ In both cases the user then runs `update`. It pulls `main`, runs the lint checks
 
 - New files must be git-tracked or flakes won't see them
 - Never commit raw secrets (use SOPS-NIX.)
-- The user will need to add secrets via the sops edit command.
+- The user adds secrets with `sops edit`, then commits and pushes `nixos-secrets` themselves. When they say a secret is pushed, run `nix flake update nixos-secrets` and commit the lock, declaring the secret in its consuming service if it is new.
 
 ## Finding and Verifying Configuration
 

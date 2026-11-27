@@ -9,7 +9,7 @@ Vaultwarden on the NAS, at [vault.homehub.tv](https://vault.homehub.tv), is a pa
 3. Copy the `$argon2id$...` line that it prints.
 4. In your `nixos-secrets` checkout, run `sops edit secrets/secrets.yaml`.
 5. Add `vaultwarden-admin-token: '<the $argon2id$ line>'`. Use single quotes.
-6. Ask an agent to commit it, then follow [Secrets](secrets.md#add-or-change-a-secret) to update the lock and run `update`.
+6. Commit and push `nixos-secrets`, then follow [Secrets](secrets.md#add-or-change-a-secret) from step 2.
 
 Add the key before the first `update` that includes Vaultwarden. Without it, the NAS build stops with `the key 'vaultwarden-admin-token' cannot be found`.
 

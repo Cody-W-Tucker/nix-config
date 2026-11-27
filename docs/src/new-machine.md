@@ -27,8 +27,8 @@ A new machine joins as a Den host: a host file and a hardware file in `modules/h
    nix shell nixpkgs#ssh-to-age --command sh -c 'ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub'
    ```
 
-2. In `nixos-secrets`, add the recipient to `.sops.yaml`. Run `sops updatekeys` on each file the host must read. Add any host-only secrets. Ask an agent to commit it.
-3. Ask an agent to run `nix flake update nixos-secrets` in `/etc/nixos` and commit it, then run `update`, and pull on the new machine.
+2. In `nixos-secrets`, add the recipient to `.sops.yaml`. Run `sops updatekeys` on each file the host must read. Add any host-only secrets. Commit and push it yourself.
+3. Tell an agent the secrets are pushed. It updates the `nixos-secrets` lock in `/etc/nixos` and commits it. Run `update`, then pull on the new machine.
 
 Without this step the build succeeds, but services that need secrets fail to start.
 
