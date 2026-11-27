@@ -9,6 +9,7 @@ The repo enforces its standards with flake checks. `update` runs the first two s
 | `formatting` | Nix not formatted with nixfmt. `nix fmt` corrects it. | `update` (as `nix fmt`), PRs |
 | `imports` | A `default.nix` outside a `_` path under `modules/`, or a `_` subtree whose `default.nix` misses a sibling or imports a missing file | `update` (as `check-imports`), PRs |
 | `statix`, `deadnix` | Lint warnings, unused bindings | PRs |
+| `no-comments` | Any Nix comment. `ast-grep scan --update-all .` then `nix fmt` deletes them. OpenCode, Claude Code and Neovim show the same error as you type. | PRs |
 | `docs` | This book does not build, or links a repo file that does not exist | PRs, and the docs deploy |
 
 On a pull request, the full `nix flake check` runs only when the `NIX_SECRETS_READ` token is available; without it, only formatting and lint run.
@@ -31,4 +32,6 @@ Run `check-imports [repo-root]` after moving Nix modules. It defaults to `/etc/n
 | --- | --- |
 | The checks | [`modules/flake/checks.nix`](../../modules/flake/checks.nix) |
 | Lint rules | [`statix.toml`](../../statix.toml) |
+| The comment rule and its message | [`lint/no-comments.yml`](../../lint/no-comments.yml) |
+| The comment rule in the agents | [`modules/harness/_hm/plugins/no-comments/default.nix`](../../modules/harness/_hm/plugins/no-comments/default.nix) |
 | PR checks | [`.github/workflows/`](../../.github/workflows) |

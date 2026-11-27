@@ -1,7 +1,5 @@
 { den, ... }:
 {
-  # Git: the system package, plus the user's identity and settings, delta as the pager,
-  # GitHub CLI and lazygit. Registered on every host and user.
   den.aspects.git = {
     nixos =
       { pkgs, ... }:

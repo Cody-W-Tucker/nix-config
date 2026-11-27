@@ -14,8 +14,6 @@ let
 in
 {
   config = {
-    # PID 1 can set the new supplementary group without restarting Cody's
-    # lingering user manager. The bridge still reads sessions as Cody.
     systemd.services.hermes-deja-mcp = {
       description = "Read-only search over Cody's agent sessions, for Hermes";
       wantedBy = [ "multi-user.target" ];
@@ -40,7 +38,7 @@ in
     };
 
     codyos.hermes-agent.egress.loopbackPorts = [
-      3005 # Karakeep API
+      3005
       bridge.qmd.port
       bridge.deja.port
     ];
@@ -57,8 +55,6 @@ in
       '';
     };
 
-    # Default profile only: expose selected servers so unrelated MCP schemas
-    # and tools never enter its prompt surface.
     services.hermes-agent.mcpServers = {
       karakeep = {
         command = lib.getExe' pkgs.nodejs "npx";

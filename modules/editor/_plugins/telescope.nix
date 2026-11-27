@@ -4,7 +4,7 @@
     keymaps = {
       "<leader>cd" = {
         action = "zoxide list";
-        options.desc = "Change directory with Zoxide"; # Optional: for which-key integration
+        options.desc = "Change directory with Zoxide";
       };
     };
     extensions.zoxide = {

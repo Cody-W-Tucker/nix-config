@@ -8,14 +8,10 @@
 
 let
   nextmeeting = lib.getExe inputs.nextmeeting.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  # WORKAROUND: upstream's package omits SQLite required by its Rust binaries.
-  # https://github.com/akitaonrails/ai-usagebar/issues
-  # REVIEW-BY: 2026-12-15
-  aiUsagebar =
-    inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
-      (old: {
-        buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.sqlite ];
-      });
+  upstreamAiUsagebar = inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  aiUsagebar = upstreamAiUsagebar.overrideAttrs (old: {
+    buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.sqlite ];
+  });
   aiUsagebarCmd = lib.getExe aiUsagebar;
   hermesVoice = import ../../ai/hermes-agent/_voice/client.nix { inherit config lib pkgs; };
   hermesVoiceCmd = lib.getExe hermesVoice;
@@ -33,6 +29,13 @@ let
   };
 in
 {
+  codyos.workarounds.ai-usagebar-sqlite = {
+    reason = "ai-usagebar's package omits the SQLite its Rust binaries link against, so aiUsagebar adds it to buildInputs.";
+    upstream = "https://github.com/akitaonrails/ai-usagebar/blob/main/nix/package.nix";
+    reviewBy = "2027-02-27";
+    obsolete = lib.any (dep: lib.getName dep == "sqlite") (upstreamAiUsagebar.buildInputs or [ ]);
+  };
+
   home.packages = [
     aiUsagebar
   ];

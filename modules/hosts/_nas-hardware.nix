@@ -1,6 +1,3 @@
-# NAS hardware: disks, filesystems, and initrd/kernel modules. Storage policy
-# (ZFS pools, ARC size) and host policy live in default.nix; ZFS snapshot
-# policy lives in modules/backups/backups.nix.
 {
   boot = {
     initrd.availableKernelModules = [

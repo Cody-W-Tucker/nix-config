@@ -10,11 +10,6 @@ in
     host = host.name;
     ports.nvidia-gpu = exporterPort;
   };
-  # NVIDIA driver, CUDA, and GPU monitoring. Included by every host with an NVIDIA GPU.
-  # nixpkgs.config.cudaSupport is host-wide (pkgs.unstable inherits it through the overlay).
-  # A host that caps GPU board power sets the `nvidiaPowerLimit` host attribute (watts,
-  # modules/hosts/<host>.nix); the card's minimum applies, e.g. RTX 5060 LP reports
-  # min 123 W / max 145 W and values below it fail the unit.
   den.aspects.nvidia.nixos =
     {
       config,
@@ -23,7 +18,6 @@ in
       ...
     }:
     {
-      # Load nvidia driver for Xorg and Wayland. Even on headless installs, this is vital to installing the nvidia drivers.
       services.xserver.videoDrivers = [ "nvidia" ];
 
       hardware.nvidia = {
@@ -32,15 +26,12 @@ in
         nvidiaPersistenced = true;
         package = config.boot.kernelPackages.nvidiaPackages.production;
         nvidiaSettings = false;
-        # With 595+ kernel suspend notifiers, VRAM is otherwise saved to kernel RAM at
-        # suspend, which intermittently fails (NV_ERR_NO_MEMORY) and breaks resume.
         moduleParams.nvidia.NVreg_TemporaryFilePath = "/var/tmp";
       };
       services.prometheus.exporters.nvidia-gpu = {
         enable = true;
         port = exporterPort;
       };
-      # NVIDIA GPU exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
         config.services.prometheus.exporters.nvidia-gpu.port
       ];
@@ -61,8 +52,6 @@ in
         };
       };
       nixpkgs.config.cudaSupport = true;
-      # CUDA licences are covered by the global nixpkgs.config.allowUnfree (modules/nix/nix.nix).
-      # CUDA binary cache to avoid building from source
       nix.settings = {
         extra-substituters = [
           "https://cache.nixos-cuda.org"

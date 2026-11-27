@@ -31,7 +31,6 @@ let
     exec ${direnvExe} exec . ${bashExe} --noprofile --norc "$@"
   '';
 in
-# Harnesses use the basename to decide which shell syntax to generate.
 lib.getExe (
   pkgs.writeShellScriptBin "bash" ''
     # Shell detection must still work when the working directory has a blocked .envrc.

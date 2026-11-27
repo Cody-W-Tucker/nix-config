@@ -23,7 +23,6 @@
 
       services = {
         calibre-web = {
-          # Calibre web for reading Books (with Kobo sync support)
           enable = true;
           group = "media";
           listen.port = 8083;
@@ -34,7 +33,6 @@
           });
         };
         calibre-server = {
-          # Calibre content server for Readarr metadata lookups
           enable = true;
           group = "media";
           port = 7007;
@@ -55,7 +53,6 @@
         };
       };
 
-      # Open Port for kobo sync
       networking.firewall.allowedTCPPorts = [ 8083 ];
 
       nas.backups.sqlite = [

@@ -29,7 +29,6 @@
         enable = true;
         settings = {
           server = {
-            # Serve LAN, Tailscale, containers, and local processes directly.
             interface = [
               "0.0.0.0"
               "::0"
@@ -40,16 +39,11 @@
               "::0/0 allow"
             ];
 
-            # All homehub.tv names resolve to the NAS on the local network.
             local-zone = [ ''"${domain}." redirect'' ];
             local-data = [ ''"${domain}. A ${config.codyos.site.hosts.nas.lan}"'' ];
 
-            # StevenBlack ads/malware blocklist, generated upstream as a
-            # local-zone always_nxdomain fragment and included directly.
             include = [ "${inputs.stevenblack.packages.${pkgs.stdenv.hostPlatform.system}.unbound}/hosts" ];
 
-            # One journal line per client query and per blocklist hit; the
-            # egress-audit aspect ships them to Loki as job="egress", source="dns".
             log-queries = true;
             log-local-actions = true;
 

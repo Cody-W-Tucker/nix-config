@@ -6,10 +6,8 @@
 {
   den.aspects.nas.includes = [ den.aspects.hermes-agent ];
 
-  # Include only on the NAS: this aspect needs nas.backups.*.
   den.aspects.hermes-agent = {
     includes = [ den.aspects.google-workspace.hermes ];
-    # Cody serves QMD over loopback; local tools read the Hermes session path.
     provides.to-users.homeManager.imports = [ ./_bridge ];
 
     nixos =
@@ -24,8 +22,6 @@
           ./_nixos
         ];
 
-        # Cody reads Hermes's state: deja indexes its sessions, and beast
-        # fetches its CodyOS branches over SSH.
         users.users.${site.user.name}.extraGroups = [ config.services.hermes-agent.group ];
 
         networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
@@ -33,7 +29,6 @@
           9119
         ];
 
-        # Live databases and caches are not consistent Restic inputs.
         services.restic.backups.nas-files.exclude = map (suffix: "${hermesHome}/${suffix}") [
           "audio_cache"
           "cache"
@@ -45,8 +40,6 @@
           "**/*.sqlite-shm"
         ];
 
-        # Keep the CRM export's existing name even though the live database is
-        # outside the agent's hidden profile directory.
         nas.backups.sqlite = [
           {
             name = "hermes";
@@ -55,8 +48,6 @@
           }
         ]
         ++
-          # Other exports mirror the layout under hermesHome. A missing database
-          # fails the backup run; remove its entry when Hermes drops it.
           map
             (rel: {
               name = "hermes";

@@ -1,12 +1,5 @@
 {
   den.aspects.nightly-build.nixos =
-    # Nightly: build every host from GitHub `main` (filling the Harmonia cache),
-    # then switch the NAS to it, but only if the NAS's /etc/nixos checkout has no
-    # uncommitted or unpushed work. Also pre-builds the pending flake-update PR
-    # branch, so merging it is already a cache hit.
-    #
-    # Builds are GC-rooted under /nix/var/nix/gcroots/nightly-build so the weekly
-    # GC keeps beast's closure on the NAS.
     {
       config,
       pkgs,
@@ -22,7 +15,7 @@
           pkgs.curl
           pkgs.git
           pkgs.jq
-          pkgs.util-linux # runuser
+          pkgs.util-linux
         ];
         text = ''
           repo="github:Cody-W-Tucker/nix-config"
@@ -97,8 +90,6 @@
       };
     in
     {
-      # Builds run inside nix-daemon, not this unit, so the unit's Nice doesn't
-      # reach them. Keep all NAS builds behind the services it hosts.
       nix = {
         daemonCPUSchedPolicy = "batch";
         daemonIOSchedClass = "idle";
@@ -108,8 +99,6 @@
         description = "Build all hosts from main for the binary cache, then switch the NAS";
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
-        # Like system.autoUpgrade: the switch inside this job must not restart or
-        # stop the job itself.
         restartIfChanged = false;
         unitConfig.X-StopOnRemoval = false;
         environment.HOME = "/root";
@@ -127,7 +116,6 @@
         timerConfig = {
           OnCalendar = "*-*-* 03:00";
           RandomizedDelaySec = "15min";
-          # Catch up after the NAS was off at 03:00.
           Persistent = true;
         };
       };

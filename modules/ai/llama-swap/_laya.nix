@@ -8,8 +8,6 @@ let
   cfg = config.services.laya;
   endpoint = import ./_endpoint.nix;
   llamaSwap = "http://127.0.0.1:${toString endpoint.port}";
-  # The worker runs as llama-swap's user, so it reads Laya's private state through
-  # world-readable copies: published policies, and the trainer's Hugging Face cache.
   policies = "/var/cache/laya/policies";
   hub = "/var/cache/laya/hub";
   registry = pkgs.writeText "laya-classifiers.json" (builtins.toJSON cfg.classifiers);
@@ -142,7 +140,6 @@ in
       restartUnits = [ "laya.service" ];
     };
 
-    # The GPU worker is an ordinary llama-swap model; the gateway never uses the GPU.
     services.llama-swap.settings.models.vega = {
       ttl = 600;
       cmd = "${gpu} worker --device cuda --port \${PORT} --state-dir /run/vega/policies";
@@ -165,7 +162,6 @@ in
       ];
     };
 
-    # Peer dispatch must not hold a local slot while waiting for Vega.
     services.llama-swap.settings.peers.laya-gateway = {
       proxy = "http://127.0.0.1:${toString endpoint.layaPort}";
       models = [ "laya" ];
@@ -207,7 +203,6 @@ in
       path = [ pkgs.coreutils ];
       serviceConfig = sandbox // {
         Type = "oneshot";
-        # Returns only once every local model has stopped.
         ExecStartPre = "${pkgs.curl}/bin/curl -fsS --max-time 300 -X POST ${llamaSwap}/api/models/pause";
         ExecStart = "${gpu} train --device cuda";
         ExecStopPost = [

@@ -12,7 +12,6 @@
     let
       inherit (config.codyos.site) user;
       share = "/mnt/backup/Share";
-      # Share subfolders bind-mounted into the user's home on every host.
       homeFolders = [
         "Documents"
         "Music"
@@ -28,16 +27,13 @@
         overrideDevices = true;
         overrideFolders = true;
         guiAddress = lib.mkDefault "0.0.0.0:8384";
-        # syncthing-init PUTs this whole block, which resets unlisted options to
-        # Syncthing defaults; keep anything previously chosen in the GUI here.
         settings.options = {
-          # Replace the built-in STUN list (which includes stun.miwifi.com, China).
           stunServers = [
             "stun.l.google.com:19302"
             "stun1.l.google.com:19302"
             "stun2.l.google.com:19302"
           ];
-          urAccepted = -1; # usage reporting declined
+          urAccepted = -1;
         };
         settings.devices = {
           "beast" = {
@@ -49,9 +45,6 @@
         };
       };
 
-      # Sync and discovery ports are opened by openDefaultPorts. The web GUI is
-      # reachable over Tailscale only: the NAS nginx proxies beast-syncthing.${domain}
-      # to Beast's Tailscale address, and nas-syncthing.${domain} to the NAS locally.
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8384 ];
       systemd.tmpfiles.rules = [
         "d /mnt 0755 root root - -"
@@ -59,8 +52,6 @@
         "d ${share} 0755 ${user.name} users - -"
       ];
 
-      # Map Share subfolders into the home directory one by one, so the rest of
-      # the home directory stays outside Syncthing.
       fileSystems = lib.genAttrs' homeFolders (
         name:
         lib.nameValuePair "${user.home}/${name}" {
@@ -70,8 +61,6 @@
             "bind"
             "nofail"
           ]
-          # Where /mnt/backup is a ZFS pool (NAS), its datasets are mounted by
-          # zfs-mount.service rather than .mount units, so order after it.
           ++ lib.optionals config.boot.zfs.enabled [
             "x-systemd.requires=zfs-mount.service"
             "x-systemd.after=zfs-mount.service"
@@ -79,7 +68,6 @@
         }
       );
 
-      # Shared folder, identical on every host that imports this module.
       services.syncthing.settings.folders."Share" = {
         path = share;
         devices = [
@@ -103,8 +91,6 @@
       };
     };
 
-  # Opt-in (nas): the web UIs of both hosts behind the NAS nginx, reachable over
-  # Tailscale only (see the firewall note above).
   den.aspects.syncthing.nginx.nixos =
     { config, mkNginxVhost, ... }:
 

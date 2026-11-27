@@ -5,10 +5,6 @@
 }:
 
 {
-  # Newer Stylix walks `config.lib` while building target options, and nixvim's
-  # exported lib attrset now recurses there during flake checks after input updates.
-  # Keep nixvim's internal extended lib for module evaluation, but don't re-export
-  # it onto Home Manager's `lib` option.
   lib.nixvim = lib.mkForce { };
 
   imports = [
@@ -29,7 +25,6 @@
   programs.nixvim = {
     enable = true;
     nixpkgs.useGlobalPackages = true;
-    # Rendering `man nixvim` walks every nixvim option and costs ~2s of eval per rebuild.
     enableMan = false;
     defaultEditor = true;
     viAlias = true;
@@ -42,12 +37,8 @@
       };
     };
     clipboard = {
-      # Use system clipboard
       register = "unnamedplus";
     };
-    # Remote SSH (e.g. `kitty +kitten ssh` from Beast to NAS): forward yanks
-    # via OSC 52 so Kitty pastes into the local clipboard. Local sessions keep
-    # the wl-copy provider configured above.
     extraConfigLua = ''
       if vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil then
         local ok, osc52 = pcall(require, "vim.ui.clipboard.osc52")
@@ -103,8 +94,6 @@
         command = "setlocal spell spelllang=en_us";
       }
       {
-        # vim-pencil only wraps once initialized; SoftPencil forces soft
-        # line wrap (display-only, no inserted line breaks).
         event = [ "FileType" ];
         pattern = [
           "markdown"

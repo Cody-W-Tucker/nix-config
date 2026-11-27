@@ -1,4 +1,3 @@
-# Every packages/<name>/ directory, as built by the shared overlay.
 { inputs, ... }:
 let
   pkgs = import ./_pkgs.nix { inherit inputs; };

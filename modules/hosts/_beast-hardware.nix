@@ -1,5 +1,3 @@
-# Beast hardware: disks, initrd/kernel modules, and device quirks for this
-# machine. Host policy lives in default.nix.
 _:
 
 {

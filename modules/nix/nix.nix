@@ -1,8 +1,5 @@
 { den, inputs, ... }:
 {
-  # Nix itself: package manager settings (unfree, flakes, caches, GitHub access
-  # token, GC), repo maintenance commands and command-not-found. The shared overlay is
-  # `nix.overlay` below.
   den.aspects.nix.nixos =
     {
       config,
@@ -24,7 +21,6 @@
       };
 
       nix = {
-        # Flakes-only hosts: no nix-channel, and no stale channel entry in NIX_PATH.
         channel.enable = false;
         extraOptions = ''
           !include ${config.sops.templates."nix-access-tokens.conf".path}
@@ -43,7 +39,6 @@
             "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
           ];
         };
-        # Deduplicate the store on a timer rather than during every build.
         optimise.automatic = true;
         gc = {
           automatic = true;
@@ -52,15 +47,11 @@
         };
       };
 
-      # Repo maintenance commands installed system-wide.
       environment.systemPackages = [
         pkgs.check-imports
         pkgs.update
       ];
 
-      # Enables prompts to install missing packages when running commands
-      # The flake's own package is keyed to its single nixpkgs input, so call its
-      # builder with this host's nixpkgs revision (stable on nas, unstable on beast).
       programs.command-not-found = {
         enable = true;
         dbPath = pkgs.callPackage "${inputs.flake-programs-sqlite}/programs-sqlite.nix" {
@@ -81,10 +72,6 @@
 
   den.default.includes = [ den.aspects.nix ];
 
-  # The flake's shared overlay (see modules/flake/_overlay.nix); the packages themselves
-  # live in packages/<name>/ and reach pkgs through it. A host-level setting, so it is on
-  # the host schema rather than den.default (which also walks every user). Home Manager
-  # uses the host's pkgs (useGlobalPkgs), so users get it too.
   den.aspects.nix.overlay.nixos =
     { self, ... }:
     {

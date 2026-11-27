@@ -71,13 +71,11 @@
         extraComponents = [
           "music_assistant"
           "zha"
-          # Google TV / Chromecast built-in: power, apps, remote (PIN pair in HA UI)
           "androidtv_remote"
           "cast"
         ];
         package = pkgs.home-assistant.override {
           extraPackages = ps: [
-            # Existing integrations
             ps.aiohue
             ps."starlink-grpc-core"
             ps."ha-philipsjs"
@@ -88,9 +86,8 @@
             ps."kegtron-ble"
             ps."ibeacon-ble"
 
-            # NAS service integrations (runtime deps for UI-paired integrations)
             ps."jellyfin-apiclient-python"
-            ps.aiopyarr # Shared by sonar rradarr lidarr
+            ps.aiopyarr
             ps."transmission-rpc"
             ps.aioimmich
             ps.adguardhome
@@ -98,7 +95,6 @@
             ps."python-overseerr"
             ps.tailscale
 
-            # Auto-discovery integrations (required since default_config is not enabled)
             ps.aiodhcpwatcher
             ps.aiodiscover
             ps."cached-ipaddress"
@@ -107,7 +103,6 @@
             ps.serialx
             ps.zeroconf
 
-            # Bluetooth integration runtime dependencies (manifest-backed)
             ps.bleak
             ps."bleak-retry-connector"
             ps."bluetooth-adapters"
@@ -118,7 +113,6 @@
           ];
         };
         config = {
-          # https://www.home-assistant.io/integrations/default_config/
           default_config = { };
           automation = "!include automations.yaml";
           homeassistant = {
@@ -127,14 +121,12 @@
           };
           http = {
             use_x_forwarded_for = true;
-            # Only trust nginx on loopback
             trusted_proxies = [ "127.0.0.1" ];
             server_host = "127.0.0.1";
           };
           mobile_app = { };
           prometheus = { };
 
-          # Explicit discovery integrations (not included without default_config)
           dhcp = { };
           ssdp = { };
           usb = { };

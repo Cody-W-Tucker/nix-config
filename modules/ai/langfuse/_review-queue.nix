@@ -9,7 +9,6 @@ in
 {
   imports = [ inputs.cognitive-assistant.nixosModules.langfuse-review-queue ];
 
-  # Reuse the encrypted Langfuse API env already consumed by OpenCode.
   sops.secrets."opencode-langfuse-env" = {
     owner = config.codyos.site.user.name;
     mode = "0400";

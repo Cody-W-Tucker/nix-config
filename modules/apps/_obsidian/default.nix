@@ -18,7 +18,6 @@ let
     hash = "sha256-GlfRvFoH33W8T1I3hiZmZHzy99DazJRMgu13ufIOoyg=";
   };
 
-  # Fetch a community plugin from its GitHub release assets.
   mkReleasePlugin =
     {
       owner,
@@ -89,8 +88,6 @@ let
     }
   ];
 
-  # Stylix's obsidian target defines vault-level cssSnippets, which would
-  # otherwise replace the shared defaults instead of extending them.
   withSharedSnippets =
     settings:
     lib.mkMerge [

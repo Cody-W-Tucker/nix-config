@@ -19,8 +19,6 @@ let
   cfg = config.codyos.hermes-agent.sandbox;
 in
 {
-  # Upstream merges settings with recursiveUpdate, where a later list replaces
-  # an earlier one. Features add sandbox entries here instead.
   options.codyos.hermes-agent.sandbox = {
     binds = lib.mkOption {
       type = with lib.types; listOf (attrsOf (either str bool));
@@ -34,8 +32,6 @@ in
     };
   };
 
-  # The live checkout `update` applies. Hermes changes CodyOS in its own
-  # clone in the workspace (see documents/default.nix).
   config.codyos.hermes-agent.sandbox.binds = [
     {
       src = "/etc/nixos";
@@ -57,16 +53,11 @@ in
         timeout = 600;
       };
       plugins.entries.bubblewrap.settings = {
-        # The host network, limited by the hermes user's egress policy
-        # (egress/default.nix).
         profile = "network";
         memory_mb = 2048;
         cpu_seconds = 600;
         home_default_deny = "all";
         home_allow = cfg.homeAllow;
-        # Sockets that reach past the egress policy: tailscaled (`tailscale nc`
-        # to any tailnet host and port), sshd's local socket and PostgreSQL.
-        # The units close them too; cron jobs run outside the units.
         hide = [
           "/run/tailscale"
           "/run/nscd"

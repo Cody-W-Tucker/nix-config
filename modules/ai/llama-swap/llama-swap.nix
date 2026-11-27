@@ -13,9 +13,6 @@
       endpoint = import ./_endpoint.nix;
       user = config.codyos.site.user.name;
       group = "users";
-      # NAS intentionally tracks unstable llama-cpp 0.6.0 for SystemOne
-      # (upstream PR #29818) while the host stays on stable pkgs. CUDA comes from
-      # the host nixpkgs.config that pkgs.unstable inherits.
       llamaCpp = pkgs.unstable.llama-cpp;
 
       llamaServerCommand =
@@ -33,11 +30,6 @@
             extraArgs = [ ];
           }
           // model;
-          # Every rendered argument is shell-escaped so values containing shell
-          # metacharacters (notably the JSON --chat-template-kwargs value) pass
-          # through to llama-server literally. ${PORT} keeps its literal form for
-          # llama-swap's own template substitution, which still matches the
-          # `${PORT}` substring inside the single quotes.
           escape = lib.strings.escapeShellArg;
         in
         lib.concatStringsSep " " (
@@ -93,8 +85,6 @@
 
       services.llama-swap = {
         enable = true;
-        # Keep the router on nixos-unstable alongside the llama.cpp server, so
-        # decision-endpoint support can move forward with the upstream packages.
         package = pkgs.unstable.llama-swap;
         inherit (endpoint) port;
         listenAddress = "0.0.0.0";
@@ -107,8 +97,6 @@
             cmd = llamaServerCommand name model;
             ttl = model.ttl or 600;
           }) (import ./_models.nix { inherit pkgs; });
-          # Keep embeddings across workload changes. No set permits audio to share
-          # the card with either chat model; models outside the sets run alone.
           routing.router = {
             use = "matrix";
             settings.matrix = {
@@ -117,7 +105,6 @@
                 summarization = "summary & embed";
                 chat = "text & embed";
                 audio = "stt & cleanup & tts & embed";
-                # Laya's Vega fits beside embeddings, but not beside them and a chat model.
                 classify = "vega & embed";
               };
             };
@@ -147,8 +134,6 @@
       };
 
       systemd.tmpfiles.rules = [
-        # CacheDirectory creates /var/cache/llama-swap as root:root; re-own for service user so
-        # HF_HOME and XDG_CACHE_HOME subdirectories are writable at runtime.
         "d /var/cache/llama-swap 0755 ${user} ${group} - -"
         "d /var/cache/llama-swap/huggingface 0755 ${user} ${group} - -"
       ];

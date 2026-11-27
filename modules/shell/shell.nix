@@ -1,11 +1,5 @@
 { den, ... }:
 {
-  # Shell feature, registered on every host and every user. The system half sets up zsh and
-  # starship and the base command-line packages. The Home Manager half is the interactive
-  # shell: zsh (vi-mode, history, aliases), the navigation tools wired into it (fzf, yazi,
-  # eza, bat, zoxide, direnv) and the small CLI tools every host's user gets.
-  # `config.lib ? stylix` is true only where the theming aspect imports Stylix (beast), so
-  # fzf colors and the yazi git theme apply there and nowhere else.
   den.aspects.shell = {
     nixos =
       { pkgs, ... }:
@@ -16,10 +10,6 @@
           };
           zsh = {
             enable = true;
-            # Disable the completion in the global module because it would call compinit
-            # but the home manager config also calls compinit. This causes the cache to be invalidated
-            # because the fpath changes in-between, causing constant re-evaluation and thus startup
-            # times of 1-2 seconds. Disable the completion here and only keep the home-manager one to fix it.
             enableCompletion = false;
           };
         };
@@ -38,12 +28,6 @@
         ...
       }:
       let
-        # glow has no Stylix target and ignores its own `glow.yml`, so the preview's
-        # palette can only arrive as a style file on the command line. A style file
-        # replaces glamour's built-in style rather than merging with it, so alongside the
-        # Stylix colours this carries the few markers glamour would otherwise drop:
-        # without them ordered lists lose their `1.`, bullets and task boxes disappear,
-        # `---` renders as nothing and bold reads as plain text.
         themed = config.lib ? stylix;
         glowStyle =
           if themed then
@@ -100,7 +84,7 @@
           packages = with pkgs; [
             fastfetch
             fd
-            glow # renders the markdown preview in yazi
+            glow
             tree
             unzip
             zip
@@ -114,14 +98,12 @@
           ripgrep.enable = true;
           yazi = {
             enable = true;
-            # whatchanged requires Yazi 26.8.15 or newer, including on stable hosts.
             package = pkgs.unstable.yazi;
             enableZshIntegration = true;
             shellWrapperName = "rr";
             plugins = {
               git = pkgs.unstable.yaziPlugins.git;
               piper = pkgs.unstable.yaziPlugins.piper;
-              # Neither is in nixpkgs.
               whatchanged = pkgs.fetchFromGitHub {
                 owner = "WhoSowSee";
                 repo = "whatchanged.yazi";
@@ -186,12 +168,6 @@
                 5
               ];
             };
-            # Render markdown in the preview pane instead of showing its source. This is
-            # piper's documented glow recipe, with only `-s` changed to the Stylix style
-            # above: piper pipes a command's output into the pane, passing the pane width
-            # as `$w` and the hovered file as `$1`. Yazi uses the first matching previewer,
-            # so whatchanged's view (a `search://` listing) comes first and markdown comes
-            # before the gutter's catch-all `text/*`.
             settings.plugin.prepend_previewers = [
               {
                 url = "search://*";
@@ -288,12 +264,12 @@
             history = {
               path = "$HOME/.local/share/zsh/zsh_history";
               size = 10000;
-              share = false; # Prevents concurrent sessions from stepping on each other
+              share = false;
             };
             setOptions = [
-              "EXTENDED_HISTORY" # Preserves timestamps and safely escapes multiline commands
-              "INC_APPEND_HISTORY" # Writes to history immediately, not at session close
-              "HIST_IGNORE_ALL_DUPS" # Cleans up duplicates to keep the file smaller
+              "EXTENDED_HISTORY"
+              "INC_APPEND_HISTORY"
+              "HIST_IGNORE_ALL_DUPS"
             ];
             plugins = [
               {

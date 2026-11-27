@@ -47,9 +47,6 @@ let
   hindsightPlugin = pkgs.runCommand "hermes-plugin-hindsight" { } ''
     cp -R ${hindsightSource}/hindsight-integrations/hermes "$out"
   '';
-  # Hermes already seals shared libraries into its environment. Package only
-  # the plugin-specific modules so extraPythonPackages does not add their
-  # propagated copies of aiohttp, urllib3, pydantic, etc. a second time.
   hindsightPython = python.toPythonModule (
     pkgs.runCommand "hermes-hindsight-python" { } ''
       mkdir -p "$out/${config.services.hermes-agent.package.python.sitePackages}"

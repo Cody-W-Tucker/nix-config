@@ -1,5 +1,4 @@
 {
-  # Notification center (SwayNC).
   den.aspects.graphical = {
     provides.to-users.homeManager = {
       services.swaync = {
@@ -67,8 +66,6 @@
             mpris = {
               image-size = 96;
               image-radius = 7;
-              # playerctld wraps other player buses for playerctl; ignore the shim
-              # so the real players (e.g. Chrome/Feishin) are shown instead.
               blacklist = [ "playerctld" ];
             };
             volume = {
@@ -80,7 +77,6 @@
           };
           notification-visibility = {
             voice-input = {
-              # Surpress notification when using speech to text
               state = "ignored";
               summary = "Voice Input";
             };

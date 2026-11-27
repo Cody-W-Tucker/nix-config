@@ -32,8 +32,6 @@ let
     hash = "sha256-nHweNF9lUhwbeC58XBSlgGfbVGZvJTfRoNAO/vLdkoQ=";
   };
 
-  # Same value handling as Home Manager's per-tool skills options: a string is
-  # the SKILL.md text; a path is either a skill directory or its SKILL.md.
   mkAgentsSkill =
     name: content:
     if lib.hm.strings.isPathLike content then
@@ -70,9 +68,6 @@ in
       vision = "${visionSource}/skills/vision";
     };
 
-    # Claude Code reads only ~/.claude/skills. Codex and Pi read only
-    # ~/.agents/skills. OpenCode reads both and resolves the identical copies
-    # by name, so it needs no skills option of its own.
     programs.claude-code.skills = skills;
     home.file = lib.mapAttrs' mkAgentsSkill skills;
   };

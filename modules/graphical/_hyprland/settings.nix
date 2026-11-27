@@ -1,5 +1,3 @@
-# Hyprland settings (Lua config). `hardwareConfig` is the host's monitor/workspace layout,
-# passed in by the hyprland aspect from `host.hardwareConfig`.
 { hardwareConfig }:
 {
   osConfig,
@@ -18,13 +16,10 @@ let
 
   lua = lib.generators.mkLuaInline;
 
-  # Dispatcher calls rendered as raw Lua expressions for bind actions
   exec = cmd: lua "hl.dsp.exec_cmd(${builtins.toJSON cmd})";
 
-  # Helper to focus or run applications (renders a single hl.dsp.exec_cmd call)
   focusOrRun = appClass: cmd: lua ''hl.dsp.exec_cmd("focus-or-run '${appClass}' '${cmd}'")'';
 
-  # One bind: { _args = [ key action (options)? ] } renders hl.bind(key, action[, options])
   mkBind = key: action: options: {
     _args = [
       key
@@ -36,7 +31,6 @@ let
   execBind = key: cmd: mkBind key (exec cmd) null;
   actionBind = key: action: mkBind key action null;
 
-  # Drag/resize binds need the mouse option flag (replaces hyprlang bindm)
   mouseBind = key: action: mkBind key action { mouse = true; };
 
   screenshotAction = pkgs.writeShellApplication {
@@ -70,10 +64,8 @@ let
   };
 
   binds = [
-    # Move/resize windows with mainMod + LMB/RMB and dragging
     (mouseBind "${mainMod} + mouse:272" (lua "hl.dsp.window.drag()"))
     (mouseBind "${mainMod} + mouse:273" (lua "hl.dsp.window.resize()"))
-    # Application launchers (focus existing window or run new)
     (execBind "${mainMod} + Q" terminal)
     (actionBind "${mainMod} + 0" (focusOrRun "zen-beta" browser))
     (execBind "${mainMod} + SHIFT + Return" "[workspace special:ai] ${webApp}=https://grok.com/")
@@ -101,14 +93,12 @@ let
     (actionBind "${mainMod} + D" (lua ''hl.dsp.workspace.toggle_special("dev")''))
     (actionBind "${mainMod} + E" (lua ''hl.dsp.workspace.toggle_special("think")''))
     (actionBind "${mainMod} + Y" (lua ''hl.dsp.workspace.toggle_special("media")''))
-    # Toggle waybar
     (execBind "${mainMod} + P" "pkill -SIGUSR1 waybar")
     (execBind "${mainMod} + Escape" "llama-dictate toggle")
     (execBind "${mainMod} + SHIFT + Escape" "llama-dictate recover")
     (execBind "${mainMod} + CTRL + Escape" "llama-dictate fix")
   ];
 
-  # Multimedia keys for volume, mic, and LCD brightness (bindel: locked + repeating)
   repeatingExecBinds =
     map
       (
@@ -145,9 +135,7 @@ let
         }
       ];
 
-  # Locking binds that don't repeat (bindl)
   lockedExecBinds = map (spec: mkBind spec.key (exec spec.command) { locked = true; }) [
-    # Requires playerctl
     {
       key = "XF86AudioNext";
       command = "playerctl next";
@@ -165,7 +153,6 @@ let
       command = "playerctl previous";
     }
   ];
-  # binds $mainMod + [shift +] {1..9} to [move to] workspace {1..9}
   workspaceBinds = builtins.concatLists (
     builtins.genList (
       i:
@@ -199,7 +186,6 @@ in
     end)
   '';
   wayland.windowManager.hyprland.settings = {
-    # Exposes the old `$mainMod` hyprlang variable as a Lua local
     mainMod = {
       _var = mainMod;
     };
@@ -290,7 +276,6 @@ in
         opacity = "1.0 1.0 1.0 override";
       }
 
-      # Ensure all web apps don't float
       {
         match.initial_class = "^(Chromium-browser)$";
         tile = true;
@@ -304,7 +289,6 @@ in
         pin = true;
       }
 
-      # Throw sharing indicators away
       {
         match.title = "^(Firefox — Sharing Indicator)$";
         workspace = "special silent";
@@ -319,11 +303,9 @@ in
       }
     ];
 
-    # Workspace and monitor layout come from the host's hardwareConfig
     workspace_rule = hardwareConfig.workspace;
     inherit (hardwareConfig) monitor;
 
-    # Custom curves used by the animation entries below
     curve = [
       {
         _args = [

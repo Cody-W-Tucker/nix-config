@@ -1,6 +1,3 @@
-# `inbox`: agents leave Cody a one-line note about friction in the Discord
-# #inbox channel through a channel webhook. Hermes does not watch the channel;
-# Cody picks notes up, or @mentions Hermes on one.
 {
   config,
   lib,

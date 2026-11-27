@@ -1,8 +1,6 @@
 _:
 
 let
-  # getSubOptions alone includes shared modules, but not the user's imports.
-  # Extend the existing submodule type so its specialArgs are preserved too.
   homeOptions = host: ''
     let
       host = (builtins.getFlake (toString ./.)).nixosConfigurations.${host};
@@ -28,9 +26,6 @@ in
               formatting = {
                 command = [ "nixfmt" ];
               };
-              # One option set per host (they run different nixpkgs releases
-              # and profiles), plus Home Manager for everything under users/.
-              # Each set includes the codyos.* options declared in modules/.
               options = {
                 beast = {
                   expr = "(builtins.getFlake (toString ./.)).nixosConfigurations.beast.options";
@@ -48,9 +43,13 @@ in
             };
           };
         };
-        dockerls.enable = true; # Docker
-        bashls.enable = true; # Bash
-        marksman.enable = true; # Markdown
+        ast_grep = {
+          enable = true;
+          filetypes = [ "nix" ];
+        };
+        dockerls.enable = true;
+        bashls.enable = true;
+        marksman.enable = true;
       };
       keymaps = {
         silent = true;

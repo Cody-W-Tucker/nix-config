@@ -15,7 +15,8 @@ When planning a feature or auditing what a host declares, use the [capability in
 
 - When a report is vague ("this is slow", "this works differently"), read the feature's page for what normal is first, then recall its history (Hindsight, deja, and `git log` on the aspect's files), then check the host. The page, the aspect and that history are three views of one feature; the file paths and aspect name join them.
 - When a change alters what the user experiences, update that feature's page in the same change, following [Writing these docs](docs/src/writing-docs.md#what-a-page-records). Record only what is specific to this system and visible to the user; omit general knowledge, config recaps and the reasons for choices. Never invent a behavior or a number.
-- Keep operator guidance in `docs/` and durable editing rules in the nearest `AGENTS.md`. Keep local READMEs for temporary workarounds with a removal condition, not permanent feature maps. Keep source comments for non-obvious constraints, not inline usage guides.
+- Keep operator guidance in `docs/` and durable editing rules in the nearest `AGENTS.md`. Keep local READMEs for temporary workarounds with a removal condition, not permanent feature maps.
+- Write no comments in Nix. Make the code say it through names and structure. Retain a workaround's `REVIEW-BY` date, upstream link and rationale, a constraint whose violation breaks something, or a decode of an opaque value in Hindsight (bank `codyos`, tags `source-note` and `file:<path>`). Recall that tag before changing a file. The `no-comments` rule in `lint/` enforces this as an LSP diagnostic and a flake check.
 
 ## Evidence Discipline
 
@@ -48,7 +49,7 @@ Once the changes have settled, the user will run the `update` script to build an
 
 ### Editing
 
-- Keep narrowly scoped edits minimal: preserve unrelated lines and comments, and avoid repository-wide formatting. Before summarizing Git state or claiming no unrelated files were touched, inspect status and the complete staged and unstaged diff for every modified or unmerged path; enumerate relevant changed files by exact path.
+- Keep narrowly scoped edits minimal: preserve unrelated lines, and avoid repository-wide formatting. Before summarizing Git state or claiming no unrelated files were touched, inspect status and the complete staged and unstaged diff for every modified or unmerged path; enumerate relevant changed files by exact path.
 - **For a nice-to-have, take the upstream default.** Configure a small convenience the way its own documentation does, and theme it only through a configuration surface the tool already supports — Home Manager generating that file is fine, and it should carry Stylix colours rather than literals. Do not write a wrapper, patch, package or post-processing step to close a cosmetic gap: report the gap and leave it. The user asks explicitly when a nice-to-have is worth more than that.
 
 ### Naming & Files

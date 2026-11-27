@@ -23,7 +23,7 @@ Keep pages atomic: one feature per page, described by what it does for the user.
 
 Say each thing once. Deploy commands are on [Building and updating](getting-started.md); checks are on [Checks and standards](checks.md). Other pages link there. Define a term on the page that uses it. There is no glossary.
 
-Keep operator guidance in this book and repository instructions in the nearest `AGENTS.md`. A local README is for a temporary workaround with a removal condition. Keep source comments for constraints and details that are not obvious from the code, not usage guides or inventories.
+Keep operator guidance in this book and repository instructions in the nearest `AGENTS.md`. A local README is for a temporary workaround with a removal condition. Nix source has no comments; see the comment rule in the root [`AGENTS.md`](../AGENTS.md).
 
 When agreed behavior changes, update the page in the same change. If a performance question makes a number part of what the user expects, add that number. Benchmarks otherwise stay in memory.
 

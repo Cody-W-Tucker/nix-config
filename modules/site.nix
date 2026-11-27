@@ -7,8 +7,6 @@
 let
   inherit (lib) mkOption types;
 
-  # Facts of the machines in this flake come from the den host attributes
-  # (modules/hosts/<host>.nix): lan, tailscale and, optionally, mac.
   hostFacts = lib.mapAttrs (
     _: host:
     {
@@ -17,9 +15,6 @@ let
     // lib.optionalAttrs (host ? mac) { inherit (host) mac; }
   ) config.den.hosts.x86_64-linux;
 
-  # The primary user is the Den user entity (den.hosts.<system>.<host>.users), so the account
-  # name is declared once. Every host has the same single user today; with more than one,
-  # set codyos.site.user.name explicitly.
   userNames = lib.unique (
     lib.concatMap (host: map (user: user.userName) (lib.attrValues host.users)) (
       lib.attrValues config.den.hosts.x86_64-linux
@@ -32,9 +27,6 @@ let
       throw "codyos.site.user.name: den hosts declare users ${toString userNames}; set it explicitly.";
 in
 {
-  # Site-wide facts shared by every host: the primary user, the public domain,
-  # and LAN/Tailscale addresses. Read them as `config.codyos.site` in NixOS
-  # modules and `osConfig.codyos.site` in Home Manager modules.
   den.aspects.site.nixos =
     { config, ... }:
     let

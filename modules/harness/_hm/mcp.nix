@@ -43,7 +43,6 @@ in
 {
   home.sessionVariables = dejaEmbedding;
 
-  # Ship the CLI and its instructions with this harness's session-search integration.
   home.packages = [
     deja
     pkgs.sqlite
@@ -52,14 +51,11 @@ in
 
   sops.secrets.karakeep-api-key = { };
 
-  # Global MCP tools for all agents
   programs.mcp = {
     enable = true;
     servers = {
       deja.command = lib.getExe dejaMcp;
       karakeep.command = lib.getExe karakeepMcp;
-      # Use the same NAS index and GPU backend as Hermes, without exposing a
-      # network listener. On the NAS itself, run QMD directly.
       qmd =
         if localAi then
           {
@@ -95,7 +91,6 @@ in
     };
   };
 
-  # Pi uses the same MCP schema, without Home Manager's null/default fields.
   home.file."${config.programs.pi-coding-agent.configDir}/mcp.json".text = builtins.toJSON {
     mcpServers = lib.mapAttrs (
       _: server: lib.filterAttrs (_: value: value != null && value != [ ] && value != { }) server

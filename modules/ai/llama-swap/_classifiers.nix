@@ -1,7 +1,5 @@
 { lib, ... }:
 let
-  # Agency service catalog IDs (Services/services.json) and the job each one delivers.
-  # Keep IDs in step with the catalog; editing any text starts a new dataset.
   services = {
     seo = "search engines and AI assistants crawl, index and rank the client's site for priority queries";
     paid-media = "Google, Meta and LinkedIn ad spend run to a target cost per qualified lead or acquisition";
@@ -18,8 +16,6 @@ let
     account-management = "client reporting, commitments, scope decisions and renewal";
     workflow-enablement = "one of a client's recurring business jobs run as an agent workflow inside the client's own tools; not tooling for running one's own servers, models or agents";
   };
-  # Vega distils Jev and the user's Karakeep list edits: both train it, and a fifth of bookmarks
-  # is held out to check Vega against them before it answers alone.
   distill = {
     learnFromTeacher = true;
     calibrateOn = [

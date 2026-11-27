@@ -16,10 +16,6 @@
 
       cfg = config.nas.backups;
 
-      # Native dump locations (PostgreSQL) are Restic inputs directly.
-      # App-specific dumps owned by their service modules (e.g. Langfuse
-      # Postgres/ClickHouse under modules/ai/langfuse) register via
-      # nas.backups.dataDirectories instead of being listed here.
       fixedHostData = [
         "/mnt/projects"
         "/mnt/knowledge"
@@ -40,7 +36,6 @@
             destDir = "/mnt/backup/backups/${s.name}";
             dest = "${destDir}/${s.filename}";
             destTmp = "${dest}.in-progress";
-            # SQLite dot-commands single-quote the filename; '' escapes a literal '.
             sqliteFileArg = "'${lib.replaceStrings [ "'" ] [ "''" ] destTmp}'";
             dotCommand = ".backup ${sqliteFileArg}";
           in
@@ -105,7 +100,6 @@
         backupAll = true;
         compression = "zstd";
         location = "/mnt/backup/backups/postgresql";
-        # Restic starts this service through its Requires/After dependencies.
         startAt = [ ];
       };
 

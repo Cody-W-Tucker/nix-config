@@ -32,7 +32,6 @@
 
       sops.secrets."langfuse-env" = { };
 
-      # The Chainguard MinIO runtime UID is image-dependent.
       systemd.tmpfiles.rules = [
         "d /mnt/appdata/langfuse 0755 root root -"
         "d /mnt/appdata/langfuse/postgres 0700 999 999 -"
@@ -42,8 +41,6 @@
         "d /mnt/appdata/langfuse/minio 0777 root root -"
       ];
 
-      # Container startup order does not guarantee dependency readiness.
-      # Langfuse retries while its dependencies initialize.
       systemd.services =
         (lib.genAttrs
           (map (n: "docker-${n}") [
@@ -79,17 +76,9 @@
           };
         };
 
-      # Shared non-secret environment for web + worker. Every value here is also
-      # present verbatim in the upstream compose default; secrets live only in the
-      # SOPS env file.
       virtualisation.oci-containers.containers =
         let
           commonEnv = {
-            # LLM connection base URLs are SSRF-checked separately.
-            # LANGFUSE_UNSAFE_TRUSTED_PRIVATE_IPS does not open them (upstream
-            # #13097; live 4.15 still returns "Blocked IP address detected").
-            # Host allowlist short-circuits the IP check. Containers reach
-            # llama-swap via host.docker.internal, never 127.0.0.1.
             LANGFUSE_LLM_CONNECTION_WHITELISTED_HOST = "host.docker.internal";
             LANGFUSE_LLM_CONNECTION_WHITELISTED_IPS = "172.18.0.1,172.17.0.1,${config.codyos.site.hosts.nas.lan}";
 
@@ -200,7 +189,6 @@
           "minio" = {
             image = "cgr.dev/chainguard/minio";
             entrypoint = "sh";
-            # Create the upstream default bucket before making MinIO available.
             cmd = [
               "-c"
               ''
@@ -221,8 +209,6 @@
 
           "redis" = {
             image = "docker.io/redis:7";
-            # Password comes from the SOPS env file (REDIS_AUTH); expand it at runtime
-            # so the secret is never written to the Nix store.
             entrypoint = "sh";
             cmd = [
               "-c"
@@ -237,8 +223,6 @@
           };
         };
 
-      # Nginx ingress: only the web service is exposed to the host (on localhost),
-      # proxied here. Internal dependency ports are NOT published (see above).
       services.nginx.virtualHosts = mkNginxVhost {
         host = "langfuse.${domain}";
         port = 3030;

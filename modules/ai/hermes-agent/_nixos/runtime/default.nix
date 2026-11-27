@@ -9,7 +9,6 @@
 let
   cfg = config.services.hermes-agent;
   inherit (inputs.workflow.packages.${pkgs.stdenv.hostPlatform.system}) workflowCli;
-  # Expose only the CRM directory, not HERMES_HOME, to terminal commands.
   crmDir = "${cfg.stateDir}/crm";
   ldLibraryPath = lib.concatStringsSep ":" [
     "/run/opengl-driver/lib"
@@ -29,8 +28,6 @@ in
       "operational/verified-work-run" = "${inputs.workflow}/skills/operational/verified-work-run";
     };
 
-    # Upstream's activation creates stateDir, HERMES_HOME, the workspace and
-    # the standard state subdirs; this adds the CRM directory.
     systemd.tmpfiles.rules = [
       "d ${crmDir} 2770 ${cfg.user} ${cfg.group} - -"
     ];

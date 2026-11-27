@@ -2,7 +2,6 @@
 {
   den.aspects.beast.includes = [ den.aspects.gaming ];
 
-  # Steam, gamescope, gamemode and gaming performance tweaks. Including the aspect turns it on.
   den.aspects.gaming.nixos =
     { pkgs, ... }:
     {
@@ -15,7 +14,7 @@
       };
       environment.systemPackages = with pkgs; [
         gamescope-wsi
-        prismlauncher # Minecraft launcher with native Linux support
+        prismlauncher
       ];
       powerManagement.cpuFreqGovernor = "performance";
     };

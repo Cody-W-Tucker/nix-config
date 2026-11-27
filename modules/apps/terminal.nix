@@ -1,5 +1,4 @@
 {
-  # Kitty terminal (the default $TERMINAL) with its shell aliases.
   den.aspects.apps.provides.to-users.homeManager = _: {
     home.sessionVariables.TERMINAL = "kitty";
 

@@ -2,15 +2,12 @@
 let
   mkInstantiate = import ./_instantiate.nix { inherit inputs; };
 
-  # Each channel pairs a nixpkgs with the Home Manager and NixVim releases built for it.
-  # The HM-version checks in modules/harness/_hm/ rely on this pairing.
   channels = {
     stable = {
       inherit (inputs) nixpkgs;
       home-manager = inputs.home-manager-stable;
       nixvim = inputs.nixvim-stable;
     };
-    # `home-manager` is HM master following nixpkgs-unstable.
     unstable = {
       nixpkgs = inputs.nixpkgs-unstable;
       inherit (inputs) home-manager nixvim;
@@ -18,8 +15,6 @@ let
   };
 in
 {
-  # A host says only `channel = "stable" | "unstable"`; its builder, Home Manager module and
-  # NixVim module follow from it (mkDefault, so one host can still override any of them).
   den.schema.host =
     { config, lib, ... }:
     let

@@ -1,5 +1,4 @@
 {
-  # XDG user directories, document-viewer desktop entries and default applications.
   den.aspects.graphical = {
     provides.to-users.homeManager =
       { pkgs, ... }:
@@ -68,20 +67,20 @@
               "application/vnd.ms-excel.template.macroEnabled.12" = "xleak.desktop";
               "text/*" = "nvim.desktop";
               "text/html" = "zen-beta.desktop";
-              "application/json" = "nvim.desktop"; # JSON is technically not text/*
-              "application/javascript" = "nvim.desktop"; # For explicit JS files
-              "application/x-subrip" = "nvim.desktop"; # For .srt subtitle files
+              "application/json" = "nvim.desktop";
+              "application/javascript" = "nvim.desktop";
+              "application/x-subrip" = "nvim.desktop";
               "x-scheme-handler/http" = "zen-beta.desktop";
               "x-scheme-handler/https" = "zen-beta.desktop";
             };
           };
         };
         home.packages = with pkgs; [
-          feh # Image viewer
-          zathura # PDF viewer
-          mpv # Media player
-          xleak # Excel spreadsheet viewer
-          doxx # Word document viewer
+          feh
+          zathura
+          mpv
+          xleak
+          doxx
         ];
       };
   };

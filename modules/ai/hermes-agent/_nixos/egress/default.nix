@@ -1,8 +1,3 @@
-# What the hermes user may reach. One policy covers every process it runs:
-# the gateway, its MCP servers, cron jobs and the terminal sandbox (which
-# shares the host network). The internet is open; this host, the LAN, the
-# tailnet, IPv6 and SSH are closed except for the local services declared
-# through codyos.hermes-agent.egress.
 {
   config,
   lib,
@@ -26,7 +21,6 @@ in
   };
 
   config = {
-    # DNS goes to the local resolver.
     codyos.hermes-agent.egress.loopbackPorts = [ 53 ];
 
     networking.nftables.tables.hermes-egress = {
@@ -65,14 +59,11 @@ in
         }
       '';
     };
-    # The build-time ruleset check has no /etc/passwd entry for the hermes user.
     networking.nftables.preCheckRuleset = ''
       sed -e 's/skuid ${user} jump/skuid 65534 jump/g' \
           -e 's/skuid != { root, ${owner}, ${user} }/skuid != { 0, 1000, 65534 }/g' -i ruleset.conf
     '';
 
-    # Paths no Hermes process needs, closed for the units themselves.
-    # tailscaled's socket dials any tailnet host and port (`tailscale nc`).
     systemd.services =
       lib.genAttrs
         [

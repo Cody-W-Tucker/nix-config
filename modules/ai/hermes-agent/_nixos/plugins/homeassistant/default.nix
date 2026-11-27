@@ -27,7 +27,6 @@ in
   codyos.hermes-agent.egress.loopbackPorts = [ 8123 ];
   services.hermes-agent = {
     extraPlugins = lib.mkOrder 900 [ homeAssistantPlugin ];
-    # HASS_TOKEN comes from the existing Hermes SOPS secret.
     environment.HASS_URL = "http://127.0.0.1:8123";
   };
 }

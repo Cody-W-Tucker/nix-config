@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   ...
 }:
@@ -7,10 +8,6 @@ let
   endpoint = import ./llama-swap/_endpoint.nix;
   baseUrl = "http://${endpoint.host}:${toString endpoint.port}";
   historyUrl = "http://${endpoint.host}:${toString endpoint.speechHistoryPort}";
-  # WORKAROUND: wtype 0.5 still uses control-range codes for mixed text/key commands.
-  # https://github.com/atx/wtype/issues/71
-  # https://github.com/atx/wtype/pull/74
-  # REVIEW-BY: 2026-11-30
   wtypeFixedKeycodes = pkgs.wtype.overrideAttrs (oa: {
     postPatch = (oa.postPatch or "") + ''
       substituteInPlace main.c \
@@ -432,5 +429,12 @@ let
 in
 
 {
+  codyos.workarounds.wtype-keycodes = {
+    reason = "wtype 0.5 still sends control-range keycodes for mixed text and key commands, so wtypeFixedKeycodes patches them.";
+    upstream = "https://github.com/atx/wtype/pull/74";
+    reviewBy = "2027-02-27";
+    obsolete = lib.versionAtLeast pkgs.wtype.version "0.6";
+  };
+
   home.packages = [ llamaDictate ];
 }

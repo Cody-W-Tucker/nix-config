@@ -81,6 +81,7 @@ in
   imports = [
     (import ./hindsight { inherit localAi; })
     ./langfuse
+    ./no-comments
     ./rtk
   ];
 
@@ -105,8 +106,6 @@ in
     };
 
     programs.claude-code = {
-      # home-manager release-26.05 only accepts a list; unstable prefers named
-      # plugins and warns on the list form.
       plugins =
         if builtins.isList options.programs.claude-code.plugins.default then
           lib.attrValues claudePluginAttrs

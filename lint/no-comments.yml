@@ -1,0 +1,14 @@
+id: no-comments
+language: nix
+severity: error
+ignores:
+  - ".agents/**"
+rule:
+  kind: comment
+fix: ""
+message: >-
+  Comments are not allowed in this repo; the Nix must read on its own. Delete
+  this comment. If it said something the code does not, rename the binding or
+  attribute so the code says it. Put user-facing behavior in
+  docs/src/<feature>.md, and retain a workaround's REVIEW-BY date, upstream
+  link or a breaking constraint in Hindsight (bank codyos, tag source-note).

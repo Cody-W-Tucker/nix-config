@@ -3,8 +3,6 @@
   den.aspects.nas.includes = [ den.aspects.nfs.server ];
   den.aspects.beast.includes = [ den.aspects.nfs.client ];
 
-  # NFS: the NAS exports its project and knowledge trees to the LAN; beast mounts them.
-
   den.aspects.nfs.server.nixos =
     {
       config,
@@ -12,8 +10,6 @@
     }:
 
     {
-      # Export only to Beast on the LAN.  Tailscale is NOT used for
-      # these shares.
 
       services.nfs.server = {
         enable = true;
@@ -37,9 +33,6 @@
       site = config.codyos.site;
     in
     {
-      # Native units keep unavailable NAS shares out of fstab-generator during
-      # systemd re-execution: https://github.com/systemd/systemd/issues/44396
-      # mkBefore keeps nfs-utils ahead of cifs-utils in the fsck/mount PATH.
       system.fsPackages = lib.mkBefore [ pkgs.nfs-utils ];
       systemd.mounts = [
         {

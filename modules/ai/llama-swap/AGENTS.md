@@ -22,4 +22,4 @@ Does not own user chat clients, Hermes identity, or general desktop AI tooling.
 - Keep client/editor/Hermes integration outside this module unless it is required service plumbing.
 - Keep long scripts in their own files next to the Nix that runs them.
 - A multimodal model must set `mmprojFile` to its matching projector, or llama-server rejects image input.
-- Keep tuning benchmarks in Hindsight (`codyos` bank, tag `llama-swap`), not in comments. A comment states the constraint; the numbers behind it live in memory.
+- Keep tuning benchmarks in Hindsight (`codyos` bank, tag `llama-swap`), not in comments. The constraints themselves are `source-note` memories in the same bank.

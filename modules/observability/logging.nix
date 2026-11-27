@@ -14,7 +14,6 @@ let
           labels = "job=systemd-journal,host=$hostname,unit=$systemd_unit,level=$level";
           line_format = "json";
         }
-        # Connection records split out of the journal by egress-audit.nix.
         {
           name = "loki";
           match = "egress";
@@ -32,10 +31,6 @@ in
     den.aspects.logging.forward-to-nas
   ];
 
-  # Host telemetry shared by every host: the node and smartctl exporters (scraped by the NAS
-  # Prometheus) and the journal input. Shipping requires an explicit forwarding aspect.
-  # Host-specific inputs and outputs (e.g. NAS nginx logs) are appended by the
-  # owning module; list settings concatenate after the shared entries (mkBefore).
   den.aspects.logging.nixos =
     {
       config,
@@ -100,7 +95,6 @@ in
         };
       };
 
-      # smartctl exporter: scraped by the NAS Prometheus over Tailscale (localhost on the NAS).
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
         config.services.prometheus.exporters.smartctl.port
       ];
@@ -111,7 +105,6 @@ in
     { config, lib, ... }:
     forwardJournal "127.0.0.1" config.services.loki.configuration.server.http_listen_port lib;
 
-  # Open and advertise the desktop exporter endpoints for remote scraping.
   den.aspects.logging.desktop.prometheus-targets =
     { host, ... }:
     {
@@ -125,7 +118,6 @@ in
     { config, ... }:
 
     {
-      # The shared node exporter is scraped by the NAS Prometheus over Tailscale.
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
         config.services.prometheus.exporters.node.port
       ];

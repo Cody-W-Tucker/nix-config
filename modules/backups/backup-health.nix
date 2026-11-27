@@ -66,11 +66,9 @@
       '';
 
       mkHealthHooks = job: {
-        # mkBefore so duration covers the whole run; + runs as root; %%s avoids systemd specifier expansion.
         ExecStartPre = lib.mkBefore [
           "+${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/date +%%s > ${runDir}/${job}.start'"
         ];
-        # -+: run as root (+) without failing the backup unit on reporting errors (-).
         ExecStopPost = [ "-+${reporter} ${job}" ];
       };
     in
@@ -87,9 +85,6 @@
         "--collector.textfile.directory=${textfileDir}"
       ];
 
-      # Retired Restic textfile after migration to prometheus-restic-exporter,
-      # plus retired ZFS snapshot inventory after migration to zfs_exporter.
-      # Targeted to these single paths only; safe to run on every activation.
       system.activationScripts.cleanup-retired-restic-prom.text = ''
         ${pkgs.coreutils}/bin/rm -f ${textfileDir}/nas_backup_restic-backups-nas-files.prom ${textfileDir}/nas_zfs_snapshots.prom
       '';

@@ -26,15 +26,11 @@
 
       services.immich = {
         enable = true;
-        # Pull Immich from nixpkgs-unstable while the NAS host stays on stable.
         package = pkgs.unstable.immich;
         host = "127.0.0.1";
         mediaLocation = "/mnt/backup/photos";
         group = "media";
 
-        # Expose GPU 0 to Immich ML via narrow NVIDIA device allowlist.
-        # Setting a non-empty accelerationDevices makes PrivateDevices=false
-        # (default [] means PrivateDevices=true, blocking all GPU access).
         machine-learning.environment = {
           CUDA_VISIBLE_DEVICES = "0";
         };

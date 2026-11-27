@@ -1,5 +1,3 @@
-# Repository-wide checks; individual checks can also be built by name.
-# Package and host outputs are evaluated by `nix flake check`, not built.
 { inputs, ... }:
 let
   inherit (inputs) self;
@@ -21,8 +19,8 @@ in
     deadnix = lint "deadnix" [
       pkgs.deadnix
     ] "deadnix --fail --no-lambda-arg --no-lambda-pattern-names .";
+    no-comments = lint "no-comments" [ pkgs.ast-grep ] "ast-grep scan .";
     imports = lint "imports" [ pkgs.check-imports ] "check-imports .";
-    # The docs site builds, and its links to repository files point at real files.
     docs = lint "docs" [ pkgs.mdbook pkgs.jq ] ''mdbook build docs --dest-dir "$TMPDIR/book"'';
   };
 }

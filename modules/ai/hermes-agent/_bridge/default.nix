@@ -1,4 +1,3 @@
-# Home Manager side of the NAS bridge: QMD and Cody's local tools.
 {
   inputs,
   lib,
@@ -25,7 +24,6 @@ let
   };
 in
 {
-  # Cody's notes, with the index on the NAS's GPU (Vulkan, NVIDIA ICD).
   systemd.user.services.qmd-mcp =
     service "QMD search over Cody's notes, for Hermes"
       "${lib.getExe llmAgents.qmd} mcp --http --host 127.0.0.1 --port ${toString endpoints.qmd.port}"
@@ -36,9 +34,6 @@ in
 
   home.sessionVariables.DEJA_HERMES_HOME = hermesHome;
 
-  # These came onto codyt's PATH through Hermes's packages. Beast's harness
-  # runs `qmd mcp` here over SSH; the harness skills below use crm-cli and
-  # the workflow CLI (installed system-wide by the workflow module).
   home.packages = [
     llmAgents.qmd
     pkgs.crm-cli
@@ -48,7 +43,5 @@ in
     verified-work-run = "${inputs.workflow}/skills/operational/verified-work-run";
   };
 
-  # Fetching Hermes's inbox branches (from beast over SSH, or here) reads a
-  # repository the hermes user owns.
   programs.git.settings.safe.directory = codyosClone;
 }

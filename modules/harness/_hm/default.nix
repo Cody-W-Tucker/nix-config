@@ -1,5 +1,3 @@
-# Harness root module. `localAi` (host attribute, passed by den.aspects.harness) selects
-# whether the NAS-backed services are local; it is also used while resolving `imports`.
 { localAi }:
 {
   inputs,
@@ -45,8 +43,6 @@ in
     llmPkgs.muse-code
     llmPkgs.grok
 
-    # Agent workspace: persistent agent terminals. The NAS core is the shared
-    # remote that Beast's herdr-app reaches over SSH; both use this pinned hc.
     llmPkgs.herdr-core
 
     llmPkgs.tuicr
@@ -64,9 +60,13 @@ in
     settings = piShell;
   };
 
-  # WORKAROUND: The NAS imports Pi from unstable HM, but stable lacks its config merger.
-  # https://github.com/nix-community/home-manager/pull/9654
-  # REVIEW-BY: 2027-01-15. The fallback switches itself off once HM has the merger.
+  codyos.workarounds.pi-config-merger = {
+    reason = "Stable Home Manager lacks mkImpureConfigMerger, so piShellSettings merges Pi's settings.json during activation where it is missing.";
+    upstream = "https://github.com/nix-community/home-manager/pull/9654";
+    reviewBy = "2027-06-30";
+    obsolete = inputs.home-manager-stable.lib.hm.generators ? mkImpureConfigMerger;
+  };
+
   home.activation.piShellSettings = lib.mkIf (!hasConfigMerger) (
     lib.hm.dag.entryAfter [ "linkGeneration" ] (
       (import "${inputs.home-manager}/modules/lib/generators.nix" { inherit lib; }).mkImpureConfigMerger {
@@ -81,8 +81,6 @@ in
     )
   );
 
-  # Pi discovers this entrypoint globally; dependencies live outside the
-  # extension directory so their own files are not discovered as extensions.
   home.file.".pi/agent/extensions/langfuse.ts".text = ''
     export { default } from "${piLangfuseDir}/node_modules/@langfuse/pi-observability-plugin/src/index.ts";
   '';
@@ -101,6 +99,5 @@ in
     harness:pi
   '';
 
-  # tuicr: match stylix catppuccin-mocha palette
   xdg.configFile."tuicr/config.toml".source = ./tuicr.toml;
 }

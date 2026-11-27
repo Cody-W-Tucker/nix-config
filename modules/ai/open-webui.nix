@@ -48,8 +48,6 @@
             DO_NOT_TRACK = "True";
             ANONYMIZED_TELEMETRY = "False";
 
-            # TODO: make all this declarative instead of having to configure in the admin panel.
-            # ENABLE_PERSISTENT_CONFIG = "False"
             WEBUI_URL = "https://chat.${domain}";
             WEBUI_SECRET_KEY = "local-only";
             USE_CUDA_DOCKER = "true";
@@ -61,8 +59,6 @@
             TIKA_SERVER_URL = "https://tika.${domain}";
             ENABLE_RAG_HYBRID_SEARCH = "True";
 
-            # Forward user info headers to the backend inference endpoint
-            # (direct llama-swap on 127.0.0.1:8081).
             ENABLE_FORWARD_USER_INFO_HEADERS = "True";
           };
         };

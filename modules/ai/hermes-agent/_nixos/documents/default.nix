@@ -14,7 +14,6 @@ let
   artifacts = inputs.cognitive-assistant.lib.artifacts;
   inherit (artifacts) operational existential;
   ca = inputs.cognitive-assistant.packages.${pkgs.stdenv.hostPlatform.system}.ca;
-  # The living SOUL's lineage: bootstrap plus records learned in use.
   caHome = "${cfg.stateDir}/cognitive-assistant";
   existentialProfileFile = pkgs.writeText "hermes-existential-human-profile.md" (
     builtins.readFile existential.humanProfile
@@ -76,8 +75,6 @@ in
 
 {
   config = {
-    # Workspace documents: upstream installs each key (subdirectories allowed)
-    # under workingDirectory via its hermes-agent-setup activation.
     services.hermes-agent.documents = {
       "MEMORY-SPEC.md" = builtins.readFile operational.toolSpecs.memory;
       "TASK-SPEC.md" = builtins.readFile operational.toolSpecs.tasks;
@@ -85,19 +82,10 @@ in
       "human-profiles/OPERATIONAL-HUMAN-PROFILE.md" = operationalProfileFile;
     };
 
-    # Hermes loads its primary identity from HERMES_HOME/SOUL.md, not from the
-    # workspace documents directory. That file is the Cognitive Assistant's
-    # living SOUL: before each start `ca soul compile` builds
-    # prefix + bootstrap SOUL + records learned in use + suffix under
-    # CA_HOME/soul (a no-op when nothing changed) and `ca soul link` points
-    # SOUL.md at it. Do not also declare SOUL.md in hermesHomeFiles: upstream
-    # would install a regular file over the link. Cognitive Assistant's module
-    # for this is Home Manager only; its improvement pass stays off.
     systemd.tmpfiles.rules = [ "d ${caHome} 2770 ${cfg.user} ${cfg.group} - -" ];
     systemd.services.hermes-agent = {
       environment = {
         CA_HOME = caHome;
-        # The terminal does not inherit access to arbitrary dotfiles in HOME.
         GIT_CONFIG_GLOBAL = gitConfig;
       };
       preStart = lib.mkAfter ''

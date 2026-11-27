@@ -1,10 +1,6 @@
 { den, ... }:
 {
-  # Hyprland (UWSM + greetd autologin) and the user's Hyprland session, lock screen and idle
-  # management. Needs the host attribute `hardwareConfig` (monitor/workspace layout and the
-  # hypridle suspend timeout), which the aspect reads from `host` and passes down.
   den.aspects.graphical = {
-    # Waybar always renders the Hermes voice button; route its client and secret together.
     includes = [ den.aspects.hermes-voice-client ];
 
     nixos =
@@ -22,7 +18,6 @@
         };
 
         security.pam.services = {
-          # Let the first screen unlock also unlock the Login keyring after autologin.
           hyprlock.enableGnomeKeyring = true;
           greetd.enableGnomeKeyring = true;
           login.enableGnomeKeyring = true;
@@ -56,32 +51,26 @@
       {
         imports = [
           (import ./_hyprland/settings.nix { inherit hardwareConfig; })
-          # Waybar with the Hermes voice, AI usage and meeting modules.
           ./_waybar/waybar.nix
         ];
 
         home.packages = with pkgs; [
-          wttrbar # Waybar weather
-          playerctl # Hyprland and Waybar media controls
-          wl-clipboard # Wayland clipboard bindings
-          # Workaround for Hyprland's Lua config provider rejecting the legacy
-          # `hyprctl dispatch` IPC syntax that hyprnome's vendored hyprland-rs
-          # emits. Patches workspace/move/special dispatching to run `hyprctl eval`
-          # with Lua dispatchers instead.
+          wttrbar
+          playerctl
+          wl-clipboard
           (hyprnome.overrideAttrs (old: {
             patches = (old.patches or [ ]) ++ [ ./_hyprland/hyprnome-lua-config-provider.patch ];
           }))
         ];
 
-        # Expose Home Manager session variables to UWSM-launched sessions
         xdg.configFile."uwsm/env".source =
           "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh";
 
         wayland.windowManager.hyprland = {
           enable = true;
-          package = null; # null to use NixOS module
-          portalPackage = null; # null to use NixOS module
-          systemd.enable = false; # Since using UWSM, disable systemd
+          package = null;
+          portalPackage = null;
+          systemd.enable = false;
           configType = "lua";
         };
 
@@ -110,20 +99,18 @@
             enable = true;
             settings = {
               general = {
-                # Follow the official hypridle sleep flow; avoids a foreground
-                # hyprlock blocking the suspend pre-sleep hook.
-                before_sleep_cmd = lock; # Lock on (manual) suspend.
+                before_sleep_cmd = lock;
                 after_sleep_cmd = dpms "enable";
                 lock_cmd = "pgrep hyprlock || ${lib.getExe config.programs.hyprlock.package}";
               };
 
               listener = [
                 {
-                  timeout = 900; # 15min.
+                  timeout = 900;
                   on-timeout = lock;
                 }
                 {
-                  timeout = 1800; # 30min.
+                  timeout = 1800;
                   on-timeout = dpms "disable";
                   on-resume = dpms "enable";
                 }
@@ -148,7 +135,7 @@
                 monitor = "";
                 path = "screenshot";
                 color = "rgba(25, 20, 20, 1.0)";
-                blur_passes = 2; # 0 disables blurring
+                blur_passes = 2;
                 blur_size = 2;
                 noise = 0.0117;
                 contrast = 0.8916;

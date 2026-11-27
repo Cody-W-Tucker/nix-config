@@ -8,8 +8,6 @@ let
   plugin99 = pkgs.callPackage ./package.nix { };
 in
 {
-  # 99 uses OpenCode for editor requests without changing the default
-  # OpenCode model router.
   programs.nixvim = {
     extraPlugins = [ plugin99 ];
 

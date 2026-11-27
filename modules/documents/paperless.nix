@@ -48,27 +48,18 @@
           PAPERLESS_ADMIN_USER = config.codyos.site.user.name;
           PAPERLESS_TIKA_ENABLED = "true";
           PAPERLESS_TIKA_URL = "http://localhost:${toString config.services.tika.port}";
-          # Look in consume subdirectories for docs
           PAPERLESS_CONSUMER_RECURSIVE = "true";
           PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
-          PAPERLESS_CONSUMER_POLLING = "1"; # Faster processing
-          # Paperless runs behind the nginx vhost below: publish the external
-          # URL and honor its X-Forwarded-* headers.
+          PAPERLESS_CONSUMER_POLLING = "1";
           PAPERLESS_URL = "https://paperless.${domain}";
           USE_X_FORWARD_HOST = "true";
           USE_X_FORWARD_PORT = "true";
         };
       };
 
-      # mediaDir is the backup/documents ZFS dataset. Selected datasets are
-      # snapshotted centrally in backups.nix; no second local copy is needed.
-
       services.nginx.virtualHosts = mkNginxVhost {
         host = "paperless.${domain}";
         inherit port;
-        # These configuration options are required for WebSockets to work.
-        # Without them Tika document conversion wouldn't work
-        # The default value 1M might be a little too small.
         locationExtraConfig = ''
           client_max_body_size 100M;
 
@@ -89,9 +80,6 @@
 
     };
 
-  # paperless.scanner: beast's document scanner. scanbd reacts to the scanner button, scans
-  # to PDF, and a timer delivers queued scans to the NAS Paperless consume share (cifs mount
-  # owned by this scanner aspect). Included by beast.
   den.aspects.paperless.scanner.nixos =
     {
       config,
@@ -190,8 +178,6 @@
       '';
     in
     {
-      # Native units keep unavailable NAS shares out of fstab-generator during
-      # systemd re-execution: https://github.com/systemd/systemd/issues/44396
       system.fsPackages = [ pkgs.cifs-utils ];
       systemd.mounts = [
         {

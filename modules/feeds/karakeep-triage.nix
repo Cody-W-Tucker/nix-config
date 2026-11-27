@@ -2,8 +2,6 @@
 {
   den.aspects.nas.includes = [ den.aspects.karakeep-triage ];
 
-  # Files Karakeep bookmarks into lists by Laya's bookmark-route classifier.
-  # Writes to Karakeep only add list entries and the `ai-route:unsure` and `ai-codyos:unsure` tags.
   den.aspects.karakeep-triage.nixos =
     {
       config,
@@ -27,8 +25,6 @@
 
       systemd.services.karakeep-triage = {
         description = "Classify Karakeep bookmarks";
-        # A run can take a while; switching must not restart it and wait for it to finish.
-        # The next timer run picks up the new version.
         restartIfChanged = false;
         after = [
           "karakeep-web.service"
@@ -52,7 +48,6 @@
               removeAttrs config.services.laya.classifiers.bookmark-route.questions.route.criteria [ "none" ]
             )
           );
-          # List contents reach Laya as labels.
           SupplementaryGroups = [ "laya-feedback" ];
           TimeoutStartSec = "2h";
           Nice = 10;

@@ -1,5 +1,4 @@
 {
-  # KDE Connect: phone integration (user daemon + indicator) and its discovery ports.
   den.aspects.apps = {
     nixos.networking.firewall = {
       allowedTCPPortRanges = [

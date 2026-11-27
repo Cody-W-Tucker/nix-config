@@ -23,16 +23,19 @@ in
   ];
 
   config = {
+    codyos.workarounds.hermes-patchelf = {
+      reason = "Hermes's pm-packages backport a patch onto patchelf 0.15.2; services.hermes-agent.package swaps in patchelfUnstable, which already has the fix.";
+      upstream = "https://github.com/NousResearch/hermes-agent/pull/152542";
+      reviewBy = "2027-01-15";
+    };
+
     codyos.hermes-agent.egress.loopbackPorts = [
-      8081 # Local models and speech
+      8081
       config.services.mealie.port
     ];
 
     services.hermes-agent = {
       enable = true;
-      # WORKAROUND: Hermes patches 0.15.2, but patchelfUnstable already has the fix.
-      # https://github.com/NousResearch/hermes-agent/issues
-      # REVIEW-BY: 2026-12-15
       package = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
         pmPackages = lib.filterAttrs (_: lib.isDerivation) (
           pkgs.unstable.callPackage "${inputs.hermes-agent}/nix/pm-packages.nix" {
@@ -42,18 +45,12 @@ in
           }
         );
       };
-      # The system user `hermes` owns stateDir (/var/lib/hermes): HERMES_HOME
-      # is its .hermes. Upstream needs workingDirectory set explicitly before
-      # it installs `documents`; this is its own default.
       workingDirectory = "${config.services.hermes-agent.stateDir}/workspace";
       extraDependencyGroups = [
         "edge-tts"
         "firecrawl"
         "messaging"
       ];
-      # NumPy and aiohttp are sealed into Hermes's dependency groups. Do not
-      # inject them through extraPythonPackages: Hermes rejects duplicate
-      # distributions at build time.
       extraPackages = with pkgs; [
         binutils
         chromium
@@ -70,8 +67,6 @@ in
         API_SERVER_ENABLED = "true";
         API_SERVER_HOST = "0.0.0.0";
         API_SERVER_PORT = toString (import ../_endpoint.nix).port;
-        # Satisfies tools.browser_tool_install._chromium_installed without a
-        # Playwright cache write into the immutable hermes-agent-env.
         AGENT_BROWSER_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";
         VOICE_TOOLS_OPENAI_KEY = "local-only";
         MEALIE_BASE_URL = "http://127.0.0.1:${mealiePort}";
@@ -81,8 +76,6 @@ in
         config.sops.templates."hermes-agent-env".path
       ];
       settings = {
-        # Retire the former Nix-store catalog. Leave enable/disable choices
-        # to Hermes: the upstream merge preserves keys not declared here.
         skills.external_dirs = [ ];
         model = {
           default = "gpt-6.1-terra";
@@ -107,7 +100,6 @@ in
             base_url = "http://127.0.0.1:8081/v1";
             api_key = "local-only";
           };
-          # Metadata and archival work stay local.
           curator = {
             provider = "custom";
             model = "qwen-3.5-9b";
@@ -151,19 +143,12 @@ in
           default_trust = 0.5;
         };
         max_turns = 100;
-        # Keep deterministic platform authorization broad, but disclose cold
-        # schemas only when the model needs them. The bridge and compact
-        # manifest remain stable; full schemas arrive through tool_search.
         tools.tool_search = {
           enabled = "on";
           listing = "auto";
           listing_max_tokens = 1200;
           search_default_limit = 5;
           max_search_limit = 15;
-          # Extend Hermes's curated cold-tool default with delegation: its
-          # schema is unusually large and it is episodic. Do not defer
-          # terminal/file/web/browser/clarify/skills/memory: they are the
-          # normal working set for the personal operator.
           defer = [
             "computer_use"
             "session_search"
@@ -171,14 +156,9 @@ in
             "todo_list"
             "process_manage"
             "cronjob_manage"
-            # Cold capability-management tools. Keep skill discovery and
-            # ordinary memory eager; defer only their rare mutation/query APIs.
             "skill_manage"
             "fact_store"
             "vision_analyze"
-            # Defer every browser backend variant. The active browser-use
-            # backend exposes browser_exec; the named variants cover a later
-            # switch to Hermes's native CDP browser backend.
             "browser_exec"
             "browser_navigate"
             "browser_snapshot"
@@ -209,31 +189,29 @@ in
           ];
         };
         discord = {
-          require_mention = true; # Respond only when @mentioned
-          auto_thread = true; # Isolate each conversation in a thread
-          reactions = true; # Emoji reactions for processing state
-          free_response_channels = [ ]; # Channels that respond without @mention
+          require_mention = true;
+          auto_thread = true;
+          reactions = true;
+          free_response_channels = [ ];
         };
-        # The home channel shape `/sethome` writes. Nix owns these channels.
         platforms = {
           discord.home_channel = {
             platform = "discord";
-            chat_id = "1502095470334578779"; # hermes-home (text)
+            chat_id = "1502095470334578779";
             name = "hermes-home";
           };
           telegram.home_channel = {
             platform = "telegram";
-            chat_id = "8369015005"; # Cody Tucker DM
+            chat_id = "8369015005";
             name = "Cody Tucker";
           };
         };
         environment = {
           DISCORD_HOME_CHANNEL = "1502095470334578779";
-          TELEGRAM_HOME_CHANNEL = "8369015005"; # Cody Tucker DM
+          TELEGRAM_HOME_CHANNEL = "8369015005";
         };
         voice = {
           auto_tts = false;
-          # Desktop must relay audio through Hermes: the speech URLs are NAS-local.
           client_direct = false;
         };
         stt = {

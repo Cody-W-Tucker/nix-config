@@ -12,10 +12,6 @@ let
   opencode = pkgs.unstable.opencode;
 in
 {
-  # OpenCode Langfuse observability credentials (shared Home Manager scope):
-  # the nixos-secrets `opencode-langfuse-env` secret is rendered by a SOPS
-  # template (codyt-owned, 0400) plus a declarative LANGFUSE_BASE_URL. Values
-  # stay out of the Nix store and out of eval-time substitution.
   sops.secrets."opencode-langfuse-env" = {
     mode = "0400";
   };
@@ -28,9 +24,6 @@ in
     '';
   };
 
-  # Langfuse env for interactive OpenCode sessions: source the SOPS-rendered
-  # template (set -a exports the payload keys) so OpenCode and related tooling
-  # inherit the vars from any interactive zsh.
   programs.zsh.initContent = ''
     # Langfuse credentials for OpenCode and related tooling.
     if [ -f "${config.sops.templates."opencode-langfuse-env".path}" ]; then
@@ -40,24 +33,14 @@ in
     fi
   '';
 
-  # Langfuse env for the opencode-web user service: systemd services don't run
-  # interactive shells, so the zsh sourcing above doesn't cover it; merge the
-  # SOPS template as an EnvironmentFile (listOf merges by concatenation with
-  # modules/ai/opencode.nix). Harmless where the service is
-  # not enabled.
   systemd.user.services.opencode-web.Service.EnvironmentFile = [
     config.sops.templates."opencode-langfuse-env".path
   ];
 
-  # Remove the previously unmanaged legacy plugin so global discovery cannot
-  # continue loading it after this configuration is activated.
   home.activation.removeOpenCodeVoicePlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     rm -f "${config.xdg.configHome}/opencode/plugins/voice.ts"
   '';
 
-  # Remove the retired model-router directory plugin and the retired Herdr
-  # agent-state plugin so OpenCode plugin discovery cannot keep loading
-  # them from previous activations after their Nix modules were removed.
   home.activation.removeRetiredOpenCodePlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     rm -rf "${config.xdg.configHome}/opencode/plugins/model-router"
     rm -f "${config.xdg.configHome}/opencode/plugins/model-router.ts"
@@ -72,9 +55,6 @@ in
     enableMcpIntegration = true;
     settings = {
       shell = import ../runtime.nix { inherit inputs lib pkgs; };
-      # The langfuse module contributes its own entry to this list. Keep its
-      # patched 0.5.2 directory plugin until upstream resolves the 0.6.0
-      # SynchronizedRef initialization failure on OpenCode 2.1.1.
       plugins = [
         {
           package = "${
@@ -82,7 +62,7 @@ in
           }/extensions/opencode";
           options = {
             autoRecall = false;
-            tools = false; # The shared MCP server provides recall tools.
+            tools = false;
           };
         }
       ];
@@ -113,8 +93,6 @@ in
     mutableSettings = true;
   }
   // lib.optionalAttrs (options.programs.opencode ? cli) {
-    # Stylix still sets the legacy `tui` option. OpenCode 2 reads terminal
-    # preferences from cli.json instead.
     tui = lib.mkForce { };
     cli.theme = {
       name = "stylix";

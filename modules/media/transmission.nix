@@ -8,63 +8,46 @@
     }:
 
     {
-      # VPN-specific Transmission wiring: confinement, WireGuard namespace,
-      # and Transmission service settings. Media directory creation lives in
-      # the parent media module (default.nix) since it is shared across
-      # services.
       systemd.services.transmission.vpnConfinement = {
         enable = true;
         vpnNamespace = "wg";
       };
       sops.secrets."server-wg.conf" = {
         sopsFile = inputs.nixos-secrets.paths.serverWireguardSopsFile;
-        mode = "0400"; # Only root can read
+        mode = "0400";
       };
       vpnNamespaces.wg = {
         enable = true;
         wireguardConfigFile = config.sops.secrets."server-wg.conf".path;
         allowedIngress = [ "192.168.0.0/24" ];
-        # Host-side wg-br bridge address of FlareSolverr (running on the host
-        # network, see arr-stack.nix). The namespace OUTPUT kill switch drops
-        # new connections out the veth unless the destination is explicitly
-        # allowed here, so Prowlarr could not otherwise reach it at
-        # http://192.168.15.5:8191. Single /32 only — no subnet-wide egress.
         allowedEgress = [ "192.168.15.5/32" ];
         portMappings = [
           {
             from = 9091;
             to = 9091;
           }
-          # Prowlarr (confined to this namespace by arr-stack.nix): mapped on the
-          # host for LAN clients. Host-side consumers (nginx, Sonarr, Radarr, ...)
-          # reach it at the namespace address instead. Prowlarr's NixOS module has
-          # no dedicated port option; the servarr settings default is 9696.
           {
             from = 9696;
             to = config.services.prowlarr.settings.server.port;
           }
-          # Arr apps (confined to this namespace by arr-stack.nix): mapped on the
-          # host so nginx vhosts and LAN clients reach them at the namespace
-          # address. `from` is each module's default port; `to` reads the actual
-          # port from the module option.
           {
-            from = 8989; # Sonarr
+            from = 8989;
             to = config.services.sonarr.settings.server.port;
           }
           {
-            from = 7878; # Radarr
+            from = 7878;
             to = config.services.radarr.settings.server.port;
           }
           {
-            from = 8787; # Readarr
+            from = 8787;
             to = config.services.readarr.settings.server.port;
           }
           {
-            from = 6767; # Bazarr
+            from = 6767;
             to = config.services.bazarr.listenPort;
           }
           {
-            from = 8686; # Lidarr
+            from = 8686;
             to = config.services.lidarr.settings.server.port;
           }
         ];
@@ -73,7 +56,6 @@
       };
 
       systemd.services.transmission = {
-        # Forces systemd to wait for /mnt/media to be mounted first
         after = [
           "mnt-media.device"
           "mnt-media.mount"
@@ -85,14 +67,14 @@
         enable = true;
         package = pkgs.transmission_4;
         group = "media";
-        openRPCPort = true; # Allows Sonarr/Radarr to connect
+        openRPCPort = true;
         settings = {
           download-dir = "/mnt/media/Downloads";
           incomplete-dir = "/mnt/media/Downloads/incomplete";
           incomplete-dir-enabled = true;
-          umask = 2; # Group write permissions (so Sonarr/Radarr can move files)
+          umask = 2;
           dht-enabled = true;
-          encryption = 1; # Prefer encrypted peers
+          encryption = 1;
           anti-brute-force-enabled = true;
           anti-brute-force-threshold = 10;
           blocklist-enabled = true;
@@ -109,25 +91,21 @@
           download-queue-enabled = false;
           download-queue-size = 10;
 
-          # Download Schedule (during the day)
           alt-speed-enabled = true;
-          alt-speed-down = 10240; # KB/s download during restricted hours
-          alt-speed-up = 1280; # KB/s upload during restricted hours
+          alt-speed-down = 10240;
+          alt-speed-up = 1280;
           alt-speed-time-enabled = true;
-          alt-speed-time-begin = 480; # Start at 8:00 (8am), in minutes after midnight
-          alt-speed-time-end = 1380; # End at 23:00 (11pm), in minutes after midnight
-          alt-speed-time-day = 126; # Monday–Saturday only
+          alt-speed-time-begin = 480;
+          alt-speed-time-end = 1380;
+          alt-speed-time-day = 126;
           peer-limit-global = 200;
           peer-limit-per-torrent = 60;
           upload-slots-per-torrent = 8;
           rpc-whitelist-enabled = true;
           rpc-whitelist = "192.168.15.1,192.168.15.5";
           rpc-authentication-required = false;
-          rpc-bind-address = "192.168.15.1"; # Bind RPC/WebUI to VPN network namespace address
+          rpc-bind-address = "192.168.15.1";
 
-          # Peer port matches the provider-forwarded port opened via
-          # vpnNamespaces.wg.vpn.allowedTCPPorts/allowedUDPPorts above. Randomization stays disabled
-          # (module default `peer-port-random-on-start = false`).
           peer-port = 60729;
         };
       };

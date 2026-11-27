@@ -12,7 +12,6 @@ in
 {
   den.aspects.nas.includes = [ den.aspects.homepage ];
 
-  # Let services declare cards without selecting or enabling the dashboard.
   den.default.includes = [ den.aspects.homepage.cards ];
   den.aspects.homepage.cards.nixos =
     { lib, ... }:
@@ -122,7 +121,6 @@ in
             {
               openmeteo = {
                 label = "Kearney";
-                # Kearney Nebraska
                 latitude = 40.699670;
                 longitude = -99.010310;
                 timezone = "America/Chicago";

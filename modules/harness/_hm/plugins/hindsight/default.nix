@@ -1,9 +1,3 @@
-# Hindsight auto-retain and auto-recall for OpenCode and Claude Code.
-#
-# Coding sessions write to the project's memory bank after each turn, and each
-# prompt is answered with memories recalled from that bank and the shared user
-# bank. The Hindsight MCP server in ../../mcp.nix stays available for explicit
-# calls.
 { localAi }:
 {
   config,
@@ -23,14 +17,11 @@ let
     }).api
       localAi;
 
-  # Map known repositories to the existing Hindsight banks; other projects
-  # write to a bank named after their git root directory.
   bankMap = {
     "/etc/nixos" = "codyos";
     "${config.home.homeDirectory}/Projects/Cognitive-Assistant" = "cognitive-assistant";
   };
 
-  # Cross-project user preferences, recalled alongside the project bank.
   sharedBank = "cody";
 
   opencodePlugin = pkgs.replaceVars ./opencode-memory.js {
@@ -56,8 +47,6 @@ let
     }
   );
 
-  # UserPromptSubmit recalls and Stop retains. The server is external, so
-  # SessionStart and SessionEnd have nothing to do.
   claudeHooks = pkgs.writeText "hindsight-claude-hooks.json" (
     builtins.toJSON {
       hooks.UserPromptSubmit = [
@@ -66,7 +55,6 @@ let
             {
               type = "command";
               command = "${lib.getExe pkgs.python3} \"\${CLAUDE_PLUGIN_ROOT}/scripts/recall.py\"";
-              # Two banks, each with a 10 second request timeout.
               timeout = 25;
             }
           ];

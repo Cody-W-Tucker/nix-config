@@ -1,5 +1,4 @@
 {
-  # Rofi launcher, themed from the Stylix palette.
   den.aspects.graphical = {
     provides.to-users.homeManager =
       { config, pkgs, ... }:
@@ -23,9 +22,7 @@
             location = 0;
             font = "JetBrainsMono Nerd Font Mono 16";
             drun-display-format = "{icon} {name}";
-            # display-web-search = "";
             display-drun = "";
-            # display-filebrowser = "";
           };
           theme =
             let
@@ -178,7 +175,6 @@
       };
   };
 
-  # Wi-Fi picker for the launcher (rofi-network-manager).
   den.aspects.graphical.nixos =
     { pkgs, ... }:
     {

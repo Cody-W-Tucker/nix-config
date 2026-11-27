@@ -58,11 +58,10 @@ in
             provision.enable = true;
             settings = {
               analytics.reporting_enabled = false;
-              security.secret_key = "SW2YcwTIb9zpOOhoPsMm"; # no secrets, but 26.05 needs a secret key to start.
+              security.secret_key = "SW2YcwTIb9zpOOhoPsMm";
               server = {
                 http_addr = "127.0.0.1";
                 http_port = 3001;
-                # Grafana needs to know on which domain and URL it's running
                 domain = "monitoring.${domain}";
                 root_url = "https://monitoring.${domain}";
               };
@@ -95,7 +94,6 @@ in
             extraFlags = [ "--web.enable-remote-write-receiver" ];
             port = 9001;
             exporters = {
-              # node exporter: modules/observability/logging.nix
               nginx = {
                 enable = true;
                 port = 9115;
@@ -244,7 +242,7 @@ in
               ingester = {
                 chunk_encoding = "snappy";
                 lifecycler = {
-                  join_after = "0s"; # Added for quicker startup
+                  join_after = "0s";
                 };
               };
 
@@ -355,8 +353,6 @@ in
             };
           };
 
-          # Journal shipping is shared with every host (modules/observability/logging.nix);
-          # the NAS adds its nginx access log.
           fluent-bit.settings.pipeline = {
             inputs = [
               {
@@ -385,11 +381,8 @@ in
           };
         };
 
-        # Grant Fluent Bit access to nginx logs; list unit options concatenate with
-        # the module's systemd-journal group.
         systemd.services.fluent-bit.serviceConfig.SupplementaryGroups = [ "nginx" ];
 
-        # Restic exporter reads /mnt/backup/backups/restic as root; fail closed when storage is absent.
         systemd.services.prometheus-restic-exporter = {
           unitConfig = {
             ConditionPathIsMountPoint = [ "/mnt/backup/backups" ];
@@ -402,7 +395,6 @@ in
 
         systemd.services.prometheus-zfs-exporter.serviceConfig.DynamicUser = lib.mkForce false;
 
-        # Open the Loki listener for explicitly configured senders.
         networking.firewall.allowedTCPPorts = [
           config.services.loki.configuration.server.http_listen_port
           9001

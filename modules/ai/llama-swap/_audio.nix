@@ -1,7 +1,3 @@
-# Speech models served through llama-swap by OpenAI-compatible helper servers,
-# plus the speech-history service that records Fluid transcriptions.
-# CUDA builds of onnxruntime and torch come from the host-wide
-# nixpkgs.config.cudaSupport, not from overrides here.
 {
   config,
   lib,
@@ -15,15 +11,11 @@ let
   group = "users";
 
   diarizationEnrollmentDir = "/var/lib/llama-swap/diarization/enrollment";
-  # The diarization server hardcodes this path; startup fails with a read-only
-  # file system error unless it is created and in ReadWritePaths.
   diarizationEmbeddingCache = "/var/lib/llama-swap/diarization/embedding-cache";
   diarizationCache = "/var/cache/llama-swap/whisperx";
   speechHistoryDir = "/var/lib/llama-swap/speech-history";
   speechHistoryUrl = "http://127.0.0.1:${toString endpoint.speechHistoryPort}";
 
-  # Fluid Speech Pro by FluidVoice (CC BY 4.0). Keep the external weights
-  # beside the clean graphs, under the exact filenames embedded in the graphs.
   fluidSpeechProClean =
     let
       rev = "fa588e9f87f1b9ad0ca2e2d8f7eaf84dc3803581";
@@ -60,9 +52,6 @@ let
   );
   kokoroPython = pkgs.python313.withPackages (
     ps: with ps; [
-      # Provide the spacy model that misaki's G2P (used by kokoro) requires.
-      # Without it in the same env, misaki calls spacy.cli.download which fails
-      # in the Nix python env (no pip/uv).
       spacy-models.en_core_web_sm
       fastapi
       kokoro

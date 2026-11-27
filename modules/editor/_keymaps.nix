@@ -3,7 +3,7 @@ _:
 {
   programs.nixvim.keymaps = [
     {
-      mode = "n"; # Normal mode
+      mode = "n";
       key = "<Leader>ff";
       action = "<cmd>Telescope find_files<CR>";
       options = {

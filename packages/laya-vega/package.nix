@@ -1,7 +1,6 @@
 {
   lib,
   unstable,
-  # Serving stays on CPU; the training job opts into CUDA.
   cudaSupport ? false,
 }:
 

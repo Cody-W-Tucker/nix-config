@@ -29,9 +29,7 @@
       services.nginx.virtualHosts = mkNginxVhost {
         host = "audiobooks.${domain}";
         port = config.services.audiobookshelf.port;
-        # Audiobookshelf pushes playback/scanner updates over websockets.
         proxyWebsockets = true;
-        # Prevent 413 Request Entity Too Large errors on large uploads (10 GiB).
         locationExtraConfig = ''
           client_max_body_size 10240M;
         '';

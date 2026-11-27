@@ -3,7 +3,6 @@
 let
   googleWorkspaceSkillsRoot = inputs.googleworkspace-cli + "/skills";
 
-  # Expose only the Workspace capabilities we use, on either side of the aspect.
   gwsSkillNames = [
     "gws-shared"
     "gws-calendar"
@@ -18,7 +17,6 @@ let
     "gws-tasks"
   ];
 
-  # Triage defaults to the inbox instead of every unread message.
   gmailTriageText =
     builtins.replaceStrings
       [

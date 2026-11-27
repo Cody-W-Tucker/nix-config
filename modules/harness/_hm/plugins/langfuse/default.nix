@@ -1,6 +1,3 @@
-# WORKAROUND: OpenCode's Bun runtime fails to initialize SynchronizedRef in Langfuse 0.6.0.
-# https://github.com/langfuse/opencode-observability-plugin/issues/55
-# REVIEW-BY: 2026-12-15; see README.md for the removal test.
 {
   config,
   lib,
@@ -13,12 +10,8 @@ let
 
   pluginPath = "${config.xdg.configHome}/opencode/plugins/langfuse-observability";
 
-  # Node + npm used only at activation time to materialize node_modules
-  # inside the managed plugin dir (never mutates the OpenCode npm cache).
   nodePkg = pkgs.nodejs;
 
-  # langfuse 4.15.2 needs uv_build>=0.11.2; release-26.05 (nas) ships 0.10.0.
-  # Build from unstable on every host so all share one tested Python closure.
   claudePlugin = pkgs.callPackage ./claude-package.nix { inherit (pkgs.unstable) python3; };
 in
 {
@@ -58,6 +51,19 @@ in
     # loudly on unexpected bundle shape so the workaround gets revisited
     # instead of silently exporting zero spans.
   '';
+
+  codyos.workarounds = {
+    langfuse-opencode-bun = {
+      reason = "OpenCode's Bun runtime fails to initialize SynchronizedRef in the Langfuse OpenCode plugin 0.6.0, so activation patches the bundle. README.md beside this file has the removal test; 0.7.0 is released but untested.";
+      upstream = "https://github.com/langfuse/opencode-observability-plugin/issues/55";
+      reviewBy = "2026-12-15";
+    };
+    langfuse-claude-uv-build = {
+      reason = "Langfuse 4.15.2 caps uv_build below 0.12 while nixpkgs has 0.12.x, so claude-package.nix relaxes the bound. Its --replace-fail breaks the build once a newer Langfuse drops the cap.";
+      upstream = "https://github.com/langfuse/langfuse-python/blob/main/pyproject.toml";
+      reviewBy = "2027-01-15";
+    };
+  };
 
   codyos.harness.plugins.langfuse-observability = {
     opencode.settings = pluginPath;

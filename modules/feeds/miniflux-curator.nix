@@ -17,7 +17,6 @@
     in
 
     {
-      # Including this aspect is the switch; the values are set by den.aspects.miniflux.
       options.services.miniflux-curator = {
         minifluxUrl = lib.mkOption {
           type = lib.types.str;
@@ -43,7 +42,7 @@
 
         openaiHost = lib.mkOption {
           type = lib.types.str;
-          default = "http://localhost:8080"; # Llama-cpp default
+          default = "http://localhost:8080";
           description = "Embedding API host (OpenAI-compatible)";
         };
 

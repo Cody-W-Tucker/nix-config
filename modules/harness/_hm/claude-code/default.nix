@@ -32,10 +32,7 @@ in
       syncClaudeAiSkills = false;
     };
   }
-  # Guard: Home Manager release-26.05 (NAS) lacks this option. Drop the guard
-  # once the NAS is on a Home Manager release that has it.
   // lib.optionalAttrs (options.programs.claude-code ? mutableSettings) {
-    # Merge into a writable settings.json so /config and /model keep working.
     mutableSettings = true;
   };
 }

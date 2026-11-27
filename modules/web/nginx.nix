@@ -6,26 +6,6 @@
     { lib, config, ... }:
 
     {
-      # System-wide nginx vhost builder.
-      # Covers the common reverse-proxy pattern used across this flake:
-      #   forceSSL + ACME host + kTLS + single-location proxyPass + websocket proxy.
-      #
-      # Accepts either:
-      #   - `service`: a service name (e.g. "sonarr") — derives host as
-      #     "${service}.${baseHost}" and port from
-      #     config.services.${service}.settings.server.port
-      #   - `host` + `port`: explicit values for services without a standard
-      #     settings.server.port option or non-standard hostnames
-      #   - `host` + `locations`: explicit values for complex vhosts with multiple
-      #     locations or custom location blocks (port not required)
-      #
-      # `port` accepts an int or string; the helper applies `toString` internally.
-      # `locations` accepts a full location attrset for complex vhosts; when provided,
-      # the helper uses it verbatim instead of generating a default proxy location.
-      # `listen` accepts a list of listen specs for non-standard vhost bindings.
-      # `locationExtraConfig` applies extra config to the generated location only.
-      # Returns a singleton attrset { "<host>" = { ... }; } suitable for merging
-      # into services.nginx.virtualHosts via `//`.
       _module.args.mkNginxVhost =
         {
           host ? null,
@@ -75,13 +55,8 @@
         };
     };
 
-  # nginx provides the mkNginxVhost module argument to every module on every host.
   den.default.includes = [ den.aspects.nginx ];
 
-  # nginx.server: the NAS ingress. Wildcard ACME certificate for the site domain (DNS-01
-  # through Cloudflare), the nginx service with shared proxy settings, a localhost-only
-  # stub_status endpoint for the metrics exporter, and the HTTP/HTTPS firewall openings.
-  # Service aspects add their own virtual hosts through mkNginxVhost. Included by nas.
   den.aspects.nginx.server.nixos =
     {
       config,
@@ -120,7 +95,6 @@
         recommendedOptimisation = true;
         recommendedGzipSettings = true;
         recommendedProxySettings = true;
-        # Enable access logging for Loki
         appendHttpConfig = ''
           proxy_headers_hash_max_size 1024;
           proxy_headers_hash_bucket_size 128;

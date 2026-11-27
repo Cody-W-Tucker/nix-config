@@ -18,13 +18,8 @@ let
     substituteInPlace "$out/plugin.yaml" \
       --replace-fail 'requires_hermes: ">=0.21.7"' 'requires_hermes: ">=0.0.0"'
   '';
-  # Use the interpreter family selected by the Hermes flake's pythonLock.
-  # Never layer a host or stale Python ABI over the sealed Hermes venv.
   hermesPython = config.services.hermes-agent.package.python;
   hermesPythonPackages = hermesPython.pkgs;
-  # The official Langfuse plugin pins this exact SDK. Build only the SDK
-  # wheel here; its shared dependencies stay in Hermes' sealed environment
-  # or are supplied explicitly below, avoiding the module's collision guard.
   langfuse415 = hermesPythonPackages.buildPythonPackage rec {
     pname = "langfuse";
     version = "4.15.2";
@@ -34,11 +29,6 @@ let
       hash = "sha256-f4GPOMwi2rqI/c7GLSrdzuThjRr0Upl4ttB1AehraUY=";
     };
     build-system = [ hermesPythonPackages.uv-build ];
-    # WORKAROUND: Langfuse 4.15.2 caps its build backend below uv-build 0.12,
-    # while Hermes's locked Python set provides uv-build 0.12.5. Patch the
-    # obsolete upper bound so PEP 517 can build the wheel.
-    # Upstream: https://github.com/NousResearch/hermes-agent/issues/48576
-    # REVIEW-BY: 2026-11-30
     postPatch = ''
       substituteInPlace pyproject.toml \
         --replace-fail 'uv_build>=0.11.2,<0.12.0' 'uv_build>=0.11.2'
@@ -57,10 +47,6 @@ let
     doCheck = false;
     pythonImportsCheck = [ ];
   };
-  # PYTHONPATH only — wrapping extraPythonPackages would duplicate sealed
-  # httpx/pydantic packages and intentionally fails collision checks.
-  # Langfuse needs the OTLP HTTP exporter closure, not the meta exporter
-  # package (which pulls gRPC).
   hermesPythonPath = lib.makeSearchPath hermesPython.sitePackages (
     with hermesPythonPackages;
     [
@@ -80,6 +66,12 @@ in
   systemd.services.hermes-agent.preStart = ''
     ln -sfn ${langfusePlugin} ${config.services.hermes-agent.stateDir}/.hermes/plugins/langfuse
   '';
+  codyos.workarounds.hermes-langfuse-uv-build = {
+    reason = "Langfuse 4.15.2 caps uv_build below 0.12 while Hermes's Python set has 0.12.x, so langfuse415 relaxes the bound. Its --replace-fail breaks the build once a newer Langfuse drops the cap.";
+    upstream = "https://github.com/NousResearch/hermes-agent/issues/48576";
+    reviewBy = "2027-01-15";
+  };
+
   codyos.hermes-agent.egress.loopbackPorts = [ 3030 ];
   services.hermes-agent = {
     extraPlugins = lib.mkOrder 1000 [ langfusePlugin ];

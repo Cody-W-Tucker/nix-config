@@ -30,7 +30,6 @@ let
   '';
 in
 {
-  # Put only the expiring access token in the terminal, never the refresh credential.
   services.hermes-agent.extraPackages = [ wrapper ];
   codyos.hermes-agent.sandbox.binds = [
     {
@@ -47,7 +46,6 @@ in
     "d ${cacheDir} 0700 ${cfg.user} ${cfg.group} - -"
   ];
 
-  # Bubblewrap inherits the unit's read-only mounts under ProtectSystem=strict.
   systemd.services.hermes-agent.serviceConfig.ReadWritePaths = [ cacheDir ];
   systemd.services.hermes-backend.serviceConfig.ReadWritePaths = [ cacheDir ];
 

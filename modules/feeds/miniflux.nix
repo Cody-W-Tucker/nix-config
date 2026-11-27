@@ -45,7 +45,6 @@
       };
 
       services = {
-        # Miniflux RSS reader. Theme: https://github.com/andymason/miniflux-css-theme/tree/main
         miniflux = {
           enable = true;
           config = {
@@ -57,7 +56,6 @@
           adminCredentialsFile = config.sops.templates."miniflux-credentials".path;
         };
 
-        # Auto-curator for cleaning up low-relevance articles
         miniflux-curator = {
           minifluxUrl = "http://localhost:7777";
           apiKeyFile = config.sops.secrets."miniflux/API_KEY".path;
@@ -70,8 +68,8 @@
           karakeepFetchLimit = 100;
           referenceLimit = 50;
           batchSize = 64;
-          dryRun = false; # set true to test
-          schedule = "*-*-* 07:15,23:15"; # 7:15am and 11:15pm
+          dryRun = false;
+          schedule = "*-*-* 07:15,23:15";
         };
 
         nginx.virtualHosts = mkNginxVhost {
