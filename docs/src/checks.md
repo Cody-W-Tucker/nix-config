@@ -1,15 +1,15 @@
 # Checks and standards
 
-The repo enforces its standards with flake checks. `update` runs the first two steps itself; GitHub runs the rest on every pull request.
+The repo enforces its standards with flake checks. `update` runs every check below except `docs` itself; GitHub runs them on every pull request.
 
 ## What is checked
 
 | Check | Fails on | Runs in |
 | --- | --- | --- |
-| `formatting` | Nix not formatted with nixfmt. `nix fmt` corrects it. | `update` (as `nix fmt`), PRs |
-| `imports` | A `default.nix` outside a `_` path under `modules/`, or a `_` subtree whose `default.nix` misses a sibling or imports a missing file | `update` (as `check-imports`), PRs |
-| `statix`, `deadnix` | Lint warnings, unused bindings | PRs |
-| `no-comments` | Any Nix comment. `ast-grep scan --update-all .` then `nix fmt` deletes them. OpenCode, Claude Code and Neovim show the same error as you type. | PRs |
+| `formatting` | Nix not formatted with nixfmt. `nix fmt` corrects it. | `update`, PRs |
+| `imports` | A `default.nix` outside a `_` path under `modules/`, or a `_` subtree whose `default.nix` misses a sibling or imports a missing file | `update`, PRs |
+| `statix`, `deadnix` | Lint warnings, unused bindings | `update`, PRs |
+| `no-comments` | Any Nix comment. `ast-grep scan --update-all .` then `nix fmt` deletes them. OpenCode, Claude Code and Neovim show the same error as you type. | `update`, PRs |
 | `docs` | This book does not build, or links a repo file that does not exist | PRs, and the docs deploy |
 
 On a pull request, the full `nix flake check` runs only when the `NIX_SECRETS_READ` token is available; without it, only formatting and lint run.
