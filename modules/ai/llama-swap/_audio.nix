@@ -93,7 +93,7 @@ in
 
   services.llama-swap.settings.models = {
     "fluid-speech-pro-clean" = {
-      ttl = 30;
+      ttl = 0;
       cmd = ''
         ${sherpaPython}/bin/python3 ${./sherpa-onnx-openai-server.py} \
           --host 127.0.0.1 \

@@ -200,7 +200,7 @@ in
     contextSize = 8192;
     batchSize = 512;
     ubatchSize = 512;
-    ttl = 30;
+    ttl = 0;
     gpuLayers = 999;
     extraArgs = [
       "--fit"
