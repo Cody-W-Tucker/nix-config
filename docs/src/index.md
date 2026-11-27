@@ -15,7 +15,7 @@ Tell your agent what you notice, **Agents figure it out.**
 1. **You notice something**, in a few words: "dictation feels slow".
 2. **An agent collects the noise.** It reads how things should work, recalls the history, and checks the machine.
 3. **It proposes a change that respects the situation.**
-4. **You apply it** with [`update`](getting-started.md). It commits, switches, and pushes.
+4. **You apply it** with [`update`](getting-started.md).
 5. **The change becomes history.** Agents [extracts decisions automatically](harness.md#memory).
 
 The next prompt about that feature starts from all three views.
