@@ -7,9 +7,7 @@ with a source (human > imported > teacher). Each classifier names the sources it
 """
 
 import argparse
-from contextlib import closing, contextmanager
-from datetime import datetime
-import gc
+from contextlib import closing
 import grp
 import hashlib
 import http.client
@@ -25,7 +23,6 @@ import sqlite3
 import sys
 import tempfile
 import threading
-import time
 import urllib.request
 from urllib.parse import urlsplit
 
@@ -173,7 +170,6 @@ def versions(folder):
 
 REVISION = "6aee375845724d2cca21d5fd5c043a028dbc1b48"
 GPU_FREE_BYTES = int(2.5 * 1024 ** 3)
-GPU_RETRY_SECONDS = 300
 
 
 def new_agent(device="cpu"):
@@ -183,84 +179,29 @@ def new_agent(device="cpu"):
 
 
 def training_device():
-    """CUDA when the card has room next to llama-swap's models, otherwise CPU."""
+    """Require enough GPU memory rather than silently switching to CPU."""
     try:
         import torch
-
-        if torch.cuda.is_available():
-            free, _ = torch.cuda.mem_get_info()
-            if free >= GPU_FREE_BYTES:
-                return "cuda"
-            logging.info("GPU has %.1f GiB free; reading on CPU", free / 1024 ** 3)
+        available = torch.cuda.is_available()
+        free = torch.cuda.mem_get_info()[0] if available else 0
     except Exception as exc:
-        logging.info("GPU unavailable (%s); reading on CPU", exc)
-    return "cpu"
+        raise RuntimeError("Laya GPU unavailable: %s" % exc) from exc
+    if not available:
+        raise RuntimeError("Laya requires CUDA")
+    if free < GPU_FREE_BYTES:
+        raise RuntimeError("GPU has %.1f GiB free; Laya requires 2.5 GiB" % (free / 1024 ** 3))
+    return "cuda"
 
 
 def serving_device(requested):
-    """Where Vega reads to serve: CUDA when asked for and the card has room, otherwise CPU."""
+    """Use the requested device; CUDA requests require room on the card."""
     return training_device() if requested == "cuda" else "cpu"
 
 
-class Lease:
-    """A GPU lease from llama-swap: a placeholder model whose declared VRAM stands for Vega's.
-
-    Loading it makes llama-swap's capacity router evict cheaper models to make room; any
-    request to it restarts its idle timer. Without a URL the GPU needs no lease."""
-
-    def __init__(self, url=None, model=None):
-        self.url = url.rstrip("/") if url else None
-        self.model = model
-
-    def acquire(self, timeout=60):
-        if not self.url:
-            return True
-        try:
-            with closing(urllib.request.urlopen(f"{self.url}/upstream/{self.model}/", timeout=timeout)) as r:
-                return r.status == 200
-        except OSError as exc:
-            logging.info("no GPU lease from llama-swap: %s", exc)
-            return False
-
-    def held(self):
-        if not self.url:
-            return True
-        try:
-            with closing(urllib.request.urlopen(f"{self.url}/running", timeout=5)) as r:
-                running = json.load(r).get("running", [])
-        except (OSError, ValueError):
-            return False
-        return any(m.get("model") == self.model and m.get("state") == "ready" for m in running)
-
-    @contextmanager
-    def holding(self, every=120):
-        """Keep the lease renewed for a long job; yields whether it was granted."""
-        granted, done = self.acquire(), threading.Event()
-
-        def renew():
-            while not done.wait(every):
-                self.acquire()
-
-        if granted and self.url:
-            threading.Thread(target=renew, daemon=True).start()
-        try:
-            yield granted
-        finally:
-            done.set()
-
-
-def free_gpu():
-    gc.collect()
-    try:
-        import torch
-
-        torch.cuda.empty_cache()
-    except Exception:
-        pass
-
-
-def business_hours(now):
-    return now.weekday() < 5 and 8 <= now.hour < 17
+def weights_cached():
+    """Whether the pinned Vega checkpoint is in the Hugging Face cache the worker reads."""
+    hub = Path(os.environ.get("HF_HOME", Path.home() / ".cache" / "huggingface")) / "hub"
+    return (hub / "models--nandakishorm--vega-U" / "snapshots" / REVISION).is_dir()
 
 
 class ReadCache:
@@ -325,12 +266,10 @@ def split_rows(rows, calibrate_on=("human",), share=1.0):
     return fit, calibrate
 
 
-def train(root, registry, cache_dir, small=200, now=None, device="cpu", lease=None):
-    """Refit classifiers with enough new labels. During business hours, only refits needing at
-    most `small` uncached reads run; larger ones wait for an evening or weekend run."""
+def train(root, registry, cache_dir, device="cpu"):
+    """Refit classifiers with enough new labels."""
     if not (root / "labels.sqlite").exists():
         return
-    office = business_hours(now or datetime.now())
     cache = ReadCache(cache_dir / "vega-reads.sqlite")
     agents = {}
 
@@ -367,18 +306,14 @@ def train(root, registry, cache_dir, small=200, now=None, device="cpu", lease=No
                     logging.info("Laya classifier %s has no labels outside %s to fit on",
                                  name, "/".join(calibrate_on))
                     continue
-                pending = cache.pending(key, pairs)
-                if office and pending > small:
-                    logging.info("Laya classifier %s needs %d new reads; waiting until after hours",
-                                 name, pending)
-                    continue
-                logging.info("refitting Laya classifier %s with %d new reads", name, pending)
+                logging.info("refitting Laya classifier %s with %d new reads", name, cache.pending(key, pairs))
                 try:
-                    with (lease or Lease()).holding() as leased:
-                        fit_policy(agent, fit, calibrate, spec["questions"], folder / f"policy-{latest}",
-                                   device if leased else "cpu")
+                    fit_policy(agent, fit, calibrate, spec["questions"], folder / f"policy-{latest}", device)
                 except ValueError as exc:
                     logging.warning("could not fit Laya classifier %s at version %d: %s", name, latest, exc)
+                except RuntimeError as exc:
+                    logging.warning("Laya classifier %s deferred: %s", name, exc)
+                    continue
                 cache.mark(key, pairs)
                 draft = marker.with_suffix(".next")
                 draft.write_text(str(latest))
@@ -388,8 +323,7 @@ def train(root, registry, cache_dir, small=200, now=None, device="cpu", lease=No
 
 
 def fit_policy(agent, fit, calibrate, questions, target, device="cpu"):
-    """Heads from the bulk labels (on the GPU when it has room), then the calibration on the
-    held-out labels on the serving device, so the band measures what serves."""
+    """Fit and calibrate on the requested serving device, so the band measures what serves."""
     from vegaml.policy import save_policy
 
     if target.exists():
@@ -446,10 +380,10 @@ def teacher_label(answer, q, threshold):
 
 
 class DecisionService:
-    def __init__(self, root, registry, teacher_url, default_teacher, api_key, device="cpu", lease=None):
+    def __init__(self, root, registry, teacher_url, default_teacher, api_key, device="cpu", worker_url=None):
         self.root = root
         self.device = device
-        self.lease = lease or Lease()
+        self.worker_url = worker_url.rstrip("/") if worker_url else None
         self.registry = registry
         self.teacher_url = urlsplit(teacher_url) if teacher_url else None
         if self.teacher_url and not (self.teacher_url.scheme == "https" or (
@@ -461,7 +395,6 @@ class DecisionService:
         self.write_lock = threading.Lock()
         self.teacher_slots = threading.BoundedSemaphore(4)
         self.agent = None
-        self.served_on, self.checked = None, 0.0
         self.policies = {}  # classifier -> (policy path, heads, calibration)
 
     def heads(self, agent, name):
@@ -486,48 +419,30 @@ class DecisionService:
         self.policies[name] = (latest, heads, calibration)
         return heads, calibration
 
-    def place(self):
-        """The device for the next read. The GPU needs a renewed lease and room on the card;
-        a CPU fallback retries the GPU every few minutes."""
-        if self.device != "cuda":
-            return "cpu"
-        now = time.monotonic()
-        if self.served_on == "cpu" and now - self.checked < GPU_RETRY_SECONDS:
-            return "cpu"
-        if not self.lease.acquire():
-            self.checked = now
-            return "cpu"
-        if self.served_on == "cuda":
-            return "cuda"
-        self.checked = now
-        return training_device()
-
-    def leave_gpu(self):
-        if self.served_on == "cuda":
-            self.agent, self.served_on, self.policies = None, None, {}
-            free_gpu()
-
-    def watch_lease(self, every=15):
-        """Give the GPU back once llama-swap evicts the lease or it expires while idle."""
-        def loop():
-            while True:
-                time.sleep(every)
-                if self.served_on == "cuda" and not self.lease.held():
-                    with self.lock:
-                        if self.served_on == "cuda" and not self.lease.held():
-                            logging.info("GPU lease ended; Vega leaves the GPU")
-                            self.leave_gpu()
-
-        threading.Thread(target=loop, daemon=True).start()
+    def load_agent(self):
+        """Vega stays loaded for the life of the process; llama-swap stops the worker to free the GPU."""
+        if self.agent is None:
+            device = serving_device(self.device)
+            logging.info("Vega serves on %s", device)
+            self.agent, self.policies = new_agent(device), {}
+        return self.agent
 
     def vega(self, state, questions, name):
+        if self.worker_url:
+            asked = list(questions) if name is not None else questions
+            request = urllib.request.Request(
+                self.worker_url + "/v1/predict",
+                data=encode({"state": state, "questions": asked, "classifier": name}).encode(),
+                headers={"Content-Type": "application/json", "User-Agent": USER_AGENT},
+                method="POST",
+            )
+            with closing(urllib.request.urlopen(request, timeout=120)) as response:
+                result = json.load(response)
+            if not isinstance(result, dict) or not isinstance(result.get("answers"), dict):
+                raise ValueError("invalid Vega worker result")
+            return result
         with self.lock:
-            device = self.place()
-            if self.agent is None or device != self.served_on:
-                self.leave_gpu()
-                logging.info("Vega serves on %s", device)
-                self.agent, self.served_on, self.policies = new_agent(device), device, {}
-            agent = self.agent
+            agent = self.load_agent()
             heads, calibration = self.heads(agent, name)
             agent.vega.heads.clear()
             agent.vega.heads.update(heads)
@@ -569,8 +484,8 @@ class DecisionService:
         spec = self.registry.get(name, {})
         try:
             out = self.vega(state, questions, name)
-        except Exception:
-            logging.error("Vega prediction failed")
+        except Exception as exc:
+            logging.warning("Vega prediction failed: %s", exc)
             out = {"answers": {}}
         answers = out["answers"]
         pending = {}
@@ -645,6 +560,31 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200, body)
 
 
+class WorkerHandler(Handler):
+    """The llama-swap worker's surface: raw Vega predictions only, never Jev, labels or feedback."""
+    def do_POST(self):
+        if self.path != "/v1/predict":
+            self.reply(404, {})
+            return
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            if not 0 < length <= MAX_BODY:
+                self.reply(413, {"error": "invalid body size"})
+                return
+            if not self.server.slots.acquire(blocking=False):
+                self.reply(503, {"error": "Vega worker is busy"})
+                return
+            try:
+                state, questions, name = parse(json.loads(self.rfile.read(length)), self.server.service.registry)
+                body = self.server.service.vega(state, questions, name)
+            finally:
+                self.server.slots.release()
+        except (ValueError, RecursionError) as exc:
+            self.reply(400, {"error": f"invalid Vega request: {exc}"})
+            return
+        self.reply(200, body)
+
+
 class FeedbackHandler(Handler):
     """Human labels, on a socket only the feedback group can open: `{"items": [{classifier,
     state, gold}, ...]}`, the same items `laya-feedback` reads."""
@@ -700,7 +640,7 @@ def read_items(data):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=["serve", "feedback", "train"])
+    parser.add_argument("mode", choices=["serve", "worker", "feedback", "train"])
     parser.add_argument("--state-dir", type=Path, default=Path("/var/lib/laya"))
     parser.add_argument("--classifiers", type=Path, default=os.environ.get("LAYA_CLASSIFIERS"))
     parser.add_argument("--port", type=int, default=18091)
@@ -708,16 +648,12 @@ def main():
     parser.add_argument("--default-teacher")
     parser.add_argument("--source", choices=["human", "imported"], default="human")
     parser.add_argument("--cache-dir", type=Path, default=Path("/var/cache/laya"))
-    parser.add_argument("--small-refit", type=int, default=200,
-                        help="most uncached reads a refit may need during business hours")
     parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu",
-                        help="where Vega serves and is calibrated; cuda falls back to cpu when the card is full")
-    parser.add_argument("--lease-url", help="llama-swap that grants GPU leases")
-    parser.add_argument("--lease-model", help="llama-swap placeholder model that holds the lease")
+                        help="where Vega serves and is calibrated; cuda requires GPU memory")
+    parser.add_argument("--worker-url", help="Vega worker that serves predictions; the gateway then never loads Vega")
     parser.add_argument("--feedback-socket", help="Unix socket that takes human labels")
     parser.add_argument("--feedback-group", default="laya-feedback", help="group allowed to open it")
     args = parser.parse_args()
-    lease = Lease(args.lease_url, args.lease_model)
     os.umask(0o077)
     logging.basicConfig(level=logging.INFO)
     registry = load_registry(args.classifiers)
@@ -731,15 +667,24 @@ def main():
             parser.error(str(exc))
         print(f"Saved {changed} {args.source} example(s).")
     elif args.mode == "train":
-        train(args.state_dir, registry, args.cache_dir, args.small_refit, device=args.device, lease=lease)
+        train(args.state_dir, registry, args.cache_dir, device=args.device)
+        if not weights_cached():
+            new_agent(args.device)  # Download the pinned checkpoint for the worker, which reads offline.
+    elif args.mode == "worker":
+        # Reads only published policies and the shared weights; never labels, feedback or the Jev key.
+        service = DecisionService(args.state_dir, registry, None, None, "", args.device)
+        service.load_agent()  # Ready, and shown as running in llama-swap, only once the weights are loaded.
+        with ThreadingHTTPServer(("127.0.0.1", args.port), WorkerHandler) as server:
+            server.service = service
+            server.slots = threading.BoundedSemaphore(4)
+            server.serve_forever()
     else:
         with closing(connect(args.state_dir)) as db, db:
             pass  # The nightly backup expects the label store to exist.
         with ThreadingHTTPServer(("127.0.0.1", args.port), Handler) as server:
             server.service = DecisionService(args.state_dir, registry, args.teacher_url,
                                              args.default_teacher, os.environ.get("OPENCODE_GO_API_KEY", ""),
-                                             args.device, lease)
-            server.service.watch_lease()
+                                             args.device, args.worker_url)
             server.slots = threading.BoundedSemaphore(4)
             if args.feedback_socket:
                 labels = UnixServer(args.feedback_socket, args.feedback_group, server.service)

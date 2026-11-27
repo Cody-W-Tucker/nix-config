@@ -46,9 +46,12 @@ in
     mmprojFile = "mmproj-qwen3.5-4b-nvfp4-f16.gguf";
     ttl = 300;
     contextSize = 32768;
+    gpuLayers = 999;
     # Slots share one unified KV pool (the full -c), so extra parallelism
     # costs little VRAM; concurrent requests split the 32K context.
     extraArgs = [
+      "--fit"
+      "off"
       "--parallel"
       "4"
       "--kv-unified"
@@ -70,7 +73,10 @@ in
     mmprojFile = null;
     ttl = 300;
     contextSize = 32768;
+    gpuLayers = 999;
     extraArgs = [
+      "--fit"
+      "off"
       "--reasoning"
       "off"
       "--parallel"
@@ -138,9 +144,12 @@ in
     ubatchSize = 512;
     flashAttention = false; # avoid flash-attn to reduce startup instability in llama-server.
     ttl = 300;
+    gpuLayers = 999;
     # Many background clients (Hindsight, Karakeep, deja)
     # embed concurrently; eight slots share the unified 8K KV pool.
     extraArgs = [
+      "--fit"
+      "off"
       "--embeddings"
       "--pooling"
       "last"
@@ -234,7 +243,10 @@ in
     batchSize = 512;
     ubatchSize = 512;
     ttl = 0;
+    gpuLayers = 999;
     extraArgs = [
+      "--fit"
+      "off"
       "--jinja"
       "--chat-template-kwargs"
       "{\"enable_thinking\":false}"

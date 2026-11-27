@@ -161,13 +161,14 @@ def create_app(args: argparse.Namespace) -> FastAPI:
         if voices_dir:
             _install_local_voice_provider(voices_dir)
 
+        if not torch.cuda.is_available():
+            raise RuntimeError("Kokoro requires CUDA")
+
         # Prefer explicit pre-fetched model files (from pkgs.kokoro) so we
         # never hit the network for the big weights/config at startup.
         kmodel = None
         if args.model_path and args.config_path:
             from kokoro.model import KModel
-
-            device = "cuda" if torch.cuda.is_available() else "cpu"
 
             kmodel = KModel(
                 repo_id=repo_id,
@@ -177,9 +178,9 @@ def create_app(args: argparse.Namespace) -> FastAPI:
                 # preloaded models, surfacing as "could not create a primitive"
                 # during synthesis.
                 disable_complex=True,
-            ).to(device).eval()
+            ).to("cuda").eval()
 
-        app.state.pipeline = KPipeline(lang_code=args.lang_code, repo_id=repo_id, model=kmodel or True)
+        app.state.pipeline = KPipeline(lang_code=args.lang_code, repo_id=repo_id, model=kmodel or True, device="cuda")
         app.state.model_id = args.model_id
         app.state.default_voice = args.default_voice
         app.state.voices_dir = voices_dir

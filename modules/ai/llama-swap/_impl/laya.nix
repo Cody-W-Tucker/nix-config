@@ -7,17 +7,30 @@
 let
   cfg = config.services.laya;
   endpoint = import ../_endpoint.nix;
-  # Serving and training each hold their own lease, so both are counted when both run.
-  leases = {
-    laya-gpu = 2600;
-    laya-train-gpu = 2600;
-  };
-  lease = model: "--lease-url http://127.0.0.1:${toString endpoint.port} --lease-model ${model}";
+  llamaSwap = "http://127.0.0.1:${toString endpoint.port}";
+  # The worker runs as llama-swap's user, so it reads Laya's private state through
+  # world-readable copies: published policies, and the trainer's Hugging Face cache.
+  policies = "/var/cache/laya/policies";
+  hub = "/var/cache/laya/hub";
   registry = pkgs.writeText "laya-classifiers.json" (builtins.toJSON cfg.classifiers);
   run = python: "${python}/bin/python3 ${./laya-service.py} --classifiers ${registry}";
   command = run pkgs.laya-vega;
-  # Serving, training and calibration read on the GPU when it has room, otherwise on the CPU.
   gpu = run (pkgs.laya-vega.override { cudaSupport = true; });
+  publish = pkgs.writeShellScript "laya-publish" ''
+    set -euo pipefail
+    shopt -s nullglob
+    install -d -m 0755 ${policies}
+    for policy in /var/lib/laya/*/policy-[0-9]*; do
+      target=${policies}/$(basename "$(dirname "$policy")")/$(basename "$policy")
+      [[ -d "$policy" && ! -e "$target" ]] || continue
+      install -d -m 0755 "$(dirname "$target")"
+      draft=$(mktemp -d "$(dirname "$target")/.publish.XXXXXXXX")
+      cp -rP "$policy/." "$draft/"
+      chmod -R a+rX "$draft"
+      mv -T "$draft" "$target"
+    done
+    [[ ! -d ${hub} ]] || chmod -R a+rX ${hub}
+  '';
   feedback = pkgs.writeShellScriptBin "laya-feedback" ''
     exec ${command} feedback "$@"
   '';
@@ -131,24 +144,37 @@ in
       restartUnits = [ "laya.service" ];
     };
 
-    # Laya's GPU lease: an empty llama-swap model that declares Vega's VRAM, so the
-    # capacity router counts it and evicts it like any model. Laya loads it before
-    # reading on the GPU and drops to the CPU once it is gone (evicted or idle).
-    services.llama-swap.enabledModels = builtins.attrNames leases;
-    services.llama-swap.modelOverrides = lib.mapAttrs (_: vram: {
+    # llama-swap runs Vega on the GPU as an ordinary model, so it is placed and
+    # evicted like the others. The gateway keeps the Jev key and the labels and
+    # never touches the GPU.
+    services.llama-swap.enabledModels = [ "vega" ];
+    services.llama-swap.modelOverrides.vega = {
       file = null;
       ttl = 600;
       upstream = {
-        cmd = "${pkgs.python3}/bin/python3 -m http.server \${PORT} --bind 127.0.0.1 --directory ${pkgs.emptyDirectory}";
-        checkEndpoint = "/";
-        unlisted = true;
-        capacities.vram = vram;
-        evict_cost = 20;
+        cmd = "${gpu} worker --device cuda --port \${PORT} --state-dir /run/vega/policies";
+        env = lib.mapAttrsToList (key: value: "${key}=${value}") (
+          env
+          // {
+            HF_HOME = "/run/vega/hf";
+            HF_HUB_OFFLINE = "1";
+          }
+        );
+        checkEndpoint = "/health";
+        name = "Vega (Laya GPU worker)";
       };
-    }) leases;
+    };
+    systemd.services.llama-swap = {
+      wants = [ "laya.service" ];
+      after = [ "laya.service" ];
+      serviceConfig.BindReadOnlyPaths = [
+        "-${policies}:/run/vega/policies"
+        "-${hub}:/run/vega/hf/hub"
+      ];
+    };
 
-    # Peer dispatch holds no capacity; the lease above does.
-    services.llama-swap.settings.peers.vega = {
+    # Peer dispatch must not hold a local slot while waiting for Vega.
+    services.llama-swap.settings.peers.laya-gateway = {
       proxy = "http://127.0.0.1:${toString endpoint.layaPort}";
       models = [ "laya" ];
       timeouts.responseHeader = 300;
@@ -160,18 +186,20 @@ in
       wants = [ "network-online.target" ];
       after = [ "network-online.target" ];
       environment = env;
+      path = [ pkgs.coreutils ];
       serviceConfig = sandbox // {
         EnvironmentFile = config.sops.templates."laya-env".path;
+        ExecStartPre = publish;
         ExecStart = lib.concatStringsSep " " (
           [
-            "${gpu} serve --device cuda ${lease "laya-gpu"} --port ${toString endpoint.layaPort}"
+            "${command} serve --port ${toString endpoint.layaPort}"
+            "--worker-url ${llamaSwap}/upstream/vega"
             "--teacher-url https://opencode.ai/inference/go/systemone/v1/systemone"
             "--feedback-socket ${cfg.feedbackSocket} --feedback-group laya-feedback"
           ]
           ++ lib.optional (cfg.defaultTeacher != null) "--default-teacher ${cfg.defaultTeacher}"
         );
         Restart = "on-failure";
-        PrivateDevices = false;
         RuntimeDirectory = "laya";
         RuntimeDirectoryMode = "0755";
       };
@@ -179,24 +207,36 @@ in
 
     systemd.services.laya-train = {
       description = "Refit Laya heads from stored labels";
-      after = [ "laya.service" ];
+      after = [
+        "laya.service"
+        "llama-swap.service"
+      ];
       environment = env;
+      path = [ pkgs.coreutils ];
       serviceConfig = sandbox // {
         Type = "oneshot";
-        # Large refits wait for evenings and weekends in the NAS's local time.
-        ExecStart = "${gpu} train --device cuda ${lease "laya-train-gpu"}";
+        # Pausing unloads every local model and refuses new loads (HTTP 503) until
+        # resumed; it returns once they have stopped. The Laya endpoint stays up
+        # and sends questions to Jev meanwhile. A restart of llama-swap clears it.
+        ExecStartPre = "${pkgs.curl}/bin/curl -fsS --max-time 300 -X POST ${llamaSwap}/api/models/pause";
+        ExecStart = "${gpu} train --device cuda";
+        # Run after success, failure or timeout alike.
+        ExecStopPost = [
+          "-${publish}"
+          "-${pkgs.curl}/bin/curl -fsS --max-time 30 -X POST ${llamaSwap}/api/models/resume"
+        ];
         PrivateDevices = false;
         Nice = 15;
         CPUQuota = "200%";
         IOWeight = 10;
-        TimeoutStartSec = "2h";
+        TimeoutStartSec = "45min";
       };
     };
     systemd.timers.laya-train = {
       wantedBy = [ "timers.target" ];
       timerConfig = {
-        OnCalendar = "hourly";
-        Persistent = true;
+        OnCalendar = "*-*-* 01:00:00";
+        Persistent = false;
       };
     };
   };

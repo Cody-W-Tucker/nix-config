@@ -107,53 +107,14 @@ let
     };
   };
 
-  # The RTX 5060's 8151 MiB less room for other processes and CUDA contexts that
-  # outlive a released lease (Laya keeps ~300 MiB).
-  vramBudget = 7800;
-  # MiB measured with nvidia-smi, rounded up. `keep` is the eviction cost:
-  # higher stays loaded longer.
-  gpu = {
-    "fluid-speech-pro-clean" = {
-      vram = 1450;
-      keep = 100;
-    };
-    "s1-mini" = {
-      vram = 1450;
-      keep = 100;
-    };
-    # Text-to-speech is rare and reloads in about a second, so it makes room for Laya.
-    "kokoro-82m" = {
-      vram = 500;
-      keep = 15;
-    };
-    "qwen3-embedding-0.6b" = {
-      vram = 2100;
-      keep = 30;
-    };
-    "qwen-3.5-9b" = {
-      vram = 4650;
-      keep = 10;
-    };
-    "qwen-3.5-4b" = {
-      # 4578 MiB fully GPU-resident after a small image at 32K (2026-11-27).
-      # Leave headroom for larger images and concurrent requests.
-      vram = 4900;
-      keep = 10;
-    };
-    "glm-ocr-f16" = {
-      vram = 7400;
-      keep = 5;
-    };
-    # These fill whatever is free (the 35B fits experts to free VRAM; diarization
-    # was not measured), so they run alone.
-    "qwen-3.6-35b-a3b" = {
-      vram = vramBudget;
-      keep = 10;
-    };
-    "whisper-diarization" = {
-      vram = vramBudget;
-      keep = 5;
-    };
+  matrixModels = {
+    summary = "qwen-3.5-4b";
+    text = "qwen-3.5-9b";
+    embed = "qwen3-embedding-0.6b";
+    stt = "fluid-speech-pro-clean";
+    cleanup = "s1-mini";
+    tts = "kokoro-82m";
+    vega = "vega";
   };
 in
 {
@@ -213,24 +174,25 @@ in
       "kokoro-82m"
       "s1-mini"
     ];
-    preloadModels = [
-      "fluid-speech-pro-clean"
-      "s1-mini"
-    ];
-    # Any models whose declared VRAM fits the card may run together; to make room,
-    # llama-swap evicts the cheapest set: OCR, then text/vision models, text-to-speech,
-    # Laya, embeddings, and speech-to-text last.
+    # Keep embeddings across workload changes. No set permits audio to share
+    # the card with either chat model; models outside the sets run alone.
     settings.routing.router = {
-      use = "capacity";
-      settings.capacity.pools.vram = vramBudget;
+      use = "matrix";
+      settings.matrix = {
+        vars = matrixModels;
+        sets = {
+          summarization = "summary & embed";
+          chat = "text & embed";
+          audio = "stt & cleanup & tts & embed";
+          # Laya's Vega fits beside embeddings, but not beside them and a chat model.
+          classify = "vega & embed";
+        };
+      };
     };
     modelOverrides = lib.recursiveUpdate modelFiles (
-      lib.mapAttrs (_: fit: {
-        upstream = {
-          capacities.vram = fit.vram;
-          evict_cost = fit.keep;
-        };
-      }) gpu
+      lib.genAttrs [ matrixModels.stt matrixModels.cleanup matrixModels.tts ] (_: {
+        ttl = 30;
+      })
     );
   };
 
