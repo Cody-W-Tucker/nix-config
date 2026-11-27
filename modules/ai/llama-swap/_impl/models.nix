@@ -39,14 +39,15 @@ let
 in
 {
   # Qwen3.5-4B in NVIDIA FP4 (NVFP4) — multimodal, non-reasoning task endpoint.
-  # ~2.4 GB weights. On the RTX 5060 (8 GB) at 64K context with Q8 KV cache the
-  # footprint is ~3 GB, leaving >5 GB for the embedding model.
+  # ~2.4 GB weights. At 32K with Q8 KV cache, the full GPU-resident model
+  # and projector used 4578 MiB after a small image request on the NAS.
   "qwen-3.5-4b" = {
     file = "qwen3.5-4b-nvfp4.gguf";
     mmprojFile = "mmproj-qwen3.5-4b-nvfp4-f16.gguf";
     ttl = 300;
+    contextSize = 32768;
     # Slots share one unified KV pool (the full -c), so extra parallelism
-    # costs little VRAM; concurrent requests split the 64K context.
+    # costs little VRAM; concurrent requests split the 32K context.
     extraArgs = [
       "--parallel"
       "4"

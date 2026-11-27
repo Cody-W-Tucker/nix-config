@@ -37,7 +37,7 @@
           OPENAI_BASE_URL = "http://127.0.0.1:8081/v1";
           OPENAI_API_KEY = "sk-llama-swap";
 
-          INFERENCE_TEXT_MODEL = "qwen-3.5-9b";
+          INFERENCE_TEXT_MODEL = "qwen-3.5-4b";
           OCR_USE_LLM = "true";
           INFERENCE_IMAGE_MODEL = "qwen-3.5-4b";
           # Karakeep counts with o200k_base, not Qwen's tokenizer; leave headroom.

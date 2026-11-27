@@ -110,8 +110,8 @@ let
   # The RTX 5060's 8151 MiB less room for other processes and CUDA contexts that
   # outlive a released lease (Laya keeps ~300 MiB).
   vramBudget = 7800;
-  # MiB measured with nvidia-smi on 2026-11-24 with each model loaded on its own,
-  # rounded up. `keep` is the eviction cost: higher stays loaded longer.
+  # MiB measured with nvidia-smi, rounded up. `keep` is the eviction cost:
+  # higher stays loaded longer.
   gpu = {
     "fluid-speech-pro-clean" = {
       vram = 1450;
@@ -135,7 +135,9 @@ let
       keep = 10;
     };
     "qwen-3.5-4b" = {
-      vram = 5300;
+      # 4578 MiB fully GPU-resident after a small image at 32K (2026-11-27).
+      # Leave headroom for larger images and concurrent requests.
+      vram = 4900;
       keep = 10;
     };
     "glm-ocr-f16" = {

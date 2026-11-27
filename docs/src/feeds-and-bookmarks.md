@@ -13,7 +13,7 @@ The AI work runs on the NAS's graphics card.
 
 | What happens | Done by |
 | --- | --- |
-| Karakeep summary and tags | `qwen-3.5-9b` |
+| Karakeep summary and tags | `qwen-3.5-4b` |
 | Karakeep image descriptions | `qwen-3.5-4b` |
 | The curator's comparison | `qwen3-embedding-0.6b` |
 
