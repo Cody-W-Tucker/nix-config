@@ -1,0 +1,53 @@
+agent: pi
+
+commands:
+  lint: >-
+    nix build --no-link
+    .#checks.x86_64-linux.formatting
+    .#checks.x86_64-linux.statix
+    .#checks.x86_64-linux.deadnix
+    .#checks.x86_64-linux.no-comments
+    .#checks.x86_64-linux.imports
+    .#checks.x86_64-linux.docs
+  format: nix fmt
+
+gates:
+  - name: host-build
+    after: lint
+    command: >-
+      nix build --no-link
+      .#nixosConfigurations.beast.config.system.build.toplevel
+      .#nixosConfigurations.nas.config.system.build.toplevel
+
+protected_paths:
+  - "flake.lock"
+  - ".github/**"
+
+test:
+  instructions: |
+    Follow "Change Validation" in the root AGENTS.md: evaluate the merged option on each
+    affected host, or build the changed package, script or generated file. The host-build
+    gate builds both hosts after lint, so do not build host closures here.
+    Never activate anything: no `nixos-rebuild switch`, `test` or `boot`, and no `update`.
+
+document:
+  instructions: |
+    docs/src/ is the user manual for CodyOS. Write it by the rules in docs/AGENTS.md.
+    Take what to write from the intent: the user's own request describes what they will
+    see and do. Use the diff only to confirm names, keys, commands and addresses.
+    A page records what the user presses, opens or runs, and what then happens. Never
+    restate the code, option values, config tables or the reasons for a choice. Never
+    invent a behavior or a number.
+    Commands are listed only on docs/src/getting-started.md; other pages link there.
+    A new feature that the user can see gets its own page, listed in docs/src/SUMMARY.md.
+    A change the user cannot see needs no docs change.
+
+review:
+  path_instructions:
+    - path: "modules/**"
+      instructions: |
+        Follow modules/AGENTS.md and the nearest AGENTS.md. Nix has no comments.
+    - path: "docs/**"
+      instructions: |
+        Prose only. Judge it against docs/AGENTS.md: what the user sees and does, no code
+        recap, no invented behavior. Do not request test coverage.

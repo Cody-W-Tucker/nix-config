@@ -14,8 +14,8 @@ When planning a feature or auditing what a host declares, use the [capability in
 `docs/src/` maps the system as the user meets it: what they press, open or run, and what they then see. That is the agreed baseline. The code, Hindsight and deja hold everything beneath it: implementation, decisions and their reasons, benchmarks, history.
 
 - When a report is vague ("this is slow", "this works differently"), read the feature's page for what normal is first, then recall its history (Hindsight, deja, and `git log` on the aspect's files), then check the host. The page, the aspect and that history are three views of one feature; the file paths and aspect name join them.
-- When a change alters what the user experiences, update that feature's page in the same change, following [Writing these docs](docs/src/writing-docs.md#what-a-page-records). Record only what is specific to this system and visible to the user; omit general knowledge, config recaps and the reasons for choices. Never invent a behavior or a number.
-- Keep operator guidance in `docs/` and durable editing rules in the nearest `AGENTS.md`. Keep local READMEs for temporary workarounds with a removal condition, not permanent feature maps.
+- Do not edit `docs/src/`. The no-mistakes pipeline's document step writes the docs from the user's request and the diff.
+- Keep durable editing rules in the nearest `AGENTS.md`. Keep local READMEs for temporary workarounds with a removal condition, not permanent feature maps.
 - Write no comments in Nix. Make the code say it through names and structure. Retain a workaround's `REVIEW-BY` date, upstream link and rationale, a constraint whose violation breaks something, or a decode of an opaque value in Hindsight (bank `codyos`, tags `source-note` and `file:<path>`). Recall that tag before changing a file. The `no-comments` rule in `lint/` enforces this as an LSP diagnostic and a flake check.
 
 ## Evidence Discipline
@@ -43,7 +43,14 @@ nix build --no-link .#update
 nix build --no-link .#nixosConfigurations.nas.config.system.build.toplevel
 ```
 
-Once the changes have settled, the user will run the `update` script to build and activate the system.
+## Making Changes
+
+Every change reaches `main` one of two ways. Write the commit messages yourself; the user does not.
+
+- **Pull request (default):** fetch `origin`, then create a worktree on a new branch from `origin/main` outside `/etc/nixos`. Make the change and commit it there, then run `/no-mistakes` with the user's request as the intent. Bring every `ask-user` finding to the user. When the PR reaches `checks-passed`, give the user the link. When they say to merge, run `gh pr merge --squash --delete-branch`, then remove the worktree.
+- **Direct to main:** only when the user says to do it on main. Commit in `/etc/nixos` on `main`. Do not push.
+
+In both cases the user then runs `update`. It pulls `main`, runs the lint checks, switches beast and pushes any local commits. Do not run it yourself.
 
 ## High-value repo rules
 
