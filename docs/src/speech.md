@@ -56,6 +56,6 @@ When building the speaker cache, the server logs a warning for each segment shor
 | Dictation keys | [`_hyprland/settings.nix`](../../modules/graphical/_hyprland/settings.nix) |
 | Dictation behavior | [`_speech-to-text.nix`](../../modules/ai/_speech-to-text.nix) |
 | Declared vocabulary | [`_speech-vocabulary.json`](../../modules/ai/llama-swap/_speech-vocabulary.json) |
-| How fixes are learned and applied | [`speech-history.py`](../../modules/ai/llama-swap/_impl/speech-history.py) |
+| How fixes are learned and applied | [`speech-history.py`](../../modules/ai/llama-swap/speech-history.py) |
 | Voice button: model, voice, endpoint | [`_voice/client.nix`](../../modules/ai/hermes-agent/_voice/client.nix) |
-| The speech models | [`_nas-models.nix`](../../modules/ai/llama-swap/_nas-models.nix) |
+| The speech models | [`_audio.nix`](../../modules/ai/llama-swap/_audio.nix) |

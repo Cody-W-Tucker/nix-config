@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.services.laya;
-  endpoint = import ../_endpoint.nix;
+  endpoint = import ./_endpoint.nix;
   llamaSwap = "http://127.0.0.1:${toString endpoint.port}";
   # The worker runs as llama-swap's user, so it reads Laya's private state through
   # world-readable copies: published policies, and the trainer's Hugging Face cache.
@@ -131,11 +131,9 @@ in
       extraGroups = [ "laya-feedback" ];
     };
     users.groups.laya = { };
-    # Services that may save labels as the user's own join this group.
     users.groups.laya-feedback = { };
     environment.systemPackages = [ feedback ];
 
-    # Same opencode-api-key Hermes and Hindsight use, rendered for this unit.
     sops.secrets."opencode-api-key" = { };
     sops.templates."laya-env" = {
       content = ''
@@ -144,25 +142,19 @@ in
       restartUnits = [ "laya.service" ];
     };
 
-    # llama-swap runs Vega on the GPU as an ordinary model, so it is placed and
-    # evicted like the others. The gateway keeps the Jev key and the labels and
-    # never touches the GPU.
-    services.llama-swap.enabledModels = [ "vega" ];
-    services.llama-swap.modelOverrides.vega = {
-      file = null;
+    # The GPU worker is an ordinary llama-swap model; the gateway never uses the GPU.
+    services.llama-swap.settings.models.vega = {
       ttl = 600;
-      upstream = {
-        cmd = "${gpu} worker --device cuda --port \${PORT} --state-dir /run/vega/policies";
-        env = lib.mapAttrsToList (key: value: "${key}=${value}") (
-          env
-          // {
-            HF_HOME = "/run/vega/hf";
-            HF_HUB_OFFLINE = "1";
-          }
-        );
-        checkEndpoint = "/health";
-        name = "Vega (Laya GPU worker)";
-      };
+      cmd = "${gpu} worker --device cuda --port \${PORT} --state-dir /run/vega/policies";
+      env = lib.mapAttrsToList (key: value: "${key}=${value}") (
+        env
+        // {
+          HF_HOME = "/run/vega/hf";
+          HF_HUB_OFFLINE = "1";
+        }
+      );
+      checkEndpoint = "/health";
+      name = "Vega (Laya GPU worker)";
     };
     systemd.services.llama-swap = {
       wants = [ "laya.service" ];
@@ -215,12 +207,9 @@ in
       path = [ pkgs.coreutils ];
       serviceConfig = sandbox // {
         Type = "oneshot";
-        # Pausing unloads every local model and refuses new loads (HTTP 503) until
-        # resumed; it returns once they have stopped. The Laya endpoint stays up
-        # and sends questions to Jev meanwhile. A restart of llama-swap clears it.
+        # Returns only once every local model has stopped.
         ExecStartPre = "${pkgs.curl}/bin/curl -fsS --max-time 300 -X POST ${llamaSwap}/api/models/pause";
         ExecStart = "${gpu} train --device cuda";
-        # Run after success, failure or timeout alike.
         ExecStopPost = [
           "-${publish}"
           "-${pkgs.curl}/bin/curl -fsS --max-time 30 -X POST ${llamaSwap}/api/models/resume"

@@ -100,7 +100,7 @@
         };
         virtualisation.docker.package = pkgs.docker_29;
 
-        # llama-swap (_nas-models.nix) and Hermes (modules/ai/hermes-agent/_nixos/runtime)
+        # llama-swap (modules/ai/llama-swap/llama-swap.nix) and Hermes (modules/ai/hermes-agent/_nixos/runtime)
         # put /run/current-system/sw/lib on LD_LIBRARY_PATH and may load CUDA
         # libraries from the toolkit there, so keep it installed on this host.
         environment.systemPackages = [ pkgs.cudaPackages.cudatoolkit ];

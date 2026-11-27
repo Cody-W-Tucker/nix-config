@@ -45,8 +45,8 @@ flowchart TD
 
     subgraph feature["modules/ai/llama-swap/ (one feature)"]
         aspect["llama-swap.nix<br/>defines den.aspects.llama-swap"]
-        impl["_impl/<br/>the service module"]
-        models["_nas-models.nix<br/>this repo's model choices"]
+        impl["_audio.nix, _laya.nix<br/>plain NixOS modules"]
+        models["_models.nix<br/>model data"]
     end
 
     shared["site.nix, nix/, shell/, …<br/>add themselves to every host"]

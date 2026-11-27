@@ -55,6 +55,6 @@ On the NAS, `sudo systemctl start karakeep-triage` runs it now, and `journalctl 
 | Curator schedule and limits | [`miniflux.nix`](../../modules/feeds/miniflux.nix) |
 | Karakeep and its models | [`karakeep.nix`](../../modules/web/karakeep.nix) |
 | Bookmark sorting: schedule and per-run limits | [`karakeep-triage.nix`](../../modules/feeds/karakeep-triage.nix) |
-| The questions the classifiers ask | [`_nas-classifiers.nix`](../../modules/ai/llama-swap/_nas-classifiers.nix) |
+| The questions the classifiers ask | [`_classifiers.nix`](../../modules/ai/llama-swap/_classifiers.nix) |
 
 Curator source: [Cody-W-Tucker/miniflux-curator](https://github.com/Cody-W-Tucker/miniflux-curator).

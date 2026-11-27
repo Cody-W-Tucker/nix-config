@@ -31,9 +31,6 @@ let
   };
 in
 {
-  # A saved bookmark (title, url, type, Karakeep summary) is the state. Two independent
-  # questions: the one agency service it serves, and whether CodyOS could borrow from it.
-  # Vega answers each alone or sends it to Jev.
   services.laya.classifiers.bookmark-route = distill // {
     questions.route = {
       type = "choice";
