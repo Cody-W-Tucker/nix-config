@@ -17,7 +17,7 @@ A new machine joins as a Den host: a host file and a hardware file in `modules/h
    - `den.hosts.x86_64-linux.<host>`: `channel` (`"stable"` or `"unstable"`), `users.codyt = { }`, `lan`, `tailscale`.
    - `den.aspects.<host>`: `provides.to-users.homeManager.home.stateVersion` and a `nixos` block that imports the hardware file and sets `networking.hostName` and `system.stateVersion`.
 4. Shared features apply automatically. For each host-specific feature the machine needs, add `den.aspects.<host>.includes = [ den.aspects.<feature> ];` in that feature's file.
-5. Commit and push the changes **from beast**, so the main repo stays the source of truth. Then pull on the new machine.
+5. Ask an agent to commit the changes, then run `update`, so the main repo stays the source of truth. Then pull on the new machine.
 
 ## 3. Give it access to secrets
 
@@ -27,8 +27,8 @@ A new machine joins as a Den host: a host file and a hardware file in `modules/h
    nix shell nixpkgs#ssh-to-age --command sh -c 'ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub'
    ```
 
-2. In `nixos-secrets`, add the recipient to `.sops.yaml`. Run `sops updatekeys` on each file the host must read. Add any host-only secrets. Push.
-3. In `/etc/nixos`, run `nix flake update nixos-secrets`, commit and push from beast, and pull on the new machine.
+2. In `nixos-secrets`, add the recipient to `.sops.yaml`. Run `sops updatekeys` on each file the host must read. Add any host-only secrets. Commit and push it yourself.
+3. Tell an agent the secrets are pushed. It updates the `nixos-secrets` lock in `/etc/nixos` and commits it. Run `update`, then pull on the new machine.
 
 Without this step the build succeeds, but services that need secrets fail to start.
 

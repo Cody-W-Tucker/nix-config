@@ -61,7 +61,6 @@
     };
 
   den.aspects.nix.homeManager.programs.zsh.shellAliases = {
-    pullUpdate = "cd /etc/nixos && git pull && sudo nixos-rebuild switch";
     upgrade = ''
       cd /etc/nixos &&
       sudo nix flake update &&

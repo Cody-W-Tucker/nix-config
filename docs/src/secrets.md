@@ -4,9 +4,9 @@ Secret values live encrypted in the private `nixos-secrets` repository, a locked
 
 ## Add or change a secret
 
-1. In your `nixos-secrets` checkout, edit the file with `sops`. Commit and push. Agents cannot do this step.
-2. In `/etc/nixos`, run `nix flake update nixos-secrets`. Until you do, the pushed value does not reach any host.
-3. Declare the secret in the file of the service that uses it, with a quoted name: `sops.secrets."paperless-password" = { owner = "paperless"; };`. Use `sops.templates` for files that mix secrets and settings.
+1. In your `nixos-secrets` checkout, edit the file with `sops`. Commit and push it yourself. Agents do not do this step.
+2. Tell an agent the secret is pushed. It runs `nix flake update nixos-secrets` in `/etc/nixos` and commits the lock. Until then, the pushed value does not reach any host.
+3. For a new secret, the agent also declares it in the file of the service that uses it, with a quoted name: `sops.secrets."paperless-password" = { owner = "paperless"; };`. Files that mix secrets and settings use `sops.templates`.
 4. Run `update`.
 
 ## Add a host

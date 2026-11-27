@@ -3,7 +3,6 @@
   nix,
   git,
   nixos-rebuild,
-  check-imports,
   openssh,
 }:
 
@@ -13,41 +12,48 @@ writeShellApplication {
     nix
     git
     nixos-rebuild
-    check-imports
     openssh
   ];
   text = ''
     set -euo pipefail
 
-    # Usage: update [--nas] [commit message]
-    #   --nas  after switching this host, pull and switch the NAS too.
     deploy_nas=false
     if [ "''${1-}" = "--nas" ]; then
       deploy_nas=true
       shift
     fi
-
-    cd /etc/nixos
-    nix fmt
-    check-imports
-
-    git add .
-    if [ -z "''${1-}" ]; then
-      echo "Enter commit message:"
-      read -r commit_message
-      commit_message=''${commit_message:-"Update NixOS configuration"}
-    else
-      commit_message="$1"
+    if [ "$#" -ne 0 ]; then
+      echo "Usage: update [--nas]" >&2
+      exit 2
     fi
 
-    git commit -m "$commit_message"
+    cd /etc/nixos
+
+    if [ -n "$(git status --porcelain)" ]; then
+      echo "/etc/nixos has uncommitted changes. Have an agent commit them, then run update again:" >&2
+      git status --short >&2
+      exit 1
+    fi
+
+    branch=$(git symbolic-ref --short HEAD)
+    if [ "$branch" != main ]; then
+      echo "/etc/nixos is on $branch, not main." >&2
+      exit 1
+    fi
+
+    git pull --rebase
+
+    checks=(formatting statix deadnix no-comments imports)
+    nix build --no-link "''${checks[@]/#/.#checks.x86_64-linux.}"
+
     sudo nixos-rebuild switch
-    git push
+
+    if [ -n "$(git rev-list '@{upstream}..HEAD')" ]; then
+      git push
+    fi
 
     if [ "$deploy_nas" = true ]; then
-      # The NAS evaluates and builds itself after the push. Refuse to touch a
-      # checkout with uncommitted work or merge unpushed NAS commits.
-      # shellcheck disable=SC2016 # expanded on the NAS, not here
+      # shellcheck disable=SC2016
       ssh -t nas 'cd /etc/nixos &&
         if [ -n "$(git status --porcelain)" ]; then
           echo "NAS /etc/nixos has uncommitted changes; not deploying:" >&2

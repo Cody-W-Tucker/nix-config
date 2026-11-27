@@ -1,22 +1,21 @@
 # Building and updating
 
-Edit `/etc/nixos` on beast, then deploy with `update`.
+Ask an agent to make the change. It works on a branch, opens a pull request, and merges it when you say so. Then run `update`. For a small change, ask for it on main instead. The agent commits without pushing, and `update` pushes it.
 
 ## Deploy
 
-| Command                   | Result                                                  |
-| ------------------------- | ------------------------------------------------------- |
-| `update "commit message"` | Formats and checks the tree, then commits, switches and pushes. |
-| `update --nas`            | Switches beast, then the NAS over SSH                   |
+| Command        | Result                                                                          |
+| -------------- | ------------------------------------------------------------------------------- |
+| `update`         | Pulls `main`, runs the lint checks, switches beast, then pushes a local commit if there is one. |
+| `update --nas`   | Switches beast, then the NAS over SSH                                           |
 
-See [Checks and standards](checks.md). If the switch fails, the commit stays local and nothing is pushed. `update --nas "commit message"` also deploys to the NAS after the push. The NAS step stops if its checkout has uncommitted changes or cannot fast-forward.
+`update` refuses when `/etc/nixos` has uncommitted changes or is not on `main`. See [Checks and standards](checks.md). If the switch fails, nothing is pushed. `update --nas` also deploys to the NAS after the push. The NAS step stops if its checkout has uncommitted changes or cannot fast-forward.
 
 ## Other commands
 
-| Command      | Use                                                                           |
-| ------------ | ----------------------------------------------------------------------------- |
-| `pullUpdate` | Apply commits pushed from the other host                                      |
-| `upgrade`    | Update all flake inputs and switch this host                                  |
+| Command    | Use                                                                          |
+| ---------- | ---------------------------------------------------------------------------- |
+| `upgrade`    | Update all flake inputs and switch this host                                 |
 | `gcCleanup`  | Free disk. Deletes every old generation, so there is nothing to roll back to. |
 
 ## What runs without you

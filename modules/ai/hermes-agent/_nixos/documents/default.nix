@@ -44,7 +44,7 @@ let
 
     1. `git fetch origin && git switch -c inbox/<short-slug> origin/main`. One branch per request; never commit to `main`.
     2. Read the repo's `AGENTS.md` and the nearest one to the files you change, and follow them.
-    3. Make the smallest change that does what was asked, including the feature's docs page when what Cody experiences changes.
+    3. Make the smallest change that does what was asked. Do not edit `docs/src/`; the no-mistakes pipeline writes the docs when Cody validates the branch.
     4. Run the cheapest check that can catch the likely failure (for example `nix eval` on the setting you changed for each affected host). If a check cannot run here, say so; do not claim it passed.
     5. Commit on the branch. Do not push, rebuild, or touch `${nixosConfigRoot}`.
     6. Reply with the branch name, what changed, what you verified, and what is still unverified.
