@@ -47,7 +47,7 @@ nix build --no-link .#nixosConfigurations.nas.config.system.build.toplevel
 
 Every change reaches `main` one of two ways. Write the commit messages yourself; the user does not.
 
-- **Pull request (default):** fetch `origin`, then create a worktree on a new branch from `origin/main` outside `/etc/nixos`. Make the change and commit it there, then run `/no-mistakes` with the user's request as the intent. Bring every `ask-user` finding to the user. When the PR reaches `checks-passed`, give the user the link. When they say to merge, run `gh pr merge --squash --delete-branch`, then remove the worktree.
+- **Pull request (default):** fetch `origin`, then create a worktree on a new branch from `origin/main` at `~/worktrees/codyos/<branch>` (`git worktree add -b <branch> ~/worktrees/codyos/<branch> origin/main`). Never put it inside `/etc/nixos` or under `~/Projects`, which syncs between hosts. Make the change and commit it there, then run `/no-mistakes` with the user's request as the intent. Bring every `ask-user` finding to the user. When the PR reaches `checks-passed`, give the user the link. When they say to merge, run `gh pr merge --squash --delete-branch`, then remove the worktree.
 - **Direct to main:** only when the user says to do it on main. Commit in `/etc/nixos` on `main`. Do not push.
 
 In both cases the user then runs `update`. It pulls `main`, runs the lint checks, switches beast and pushes any local commits. Do not run it yourself.
