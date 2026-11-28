@@ -45,7 +45,7 @@ Each of these keys toggles a special workspace over the current one. The first t
 | `SUPER` + MMB       | Pick a color; it goes to the clipboard                  |
 | `SUPER + P`         | Hide or show Waybar                                     |
 
-Media, volume and brightness keys work. The full bind list is in [`_hyprland/settings.nix`](../../modules/graphical/_hyprland/settings.nix).
+Media, volume and brightness keys work. The full bind list is in [`hyprland-settings.nix`](../../modules/graphical/hyprland-settings.nix).
 
 ## Waybar and notifications
 
@@ -67,7 +67,7 @@ Notifications close after 10 s (low priority: 5 s). Critical ones stay until dis
 
 | To change                                    | Edit                                                                       |
 | -------------------------------------------- | -------------------------------------------------------------------------- |
-| Binds, special-workspace programs            | [`_hyprland/settings.nix`](../../modules/graphical/_hyprland/settings.nix) |
+| Binds, special-workspace programs            | [`hyprland-settings.nix`](../../modules/graphical/hyprland-settings.nix)   |
 | Monitors, suspend timeout (`hardwareConfig`) | [`modules/hosts/beast.nix`](../../modules/hosts/beast.nix)                 |
 | Lock, idle, login                            | [`hyprland.nix`](../../modules/graphical/hyprland.nix)                     |
 | Waybar                                       | [`_waybar/waybar.nix`](../../modules/graphical/_waybar/waybar.nix)         |
