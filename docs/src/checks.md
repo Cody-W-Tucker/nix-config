@@ -33,5 +33,5 @@ Run `check-imports [repo-root]` after moving Nix modules. It defaults to `/etc/n
 | The checks | [`modules/flake/checks.nix`](../../modules/flake/checks.nix) |
 | Lint rules | [`statix.toml`](../../statix.toml) |
 | The comment rule and its message | [`lint/no-comments.yml`](../../lint/no-comments.yml) |
-| The comment rule in the agents | [`modules/harness/_hm/plugins/no-comments/default.nix`](../../modules/harness/_hm/plugins/no-comments/default.nix) |
+| The comment rule in the agents | [`modules/ai/harness/plugins.nix`](../../modules/ai/harness/plugins.nix) |
 | PR checks | [`.github/workflows/`](../../.github/workflows) |

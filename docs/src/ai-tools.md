@@ -48,6 +48,6 @@ At 1 a.m. NAS time, Laya refits on the CPU while local models keep serving. Laya
 | Open WebUI | [`open-webui.nix`](../../modules/ai/open-webui.nix) |
 | Local models: add, remove, tune | [`_models.nix`](../../modules/ai/llama-swap/_models.nix) |
 | Which models share the card | [`llama-swap.nix`](../../modules/ai/llama-swap/llama-swap.nix) |
-| Hindsight: models, banks, agent tools | [`hindsight.nix`](../../modules/ai/hindsight.nix) |
+| Hindsight: models, banks | [`hindsight/server.nix`](../../modules/ai/hindsight/server.nix) |
 | Langfuse | [`langfuse/langfuse.nix`](../../modules/ai/langfuse/langfuse.nix) |
 | `gws` skills | [`google-workspace.nix`](../../modules/ai/google-workspace.nix) |
