@@ -5,19 +5,12 @@
   ...
 }:
 let
-  officialPlugins = pkgs.fetchFromGitHub {
-    owner = "NousResearch";
-    repo = "hermes-official-plugins";
+  langfusePlugin = import ../lib/build-plugin.nix pkgs {
+    name = "langfuse";
     rev = "a4e311e433f1470b1fec15434deea6a05e8644eb";
     hash = "sha256-q9gpwik7FUp2z6H69z5eoq7qNZYvdi6KvU7fOG796C4=";
+    requiresHermes = "0.21.7";
   };
-  langfusePlugin = pkgs.runCommand "langfuse" { } ''
-    cp -R ${officialPlugins}/langfuse "$out"
-    # The installed Hermes source is post-extraction but its Nix derivation
-    # reports 0.0.0, so the catalog's semantic-version gate is a false reject.
-    substituteInPlace "$out/plugin.yaml" \
-      --replace-fail 'requires_hermes: ">=0.21.7"' 'requires_hermes: ">=0.0.0"'
-  '';
   hermesPython = config.services.hermes-agent.package.python;
   hermesPythonPackages = hermesPython.pkgs;
   langfuse415 = hermesPythonPackages.buildPythonPackage rec {
