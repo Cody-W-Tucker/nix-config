@@ -6,7 +6,7 @@ Ask an agent to make the change. It works on a branch, opens a pull request, and
 
 | Command        | Result                                                                          |
 | -------------- | ------------------------------------------------------------------------------- |
-| `update`         | Pulls `main`, runs the lint checks, switches beast, then pushes a local commit if there is one. |
+| `update`         | Pulls `main`, switches beast, then pushes a local commit if there is one. |
 | `update --nas`   | Switches beast, then the NAS over SSH                                           |
 
 `update` refuses when `/etc/nixos` has uncommitted changes or is not on `main`. See [Checks and standards](checks.md). If the switch fails, nothing is pushed. `update --nas` also deploys to the NAS after the push. The NAS step stops if its checkout has uncommitted changes or cannot fast-forward.
