@@ -1,13 +1,6 @@
 # Hosts
 
-Owns machine entry points and host-local facts.
+A host file holds machine facts only: hostname, disks, network identity, hardware imports, state versions, and `codyos.*` settings for that machine. Features include themselves from their own files; a host file never lists them.
 
-Does not own reusable services, shared desktop behavior, or user preferences. Put those in feature aspects under `modules/` and declare their `den.aspects.<host>.includes` or `den.default.includes` entries in the owning feature file.
-
-## Placement Rules
-
-- Keep machine-local settings here: hostname, disks, networking identity, hardware imports, and state versions.
-- Compose modules; do not implement large services inline in a host file.
-- Keep user account behavior in `modules/users/`; use `provides.to-users` here only for machine-local settings such as the Home Manager state version.
-- Move duplicated host logic into an aspect once a second host wants it.
-- Host files should read as machine facts and option-carrying `codyos.*` settings, not a private module tree.
+- Do not implement a service inline. When a second host needs host logic, move it into an aspect.
+- Use `provides.to-users` here only for machine-local user settings such as `home.stateVersion`.

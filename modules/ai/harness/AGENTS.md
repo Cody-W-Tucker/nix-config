@@ -12,17 +12,12 @@
 
 Clients of NAS services live with the service and join the harness from there: `../hindsight/client.nix` and `../langfuse/client.nix` add `hindsight.client` and `langfuse.client` to `harness.includes`.
 
-## Placement Rules
+## Rules
 
 - Manage agents, skills, tools and configuration here. Do not edit `~/.config/opencode` or `~/.claude` directly.
 - A tool brings its own skill, MCP entry, plugin and secrets in its own file. Set Home Manager options (`programs.opencode.*`, `programs.claude-code.*`, `programs.mcp.servers`) directly; the only harness options are `codyos.harness.skills` (one skill, two harness locations), `codyos.harness.agentEnvFiles` (secret env for the agents) and `codyos.harness.claudePlugins` (in `compat.nix`, because stable Home Manager takes plugins only as a list).
 - `codyos.harness.skills` carries coding skills only. Skills for personal-assistant tools such as Google Workspace and the CRM ship to Hermes alone, as starter skills under `/etc/hermes/starter-skills`, even when the tool's CLI is also installed for Cody.
-- Read host facts through Den's `host` argument (`host.localAi`, `host.channel`), not import-time wrappers.
-- Keep secrets out of this tree; use SOPS. An agent-only secret goes in `codyos.harness.agentEnvFiles`, never a shell profile.
-
-## Failure Modes
-
-- Adding a file without tracking it, so the flake cannot see it.
-- Defining the same MCP server in two files instead of in the tool or service file that owns it.
-- Hiding long shell behavior or agent prose inside Nix strings when a script or Markdown file would be clearer.
-- Renaming command names, skill paths or tool names that existing agents reference.
+- An agent-only secret goes in `codyos.harness.agentEnvFiles`, never a shell profile.
+- Define each MCP server once, in the file of the tool or service that owns it.
+- Keep long shell behavior and agent prose in script or Markdown files, not Nix strings.
+- Do not rename commands, skill paths or tool names that existing agents reference.

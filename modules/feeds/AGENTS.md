@@ -1,23 +1,7 @@
 # Feeds and automations
 
-Owns Miniflux and the miniflux-curator under `modules/feeds` (`miniflux.nix`: the reader plus the curator's values on nas; `miniflux-curator.nix`: the reusable curator module and its options), and the placement rules for reusable system-level scheduled jobs.
+`miniflux.nix` is the reader and the curator's NAS settings; `miniflux-curator.nix` is the curator module and its options; `karakeep-triage.nix` classifies Karakeep bookmarks. Reusable scheduled jobs live here too.
 
-Does not own one-host cron-like tasks unless they are reusable enough to become a module, and does not own user-session launchers or Home Manager tools.
-
-## Placement Rules
-
-- Put each reusable automation in its own kebab-case file (or directory with a `_` supporting tree) as one `den.aspects.<name>`, and add it to `den.aspects.<host>.includes` in the same file.
-- Split longer scripts into nearby `_` files such as `_script.nix`; there is no `default.nix` outside `_` paths.
-- Define simple one-host automations in the host module instead of adding a new reusable module.
-- Keep secrets close to the consuming automation and use SOPS wiring rather than plaintext values.
-- Prefer native `systemd.services` and `systemd.timers` options over ad hoc cron-style glue.
-
-## Failure Modes
-
-- Timer exists but service is not wired to `timers.target` or `startAt`.
-- Script depends on commands not present in `runtimeInputs` or the service `path`.
-- Service runs as the wrong user and cannot access expected files.
-- Long-running or stateful work is modeled as a fragile oneshot without clear working directory, state path, or persistence behavior.
-- Data-integrity jobs miss runs because the timer does not use `Persistent = true` where catch-up matters.
-
-See [Feeds and bookmarks](../../docs/src/feeds-and-bookmarks.md) for operating commands.
+- Make each reusable automation one `den.aspects.<name>` in its own file, with its `den.aspects.<host>.includes` entry in the same file. Put long scripts in a nearby `_` path.
+- A one-host job goes in its owning aspect, not a new reusable module.
+- Use `systemd.services` with `systemd.timers` or `startAt`, and `Persistent = true` where missed runs must catch up. Put every command the script calls in its `runtimeInputs` or the unit's `path`.

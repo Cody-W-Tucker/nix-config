@@ -7,7 +7,7 @@ description: Verify NixOS configuration changes before activation using nvd and 
 
 ## When to Use
 
-Use when a change could alter a host's closure in ways you need to see: a `flake.lock` update, new or rewired services, shared modules that touch several hosts, or a rebuild that turned out larger than expected. For a single setting, evaluating the merged option is still the cheaper check (see `AGENTS.md`).
+Use when a change could alter a host's closure in ways you need to see: a `flake.lock` update, new or rewired services, shared modules that touch several hosts, or a rebuild that turned out larger than expected. It shows exactly what changed, which a search or a single `nix eval` cannot. For a single setting, evaluating the merged option is still the cheaper check.
 
 Never activate. Report the audit; the user deploys with `update`.
 
@@ -15,7 +15,8 @@ Never activate. Report the audit; the user deploys with `update`.
 
 ## Choose the Baseline
 
-- **`HEAD`** shows only the uncommitted change, and works for either host from either machine. Prefer it.
+- **`origin/main`** shows everything on a PR branch, and works for either host from either machine. Prefer it in a worktree.
+- **`HEAD`** shows only the uncommitted change.
 - **`/run/current-system`** also includes commits that were never activated. It is only meaningful for the host you are on.
 
 New files must be staged with `git add` first, or the worktree build will not see them.
@@ -23,7 +24,7 @@ New files must be staged with `git add` first, or the worktree build will not se
 ```bash
 host=nas   # or beast
 attr="nixosConfigurations.$host.config.system.build.toplevel"
-base="git+file://$PWD?rev=$(git rev-parse HEAD)#$attr"
+base="git+file://$PWD?rev=$(git rev-parse origin/main)#$attr"   # or HEAD
 ```
 
 ## Step 1: Derivation Diff (`nix-diff`), no build needed

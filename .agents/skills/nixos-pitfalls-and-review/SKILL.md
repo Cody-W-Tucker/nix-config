@@ -63,62 +63,19 @@ Create custom options when:
 
 Do not create them when a plain module import and a few direct assignments are enough.
 
-### 4. Thick host files
+### 4. Mixing packages and modules
 
-Hosts should not become giant copies of service configuration. Put reusable service logic in modules and keep hosts focused on machine identity.
+If a file builds a derivation, it is a package in `packages/`, not a module in `modules/`.
 
-### 5. Misplacing `stateVersion`
-
-- `system.stateVersion` belongs in the host, not in a shared global file.
-- `home.stateVersion` belongs in the user or Home Manager config.
-- Different hosts may legitimately use different versions.
-
-### 6. Forgetting that flakes only see tracked files
-
-With flakes, untracked files are often invisible to evaluation.
-
-- new files should be added to git before expecting builds to see them
-- this is a very common source of confusing "file not found" errors
-
-### 7. Mixing packages and modules
-
-- package definitions belong in `packages/`
-- reusable system behavior belongs in `modules/`
-
-If a file builds a derivation, it is usually a package file, not a NixOS module.
-
-### 8. Hiding secrets assumptions
-
-- declare secrets close to the service that consumes them
-- never commit raw secrets
-- remember that secret tooling adds operational requirements for builds and deployment
-
-### 9. Treat timer offsets as load shaping, not exclusion
+### 5. Treat timer offsets as load shaping, not exclusion
 
 When recurring services must not overlap, encode explicit systemd coordination or mutual exclusion, such as unit relationships, conditions, or a shared lock. A different `OnCalendar` time alone is not a guarantee because a long run can cross into another job's window.
 
-## Recommended architecture patterns
+## Evidence for audits and recommendations
 
-### Import-all, enable-selectively
-
-For larger repos, import a stable set of modules and enable them with options instead of hand-curating imports per host.
-
-Benefits:
-
-- hosts stay smaller
-- shared defaults live in one place
-- new features scale better across many machines
-
-### Single responsibility modules
-
-Each module should answer one question clearly:
-
-- how is this service configured?
-- how is this hardware handled?
-- how is this user environment defined?
-
-## Verify recommendations and merged values
-
+- Map every acceptance criterion to direct source or evaluated evidence, and mark anything unverified. A behavioral claim needs a focused runtime test; reading source is not enough.
+- Open and read a file in this session before citing it; a search hit is not a reading. For an exhaustive inventory, list every exact path rather than a wildcard summary.
+- Verify upstream option, NixOS and override semantics in authoritative docs, source or tests, not search snippets.
 - Before recommending a Nix option, verify it against the local module or package source and give its complete enclosing attribute path.
 - When merge semantics determine a value, evaluate the resulting configuration when feasible; clearly distinguish evaluated output from an expected merge.
 - When auditing NixOS policy, evaluate the resulting configuration when feasible and distinguish evaluated values from source-level expectations.
@@ -129,24 +86,11 @@ Each module should answer one question clearly:
 
 When reviewing a NixOS change, ask:
 
-- Is the file in the right category?
-- Is the file name obvious and consistent?
-- Is the host file still mostly machine-specific?
-- Is `stateVersion` local to the host or user?
-- Are secrets declared near use?
-- Are package definitions separated from NixOS modules?
-- Is the module boundary clear and single-purpose?
+- Does it follow `modules/AGENTS.md` and the nearest `AGENTS.md`?
+- Is the host file still only machine facts?
 - Is the change using module-system helpers where merge semantics matter?
-- Will flakes see every new file because it is tracked?
-
-## Validation checklist
-
-Run at least:
-
-- `nix flake check`
-- `nixos-rebuild build --flake .#<host>`
-
-If using Home Manager through NixOS, also validate the relevant host build rather than only checking formatting.
+- Is every new file tracked, so the flake sees it?
+- Was it checked as root `AGENTS.md` "Change Validation" describes?
 
 ## Network reachability diagnosis
 
@@ -158,7 +102,6 @@ Verify the failing path from the affected client. If that is not possible, expli
 - one massive host file containing everything
 - one massive shared module containing everything
 - custom abstractions that nobody can explain quickly
-- putting real config into import-only aggregator files
 
 ## Rule of thumb
 

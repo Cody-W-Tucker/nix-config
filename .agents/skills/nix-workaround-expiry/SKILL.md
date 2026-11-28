@@ -20,7 +20,7 @@ codyos.workarounds.<name> = {
 
 1. **`reason`**: what is broken and the binding or option the workaround sits on.
 2. **`upstream`**: the issue, pull request or commit that tracks the fix.
-3. **`reviewBy`**: a concrete date. Not "when upstream fixes it." Every build warns once `inputs.self.lastModifiedDate` reaches it. `update` commits before it builds, so this is the date of the first `update` after it passes.
+3. **`reviewBy`**: a concrete date. Not "when upstream fixes it." Every build warns once `inputs.self.lastModifiedDate` (the last commit's date) reaches it.
 4. **`obsolete`**: a predicate that is true once the workaround is no longer needed. Every build then warns to remove it, before the review date. Leave it at the default `false` only when no reliable consumer-scoped signal exists, and say why in `reason`.
 
 The option exists in both NixOS and Home Manager modules. Names are unique per host and user, so give two copies of one workaround two names.
