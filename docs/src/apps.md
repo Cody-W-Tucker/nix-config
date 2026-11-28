@@ -45,9 +45,7 @@ The full list is in [`hotkeys.nix`](../../modules/apps/_obsidian/hotkeys.nix).
 
 All in [`modules/apps/`](../../modules/apps):
 
-| To change                          | Edit                                                                                                                |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Apps                               | [`apps.nix`](../../modules/apps/apps.nix)                                                                           |
-| Terminal                           | [`apps.nix`](../../modules/apps/apps.nix)                                                                   |
-| Obsidian settings, plugins, vaults | [`_obsidian/default.nix`](../../modules/apps/_obsidian/default.nix) |
-| Phone integration                  | [`apps.nix`](../../modules/apps/apps.nix)                                                               |
+| To change                                         | Edit                                                                                                                |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Apps, terminal, phone integration                | [`apps.nix`](../../modules/apps/apps.nix)                                                                           |
+| Obsidian settings, plugins, vaults                | [`_obsidian/default.nix`](../../modules/apps/_obsidian/default.nix) |
