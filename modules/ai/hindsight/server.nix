@@ -13,7 +13,7 @@
     }:
     let
       inherit (config.codyos.site) domain;
-      endpoints = import ./_hindsight-endpoints.nix {
+      endpoints = import ./_endpoints.nix {
         nasTailscale = config.codyos.site.hosts.nas.tailscale;
       };
       packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};

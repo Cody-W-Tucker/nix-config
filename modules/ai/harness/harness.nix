@@ -1,3 +1,4 @@
+{ den, ... }:
 let
   context = shellContext: ''
     # Delegation
@@ -40,10 +41,89 @@ let
   '';
 in
 {
-  programs = {
-    opencode.context = managed;
-    claude-code.context = managed;
-    pi-coding-agent.context = managed;
-    codex.context = minimal;
-  };
+  den.default.includes = [ den.aspects.harness ];
+
+  den.aspects.harness.homeManager =
+    {
+      config,
+      inputs,
+      lib,
+      options,
+      pkgs,
+      ...
+    }:
+    let
+      llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+      withMutableSettings =
+        program:
+        lib.optionalAttrs (options.programs.${program} ? mutableSettings) { mutableSettings = true; };
+      claudePlugins = config.codyos.harness.claudePlugins;
+    in
+    {
+      options.codyos.harness.claudePlugins = lib.mkOption {
+        type = lib.types.attrsOf (lib.types.either lib.types.package lib.types.path);
+        default = { };
+        description = "Claude Code plugins by name; stable Home Manager only accepts them as a list.";
+      };
+
+      config = {
+        home.packages = with llmPkgs; [
+          cursor-agent
+          muse-code
+          grok
+          herdr-core
+          tuicr
+          spec-kit
+          backlog-md
+          gnhf
+          no-mistakes
+        ];
+
+        codyos.harness.skills = {
+          gnhf = "${llmPkgs.gnhf}/lib/node_modules/gnhf/skills/gnhf";
+          no-mistakes = "${llmPkgs.no-mistakes.src}/skills/no-mistakes";
+        };
+
+        xdg.configFile."tuicr/config.toml".source = ./tuicr.toml;
+
+        programs = {
+          opencode.context = managed;
+          pi-coding-agent.context = managed;
+
+          codex = {
+            enable = true;
+            enableMcpIntegration = true;
+            context = minimal;
+          }
+          // withMutableSettings "codex";
+
+          claude-code = {
+            enable = true;
+            package = llmPkgs.claude-code;
+            enableMcpIntegration = true;
+            context = managed;
+            plugins =
+              if builtins.isList options.programs.claude-code.plugins.default then
+                lib.attrValues claudePlugins
+              else
+                claudePlugins;
+            agents.explore = ''
+              ---
+              name: Explore
+              description: First pass for repository exploration and gathering context before the parent reads broadly.
+              model: haiku
+              tools: Read, Glob, Grep
+              ---
+
+              Investigate the requested scope without editing. Report concise findings with file and line references, checks run, and any gaps. Do not copy back raw output.
+            '';
+            settings = {
+              env.CLAUDE_CODE_SUBAGENT_MODEL = "haiku";
+              syncClaudeAiSkills = false;
+            };
+          }
+          // withMutableSettings "claude-code";
+        };
+      };
+    };
 }

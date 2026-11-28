@@ -14,23 +14,22 @@ the same constructor.
 
 ## What it does
 
-- Keeps a checked-in wrapper `opencode-plugin/package.json` pinning the exact upstream
+- Keeps a checked-in wrapper `package.json` pinning the exact upstream
   `0.6.0` tarball, plus a managed forwarding entrypoint
-  `opencode-plugin/index.ts` (selected via package.json `main`, the same mechanism
-  as the model-router `src/index.ts` main) that default-exports the
+  `index.ts` (selected via package.json `main`) that default-exports the
   upstream plugin unchanged — a bare `package.json` alone is not loadable
   by OpenCode V2 directory-plugin resolution.
-- `default.nix` materializes it to
+- `../client.nix` materializes it to
   `~/.config/opencode/plugins/langfuse-observability` via a
-  `home.activation` step (same pattern as `../model-router`), and registers
-  that local path in `codyos.harness.plugins.langfuse-observability.opencode.settings`.
+  `home.activation` step, and registers that local path in
+  `programs.opencode.settings.plugins`.
 - Never touches the OpenCode npm cache.
 - Secrets are untouched: Langfuse credentials still come from the SOPS
-  `opencode-langfuse-env` template owned by `modules/harness/_hm/opencode/default.nix`.
+  `opencode-langfuse-env` template, also owned by `../client.nix`.
 - Repeatable: activation skips `npm install` when the target matches the
   wrapper and contains the expected upstream version — no network on every
   activation.
-- `opencode-plugin/patch-synchronized-ref.cjs` runs after every activation. It asserts
+- `patch-synchronized-ref.cjs` runs after every activation. It asserts
   upstream `0.6.0` and exactly one matching bundled expression, replacing it
   with `SynchronizedRef.makeUnsafe(...)`. It is idempotent and fails loudly
   if upstream refactors the code. The patch is scoped to the managed plugin
@@ -42,7 +41,7 @@ When an upstream release loads successfully on the installed OpenCode version
 and emits spans to the local Langfuse instance (including the dependency and
 tracer fixes already present in 0.6.0):
 
-1. Delete `modules/harness/_hm/plugins/langfuse/opencode-plugin/` and `README.md`.
-2. Drop `home.activation.opencodeLangfusePlugin` in `modules/harness/_hm/plugins/langfuse/default.nix`.
+1. Delete this `opencode-plugin/` directory.
+2. Drop `home.activation.opencodeLangfusePlugin` in `../client.nix`.
 3. Restore the bare `@langfuse/opencode-observability-plugin@<fixed-version>`
-   spec in `codyos.harness.plugins.langfuse-observability.opencode.settings`.
+   spec in `programs.opencode.settings.plugins` there.

@@ -2,7 +2,7 @@
 
 Owns `nginx.nix` (`mkNginxVhost` on every host; `den.aspects.nginx.server`, the NAS ingress) and one `den.aspects.<service>` per self-hosted single-service web app. See [Web apps](../../docs/src/web-apps.md) for user-facing addresses. The same rules apply to the other NAS service directories (`feeds/`, `observability/`, `backups/`, `ai/`, `documents/`, `media/`).
 
-Does not own machine facts (`modules/hosts/nas.nix`) or Home Manager/user preferences (`modules/users/`, `modules/harness/`).
+Does not own machine facts (`modules/hosts/nas.nix`) or Home Manager/user preferences (`modules/users/`, `modules/ai/harness/`).
 
 ## Rules
 
