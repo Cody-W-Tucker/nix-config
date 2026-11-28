@@ -4,13 +4,10 @@
   pkgs,
   ...
 }:
-
 let
   wrapperSrc = ./opencode-plugin;
 
   pluginPath = "${config.xdg.configHome}/opencode/plugins/langfuse-observability";
-
-  nodePkg = pkgs.nodejs;
 
   claudePlugin = pkgs.callPackage ./claude-package.nix { inherit (pkgs.unstable) python3; };
 in
@@ -19,7 +16,7 @@ in
     plugin_dir="${config.xdg.configHome}/opencode/plugins"
     target_dir="${pluginPath}"
     wrapper_src="${wrapperSrc}"
-    PATH="${lib.getBin nodePkg}/bin:$PATH"
+    PATH="${lib.getBin pkgs.nodejs}/bin:$PATH"
 
     mkdir -p "$plugin_dir"
 

@@ -1,8 +1,12 @@
-{ pkgs, ... }:
-
+{ lib, pkgs, ... }:
+let
+  prettierFirst.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
+  closeAndRename = {
+    enable_close = true;
+    enable_rename = true;
+  };
+in
 {
-  imports = [ ./ts-autotag.nix ];
-
   programs.nixvim = {
     clipboard.providers.wl-copy.enable = true;
     extraPackages = with pkgs; [
@@ -38,21 +42,20 @@
         astro
         tsx
       ];
-      conform-nvim = {
-        settings = {
-          formatters_by_ft = {
-            astro = [ "prettier" ];
-            html.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
-            css.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
-            javascript.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
-            javascriptreact.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
-            typescript.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
-            typescriptreact.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
-            python = [ "black" ];
-            markdown.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
-          };
+      conform-nvim.settings.formatters_by_ft =
+        lib.genAttrs [
+          "html"
+          "css"
+          "javascript"
+          "javascriptreact"
+          "typescript"
+          "typescriptreact"
+          "markdown"
+        ] (_: prettierFirst)
+        // {
+          astro = [ "prettier" ];
+          python = [ "black" ];
         };
-      };
       none-ls.sources.formatting.prettier = {
         enable = true;
         disableTsServerFormatter = true;
@@ -62,6 +65,23 @@
             extra_args = { "--no-semi" },
           }
         '';
+      };
+      ts-autotag = {
+        enable = true;
+        settings = {
+          opts = closeAndRename // {
+            enable_close_on_slash = false;
+          };
+          per_filetype =
+            lib.genAttrs [
+              "astro"
+              "javascriptreact"
+              "typescriptreact"
+            ] (_: closeAndRename)
+            // {
+              html.enable_close = false;
+            };
+        };
       };
     };
   };

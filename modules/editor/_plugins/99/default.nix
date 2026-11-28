@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}:
-
+{ config, pkgs, ... }:
 let
   plugin99 = pkgs.callPackage ./package.nix { };
 in
