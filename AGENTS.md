@@ -14,7 +14,7 @@ When planning a feature or auditing what a host declares, use the [capability in
 `docs/src/` maps the system as the user meets it: what they press, open or run, and what they then see. That is the agreed baseline. The code, Hindsight and deja hold everything beneath it: implementation, decisions and their reasons, benchmarks, history.
 
 - When a report is vague ("this is slow", "this works differently"), read the feature's page for what normal is first, then recall its history (Hindsight, deja, and `git log` on the aspect's files), then check the host. The page, the aspect and that history are three views of one feature; the file paths and aspect name join them.
-- Do not edit `docs/src/`. The no-mistakes pipeline's document step writes the docs from the user's request and the diff.
+- Do not edit `docs/src/`. The no-mistakes pipeline's document step writes the docs from the user's request and the diff. Never manually create, fix, or update files there, even when documentation is part of the request.
 - Keep durable editing rules in the nearest `AGENTS.md`. Keep local READMEs for temporary workarounds with a removal condition, not permanent feature maps.
 - Write no comments in Nix. Make the code say it through names and structure. Retain a workaround's `REVIEW-BY` date, upstream link and rationale, a constraint whose violation breaks something, or a decode of an opaque value in Hindsight (bank `codyos`, tags `source-note` and `file:<path>`). Recall that tag before changing a file. The `no-comments` rule in `lint/` enforces this as an LSP diagnostic and a flake check.
 
@@ -23,7 +23,7 @@ When planning a feature or auditing what a host declares, use the [capability in
 - Before declaring an audit or evidence report complete, map every acceptance criterion to direct source or evaluated evidence and explicitly mark anything unverified. A behavioral criterion requires a focused runtime test; source inspection alone is insufficient.
 - Before citing a file, open and read it in the current session; grep/search output does not count. For exhaustive inventories, enumerate every relevant exact path instead of using wildcard summaries, and inspect every search hit and referenced file.
 - Verify claims about upstream options, NixOS behavior, and override/build semantics in authoritative documentation, source, or tests; search snippets are not evidence.
-- Validation status must be the validated command's status. Do not pipe through `head` or `tail` unless `pipefail` or `PIPESTATUS` preserves it. Report success only when both status and output demonstrate it; inspect failures, correct the invocation, and rerun.
+- Validation status must be the validated command's status. Do not pipe through `head` or `tail` unless `pipefail` or `PIPESTATUS` preserves it. Report success only when both status and output demonstrate it; inspect failures, correct the invocation, and rerun. A running or pending check is not passed.
 
 ## Change Validation
 
@@ -47,6 +47,8 @@ nix build --no-link .#nixosConfigurations.nas.config.system.build.toplevel
 
 Every change reaches `main` one of two ways. Write the commit messages yourself; the user does not.
 
+**Choose the route before writing repository files.** Unless the user explicitly chose direct-to-main, do not edit in `/etc/nixos` or an existing checkout; create the PR worktree first.
+
 - **Pull request (default):** fetch `origin`, then create a worktree on a new branch from `origin/main` at `~/worktrees/codyos/<branch>` (`git worktree add -b <branch> ~/worktrees/codyos/<branch> origin/main`). Never put it inside `/etc/nixos` or under `~/Projects`, which syncs between hosts. Make the change and commit it there, then run `/no-mistakes` with the user's request as the intent. Bring every `ask-user` finding to the user. When the PR reaches `checks-passed`, give the user the link. When they say to merge, run `gh pr merge --squash --delete-branch`, then remove the worktree.
 - **Direct to main:** only when the user says to do it on main. Before committing in `/etc/nixos` on `main`, run the `lint` command from `.no-mistakes.yaml`, since no-mistakes does not see this path. Do not push.
 
@@ -56,7 +58,7 @@ In both cases the user then runs `update`. It pulls `main`, switches beast and p
 
 ### Editing
 
-- Keep narrowly scoped edits minimal: preserve unrelated lines, and avoid repository-wide formatting. Before summarizing Git state or claiming no unrelated files were touched, inspect status and the complete staged and unstaged diff for every modified or unmerged path; enumerate relevant changed files by exact path.
+- Keep narrowly scoped edits minimal: preserve unrelated lines, and avoid repository-wide formatting. Before summarizing Git state or claiming no unrelated files were touched, inspect status and the complete staged and unstaged diff for every modified or unmerged path; enumerate relevant changed files by exact path. Do this immediately before the final summary or commit; a diff statistic is not a substitute.
 - **For a nice-to-have, take the upstream default.** Configure a small convenience the way its own documentation does, and theme it only through a configuration surface the tool already supports — Home Manager generating that file is fine, and it should carry Stylix colours rather than literals. Do not write a wrapper, patch, package or post-processing step to close a cosmetic gap: report the gap and leave it. The user asks explicitly when a nice-to-have is worth more than that.
 
 ### Naming & Files

@@ -1,6 +1,6 @@
 ---
 name: nixos-pitfalls-and-review
-description: Use before NixOS/Nix module changes or audits that assert merged or upstream option semantics, trace complete NixOS/Home Manager argument wiring, report locked dependency versions with exact revisions and timestamps, validate builds, or diagnose network reachability.
+description: Use before NixOS/Nix module changes or audits that assert merged or upstream option semantics, trace complete NixOS/Home Manager argument wiring, report locked dependency versions with exact revisions and timestamps, validate builds, diagnose network reachability, or schedule services that must not overlap.
 ---
 
 # NixOS Pitfalls And Review
@@ -92,6 +92,10 @@ If a file builds a derivation, it is usually a package file, not a NixOS module.
 - declare secrets close to the service that consumes them
 - never commit raw secrets
 - remember that secret tooling adds operational requirements for builds and deployment
+
+### 9. Treat timer offsets as load shaping, not exclusion
+
+When recurring services must not overlap, encode explicit systemd coordination or mutual exclusion, such as unit relationships, conditions, or a shared lock. A different `OnCalendar` time alone is not a guarantee because a long run can cross into another job's window.
 
 ## Recommended architecture patterns
 
