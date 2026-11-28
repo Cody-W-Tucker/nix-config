@@ -5,17 +5,12 @@
   ...
 }:
 let
-  sandboxPlugins = pkgs.fetchFromGitHub {
-    owner = "NousResearch";
-    repo = "hermes-official-plugins";
+  bubblewrapPlugin = import ../lib/build-plugin.nix pkgs {
+    name = "bubblewrap";
     rev = "e7a218f26db88426ab3e7376f0e000b6e356f5e7";
     hash = "sha256-zDjiWUVmWUPAyasy74mUuh+d/dpBi1SBh7GZvuTjxcI=";
+    requiresHermes = "0.22.6";
   };
-  bubblewrapPlugin = pkgs.runCommand "bubblewrap" { } ''
-    cp -R ${sandboxPlugins}/bubblewrap "$out"
-    substituteInPlace "$out/plugin.yaml" \
-      --replace-fail 'requires_hermes: ">=0.22.6"' 'requires_hermes: ">=0.0.0"'
-  '';
   cfg = config.codyos.hermes-agent.sandbox;
 in
 {
