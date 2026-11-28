@@ -38,10 +38,6 @@ in
     llmAgents.qmd
     pkgs.crm-cli
   ];
-  codyos.harness.skills = {
-    crm-cli = "${pkgs.crm-cli.src}/skills/SKILL.md";
-    verified-work-run = "${inputs.workflow}/skills/operational/verified-work-run";
-  };
 
   programs.git.settings.safe.directory = codyosClone;
 }
