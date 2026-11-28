@@ -102,10 +102,9 @@
             settings.matrix = {
               vars = matrixModels;
               sets = {
-                summarization = "summary & embed";
-                chat = "text & embed";
-                audio = "stt & cleanup & tts & embed";
-                classify = "vega & embed";
+                summarization = "summary & embed & vega";
+                chat = "text & embed & vega";
+                audio = "stt & cleanup & tts & embed & vega";
               };
             };
           };
