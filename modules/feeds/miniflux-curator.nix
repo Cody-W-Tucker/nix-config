@@ -18,83 +18,32 @@
     in
 
     {
-      options.services.miniflux-curator = {
-        minifluxUrl = mkOption {
-          type = types.str;
-          default = "http://localhost:7777";
-          description = "Miniflux instance URL";
+      options.services.miniflux-curator =
+        let
+          option =
+            type: default: description:
+            mkOption { inherit type default description; };
+          required = type: description: mkOption { inherit type description; };
+        in
+        {
+          minifluxUrl = option types.str "http://localhost:7777" "Miniflux instance URL";
+          apiKeyFile = required types.path "Path to file containing Miniflux API key";
+          karakeepUrl = option types.str "http://localhost:3000" "Karakeep instance URL";
+          karakeepApiKeyFile = required types.path "Path to file containing Karakeep API key";
+          openaiHost = option types.str "http://localhost:8080" "Embedding API host (OpenAI-compatible)";
+          embedModel = option types.str "qwen3-embedding-8b" "Embedding model for similarity scoring";
+          batchSize = option types.int 64 "Number of articles to embed per batch request (default: 64)";
+          karakeepFetchLimit =
+            option types.int 100
+              "Number of recent Karakeep bookmarks to fetch before reference selection";
+          referenceLimit = option types.int 50 "Maximum Karakeep bookmarks selected for reference embeddings";
+          autoMarkReadBelow =
+            option types.float 3.5
+              "Score threshold below which entries are marked as read (0-10)";
+          limitUnread = option types.int 400 "Maximum unread entries to process per run";
+          dryRun = option types.bool true "When true, only logs what would be done without making changes";
+          schedule = option types.str "daily" "Schedule for running the curator (systemd timer format)";
         };
-
-        apiKeyFile = mkOption {
-          type = types.path;
-          description = "Path to file containing Miniflux API key";
-        };
-
-        karakeepUrl = mkOption {
-          type = types.str;
-          default = "http://localhost:3000";
-          description = "Karakeep instance URL";
-        };
-
-        karakeepApiKeyFile = mkOption {
-          type = types.path;
-          description = "Path to file containing Karakeep API key";
-        };
-
-        openaiHost = mkOption {
-          type = types.str;
-          default = "http://localhost:8080";
-          description = "Embedding API host (OpenAI-compatible)";
-        };
-
-        embedModel = mkOption {
-          type = types.str;
-          default = "qwen3-embedding-8b";
-          description = "Embedding model for similarity scoring";
-        };
-
-        batchSize = mkOption {
-          type = types.int;
-          default = 64;
-          description = "Number of articles to embed per batch request (default: 64)";
-        };
-
-        karakeepFetchLimit = mkOption {
-          type = types.int;
-          default = 100;
-          description = "Number of recent Karakeep bookmarks to fetch before reference selection";
-        };
-
-        referenceLimit = mkOption {
-          type = types.int;
-          default = 50;
-          description = "Maximum Karakeep bookmarks selected for reference embeddings";
-        };
-
-        autoMarkReadBelow = mkOption {
-          type = types.float;
-          default = 3.5;
-          description = "Score threshold below which entries are marked as read (0-10)";
-        };
-
-        limitUnread = mkOption {
-          type = types.int;
-          default = 400;
-          description = "Maximum unread entries to process per run";
-        };
-
-        dryRun = mkOption {
-          type = types.bool;
-          default = true;
-          description = "When true, only logs what would be done without making changes";
-        };
-
-        schedule = mkOption {
-          type = types.str;
-          default = "daily";
-          description = "Schedule for running the curator (systemd timer format)";
-        };
-      };
 
       config = {
         systemd.services.miniflux-curator = {

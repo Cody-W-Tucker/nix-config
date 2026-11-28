@@ -5,6 +5,7 @@
   den.aspects.home-assistant.nixos =
     {
       config,
+      lib,
       mkNginxVhost,
       pkgs,
       ...
@@ -136,17 +137,21 @@
           };
         };
 
-        nginx.virtualHosts =
-          mkNginxVhost {
-            host = "home-assistant.${domain}";
-            port = 8123;
-            proxyWebsockets = true;
-          }
-          // mkNginxVhost {
-            host = "music-assistant.${domain}";
-            port = 8095;
-            proxyWebsockets = true;
-          };
+        nginx.virtualHosts = lib.mergeAttrsList (
+          lib.mapAttrsToList
+            (
+              name: port:
+              mkNginxVhost {
+                host = "${name}.${domain}";
+                inherit port;
+                proxyWebsockets = true;
+              }
+            )
+            {
+              home-assistant = 8123;
+              music-assistant = 8095;
+            }
+        );
       };
 
       nas.backups.sqlite = [

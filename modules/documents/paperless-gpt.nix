@@ -11,6 +11,10 @@
 
     let
       inherit (config.codyos.site) domain;
+      dataDirs = map (dir: "/var/lib/paperless-gpt/${dir}") [
+        "prompts"
+        "config"
+      ];
     in
     {
       codyos.homepage.cards.PaperlessGPT = {
@@ -23,18 +27,14 @@
         };
       };
 
-      nas.backups.dataDirectories = [
-        "/var/lib/paperless-gpt/prompts"
-        "/var/lib/paperless-gpt/config"
-      ];
+      nas.backups.dataDirectories = dataDirs;
 
       sops.secrets."paperless-ai-env" = { };
 
       systemd.tmpfiles.rules = [
         "d /var/lib/paperless-gpt 0755 root root -"
-        "d /var/lib/paperless-gpt/prompts 0755 10001 10001 -"
-        "d /var/lib/paperless-gpt/config 0755 10001 10001 -"
-      ];
+      ]
+      ++ map (dir: "d ${dir} 0755 10001 10001 -") dataDirs;
 
       virtualisation.oci-containers.containers.paperless-gpt = {
         image = "icereed/paperless-gpt:latest";

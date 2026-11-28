@@ -10,6 +10,10 @@
     let
       inherit (config.codyos.site) domain;
       port = 8084;
+      mountAndDirs = [
+        "mnt-media.mount"
+        "shelfmark-dirs.service"
+      ];
     in
     {
       codyos.homepage.cards.Shelfmark = {
@@ -51,14 +55,8 @@
           };
 
           "${config.virtualisation.oci-containers.backend}-shelfmark" = {
-            after = [
-              "mnt-media.mount"
-              "shelfmark-dirs.service"
-            ];
-            requires = [
-              "mnt-media.mount"
-              "shelfmark-dirs.service"
-            ];
+            after = mountAndDirs;
+            requires = mountAndDirs;
           };
         };
       };

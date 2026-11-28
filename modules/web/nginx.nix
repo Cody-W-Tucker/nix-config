@@ -30,14 +30,17 @@
               resolvedHost = if service != null then "${service}.${resolvedBaseHost}" else host;
               resolvedPort = if service != null then config.services.${service}.settings.server.port else port;
               hasCustomLocations = locations != null;
-              generatedLocations = {
-                ${locationPath} = {
-                  proxyPass = "http://${proxyHost}:${toString resolvedPort}";
-                  inherit proxyWebsockets;
-                }
-                // lib.optionalAttrs (locationExtraConfig != "") { extraConfig = locationExtraConfig; };
-              };
-              finalLocations = if hasCustomLocations then locations else generatedLocations;
+              finalLocations =
+                if hasCustomLocations then
+                  locations
+                else
+                  {
+                    ${locationPath} = {
+                      proxyPass = "http://${proxyHost}:${toString resolvedPort}";
+                      inherit proxyWebsockets;
+                    }
+                    // lib.optionalAttrs (locationExtraConfig != "") { extraConfig = locationExtraConfig; };
+                  };
             in
             assert lib.assertMsg (
               resolvedHost != null
@@ -79,11 +82,9 @@
               inherit (config.codyos.site.user) email;
             };
             certs.${domain} = {
-              inherit domain;
               extraDomainNames = [ "*.${domain}" ];
               dnsProvider = "cloudflare";
               dnsResolver = "1.1.1.1:53";
-              dnsPropagationCheck = true;
               credentialFiles = {
                 "CF_API_EMAIL_FILE" = config.sops.secrets.cloudflare-api-email.path;
                 "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets.cloudflare-api-key.path;
@@ -125,8 +126,6 @@
           users.users.nginx.extraGroups = [ "acme" ];
 
           networking.firewall = {
-            enable = true;
-            allowPing = true;
             allowedTCPPorts = [
               80
               443

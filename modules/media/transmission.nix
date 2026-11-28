@@ -8,10 +8,6 @@
     }:
 
     {
-      systemd.services.transmission.vpnConfinement = {
-        enable = true;
-        vpnNamespace = "wg";
-      };
       sops.secrets."server-wg.conf" = {
         sopsFile = inputs.nixos-secrets.paths.serverWireguardSopsFile;
         mode = "0400";
@@ -56,6 +52,10 @@
       };
 
       systemd.services.transmission = {
+        vpnConfinement = {
+          enable = true;
+          vpnNamespace = "wg";
+        };
         after = [
           "mnt-media.device"
           "mnt-media.mount"

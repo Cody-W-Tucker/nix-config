@@ -73,16 +73,10 @@ in
             settings = {
               title = "HomeHub.tv";
               cardBlur = "sm";
-              layout = {
-                Business = {
-                  style = "row";
-                  columns = 3;
-                };
-                Tools = {
-                  style = "row";
-                  columns = 3;
-                };
-              };
+              layout = lib.genAttrs [ "Business" "Tools" ] (_: {
+                style = "row";
+                columns = 3;
+              });
               headerStyle = "boxedWidgets";
               target = "_self";
               quicklaunch = {
