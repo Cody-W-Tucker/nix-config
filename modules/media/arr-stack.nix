@@ -37,55 +37,39 @@
         );
     in
     {
-      codyos.homepage.cards.Sonarr = {
-        group = "Manage";
-        order = 10;
-        card = {
-          href = "https://sonarr.${domain}";
-          icon = "sonarr";
-          description = "Tv Show Search";
-        };
-      };
-
-      codyos.homepage.cards.Radarr = {
-        group = "Manage";
-        order = 20;
-        card = {
-          href = "https://radarr.${domain}";
-          icon = "radarr";
-          description = "Movie Search";
-        };
-      };
-
-      codyos.homepage.cards.Readarr = {
-        group = "Manage";
-        order = 30;
-        card = {
-          href = "https://readarr.${domain}";
-          icon = "readarr";
-          description = "Book Search";
-        };
-      };
-
-      codyos.homepage.cards.Lidarr = {
-        group = "Manage";
-        order = 50;
-        card = {
-          href = "https://lidarr.${domain}";
-          icon = "lidarr";
-          description = "Music Search";
-        };
-      };
-
-      codyos.homepage.cards.Bazarr = {
-        group = "Manage";
-        order = 60;
-        card = {
-          href = "https://bazarr.${domain}";
-          icon = "bazarr";
-          description = "Subtitle Search";
-        };
-      };
+      codyos.homepage.cards =
+        lib.mapAttrs
+          (name: card: {
+            group = "Manage";
+            inherit (card) order;
+            card = {
+              href = "https://${lib.toLower name}.${domain}";
+              icon = lib.toLower name;
+              inherit (card) description;
+            };
+          })
+          {
+            Sonarr = {
+              order = 10;
+              description = "Tv Show Search";
+            };
+            Radarr = {
+              order = 20;
+              description = "Movie Search";
+            };
+            Readarr = {
+              order = 30;
+              description = "Book Search";
+            };
+            Lidarr = {
+              order = 50;
+              description = "Music Search";
+            };
+            Bazarr = {
+              order = 60;
+              description = "Subtitle Search";
+            };
+          };
 
       systemd.services = lib.genAttrs confinedServices (_: {
         vpnConfinement = {

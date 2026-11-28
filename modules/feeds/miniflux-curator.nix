@@ -12,88 +12,38 @@
     }:
 
     let
+      inherit (lib) mkOption types;
       cfg = config.services.miniflux-curator;
       curatorScript = inputs.miniflux-curator.packages.${pkgs.stdenv.hostPlatform.system}.default;
     in
 
     {
-      options.services.miniflux-curator = {
-        minifluxUrl = lib.mkOption {
-          type = lib.types.str;
-          default = "http://localhost:7777";
-          description = "Miniflux instance URL";
+      options.services.miniflux-curator =
+        let
+          option =
+            type: default: description:
+            mkOption { inherit type default description; };
+          required = type: description: mkOption { inherit type description; };
+        in
+        {
+          minifluxUrl = option types.str "http://localhost:7777" "Miniflux instance URL";
+          apiKeyFile = required types.path "Path to file containing Miniflux API key";
+          karakeepUrl = option types.str "http://localhost:3000" "Karakeep instance URL";
+          karakeepApiKeyFile = required types.path "Path to file containing Karakeep API key";
+          openaiHost = option types.str "http://localhost:8080" "Embedding API host (OpenAI-compatible)";
+          embedModel = option types.str "qwen3-embedding-8b" "Embedding model for similarity scoring";
+          batchSize = option types.int 64 "Number of articles to embed per batch request (default: 64)";
+          karakeepFetchLimit =
+            option types.int 100
+              "Number of recent Karakeep bookmarks to fetch before reference selection";
+          referenceLimit = option types.int 50 "Maximum Karakeep bookmarks selected for reference embeddings";
+          autoMarkReadBelow =
+            option types.float 3.5
+              "Score threshold below which entries are marked as read (0-10)";
+          limitUnread = option types.int 400 "Maximum unread entries to process per run";
+          dryRun = option types.bool true "When true, only logs what would be done without making changes";
+          schedule = option types.str "daily" "Schedule for running the curator (systemd timer format)";
         };
-
-        apiKeyFile = lib.mkOption {
-          type = lib.types.path;
-          description = "Path to file containing Miniflux API key";
-        };
-
-        karakeepUrl = lib.mkOption {
-          type = lib.types.str;
-          default = "http://localhost:3000";
-          description = "Karakeep instance URL";
-        };
-
-        karakeepApiKeyFile = lib.mkOption {
-          type = lib.types.path;
-          description = "Path to file containing Karakeep API key";
-        };
-
-        openaiHost = lib.mkOption {
-          type = lib.types.str;
-          default = "http://localhost:8080";
-          description = "Embedding API host (OpenAI-compatible)";
-        };
-
-        embedModel = lib.mkOption {
-          type = lib.types.str;
-          default = "qwen3-embedding-8b";
-          description = "Embedding model for similarity scoring";
-        };
-
-        batchSize = lib.mkOption {
-          type = lib.types.int;
-          default = 64;
-          description = "Number of articles to embed per batch request (default: 64)";
-        };
-
-        karakeepFetchLimit = lib.mkOption {
-          type = lib.types.int;
-          default = 100;
-          description = "Number of recent Karakeep bookmarks to fetch before reference selection";
-        };
-
-        referenceLimit = lib.mkOption {
-          type = lib.types.int;
-          default = 50;
-          description = "Maximum Karakeep bookmarks selected for reference embeddings";
-        };
-
-        autoMarkReadBelow = lib.mkOption {
-          type = lib.types.float;
-          default = 3.5;
-          description = "Score threshold below which entries are marked as read (0-10)";
-        };
-
-        limitUnread = lib.mkOption {
-          type = lib.types.int;
-          default = 400;
-          description = "Maximum unread entries to process per run";
-        };
-
-        dryRun = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "When true, only logs what would be done without making changes";
-        };
-
-        schedule = lib.mkOption {
-          type = lib.types.str;
-          default = "daily";
-          description = "Schedule for running the curator (systemd timer format)";
-        };
-      };
 
       config = {
         systemd.services.miniflux-curator = {

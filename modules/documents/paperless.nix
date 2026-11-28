@@ -1,249 +1,254 @@
 { den, ... }:
 {
-  den.aspects.nas.includes = [ den.aspects.paperless ];
-  den.aspects.beast.includes = [ den.aspects.paperless.scanner ];
+  den.aspects = {
+    nas.includes = [ den.aspects.paperless ];
+    beast.includes = [ den.aspects.paperless.scanner ];
 
-  den.aspects.paperless.nixos =
-    {
-      mkNginxVhost,
-      config,
-      ...
-    }:
+    paperless.nixos =
+      {
+        mkNginxVhost,
+        config,
+        ...
+      }:
 
-    let
-      inherit (config.codyos.site) domain;
-      port = 28981;
-    in
-    {
-      codyos.homepage.cards.Paperless = {
-        group = "Collect";
-        order = 40;
-        card = {
-          href = "https://paperless.${domain}";
-          icon = "paperless";
-          description = "Document Management";
+      let
+        inherit (config.codyos.site) domain;
+        port = 28981;
+      in
+      {
+        codyos.homepage.cards.Paperless = {
+          group = "Collect";
+          order = 40;
+          card = {
+            href = "https://paperless.${domain}";
+            icon = "paperless";
+            description = "Document Management";
+          };
         };
-      };
 
-      services.samba.settings.PaperlessConsume = {
-        "path" = "/var/lib/paperless/consume";
-        "browseable" = "yes";
-        "read only" = "no";
-        "guest ok" = "yes";
-        "force user" = "paperless";
-        "force group" = "paperless";
-        "create mask" = "0664";
-        "directory mask" = "2775";
-      };
+        sops.secrets."paperless-password" = { };
 
-      sops.secrets."paperless-password" = { };
+        services = {
+          samba.settings.PaperlessConsume = {
+            "path" = "/var/lib/paperless/consume";
+            "browseable" = "yes";
+            "read only" = "no";
+            "guest ok" = "yes";
+            "force user" = "paperless";
+            "force group" = "paperless";
+            "create mask" = "0664";
+            "directory mask" = "2775";
+          };
 
-      services.paperless = {
-        enable = true;
-        inherit port;
-        mediaDir = "/mnt/backup/documents";
-        consumptionDirIsPublic = true;
-        passwordFile = config.sops.secrets.paperless-password.path;
-        settings = {
-          PAPERLESS_ADMIN_USER = config.codyos.site.user.name;
-          PAPERLESS_TIKA_ENABLED = "true";
-          PAPERLESS_TIKA_URL = "http://localhost:${toString config.services.tika.port}";
-          PAPERLESS_CONSUMER_RECURSIVE = "true";
-          PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
-          PAPERLESS_CONSUMER_POLLING = "1";
-          PAPERLESS_URL = "https://paperless.${domain}";
-          USE_X_FORWARD_HOST = "true";
-          USE_X_FORWARD_PORT = "true";
+          paperless = {
+            enable = true;
+            inherit port;
+            mediaDir = "/mnt/backup/documents";
+            consumptionDirIsPublic = true;
+            passwordFile = config.sops.secrets.paperless-password.path;
+            settings = {
+              PAPERLESS_ADMIN_USER = config.codyos.site.user.name;
+              PAPERLESS_TIKA_ENABLED = "true";
+              PAPERLESS_TIKA_URL = "http://localhost:${toString config.services.tika.port}";
+              PAPERLESS_CONSUMER_RECURSIVE = "true";
+              PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = "true";
+              PAPERLESS_CONSUMER_POLLING = "1";
+              PAPERLESS_URL = "https://paperless.${domain}";
+              USE_X_FORWARD_HOST = "true";
+              USE_X_FORWARD_PORT = "true";
+            };
+          };
+
+          nginx.virtualHosts = mkNginxVhost {
+            host = "paperless.${domain}";
+            inherit port;
+            locationExtraConfig = ''
+              client_max_body_size 100M;
+
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+
+              proxy_set_header X-Forwarded-Host $server_name;
+              add_header Referrer-Policy "strict-origin-when-cross-origin";
+            '';
+          };
         };
+
+        nas.backups.sqlite = [
+          {
+            name = "paperless";
+            source = "/var/lib/paperless/db.sqlite3";
+          }
+        ];
       };
 
-      services.nginx.virtualHosts = mkNginxVhost {
-        host = "paperless.${domain}";
-        inherit port;
-        locationExtraConfig = ''
-          client_max_body_size 100M;
-
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-
-          proxy_set_header X-Forwarded-Host $server_name;
-          add_header Referrer-Policy "strict-origin-when-cross-origin";
+    paperless.scanner.nixos =
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
+      let
+        site = config.codyos.site;
+        scan = pkgs.writeShellScript "paperless-scan" ''
+          set -eu
+          umask 077
+          # Keep the working directory and page images if scanning or conversion fails.
+          work=$(mktemp -d /var/lib/paperless-scanning/scan-XXXXXXXX)
+          cd "$work"
+          # Detect each page's end within a legal-length scan area. Software cropping
+          # is disabled because it cut off content during an iX500 duplex scan.
+          scanimage -d "$SCANBD_DEVICE" --batch='image%04d.pnm' --source "ADF Duplex" --mode Color --resolution 300dpi --page-height 355.6 -y 355.6 --ald=yes
+          mkdir cropped
+          for image in image*; do
+            # Expand the detected bounds by 2 mm at 300 dpi, without exceeding the scan.
+            set -- $(${pkgs.imagemagick}/bin/magick "$image" -format '%w %h' info:)
+            width=$1 height=$2
+            set -- $(${pkgs.imagemagick}/bin/magick "$image" -fuzz 15% -trim -format '%w %h %X %Y' info:)
+            crop_width=$1 crop_height=$2 x=$3 y=$4
+            if [ "$crop_width" -le 1 ] || [ "$crop_height" -le 1 ]; then
+              cp "$image" "cropped/$image"
+              continue
+            fi
+            left=$((x - 24)); top=$((y - 24))
+            right=$((x + crop_width + 24)); bottom=$((y + crop_height + 24))
+            [ "$left" -ge 0 ] || left=0
+            [ "$top" -ge 0 ] || top=0
+            [ "$right" -le "$width" ] || right=$width
+            [ "$bottom" -le "$height" ] || bottom=$height
+            ${pkgs.imagemagick}/bin/magick "$image" -crop "$((right - left))x$((bottom - top))+$left+$top" +repage "cropped/$image"
+          done
+          ${pkgs.imagemagick}/bin/convert cropped/image* -density 300 scan.pdf
+          test -s scan.pdf
+          name="Scan-$(date +%Y%m%d-%H%M%S)-''${work##*-}.pdf"
+          mv scan.pdf "/var/lib/paperless-scanning/pending/$name"
+          rm -f image* cropped/image*
+          rmdir cropped
+          cd /
+          rmdir "$work"
         '';
-      };
-
-      nas.backups.sqlite = [
-        {
-          name = "paperless";
-          source = "/var/lib/paperless/db.sqlite3";
-        }
-      ];
-
-    };
-
-  den.aspects.paperless.scanner.nixos =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
-    let
-      site = config.codyos.site;
-      scan = pkgs.writeShellScript "paperless-scan" ''
-        set -eu
-        umask 077
-        # Keep the working directory and page images if scanning or conversion fails.
-        work=$(mktemp -d /var/lib/paperless-scanning/scan-XXXXXXXX)
-        cd "$work"
-        # Detect each page's end within a legal-length scan area. Software cropping
-        # is disabled because it cut off content during an iX500 duplex scan.
-        scanimage -d "$SCANBD_DEVICE" --batch='image%04d.pnm' --source "ADF Duplex" --mode Color --resolution 300dpi --page-height 355.6 -y 355.6 --ald=yes
-        mkdir cropped
-        for image in image*; do
-          # Expand the detected bounds by 2 mm at 300 dpi, without exceeding the scan.
-          set -- $(${pkgs.imagemagick}/bin/magick "$image" -format '%w %h' info:)
-          width=$1 height=$2
-          set -- $(${pkgs.imagemagick}/bin/magick "$image" -fuzz 15% -trim -format '%w %h %X %Y' info:)
-          crop_width=$1 crop_height=$2 x=$3 y=$4
-          if [ "$crop_width" -le 1 ] || [ "$crop_height" -le 1 ]; then
-            cp "$image" "cropped/$image"
-            continue
-          fi
-          left=$((x - 24)); top=$((y - 24))
-          right=$((x + crop_width + 24)); bottom=$((y + crop_height + 24))
-          [ "$left" -ge 0 ] || left=0
-          [ "$top" -ge 0 ] || top=0
-          [ "$right" -le "$width" ] || right=$width
-          [ "$bottom" -le "$height" ] || bottom=$height
-          ${pkgs.imagemagick}/bin/magick "$image" -crop "$((right - left))x$((bottom - top))+$left+$top" +repage "cropped/$image"
-        done
-        ${pkgs.imagemagick}/bin/convert cropped/image* -density 300 scan.pdf
-        test -s scan.pdf
-        name="Scan-$(date +%Y%m%d-%H%M%S)-''${work##*-}.pdf"
-        mv scan.pdf "/var/lib/paperless-scanning/pending/$name"
-        rm -f image* cropped/image*
-        rmdir cropped
-        cd /
-        rmdir "$work"
-      '';
-      deliver = pkgs.writeShellScript "paperless-scan-deliver" ''
-        set -eu
-        umask 077
-        pending=/var/lib/paperless-scanning/pending
-        destination=/mnt/paperless-consume
-        exec 9> /var/lib/paperless-scanning/delivery.lock
-        flock -n 9 || exit 0
-        for file in "$pending"/*.pdf; do
-          [ -f "$file" ] || continue
-          # Trigger the automount and refuse to write into an unmounted directory.
-          ls "$destination" >/dev/null
-          mountpoint -q "$destination" || exit 1
-          name=''${file##*/}
-          cp "$file" "$destination/$name.tmp"
-          mv "$destination/$name.tmp" "$destination/$name"
-          rm "$file"
-        done
-      '';
-      tools = [
-        pkgs.coreutils
-        pkgs.util-linux
-        pkgs.sane-backends
-        pkgs.imagemagick
-        pkgs.ghostscript
-      ];
-      scanbdConf = pkgs.writeText "scanbd.conf" ''
-        global {
-          debug = true
-          debug-level = 3
-          user = scanner
-          group = scanner
-          scriptdir = /etc/scanbd/scripts
-          pidfile = /run/scanbd.pid
-          timeout = 500
-          environment {
-            device = "SCANBD_DEVICE"
-            action = "SCANBD_ACTION"
-          }
-          multiple_actions = true
-          action scan {
-            filter = "^scan.*"
-            numerical-trigger {
-              from-value = 1
-              to-value = 0
+        deliver = pkgs.writeShellScript "paperless-scan-deliver" ''
+          set -eu
+          umask 077
+          pending=/var/lib/paperless-scanning/pending
+          destination=/mnt/paperless-consume
+          exec 9> /var/lib/paperless-scanning/delivery.lock
+          flock -n 9 || exit 0
+          for file in "$pending"/*.pdf; do
+            [ -f "$file" ] || continue
+            # Trigger the automount and refuse to write into an unmounted directory.
+            ls "$destination" >/dev/null
+            mountpoint -q "$destination" || exit 1
+            name=''${file##*/}
+            cp "$file" "$destination/$name.tmp"
+            mv "$destination/$name.tmp" "$destination/$name"
+            rm "$file"
+          done
+        '';
+        tools = [
+          pkgs.coreutils
+          pkgs.util-linux
+          pkgs.sane-backends
+          pkgs.imagemagick
+          pkgs.ghostscript
+        ];
+        scanbdConf = pkgs.writeText "scanbd.conf" ''
+          global {
+            debug = true
+            debug-level = 3
+            user = scanner
+            group = scanner
+            scriptdir = /etc/scanbd/scripts
+            pidfile = /run/scanbd.pid
+            timeout = 500
+            environment {
+              device = "SCANBD_DEVICE"
+              action = "SCANBD_ACTION"
             }
-            desc = "Scan to Paperless"
-            script = "scan.script"
+            multiple_actions = true
+            action scan {
+              filter = "^scan.*"
+              numerical-trigger {
+                from-value = 1
+                to-value = 0
+              }
+              desc = "Scan to Paperless"
+              script = "scan.script"
+            }
           }
-        }
-      '';
-    in
-    {
-      system.fsPackages = [ pkgs.cifs-utils ];
-      systemd.mounts = [
-        {
-          what = "//${site.hosts.nas.lan}/PaperlessConsume";
-          where = "/mnt/paperless-consume";
-          type = "cifs";
-          options = "guest,uid=${toString config.ids.uids.scanner},gid=${toString config.ids.gids.scanner}";
-          mountConfig.TimeoutSec = "10s";
-        }
-      ];
-      systemd.automounts = [
-        {
-          where = "/mnt/paperless-consume";
-          wantedBy = [ "remote-fs.target" ];
-          automountConfig.TimeoutIdleSec = "60s";
-        }
-      ];
+        '';
+      in
+      {
+        system.fsPackages = [ pkgs.cifs-utils ];
+        systemd = {
+          mounts = [
+            {
+              what = "//${site.hosts.nas.lan}/PaperlessConsume";
+              where = "/mnt/paperless-consume";
+              type = "cifs";
+              options = "guest,uid=${toString config.ids.uids.scanner},gid=${toString config.ids.gids.scanner}";
+              mountConfig.TimeoutSec = "10s";
+            }
+          ];
+          automounts = [
+            {
+              where = "/mnt/paperless-consume";
+              wantedBy = [ "remote-fs.target" ];
+              automountConfig.TimeoutIdleSec = "60s";
+            }
+          ];
+          tmpfiles.rules = [
+            "d /var/lib/paperless-scanning 0700 scanner scanner -"
+            "d /var/lib/paperless-scanning/pending 0700 scanner scanner -"
+          ];
+          services = {
+            scanbd = {
+              description = "ScanSnap button polling";
+              wantedBy = [ "multi-user.target" ];
+              path = tools;
+              environment = {
+                SANE_CONFIG_DIR = "/etc/sane-config";
+                LD_LIBRARY_PATH = "/etc/sane-libs";
+                HOME = "/var/lib/paperless-scanning";
+              };
+              serviceConfig = {
+                ExecStart = "${pkgs.scanbd}/bin/scanbd -c /etc/scanbd/scanbd.conf -f";
+                Restart = "on-failure";
+              };
+            };
 
-      hardware.sane.enable = true;
-
-      users.users.scanner = {
-        isSystemUser = true;
-        uid = config.ids.uids.scanner;
-        group = "scanner";
-        extraGroups = [ "lp" ];
-      };
-
-      systemd.tmpfiles.rules = [
-        "d /var/lib/paperless-scanning 0700 scanner scanner -"
-        "d /var/lib/paperless-scanning/pending 0700 scanner scanner -"
-      ];
-
-      environment.etc."scanbd/scanbd.conf".source = scanbdConf;
-      environment.etc."scanbd/scripts/scan.script".source = scan;
-
-      systemd.services.scanbd = {
-        description = "ScanSnap button polling";
-        wantedBy = [ "multi-user.target" ];
-        path = tools;
-        environment = {
-          SANE_CONFIG_DIR = "/etc/sane-config";
-          LD_LIBRARY_PATH = "/etc/sane-libs";
-          HOME = "/var/lib/paperless-scanning";
+            paperless-scan-delivery = {
+              description = "Deliver queued scans to Paperless";
+              path = tools;
+              serviceConfig = {
+                Type = "oneshot";
+                User = "scanner";
+                Group = "scanner";
+                ExecStart = deliver;
+              };
+            };
+          };
+          timers.paperless-scan-delivery = {
+            wantedBy = [ "timers.target" ];
+            timerConfig = {
+              OnBootSec = "1min";
+              OnUnitInactiveSec = "1min";
+            };
+          };
         };
-        serviceConfig = {
-          ExecStart = "${pkgs.scanbd}/bin/scanbd -c /etc/scanbd/scanbd.conf -f";
-          Restart = "on-failure";
-        };
-      };
 
-      systemd.services.paperless-scan-delivery = {
-        description = "Deliver queued scans to Paperless";
-        path = tools;
-        serviceConfig = {
-          Type = "oneshot";
-          User = "scanner";
-          Group = "scanner";
-          ExecStart = deliver;
+        hardware.sane.enable = true;
+
+        users.users.scanner = {
+          isSystemUser = true;
+          uid = config.ids.uids.scanner;
+          group = "scanner";
+          extraGroups = [ "lp" ];
         };
+
+        environment.etc."scanbd/scanbd.conf".source = scanbdConf;
+        environment.etc."scanbd/scripts/scan.script".source = scan;
       };
-      systemd.timers.paperless-scan-delivery = {
-        wantedBy = [ "timers.target" ];
-        timerConfig = {
-          OnBootSec = "1min";
-          OnUnitInactiveSec = "1min";
-        };
-      };
-    };
+  };
 }
