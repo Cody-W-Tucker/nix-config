@@ -20,7 +20,7 @@ in
             enableMcpIntegration = true;
             settings = {
               autoupdate = false;
-              small_model = "opencode-go/deepseek-v4-flash";
+              small_model = "opencode-go/deepseek-v4.1-flash";
               agents = {
                 explore.model = "openai/gpt-6-luna";
                 general.model = "openai/gpt-6-luna";
