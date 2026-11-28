@@ -1,19 +1,19 @@
 { inputs, pkgs, ... }:
 
 let
-  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  inherit (inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}) rtk;
 in
 {
   codyos.harness.plugins.rtk = {
-    packages = [ llmPkgs.rtk ];
-    opencode.file = "${llmPkgs.rtk}/libexec/rtk/hooks/opencode/rtk.ts";
+    packages = [ rtk ];
+    opencode.file = "${rtk}/libexec/rtk/hooks/opencode/rtk.ts";
     claudeCode.hooks.PreToolUse = [
       {
         matcher = "Bash";
         hooks = [
           {
             type = "command";
-            command = "${llmPkgs.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
+            command = "${rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
           }
         ];
       }

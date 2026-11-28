@@ -33,9 +33,7 @@
   };
 
   den.aspects.beast = {
-    provides.to-users.homeManager = {
-      home.stateVersion = "25.05";
-    };
+    provides.to-users.homeManager.home.stateVersion = "25.05";
 
     nixos =
       { pkgs, ... }:
@@ -47,9 +45,7 @@
         boot.kernelPackages = pkgs.linuxPackages_latest;
         networking = {
           hostName = "beast";
-          networkmanager.settings.connection = {
-            "wifi.powersave" = 2;
-          };
+          networkmanager.settings.connection."wifi.powersave" = 2;
         };
 
         system.stateVersion = "25.05";

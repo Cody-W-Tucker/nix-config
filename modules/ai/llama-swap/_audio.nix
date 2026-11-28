@@ -127,47 +127,49 @@ in
     };
   };
 
-  systemd.tmpfiles.rules = [
-    "d ${diarizationCache} 0755 ${user} ${group} - -"
-    "d ${diarizationEnrollmentDir} 0750 ${user} ${group} - -"
-    "d ${diarizationEmbeddingCache} 0750 ${user} ${group} - -"
-    "d ${speechHistoryDir} 0750 ${user} ${group} - -"
-    "d ${speechHistoryDir}/audio 0750 ${user} ${group} 30d -"
-  ];
+  systemd = {
+    tmpfiles.rules = [
+      "d ${diarizationCache} 0755 ${user} ${group} - -"
+      "d ${diarizationEnrollmentDir} 0750 ${user} ${group} - -"
+      "d ${diarizationEmbeddingCache} 0750 ${user} ${group} - -"
+      "d ${speechHistoryDir} 0750 ${user} ${group} - -"
+      "d ${speechHistoryDir}/audio 0750 ${user} ${group} 30d -"
+    ];
 
-  systemd.services.llama-swap.serviceConfig.ReadWritePaths = lib.mkAfter [
-    diarizationCache
-    diarizationEnrollmentDir
-    diarizationEmbeddingCache
-  ];
+    services.llama-swap.serviceConfig.ReadWritePaths = lib.mkAfter [
+      diarizationCache
+      diarizationEnrollmentDir
+      diarizationEmbeddingCache
+    ];
 
-  systemd.services.speech-history = {
-    description = "Speech transcript history and vocabulary";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "llama-swap.service" ];
-    serviceConfig = {
-      ExecStart = lib.escapeShellArgs [
-        (lib.getExe pkgs.python3)
-        "${./speech-history.py}"
-        "--host"
-        "0.0.0.0"
-        "--port"
-        (toString endpoint.speechHistoryPort)
-        "--state-dir"
-        speechHistoryDir
-        "--common-words"
-        "${pkgs.scowl}/share/dict/wamerican.50"
-        "--vocabulary"
-        "${./_speech-vocabulary.json}"
-      ];
-      User = user;
-      Group = group;
-      Restart = "on-failure";
-      ProtectSystem = "strict";
-      ProtectHome = true;
-      PrivateTmp = true;
-      NoNewPrivileges = true;
-      ReadWritePaths = [ speechHistoryDir ];
+    services.speech-history = {
+      description = "Speech transcript history and vocabulary";
+      wantedBy = [ "multi-user.target" ];
+      before = [ "llama-swap.service" ];
+      serviceConfig = {
+        ExecStart = lib.escapeShellArgs [
+          (lib.getExe pkgs.python3)
+          "${./speech-history.py}"
+          "--host"
+          "0.0.0.0"
+          "--port"
+          (toString endpoint.speechHistoryPort)
+          "--state-dir"
+          speechHistoryDir
+          "--common-words"
+          "${pkgs.scowl}/share/dict/wamerican.50"
+          "--vocabulary"
+          "${./_speech-vocabulary.json}"
+        ];
+        User = user;
+        Group = group;
+        Restart = "on-failure";
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateTmp = true;
+        NoNewPrivileges = true;
+        ReadWritePaths = [ speechHistoryDir ];
+      };
     };
   };
 }

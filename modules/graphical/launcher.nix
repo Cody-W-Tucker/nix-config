@@ -1,8 +1,13 @@
 {
   den.aspects.graphical = {
+    nixos =
+      { pkgs, ... }:
+      {
+        environment.systemPackages = [ pkgs.rofi-network-manager ];
+      };
+
     provides.to-users.homeManager =
       { config, pkgs, ... }:
-
       {
         home.packages = map (script: pkgs.callPackage script { }) [
           ./_scripts/focus-or-run.nix
@@ -12,9 +17,7 @@
 
         programs.rofi = {
           enable = true;
-          plugins = [
-            pkgs.rofi-calc
-          ];
+          plugins = [ pkgs.rofi-calc ];
           settings = {
             modi = "drun";
             show-icons = true;
@@ -69,9 +72,7 @@
                 background-color = mkLiteral "transparent";
                 background-image = mkLiteral ''url("/etc/nixos/wallpapers/puffy-stars.jpg", height)'';
                 orientation = mkLiteral "vertical";
-                children = map mkLiteral [
-                  "dummy"
-                ];
+                children = [ (mkLiteral "dummy") ];
               };
               "listbox" = {
                 spacing = mkLiteral "20px";
@@ -174,12 +175,4 @@
         };
       };
   };
-
-  den.aspects.graphical.nixos =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = with pkgs; [
-        rofi-network-manager
-      ];
-    };
 }

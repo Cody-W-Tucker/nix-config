@@ -1,7 +1,7 @@
 {
   config,
-  lib,
   pkgs,
+  ...
 }:
 let
   hermes = import ../_endpoint.nix;

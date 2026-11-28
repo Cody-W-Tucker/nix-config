@@ -1,111 +1,34 @@
-_:
-
+{ lib, ... }:
+let
+  keymap = mode: key: action: desc: {
+    inherit mode action;
+    key = "<Leader>${key}";
+    options = {
+      silent = true;
+    }
+    // lib.optionalAttrs (desc != null) { inherit desc; };
+  };
+  cmd =
+    key: command: desc:
+    keymap "n" key "<cmd>${command}<CR>" desc;
+  telescope = key: picker: cmd key "Telescope ${picker}" null;
+  lua =
+    mode: key: module: fn: desc:
+    keymap mode key { __raw = ''function() require("${module}").${fn}() end''; } desc;
+in
 {
   programs.nixvim.keymaps = [
-    {
-      mode = "n";
-      key = "<Leader>ff";
-      action = "<cmd>Telescope find_files<CR>";
-      options = {
-        silent = true;
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>fg";
-      action = "<cmd>Telescope live_grep<CR>";
-      options = {
-        silent = true;
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>fb";
-      action = "<cmd>Telescope buffers<CR>";
-      options = {
-        silent = true;
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>fh";
-      action = "<cmd>Telescope help_tags<CR>";
-      options = {
-        silent = true;
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>gg";
-      action = "<cmd>LazyGit<CR>";
-      options = {
-        silent = true;
-        desc = "Open Lazygit";
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>-";
-      action = "<cmd>Yazi<CR>";
-      options = {
-        silent = true;
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>==";
-      action = "<cmd>Yazi cwd<CR>";
-      options = {
-        silent = true;
-      };
-    }
-    {
-      mode = "v";
-      key = "<Leader>9v";
-      action.__raw = ''function() require("99").visual() end'';
-      options = {
-        silent = true;
-        desc = "99 Visual";
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>9s";
-      action.__raw = ''function() require("99").search() end'';
-      options = {
-        silent = true;
-        desc = "99 Search";
-      };
-    }
-    {
-      mode = [
-        "n"
-        "v"
-      ];
-      key = "<Leader>9x";
-      action.__raw = ''function() require("99").stop_all_requests() end'';
-      options = {
-        silent = true;
-        desc = "99 Stop";
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>9m";
-      action.__raw = ''function() require("99.extensions.telescope").select_model() end'';
-      options = {
-        silent = true;
-        desc = "99 Model";
-      };
-    }
-    {
-      mode = "n";
-      key = "<Leader>9p";
-      action.__raw = ''function() require("99.extensions.telescope").select_provider() end'';
-      options = {
-        silent = true;
-        desc = "99 Provider";
-      };
-    }
+    (telescope "ff" "find_files")
+    (telescope "fg" "live_grep")
+    (telescope "fb" "buffers")
+    (telescope "fh" "help_tags")
+    (cmd "gg" "LazyGit" "Open Lazygit")
+    (cmd "-" "Yazi" null)
+    (cmd "==" "Yazi cwd" null)
+    (lua "v" "9v" "99" "visual" "99 Visual")
+    (lua "n" "9s" "99" "search" "99 Search")
+    (lua [ "n" "v" ] "9x" "99" "stop_all_requests" "99 Stop")
+    (lua "n" "9m" "99.extensions.telescope" "select_model" "99 Model")
+    (lua "n" "9p" "99.extensions.telescope" "select_provider" "99 Provider")
   ];
 }

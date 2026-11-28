@@ -24,15 +24,6 @@ in
     '';
   };
 
-  programs.zsh.initContent = ''
-    # Langfuse credentials for OpenCode and related tooling.
-    if [ -f "${config.sops.templates."opencode-langfuse-env".path}" ]; then
-      set -a
-      . "${config.sops.templates."opencode-langfuse-env".path}"
-      set +a
-    fi
-  '';
-
   systemd.user.services.opencode-web.Service.EnvironmentFile = [
     config.sops.templates."opencode-langfuse-env".path
   ];
@@ -47,56 +38,65 @@ in
     rm -f "${config.xdg.configHome}/opencode/plugins/herdr-agent-state.js"
   '';
 
-  programs.zsh.shellAliases.op = "opencode";
-
-  programs.opencode = {
-    enable = true;
-    package = lib.mkDefault opencode;
-    enableMcpIntegration = true;
-    settings = {
-      shell = import ../runtime.nix { inherit inputs lib pkgs; };
-      plugins = [
-        {
-          package = "${
-            inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu.src
-          }/extensions/opencode";
-          options = {
-            autoRecall = false;
-            tools = false;
+  programs = {
+    zsh.initContent = ''
+      # Langfuse credentials for OpenCode and related tooling.
+      if [ -f "${config.sops.templates."opencode-langfuse-env".path}" ]; then
+        set -a
+        . "${config.sops.templates."opencode-langfuse-env".path}"
+        set +a
+      fi
+    '';
+    zsh.shellAliases.op = "opencode";
+    opencode = {
+      enable = true;
+      package = lib.mkDefault opencode;
+      enableMcpIntegration = true;
+      settings = {
+        shell = import ../runtime.nix { inherit inputs lib pkgs; };
+        plugins = [
+          {
+            package = "${
+              inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.deja-vu.src
+            }/extensions/opencode";
+            options = {
+              autoRecall = false;
+              tools = false;
+            };
+          }
+        ];
+        autoupdate = false;
+        small_model = "opencode-go/deepseek-v4-flash";
+        agents = {
+          explore.model = "openai/gpt-6-luna";
+          general.model = "openai/gpt-6-luna";
+        };
+        formatter = true;
+        default_agent = "build";
+        permission.external_directory = {
+          "/nix/store" = "allow";
+          "/nix/store/**" = "allow";
+        };
+        lsp = {
+          nix = {
+            command = [
+              "${lib.getExe pkgs.nixd}"
+              "--config=${builtins.toJSON { formatting.command = [ (lib.getExe pkgs.nixfmt) ]; }}"
+            ];
+            extensions = [ ".nix" ];
           };
-        }
-      ];
-      autoupdate = false;
-      small_model = "opencode-go/deepseek-v4-flash";
-      agents = {
-        explore.model = "openai/gpt-6-luna";
-        general.model = "openai/gpt-6-luna";
-      };
-      formatter = true;
-      default_agent = "build";
-      permission.external_directory = {
-        "/nix/store" = "allow";
-        "/nix/store/**" = "allow";
-      };
-      lsp = {
-        nix = {
-          command = [
-            "${lib.getExe pkgs.nixd}"
-            "--config=${builtins.toJSON { formatting.command = [ (lib.getExe pkgs.nixfmt) ]; }}"
-          ];
-          extensions = [ ".nix" ];
         };
       };
-    };
-  }
-  // lib.optionalAttrs (options.programs.opencode ? mutableSettings) {
-    mutableSettings = true;
-  }
-  // lib.optionalAttrs (options.programs.opencode ? cli) {
-    tui = lib.mkForce { };
-    cli.theme = {
-      name = "stylix";
-      mode = "system";
+    }
+    // lib.optionalAttrs (options.programs.opencode ? mutableSettings) {
+      mutableSettings = true;
+    }
+    // lib.optionalAttrs (options.programs.opencode ? cli) {
+      tui = lib.mkForce { };
+      cli.theme = {
+        name = "stylix";
+        mode = "system";
+      };
     };
   };
 }

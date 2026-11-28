@@ -88,10 +88,8 @@
         package = pkgs.unstable.llama-swap;
         inherit (endpoint) port;
         listenAddress = "0.0.0.0";
-        openFirewall = false;
         settings = {
           healthCheckTimeout = 60;
-          logLevel = "info";
           logToStdout = "both";
           models = lib.mapAttrs (name: model: {
             cmd = llamaServerCommand name model;

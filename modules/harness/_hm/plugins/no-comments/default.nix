@@ -36,10 +36,7 @@ in
   };
 
   programs.opencode.settings.lsp.no-comments = {
-    command = [
-      server.command
-    ]
-    ++ server.args;
+    command = [ server.command ] ++ server.args;
     extensions = [ ".nix" ];
   };
 }

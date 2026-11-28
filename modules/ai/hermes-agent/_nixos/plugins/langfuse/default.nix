@@ -5,19 +5,12 @@
   ...
 }:
 let
-  officialPlugins = pkgs.fetchFromGitHub {
-    owner = "NousResearch";
-    repo = "hermes-official-plugins";
+  langfusePlugin = import ../lib/build-plugin.nix pkgs {
+    name = "langfuse";
     rev = "a4e311e433f1470b1fec15434deea6a05e8644eb";
     hash = "sha256-q9gpwik7FUp2z6H69z5eoq7qNZYvdi6KvU7fOG796C4=";
+    requiresHermes = "0.21.7";
   };
-  langfusePlugin = pkgs.runCommand "langfuse" { } ''
-    cp -R ${officialPlugins}/langfuse "$out"
-    # The installed Hermes source is post-extraction but its Nix derivation
-    # reports 0.0.0, so the catalog's semantic-version gate is a false reject.
-    substituteInPlace "$out/plugin.yaml" \
-      --replace-fail 'requires_hermes: ">=0.21.7"' 'requires_hermes: ">=0.0.0"'
-  '';
   hermesPython = config.services.hermes-agent.package.python;
   hermesPythonPackages = hermesPython.pkgs;
   langfuse415 = hermesPythonPackages.buildPythonPackage rec {
@@ -63,9 +56,15 @@ let
   );
 in
 {
-  systemd.services.hermes-agent.preStart = ''
-    ln -sfn ${langfusePlugin} ${config.services.hermes-agent.stateDir}/.hermes/plugins/langfuse
-  '';
+  systemd.services = {
+    hermes-agent = {
+      preStart = ''
+        ln -sfn ${langfusePlugin} ${config.services.hermes-agent.stateDir}/.hermes/plugins/langfuse
+      '';
+      environment.PYTHONPATH = hermesPythonPath;
+    };
+    hermes-backend.environment.PYTHONPATH = hermesPythonPath;
+  };
   codyos.workarounds.hermes-langfuse-uv-build = {
     reason = "Langfuse 4.15.2 caps uv_build below 0.12 while Hermes's Python set has 0.12.x, so langfuse415 relaxes the bound. Its --replace-fail breaks the build once a newer Langfuse drops the cap.";
     upstream = "https://github.com/NousResearch/hermes-agent/issues/48576";
@@ -77,6 +76,4 @@ in
     extraPlugins = lib.mkOrder 1000 [ langfusePlugin ];
     environment.HERMES_LANGFUSE_BASE_URL = "http://127.0.0.1:3030";
   };
-  systemd.services.hermes-agent.environment.PYTHONPATH = hermesPythonPath;
-  systemd.services.hermes-backend.environment.PYTHONPATH = hermesPythonPath;
 }

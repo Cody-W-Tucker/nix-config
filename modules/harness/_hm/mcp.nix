@@ -41,12 +41,19 @@ let
   };
 in
 {
-  home.sessionVariables = dejaEmbedding;
+  home = {
+    sessionVariables = dejaEmbedding;
+    packages = [
+      deja
+      pkgs.sqlite
+    ];
+    file."${config.programs.pi-coding-agent.configDir}/mcp.json".text = builtins.toJSON {
+      mcpServers = lib.mapAttrs (
+        _: server: lib.filterAttrs (_: value: value != null && value != [ ] && value != { }) server
+      ) config.programs.mcp.servers;
+    };
+  };
 
-  home.packages = [
-    deja
-    pkgs.sqlite
-  ];
   codyos.harness.skills.deja-search = "${deja.src}/skills/deja-search";
 
   sops.secrets.karakeep-api-key = { };
@@ -77,23 +84,11 @@ in
               "env QMD_LLAMA_GPU=vulkan VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json qmd mcp"
             ];
           };
-      hindsight = {
-        url = "${hindsight.api localAi}/mcp/";
-      };
-      exa = {
-        url = "https://mcp.exa.ai/mcp";
-      };
+      hindsight.url = "${hindsight.api localAi}/mcp/";
+      exa.url = "https://mcp.exa.ai/mcp";
       context7.command = lib.getExe pkgs.context7-mcp;
-      gh_grep = {
-        url = "https://mcp.grep.app";
-      };
+      gh_grep.url = "https://mcp.grep.app";
       nixos-option-search.command = lib.getExe pkgs.mcp-nixos;
     };
-  };
-
-  home.file."${config.programs.pi-coding-agent.configDir}/mcp.json".text = builtins.toJSON {
-    mcpServers = lib.mapAttrs (
-      _: server: lib.filterAttrs (_: value: value != null && value != [ ] && value != { }) server
-    ) config.programs.mcp.servers;
   };
 }

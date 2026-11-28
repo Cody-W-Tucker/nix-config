@@ -1,5 +1,14 @@
 { pkgs, ... }:
-
+let
+  section = {
+    oldfilesDirectory = false;
+    align = "center";
+    foldSection = false;
+    margin = 5;
+    defaultColor = "";
+    oldfilesAmount = 0;
+  };
+in
 {
   programs.nixvim.plugins.startup = {
     enable = true;
@@ -7,13 +16,9 @@
       patches = (old.patches or [ ]) ++ [ ./startup-cursor-guard.patch ];
     });
     settings = {
-      header = {
+      header = section // {
         type = "text";
-        oldfilesDirectory = false;
-        align = "center";
-        foldSection = false;
         title = "Header";
-        margin = 5;
         content = [
           "░█████╗░░█████╗░██████╗░██╗░░░██╗  ░██╗░░░░░░░██╗░█████╗░░██████╗  ██╗░░██╗███████╗██████╗░███████╗"
           "██╔══██╗██╔══██╗██╔══██╗╚██╗░██╔╝  ░██║░░██╗░░██║██╔══██╗██╔════╝  ██║░░██║██╔════╝██╔══██╗██╔════╝"
@@ -23,17 +28,10 @@
           "░╚════╝░░╚════╝░╚═════╝░░░░╚═╝░░░  ░░░╚═╝░░░╚═╝░░╚═╝░░╚═╝╚═════╝░  ╚═╝░░╚═╝╚══════╝╚═╝░░╚═╝╚══════╝"
         ];
         highlight = "Statement";
-        defaultColor = "";
-        oldfilesAmount = 0;
       };
-
-      body = {
+      body = section // {
         type = "mapping";
-        oldfilesDirectory = false;
-        align = "center";
-        foldSection = false;
         title = "Menu";
-        margin = 5;
         content = [
           [
             " Find File"
@@ -57,17 +55,11 @@
           ]
         ];
         highlight = "string";
-        defaultColor = "";
-        oldfilesAmount = 0;
       };
-
-      options = {
-        paddings = [
-          1
-          3
-        ];
-      };
-
+      options.paddings = [
+        1
+        3
+      ];
       parts = [
         "header"
         "body"
