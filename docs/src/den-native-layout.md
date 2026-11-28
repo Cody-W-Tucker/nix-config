@@ -62,4 +62,4 @@ flowchart TD
     out -- "overlay turns into pkgs.&lt;name&gt;" --> pkgs
 ```
 
-Files under a `_` path are loaded only when the owning aspect imports them. For editing conventions and tracing recipes, see [`modules/AGENTS.md`](../../modules/AGENTS.md).
+Files under a `_` path are loaded only when the owning aspect imports them. For editing conventions, see [`modules/AGENTS.md`](../../modules/AGENTS.md).

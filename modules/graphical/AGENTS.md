@@ -1,24 +1,11 @@
-# Graphical Aspect
+# Graphical aspect
 
-`den.aspects.graphical` is one aspect spread over several files in this directory; each file
-owns one concern and may contribute both halves (`nixos` for system plumbing,
-`provides.to-users.homeManager` for the user's side). Den merges the contributions;
-`session.nix` adds the aspect to `den.aspects.beast.includes` once.
+`den.aspects.graphical` is one aspect spread over this directory. Each file owns one concern and may contribute both `nixos` and `provides.to-users.homeManager`. `session.nix` includes it on beast.
 
 - `session.nix`: graphics, gvfs, basic desktop packages, Wayland and NVIDIA session variables.
-- `hyprland.nix`: Hyprland (UWSM + greetd), lock screen, idle management and Waybar.
-- `hyprland-settings.nix`: Hyprland keybindings, window rules, animations, and monitors and workspaces from `host.hardwareConfig`.
-- `launcher.nix`: Rofi, themed from Stylix, and the Wi-Fi picker.
-- `notifications.nix`, `xdg.nix`: SwayNC; XDG directories and default applications.
-- `theming.nix`: system fonts and Stylix theming (Home Manager only).
+- `hyprland.nix`: Hyprland (UWSM + greetd), lock screen, idle and Waybar. `hyprland-settings.nix`: keybinds, window rules, animations, and monitors and workspaces from `host.hardwareConfig`.
+- `launcher.nix`: Rofi and the Wi-Fi picker. `notifications.nix`: SwayNC. `xdg.nix`: XDG directories and default apps.
+- `theming.nix`: fonts and Stylix. Only this file imports Stylix, so `config.lib ? stylix` (read in `modules/shell/shell.nix`) is true only on hosts with `graphical`.
+- `_hyprland/` (the hyprnome patch), `_waybar/` and `_scripts/` are imported by their aspect.
 
-Applications live in `modules/apps/`; audio, printing and gaming are standalone features in
-`modules/`. Each feature adds itself to `den.aspects.beast.includes` in its own file; there is no desktop role aspect.
-
-- Non-module data and large single-class subtrees (`_hyprland/` for the hyprnome patch, `_waybar/`) are `_`-prefixed
-  and imported by their aspect.
-- Per-host facts come from the den host (`host.hardwareConfig` for the Hyprland layout).
-- Stylix is imported only by `theming.nix`, so `config.lib ? stylix` (checked by
-  `modules/shell/shell.nix`) is true only on hosts that include `graphical`.
-- Does not own the shared shell/git user environment or the editor (see `modules/shell/`,
-  `modules/editor/`).
+Applications are in `modules/apps/`. Audio, printing and gaming are their own features; there is no desktop role aspect.

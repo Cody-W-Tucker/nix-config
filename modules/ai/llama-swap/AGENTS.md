@@ -1,26 +1,18 @@
-# llama-swap Service
+# llama-swap
 
-Owns the NixOS integration for local llama-swap serving on the NAS, the only host that runs local models, plus Beast's dictation client of it. Write it as NAS configuration, not as a reusable module: set llama-swap's own `settings` directly and use plain `let` bindings, not new options.
-
-Does not own user chat clients, Hermes identity, or general desktop AI tooling.
-
-## Layout
+Local model serving on the NAS, the only host that runs models, plus beast's dictation client. Write it as NAS configuration: set llama-swap's own `settings` directly with plain `let` bindings, not new options.
 
 | File | Owns |
 | --- | --- |
 | `llama-swap.nix` | The aspect: service, llama-server command rendering, routing sets, systemd, firewall, backups, Homepage card |
 | `_models.nix` | GGUF models: download pin and llama-server flags per model |
-| `_audio.nix` | Speech models served by helper servers, and the speech-history service |
+| `_audio.nix` | Speech models on helper servers, and the speech-history service |
 | `_laya.nix` | Laya gateway, Vega worker, training timer, and the `services.laya` options Karakeep triage reads |
 | `_classifiers.nix` | Laya classifier definitions |
 | `_endpoint.nix` | Host and ports, also read by beast's clients |
-| `dictation.nix`, `dictation.sh` | `llama-swap.dictation`: Beast's `llama-dictate` command (record, transcribe, clean up with s1-mini, type, fix) |
+| `dictation.nix`, `dictation.sh` | `llama-swap.dictation`: beast's `llama-dictate` (record, transcribe, clean up with s1-mini, type, fix) |
 
-## Placement Rules
-
-- Keep model selection explicit and avoid hidden mutable defaults.
-- Put secrets next to the service and use SOPS for private values.
-- Keep client/editor/Hermes integration outside this module unless it is required service plumbing or, like dictation, a client of this endpoint alone.
-- Keep long scripts in their own files next to the Nix that runs them.
+- Select models explicitly; no hidden mutable defaults.
+- Chat clients, editors and Hermes integrate from their own aspects, unless they exist only as clients of this endpoint, like dictation.
 - A multimodal model must set `mmprojFile` to its matching projector, or llama-server rejects image input.
-- Keep tuning benchmarks in Hindsight (`codyos` bank, tag `llama-swap`), not in comments. The constraints themselves are `source-note` memories in the same bank.
+- Tuning benchmarks are in Hindsight (bank `codyos`, tag `llama-swap`).
