@@ -99,60 +99,87 @@ let
     (execBind "${mainMod} + CTRL + Escape" "llama-dictate fix")
   ];
 
+  execBinds =
+    options:
+    map (bindSpec: mkBind (builtins.elemAt bindSpec 0) (exec (builtins.elemAt bindSpec 1)) options);
+
   repeatingExecBinds =
-    map
-      (
-        spec:
-        mkBind spec.key (exec spec.command) {
-          locked = true;
-          repeating = true;
-        }
-      )
+    execBinds
+      {
+        locked = true;
+        repeating = true;
+      }
       [
-        {
-          key = "XF86AudioRaiseVolume";
-          command = "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+";
-        }
-        {
-          key = "XF86AudioLowerVolume";
-          command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
-        }
-        {
-          key = "XF86AudioMute";
-          command = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-        }
-        {
-          key = "XF86AudioMicMute";
-          command = "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
-        }
-        {
-          key = "XF86MonBrightnessUp";
-          command = "brightnessctl -e4 -n2 set 5%+";
-        }
-        {
-          key = "XF86MonBrightnessDown";
-          command = "brightnessctl -e4 -n2 set 5%-";
-        }
+        [
+          "XF86AudioRaiseVolume"
+          "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
+        ]
+        [
+          "XF86AudioLowerVolume"
+          "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ]
+        [
+          "XF86AudioMute"
+          "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ]
+        [
+          "XF86AudioMicMute"
+          "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ]
+        [
+          "XF86MonBrightnessUp"
+          "brightnessctl -e4 -n2 set 5%+"
+        ]
+        [
+          "XF86MonBrightnessDown"
+          "brightnessctl -e4 -n2 set 5%-"
+        ]
       ];
 
-  lockedExecBinds = map (spec: mkBind spec.key (exec spec.command) { locked = true; }) [
-    {
-      key = "XF86AudioNext";
-      command = "playerctl next";
-    }
-    {
-      key = "XF86AudioPause";
-      command = "playerctl play-pause";
-    }
-    {
-      key = "XF86AudioPlay";
-      command = "playerctl play-pause";
-    }
-    {
-      key = "XF86AudioPrev";
-      command = "playerctl previous";
-    }
+  lockedExecBinds = execBinds { locked = true; } [
+    [
+      "XF86AudioNext"
+      "playerctl next"
+    ]
+    [
+      "XF86AudioPause"
+      "playerctl play-pause"
+    ]
+    [
+      "XF86AudioPlay"
+      "playerctl play-pause"
+    ]
+    [
+      "XF86AudioPrev"
+      "playerctl previous"
+    ]
   ];
+
+  rule =
+    field: pattern: attrs:
+    { match.${field} = pattern; } // attrs;
+
+  bezierCurve = name: p1: p2: {
+    _args = [
+      name
+      {
+        type = "bezier";
+        points = [
+          p1
+          p2
+        ];
+      }
+    ];
+  };
+
+  animation =
+    leaf: speed: bezier: style:
+    {
+      inherit leaf speed bezier;
+      enabled = true;
+    }
+    // lib.optionalAttrs (style != null) { inherit style; };
+
   workspaceBinds = builtins.concatLists (
     builtins.genList (
       i:
@@ -186,9 +213,7 @@ in
     end)
   '';
   wayland.windowManager.hyprland.settings = {
-    mainMod = {
-      _var = mainMod;
-    };
+    mainMod._var = mainMod;
 
     config = {
       ecosystem = {
@@ -206,13 +231,8 @@ in
         kb_layout = "us";
       };
 
-      render = {
-        direct_scanout = 0;
-      };
-
-      master = {
-        new_status = "master";
-      };
+      render.direct_scanout = 0;
+      master.new_status = "master";
 
       general = {
         allow_tearing = false;
@@ -238,17 +258,13 @@ in
         };
       };
 
-      cursor = {
-        hide_on_key_press = true;
-      };
+      cursor.hide_on_key_press = true;
 
       decoration = {
         rounding = 10;
         active_opacity = 1;
         inactive_opacity = 1;
-        blur = {
-          enabled = false;
-        };
+        blur.enabled = false;
         shadow = {
           enabled = true;
           render_power = 3;
@@ -267,124 +283,33 @@ in
 
     bind = binds ++ repeatingExecBinds ++ lockedExecBinds ++ workspaceBinds;
     window_rule = [
-      {
-        match.class = "^(kitty)$";
-        no_blur = true;
-      }
-      {
-        match.class = "^(kitty)$";
-        opacity = "1.0 1.0 1.0 override";
-      }
-
-      {
-        match.initial_class = "^(Chromium-browser)$";
-        tile = true;
-      }
-      {
-        match.title = "^(Picture-in-Picture)$";
-        float = true;
-      }
-      {
-        match.title = "^(Picture-in-Picture)$";
-        pin = true;
-      }
-
-      {
-        match.title = "^(Firefox — Sharing Indicator)$";
-        workspace = "special silent";
-      }
-      {
-        match.title = "^(Zen — Sharing Indicator)$";
-        workspace = "special silent";
-      }
-      {
-        match.title = "^(.*is sharing (your screen|a window).)$";
-        workspace = "special silent";
-      }
+      (rule "class" "^(kitty)$" { no_blur = true; })
+      (rule "class" "^(kitty)$" { opacity = "1.0 1.0 1.0 override"; })
+      (rule "initial_class" "^(Chromium-browser)$" { tile = true; })
+      (rule "title" "^(Picture-in-Picture)$" { float = true; })
+      (rule "title" "^(Picture-in-Picture)$" { pin = true; })
+    ]
+    ++ map (title: rule "title" title { workspace = "special silent"; }) [
+      "^(Firefox — Sharing Indicator)$"
+      "^(Zen — Sharing Indicator)$"
+      "^(.*is sharing (your screen|a window).)$"
     ];
 
     workspace_rule = hardwareConfig.workspace;
     inherit (hardwareConfig) monitor;
 
     curve = [
-      {
-        _args = [
-          "easeInExpo"
-          {
-            type = "bezier";
-            points = [
-              [
-                0.7
-                0
-              ]
-              [
-                0.84
-                0
-              ]
-            ];
-          }
-        ];
-      }
-      {
-        _args = [
-          "easeOutExpo"
-          {
-            type = "bezier";
-            points = [
-              [
-                0.16
-                1
-              ]
-              [
-                0.3
-                1
-              ]
-            ];
-          }
-        ];
-      }
+      (bezierCurve "easeInExpo" [ 0.7 0 ] [ 0.84 0 ])
+      (bezierCurve "easeOutExpo" [ 0.16 1 ] [ 0.3 1 ])
     ];
 
     animation = [
-      {
-        leaf = "windows";
-        enabled = true;
-        speed = 1;
-        bezier = "easeInExpo";
-        style = "slide";
-      }
-      {
-        leaf = "windowsIn";
-        enabled = true;
-        speed = 1;
-        bezier = "easeInExpo";
-        style = "slide 80%";
-      }
-      {
-        leaf = "windowsOut";
-        enabled = true;
-        speed = 1;
-        bezier = "easeOutExpo";
-        style = "slide 80%";
-      }
-      {
-        leaf = "border";
-        enabled = true;
-        speed = 10;
-        bezier = "default";
-      }
-      {
-        leaf = "borderangle";
-        enabled = true;
-        speed = 8;
-        bezier = "default";
-      }
-      {
-        leaf = "fade";
-        enabled = true;
-        speed = 2;
-        bezier = "default";
-      }
+      (animation "windows" 1 "easeInExpo" "slide")
+      (animation "windowsIn" 1 "easeInExpo" "slide 80%")
+      (animation "windowsOut" 1 "easeOutExpo" "slide 80%")
+      (animation "border" 10 "default" null)
+      (animation "borderangle" 8 "default" null)
+      (animation "fade" 2 "default" null)
       {
         leaf = "workspaces";
         enabled = false;

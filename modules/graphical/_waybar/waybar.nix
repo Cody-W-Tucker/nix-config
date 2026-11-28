@@ -15,6 +15,7 @@ let
   aiUsagebarCmd = lib.getExe aiUsagebar;
   hermesVoice = import ../../ai/hermes-agent/_voice/client.nix { inherit config lib pkgs; };
   hermesVoiceCmd = lib.getExe hermesVoice;
+  badge = icon: "${icon}<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
   favorite_apps = {
     "zen-beta" = "🞋";
     "spotify" = "";
@@ -36,9 +37,7 @@ in
     obsolete = lib.any (dep: lib.getName dep == "sqlite") (upstreamAiUsagebar.buildInputs or [ ]);
   };
 
-  home.packages = [
-    aiUsagebar
-  ];
+  home.packages = [ aiUsagebar ];
 
   programs.waybar = {
     enable = true;
@@ -106,12 +105,8 @@ in
           format = "{player_icon} {title}";
           title-len = 50;
           format-paused = "{status_icon} {title}";
-          player-icons = {
-            default = "";
-          };
-          status-icons = {
-            paused = "";
-          };
+          player-icons.default = "";
+          status-icons.paused = "";
           on-click-right = "playerctl stop";
           smooth-scrolling-threshold = 1;
           on-scroll-up = "playerctl next";
@@ -121,18 +116,17 @@ in
           icon-spacing = 4;
           icon-size = 18;
           transition-duration = 250;
-          modules = [
-            {
-              type = "screenshare";
-              tooltip = true;
-              tooltip-icon-size = 24;
-            }
-            {
-              type = "audio-in";
-              tooltip = true;
-              tooltip-icon-size = 24;
-            }
-          ];
+          modules =
+            map
+              (type: {
+                inherit type;
+                tooltip = true;
+                tooltip-icon-size = 24;
+              })
+              [
+                "screenshare"
+                "audio-in"
+              ];
         };
         "custom/hermes-voice" = {
           exec = "${hermesVoiceCmd} status";
@@ -210,13 +204,13 @@ in
           tooltip = false;
           format = "{icon} {text}";
           format-icons = {
-            notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+            notification = badge "";
             none = "";
-            dnd-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+            dnd-notification = badge "";
             dnd-none = "";
-            inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+            inhibited-notification = badge "";
             inhibited-none = "";
-            dnd-inhibited-notification = "<span foreground='#${config.lib.stylix.colors.base0A}'><sup></sup></span>";
+            dnd-inhibited-notification = badge "";
             dnd-inhibited-none = "";
           };
           return-type = "json";
@@ -257,9 +251,7 @@ in
           interval = 30;
           format = "{used:0.1f}G/{total:0.1f}G ";
         };
-        disk = {
-          format = "{percentage_free}% ";
-        };
+        disk.format = "{percentage_free}% ";
         temperature = {
           on-click = "kitty -e btop";
           format = "{temperatureC}°C ";
