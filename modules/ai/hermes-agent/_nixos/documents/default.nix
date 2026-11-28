@@ -74,28 +74,26 @@ let
 in
 
 {
-  config = {
-    services.hermes-agent.documents = {
-      "MEMORY-SPEC.md" = builtins.readFile operational.toolSpecs.memory;
-      "TASK-SPEC.md" = builtins.readFile operational.toolSpecs.tasks;
-      "human-profiles/EXISTENTIAL-HUMAN-PROFILE.md" = existentialProfileFile;
-      "human-profiles/OPERATIONAL-HUMAN-PROFILE.md" = operationalProfileFile;
-    };
+  services.hermes-agent.documents = {
+    "MEMORY-SPEC.md" = builtins.readFile operational.toolSpecs.memory;
+    "TASK-SPEC.md" = builtins.readFile operational.toolSpecs.tasks;
+    "human-profiles/EXISTENTIAL-HUMAN-PROFILE.md" = existentialProfileFile;
+    "human-profiles/OPERATIONAL-HUMAN-PROFILE.md" = operationalProfileFile;
+  };
 
-    systemd.tmpfiles.rules = [ "d ${caHome} 2770 ${cfg.user} ${cfg.group} - -" ];
-    systemd.services.hermes-agent = {
-      environment = {
-        CA_HOME = caHome;
-        GIT_CONFIG_GLOBAL = gitConfig;
-      };
-      preStart = lib.mkAfter ''
-        ${ca}/bin/ca soul compile --prefix-file ${soulPrefix} --suffix-file ${soulSuffix} --reason activation
-        ${ca}/bin/ca soul link ${hermesHome}
-        if [ ! -e ${codyosClone} ]; then
-          ${lib.getExe pkgs.git} clone --no-local ${nixosConfigRoot} ${codyosClone} || \
-            echo "Hermes could not seed its CodyOS clone; other tasks remain available" >&2
-        fi
-      '';
+  systemd.tmpfiles.rules = [ "d ${caHome} 2770 ${cfg.user} ${cfg.group} - -" ];
+  systemd.services.hermes-agent = {
+    environment = {
+      CA_HOME = caHome;
+      GIT_CONFIG_GLOBAL = gitConfig;
     };
+    preStart = lib.mkAfter ''
+      ${ca}/bin/ca soul compile --prefix-file ${soulPrefix} --suffix-file ${soulSuffix} --reason activation
+      ${ca}/bin/ca soul link ${hermesHome}
+      if [ ! -e ${codyosClone} ]; then
+        ${lib.getExe pkgs.git} clone --no-local ${nixosConfigRoot} ${codyosClone} || \
+          echo "Hermes could not seed its CodyOS clone; other tasks remain available" >&2
+      fi
+    '';
   };
 }

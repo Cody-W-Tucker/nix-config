@@ -14,23 +14,24 @@
       inherit (config.codyos.site) domain;
     in
     {
-      codyos.homepage.cards.Open-WebUI = {
-        group = "Business";
-        order = 10;
-        card = {
-          href = "https://chat.${domain}";
-          icon = "open-webui";
-          description = "AI Chat Interface";
+      codyos.homepage.cards = {
+        Open-WebUI = {
+          group = "Business";
+          order = 10;
+          card = {
+            href = "https://chat.${domain}";
+            icon = "open-webui";
+            description = "AI Chat Interface";
+          };
         };
-      };
-
-      codyos.homepage.cards.Qdrant = {
-        group = "Tools";
-        order = 30;
-        card = {
-          href = "https://qdrant.${domain}/dashboard";
-          icon = "https://qdrant.${domain}/dashboard/favicon.ico";
-          description = "Vector DB";
+        Qdrant = {
+          group = "Tools";
+          order = 30;
+          card = {
+            href = "https://qdrant.${domain}/dashboard";
+            icon = "https://qdrant.${domain}/dashboard/favicon.ico";
+            description = "Vector DB";
+          };
         };
       };
 
@@ -66,18 +67,14 @@
           enable = true;
           settings = {
             storage.hnsw_index.on_disk = true;
-            service = {
-              host = "0.0.0.0";
-            };
+            service.host = "0.0.0.0";
           };
         };
         nginx.virtualHosts =
           (mkNginxVhost {
             host = "qdrant.${domain}";
             locations = {
-              "/" = {
-                proxyPass = "http://localhost:6333";
-              };
+              "/".proxyPass = "http://localhost:6333";
               "/grpc" = {
                 proxyPass = "http://localhost:6334";
                 extraConfig = ''

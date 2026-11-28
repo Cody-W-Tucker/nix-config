@@ -1,5 +1,6 @@
 { pkgs }:
 let
+  args = pkgs.lib.splitString " ";
   hf =
     repo: rev: name: sha256:
     pkgs.fetchurl {
@@ -7,30 +8,8 @@ let
       inherit sha256;
     };
 
-  qwenNonThinkingSampling = [
-    "--temp"
-    "0.7"
-    "--top-p"
-    "0.8"
-    "--top-k"
-    "20"
-    "--min-p"
-    "0"
-    "--presence-penalty"
-    "1.5"
-  ];
-  qwenThinkingSampling = [
-    "--temp"
-    "1.0"
-    "--top-p"
-    "0.95"
-    "--top-k"
-    "20"
-    "--min-p"
-    "0"
-    "--presence-penalty"
-    "1.5"
-  ];
+  qwenNonThinkingSampling = args "--temp 0.7 --top-p 0.8 --top-k 20 --min-p 0 --presence-penalty 1.5";
+  qwenThinkingSampling = args "--temp 1.0 --top-p 0.95 --top-k 20 --min-p 0 --presence-penalty 1.5";
 in
 {
   "qwen-3.5-4b" = {
@@ -45,20 +24,9 @@ in
     ttl = 300;
     contextSize = 32768;
     gpuLayers = 999;
-    extraArgs = [
-      "--fit"
-      "off"
-      "--parallel"
-      "4"
-      "--kv-unified"
-      "--reasoning"
-      "off"
-      "--cache-type-k"
-      "q8_0"
-      "--cache-type-v"
-      "q8_0"
-    ]
-    ++ qwenNonThinkingSampling;
+    extraArgs =
+      args "--fit off --parallel 4 --kv-unified --reasoning off --cache-type-k q8_0 --cache-type-v q8_0"
+      ++ qwenNonThinkingSampling;
   };
   "qwen-3.5-9b" = {
     file =
@@ -68,20 +36,9 @@ in
     ttl = 300;
     contextSize = 32768;
     gpuLayers = 999;
-    extraArgs = [
-      "--fit"
-      "off"
-      "--reasoning"
-      "off"
-      "--parallel"
-      "4"
-      "--kv-unified"
-      "--cache-type-k"
-      "q8_0"
-      "--cache-type-v"
-      "q8_0"
-    ]
-    ++ qwenNonThinkingSampling;
+    extraArgs =
+      args "--fit off --reasoning off --parallel 4 --kv-unified --cache-type-k q8_0 --cache-type-v q8_0"
+      ++ qwenNonThinkingSampling;
   };
   "qwen-3.6-35b-a3b" = {
     file =
@@ -92,27 +49,11 @@ in
     ttl = 300;
     batchSize = 2048;
     ubatchSize = 1024;
-    extraArgs = [
-      "--fit-target"
-      "512"
-      "--parallel"
-      "1"
-      "--cache-type-k"
-      "q8_0"
-      "--cache-type-v"
-      "q4_0"
-      "--load-mode"
-      "none"
-      "--reasoning-budget"
-      "2048"
-      "--reasoning-budget-message"
-      "Wait, I am overthinking. I should answer now."
-      "--spec-type"
-      "draft-mtp"
-      "--spec-draft-n-max"
-      "2"
-    ]
-    ++ qwenThinkingSampling;
+    extraArgs =
+      args "--fit-target 512 --parallel 1 --cache-type-k q8_0 --cache-type-v q4_0 --load-mode none --reasoning-budget 2048 --reasoning-budget-message"
+      ++ [ "Wait, I am overthinking. I should answer now." ]
+      ++ args "--spec-type draft-mtp --spec-draft-n-max 2"
+      ++ qwenThinkingSampling;
   };
   "qwen3-embedding-0.6b" = {
     file =
@@ -125,16 +66,7 @@ in
     flashAttention = false;
     ttl = 300;
     gpuLayers = 999;
-    extraArgs = [
-      "--fit"
-      "off"
-      "--embeddings"
-      "--pooling"
-      "last"
-      "--parallel"
-      "8"
-      "--kv-unified"
-    ];
+    extraArgs = args "--fit off --embeddings --pooling last --parallel 8 --kv-unified";
   };
   "glm-ocr-f16" = {
     file =
@@ -149,22 +81,7 @@ in
     ttl = 5;
     flashAttention = false;
     gpuLayers = 999;
-    extraArgs = [
-      "--samplers"
-      "top_k"
-      "--top-k"
-      "1"
-      "--temp"
-      "0"
-      "--repeat-penalty"
-      "1.1"
-      "--repeat-last-n"
-      "256"
-      "--cache-type-k"
-      "q8_0"
-      "--fit"
-      "off"
-    ];
+    extraArgs = args "--samplers top_k --top-k 1 --temp 0 --repeat-penalty 1.1 --repeat-last-n 256 --cache-type-k q8_0 --fit off";
   };
   "s1-mini" = {
     file =
@@ -175,14 +92,9 @@ in
     ubatchSize = 512;
     ttl = 0;
     gpuLayers = 999;
-    extraArgs = [
-      "--fit"
-      "off"
-      "--jinja"
-      "--chat-template-kwargs"
-      "{\"enable_thinking\":false}"
-      "--temp"
-      "0"
-    ];
+    extraArgs =
+      args "--fit off --jinja --chat-template-kwargs"
+      ++ [ "{\"enable_thinking\":false}" ]
+      ++ args "--temp 0";
   };
 }
