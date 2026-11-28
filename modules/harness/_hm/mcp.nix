@@ -41,12 +41,19 @@ let
   };
 in
 {
-  home.sessionVariables = dejaEmbedding;
+  home = {
+    sessionVariables = dejaEmbedding;
+    packages = [
+      deja
+      pkgs.sqlite
+    ];
+    file."${config.programs.pi-coding-agent.configDir}/mcp.json".text = builtins.toJSON {
+      mcpServers = lib.mapAttrs (
+        _: server: lib.filterAttrs (_: value: value != null && value != [ ] && value != { }) server
+      ) config.programs.mcp.servers;
+    };
+  };
 
-  home.packages = [
-    deja
-    pkgs.sqlite
-  ];
   codyos.harness.skills.deja-search = "${deja.src}/skills/deja-search";
 
   sops.secrets.karakeep-api-key = { };
@@ -89,11 +96,5 @@ in
       };
       nixos-option-search.command = lib.getExe pkgs.mcp-nixos;
     };
-  };
-
-  home.file."${config.programs.pi-coding-agent.configDir}/mcp.json".text = builtins.toJSON {
-    mcpServers = lib.mapAttrs (
-      _: server: lib.filterAttrs (_: value: value != null && value != [ ] && value != { }) server
-    ) config.programs.mcp.servers;
   };
 }
