@@ -7,7 +7,7 @@
       ...
     }:
     let
-      voice = import ./_voice/client.nix { inherit config lib pkgs; };
+      voice = import ./_voice/client.nix { inherit config pkgs; };
       repair = pkgs.writeShellApplication {
         name = "hermes-waybar-repair";
         text = ''

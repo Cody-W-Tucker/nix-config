@@ -1,4 +1,4 @@
-{ lib, ... }:
+_:
 let
   services = {
     seo = "search engines and AI assistants crawl, index and rank the client's site for priority queries";

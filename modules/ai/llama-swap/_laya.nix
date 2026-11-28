@@ -11,8 +11,7 @@ let
   policies = "/var/cache/laya/policies";
   hub = "/var/cache/laya/hub";
   registry = pkgs.writeText "laya-classifiers.json" (builtins.toJSON cfg.classifiers);
-  run = python: "${python}/bin/python3 ${./laya-service.py} --classifiers ${registry}";
-  command = run pkgs.laya-vega;
+  command = "${pkgs.laya-vega}/bin/python3 ${./laya-service.py} --classifiers ${registry}";
   publish = pkgs.writeShellScript "laya-publish" ''
     set -euo pipefail
     shopt -s nullglob
