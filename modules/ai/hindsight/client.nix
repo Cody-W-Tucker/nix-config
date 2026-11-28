@@ -15,11 +15,12 @@
     let
       hindsightSource = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hindsight.src;
 
+      endpoints = import ./_endpoints.nix;
       apiUrl =
-        (import ./_endpoints.nix {
-          nasTailscale = osConfig.codyos.site.hosts.nas.tailscale;
-        }).api
-          host.localAi;
+        if host.localAi then
+          "http://127.0.0.1:${toString endpoints.port}"
+        else
+          "http://${osConfig.codyos.site.hosts.nas.tailscale}:${toString endpoints.tailnetPort}";
 
       bankMap = {
         "/etc/nixos" = "codyos";
@@ -33,23 +34,21 @@
         bankMap = builtins.toJSON bankMap;
       };
 
-      claudeSettings = pkgs.writeText "hindsight-claude-settings.json" (
-        builtins.toJSON {
-          hindsightApiUrl = apiUrl;
-          autoRecall = true;
-          recallAdditionalBanks = [ sharedBank ];
-          autoRetain = true;
-          retainMode = "full-session";
-          retainEveryNTurns = 1;
-          bankMission = "";
-          retainToolCalls = false;
-          dynamicBankId = true;
-          dynamicBankGranularity = [ "project" ];
-          directoryBankMap = bankMap;
-          enableKnowledgeTools = false;
-          upgradeNotice = false;
-        }
-      );
+      claudeSettings = pkgs.writers.writeJSON "hindsight-claude-settings.json" {
+        hindsightApiUrl = apiUrl;
+        autoRecall = true;
+        recallAdditionalBanks = [ sharedBank ];
+        autoRetain = true;
+        retainMode = "full-session";
+        retainEveryNTurns = 1;
+        bankMission = "";
+        retainToolCalls = false;
+        dynamicBankId = true;
+        dynamicBankGranularity = [ "project" ];
+        directoryBankMap = bankMap;
+        enableKnowledgeTools = false;
+        upgradeNotice = false;
+      };
 
       recallHook = script: extra: {
         hooks = [
@@ -63,19 +62,17 @@
         ];
       };
 
-      claudeHooks = pkgs.writeText "hindsight-claude-hooks.json" (
-        builtins.toJSON {
-          hooks = {
-            UserPromptSubmit = [ (recallHook "recall" { timeout = 25; }) ];
-            Stop = [
-              (recallHook "retain" {
-                timeout = 15;
-                async = true;
-              })
-            ];
-          };
-        }
-      );
+      claudeHooks = pkgs.writers.writeJSON "hindsight-claude-hooks.json" {
+        hooks = {
+          UserPromptSubmit = [ (recallHook "recall" { timeout = 25; }) ];
+          Stop = [
+            (recallHook "retain" {
+              timeout = 15;
+              async = true;
+            })
+          ];
+        };
+      };
 
       claudePlugin = pkgs.runCommand "claude-plugin-hindsight" { nativeBuildInputs = [ pkgs.patch ]; } ''
         cp -R ${hindsightSource}/hindsight-integrations/claude-code "$out"

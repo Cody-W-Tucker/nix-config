@@ -14,7 +14,6 @@
       wrapperSrc = ./opencode-plugin;
       pluginPath = "${config.xdg.configHome}/opencode/plugins/langfuse-observability";
       piPluginDir = "${config.home.homeDirectory}/.pi/agent/langfuse-plugin";
-      envFile = config.sops.templates."opencode-langfuse-env".path;
     in
     {
       sops = {
@@ -29,23 +28,8 @@
       };
 
       programs = {
-        zsh.initContent = ''
-          if [ -f "${envFile}" ]; then
-            set -a
-            . "${envFile}"
-            set +a
-          fi
-        '';
         opencode.settings.plugins = [ pluginPath ];
         claude-code.settings.env.CC_LANGFUSE_CAPTURE_IMAGES = "false";
-      };
-
-      systemd.user.services.opencode-web = lib.mkIf config.programs.opencode.web.enable {
-        Service.EnvironmentFile = [ envFile ];
-      };
-
-      codyos.harness.claudePlugins.langfuse-observability = pkgs.callPackage ./_claude-package.nix {
-        inherit (pkgs.unstable) python3;
       };
 
       home = {
@@ -99,16 +83,25 @@
 
       };
 
-      codyos.workarounds = {
-        langfuse-opencode-bun = {
-          reason = "OpenCode's Bun runtime fails to initialize SynchronizedRef in the Langfuse OpenCode plugin 0.6.0, so activation patches the bundle. opencode-plugin/README.md has the removal test; 0.7.0 is released but untested.";
-          upstream = "https://github.com/langfuse/opencode-observability-plugin/issues/55";
-          reviewBy = "2026-12-15";
+      codyos = {
+        harness = {
+          agentEnvFiles = [ config.sops.templates."opencode-langfuse-env".path ];
+          claudePlugins.langfuse-observability = pkgs.callPackage ./_claude-package.nix {
+            inherit (pkgs.unstable) python3;
+          };
         };
-        langfuse-claude-uv-build = {
-          reason = "Langfuse 4.15.2 caps uv_build below 0.12 while nixpkgs has 0.12.x, so _claude-package.nix relaxes the bound. Its --replace-fail breaks the build once a newer Langfuse drops the cap.";
-          upstream = "https://github.com/langfuse/langfuse-python/blob/main/pyproject.toml";
-          reviewBy = "2027-01-15";
+
+        workarounds = {
+          langfuse-opencode-bun = {
+            reason = "OpenCode's Bun runtime fails to initialize SynchronizedRef in the Langfuse OpenCode plugin 0.6.0, so activation patches the bundle. opencode-plugin/README.md has the removal test; 0.7.0 is released but untested.";
+            upstream = "https://github.com/langfuse/opencode-observability-plugin/issues/55";
+            reviewBy = "2026-12-15";
+          };
+          langfuse-claude-uv-build = {
+            reason = "Langfuse 4.15.2 caps uv_build below 0.12 while nixpkgs has 0.12.x, so _claude-package.nix relaxes the bound. Its --replace-fail breaks the build once a newer Langfuse drops the cap.";
+            upstream = "https://github.com/langfuse/langfuse-python/blob/main/pyproject.toml";
+            reviewBy = "2027-01-15";
+          };
         };
       };
     };

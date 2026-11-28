@@ -8,21 +8,15 @@ in
       den.aspects.opencode.desktop
       den.aspects.opencode.remote
     ];
-    nas.includes = [ den.aspects.opencode ];
+    nas.includes = [ den.aspects.opencode.web ];
 
     harness.homeManager =
-      {
-        lib,
-        options,
-        pkgs,
-        ...
-      }:
+      { lib, pkgs, ... }:
       {
         programs = {
           zsh.shellAliases.op = "opencode";
           opencode = {
             enable = true;
-            package = lib.mkDefault pkgs.unstable.opencode;
             enableMcpIntegration = true;
             settings = {
               autoupdate = false;
@@ -45,74 +39,66 @@ in
                 extensions = [ ".nix" ];
               };
             };
-          }
-          // lib.optionalAttrs (options.programs.opencode ? mutableSettings) {
-            mutableSettings = true;
-          }
-          // lib.optionalAttrs (options.programs.opencode ? cli) {
-            tui = lib.mkForce { };
-            cli.theme = {
-              name = "stylix";
-              mode = "system";
-            };
           };
         };
       };
 
     opencode = {
-      nixos =
-        { config, mkNginxVhost, ... }:
-        let
-          inherit (config.codyos.site) domain;
-        in
-        {
-          codyos.homepage.cards.OpenCode = {
-            group = "Tools";
-            order = 20;
-            card = {
-              href = "https://opencode.${domain}";
-              icon = "opencode";
-              description = "OpenCode Web";
+      web = {
+        nixos =
+          { config, mkNginxVhost, ... }:
+          let
+            inherit (config.codyos.site) domain;
+          in
+          {
+            codyos.homepage.cards.OpenCode = {
+              group = "Tools";
+              order = 20;
+              card = {
+                href = "https://opencode.${domain}";
+                icon = "opencode";
+                description = "OpenCode Web";
+              };
+            };
+
+            sops.secrets."opencode-password" = {
+              owner = config.codyos.site.user.name;
+            };
+
+            sops.templates."opencode-env" = {
+              content = ''
+                OPENCODE_SERVER_PASSWORD=${config.sops.placeholder."opencode-password"}
+              '';
+              owner = config.codyos.site.user.name;
+            };
+
+            services.nginx.virtualHosts = mkNginxVhost {
+              host = "opencode.${domain}";
+              port = webPort;
+              proxyWebsockets = true;
             };
           };
 
-          sops.secrets."opencode-password" = {
-            owner = config.codyos.site.user.name;
-          };
+        provides.to-users.homeManager =
+          { osConfig, ... }:
+          {
+            programs.opencode.web = {
+              enable = true;
+              extraArgs = [
+                "--hostname"
+                "127.0.0.1"
+                "--port"
+                (toString webPort)
+              ];
+            };
 
-          sops.templates."opencode-env" = {
-            content = ''
-              OPENCODE_SERVER_PASSWORD=${config.sops.placeholder."opencode-password"}
-            '';
-            owner = config.codyos.site.user.name;
-          };
-
-          services.nginx.virtualHosts = mkNginxVhost {
-            host = "opencode.${domain}";
-            port = webPort;
-            proxyWebsockets = true;
-          };
-        };
-
-      provides.to-users.homeManager =
-        { osConfig, ... }:
-        {
-          programs.opencode.web = {
-            enable = true;
-            extraArgs = [
-              "--hostname"
-              "127.0.0.1"
-              "--port"
-              (toString webPort)
+            systemd.user.services.opencode-web.Service.EnvironmentFile = [
+              osConfig.sops.templates."opencode-env".path
             ];
           };
 
-          systemd.user.services.opencode-web.Service.EnvironmentFile = [
-            osConfig.sops.templates."opencode-env".path
-          ];
-        };
-
-      provides.to-users.user.linger = true;
+        provides.to-users.user.linger = true;
+      };
 
       remote.provides.to-users.homeManager =
         { osConfig, config, ... }:

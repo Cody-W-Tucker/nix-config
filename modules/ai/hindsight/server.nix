@@ -13,9 +13,8 @@
     }:
     let
       inherit (config.codyos.site) domain;
-      endpoints = import ./_endpoints.nix {
-        nasTailscale = config.codyos.site.hosts.nas.tailscale;
-      };
+      endpoints = import ./_endpoints.nix;
+      local = "http://127.0.0.1:${toString endpoints.port}";
       packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
       hardened = {
         User = "hindsight";
@@ -108,7 +107,7 @@
           serviceConfig = hardened // {
             EnvironmentFile = config.sops.templates."hindsight-env".path;
             StateDirectory = "hindsight";
-            ExecStart = "${lib.getExe packages.hindsight} --host ${endpoints.localHost} --port ${toString endpoints.localPort}";
+            ExecStart = "${lib.getExe packages.hindsight} --host 127.0.0.1 --port ${toString endpoints.port}";
           };
         };
 
@@ -117,11 +116,11 @@
           wantedBy = [ "multi-user.target" ];
           after = [ "hindsight.service" ];
           environment = {
-            HINDSIGHT_CP_DATAPLANE_API_URL = endpoints.local;
+            HINDSIGHT_CP_DATAPLANE_API_URL = local;
             NEXT_TELEMETRY_DISABLED = "1";
           };
           serviceConfig = hardened // {
-            ExecStart = "${lib.getExe packages.hindsight-control-plane} --hostname 127.0.0.1 --port 9999 --api-url ${endpoints.local}";
+            ExecStart = "${lib.getExe packages.hindsight-control-plane} --hostname 127.0.0.1 --port 9999 --api-url ${local}";
           };
         };
       };
@@ -145,19 +144,19 @@
                   allow ${config.codyos.site.hosts.beast.tailscale};
                   deny all;
                   if ($http_origin != "") { return 403; }
-                  proxy_set_header Host ${lib.removePrefix "http://" endpoints.local};
+                  proxy_set_header Host ${lib.removePrefix "http://" local};
                   proxy_buffering off;
                   proxy_read_timeout 3600s;
                 '';
               in
               {
                 "= /mcp/" = {
-                  proxyPass = endpoints.local;
+                  proxyPass = local;
                   recommendedProxySettings = false;
                   extraConfig = beastOnlyProxy;
                 };
                 "~ ^/v1/default/banks/[^/]+/memories(/recall)?$" = {
-                  proxyPass = endpoints.local;
+                  proxyPass = local;
                   recommendedProxySettings = false;
                   extraConfig = beastOnlyProxy + ''
                     if ($request_method != POST) { return 405; }
