@@ -30,21 +30,36 @@
       };
       users.groups.shelfmark = { };
 
-      systemd.tmpfiles.rules = [
-        "d /var/lib/shelfmark 0750 shelfmark media - -"
-      ];
+      systemd = {
+        tmpfiles.rules = [
+          "d /var/lib/shelfmark 0750 shelfmark media - -"
+        ];
 
-      systemd.services.shelfmark-dirs = {
-        description = "Create Shelfmark staging directory on the mounted media filesystem";
-        after = [ "mnt-media.mount" ];
-        requires = [ "mnt-media.mount" ];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = [
-            "${pkgs.coreutils}/bin/mkdir -p /mnt/media/Downloads/Shelfmark"
-            "${pkgs.coreutils}/bin/chown root:media /mnt/media/Downloads/Shelfmark"
-            "${pkgs.coreutils}/bin/chmod 2775 /mnt/media/Downloads/Shelfmark"
-          ];
+        services = {
+          shelfmark-dirs = {
+            description = "Create Shelfmark staging directory on the mounted media filesystem";
+            after = [ "mnt-media.mount" ];
+            requires = [ "mnt-media.mount" ];
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart = [
+                "${pkgs.coreutils}/bin/mkdir -p /mnt/media/Downloads/Shelfmark"
+                "${pkgs.coreutils}/bin/chown root:media /mnt/media/Downloads/Shelfmark"
+                "${pkgs.coreutils}/bin/chmod 2775 /mnt/media/Downloads/Shelfmark"
+              ];
+            };
+          };
+
+          "${config.virtualisation.oci-containers.backend}-shelfmark" = {
+            after = [
+              "mnt-media.mount"
+              "shelfmark-dirs.service"
+            ];
+            requires = [
+              "mnt-media.mount"
+              "shelfmark-dirs.service"
+            ];
+          };
         };
       };
 
@@ -84,22 +99,10 @@
         extraOptions = [ "--network=host" ];
       };
 
-      systemd.services."${config.virtualisation.oci-containers.backend}-shelfmark" = {
-        after = [
-          "mnt-media.mount"
-          "shelfmark-dirs.service"
-        ];
-        requires = [
-          "mnt-media.mount"
-          "shelfmark-dirs.service"
-        ];
-      };
-
       services.nginx.virtualHosts = mkNginxVhost {
         host = "shelfmark.${domain}";
         inherit port;
         proxyWebsockets = true;
       };
-
     };
 }

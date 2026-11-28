@@ -12,84 +12,85 @@
     }:
 
     let
+      inherit (lib) mkOption types;
       cfg = config.services.miniflux-curator;
       curatorScript = inputs.miniflux-curator.packages.${pkgs.stdenv.hostPlatform.system}.default;
     in
 
     {
       options.services.miniflux-curator = {
-        minifluxUrl = lib.mkOption {
-          type = lib.types.str;
+        minifluxUrl = mkOption {
+          type = types.str;
           default = "http://localhost:7777";
           description = "Miniflux instance URL";
         };
 
-        apiKeyFile = lib.mkOption {
-          type = lib.types.path;
+        apiKeyFile = mkOption {
+          type = types.path;
           description = "Path to file containing Miniflux API key";
         };
 
-        karakeepUrl = lib.mkOption {
-          type = lib.types.str;
+        karakeepUrl = mkOption {
+          type = types.str;
           default = "http://localhost:3000";
           description = "Karakeep instance URL";
         };
 
-        karakeepApiKeyFile = lib.mkOption {
-          type = lib.types.path;
+        karakeepApiKeyFile = mkOption {
+          type = types.path;
           description = "Path to file containing Karakeep API key";
         };
 
-        openaiHost = lib.mkOption {
-          type = lib.types.str;
+        openaiHost = mkOption {
+          type = types.str;
           default = "http://localhost:8080";
           description = "Embedding API host (OpenAI-compatible)";
         };
 
-        embedModel = lib.mkOption {
-          type = lib.types.str;
+        embedModel = mkOption {
+          type = types.str;
           default = "qwen3-embedding-8b";
           description = "Embedding model for similarity scoring";
         };
 
-        batchSize = lib.mkOption {
-          type = lib.types.int;
+        batchSize = mkOption {
+          type = types.int;
           default = 64;
           description = "Number of articles to embed per batch request (default: 64)";
         };
 
-        karakeepFetchLimit = lib.mkOption {
-          type = lib.types.int;
+        karakeepFetchLimit = mkOption {
+          type = types.int;
           default = 100;
           description = "Number of recent Karakeep bookmarks to fetch before reference selection";
         };
 
-        referenceLimit = lib.mkOption {
-          type = lib.types.int;
+        referenceLimit = mkOption {
+          type = types.int;
           default = 50;
           description = "Maximum Karakeep bookmarks selected for reference embeddings";
         };
 
-        autoMarkReadBelow = lib.mkOption {
-          type = lib.types.float;
+        autoMarkReadBelow = mkOption {
+          type = types.float;
           default = 3.5;
           description = "Score threshold below which entries are marked as read (0-10)";
         };
 
-        limitUnread = lib.mkOption {
-          type = lib.types.int;
+        limitUnread = mkOption {
+          type = types.int;
           default = 400;
           description = "Maximum unread entries to process per run";
         };
 
-        dryRun = lib.mkOption {
-          type = lib.types.bool;
+        dryRun = mkOption {
+          type = types.bool;
           default = true;
           description = "When true, only logs what would be done without making changes";
         };
 
-        schedule = lib.mkOption {
-          type = lib.types.str;
+        schedule = mkOption {
+          type = types.str;
           default = "daily";
           description = "Schedule for running the curator (systemd timer format)";
         };
