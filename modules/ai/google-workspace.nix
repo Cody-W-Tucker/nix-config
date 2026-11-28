@@ -61,10 +61,9 @@ in
 {
   den.aspects.google-workspace = {
     desktop.provides.to-users.homeManager =
-      { pkgs, lib, ... }:
+      { pkgs, ... }:
       {
         home.packages = [ (cli pkgs) ];
-        codyos.harness.skills = lib.mapAttrs (_: toString) (skillDirs pkgs);
       };
 
     hermes.includes = [ den.aspects.google-workspace.desktop ];
