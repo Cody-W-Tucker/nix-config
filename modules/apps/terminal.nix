@@ -24,6 +24,5 @@
         tab_bar_style = "powerline";
       };
     };
-
   };
 }

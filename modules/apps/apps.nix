@@ -44,14 +44,11 @@
             enable = true;
             commandLineArgs = [ "--load-media-router-component-extension=1" ];
           };
-          obs-studio = {
-            enable = true;
-          };
+          obs-studio.enable = true;
         };
 
         services = {
           tailscale-systray.enable = true;
-
           mpris-proxy.enable = true;
         };
 

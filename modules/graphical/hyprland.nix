@@ -23,14 +23,12 @@
           login.enableGnomeKeyring = true;
         };
 
-        services = {
-          greetd = {
-            enable = true;
-            settings = {
-              terminal.vt = 1;
-              initial_session = session;
-              default_session = session;
-            };
+        services.greetd = {
+          enable = true;
+          settings = {
+            terminal.vt = 1;
+            initial_session = session;
+            default_session = session;
           };
         };
       };
