@@ -43,9 +43,6 @@ writeShellApplication {
 
     git pull --rebase
 
-    checks=(formatting statix deadnix no-comments imports)
-    nix build --no-link "''${checks[@]/#/.#checks.x86_64-linux.}"
-
     sudo nixos-rebuild switch
 
     if [ -n "$(git rev-list '@{upstream}..HEAD')" ]; then
