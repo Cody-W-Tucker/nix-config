@@ -42,15 +42,11 @@
         ...
       }:
       let
-        inherit (host) hardwareConfig;
         lock = "${pkgs.systemd}/bin/loginctl lock-session";
         dpms = action: ''hyprctl dispatch 'hl.dsp.dpms({action = "${action}"})''\''';
       in
       {
-        imports = [
-          (import ./_hyprland/settings.nix { inherit hardwareConfig; })
-          ./_waybar/waybar.nix
-        ];
+        imports = [ ./_waybar/waybar.nix ];
 
         home.packages = with pkgs; [
           wttrbar
@@ -113,8 +109,8 @@
                   on-resume = dpms "enable";
                 }
               ]
-              ++ lib.optional (hardwareConfig.hypridle.suspendTimeout != null) {
-                timeout = hardwareConfig.hypridle.suspendTimeout;
+              ++ lib.optional (host.hardwareConfig.hypridle.suspendTimeout != null) {
+                timeout = host.hardwareConfig.hypridle.suspendTimeout;
                 on-timeout = "systemctl suspend";
               };
             };
