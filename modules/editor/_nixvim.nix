@@ -5,7 +5,6 @@
   imports = [
     ./_keymaps.nix
     ./_plugins/lsp.nix
-    ./_plugins/treesitter.nix
     ./_plugins/99
     ./_plugins/startup.nix
   ];
@@ -103,6 +102,18 @@
       direnv.enable = true;
       trouble.enable = true;
       image.enable = true;
+      treesitter = {
+        enable = true;
+        highlight.enable = true;
+        grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+          bash
+          json
+          toml
+          yaml
+          lua
+          xml
+        ];
+      };
       telescope = {
         enable = true;
         keymaps."<leader>cd" = {

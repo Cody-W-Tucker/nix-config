@@ -90,7 +90,6 @@
         listenAddress = "0.0.0.0";
         settings = {
           healthCheckTimeout = 60;
-          logLevel = "info";
           logToStdout = "both";
           models = lib.mapAttrs (name: model: {
             cmd = llamaServerCommand name model;

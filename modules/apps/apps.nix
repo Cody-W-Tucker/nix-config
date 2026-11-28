@@ -8,6 +8,19 @@
 
   den.aspects.apps = {
     includes = [ den.aspects.google-workspace.desktop ];
+    nixos.networking.firewall =
+      let
+        kdeConnectPorts = [
+          {
+            from = 1714;
+            to = 1764;
+          }
+        ];
+      in
+      {
+        allowedTCPPortRanges = kdeConnectPorts;
+        allowedUDPPortRanges = kdeConnectPorts;
+      };
     provides.to-users.homeManager =
       { pkgs, ... }:
       let
@@ -34,7 +47,30 @@
           ./_obsidian
         ];
 
+        home.sessionVariables.TERMINAL = "kitty";
+
         programs = {
+          zsh.shellAliases = {
+            ssh- = "kitty +kitten ssh";
+            copy = "kitten clipboard";
+          };
+          kitty = {
+            enable = true;
+            settings = {
+              remember_window_size = "no";
+              auto_reload_config = "-1";
+              shell_integration = "no-cursor";
+              window_padding_width = "0 8";
+              confirm_os_window_close = "0";
+              wayland_titlebar_color = "system";
+              cursor_shape = "block";
+              enable_audio_bell = "no";
+              cursor_trail = 1;
+              cursor_trail_start_threshold = 3;
+              cursor_trail_decay = "0.1 0.4";
+              tab_bar_style = "powerline";
+            };
+          };
           cursor.enable = true;
           zen-browser = {
             enable = true;
@@ -48,6 +84,10 @@
         };
 
         services = {
+          kdeconnect = {
+            enable = true;
+            indicator = true;
+          };
           tailscale-systray.enable = true;
           mpris-proxy.enable = true;
         };
@@ -79,6 +119,7 @@
           tuxedo
           imagemagick
           libsecret
+          kdePackages.kpeople
         ];
       };
   };

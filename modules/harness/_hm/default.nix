@@ -26,7 +26,6 @@ in
     (import ./mcp.nix { inherit localAi; })
     (import ./plugins { inherit localAi; })
     ./skills
-    ./coding-tools.nix
   ]
   ++
     lib.optionals
@@ -47,6 +46,8 @@ in
       llmPkgs.tuicr
       llmPkgs.spec-kit
       llmPkgs.backlog-md
+      llmPkgs.gnhf
+      llmPkgs.no-mistakes
     ];
 
     activation = {
@@ -88,6 +89,11 @@ in
   // lib.optionalAttrs hasConfigMerger {
     mutableSettings = true;
     settings = piShell;
+  };
+
+  codyos.harness.skills = {
+    gnhf = "${llmPkgs.gnhf}/lib/node_modules/gnhf/skills/gnhf";
+    no-mistakes = "${llmPkgs.no-mistakes.src}/skills/no-mistakes";
   };
 
   codyos.workarounds.pi-config-merger = {

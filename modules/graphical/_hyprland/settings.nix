@@ -28,7 +28,15 @@ let
     ++ lib.optionals (options != null) [ options ];
   };
 
-  execBind = key: cmd: mkBind key (exec cmd) null;
+  execBindWith =
+    options: key: cmd:
+    mkBind key (exec cmd) options;
+  execBind = execBindWith null;
+  repeatingBind = execBindWith {
+    locked = true;
+    repeating = true;
+  };
+  lockedBind = execBindWith { locked = true; };
   actionBind = key: action: mkBind key action null;
 
   mouseBind = key: action: mkBind key action { mouse = true; };
@@ -99,60 +107,17 @@ let
     (execBind "${mainMod} + CTRL + Escape" "llama-dictate fix")
   ];
 
-  execBinds =
-    options:
-    map (bindSpec: mkBind (builtins.elemAt bindSpec 0) (exec (builtins.elemAt bindSpec 1)) options);
-
-  repeatingExecBinds =
-    execBinds
-      {
-        locked = true;
-        repeating = true;
-      }
-      [
-        [
-          "XF86AudioRaiseVolume"
-          "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
-        ]
-        [
-          "XF86AudioLowerVolume"
-          "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ]
-        [
-          "XF86AudioMute"
-          "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ]
-        [
-          "XF86AudioMicMute"
-          "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ]
-        [
-          "XF86MonBrightnessUp"
-          "brightnessctl -e4 -n2 set 5%+"
-        ]
-        [
-          "XF86MonBrightnessDown"
-          "brightnessctl -e4 -n2 set 5%-"
-        ]
-      ];
-
-  lockedExecBinds = execBinds { locked = true; } [
-    [
-      "XF86AudioNext"
-      "playerctl next"
-    ]
-    [
-      "XF86AudioPause"
-      "playerctl play-pause"
-    ]
-    [
-      "XF86AudioPlay"
-      "playerctl play-pause"
-    ]
-    [
-      "XF86AudioPrev"
-      "playerctl previous"
-    ]
+  mediaBinds = [
+    (repeatingBind "XF86AudioRaiseVolume" "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+")
+    (repeatingBind "XF86AudioLowerVolume" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-")
+    (repeatingBind "XF86AudioMute" "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
+    (repeatingBind "XF86AudioMicMute" "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")
+    (repeatingBind "XF86MonBrightnessUp" "brightnessctl -e4 -n2 set 5%+")
+    (repeatingBind "XF86MonBrightnessDown" "brightnessctl -e4 -n2 set 5%-")
+    (lockedBind "XF86AudioNext" "playerctl next")
+    (lockedBind "XF86AudioPause" "playerctl play-pause")
+    (lockedBind "XF86AudioPlay" "playerctl play-pause")
+    (lockedBind "XF86AudioPrev" "playerctl previous")
   ];
 
   rule =
@@ -281,7 +246,7 @@ in
       };
     };
 
-    bind = binds ++ repeatingExecBinds ++ lockedExecBinds ++ workspaceBinds;
+    bind = binds ++ mediaBinds ++ workspaceBinds;
     window_rule = [
       (rule "class" "^(kitty)$" { no_blur = true; })
       (rule "class" "^(kitty)$" { opacity = "1.0 1.0 1.0 override"; })
