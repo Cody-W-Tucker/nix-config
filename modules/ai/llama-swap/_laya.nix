@@ -122,13 +122,15 @@ in
   };
 
   config = {
-    users.users.laya = {
-      isSystemUser = true;
-      group = "laya";
-      extraGroups = [ "laya-feedback" ];
+    users = {
+      users.laya = {
+        isSystemUser = true;
+        group = "laya";
+        extraGroups = [ "laya-feedback" ];
+      };
+      groups.laya = { };
+      groups.laya-feedback = { };
     };
-    users.groups.laya = { };
-    users.groups.laya-feedback = { };
     environment.systemPackages = [ feedback ];
 
     sops.secrets."opencode-api-key" = { };
@@ -152,69 +154,74 @@ in
       checkEndpoint = "/health";
       name = "Vega (Laya CPU worker)";
     };
-    systemd.services.llama-swap = {
-      wants = [ "laya.service" ];
-      after = [ "laya.service" ];
-      serviceConfig.BindReadOnlyPaths = [
-        "-${policies}:/run/vega/policies"
-        "-${hub}:/run/vega/hf/hub"
-      ];
-    };
-
     services.llama-swap.settings.peers.laya-gateway = {
       proxy = "http://127.0.0.1:${toString endpoint.layaPort}";
       models = [ "laya" ];
       timeouts.responseHeader = 300;
     };
 
-    systemd.services.laya = {
-      description = "Vega-backed Laya SystemOne decisions";
-      wantedBy = [ "multi-user.target" ];
-      wants = [ "network-online.target" ];
-      after = [ "network-online.target" ];
-      environment = env;
-      path = [ pkgs.coreutils ];
-      serviceConfig = sandbox // {
-        EnvironmentFile = config.sops.templates."laya-env".path;
-        ExecStartPre = publish;
-        ExecStart = lib.concatStringsSep " " (
-          [
-            "${command} serve --port ${toString endpoint.layaPort}"
-            "--worker-url ${llamaSwap}/upstream/vega"
-            "--teacher-url https://opencode.ai/inference/go/systemone/v1/systemone"
-            "--feedback-socket ${cfg.feedbackSocket} --feedback-group laya-feedback"
-          ]
-          ++ lib.optional (cfg.defaultTeacher != null) "--default-teacher ${cfg.defaultTeacher}"
-        );
-        Restart = "on-failure";
-        RuntimeDirectory = "laya";
-        RuntimeDirectoryMode = "0755";
-      };
-    };
+    systemd = {
+      services = {
+        llama-swap = {
+          wants = [ "laya.service" ];
+          after = [ "laya.service" ];
+          serviceConfig.BindReadOnlyPaths = [
+            "-${policies}:/run/vega/policies"
+            "-${hub}:/run/vega/hf/hub"
+          ];
+        };
 
-    systemd.services.laya-train = {
-      description = "Refit Laya heads from stored labels";
-      after = [
-        "laya.service"
-        "llama-swap.service"
-      ];
-      environment = env;
-      path = [ pkgs.coreutils ];
-      serviceConfig = sandbox // {
-        Type = "oneshot";
-        ExecStart = "${command} train --device cpu";
-        ExecStopPost = "-${publish}";
-        Nice = 15;
-        CPUQuota = "200%";
-        IOWeight = 10;
-        TimeoutStartSec = "45min";
+        laya = {
+          description = "Vega-backed Laya SystemOne decisions";
+          wantedBy = [ "multi-user.target" ];
+          wants = [ "network-online.target" ];
+          after = [ "network-online.target" ];
+          environment = env;
+          path = [ pkgs.coreutils ];
+          serviceConfig = sandbox // {
+            EnvironmentFile = config.sops.templates."laya-env".path;
+            ExecStartPre = publish;
+            ExecStart = lib.concatStringsSep " " (
+              [
+                "${command} serve --port ${toString endpoint.layaPort}"
+                "--worker-url ${llamaSwap}/upstream/vega"
+                "--teacher-url https://opencode.ai/inference/go/systemone/v1/systemone"
+                "--feedback-socket ${cfg.feedbackSocket} --feedback-group laya-feedback"
+              ]
+              ++ lib.optional (cfg.defaultTeacher != null) "--default-teacher ${cfg.defaultTeacher}"
+            );
+            Restart = "on-failure";
+            RuntimeDirectory = "laya";
+            RuntimeDirectoryMode = "0755";
+          };
+        };
+
+        laya-train = {
+          description = "Refit Laya heads from stored labels";
+          after = [
+            "laya.service"
+            "llama-swap.service"
+          ];
+          environment = env;
+          path = [ pkgs.coreutils ];
+          serviceConfig = sandbox // {
+            Type = "oneshot";
+            ExecStart = "${command} train --device cpu";
+            ExecStopPost = "-${publish}";
+            Nice = 15;
+            CPUQuota = "200%";
+            IOWeight = 10;
+            TimeoutStartSec = "45min";
+          };
+        };
       };
-    };
-    systemd.timers.laya-train = {
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnCalendar = "*-*-* 01:00:00";
-        Persistent = false;
+
+      timers.laya-train = {
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "*-*-* 01:00:00";
+          Persistent = false;
+        };
       };
     };
   };

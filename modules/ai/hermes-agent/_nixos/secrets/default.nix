@@ -2,37 +2,39 @@
 
 {
   config = {
-    sops.secrets."hermes" = { };
-    sops.secrets."opencode-api-key" = { };
-    sops.secrets."karakeep-api-key" = { };
+    sops = {
+      secrets = {
+        "hermes" = { };
+        "opencode-api-key" = { };
+        "karakeep-api-key" = { };
+        "mealie-api-key" = { };
+        "opencode-password" = { };
+        "hass-token" = { };
+        "hermes-dashboard" = { };
+      };
 
-    sops.secrets."mealie-api-key" = { };
+      templates = {
+        "hermes-env" = {
+          content = ''
+            OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
+            OPENCODE_SERVER_PASSWORD=${config.sops.placeholder."opencode-password"}
+            KARAKEEP_API_KEY=${config.sops.placeholder."karakeep-api-key"}
+            MEALIE_API_KEY=${config.sops.placeholder."mealie-api-key"}
+            HASS_TOKEN=${config.sops.placeholder."hass-token"}
+          '';
+          restartUnits = [ "hermes-agent.service" ];
+        };
 
-    sops.secrets."opencode-password" = { };
+        "hermes-agent-env" = {
+          content = config.sops.placeholder."hermes";
+          restartUnits = [ "hermes-agent.service" ];
+        };
 
-    sops.secrets."hass-token" = { };
-
-    sops.secrets."hermes-dashboard" = { };
-
-    sops.templates."hermes-env" = {
-      content = ''
-        OPENCODE_GO_API_KEY=${config.sops.placeholder."opencode-api-key"}
-        OPENCODE_SERVER_PASSWORD=${config.sops.placeholder."opencode-password"}
-        KARAKEEP_API_KEY=${config.sops.placeholder."karakeep-api-key"}
-        MEALIE_API_KEY=${config.sops.placeholder."mealie-api-key"}
-        HASS_TOKEN=${config.sops.placeholder."hass-token"}
-      '';
-      restartUnits = [ "hermes-agent.service" ];
-    };
-
-    sops.templates."hermes-agent-env" = {
-      content = config.sops.placeholder."hermes";
-      restartUnits = [ "hermes-agent.service" ];
-    };
-
-    sops.templates."hermes-dashboard-env" = {
-      content = config.sops.placeholder."hermes-dashboard";
-      restartUnits = [ "hermes-backend.service" ];
+        "hermes-dashboard-env" = {
+          content = config.sops.placeholder."hermes-dashboard";
+          restartUnits = [ "hermes-backend.service" ];
+        };
+      };
     };
 
     systemd.services.hermes-backend.serviceConfig.EnvironmentFile = [

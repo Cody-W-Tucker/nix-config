@@ -63,9 +63,15 @@ let
   );
 in
 {
-  systemd.services.hermes-agent.preStart = ''
-    ln -sfn ${langfusePlugin} ${config.services.hermes-agent.stateDir}/.hermes/plugins/langfuse
-  '';
+  systemd.services = {
+    hermes-agent = {
+      preStart = ''
+        ln -sfn ${langfusePlugin} ${config.services.hermes-agent.stateDir}/.hermes/plugins/langfuse
+      '';
+      environment.PYTHONPATH = hermesPythonPath;
+    };
+    hermes-backend.environment.PYTHONPATH = hermesPythonPath;
+  };
   codyos.workarounds.hermes-langfuse-uv-build = {
     reason = "Langfuse 4.15.2 caps uv_build below 0.12 while Hermes's Python set has 0.12.x, so langfuse415 relaxes the bound. Its --replace-fail breaks the build once a newer Langfuse drops the cap.";
     upstream = "https://github.com/NousResearch/hermes-agent/issues/48576";
@@ -77,6 +83,4 @@ in
     extraPlugins = lib.mkOrder 1000 [ langfusePlugin ];
     environment.HERMES_LANGFUSE_BASE_URL = "http://127.0.0.1:3030";
   };
-  systemd.services.hermes-agent.environment.PYTHONPATH = hermesPythonPath;
-  systemd.services.hermes-backend.environment.PYTHONPATH = hermesPythonPath;
 }

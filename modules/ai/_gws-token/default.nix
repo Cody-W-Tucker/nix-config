@@ -41,45 +41,50 @@ in
       readonly = false;
     }
   ];
-  systemd.tmpfiles.rules = [
-    "d ${tokenDir} 0750 root ${cfg.group} - -"
-    "d ${cacheDir} 0700 ${cfg.user} ${cfg.group} - -"
-  ];
+  systemd = {
+    tmpfiles.rules = [
+      "d ${tokenDir} 0750 root ${cfg.group} - -"
+      "d ${cacheDir} 0700 ${cfg.user} ${cfg.group} - -"
+    ];
 
-  systemd.services.hermes-agent.serviceConfig.ReadWritePaths = [ cacheDir ];
-  systemd.services.hermes-backend.serviceConfig.ReadWritePaths = [ cacheDir ];
+    services = {
+      hermes-agent.serviceConfig.ReadWritePaths = [ cacheDir ];
+      hermes-backend.serviceConfig.ReadWritePaths = [ cacheDir ];
+
+      hermes-gws-token = lib.mkIf enrolled {
+        description = "Refresh Hermes's Google Workspace access token";
+        after = [
+          "network-online.target"
+          "systemd-tmpfiles-setup.service"
+        ];
+        wants = [ "network-online.target" ];
+        unitConfig.ConditionPathExists = credentials;
+        environment.SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${lib.getExe pkgs.python3} ${./refresh.py} ${credentials} ${token} ${cfg.group}";
+          ProtectSystem = "strict";
+          ProtectHome = true;
+          PrivateTmp = true;
+          NoNewPrivileges = true;
+          ReadWritePaths = [ tokenDir ];
+        };
+      };
+    };
+
+    timers.hermes-gws-token = lib.mkIf enrolled {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "15s";
+        OnCalendar = "*:0/20";
+      };
+    };
+  };
 
   sops.secrets."hermes-gws-oauth" = lib.mkIf enrolled {
     sopsFile = encryptedCredentials;
     format = "yaml";
     key = "oauth";
     restartUnits = [ "hermes-gws-token.service" ];
-  };
-
-  systemd.services.hermes-gws-token = lib.mkIf enrolled {
-    description = "Refresh Hermes's Google Workspace access token";
-    after = [
-      "network-online.target"
-      "systemd-tmpfiles-setup.service"
-    ];
-    wants = [ "network-online.target" ];
-    unitConfig.ConditionPathExists = credentials;
-    environment.SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${lib.getExe pkgs.python3} ${./refresh.py} ${credentials} ${token} ${cfg.group}";
-      ProtectSystem = "strict";
-      ProtectHome = true;
-      PrivateTmp = true;
-      NoNewPrivileges = true;
-      ReadWritePaths = [ tokenDir ];
-    };
-  };
-  systemd.timers.hermes-gws-token = lib.mkIf enrolled {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnBootSec = "15s";
-      OnCalendar = "*:0/20";
-    };
   };
 }
