@@ -3,7 +3,6 @@
   den.aspects.graphical = {
     nixos =
       { pkgs, ... }:
-
       {
         fonts = {
           fontDir.enable = true;
@@ -48,9 +47,7 @@
             rofi.fonts.enable = false;
             firefox.profileNames = [ "default" ];
             zen-browser.profileNames = [ "Default Profile" ];
-            kitty.fonts.override = {
-              size = 16;
-            };
+            kitty.fonts.override.size = 16;
           };
           opacity = {
             applications = 0.9;

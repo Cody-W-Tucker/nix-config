@@ -8,9 +8,7 @@
       {
         hardware.graphics.enable = true;
 
-        services = {
-          gvfs.enable = true;
-        };
+        services.gvfs.enable = true;
 
         environment.systemPackages = with pkgs; [
           pavucontrol

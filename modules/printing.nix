@@ -6,17 +6,16 @@
     nixos =
       { pkgs, ... }:
       {
-        services.avahi = {
-          enable = true;
-          nssmdns4 = true;
-          openFirewall = true;
-        };
-
-        services.printing = {
-          enable = true;
-          drivers = with pkgs; [
-            canon-cups-ufr2
-          ];
+        services = {
+          avahi = {
+            enable = true;
+            nssmdns4 = true;
+            openFirewall = true;
+          };
+          printing = {
+            enable = true;
+            drivers = [ pkgs.canon-cups-ufr2 ];
+          };
         };
       };
   };
