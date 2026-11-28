@@ -55,17 +55,15 @@ To post a note yourself, run `inbox "<note>"`.
 
 ## Changing it
 
-`update` overwrites `~/.config/opencode` and the skill folders, so edit these files instead. All under [`modules/harness/_hm/`](../../modules/harness/_hm):
+`update` overwrites `~/.config/opencode` and the skill folders, so edit these files instead:
 
 | To change | Edit |
 | --- | --- |
-| MCP servers | [`mcp.nix`](../../modules/harness/_hm/mcp.nix) |
-| Shared third-party skills | [`skills/default.nix`](../../modules/harness/_hm/skills/default.nix) |
+| MCP servers | [`mcp.nix`](../../modules/ai/harness/mcp.nix) |
+| Shared third-party skills | [`skills.nix`](../../modules/ai/harness/skills.nix) |
 | Locally authored skills | A folder in [`skills/`](../../skills/) |
-| Inbox command and when agents use it | [`inbox/`](../../modules/harness/_hm/inbox/default.nix) |
-| Memory behavior, banks | [`plugins/hindsight/`](../../modules/harness/_hm/plugins/hindsight/default.nix) |
-| Claude Code | [`claude-code/default.nix`](../../modules/harness/_hm/claude-code/default.nix) |
-| OpenCode | [`opencode/default.nix`](../../modules/harness/_hm/opencode/default.nix) |
-| Shared agent runtime and baseline tools | [`runtime.nix`](../../modules/harness/_hm/runtime.nix) |
-| How agents delegate to lower-cost models and enter project environments | [`context.nix`](../../modules/harness/_hm/context.nix) |
-| OpenCode Desktop, the NAS server, `op-` | [`modules/ai/opencode.nix`](../../modules/ai/opencode.nix) |
+| Inbox command and when agents use it | [`inbox.nix`](../../modules/ai/harness/inbox.nix) |
+| Memory behavior, banks | [`hindsight/client.nix`](../../modules/ai/hindsight/client.nix) |
+| Claude Code, Codex, how agents delegate and enter project environments | [`harness.nix`](../../modules/ai/harness/harness.nix) |
+| OpenCode, Desktop app, NAS server, `op-` | [`opencode.nix`](../../modules/ai/harness/opencode.nix) |
+| Shared agent runtime and baseline tools | [`runtime.nix`](../../modules/ai/harness/runtime.nix) |

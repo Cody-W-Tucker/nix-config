@@ -1,6 +1,6 @@
 # llama-swap Service
 
-Owns the NixOS integration for local llama-swap serving on the NAS, the only host that runs local models. Write it as NAS configuration, not as a reusable module: set llama-swap's own `settings` directly and use plain `let` bindings, not new options.
+Owns the NixOS integration for local llama-swap serving on the NAS, the only host that runs local models, plus Beast's dictation client of it. Write it as NAS configuration, not as a reusable module: set llama-swap's own `settings` directly and use plain `let` bindings, not new options.
 
 Does not own user chat clients, Hermes identity, or general desktop AI tooling.
 
@@ -14,12 +14,13 @@ Does not own user chat clients, Hermes identity, or general desktop AI tooling.
 | `_laya.nix` | Laya gateway, Vega worker, training timer, and the `services.laya` options Karakeep triage reads |
 | `_classifiers.nix` | Laya classifier definitions |
 | `_endpoint.nix` | Host and ports, also read by beast's clients |
+| `dictation.nix`, `dictation.sh` | `llama-swap.dictation`: Beast's `llama-dictate` command (record, transcribe, clean up with s1-mini, type, fix) |
 
 ## Placement Rules
 
 - Keep model selection explicit and avoid hidden mutable defaults.
 - Put secrets next to the service and use SOPS for private values.
-- Keep client/editor/Hermes integration outside this module unless it is required service plumbing.
+- Keep client/editor/Hermes integration outside this module unless it is required service plumbing or, like dictation, a client of this endpoint alone.
 - Keep long scripts in their own files next to the Nix that runs them.
 - A multimodal model must set `mmprojFile` to its matching projector, or llama-server rejects image input.
 - Keep tuning benchmarks in Hindsight (`codyos` bank, tag `llama-swap`), not in comments. The constraints themselves are `source-note` memories in the same bank.

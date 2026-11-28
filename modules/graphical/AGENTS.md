@@ -7,6 +7,7 @@ owns one concern and may contribute both halves (`nixos` for system plumbing,
 
 - `session.nix`: graphics, gvfs, basic desktop packages, Wayland and NVIDIA session variables.
 - `hyprland.nix`: Hyprland (UWSM + greetd), lock screen, idle management and Waybar.
+- `hyprland-settings.nix`: Hyprland keybindings, window rules, animations, and monitors and workspaces from `host.hardwareConfig`.
 - `launcher.nix`: Rofi, themed from Stylix, and the Wi-Fi picker.
 - `notifications.nix`, `xdg.nix`: SwayNC; XDG directories and default applications.
 - `theming.nix`: system fonts and Stylix theming (Home Manager only).
@@ -14,7 +15,7 @@ owns one concern and may contribute both halves (`nixos` for system plumbing,
 Applications live in `modules/apps/`; audio, printing and gaming are standalone features in
 `modules/`. Each feature adds itself to `den.aspects.beast.includes` in its own file; there is no desktop role aspect.
 
-- Non-module data and large single-class subtrees (`_hyprland/`, `_waybar/`) are `_`-prefixed
+- Non-module data and large single-class subtrees (`_hyprland/` for the hyprnome patch, `_waybar/`) are `_`-prefixed
   and imported by their aspect.
 - Per-host facts come from the den host (`host.hardwareConfig` for the Hyprland layout).
 - Stylix is imported only by `theming.nix`, so `config.lib ? stylix` (checked by

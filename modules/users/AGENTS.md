@@ -1,6 +1,6 @@
 # User Profiles
 
-Owns the `codyt` user: the Den user aspect (`codyt.nix`, account + Home Manager profile; editor in `modules/editor/`, AI harness in `modules/harness/`, shell/git/CLI tools in `modules/shell/`).
+Owns the `codyt` user: the Den user aspect (`codyt.nix`, account + Home Manager profile; editor in `modules/editor/`, AI harness in `modules/ai/harness/`, shell/git/CLI tools in `modules/shell/`).
 
 Does not own system services, hardware, networking, or host composition. Those belong in `modules/` or `modules/hosts/`.
 
