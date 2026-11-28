@@ -150,7 +150,7 @@ in
         }
       );
       checkEndpoint = "/health";
-      name = "Vega (Laya GPU worker)";
+      name = "Vega (Laya CPU worker)";
     };
     systemd.services.llama-swap = {
       wants = [ "laya.service" ];
