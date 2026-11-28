@@ -13,7 +13,6 @@ let
   registry = pkgs.writeText "laya-classifiers.json" (builtins.toJSON cfg.classifiers);
   run = python: "${python}/bin/python3 ${./laya-service.py} --classifiers ${registry}";
   command = run pkgs.laya-vega;
-  gpu = run (pkgs.laya-vega.override { cudaSupport = true; });
   publish = pkgs.writeShellScript "laya-publish" ''
     set -euo pipefail
     shopt -s nullglob
@@ -142,7 +141,7 @@ in
 
     services.llama-swap.settings.models.vega = {
       ttl = 600;
-      cmd = "${gpu} worker --device cuda --port \${PORT} --state-dir /run/vega/policies";
+      cmd = "${command} worker --device cpu --port \${PORT} --state-dir /run/vega/policies";
       env = lib.mapAttrsToList (key: value: "${key}=${value}") (
         env
         // {
@@ -151,7 +150,7 @@ in
         }
       );
       checkEndpoint = "/health";
-      name = "Vega (Laya GPU worker)";
+      name = "Vega (Laya CPU worker)";
     };
     systemd.services.llama-swap = {
       wants = [ "laya.service" ];
@@ -203,13 +202,8 @@ in
       path = [ pkgs.coreutils ];
       serviceConfig = sandbox // {
         Type = "oneshot";
-        ExecStartPre = "${pkgs.curl}/bin/curl -fsS --max-time 300 -X POST ${llamaSwap}/api/models/pause";
-        ExecStart = "${gpu} train --device cuda";
-        ExecStopPost = [
-          "-${publish}"
-          "-${pkgs.curl}/bin/curl -fsS --max-time 30 -X POST ${llamaSwap}/api/models/resume"
-        ];
-        PrivateDevices = false;
+        ExecStart = "${command} train --device cpu";
+        ExecStopPost = "-${publish}";
         Nice = 15;
         CPUQuota = "200%";
         IOWeight = 10;
