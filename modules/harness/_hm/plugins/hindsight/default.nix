@@ -47,31 +47,29 @@ let
     }
   );
 
+  recallHook = script: extra: {
+    hooks = [
+      (
+        {
+          type = "command";
+          command = "${lib.getExe pkgs.python3} \"\${CLAUDE_PLUGIN_ROOT}/scripts/${script}.py\"";
+        }
+        // extra
+      )
+    ];
+  };
+
   claudeHooks = pkgs.writeText "hindsight-claude-hooks.json" (
     builtins.toJSON {
-      hooks.UserPromptSubmit = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "${lib.getExe pkgs.python3} \"\${CLAUDE_PLUGIN_ROOT}/scripts/recall.py\"";
-              timeout = 25;
-            }
-          ];
-        }
-      ];
-      hooks.Stop = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "${lib.getExe pkgs.python3} \"\${CLAUDE_PLUGIN_ROOT}/scripts/retain.py\"";
-              timeout = 15;
-              async = true;
-            }
-          ];
-        }
-      ];
+      hooks = {
+        UserPromptSubmit = [ (recallHook "recall" { timeout = 25; }) ];
+        Stop = [
+          (recallHook "retain" {
+            timeout = 15;
+            async = true;
+          })
+        ];
+      };
     }
   );
 

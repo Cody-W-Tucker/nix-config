@@ -5,50 +5,34 @@
   options,
   ...
 }:
-
 let
-  plugins = config.codyos.harness.plugins;
+  inherit (config.codyos.harness) plugins;
+
+  opt =
+    type: default: description:
+    lib.mkOption { inherit type default description; };
 
   pluginModule = lib.types.submodule {
     options = {
-      packages = lib.mkOption {
-        type = lib.types.listOf lib.types.package;
-        default = [ ];
-        description = "Packages installed for this plugin.";
-      };
-
-      context = lib.mkOption {
-        type = lib.types.lines;
-        default = "";
-        description = "Shared context added to OpenCode and Claude Code.";
-      };
+      packages = opt (lib.types.listOf lib.types.package) [ ] "Packages installed for this plugin.";
+      context = opt lib.types.lines "" "Shared context added to OpenCode and Claude Code.";
 
       opencode = {
-        file = lib.mkOption {
-          type = lib.types.nullOr lib.types.path;
-          default = null;
-          description = "Single-file OpenCode plugin linked into ~/.config/opencode/plugins/<name>.ts.";
-        };
-
-        settings = lib.mkOption {
-          type = lib.types.nullOr (lib.types.either lib.types.str lib.types.attrs);
-          default = null;
-          description = "Entry added to programs.opencode.settings.plugins.";
-        };
+        file =
+          opt (lib.types.nullOr lib.types.path) null
+            "Single-file OpenCode plugin linked into ~/.config/opencode/plugins/<name>.ts.";
+        settings = opt (lib.types.nullOr (
+          lib.types.either lib.types.str lib.types.attrs
+        )) null "Entry added to programs.opencode.settings.plugins.";
       };
 
       claudeCode = {
-        plugin = lib.mkOption {
-          type = lib.types.nullOr (lib.types.either lib.types.package lib.types.path);
-          default = null;
-          description = "Claude Code plugin directory or package registered in programs.claude-code.plugins.";
-        };
-
-        hooks = lib.mkOption {
-          type = lib.types.attrsOf (lib.types.listOf lib.types.attrs);
-          default = { };
-          description = "Hook entries merged into programs.claude-code.settings.hooks.";
-        };
+        plugin = opt (lib.types.nullOr (
+          lib.types.either lib.types.package lib.types.path
+        )) null "Claude Code plugin directory or package registered in programs.claude-code.plugins.";
+        hooks = opt (lib.types.attrsOf (
+          lib.types.listOf lib.types.attrs
+        )) { } "Hook entries merged into programs.claude-code.settings.hooks.";
       };
     };
   };

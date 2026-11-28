@@ -40,8 +40,10 @@ let
   '';
 in
 {
-  programs.opencode.context = managed;
-  programs.claude-code.context = managed;
-  programs.pi-coding-agent.context = managed;
-  programs.codex.context = minimal;
+  programs = {
+    opencode.context = managed;
+    claude-code.context = managed;
+    pi-coding-agent.context = managed;
+    codex.context = minimal;
+  };
 }
