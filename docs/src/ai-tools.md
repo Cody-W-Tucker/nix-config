@@ -1,6 +1,6 @@
 # AI tools
 
-Web tools around the local models and Hermes, plus two CLIs on both hosts.
+Web tools around the local models and Hermes, plus one CLI on both hosts.
 
 ## Web tools
 
@@ -40,7 +40,6 @@ At 1 a.m. NAS time, Laya refits on the CPU while local models keep serving. Laya
 | CLI | Use |
 | --- | --- |
 | `gws` | Gmail, Calendar, Tasks, Contacts. Example: `gws gmail +triage --query 'in:inbox'` |
-| `research-state` | Snapshot of what is deployed and recorded, for agents to resume research. Runs only on request. |
 
 ## Changing it
 
@@ -52,4 +51,3 @@ At 1 a.m. NAS time, Laya refits on the CPU while local models keep serving. Laya
 | Hindsight: models, banks, agent tools | [`hindsight.nix`](../../modules/ai/hindsight.nix) |
 | Langfuse | [`langfuse/langfuse.nix`](../../modules/ai/langfuse/langfuse.nix) |
 | `gws` skills | [`google-workspace.nix`](../../modules/ai/google-workspace.nix) |
-| `research-state` | [`research-state.nix`](../../modules/ai/research-state.nix) |

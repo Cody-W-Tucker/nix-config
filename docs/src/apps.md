@@ -48,6 +48,6 @@ All in [`modules/apps/`](../../modules/apps):
 | To change                          | Edit                                                                                                                |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Apps                               | [`apps.nix`](../../modules/apps/apps.nix)                                                                           |
-| Terminal                           | [`terminal.nix`](../../modules/apps/terminal.nix)                                                                   |
+| Terminal                           | [`apps.nix`](../../modules/apps/apps.nix)                                                                   |
 | Obsidian settings, plugins, vaults | [`_obsidian/default.nix`](../../modules/apps/_obsidian/default.nix) |
-| Phone integration                  | [`kdeconnect.nix`](../../modules/apps/kdeconnect.nix)                                                               |
+| Phone integration                  | [`apps.nix`](../../modules/apps/apps.nix)                                                               |
