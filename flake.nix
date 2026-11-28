@@ -6,16 +6,12 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-secrets = {
-      url = "github:Cody-W-Tucker/nixos-secrets";
-    };
+    nixos-secrets.url = "github:Cody-W-Tucker/nixos-secrets";
     flake-programs-sqlite = {
       url = "github:wamserma/flake-programs-sqlite";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    vpn-confinement = {
-      url = "github:Maroka-chan/VPN-Confinement";
-    };
+    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -35,9 +31,7 @@
       url = "github:nix-community/nixvim/nixos-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixvim = {
-      url = "github:nix-community/nixvim";
-    };
+    nixvim.url = "github:nix-community/nixvim";
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -47,9 +41,7 @@
       url = "github:Cody-W-Tucker/nextmeeting-nix?dir=packaging";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-    };
+    llm-agents.url = "github:numtide/llm-agents.nix";
     ai-usagebar = {
       url = "github:akitaonrails/ai-usagebar";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -60,9 +52,11 @@
     };
     cognitive-assistant = {
       url = "github:Cody-W-Tucker/Cognitive-Assistant";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-      inputs.llm-agents.follows = "llm-agents";
-      inputs.ai-data-extractor.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        llm-agents.follows = "llm-agents";
+        ai-data-extractor.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      };
     };
     workflow = {
       url = "github:Cody-W-Tucker/runtime";
@@ -81,12 +75,8 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       inputs.home-manager.follows = "home-manager";
     };
-    den = {
-      url = "github:denful/den/v0.20.0";
-    };
-    import-tree = {
-      url = "github:vic/import-tree";
-    };
+    den.url = "github:denful/den/v0.20.0";
+    import-tree.url = "github:vic/import-tree";
     stevenblack = {
       url = "github:StevenBlack/hosts";
       inputs.nixpkgs.follows = "nixpkgs-unstable";

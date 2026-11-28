@@ -5,9 +5,7 @@
       { pkgs, ... }:
       {
         programs = {
-          starship = {
-            enable = true;
-          };
+          starship.enable = true;
           zsh = {
             enable = true;
             enableCompletion = false;
@@ -29,53 +27,58 @@
       }:
       let
         themed = config.lib ? stylix;
+        inherit (config.lib.stylix) colors;
         glowStyle =
           if themed then
-            (pkgs.formats.json { }).generate "glow-stylix.json" (
-              let
-                inherit (config.lib.stylix) colors;
-              in
-              {
-                document.color = "#${colors.base05}";
-                heading = {
-                  block_suffix = "\n";
-                  bold = true;
-                };
-                h1.color = "#${colors.base08}";
-                h2.color = "#${colors.base09}";
-                h3.color = "#${colors.base0A}";
-                h4.color = "#${colors.base0B}";
-                h5.color = "#${colors.base0D}";
-                h6.color = "#${colors.base0E}";
-                strong.bold = true;
-                emph.italic = true;
-                strikethrough.crossed_out = true;
-                item.block_prefix = "• ";
-                enumeration.block_prefix = ". ";
-                task = {
-                  ticked = "[x] ";
-                  unticked = "[ ] ";
-                };
-                block_quote = {
-                  color = "#${colors.base03}";
-                  indent = 1;
-                  indent_token = "│ ";
-                };
-                hr = {
-                  color = "#${colors.base03}";
-                  format = "\n────────\n";
-                };
-                code.color = "#${colors.base0B}";
-                link = {
-                  color = "#${colors.base0D}";
-                  underline = true;
-                };
-                link_text.color = "#${colors.base0C}";
-                code_block.margin = 2;
-              }
-            )
+            (pkgs.formats.json { }).generate "glow-stylix.json" {
+              document.color = "#${colors.base05}";
+              heading = {
+                block_suffix = "\n";
+                bold = true;
+              };
+              h1.color = "#${colors.base08}";
+              h2.color = "#${colors.base09}";
+              h3.color = "#${colors.base0A}";
+              h4.color = "#${colors.base0B}";
+              h5.color = "#${colors.base0D}";
+              h6.color = "#${colors.base0E}";
+              strong.bold = true;
+              emph.italic = true;
+              strikethrough.crossed_out = true;
+              item.block_prefix = "• ";
+              enumeration.block_prefix = ". ";
+              task = {
+                ticked = "[x] ";
+                unticked = "[ ] ";
+              };
+              block_quote = {
+                color = "#${colors.base03}";
+                indent = 1;
+                indent_token = "│ ";
+              };
+              hr = {
+                color = "#${colors.base03}";
+                format = "\n────────\n";
+              };
+              code.color = "#${colors.base0B}";
+              link = {
+                color = "#${colors.base0D}";
+                underline = true;
+              };
+              link_text.color = "#${colors.base0C}";
+              code_block.margin = 2;
+            }
           else
             "dark";
+        glowPreview = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${glowStyle} "$1"'';
+        whatchangedKey = key: subcommand: desc: {
+          on = [
+            "<A-g>"
+            key
+          ];
+          run = "plugin whatchanged${subcommand}";
+          inherit desc;
+        };
       in
       {
         xdg.configFile = lib.optionalAttrs themed { "glow/stylix.json".source = glowStyle; };
@@ -102,8 +105,7 @@
             enableZshIntegration = true;
             shellWrapperName = "rr";
             plugins = {
-              git = pkgs.unstable.yaziPlugins.git;
-              piper = pkgs.unstable.yaziPlugins.piper;
+              inherit (pkgs.unstable.yaziPlugins) git piper;
               whatchanged = pkgs.fetchFromGitHub {
                 owner = "WhoSowSee";
                 repo = "whatchanged.yazi";
@@ -120,98 +122,63 @@
                 + "/vscode-git-gutter.yazi";
             };
             keymap.mgr.prepend_keymap = [
-              {
-                on = [
-                  "<A-g>"
-                  "a"
-                ];
-                run = "plugin whatchanged";
-                desc = "Toggle git changes";
-              }
-              {
-                on = [
-                  "<A-g>"
-                  "r"
-                ];
-                run = "plugin whatchanged refresh";
-                desc = "Refresh git changes";
-              }
-              {
-                on = [
-                  "<A-g>"
-                  "v"
-                ];
-                run = "plugin whatchanged preview";
-                desc = "Toggle diff / file content";
-              }
-              {
-                on = [
-                  "<A-g>"
-                  "s"
-                ];
-                run = "plugin whatchanged staged";
-                desc = "Show staged changes";
-              }
-              {
-                on = [
-                  "<A-g>"
-                  "w"
-                ];
-                run = "plugin whatchanged unstaged";
-                desc = "Show unstaged changes";
-              }
+              (whatchangedKey "a" "" "Toggle git changes")
+              (whatchangedKey "r" " refresh" "Refresh git changes")
+              (whatchangedKey "v" " preview" "Toggle diff / file content")
+              (whatchangedKey "s" " staged" "Show staged changes")
+              (whatchangedKey "w" " unstaged" "Show unstaged changes")
             ];
-            settings.mgr = {
-              ratio = [
+            settings = {
+              mgr.ratio = [
                 1
                 2
                 5
               ];
+              plugin = {
+                prepend_previewers = [
+                  {
+                    url = "search://*";
+                    run = "whatchanged";
+                  }
+                  {
+                    url = "search://*/";
+                    run = "whatchanged";
+                  }
+                  {
+                    url = "*.md";
+                    run = glowPreview;
+                  }
+                  {
+                    url = "*.markdown";
+                    run = glowPreview;
+                  }
+                  {
+                    mime = "text/*";
+                    run = "vscode-git-gutter";
+                  }
+                ];
+                prepend_fetchers =
+                  map
+                    (url: {
+                      id = "git";
+                      inherit url;
+                      run = "git";
+                      group = "git";
+                    })
+                    [
+                      "*"
+                      "*/"
+                    ];
+              };
             };
-            settings.plugin.prepend_previewers = [
-              {
-                url = "search://*";
-                run = "whatchanged";
-              }
-              {
-                url = "search://*/";
-                run = "whatchanged";
-              }
-              {
-                url = "*.md";
-                run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${glowStyle} "$1"'';
-              }
-              {
-                url = "*.markdown";
-                run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${glowStyle} "$1"'';
-              }
-              {
-                mime = "text/*";
-                run = "vscode-git-gutter";
-              }
-            ];
-            settings.plugin.prepend_fetchers = [
-              {
-                id = "git";
-                url = "*";
-                run = "git";
-                group = "git";
-              }
-              {
-                id = "git";
-                url = "*/";
-                run = "git";
-                group = "git";
-              }
-            ];
             initLua =
-              (lib.optionalString (config.lib ? stylix) ''
+              (lib.optionalString themed ''
                 th.git = th.git or {}
-                th.git.modified = ui.Style():fg("#${config.lib.stylix.colors.base0A}")
-                th.git.added = ui.Style():fg("#${config.lib.stylix.colors.base0B}")
-                th.git.deleted = ui.Style():fg("#${config.lib.stylix.colors.base08}")
-                th.git.updated = ui.Style():fg("#${config.lib.stylix.colors.base0D}")
-                th.git.untracked = ui.Style():fg("#${config.lib.stylix.colors.base0C}")
+                th.git.modified = ui.Style():fg("#${colors.base0A}")
+                th.git.added = ui.Style():fg("#${colors.base0B}")
+                th.git.deleted = ui.Style():fg("#${colors.base08}")
+                th.git.updated = ui.Style():fg("#${colors.base0D}")
+                th.git.untracked = ui.Style():fg("#${colors.base0C}")
               '')
               + ''
                 require("git"):setup()
@@ -234,13 +201,13 @@
           fzf = {
             enable = true;
             enableZshIntegration = true;
-            colors = lib.mkIf (config.lib ? stylix) {
-              "fg+" = "#" + config.lib.stylix.colors.base0D;
+            colors = lib.mkIf themed {
+              "fg+" = "#${colors.base0D}";
               "bg+" = "-1";
-              "fg" = "#" + config.lib.stylix.colors.base05;
+              "fg" = "#${colors.base05}";
               "bg" = "-1";
-              "prompt" = "#" + config.lib.stylix.colors.base03;
-              "pointer" = "#" + config.lib.stylix.colors.base0D;
+              "prompt" = "#${colors.base03}";
+              "pointer" = "#${colors.base0D}";
             };
             defaultOptions = [
               "--margin=1"

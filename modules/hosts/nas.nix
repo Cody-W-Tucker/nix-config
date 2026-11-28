@@ -9,12 +9,15 @@
   };
 
   den.aspects.nas = {
-    provides.to-users.homeManager = {
-      home.stateVersion = "25.11";
-    };
+    provides.to-users.homeManager.home.stateVersion = "25.11";
 
     nixos =
-      { config, pkgs, ... }:
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
       let
         site = config.codyos.site;
       in
@@ -27,17 +30,14 @@
           zfs.forceImportRoot = false;
         };
 
-        fileSystems."${site.user.home}/Projects" = {
-          device = "/mnt/projects";
-          fsType = "none";
-          options = [ "bind" ];
-        };
-
-        fileSystems."${site.user.home}/Knowledge" = {
-          device = "/mnt/knowledge";
-          fsType = "none";
-          options = [ "bind" ];
-        };
+        fileSystems = lib.genAttrs' [ "Projects" "Knowledge" ] (
+          folder:
+          lib.nameValuePair "${site.user.home}/${folder}" {
+            device = "/mnt/${lib.toLower folder}";
+            fsType = "none";
+            options = [ "bind" ];
+          }
+        );
 
         services = {
           udisks2.enable = true;
@@ -77,9 +77,7 @@
               gateway = site.lan.gateway;
               may-fail = false;
             };
-            ipv6 = {
-              method = "auto";
-            };
+            ipv6.method = "auto";
           };
         };
         virtualisation.docker.package = pkgs.docker_29;

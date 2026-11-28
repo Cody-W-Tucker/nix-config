@@ -25,9 +25,7 @@
               whitespace-error-style = "22 reverse";
             };
           };
-          gh = {
-            enable = true;
-          };
+          gh.enable = true;
           git = {
             enable = true;
             ignores = [
@@ -56,11 +54,9 @@
           };
           lazygit = {
             enable = true;
-            settings = {
-              gui.paging = {
-                colorArg = "always";
-                paging = "delta --dark --paging=never";
-              };
+            settings.gui.paging = {
+              colorArg = "always";
+              paging = "delta --dark --paging=never";
             };
           };
         };
